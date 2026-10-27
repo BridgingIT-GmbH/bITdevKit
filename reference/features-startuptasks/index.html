@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4721,10 +4721,10 @@
 <p>Add startup tasks to your application in <code>Program.cs</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddStartupTasks</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Enabled</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="s">&quot;00:00:05&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="s">"00:00:05"</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithTask</span><span class="o">&lt;</span><span class="n">DatabaseSeederTask</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">())</span>
-<span class="w">        </span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="s">&quot;00:00:03&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="s">"00:00:03"</span><span class="p">));</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 <span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
@@ -4748,9 +4748,9 @@
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExecuteAsync</span><span class="p">(</span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">&quot;Starting database seeding&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Starting database seeding"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">dbContext</span><span class="p">.</span><span class="n">SeedAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
-<span class="w">        </span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">&quot;Database seeding completed&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Database seeding completed"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -4763,7 +4763,7 @@
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddStartupTasks</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithTask</span><span class="o">&lt;</span><span class="n">ConfigValidationTask</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="k">true</span><span class="p">)</span><span class="w">        </span><span class="c1">// Enable/disable the task</span>
-<span class="w">        </span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="s">&quot;00:00:02&quot;</span><span class="p">)</span><span class="w">  </span><span class="c1">// Add delay before execution</span>
+<span class="w">        </span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="s">"00:00:02"</span><span class="p">)</span><span class="w">  </span><span class="c1">// Add delay before execution</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Order</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="w">            </span><span class="c1">// Sort launch order; does not make execution sequential</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithTask</span><span class="o">&lt;</span><span class="n">CacheWarmupTask</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsProduction</span><span class="p">())</span>
@@ -4855,10 +4855,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

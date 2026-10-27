@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5379,7 +5379,7 @@
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">TakeSnapshot</span><span class="p">();</span>
 <span class="w">        </span><span class="n">next</span><span class="p">.</span><span class="n">Count</span><span class="o">++</span><span class="p">;</span>
-<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">RestoreSnapshot</span><span class="p">(</span><span class="n">next</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Incremented counter&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">RestoreSnapshot</span><span class="p">(</span><span class="n">next</span><span class="p">,</span><span class="w"> </span><span class="s">"Incremented counter"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5394,7 +5394,7 @@
 <div class="highlight"><pre><span></span><code>@inject CounterState Counter
 
 &lt;p&gt;Count: @Counter.Count&lt;/p&gt;
-&lt;button @onclick=&quot;Counter.IncrementAsync&quot;&gt;Increment&lt;/button&gt;
+&lt;button @onclick="Counter.IncrementAsync"&gt;Increment&lt;/button&gt;
 </code></pre></div>
 <p>Selecting <strong>Increment</strong> changes the displayed count and records an undo snapshot. Use <code>AsLocalStorageScoped()</code> instead when the value must survive a browser refresh.</p>
 <h2 id="detailed-usage">Detailed usage<a class="headerlink" href="#detailed-usage" title="Permanent link">&para;</a></h2>
@@ -5437,21 +5437,21 @@
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">TakeSnapshot</span><span class="p">();</span>
 <span class="w">        </span><span class="n">snapshot</span><span class="p">.</span><span class="n">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="p">;</span>
-<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">RestoreSnapshot</span><span class="p">(</span><span class="n">snapshot</span><span class="p">,</span><span class="w"> </span><span class="s">$&quot;Updated {nameof(CustomerFilterStateModel.Status)} -&gt; {value}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">RestoreSnapshot</span><span class="p">(</span><span class="n">snapshot</span><span class="p">,</span><span class="w"> </span><span class="s">$"Updated {nameof(CustomerFilterStateModel.Status)} -&gt; {value}"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">SetCustomerType</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="k">value</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">TakeSnapshot</span><span class="p">();</span>
 <span class="w">        </span><span class="n">snapshot</span><span class="p">.</span><span class="n">CustomerType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="p">;</span>
-<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">RestoreSnapshot</span><span class="p">(</span><span class="n">snapshot</span><span class="p">,</span><span class="w"> </span><span class="s">$&quot;Updated {nameof(CustomerFilterStateModel.CustomerType)} -&gt; {value}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">RestoreSnapshot</span><span class="p">(</span><span class="n">snapshot</span><span class="p">,</span><span class="w"> </span><span class="s">$"Updated {nameof(CustomerFilterStateModel.CustomerType)} -&gt; {value}"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">SetSearchText</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="k">value</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">TakeSnapshot</span><span class="p">();</span>
 <span class="w">        </span><span class="n">snapshot</span><span class="p">.</span><span class="n">SearchText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">;</span>
-<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">RestoreSnapshot</span><span class="p">(</span><span class="n">snapshot</span><span class="p">,</span><span class="w"> </span><span class="s">$&quot;Updated {nameof(CustomerFilterStateModel.SearchText)} -&gt; {value}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">RestoreSnapshot</span><span class="p">(</span><span class="n">snapshot</span><span class="p">,</span><span class="w"> </span><span class="s">$"Updated {nameof(CustomerFilterStateModel.SearchText)} -&gt; {value}"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5492,19 +5492,19 @@
 <li><code>StateChangeWithMetadata</code>: <code>Action&lt;IStateChangeMetadata&gt;</code> - Provides detailed metadata about the change, including <code>StateId</code>, <code>Timestamp</code>, <code>Operation</code>, <code>OldValue</code>, <code>NewValue</code>, and <code>Reason</code>.</li>
 </ul>
 <h4 id="customer-filter-component">Customer filter component<a class="headerlink" href="#customer-filter-component" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>&lt;MudSelect T=&quot;string&quot; Label=&quot;Status&quot; Dense=&quot;true&quot; Clearable=&quot;true&quot;
-           Value=&quot;@FilterState.Status&quot; ValueChanged=&quot;@(async (string value) =&gt; await FilterState.SetStatus(value))&quot;
-           Margin=&quot;Margin.Dense&quot; Style=&quot;width: 120px;&quot;&gt;
-    &lt;MudSelectItem Value=&quot;@(null)&quot;&gt;Alle&lt;/MudSelectItem&gt;
-    &lt;MudSelectItem Value=&quot;@(&quot;Aktiv&quot;)&quot;&gt;Aktiv&lt;/MudSelectItem&gt;
-    &lt;MudSelectItem Value=&quot;@(&quot;Inaktiv&quot;)&quot;&gt;Inaktiv&lt;/MudSelectItem&gt;
+<div class="highlight"><pre><span></span><code>&lt;MudSelect T="string" Label="Status" Dense="true" Clearable="true"
+           Value="@FilterState.Status" ValueChanged="@(async (string value) =&gt; await FilterState.SetStatus(value))"
+           Margin="Margin.Dense" Style="width: 120px;"&gt;
+    &lt;MudSelectItem Value="@(null)"&gt;Alle&lt;/MudSelectItem&gt;
+    &lt;MudSelectItem Value="@("Aktiv")"&gt;Aktiv&lt;/MudSelectItem&gt;
+    &lt;MudSelectItem Value="@("Inaktiv")"&gt;Inaktiv&lt;/MudSelectItem&gt;
 &lt;/MudSelect&gt;
 
-&lt;MudTextField Value=&quot;@FilterState.SearchText&quot; ValueChanged=&quot;@(async (string value) =&gt; await FilterState.SetSearchText(value))&quot;
-              Placeholder=&quot;Search customers&quot; Clearable=&quot;true&quot;
-              Adornment=&quot;Adornment.Start&quot; AdornmentIcon=&quot;@Icons.Material.Filled.Search&quot;
-              IconSize=&quot;Size.Medium&quot; Immediate=&quot;true&quot; DebounceInterval=&quot;300&quot;
-              Margin=&quot;Margin.Dense&quot; Style=&quot;width: 230px;&quot; /&gt;
+&lt;MudTextField Value="@FilterState.SearchText" ValueChanged="@(async (string value) =&gt; await FilterState.SetSearchText(value))"
+              Placeholder="Search customers" Clearable="true"
+              Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
+              IconSize="Size.Medium" Immediate="true" DebounceInterval="300"
+              Margin="Margin.Dense" Style="width: 230px;" /&gt;
 </code></pre></div>
 <p><strong>Code-behind</strong>:</p>
 <div class="highlight"><pre><span></span><code><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">OnInitializedAsync</span><span class="p">()</span>
@@ -5517,7 +5517,7 @@
 
 <span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnFilterStateChanged</span><span class="p">(</span><span class="kt">object</span><span class="w"> </span><span class="n">newState</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Filter state changed: {JsonSerializer.Serialize(newState)}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Filter state changed: {JsonSerializer.Serialize(newState)}"</span><span class="p">);</span>
 <span class="w">    </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">InvokeAsync</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="nf">ApplyFilters</span><span class="p">();</span>
@@ -5566,8 +5566,8 @@
 <span class="w">        </span><span class="p">.</span><span class="n">Done</span><span class="p">();</span>
 </code></pre></div>
 <h4 id="add-undo-and-redo-buttons">Add undo and redo buttons<a class="headerlink" href="#add-undo-and-redo-buttons" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>&lt;MudButton OnClick=&quot;@(() =&gt; FilterState.UndoAsync())&quot; Disabled=&quot;@(!FilterState.CanUndo)&quot;&gt;Undo&lt;/MudButton&gt;
-&lt;MudButton OnClick=&quot;@(() =&gt; FilterState.RedoAsync())&quot; Disabled=&quot;@(!FilterState.CanRedo)&quot;&gt;Redo&lt;/MudButton&gt;
+<div class="highlight"><pre><span></span><code>&lt;MudButton OnClick="@(() =&gt; FilterState.UndoAsync())" Disabled="@(!FilterState.CanUndo)"&gt;Undo&lt;/MudButton&gt;
+&lt;MudButton OnClick="@(() =&gt; FilterState.RedoAsync())" Disabled="@(!FilterState.CanRedo)"&gt;Redo&lt;/MudButton&gt;
 </code></pre></div>
 <h3 id="6-triggering-state-changes-manually">6. Triggering state changes manually<a class="headerlink" href="#6-triggering-state-changes-manually" title="Permanent link">&para;</a></h3>
 <p>If you need to notify subscribers without changing the state (e.g., after loading entities to apply filtering based on the current state), directly call the event handler instead of invoking the event. This ensures the handler is triggered with the current state.</p>
@@ -5752,10 +5752,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

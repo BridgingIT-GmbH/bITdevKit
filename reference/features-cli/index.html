@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5297,7 +5297,7 @@
 
 <span class="nv">$versionJson</span> <span class="p">=</span> <span class="n">dotnet</span> <span class="n">tool</span> <span class="n">run</span> <span class="n">bdk</span> <span class="n">version</span> <span class="p">-</span><span class="n">-output</span> <span class="n">json</span>
 <span class="k">if</span> <span class="p">(</span><span class="nv">$LASTEXITCODE</span> <span class="o">-ne</span> <span class="n">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">throw</span> <span class="s2">&quot;bdk version failed with exit code $LASTEXITCODE.&quot;</span>
+    <span class="k">throw</span> <span class="s2">"bdk version failed with exit code $LASTEXITCODE."</span>
 <span class="p">}</span>
 
 <span class="nv">$versionJson</span>
@@ -5305,7 +5305,7 @@
 <p>The command writes a JSON object containing the CLI version, registered modules and exit code <code>0</code>. Once a Development host is running, list hosts for the same workspace:</p>
 <div class="highlight"><pre><span></span><code><span class="n">dotnet</span> <span class="n">tool</span> <span class="n">run</span> <span class="n">bdk</span> <span class="n">hosts</span> <span class="n">list</span> <span class="p">-</span><span class="n">-output</span> <span class="n">json</span>
 <span class="k">if</span> <span class="p">(</span><span class="nv">$LASTEXITCODE</span> <span class="o">-ne</span> <span class="n">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">throw</span> <span class="s2">&quot;Host discovery failed with exit code $LASTEXITCODE.&quot;</span>
+    <span class="k">throw</span> <span class="s2">"Host discovery failed with exit code $LASTEXITCODE."</span>
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="packages">Packages<a class="headerlink" href="#packages" title="Permanent link">&para;</a></h2>
@@ -5884,8 +5884,8 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--runtime-id<span class="w
 <p>Documentation tools are different from runtime tools. <code>bdk_docs_search</code> and <code>bdk_docs_get</code> read the official DevKit documentation from GitHub. API-reference tools first use generated Pages data under <code>.github/pages/api</code> when it exists in the resolved workspace, then fall back to the published GitHub Pages API reference.</p>
 <p>MCP client configuration can be source-controlled for the repo:</p>
 <ul>
-<li><code>.mcp.json</code> for clients that read repo-level MCP configuration.</li>
-<li><code>.vscode/mcp.json</code> for VS Code.</li>
+<li><code>.mcp.json</code> for VS Code, GitHub Copilot and other clients that read repo-level MCP configuration.</li>
+<li><code>.vs/mcp.json</code> for Visual Studio.</li>
 <li>Rider and Visual Studio can be configured with the same command shape documented in <a href="../features-cli-mcp-clients/">MCP Clients</a>.</li>
 </ul>
 <h2 id="appendix-adding-new-mcp-tools">Appendix: adding new MCP tools<a class="headerlink" href="#appendix-adding-new-mcp-tools" title="Permanent link">&para;</a></h2>
@@ -5929,11 +5929,11 @@ bdk_project_call
 <p><code>AddMcp(...)</code> defaults to the host's evaluated local MCP tooling decision. It registers project handlers only when local MCP hosting is enabled for that host. Use <code>.Enabled(true)</code> or <code>.Enabled(false)</code> on the MCP registration builder only when an application needs an explicit override.</p>
 <p>Project calls use the stable dispatcher shape:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;operation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;commerce_inspect_customer&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;toolset&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;diagnostics&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;arguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;customerNumber&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CUST-10042&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;includeRecentOrders&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"operation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"commerce_inspect_customer"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"toolset"</span><span class="p">:</span><span class="w"> </span><span class="s2">"diagnostics"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"arguments"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"customerNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CUST-10042"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"includeRecentOrders"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -6022,10 +6022,10 @@ bdk_project_call
 </code></pre></div>
 <p>Also verify local CLI integration is not disabled by configuration:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;DevKit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;Cli&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;ConsoleCommands&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">  </span><span class="nt">"DevKit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"Cli"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"ConsoleCommands"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -6124,10 +6124,10 @@ bdk_project_call
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

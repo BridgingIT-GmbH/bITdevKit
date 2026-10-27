@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5144,7 +5144,7 @@
 <span class="w">    </span><span class="na">[CborConstructor]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">Customer</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
 
-<span class="w">    </span><span class="na">[DataMember(Name = &quot;customer_name&quot;)]</span>
+<span class="w">    </span><span class="na">[DataMember(Name = "customer_name")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[DataMember]</span>
@@ -5161,7 +5161,7 @@
 <h2 id="shared-codecs"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="codecs" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h8v20H4V6Z M20 6h8v20h-8" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m13 11 4 5-4 5M9 11v10M23 11h2M23 16h2M23 21h2" /></g></svg></span> Shared codecs<a class="headerlink" href="#shared-codecs" title="Permanent link">&para;</a></h2>
 <h3 id="base64urlhelper"><code>Base64UrlHelper</code><a class="headerlink" href="#base64urlhelper" title="Permanent link">&para;</a></h3>
 <p><code>Base64UrlHelper.Encode</code> produces canonical unpadded Base64Url text. <code>Base64UrlHelper.Decode</code> restores the bytes and rejects malformed, padded, or non-canonical values.</p>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">encoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Base64UrlHelper</span><span class="p">.</span><span class="n">Encode</span><span class="p">(</span><span class="s">&quot;payload&quot;</span><span class="n">u8</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">encoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Base64UrlHelper</span><span class="p">.</span><span class="n">Encode</span><span class="p">(</span><span class="s">"payload"</span><span class="n">u8</span><span class="p">);</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">decoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Base64UrlHelper</span><span class="p">.</span><span class="n">Decode</span><span class="p">(</span><span class="n">encoded</span><span class="p">);</span>
 </code></pre></div>
 <p>Base64Url is appropriate for opaque URL segments, continuation tokens, and string-only metadata formats. It is distinct from regular padded Base64; use <code>Convert.ToBase64String</code> when a protocol requires the standard Base64 alphabet.</p>
@@ -5280,7 +5280,7 @@
 <h2 id="serializer-benchmarks">Serializer benchmarks<a class="headerlink" href="#serializer-benchmarks" title="Permanent link">&para;</a></h2>
 <p><code>CanRoundTripStream_Benchmark</code> remains a lightweight timing check in the serializer unit tests. The standalone BenchmarkDotNet comparison lives in <code>benchmarks/Common.Benchmarks/SerializationBenchmarks.cs</code> and has no xUnit dependency.</p>
 <p>Run the comparison in Release mode:</p>
-<div class="highlight"><pre><span></span><code>dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--project<span class="w"> </span>benchmarks/Common.Benchmarks<span class="w"> </span>--<span class="w"> </span>--filter<span class="w"> </span><span class="s1">&#39;*SerializationBenchmarks*&#39;</span><span class="w"> </span>--job<span class="w"> </span>short<span class="w"> </span>--iterationTime<span class="w"> </span><span class="m">500</span><span class="w"> </span>--iterationCount<span class="w"> </span><span class="m">8</span><span class="w"> </span>--warmupCount<span class="w"> </span><span class="m">8</span>
+<div class="highlight"><pre><span></span><code>dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--project<span class="w"> </span>benchmarks/Common.Benchmarks<span class="w"> </span>--<span class="w"> </span>--filter<span class="w"> </span><span class="s1">'*SerializationBenchmarks*'</span><span class="w"> </span>--job<span class="w"> </span>short<span class="w"> </span>--iterationTime<span class="w"> </span><span class="m">500</span><span class="w"> </span>--iterationCount<span class="w"> </span><span class="m">8</span><span class="w"> </span>--warmupCount<span class="w"> </span><span class="m">8</span>
 </code></pre></div>
 <p>The comparison measures serialization, typed deserialization, and round trips through the public byte-array adapters. It includes CBOR, MessagePack, System.Text.Json, JSON.NET, and JSON.NET with Deflate compression using their DevKit defaults. Each serializer processes the same small DTO, nested DTO with collections, and DTO containing 64 KiB of deterministic random binary data. Setup validates the reconstructed values before timing. Reports include elapsed time, managed allocations, garbage collections, and encoded payload size.</p>
 <p>Mappings are warmed during setup, so these measurements describe repeated operations rather than first-use reflection or startup cost. Payload creation and validation are outside the measured methods. Short runs are useful for comparisons on one machine; use longer runs and representative application payloads before making production performance decisions. CSV, Markdown, and HTML reports are written to <code>BenchmarkDotNet.Artifacts/results</code> by default.</p>
@@ -5372,10 +5372,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

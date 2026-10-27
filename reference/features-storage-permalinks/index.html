@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4779,22 +4779,22 @@
 <span class="w">    </span><span class="p">.</span><span class="n">AddDownloadEndpoints</span><span class="p">();</span>
 
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddFileStorage</span><span class="p">(</span><span class="n">factory</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">factory</span>
-<span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">storage</span>
-<span class="w">        </span><span class="p">.</span><span class="n">UseInMemory</span><span class="p">(</span><span class="s">&quot;Reports&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">storage</span>
+<span class="w">        </span><span class="p">.</span><span class="n">UseInMemory</span><span class="p">(</span><span class="s">"Reports"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithPermalinks</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">)));</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 <span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">();</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/reports/{name}/link&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">"/reports/{name}/link"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span>
 <span class="w">    </span><span class="n">IFileStorageProviderFactory</span><span class="w"> </span><span class="n">factory</span><span class="p">,</span>
 <span class="w">    </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">reports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factory</span><span class="p">.</span><span class="n">CreateProvider</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">reports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factory</span><span class="p">.</span><span class="n">CreateProvider</span><span class="p">(</span><span class="s">"reports"</span><span class="p">);</span>
 <span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MemoryStream</span><span class="p">(</span>
-<span class="w">        </span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="s">$&quot;Report: {name}&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="s">$"Report: {name}"</span><span class="p">),</span>
 <span class="w">        </span><span class="n">writable</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
 
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">write</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">reports</span><span class="p">.</span><span class="n">WriteFileAsync</span><span class="p">(</span>
@@ -4805,7 +4805,7 @@
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">write</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;; &quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"; "</span><span class="p">,</span>
 <span class="w">            </span><span class="n">write</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -4816,11 +4816,11 @@
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">permalink</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;; &quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"; "</span><span class="p">,</span>
 <span class="w">            </span><span class="n">permalink</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">downloadUrl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">$&quot;/_bdk/api/storage/permalinks/{permalink.Value.Id.Value}&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">downloadUrl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">$"/_bdk/api/storage/permalinks/{permalink.Value.Id.Value}"</span><span class="p">;</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Created</span><span class="p">(</span><span class="n">downloadUrl</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">DownloadUrl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">downloadUrl</span><span class="w"> </span><span class="p">});</span>
 <span class="p">});</span>
 
@@ -4838,16 +4838,16 @@
 <span class="w">    </span><span class="p">.</span><span class="n">AddDownloadEndpoints</span><span class="p">();</span>
 
 <span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithPermalinks</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">"reports"</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithPermalinks</span><span class="p">(</span><span class="s">"reports"</span><span class="p">);</span>
 
 <span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="o">&lt;</span><span class="n">Report</span><span class="o">&gt;</span><span class="p">(</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;default&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithPermalinks</span><span class="o">&lt;</span><span class="n">Report</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;default&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="o">&lt;</span><span class="n">Report</span><span class="o">&gt;</span><span class="p">(</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">"default"</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithPermalinks</span><span class="o">&lt;</span><span class="n">Report</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"default"</span><span class="p">);</span>
 
 <span class="n">services</span><span class="p">.</span><span class="n">AddFileStorage</span><span class="p">(</span><span class="n">factory</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">factory</span>
-<span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">&quot;files&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">builder</span>
-<span class="w">        </span><span class="p">.</span><span class="n">UseInMemory</span><span class="p">(</span><span class="s">&quot;files&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">"files"</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">builder</span>
+<span class="w">        </span><span class="p">.</span><span class="n">UseInMemory</span><span class="p">(</span><span class="s">"files"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithPermalinks</span><span class="p">()));</span>
 </code></pre></div>
 <p><code>UseInMemory()</code> is volatile and intended for development, tests, and process-local scenarios. For persistent links, let the application <code>DbContext</code> implement <code>IStoragePermalinkRegistryContext</code>, expose <code>DbSet&lt;StoragePermalink&gt;</code>, and use:</p>
@@ -4859,7 +4859,7 @@
 <h2 id="creating-links">Creating links<a class="headerlink" href="#creating-links" title="Permanent link">&para;</a></h2>
 <p>Permalink creation verifies that the requested resource exists when called through an opted-in storage client:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">GetPermalinkAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;public&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;reports/summary.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"public"</span><span class="p">,</span><span class="w"> </span><span class="s">"reports/summary.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">StoragePermalinkCreateOptions</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">ExpiresAt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="n">AddDays</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
@@ -4877,7 +4877,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">UseInMemory</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddDownloadEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">()</span>
-<span class="w">        </span><span class="p">.</span><span class="n">RequirePolicy</span><span class="p">(</span><span class="s">&quot;StorageDownloads&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="p">.</span><span class="n">RequirePolicy</span><span class="p">(</span><span class="s">"StorageDownloads"</span><span class="p">));</span>
 </code></pre></div>
 <p>Responses use <code>Cache-Control: private, no-store</code> and <code>Referrer-Policy: no-referrer</code>. Invalid, expired, deleted, physically absent, and unavailable-provider targets do not expose their registry location.</p>
 <p>Documents download as JSON. Blobs and files retain their inferred or stored content type and download filename.</p>
@@ -4997,10 +4997,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

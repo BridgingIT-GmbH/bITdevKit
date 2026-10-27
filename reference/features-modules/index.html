@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4974,7 +4974,7 @@
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">moduleConfiguration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Configure</span><span class="o">&lt;</span><span class="n">CustomerModuleConfiguration</span><span class="p">,</span><span class="w"> </span><span class="n">CustomerModuleConfiguration</span><span class="p">.</span><span class="n">Validator</span><span class="o">&gt;</span><span class="p">(</span><span class="n">services</span><span class="p">,</span><span class="w"> </span><span class="n">configuration</span><span class="p">);</span>
 
 <span class="w">        </span><span class="n">services</span><span class="p">.</span><span class="n">AddSqlServerDbContext</span><span class="o">&lt;</span><span class="n">CustomerDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span>
-<span class="w">            </span><span class="p">.</span><span class="n">UseConnectionString</span><span class="p">(</span><span class="n">moduleConfiguration</span><span class="p">.</span><span class="n">ConnectionStrings</span><span class="p">[</span><span class="s">&quot;Default&quot;</span><span class="p">])</span>
+<span class="w">            </span><span class="p">.</span><span class="n">UseConnectionString</span><span class="p">(</span><span class="n">moduleConfiguration</span><span class="p">.</span><span class="n">ConnectionStrings</span><span class="p">[</span><span class="s">"Default"</span><span class="p">])</span>
 <span class="w">            </span><span class="p">.</span><span class="n">UseLogger</span><span class="p">())</span>
 <span class="w">            </span><span class="p">.</span><span class="n">WithDatabaseMigratorService</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="n">environment</span><span class="p">.</span><span class="n">IsLocalDevelopment</span><span class="p">())</span>
@@ -5008,11 +5008,11 @@
 </code></pre></div>
 <p>Configure the module in <code>appsettings.json</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Modules&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;customer&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;ConnectionStrings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;Default&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Server=(localdb)\\MSSQLLocalDB;Database=customers;Trusted_Connection=True&quot;</span>
+<span class="w">  </span><span class="nt">"Modules"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"customer"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"ConnectionStrings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"Default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Server=(localdb)\\MSSQLLocalDB;Database=customers;Trusted_Connection=True"</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
@@ -5029,8 +5029,8 @@
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">ConnectionStrings</span><span class="p">)</span>
 <span class="w">                </span><span class="p">.</span><span class="n">NotNull</span><span class="p">().</span><span class="n">NotEmpty</span><span class="p">()</span>
-<span class="w">                </span><span class="p">.</span><span class="n">Must</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">ContainsKey</span><span class="p">(</span><span class="s">&quot;Default&quot;</span><span class="p">))</span>
-<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Connection string &#39;Default&#39; is required&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Must</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">ContainsKey</span><span class="p">(</span><span class="s">"Default"</span><span class="p">))</span>
+<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Connection string 'Default' is required"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -5055,7 +5055,7 @@
 
 <span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">module</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">registry</span><span class="p">.</span><span class="n">Modules</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;{module.Priority}: {module.Name}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"{module.Priority}: {module.Name}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="discovering-modules">Discovering modules<a class="headerlink" href="#discovering-modules" title="Permanent link">&para;</a></h3>
@@ -5074,19 +5074,19 @@
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Map</span><span class="p">(</span><span class="n">IEndpointRouteBuilder</span><span class="w"> </span><span class="n">app</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">&quot;api/customers&quot;</span><span class="p">).</span><span class="n">WithTags</span><span class="p">(</span><span class="s">&quot;Customers&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">"api/customers"</span><span class="p">).</span><span class="n">WithTags</span><span class="p">(</span><span class="s">"Customers"</span><span class="p">);</span>
 
-<span class="w">        </span><span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/{id:guid}&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span><span class="w"> </span><span class="n">Guid</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/{id:guid}"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span><span class="w"> </span><span class="n">Guid</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomerFindOneQuery</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">ToString</span><span class="p">()));</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">MapHttpOk</span><span class="p">();</span>
-<span class="w">        </span><span class="p">}).</span><span class="n">WithName</span><span class="p">(</span><span class="s">&quot;Customers.GetById&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}).</span><span class="n">WithName</span><span class="p">(</span><span class="s">"Customers.GetById"</span><span class="p">);</span>
 
-<span class="w">        </span><span class="k">group</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span><span class="w"> </span><span class="n">CustomerModel</span><span class="w"> </span><span class="n">model</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="k">group</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">""</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span><span class="w"> </span><span class="n">CustomerModel</span><span class="w"> </span><span class="n">model</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomerCreateCommand</span><span class="p">(</span><span class="n">model</span><span class="p">));</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">MapHttpCreated</span><span class="p">(</span><span class="k">value</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$&quot;/api/customers/{value.Id}&quot;</span><span class="p">);</span>
-<span class="w">        </span><span class="p">}).</span><span class="n">WithName</span><span class="p">(</span><span class="s">&quot;Customers.Create&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">MapHttpCreated</span><span class="p">(</span><span class="k">value</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$"/api/customers/{value.Id}"</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}).</span><span class="n">WithName</span><span class="p">(</span><span class="s">"Customers.Create"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5106,9 +5106,9 @@
 <h3 id="feature-toggling">Feature toggling<a class="headerlink" href="#feature-toggling" title="Permanent link">&para;</a></h3>
 <p>Toggle modules by setting the <code>Enabled</code> property in <code>appsettings.json</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Modules&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;customer&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">  </span><span class="nt">"Modules"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"customer"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -5227,10 +5227,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4799,8 +4799,8 @@
 
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddBroadcasting</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Scopes</span><span class="p">(</span><span class="s">&quot;catalog&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">NodeIdentity</span><span class="p">(</span><span class="s">&quot;catalog-local&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Scopes</span><span class="p">(</span><span class="s">"catalog"</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">NodeIdentity</span><span class="p">(</span><span class="s">"catalog-local"</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">RefreshCatalog</span><span class="p">,</span><span class="w"> </span><span class="n">RefreshCatalogHandler</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
@@ -4808,8 +4808,8 @@
 
 <span class="kt">var</span><span class="w"> </span><span class="n">broadcaster</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">host</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IBroadcastService</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">broadcaster</span><span class="p">.</span><span class="n">PublishAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">RefreshCatalog</span><span class="p">(</span><span class="s">&quot;products&quot;</span><span class="p">),</span>
-<span class="w">    </span><span class="na">[&quot;catalog&quot;]</span><span class="p">);</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">RefreshCatalog</span><span class="p">(</span><span class="s">"products"</span><span class="p">),</span>
+<span class="w">    </span><span class="na">["catalog"]</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="p">{</span>
@@ -4817,7 +4817,7 @@
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Accepted by {result.Value.AcceptedCount} node(s).&quot;</span><span class="p">);</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Accepted by {result.Value.AcceptedCount} node(s)."</span><span class="p">);</span>
 <span class="k">await</span><span class="w"> </span><span class="n">host</span><span class="p">.</span><span class="n">StopAsync</span><span class="p">();</span>
 
 <span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">record</span><span class="w"> </span><span class="nf">RefreshCatalog</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">CacheName</span><span class="p">);</span>
@@ -4829,7 +4829,7 @@
 <span class="w">        </span><span class="n">BroadcastContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span>
 <span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Refresh requested for {payload.CacheName}.&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Refresh requested for {payload.CacheName}."</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -4838,11 +4838,11 @@
 <h2 id="registration-model">Registration model<a class="headerlink" href="#registration-model" title="Permanent link">&para;</a></h2>
 <p>Every <code>AddBroadcasting(...)</code> call contributes to one host-wide registration:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddBroadcasting</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Scopes</span><span class="p">(</span><span class="s">&quot;catalog&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Scopes</span><span class="p">(</span><span class="s">"catalog"</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">RefreshCatalog</span><span class="p">,</span><span class="w"> </span><span class="n">RefreshCatalogHandler</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddBroadcasting</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Scopes</span><span class="p">(</span><span class="s">&quot;pricing&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Scopes</span><span class="p">(</span><span class="s">"pricing"</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">RefreshPrices</span><span class="p">,</span><span class="w"> </span><span class="n">RefreshPricesHandler</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
 <p>The process registers both scopes and both handlers. Calls without a scope use <code>BroadcastingOptions.DefaultScope</code>. A later explicit scope replaces an implicit default scope, but an explicitly configured <code>default</code> scope remains.</p>
@@ -4873,14 +4873,14 @@
 <p>Configure the shared registry and HTTP transport:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddBroadcasting</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Scopes</span><span class="p">(</span><span class="s">&quot;catalog&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Scopes</span><span class="p">(</span><span class="s">"catalog"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RegistrationLease</span><span class="p">(</span>
 <span class="w">            </span><span class="n">renewalInterval</span><span class="p">:</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
 <span class="w">            </span><span class="n">duration</span><span class="p">:</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkRegistry</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithHttpTransport</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
-<span class="w">        </span><span class="p">.</span><span class="n">AdvertisedAddress</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">[</span><span class="s">&quot;Broadcasting:AdvertisedAddress&quot;</span><span class="p">])</span>
-<span class="w">        </span><span class="p">.</span><span class="n">SharedSecret</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">[</span><span class="s">&quot;Broadcasting:SharedSecret&quot;</span><span class="p">]))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">AdvertisedAddress</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">[</span><span class="s">"Broadcasting:AdvertisedAddress"</span><span class="p">])</span>
+<span class="w">        </span><span class="p">.</span><span class="n">SharedSecret</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">[</span><span class="s">"Broadcasting:SharedSecret"</span><span class="p">]))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">RefreshCatalog</span><span class="p">,</span><span class="w"> </span><span class="n">RefreshCatalogHandler</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
 <p>Map devkit endpoints in the web application:</p>
@@ -5007,10 +5007,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

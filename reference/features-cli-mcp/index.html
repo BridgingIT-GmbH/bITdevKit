@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5214,17 +5214,17 @@
 <li>Expose bounded project-specific diagnostics through application-owned handlers.</li>
 </ul>
 <h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
-<p>Restore the local tool and configure the MCP client to launch <code>bdk mcp</code> over STDIO:</p>
+<p>Restore the local tool and configure the MCP client to launch <code>bdk mcp</code> over STDIO. For VS Code, create a workspace-root <code>.mcp.json</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;servers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;bdk&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdio&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dotnet&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;bdk&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mcp&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
+<p>For Visual Studio (<code>.vs/mcp.json</code>) and other client setup, see <a href="../features-cli-mcp-clients/">MCP Client Configuration</a>.</p>
 <p>Restart or reload the MCP client, then call <code>bdk_mcp_status</code>. Check the response's <code>available</code> value before using <code>data</code>. A successful call identifies the resolved workspace and MCP server state. If no application is running, documentation and guidance tools remain available while runtime-bound calls return a structured <code>no_runtime_found</code> response.</p>
 <h2 id="agent-context-model">Agent context model<a class="headerlink" href="#agent-context-model" title="Permanent link">&para;</a></h2>
 <p>MCP gives an agent four complementary angles while it codes:</p>
@@ -5254,29 +5254,38 @@
 <div class="highlight"><pre><span></span><code>dotnet<span class="w"> </span>tool<span class="w"> </span>restore
 dotnet<span class="w"> </span>tool<span class="w"> </span>run<span class="w"> </span>bdk<span class="w"> </span>mcp
 </code></pre></div>
-<p>MCP clients usually need the command split into executable and arguments:</p>
+<p>MCP clients usually need the command split into executable and arguments. VS Code (workspace-root <code>.mcp.json</code>):</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;servers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;bdk&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdio&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dotnet&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;bdk&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mcp&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>When developing the DevKit repository itself, run the CLI from source:</p>
+<p>Visual Studio (<code>.vs/mcp.json</code>):</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;servers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;bdk&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdio&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dotnet&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="s2">&quot;run&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;--project&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;src/Presentation.Cli/Presentation.Cli.csproj&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;--&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;mcp&quot;</span>
+<span class="w">  </span><span class="nt">"servers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stdio"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>When developing the DevKit repository itself, run the CLI from source (<code>mcpServers</code> shape shown; wrap in <code>servers</code> with <code>"type": "stdio"</code> for Visual Studio):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"run"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--project"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"src/Presentation.Cli/Presentation.Cli.csproj"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"mcp"</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
@@ -5510,40 +5519,40 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--host<span class="w"> </s
 <p>For query paging, pass <code>data.nextCursor</code> as <code>cursor</code> and keep filters, <code>view</code>, <code>grouped</code> and <code>take</code> unchanged. Deletion, expiry or changed filters can return <code>profiling_boundary_invalid</code>; restart without the cursor. Empty results mean no matching retained evidence, rather than proving that the work never ran. Capture health reports the serving node's process-lifetime counters, separately from the selected history.</p>
 <p>Find slow HTTP requests:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HttpRequest&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;keyContains&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cities/&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;httpMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GET&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;view&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Slow&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;take&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
+<span class="w">  </span><span class="nt">"kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HttpRequest"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"keyContains"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/cities/"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"httpMethod"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GET"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"view"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Slow"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"take"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Call <code>bdk_profiling_details</code> with an ID from <code>data.operations</code>, or rank aggregate costs with <code>bdk_profiling_insights</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DocumentStorage&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;rankBy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;take&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;segmentTake&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<span class="w">  </span><span class="nt">"kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DocumentStorage"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"rankBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"total"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"take"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"segmentTake"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Compare the same request route across two time ranges with <code>bdk_profiling_compare</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/core/cities/{cityId}/weather&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HttpRequest&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;httpMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GET&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;baseline&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;fromUtc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-10-12T08:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;toUtc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-10-12T09:00:00Z&quot;</span>
+<span class="w">  </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/core/cities/{cityId}/weather"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HttpRequest"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"httpMethod"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GET"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"baseline"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"fromUtc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-12T08:00:00Z"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"toUtc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-12T09:00:00Z"</span>
 <span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;candidate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;fromUtc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-10-12T09:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;toUtc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-10-12T10:00:00Z&quot;</span>
+<span class="w">  </span><span class="nt">"candidate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"fromUtc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-12T09:00:00Z"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"toUtc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-12T10:00:00Z"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Use keys and dimension names returned by the selected runtime. A typed dimension filter has this form:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;dimensions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;filestorage.location&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;String&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;scalar&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;attachments&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">"dimensions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"filestorage.location"</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"String"</span><span class="p">,</span><span class="w"> </span><span class="nt">"scalar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"attachments"</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5594,46 +5603,46 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--host<span class="w"> </s
 <p>Each guidance response includes a summary, linked official docs, implementation steps, recommended MCP tools and a prompt the agent can use to continue. This sits between raw docs and live runtime diagnostics: it tells the agent how to approach the work before it edits files.</p>
 <p>Example:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;topic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;jobs&quot;</span>
+<span class="w">  </span><span class="nt">"topic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jobs"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Natural-language example:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;how to implement a new job that triggers an orchestration&quot;</span>
+<span class="w">  </span><span class="nt">"query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"how to implement a new job that triggers an orchestration"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>The generic guidance operation can infer multiple relevant topics from a query. For example, a job that triggers an orchestration returns both Jobs and Orchestration guidance, then points the agent to the linked docs and runtime verification tools.</p>
 <p>Additional examples:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;how do I add a reusable repository specification&quot;</span>
+<span class="w">  </span><span class="nt">"query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"how do I add a reusable repository specification"</span>
 <span class="p">}</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;give me guidance for document storage and file monitoring&quot;</span>
+<span class="w">  </span><span class="nt">"query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"give me guidance for document storage and file monitoring"</span>
 <span class="p">}</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;give me guidance for blob storage uploads and downloads&quot;</span>
+<span class="w">  </span><span class="nt">"query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"give me guidance for blob storage uploads and downloads"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="project-owned-mcp-tools-guidance">Project-owned MCP tools guidance<a class="headerlink" href="#project-owned-mcp-tools-guidance" title="Permanent link">&para;</a></h3>
 <p>Call <code>bdk_guidance_get</code> with <code>topic="project_mcp_tools"</code> before adding application-specific MCP operations:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;topic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;project_mcp_tools&quot;</span>
+<span class="w">  </span><span class="nt">"topic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"project_mcp_tools"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>The guide covers when a project-owned operation fits, client-safe operation names, <code>McpCapability</code> metadata and argument schemas, toolset selection, bounded <code>McpResponse</code> results, registration through <code>AddMcp(...)</code>, tests, and verification with <code>bdk_project_operations</code> and <code>bdk_project_call</code>. Its <code>examples</code> array contains a handler, the builder registration and the discovery/call payloads. Queries such as "how do I add project specific MCP tools" infer this topic.</p>
 <h3 id="operation-profiling-guidance">Operation profiling guidance<a class="headerlink" href="#operation-profiling-guidance" title="Permanent link">&para;</a></h3>
 <p>Call <code>bdk_guidance_get</code> with <code>topic="profiling"</code> for coding help before an application is running:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;topic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;profiling&quot;</span>
+<span class="w">  </span><span class="nt">"topic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"profiling"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>The guide explains operation ownership, capture registration, HTTP request adapters, recording completion and persistence, nested and repeated segments, independent workers, explicit outcomes, <code>IResult</code> classification, correlation metadata, dimensions and measurements. It distinguishes operation elapsed time from process CPU/memory profiling and explains incomplete evidence, overlap, suppression and capture limits. Stable grouping keys and bounded dimensions are covered; IDs, file paths and blob keys remain unsuitable dimensions.</p>
 <p>Its <code>examples</code> array includes C# registration, <code>JoinOrStartAsync</code> with a timed segment and result classification, and manual root/segment completion, failure and cancellation. Examples that call <code>loadAsync</code> assume the application's existing business delegate. The guide links to <code>docs/features-profiling.md</code> and suggests API lookup for <code>IOperationProfiler</code> and <code>OperationProfilingHelpers</code>. Runtime tools are optional verification after coding; they are not needed to retrieve guidance.</p>
 <p>Natural-language queries about operation recordings, request profiling or segments infer this topic:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;how do I add operation recordings and nested segments to a service?&quot;</span>
+<span class="w">  </span><span class="nt">"query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"how do I add operation recordings and nested segments to a service?"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>A query about profiling a job or pipeline combines profiling guidance with the matching feature guides. The guide does not require exact invocation-order capture. Use <a href="#inspect-operation-and-request-recordings">the profiling runtime tools</a> later to check what the running application actually retained.</p>
@@ -5668,8 +5677,8 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--host<span class="w"> </s
 </ol>
 <p>Example API reference call:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Result&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;topic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;results&quot;</span>
+<span class="w">  </span><span class="nt">"query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Result"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"topic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"results"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="project-summary">Project summary<a class="headerlink" href="#project-summary" title="Permanent link">&para;</a></h2>
@@ -5687,35 +5696,35 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--host<span class="w"> </s
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IReadOnlyCollection</span><span class="o">&lt;</span><span class="n">McpCapability</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Capabilities</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span>
 <span class="w">    </span><span class="na">[</span>
-<span class="na">        new(&quot;commerce_inspect_customer&quot;, McpToolset.Diagnostics, &quot;project&quot;, &quot;Inspects customer profile, order activity and account state.&quot;)</span>
+<span class="na">        new("commerce_inspect_customer", McpToolset.Diagnostics, "project", "Inspects customer profile, order activity and account state.")</span>
 <span class="na">        {</span>
-<span class="na">            Owner = &quot;commerce&quot;,</span>
-<span class="na">            Category = &quot;customers&quot;</span>
+<span class="na">            Owner = "commerce",</span>
+<span class="na">            Category = "customers"</span>
 <span class="na">        }</span>
 <span class="na">    ]</span><span class="p">;</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">ValueTask</span><span class="o">&lt;</span><span class="n">McpResponse</span><span class="o">&gt;</span><span class="w"> </span><span class="n">HandleAsync</span><span class="p">(</span><span class="n">McpRequest</span><span class="w"> </span><span class="n">request</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="kt">string</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">Operation</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;commerce_inspect_customer&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">StringComparison</span><span class="p">.</span><span class="n">Ordinal</span><span class="p">))</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="kt">string</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">Operation</span><span class="p">,</span><span class="w"> </span><span class="s">"commerce_inspect_customer"</span><span class="p">,</span><span class="w"> </span><span class="n">StringComparison</span><span class="p">.</span><span class="n">Ordinal</span><span class="p">))</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">ValueTask</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">McpResponse</span><span class="p">.</span><span class="n">Unavailable</span><span class="p">(</span>
 <span class="w">                </span><span class="n">McpErrorCode</span><span class="p">.</span><span class="n">FeatureUnavailable</span><span class="p">,</span>
-<span class="w">                </span><span class="s">$&quot;Operation &#39;{request.Operation}&#39; is not supported.&quot;</span><span class="p">));</span>
+<span class="w">                </span><span class="s">$"Operation '{request.Operation}' is not supported."</span><span class="p">));</span>
 <span class="w">        </span><span class="p">}</span>
 
-<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">customerNumber</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">Arguments</span><span class="p">.</span><span class="n">TryGetProperty</span><span class="p">(</span><span class="s">&quot;customerNumber&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="k">value</span><span class="p">)</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">customerNumber</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">Arguments</span><span class="p">.</span><span class="n">TryGetProperty</span><span class="p">(</span><span class="s">"customerNumber"</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="k">value</span><span class="p">)</span>
 <span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="k">value</span><span class="p">.</span><span class="n">GetString</span><span class="p">()</span>
 <span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">customerNumber</span><span class="p">))</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">ValueTask</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">McpResponse</span><span class="p">.</span><span class="n">Unavailable</span><span class="p">(</span>
 <span class="w">                </span><span class="n">McpErrorCode</span><span class="p">.</span><span class="n">OperationFailed</span><span class="p">,</span>
-<span class="w">                </span><span class="s">&quot;customerNumber is required.&quot;</span><span class="p">));</span>
+<span class="w">                </span><span class="s">"customerNumber is required."</span><span class="p">));</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="c1">// Use requester to load a bounded application model here.</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ValueTask</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">McpResponse</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span>
-<span class="w">            </span><span class="s">$&quot;Inspected customer &#39;{customerNumber}&#39;.&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s">$"Inspected customer '{customerNumber}'."</span><span class="p">,</span>
 <span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">customerNumber</span><span class="p">,</span><span class="w"> </span><span class="n">warnings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Array</span><span class="p">.</span><span class="n">Empty</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">}));</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -5741,19 +5750,19 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--host<span class="w"> </s
 <p>Project-owned operation names must be client-safe: use lowercase letters, digits, underscores or hyphens. Avoid dots and camelCase even though the operation is passed as an argument to <code>bdk_project_call</code>, because MCP clients still surface and cache these names.</p>
 <p>The operation is then discoverable through:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bdk_project_operations&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;arguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bdk_project_operations"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"arguments"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Call it through <code>bdk_project_call</code>. Include the advertised toolset so future diagnostics, operations and admin project tools can be validated consistently:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bdk_project_call&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;arguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;operation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;commerce_inspect_customer&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;toolset&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;diagnostics&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;arguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;customerNumber&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CUST-10042&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;includeRecentOrders&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bdk_project_call"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"arguments"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"operation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"commerce_inspect_customer"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"toolset"</span><span class="p">:</span><span class="w"> </span><span class="s2">"diagnostics"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"arguments"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"customerNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CUST-10042"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"includeRecentOrders"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -5884,10 +5893,10 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--host<span class="w"> </s
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

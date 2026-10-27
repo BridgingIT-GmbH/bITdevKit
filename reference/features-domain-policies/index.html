@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5107,7 +5107,7 @@ outcome:</p>
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Checkout policies passed.&quot;</span><span class="p">);</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Checkout policies passed."</span><span class="p">);</span>
 
 <span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">record</span><span class="w"> </span><span class="nf">CheckoutContext</span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">CustomerIsActive</span><span class="p">);</span>
 
@@ -5120,7 +5120,7 @@ outcome:</p>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="o">&lt;</span><span class="n">IResult</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">            </span><span class="n">context</span><span class="p">.</span><span class="n">CustomerIsActive</span>
 <span class="w">                </span><span class="o">?</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">()</span>
-<span class="w">                </span><span class="p">:</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Customer must be active.&quot;</span><span class="p">));</span>
+<span class="w">                </span><span class="p">:</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Customer must be active."</span><span class="p">));</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5172,7 +5172,7 @@ outcome:</p>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Customer</span><span class="p">.</span><span class="n">Status</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">CustomerStatus</span><span class="p">.</span><span class="n">Active</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="o">&lt;</span><span class="n">IResult</span><span class="o">&gt;</span><span class="p">(</span>
-<span class="w">                </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Customer must be active to check out&quot;</span><span class="p">));</span>
+<span class="w">                </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Customer must be active to check out"</span><span class="p">));</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="o">&lt;</span><span class="n">IResult</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">());</span>
@@ -5197,7 +5197,7 @@ outcome:</p>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="o">&lt;</span><span class="n">IResult</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">            </span><span class="n">context</span><span class="p">.</span><span class="n">Customer</span><span class="p">.</span><span class="n">CanPlaceLargeOrders</span>
 <span class="w">                </span><span class="o">?</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">()</span>
-<span class="w">                </span><span class="p">:</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Large orders require approval&quot;</span><span class="p">));</span>
+<span class="w">                </span><span class="p">:</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Large orders require approval"</span><span class="p">));</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5338,10 +5338,10 @@ the presentation-layer exception handling documented in <a href="../features-pre
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

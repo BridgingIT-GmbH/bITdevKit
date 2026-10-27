@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -7113,13 +7113,13 @@ of the available functional operations.</p>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">title</span><span class="p">))</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span>
-<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="nf">ValidationError</span><span class="p">(</span><span class="s">&quot;A title is required.&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">nameof</span><span class="p">(</span><span class="n">title</span><span class="p">)));</span>
+<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="nf">ValidationError</span><span class="p">(</span><span class="s">"A title is required."</span><span class="p">,</span><span class="w"> </span><span class="k">nameof</span><span class="p">(</span><span class="n">title</span><span class="p">)));</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="n">title</span><span class="p">.</span><span class="n">Trim</span><span class="p">());</span>
 <span class="p">}</span>
 
-<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NormalizeTitle</span><span class="p">(</span><span class="s">&quot;  Release notes  &quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NormalizeTitle</span><span class="p">(</span><span class="s">"  Release notes  "</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="p">{</span>
@@ -7136,10 +7136,10 @@ of the available functional operations.</p>
 <h3 id="result-operations">Result operations<a class="headerlink" href="#result-operations" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1">// Creating success results</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">();</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">successWithMessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="s">&quot;Operation completed successfully&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">successWithMessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="s">"Operation completed successfully"</span><span class="p">);</span>
 
 <span class="c1">// Creating failure results</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">failure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="s">&quot;Operation failed&quot;</span><span class="p">)</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">failure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="s">"Operation failed"</span><span class="p">)</span>
 <span class="w">  </span><span class="p">.</span><span class="n">WithError</span><span class="o">&lt;</span><span class="n">ValidationError</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="c1">// Checking result status</span>
@@ -7181,7 +7181,7 @@ of the available functional operations.</p>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">WithError</span><span class="o">&lt;</span><span class="n">NotFoundError</span><span class="o">&gt;</span><span class="p">()</span>
-<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">$&quot;User {id} not found&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">$"User {id} not found"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="n">user</span><span class="p">);</span>
@@ -7237,8 +7237,8 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="n">IsValid</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
-<span class="w">                </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ValidationError</span><span class="p">(</span><span class="s">&quot;Invalid input&quot;</span><span class="p">))</span>
-<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Validation failed&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ValidationError</span><span class="p">(</span><span class="s">"Invalid input"</span><span class="p">))</span>
+<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Validation failed"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="c1">// Check for specific errors</span>
@@ -7271,10 +7271,10 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">ProcessWorkflow</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">()</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Step 1 completed&quot;</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Step 2 completed&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Step 1 completed"</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Step 2 completed"</span><span class="p">);</span>
 
-<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">messages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;Process started&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Process completed&quot;</span><span class="w"> </span><span class="p">};</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">messages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">"Process started"</span><span class="p">,</span><span class="w"> </span><span class="s">"Process completed"</span><span class="w"> </span><span class="p">};</span>
 <span class="w">        </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">()</span>
 <span class="w">            </span><span class="p">.</span><span class="n">WithMessages</span><span class="p">(</span><span class="n">messages</span><span class="p">);</span>
 
@@ -7316,7 +7316,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Failed to get products&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">"Failed to get products"</span><span class="p">);</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">ResultPaged</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ExceptionError</span><span class="p">(</span><span class="n">ex</span><span class="p">));</span>
 <span class="w">        </span><span class="p">}</span>
@@ -7327,7 +7327,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ValidationResultError</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ResultErrorBase</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">ValidationResultError</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">field</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">message</span><span class="p">)</span>
-<span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="k">base</span><span class="p">(</span><span class="s">$&quot;Validation failed for {field}: {message}&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="k">base</span><span class="p">(</span><span class="s">$"Validation failed for {field}: {message}"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7335,7 +7335,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">UnauthorizedResultError</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ResultErrorBase</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">UnauthorizedResultError</span><span class="p">()</span>
-<span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="k">base</span><span class="p">(</span><span class="s">&quot;User is not authorized to perform this action&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="k">base</span><span class="p">(</span><span class="s">"User is not authorized to perform this action"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7363,11 +7363,11 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">Quantity</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
-<span class="w">                </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ValidationResultError</span><span class="p">(</span><span class="s">&quot;Quantity&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Must be greater than zero&quot;</span><span class="p">));</span>
+<span class="w">                </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ValidationResultError</span><span class="p">(</span><span class="s">"Quantity"</span><span class="p">,</span><span class="w"> </span><span class="s">"Must be greater than zero"</span><span class="p">));</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">orderRepository</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="n">order</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Order created successfully&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="n">order</span><span class="p">,</span><span class="w"> </span><span class="s">"Order created successfully"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -7394,10 +7394,10 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Failed to fetch data&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">"Failed to fetch data"</span><span class="p">);</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Data</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ExceptionError</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span>
-<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Failed to fetch data&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Failed to fetch data"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7411,12 +7411,12 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">request</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="s">&quot;Request cannot be null&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="s">"Request cannot be null"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">request</span><span class="p">.</span><span class="n">IsValid</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="s">&quot;Invalid request&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="s">"Invalid request"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="c1">// Continue processing</span>
@@ -7428,7 +7428,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 <p>Include context in error messages.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">ProcessOrderById</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">orderId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">status</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="s">$&quot;Failed to process order {orderId}: Invalid status {status}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="s">$"Failed to process order {orderId}: Invalid status {status}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="type-safe-errors">Type-safe errors<a class="headerlink" href="#type-safe-errors" title="Permanent link">&para;</a></h3>
@@ -7436,7 +7436,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">OrderNotFoundError</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ResultErrorBase</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">OrderNotFoundError</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">orderId</span><span class="p">)</span>
-<span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="k">base</span><span class="p">(</span><span class="s">$&quot;Order {orderId} not found&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="k">base</span><span class="p">(</span><span class="s">$"Order {orderId} not found"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7468,7 +7468,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ExceptionError</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span>
-<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">$&quot;Failed to retrieve user {id}&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">$"Failed to retrieve user {id}"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7508,8 +7508,8 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">UserDto</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ValidationResultError</span><span class="p">(</span>
-<span class="w">                    </span><span class="s">&quot;User&quot;</span><span class="p">,</span>
-<span class="w">                    </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot;, &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">validationResult</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">ErrorMessage</span><span class="p">))));</span>
+<span class="w">                    </span><span class="s">"User"</span><span class="p">,</span>
+<span class="w">                    </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">", "</span><span class="p">,</span><span class="w"> </span><span class="n">validationResult</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">ErrorMessage</span><span class="p">))));</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">savedUser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">repository</span><span class="p">.</span><span class="n">Save</span><span class="p">(</span><span class="n">user</span><span class="p">);</span>
@@ -7519,7 +7519,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 </code></pre></div>
 <h3 id="api-controller-example">API controller example<a class="headerlink" href="#api-controller-example" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="na">[ApiController]</span>
-<span class="na">[Route(&quot;api/[controller]</span><span class="s">&quot;)]</span>
+<span class="na">[Route("api/[controller]</span><span class="s">")]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ProductsController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ControllerBase</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IProductService</span><span class="w"> </span><span class="n">productService</span><span class="p">;</span>
@@ -7592,7 +7592,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">WithErrors</span><span class="p">(</span><span class="n">validationResult</span><span class="p">.</span><span class="n">Errors</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Order validation failed&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Order validation failed"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="c1">// Reserve inventory</span>
@@ -7601,7 +7601,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">WithErrors</span><span class="p">(</span><span class="n">inventoryResult</span><span class="p">.</span><span class="n">Errors</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Inventory reservation failed&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Inventory reservation failed"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">try</span>
@@ -7614,7 +7614,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">                </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">ReleaseInventoryAsync</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">Items</span><span class="p">);</span>
 <span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
 <span class="w">                    </span><span class="p">.</span><span class="n">WithErrors</span><span class="p">(</span><span class="n">paymentResult</span><span class="p">.</span><span class="n">Errors</span><span class="p">)</span>
-<span class="w">                    </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Payment processing failed&quot;</span><span class="p">);</span>
+<span class="w">                    </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Payment processing failed"</span><span class="p">);</span>
 <span class="w">            </span><span class="p">}</span>
 
 <span class="w">            </span><span class="c1">// Create order</span>
@@ -7626,21 +7626,21 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">                </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">ReleaseInventoryAsync</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">Items</span><span class="p">);</span>
 <span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
 <span class="w">                    </span><span class="p">.</span><span class="n">WithErrors</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="n">Errors</span><span class="p">)</span>
-<span class="w">                    </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Order creation failed&quot;</span><span class="p">);</span>
+<span class="w">                    </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Order creation failed"</span><span class="p">);</span>
 <span class="w">            </span><span class="p">}</span>
 
 <span class="w">            </span><span class="c1">// Send notifications</span>
 <span class="w">            </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">notificationService</span><span class="p">.</span><span class="n">SendOrderConfirmationAsync</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="n">Value</span><span class="p">);</span>
 
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="n">Value</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Order processed successfully&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Order processed successfully"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Unexpected error during order processing&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">"Unexpected error during order processing"</span><span class="p">);</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ExceptionError</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span>
-<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;An unexpected error occurred while processing the order&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"An unexpected error occurred while processing the order"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -7652,14 +7652,14 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">validationResult</span><span class="p">.</span><span class="n">IsValid</span><span class="p">)</span>
 <span class="w">            </span><span class="p">{</span>
 <span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
-<span class="w">                    </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ValidationResultError</span><span class="p">(</span><span class="s">&quot;Order&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">validationResult</span><span class="p">.</span><span class="n">Message</span><span class="p">));</span>
+<span class="w">                    </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ValidationResultError</span><span class="p">(</span><span class="s">"Order"</span><span class="p">,</span><span class="w"> </span><span class="n">validationResult</span><span class="p">.</span><span class="n">Message</span><span class="p">));</span>
 <span class="w">            </span><span class="p">}</span>
 
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">();</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Validation error&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">"Validation error"</span><span class="p">);</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ExceptionError</span><span class="p">(</span><span class="n">ex</span><span class="p">));</span>
 <span class="w">        </span><span class="p">}</span>
@@ -7673,7 +7673,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Inventory reservation error&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">"Inventory reservation error"</span><span class="p">);</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">InventoryReservation</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ExceptionError</span><span class="p">(</span><span class="n">ex</span><span class="p">));</span>
 <span class="w">        </span><span class="p">}</span>
@@ -7686,14 +7686,14 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">transaction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">paymentService</span><span class="p">.</span><span class="n">ProcessAsync</span><span class="p">(</span><span class="n">payment</span><span class="p">);</span>
 <span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">transaction</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogWarning</span><span class="p">(</span><span class="s">&quot;Payment failed: {Message}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">transaction</span><span class="p">.</span><span class="n">Messages</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">());</span>
+<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogWarning</span><span class="p">(</span><span class="s">"Payment failed: {Message}"</span><span class="p">,</span><span class="w"> </span><span class="n">transaction</span><span class="p">.</span><span class="n">Messages</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">());</span>
 <span class="w">            </span><span class="p">}</span>
 
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">transaction</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Payment processing error&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">"Payment processing error"</span><span class="p">);</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">PaymentTransaction</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ExceptionError</span><span class="p">(</span><span class="n">ex</span><span class="p">));</span>
 <span class="w">        </span><span class="p">}</span>
@@ -7708,7 +7708,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Order creation error&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">"Order creation error"</span><span class="p">);</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ExceptionError</span><span class="p">(</span><span class="n">ex</span><span class="p">));</span>
 <span class="w">        </span><span class="p">}</span>
@@ -7722,7 +7722,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Error releasing inventory&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">"Error releasing inventory"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -7734,7 +7734,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Error reversing payment&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">"Error reversing payment"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7844,13 +7844,13 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">        </span><span class="c1">// Generate sequence number (first async - transaction starts here)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">TapAsync</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">seqResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">numberGenerator</span><span class="p">.</span><span class="n">GetNextAsync</span><span class="p">(</span><span class="s">&quot;TodoItemSequence&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;core&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">);</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">seqResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">numberGenerator</span><span class="p">.</span><span class="n">GetNextAsync</span><span class="p">(</span><span class="s">"TodoItemSequence"</span><span class="p">,</span><span class="w"> </span><span class="s">"core"</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">);</span>
 <span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="n">Number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">seqResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">seqResult</span><span class="p">.</span><span class="n">Value</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="w">        </span><span class="p">},</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">        </span><span class="c1">// Check business rules</span>
 <span class="w">        </span><span class="p">.</span><span class="n">UnlessAsync</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Rule</span>
 <span class="w">            </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Title</span><span class="p">))</span>
-<span class="w">            </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">NotEqual</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;todo&quot;</span><span class="p">))</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">NotEqual</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="s">"todo"</span><span class="p">))</span>
 <span class="w">            </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">TitleShouldBeUniqueRule</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">repository</span><span class="p">))</span>
 <span class="w">            </span><span class="p">.</span><span class="n">CheckAsync</span><span class="p">(</span><span class="n">ct</span><span class="p">),</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">        </span><span class="c1">// Register domain event</span>
@@ -7867,7 +7867,7 @@ In the Result pattern, imperative style requires explicit success checks and err
 <span class="w">                    </span><span class="p">.</span><span class="n">WithPermission</span><span class="o">&lt;</span><span class="n">TodoItem</span><span class="o">&gt;</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">Permission</span><span class="p">.</span><span class="n">Delete</span><span class="p">)</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Build</span><span class="p">())</span>
 <span class="w">        </span><span class="c1">// Audit logging</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Tap</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;AUDIT&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Tap</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"AUDIT"</span><span class="p">))</span>
 <span class="w">        </span><span class="c1">// End transaction (commit on success, rollback on failure)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">EndOperationAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">        </span><span class="c1">// Map entity back to model</span>
@@ -8101,7 +8101,7 @@ consistent error handling and operation results across your application.</p>
 <span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">pageSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">_repository</span><span class="p">.</span><span class="n">FindAllResultPagedAsync</span><span class="p">(</span>
-<span class="w">            </span><span class="n">ordering</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Name ascending&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">ordering</span><span class="p">:</span><span class="w"> </span><span class="s">"Name ascending"</span><span class="p">,</span>
 <span class="w">            </span><span class="n">page</span><span class="p">:</span><span class="w"> </span><span class="n">page</span><span class="p">,</span>
 <span class="w">            </span><span class="n">pageSize</span><span class="p">:</span><span class="w"> </span><span class="n">pageSize</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
@@ -8250,7 +8250,7 @@ throughout the chain.</p>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">EnsureAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">CheckUserStatusAsync</span><span class="p">(</span><span class="n">user</span><span class="p">),</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">Error</span><span class="p">(</span><span class="s">&quot;Invalid status&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">Error</span><span class="p">(</span><span class="s">"Invalid status"</span><span class="p">));</span>
 </code></pre></div>
 <ul>
 <li><strong>Try</strong>: Wrap async operation in Result handling exceptions</li>
@@ -8261,7 +8261,7 @@ throughout the chain.</p>
 <li><strong>Validate</strong>: Validate collection of values using FluentValidation</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">ValidateAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">UserValidator</span><span class="p">(),</span>
-<span class="w">    </span><span class="n">strategy</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">strategy</span><span class="p">.</span><span class="n">IncludeRuleSets</span><span class="p">(</span><span class="s">&quot;Create&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="n">strategy</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">strategy</span><span class="p">.</span><span class="n">IncludeRuleSets</span><span class="p">(</span><span class="s">"Create"</span><span class="p">));</span>
 </code></pre></div>
 <h3 id="side-effects">Side effects<a class="headerlink" href="#side-effects" title="Permanent link">&para;</a></h3>
 <blockquote>
@@ -8300,43 +8300,43 @@ throughout the chain.</p>
 <span class="k">await</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">When</span><span class="p">(</span>
 <span class="w">    </span><span class="n">user</span><span class="p">.</span><span class="n">IsActive</span><span class="p">,</span>
 <span class="w">    </span><span class="n">r</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">r</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Ensure</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">Age</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Error</span><span class="p">(</span><span class="s">&quot;Must be adult&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Ensure</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">Age</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Error</span><span class="p">(</span><span class="s">"Must be adult"</span><span class="p">))</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Map</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">Email</span><span class="p">));</span>
 
 <span class="c1">// Execute operations only when predicate matches the value</span>
 <span class="k">await</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">When</span><span class="p">(</span>
-<span class="w">    </span><span class="n">user</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="n">Role</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Admin&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">user</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="n">Role</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"Admin"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">r</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">r</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Tap</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Admin user detected&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Tap</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Admin user detected"</span><span class="p">))</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">ValidateAdminPermissions</span><span class="p">));</span>
 
 <span class="c1">// Async version with cancellation support</span>
 <span class="k">await</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">WhenAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">true</span><span class="p">,</span>
 <span class="w">    </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">r</span>
-<span class="w">        </span><span class="p">.</span><span class="n">EnsureAsync</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">HasPermissionAsync</span><span class="p">(</span><span class="n">u</span><span class="p">),</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Error</span><span class="p">(</span><span class="s">&quot;No permission&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">EnsureAsync</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">HasPermissionAsync</span><span class="p">(</span><span class="n">u</span><span class="p">),</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Error</span><span class="p">(</span><span class="s">"No permission"</span><span class="p">),</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">MapAsync</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">LoadUserDetailsAsync</span><span class="p">(</span><span class="n">u</span><span class="p">),</span><span class="w"> </span><span class="n">ct</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="c1">// Multiple When blocks for different conditions</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">finalResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span>
-<span class="w">    </span><span class="p">.</span><span class="n">When</span><span class="p">(</span><span class="n">user</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="n">IsActive</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">Map</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">WithStatus</span><span class="p">(</span><span class="s">&quot;active&quot;</span><span class="p">)))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">When</span><span class="p">(</span><span class="n">user</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="n">IsPremium</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">Map</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">WithBadge</span><span class="p">(</span><span class="s">&quot;premium&quot;</span><span class="p">)))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">When</span><span class="p">(</span><span class="n">user</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="n">IsVerified</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">Map</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">WithBadge</span><span class="p">(</span><span class="s">&quot;verified&quot;</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">.</span><span class="n">When</span><span class="p">(</span><span class="n">user</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="n">IsActive</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">Map</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">WithStatus</span><span class="p">(</span><span class="s">"active"</span><span class="p">)))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">When</span><span class="p">(</span><span class="n">user</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="n">IsPremium</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">Map</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">WithBadge</span><span class="p">(</span><span class="s">"premium"</span><span class="p">)))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">When</span><span class="p">(</span><span class="n">user</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="n">IsVerified</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">Map</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">WithBadge</span><span class="p">(</span><span class="s">"verified"</span><span class="p">)));</span>
 </code></pre></div>
 <ul>
 <li><strong>Filter</strong>: Convert to failure if predicate fails</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">FilterAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">HasValidSubscriptionAsync</span><span class="p">(</span><span class="n">user</span><span class="p">),</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">SubscriptionError</span><span class="p">(</span><span class="s">&quot;Invalid subscription&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">SubscriptionError</span><span class="p">(</span><span class="s">"Invalid subscription"</span><span class="p">));</span>
 </code></pre></div>
 <ul>
 <li><strong>Unless</strong>: Convert to failure if predicate succeeds</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">UnlessAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">IsBlacklistedAsync</span><span class="p">(</span><span class="n">user</span><span class="p">),</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlacklistError</span><span class="p">(</span><span class="s">&quot;Blacklisted&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlacklistError</span><span class="p">(</span><span class="s">"Blacklisted"</span><span class="p">));</span>
 </code></pre></div>
 <ul>
 <li><strong>OrElse</strong>: Provide fallback value on failure</li>
@@ -8389,14 +8389,14 @@ throughout the chain.</p>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">MatchAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">ProcessUserAsync</span><span class="p">(</span><span class="n">user</span><span class="p">),</span>
-<span class="w">    </span><span class="n">errors</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;Processing failed&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">errors</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">"Processing failed"</span><span class="p">);</span>
 </code></pre></div>
 <ul>
 <li><strong>Match (values)</strong>: Return different values for success/failure</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Match</span><span class="p">(</span>
-<span class="w">    </span><span class="n">success</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Valid&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">failure</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Invalid&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">success</span><span class="p">:</span><span class="w"> </span><span class="s">"Valid"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">failure</span><span class="p">:</span><span class="w"> </span><span class="s">"Invalid"</span><span class="p">);</span>
 </code></pre></div>
 <ul>
 <li><strong>HandleAsync</strong>: Execute async actions with full async handlers</li>
@@ -8410,7 +8410,7 @@ throughout the chain.</p>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">HandleAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">success</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">ProcessSuccessAsync</span><span class="p">(</span><span class="n">success</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">),</span>
-<span class="w">    </span><span class="n">failure</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Failure: {failure}&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="n">failure</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Failure: {failure}"</span><span class="p">));</span>
 </code></pre></div>
 <p>Key differences from Match:</p>
 <ul>
@@ -8426,7 +8426,7 @@ throughout the chain.</p>
 <span class="w">    </span><span class="p">.</span><span class="n">TapAsync</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">_cache</span><span class="p">.</span><span class="n">StoreUserAsync</span><span class="p">(</span><span class="n">user</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">EnsureAsync</span><span class="p">(</span>
 <span class="w">        </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">CheckUserStatusAsync</span><span class="p">(</span><span class="n">user</span><span class="p">),</span>
-<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="nf">Error</span><span class="p">(</span><span class="s">&quot;Invalid status&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="nf">Error</span><span class="p">(</span><span class="s">"Invalid status"</span><span class="p">));</span>
 </code></pre></div>
 <h3 id="usage-example">Usage example<a class="headerlink" href="#usage-example" title="Permanent link">&para;</a></h3>
 <blockquote>
@@ -8474,14 +8474,14 @@ concludes by matching the result to either a success or failure message.</p>
     K -.-&gt; DB</code></pre>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">people</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">{</span><span class="w"> </span><span class="n">personA</span><span class="p">,</span><span class="w"> </span><span class="n">personB</span><span class="w"> </span><span class="p">};</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="n">people</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Do</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">&quot;Starting person processing&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Do</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Starting person processing"</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Validate</span><span class="p">(</span><span class="n">validator</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Ensure</span><span class="p">(</span>
 <span class="w">        </span><span class="n">persons</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">persons</span><span class="p">.</span><span class="n">All</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">Age</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">18</span><span class="p">),</span>
-<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="nf">Error</span><span class="p">(</span><span class="s">&quot;All persons must be adults&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="nf">Error</span><span class="p">(</span><span class="s">"All persons must be adults"</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Filter</span><span class="p">(</span>
 <span class="w">        </span><span class="n">persons</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">persons</span><span class="p">.</span><span class="n">All</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">Locations</span><span class="p">.</span><span class="n">Any</span><span class="p">()),</span>
-<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="nf">Error</span><span class="p">(</span><span class="s">&quot;All persons must have at least one location&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="nf">Error</span><span class="p">(</span><span class="s">"All persons must have at least one location"</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Map</span><span class="p">(</span><span class="n">persons</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">persons</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmailAddress</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">Email</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">ToLowerInvariant</span><span class="p">());</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">Person</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">FirstName</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">Age</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">Locations</span><span class="p">);</span>
@@ -8491,10 +8491,10 @@ concludes by matching the result to either a success or failure message.</p>
 <span class="w">        </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">EnsureAsync</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">persons</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">database</span><span class="p">.</span><span class="n">PersonsExistAsync</span><span class="p">(</span><span class="n">persons</span><span class="p">),</span>
-<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="nf">Error</span><span class="p">(</span><span class="s">&quot;Not all persons were saved correctly&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="nf">Error</span><span class="p">(</span><span class="s">"Not all persons were saved correctly"</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Match</span><span class="p">(</span>
-<span class="w">        </span><span class="n">list</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$&quot;Successfully processed {list.Count} persons&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="n">errors</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$&quot;Processing failed: {string.Join(&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;, errors)}&quot;</span>
+<span class="w">        </span><span class="n">list</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$"Successfully processed {list.Count} persons"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">errors</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$"Processing failed: {string.Join("</span><span class="p">,</span><span class="w"> </span><span class="s">", errors)}"</span>
 <span class="w">    </span><span class="p">);</span>
 </code></pre></div>
 <h2 id="appendix-c-result-creation-methods">Appendix C: Result creation methods<a class="headerlink" href="#appendix-c-result-creation-methods" title="Permanent link">&para;</a></h2>
@@ -8506,12 +8506,12 @@ concludes by matching the result to either a success or failure message.</p>
 <span class="kt">var</span><span class="w"> </span><span class="n">result1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
 
 <span class="c1">// Success with message</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">result2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;User created successfully&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">result2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="s">"User created successfully"</span><span class="p">);</span>
 
 <span class="c1">// Success with multiple messages</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span>
 <span class="w">    </span><span class="n">order</span><span class="p">,</span>
-<span class="w">    </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;Order validated&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Payment processed&quot;</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">"Order validated"</span><span class="p">,</span><span class="w"> </span><span class="s">"Payment processed"</span><span class="w"> </span><span class="p">});</span>
 
 <span class="c1">// Empty success (default value)</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">();</span>
@@ -8527,22 +8527,22 @@ concludes by matching the result to either a success or failure message.</p>
 <span class="kt">var</span><span class="w"> </span><span class="n">result3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
 
 <span class="c1">// Failure with message</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">result4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="s">&quot;User creation failed&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">result4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="s">"User creation failed"</span><span class="p">);</span>
 
 <span class="c1">// Failure with value and message</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">result5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Validation failed&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">result5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="s">"Validation failed"</span><span class="p">);</span>
 
 <span class="c1">// Failure with error instance</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result6</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ValidationError</span><span class="p">(</span><span class="s">&quot;Invalid order&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ValidationError</span><span class="p">(</span><span class="s">"Invalid order"</span><span class="p">));</span>
 
 <span class="c1">// Failure with messages and errors</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result7</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;Validation failed&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Invalid price&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">"Validation failed"</span><span class="p">,</span><span class="w"> </span><span class="s">"Invalid price"</span><span class="w"> </span><span class="p">},</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">IResultError</span><span class="p">[]</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="nf">ValidationError</span><span class="p">(</span><span class="s">&quot;Must be positive&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;price&quot;</span><span class="p">),</span>
-<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="nf">DomainError</span><span class="p">(</span><span class="s">&quot;Invalid product state&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="nf">ValidationError</span><span class="p">(</span><span class="s">"Must be positive"</span><span class="p">,</span><span class="w"> </span><span class="s">"price"</span><span class="p">),</span>
+<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="nf">DomainError</span><span class="p">(</span><span class="s">"Invalid product state"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">});</span>
 </code></pre></div>
 <h3 id="conditional-creation">Conditional creation<a class="headerlink" href="#conditional-creation" title="Permanent link">&para;</a></h3>
@@ -8550,13 +8550,13 @@ concludes by matching the result to either a success or failure message.</p>
 <span class="kt">var</span><span class="w"> </span><span class="n">result1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">SuccessIf</span><span class="p">(</span>
 <span class="w">    </span><span class="n">user</span><span class="p">.</span><span class="n">Age</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span>
 <span class="w">    </span><span class="n">user</span><span class="p">,</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">ValidationError</span><span class="p">(</span><span class="s">&quot;Must be 18 or older&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">ValidationError</span><span class="p">(</span><span class="s">"Must be 18 or older"</span><span class="p">));</span>
 
 <span class="c1">// Success if predicate is satisfied</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">SuccessIf</span><span class="p">(</span>
 <span class="w">    </span><span class="n">order</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">order</span><span class="p">.</span><span class="n">Total</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">    </span><span class="n">order</span><span class="p">,</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">ValidationError</span><span class="p">(</span><span class="s">&quot;Order total must be positive&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">ValidationError</span><span class="p">(</span><span class="s">"Order total must be positive"</span><span class="p">));</span>
 
 <span class="c1">// Failure if condition is met</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span><span class="p">.</span><span class="n">FailureIf</span><span class="p">(</span>
@@ -8568,7 +8568,7 @@ concludes by matching the result to either a success or failure message.</p>
 <span class="kt">var</span><span class="w"> </span><span class="n">result4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">FailureIf</span><span class="p">(</span>
 <span class="w">    </span><span class="n">user</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="n">IsBlacklisted</span><span class="p">,</span>
 <span class="w">    </span><span class="n">user</span><span class="p">,</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">ValidationError</span><span class="p">(</span><span class="s">&quot;User is blacklisted&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">ValidationError</span><span class="p">(</span><span class="s">"User is blacklisted"</span><span class="p">));</span>
 </code></pre></div>
 <h3 id="operation-wrapping">Operation wrapping<a class="headerlink" href="#operation-wrapping" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1">// Wrap synchronous operation</span>
@@ -8584,7 +8584,7 @@ concludes by matching the result to either a success or failure message.</p>
 <span class="kt">var</span><span class="w"> </span><span class="n">result3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Bind</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">amount</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
-<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">ArgumentException</span><span class="p">(</span><span class="s">&quot;Amount must be positive&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">ArgumentException</span><span class="p">(</span><span class="s">"Amount must be positive"</span><span class="p">);</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nf">CalculateDiscount</span><span class="p">(</span><span class="n">amount</span><span class="p">);</span>
 <span class="p">});</span>
 
@@ -8630,8 +8630,8 @@ include input that can be numeric or textual and an API that has two valid respo
 <span class="n">Either</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">firstCase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Either</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="p">.</span><span class="n">FromFirst</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
 
 <span class="c1">// Create Either from second type</span>
-<span class="n">Either</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">textCase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Hello&quot;</span><span class="p">;</span>
-<span class="n">Either</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">secondCase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Either</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="p">.</span><span class="n">FromSecond</span><span class="p">(</span><span class="s">&quot;Hello&quot;</span><span class="p">);</span>
+<span class="n">Either</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">textCase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Hello"</span><span class="p">;</span>
+<span class="n">Either</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">secondCase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Either</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="p">.</span><span class="n">FromSecond</span><span class="p">(</span><span class="s">"Hello"</span><span class="p">);</span>
 
 <span class="c1">// Check which type is contained</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">numericCase</span><span class="p">.</span><span class="n">IsFirst</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
@@ -8646,8 +8646,8 @@ include input that can be numeric or textual and an API that has two valid respo
 <h4 id="synchronous-pattern-matching">Synchronous pattern matching<a class="headerlink" href="#synchronous-pattern-matching" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="c1">// Basic matching</span>
 <span class="kt">string</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">either</span><span class="p">.</span><span class="n">Match</span><span class="p">(</span>
-<span class="w">    </span><span class="n">firstValue</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$&quot;Number: {firstValue}&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">secondValue</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$&quot;Text: {secondValue}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">firstValue</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$"Number: {firstValue}"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">secondValue</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$"Text: {secondValue}"</span><span class="p">);</span>
 
 <span class="c1">// Async matching</span>
 <span class="k">await</span><span class="w"> </span><span class="n">either</span><span class="p">.</span><span class="n">MatchAsync</span><span class="p">(</span>
@@ -8656,8 +8656,8 @@ include input that can be numeric or textual and an API that has two valid respo
 
 <span class="c1">// Action matching with Switch</span>
 <span class="n">either</span><span class="p">.</span><span class="n">Switch</span><span class="p">(</span>
-<span class="w">    </span><span class="n">number</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Got number: {number}&quot;</span><span class="p">),</span>
-<span class="w">    </span><span class="n">text</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Got text: {text}&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="n">number</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Got number: {number}"</span><span class="p">),</span>
+<span class="w">    </span><span class="n">text</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Got text: {text}"</span><span class="p">));</span>
 
 <span class="c1">// Match with transformations</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">numericEither</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Either</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="p">.</span><span class="n">FromFirst</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
@@ -8669,7 +8669,7 @@ include input that can be numeric or textual and an API that has two valid respo
 <span class="kt">var</span><span class="w"> </span><span class="n">executed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
 <span class="n">numericEither</span><span class="p">.</span><span class="n">Switch</span><span class="p">(</span>
 <span class="w">    </span><span class="n">num</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">executed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
-<span class="w">    </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Exception</span><span class="p">(</span><span class="s">&quot;Should not execute&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Exception</span><span class="p">(</span><span class="s">"Should not execute"</span><span class="p">));</span>
 </code></pre></div>
 <h4 id="asynchronous-pattern-matching">Asynchronous pattern matching<a class="headerlink" href="#asynchronous-pattern-matching" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="c1">// Async match operations</span>
@@ -8691,7 +8691,7 @@ include input that can be numeric or textual and an API that has two valid respo
 <h3 id="error-handling-and-try-operations">Error handling and try operations<a class="headerlink" href="#error-handling-and-try-operations" title="Permanent link">&para;</a></h3>
 <p>Either provides built-in support for handling operations that might fail:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Basic try operation</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">parsed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Either</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">Exception</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Try</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kt">int</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;42&quot;</span><span class="p">));</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">parsed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Either</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">Exception</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Try</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kt">int</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">"42"</span><span class="p">));</span>
 
 <span class="c1">// Async try with potential failure</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Either</span><span class="o">&lt;</span><span class="n">Data</span><span class="p">,</span><span class="w"> </span><span class="n">Exception</span><span class="o">&gt;</span><span class="p">.</span><span class="n">TryAsync</span><span class="p">(</span>
@@ -8700,7 +8700,7 @@ include input that can be numeric or textual and an API that has two valid respo
 <span class="c1">// Filter operations</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">filtered</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">either</span><span class="p">.</span><span class="n">Filter</span><span class="p">(</span>
 <span class="w">    </span><span class="n">num</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;Number must be positive&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="s">"Number must be positive"</span><span class="p">);</span>
 </code></pre></div>
 <h3 id="integration-with-result">Integration with <code>Result</code><a class="headerlink" href="#integration-with-result" title="Permanent link">&para;</a></h3>
 <p>Either integrates naturally with the Result type, allowing you to transition between the two approaches when needed:</p>
@@ -8712,7 +8712,7 @@ include input that can be numeric or textual and an API that has two valid respo
 
 <span class="c1">// Using Try operations</span>
 <span class="n">Either</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">Exception</span><span class="o">&gt;</span><span class="w"> </span><span class="n">parsed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Either</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">Exception</span><span class="o">&gt;</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Try</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kt">int</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;42&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Try</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kt">int</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">"42"</span><span class="p">));</span>
 
 <span class="c1">// Async operations</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Either</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">Exception</span><span class="o">&gt;</span>
@@ -8721,13 +8721,13 @@ include input that can be numeric or textual and an API that has two valid respo
 <span class="c1">// Convert to Result with custom error</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">resultWithError</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">either</span><span class="p">.</span><span class="n">ToResult</span><span class="p">(</span>
 <span class="w">    </span><span class="n">firstMatch</span><span class="p">:</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">num</span><span class="p">.</span><span class="n">ToString</span><span class="p">(),</span>
-<span class="w">    </span><span class="n">secondMatch</span><span class="p">:</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">secondMatch</span><span class="p">:</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">"0"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">errorFactory</span><span class="p">:</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CustomError</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
 
 <span class="c1">// Convert with simple error message</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">simpleResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">either</span><span class="p">.</span><span class="n">ToResult</span><span class="p">(</span>
 <span class="w">    </span><span class="n">firstMatch</span><span class="p">:</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">num</span><span class="p">,</span>
-<span class="w">    </span><span class="n">errorMessage</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Conversion failed&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">errorMessage</span><span class="p">:</span><span class="w"> </span><span class="s">"Conversion failed"</span><span class="p">);</span>
 </code></pre></div>
 <h3 id="examples_1">Examples<a class="headerlink" href="#examples_1" title="Permanent link">&para;</a></h3>
 <p>Here's how Either can be used in practical scenarios:</p>
@@ -8843,9 +8843,9 @@ throw <code>InvalidOperationException</code> when the instance contains the othe
 <li><strong>Usage</strong>:</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">mediator</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CreateItemCommand</span><span class="p">(</span><span class="n">item</span><span class="p">));</span>
-<span class="k">return</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">Result</span><span class="p">.</span><span class="n">MapHttpCreated</span><span class="p">(</span><span class="s">$&quot;/api/items/{response.Result.Value.Id}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">logger</span><span class="p">);</span>
+<span class="k">return</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">Result</span><span class="p">.</span><span class="n">MapHttpCreated</span><span class="p">(</span><span class="s">$"/api/items/{response.Result.Value.Id}"</span><span class="p">,</span><span class="w"> </span><span class="n">logger</span><span class="p">);</span>
 <span class="c1">// OR with factory:</span>
-<span class="k">return</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">Result</span><span class="p">.</span><span class="n">MapHttpCreated</span><span class="p">(</span><span class="k">value</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$&quot;/api/items/{value.Id}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">logger</span><span class="p">);</span>
+<span class="k">return</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">Result</span><span class="p">.</span><span class="n">MapHttpCreated</span><span class="p">(</span><span class="k">value</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$"/api/items/{value.Id}"</span><span class="p">,</span><span class="w"> </span><span class="n">logger</span><span class="p">);</span>
 </code></pre></div>
 <ul>
 <li><strong>Outcomes</strong>: <code>201 Created</code> with <code>T</code> and <code>Location</code>, <code>401 Unauthorized</code>, <code>400 Bad Request</code>, or <code>500 Problem</code>.</li>
@@ -8856,7 +8856,7 @@ throw <code>InvalidOperationException</code> when the instance contains the othe
 <li><strong>Usage</strong>:</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">mediator</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">StartLongRunningTaskCommand</span><span class="p">());</span>
-<span class="k">return</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">Result</span><span class="p">.</span><span class="n">MapHttpAccepted</span><span class="p">(</span><span class="s">&quot;/api/status/123&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">logger</span><span class="p">);</span>
+<span class="k">return</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">Result</span><span class="p">.</span><span class="n">MapHttpAccepted</span><span class="p">(</span><span class="s">"/api/status/123"</span><span class="p">,</span><span class="w"> </span><span class="n">logger</span><span class="p">);</span>
 </code></pre></div>
 <ul>
 <li><strong>Outcomes</strong>: <code>202 Accepted</code> (with <code>T</code> if generic), <code>401 Unauthorized</code>, <code>400 Bad Request</code>, or <code>500 Problem</code>.</li>
@@ -8890,7 +8890,7 @@ throw <code>InvalidOperationException</code> when the instance contains the othe
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">mediator</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CustomOperationCommand</span><span class="p">());</span>
 <span class="k">return</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">Result</span><span class="p">.</span><span class="n">MapHttp</span><span class="o">&lt;</span><span class="n">Created</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">NotFound</span><span class="p">,</span><span class="w"> </span><span class="n">UnauthorizedHttpResult</span><span class="p">,</span><span class="w"> </span><span class="n">BadRequest</span><span class="p">,</span><span class="w"> </span><span class="n">ProblemHttpResult</span><span class="o">&gt;</span><span class="p">(</span>
-<span class="w">    </span><span class="k">value</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">TypedResults</span><span class="p">.</span><span class="n">Created</span><span class="p">(</span><span class="s">&quot;/api/custom&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">value</span><span class="p">),</span><span class="w"> </span><span class="n">logger</span><span class="p">);</span>
+<span class="w">    </span><span class="k">value</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">TypedResults</span><span class="p">.</span><span class="n">Created</span><span class="p">(</span><span class="s">"/api/custom"</span><span class="p">,</span><span class="w"> </span><span class="k">value</span><span class="p">),</span><span class="w"> </span><span class="n">logger</span><span class="p">);</span>
 </code></pre></div>
 <ul>
 <li><strong>Outcomes</strong>: Depends on types; errors typically <code>500 Problem</code>.</li>
@@ -8900,7 +8900,7 @@ throw <code>InvalidOperationException</code> when the instance contains the othe
 <li><strong>Registering Handlers</strong>: Override defaults with <code>RegisterErrorHandler&lt;TError&gt;</code>.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="n">ResultMapHttpExtensions</span><span class="p">.</span><span class="n">RegisterErrorHandler</span><span class="o">&lt;</span><span class="n">ValidationError</span><span class="o">&gt;</span><span class="p">((</span><span class="n">logger</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">    </span><span class="n">TypedResults</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">detail</span><span class="p">:</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">ToString</span><span class="p">(),</span><span class="w"> </span><span class="n">statusCode</span><span class="p">:</span><span class="w"> </span><span class="mi">422</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Validation Failed&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="n">TypedResults</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">detail</span><span class="p">:</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">ToString</span><span class="p">(),</span><span class="w"> </span><span class="n">statusCode</span><span class="p">:</span><span class="w"> </span><span class="mi">422</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Validation Failed"</span><span class="p">));</span>
 </code></pre></div>
 <ul>
 <li><strong>Behavior</strong>: Specific methods wrap unrecognized custom results in <code>ProblemHttpResult</code>; generic <code>MapHttp</code> uses <code>MapError&lt;TProblem&gt;</code>.</li>
@@ -8989,10 +8989,10 @@ throw <code>InvalidOperationException</code> when the instance contains the othe
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5799,10 +5799,10 @@
 <h3 id="insert-an-entity">Insert an entity<a class="headerlink" href="#insert-an-entity" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Customer</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;John&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;john.doe@example.com&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Mr.&quot;</span>
+<span class="w">    </span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"John"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Doe"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"john.doe@example.com"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Mr."</span>
 <span class="p">};</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">insertResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">InsertAsync</span><span class="p">();</span>
@@ -5812,7 +5812,7 @@
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Inserted customer ID: {insertResult.Value.Id}&quot;</span><span class="p">);</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Inserted customer ID: {insertResult.Value.Id}"</span><span class="p">);</span>
 </code></pre></div>
 <p>The final line prints the generated <code>CustomerId</code>.</p>
 <h2 id="operation-reference">Operation reference<a class="headerlink" href="#operation-reference" title="Permanent link">&para;</a></h2>
@@ -5820,15 +5820,15 @@
 <h3 id="insert-multiple-entities">Insert multiple entities<a class="headerlink" href="#insert-multiple-entities" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Customer</span><span class="p">.</span><span class="n">InsertAsync</span><span class="p">(</span>
 <span class="na">[</span>
-<span class="na">    new() { FirstName = &quot;John&quot;, LastName = &quot;Doe&quot;, Email = &quot;john.doe@example.com&quot;, Title = &quot;Mr.&quot; },</span>
-<span class="na">    new() { FirstName = &quot;Jane&quot;, LastName = &quot;Doe&quot;, Email = &quot;jane.doe@example.com&quot;, Title = &quot;Ms.&quot; }</span>
+<span class="na">    new() { FirstName = "John", LastName = "Doe", Email = "john.doe@example.com", Title = "Mr." },</span>
+<span class="na">    new() { FirstName = "Jane", LastName = "Doe", Email = "jane.doe@example.com", Title = "Ms." }</span>
 <span class="na">]</span><span class="p">);</span>
 
 <span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">results</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Inserted customer ID: {result.Value.Id}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Inserted customer ID: {result.Value.Id}"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">    </span><span class="k">else</span>
 <span class="w">    </span><span class="p">{</span>
@@ -5846,7 +5846,7 @@
 <span class="p">}</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">findResult</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
-<span class="n">customer</span><span class="p">.</span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Janet&quot;</span><span class="p">;</span>
+<span class="n">customer</span><span class="p">.</span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Janet"</span><span class="p">;</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">updateResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">UpdateAsync</span><span class="p">();</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">updateResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
@@ -5855,7 +5855,7 @@
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Updated customer ID: {updateResult.Value.Id}&quot;</span><span class="p">);</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Updated customer ID: {updateResult.Value.Id}"</span><span class="p">);</span>
 </code></pre></div>
 <h3 id="update-multiple-existing-entities">Update multiple existing entities<a class="headerlink" href="#update-multiple-existing-entities" title="Permanent link">&para;</a></h3>
 <p>Load the entities, modify them, and pass the collection to <code>UpdateAsync</code>.</p>
@@ -5889,28 +5889,28 @@
 
 <span class="kt">var</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">findResult</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">updateResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">UpdateAsync</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">FirstName</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Janet&quot;</span><span class="p">)</span><span class="w">              </span><span class="c1">// constant assignment</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">FirstName</span><span class="p">,</span><span class="w"> </span><span class="s">"Janet"</span><span class="p">)</span><span class="w">              </span><span class="c1">// constant assignment</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Visits</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Visits</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w">       </span><span class="c1">// computed assignment</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;Archived&quot;</span><span class="p">));</span><span class="w">        </span><span class="c1">// dynamic constant</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">"Archived"</span><span class="p">));</span><span class="w">        </span><span class="c1">// dynamic constant</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">updateResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Updated customer ID: {updateResult.Value.Id}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Updated customer ID: {updateResult.Value.Id}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="update-a-set-of-entities">Update a set of entities<a class="headerlink" href="#update-a-set-of-entities" title="Permanent link">&para;</a></h3>
 <p>Use <code>UpdateSetAsync</code> to update multiple entities in one operation without loading them individually.</p>
-<div class="highlight"><pre><span></span><code><span class="c1">// update set: deactivate all customers with LastName = &quot;Doe&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">// update set: deactivate all customers with LastName = "Doe"</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">updateResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Customer</span><span class="p">.</span><span class="n">UpdateSetAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LastName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LastName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"Doe"</span><span class="p">,</span>
 <span class="w">    </span><span class="k">set</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">set</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">IsActive</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">)</span><span class="w">                 </span><span class="c1">// constant assignment</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Visits</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Visits</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w">       </span><span class="c1">// computed assignment</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;Archived&quot;</span><span class="p">));</span><span class="w">        </span><span class="c1">// dynamic constant</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">"Archived"</span><span class="p">));</span><span class="w">        </span><span class="c1">// dynamic constant</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">updateResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Updated {updateResult.Value} customers&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Updated {updateResult.Value} customers"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="delete-an-entity">Delete an entity<a class="headerlink" href="#delete-an-entity" title="Permanent link">&para;</a></h3>
@@ -5927,7 +5927,7 @@
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">deleteResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Deleted customer ID: {customer.Id}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Deleted customer ID: {customer.Id}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="delete-multiple-existing-entities">Delete multiple existing entities<a class="headerlink" href="#delete-multiple-existing-entities" title="Permanent link">&para;</a></h3>
@@ -5956,13 +5956,13 @@
 </code></pre></div>
 <h3 id="delete-a-set-of-entities">Delete a set of entities<a class="headerlink" href="#delete-a-set-of-entities" title="Permanent link">&para;</a></h3>
 <p>Use <code>DeleteSetAsync</code> to delete multiple entities in one operation.</p>
-<div class="highlight"><pre><span></span><code><span class="c1">// delete set: remove all customers with LastName = &quot;Doe&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="c1">// delete set: remove all customers with LastName = "Doe"</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">deleteResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Customer</span><span class="p">.</span><span class="n">DeleteSetAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LastName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LastName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"Doe"</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">deleteResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Deleted {deleteResult.Value} customers&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Deleted {deleteResult.Value} customers"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="find-an-entity-by-id">Find an entity by ID<a class="headerlink" href="#find-an-entity-by-id" title="Permanent link">&para;</a></h3>
@@ -5971,7 +5971,7 @@
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">findResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">findResult</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Found customer: {customer.FirstName} {customer.LastName}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Found customer: {customer.FirstName} {customer.LastName}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="find-all-entities">Find all entities<a class="headerlink" href="#find-all-entities" title="Permanent link">&para;</a></h3>
@@ -5986,7 +5986,7 @@
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="find-filtered-entities">Find filtered entities<a class="headerlink" href="#find-filtered-entities" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">findAllResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Customer</span><span class="p">.</span><span class="n">FindAllAsync</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">LastName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">findAllResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Customer</span><span class="p">.</span><span class="n">FindAllAsync</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">LastName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"Doe"</span><span class="p">);</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">findAllResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">findAllResult</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
@@ -6006,7 +6006,7 @@
 <span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">customer</span><span class="p">.</span><span class="n">FirstName</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Total customers: {pagedResult.TotalCount}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Total customers: {pagedResult.TotalCount}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="reuse-a-context-with-withcontextasync">Reuse a context with <code>WithContextAsync</code><a class="headerlink" href="#reuse-a-context-with-withcontextasync" title="Permanent link">&para;</a></h3>
@@ -6038,9 +6038,9 @@
 
 <span class="kt">var</span><span class="w"> </span><span class="n">newCustomer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Customer</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Bob&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Builder&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bob.builder@example.com&quot;</span>
+<span class="w">    </span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Bob"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Builder"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"bob.builder@example.com"</span>
 <span class="p">};</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">serviceResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">CustomerService</span><span class="p">.</span><span class="n">RegisterNewCustomerAndLogAsync</span><span class="p">(</span><span class="n">newCustomer</span><span class="p">);</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">serviceResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
@@ -6053,10 +6053,10 @@
 <p>The following examples assume that <code>Customer</code> uses <code>UseEntityFrameworkProvider&lt;ActiveEntityDbContext&gt;()</code>. The in-memory provider does not provide transaction isolation.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Customer</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;John&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;john.doe@example.com&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Mr.&quot;</span>
+<span class="w">    </span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"John"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Doe"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"john.doe@example.com"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Mr."</span>
 <span class="p">};</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">transactionResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Customer</span><span class="p">.</span><span class="n">WithTransactionAsync</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
@@ -6073,7 +6073,7 @@
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">updatedCustomer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">findResult</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
-<span class="w">    </span><span class="n">updatedCustomer</span><span class="p">.</span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Sir&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">updatedCustomer</span><span class="p">.</span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Sir"</span><span class="p">;</span>
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">updateResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">updatedCustomer</span><span class="p">.</span><span class="n">UpdateAsync</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">updateResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
@@ -6085,19 +6085,19 @@
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">transactionResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Transaction committed for customer ID: {customer.Id}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Transaction committed for customer ID: {customer.Id}"</span><span class="p">);</span>
 <span class="p">}</span>
 <span class="k">else</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Transaction failed and rolled back: {transactionResult.Errors}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Transaction failed and rolled back: {transactionResult.Errors}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>You can also return a value from a transaction using <code>WithTransactionAsync&lt;T&gt;</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">newCustomer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Customer</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Wonder&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;alice.wonder@example.com&quot;</span>
+<span class="w">    </span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Alice"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Wonder"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"alice.wonder@example.com"</span>
 <span class="p">};</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">transactionResultWithReturn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Customer</span><span class="p">.</span><span class="n">WithTransactionAsync</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="n">ctx</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -6113,11 +6113,11 @@
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">transactionResultWithReturn</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Transaction committed. New customer ID: {transactionResultWithReturn.Value.Id}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Transaction committed. New customer ID: {transactionResultWithReturn.Value.Id}"</span><span class="p">);</span>
 <span class="p">}</span>
 <span class="k">else</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Transaction failed: {transactionResultWithReturn.Errors}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Transaction failed: {transactionResultWithReturn.Errors}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>The following sequence shows the successful <code>WithTransactionAsync</code> path.</p>
@@ -6202,7 +6202,7 @@
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Required]</span>
-<span class="w">    </span><span class="na">[RegularExpression(@&quot;^[^@\s]</span><span class="o">+</span><span class="err">@</span><span class="p">[</span><span class="o">^</span><span class="err">@\</span><span class="n">s</span><span class="p">]</span><span class="o">+</span><span class="err">\</span><span class="p">.[</span><span class="o">^</span><span class="err">@\</span><span class="n">s</span><span class="p">]</span><span class="o">+</span><span class="s">$&quot;)]</span>
+<span class="w">    </span><span class="na">[RegularExpression(@"^[^@\s]</span><span class="o">+</span><span class="err">@</span><span class="p">[</span><span class="o">^</span><span class="err">@\</span><span class="n">s</span><span class="p">]</span><span class="o">+</span><span class="err">\</span><span class="p">.[</span><span class="o">^</span><span class="err">@\</span><span class="n">s</span><span class="p">]</span><span class="o">+</span><span class="s">$")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Email</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Range(1, 5)]</span>
@@ -6215,8 +6215,8 @@
 <p>An invalid entity returns a failed result:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">supplier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Supplier</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;invalid-email&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"A"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"invalid-email"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">Rating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span>
 <span class="p">};</span>
 
@@ -6233,8 +6233,8 @@
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">BasicCustomerValidator</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">FirstName</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;First name is required&quot;</span><span class="p">);</span>
-<span class="w">        </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LastName</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Last name is required&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">FirstName</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"First name is required"</span><span class="p">);</span>
+<span class="w">        </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LastName</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Last name is required"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
@@ -6242,7 +6242,7 @@
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">BusinessCustomerValidator</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Email</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">EmailAddress</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;A valid email address is required&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Email</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">EmailAddress</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"A valid email address is required"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
@@ -6260,7 +6260,7 @@
 
 <span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">existsResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">existsResult</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
 <span class="w">            </span><span class="p">})</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Cannot delete a customer with pending orders.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Cannot delete a customer with pending orders."</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
@@ -6275,14 +6275,14 @@
 
 <span class="kt">var</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Customer</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;John&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;john.doe@example.com&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Mr.&quot;</span>
+<span class="w">    </span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"John"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Doe"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"john.doe@example.com"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Mr."</span>
 <span class="p">};</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">insertResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">InsertAsync</span><span class="p">();</span>
 
-<span class="n">customer</span><span class="p">.</span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;invalid&quot;</span><span class="p">;</span>
+<span class="n">customer</span><span class="p">.</span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"invalid"</span><span class="p">;</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">updateResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">UpdateAsync</span><span class="p">();</span>
 
 <span class="c1">// Assume a pending order exists for customer.Id.</span>
@@ -6335,7 +6335,7 @@
 <li><code>FindOneBy&lt;PropertyName&gt;Async(value)</code> returns the first matching entity.</li>
 </ul>
 <p>The generator supports primitive values, value objects, enumerations, and typed IDs.</p>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">customersResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Customer</span><span class="p">.</span><span class="n">FindAllByLastNameAsync</span><span class="p">(</span><span class="s">&quot;Doe&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">customersResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Customer</span><span class="p">.</span><span class="n">FindAllByLastNameAsync</span><span class="p">(</span><span class="s">"Doe"</span><span class="p">);</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">customersResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">customersResult</span><span class="p">.</span><span class="n">Value</span><span class="p">)</span>
@@ -6346,7 +6346,7 @@
 </code></pre></div>
 <h3 id="generated-specifications">Generated specifications<a class="headerlink" href="#generated-specifications" title="Permanent link">&para;</a></h3>
 <p><code>Specifications</code> generates a nested <code>Customer.Specifications</code> class. The generated methods cover equality and the comparisons supported by each property type.</p>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">specification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Customer</span><span class="p">.</span><span class="n">Specifications</span><span class="p">.</span><span class="n">LastNameEquals</span><span class="p">(</span><span class="s">&quot;Doe&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">specification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Customer</span><span class="p">.</span><span class="n">Specifications</span><span class="p">.</span><span class="n">LastNameEquals</span><span class="p">(</span><span class="s">"Doe"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">And</span><span class="p">(</span><span class="n">Customer</span><span class="p">.</span><span class="n">Specifications</span><span class="p">.</span><span class="n">VisitsGreaterThan</span><span class="p">(</span><span class="mi">5</span><span class="p">));</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">customersResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Customer</span><span class="p">.</span><span class="n">FindAllAsync</span><span class="p">(</span><span class="n">specification</span><span class="p">);</span>
@@ -6356,7 +6356,7 @@
 <p><code>QueryDsl</code> generates <code>Query()</code> and a typed query builder. The builder supports filters, specifications, includes, ordering, paging, counts, existence checks, and projections.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">pagedResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Customer</span><span class="p">.</span><span class="n">Query</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">Customer</span><span class="p">.</span><span class="n">Specifications</span><span class="p">.</span><span class="n">IsActiveEquals</span><span class="p">(</span><span class="k">true</span><span class="p">))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">And</span><span class="p">(</span><span class="n">Customer</span><span class="p">.</span><span class="n">Specifications</span><span class="p">.</span><span class="n">LastNameEquals</span><span class="p">(</span><span class="s">&quot;Doe&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">And</span><span class="p">(</span><span class="n">Customer</span><span class="p">.</span><span class="n">Specifications</span><span class="p">.</span><span class="n">LastNameEquals</span><span class="p">(</span><span class="s">"Doe"</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">OrderBy</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">FirstName</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Skip</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Take</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
@@ -6369,7 +6369,7 @@
 <span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">customer</span><span class="p">.</span><span class="n">FirstName</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Total customers: {pagedResult.TotalCount}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Total customers: {pagedResult.TotalCount}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="static-query-forwarders">Static query forwarders<a class="headerlink" href="#static-query-forwarders" title="Permanent link">&para;</a></h3>
@@ -6408,7 +6408,7 @@
 <span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">Total</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span>
-<span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="s">&quot;The order total cannot be negative.&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="s">"The order total cannot be negative."</span><span class="p">)</span>
 <span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">());</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -6522,10 +6522,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

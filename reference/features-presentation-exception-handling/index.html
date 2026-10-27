@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5336,19 +5336,19 @@
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EnableLogging</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">KeyNotFoundException</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">        </span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status404NotFound</span><span class="p">,</span>
-<span class="w">        </span><span class="s">&quot;Resource Not Found&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="s">"Resource Not Found"</span><span class="p">);</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EnrichProblemDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">problem</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">&quot;traceId&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">TraceIdentifier</span><span class="p">;</span>
+<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">"traceId"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">TraceIdentifier</span><span class="p">;</span>
 <span class="p">});</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 <span class="n">app</span><span class="p">.</span><span class="n">UseExceptionHandler</span><span class="p">();</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/products/{id:int}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">GetProduct</span><span class="p">);</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/products/{id:int}"</span><span class="p">,</span><span class="w"> </span><span class="n">GetProduct</span><span class="p">);</span>
 <span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
 
 <span class="k">static</span><span class="w"> </span><span class="n">IResult</span><span class="w"> </span><span class="nf">GetProduct</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">KeyNotFoundException</span><span class="p">(</span><span class="s">$&quot;Product {id} was not found.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">KeyNotFoundException</span><span class="p">(</span><span class="s">$"Product {id} was not found."</span><span class="p">);</span>
 </code></pre></div>
 <p><code>GET /products/42</code> returns a 404 Problem Details response titled <code>Resource Not Found</code>. In production, the response omits the exception message; the server still logs the exception.</p>
 <h2 id="key-concepts">Key concepts<a class="headerlink" href="#key-concepts" title="Permanent link">&para;</a></h2>
@@ -5431,9 +5431,9 @@
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EnableLogging</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span><span class="w">            </span><span class="c1">// Log all exceptions</span>
 
 <span class="w">    </span><span class="c1">// Map common exceptions</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">NotFoundException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status404NotFound</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Resource Not Found&quot;</span><span class="p">)</span>
-<span class="w">           </span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">ConflictException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status409Conflict</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Conflict&quot;</span><span class="p">)</span>
-<span class="w">           </span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">UnauthorizedException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status401Unauthorized</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Unauthorized&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">NotFoundException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status404NotFound</span><span class="p">,</span><span class="w"> </span><span class="s">"Resource Not Found"</span><span class="p">)</span>
+<span class="w">           </span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">ConflictException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status409Conflict</span><span class="p">,</span><span class="w"> </span><span class="s">"Conflict"</span><span class="p">)</span>
+<span class="w">           </span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">UnauthorizedException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status401Unauthorized</span><span class="p">,</span><span class="w"> </span><span class="s">"Unauthorized"</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// Ignore operational cancellations</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Ignore</span><span class="o">&lt;</span><span class="n">OperationCanceledException</span><span class="o">&gt;</span><span class="p">()</span>
@@ -5442,8 +5442,8 @@
 <span class="w">    </span><span class="c1">// Enrich responses with correlation ID</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EnrichProblemDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">problem</span><span class="p">,</span><span class="w"> </span><span class="n">exception</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">&quot;traceId&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">TraceIdentifier</span><span class="p">;</span>
-<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">&quot;timestamp&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">;</span>
+<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">"traceId"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">TraceIdentifier</span><span class="p">;</span>
+<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">"timestamp"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">;</span>
 <span class="w">    </span><span class="p">};</span>
 <span class="p">});</span>
 
@@ -5451,11 +5451,11 @@
 </code></pre></div>
 <p><strong>Production response:</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://httpstatuses.io/404&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Resource Not Found&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">404</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;traceId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0HN4GBRMVDVP8:00000001&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-01-20T12:00:00Z&quot;</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://httpstatuses.io/404"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Resource Not Found"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">404</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"traceId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0HN4GBRMVDVP8:00000001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-01-20T12:00:00Z"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="example-2-development-configuration">Example 2: Development configuration<a class="headerlink" href="#example-2-development-configuration" title="Permanent link">&para;</a></h3>
@@ -5477,9 +5477,9 @@
 <span class="w">    </span><span class="c1">// Detailed enrichment for development</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EnrichProblemDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">problem</span><span class="p">,</span><span class="w"> </span><span class="n">exception</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">&quot;traceId&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">TraceIdentifier</span><span class="p">;</span>
-<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">&quot;timestamp&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">;</span>
-<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">&quot;environment&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Development&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">"traceId"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">TraceIdentifier</span><span class="p">;</span>
+<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">"timestamp"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">;</span>
+<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">"environment"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Development"</span><span class="p">;</span>
 <span class="w">    </span><span class="p">};</span>
 <span class="p">});</span>
 
@@ -5487,20 +5487,20 @@
 </code></pre></div>
 <p><strong>Development response:</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://httpstatuses.io/500&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Debug Information&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The object is already disposed.&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;instance&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/api/users/123&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;debugInfo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;exceptionType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;System.ObjectDisposedException&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;stackTrace&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;at MyService.GetUser(Int32 id) in MyService.cs:line 45&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">],</span>
-<span class="w">    </span><span class="nt">&quot;innerExceptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span>
-<span class="w">    </span><span class="nt">&quot;requestInfo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/api/users/123&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://httpstatuses.io/500"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Debug Information"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The object is already disposed."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"instance"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/api/users/123"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"debugInfo"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"exceptionType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"System.ObjectDisposedException"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"stackTrace"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"at MyService.GetUser(Int32 id) in MyService.cs:line 45"</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"innerExceptions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"requestInfo"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GET"</span><span class="p">,</span><span class="w"> </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/api/users/123"</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">}</span>
 <span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;traceId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0HN4GBRMVDVP8:00000001&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-01-20T12:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;environment&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Development&quot;</span>
+<span class="w">  </span><span class="nt">"traceId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0HN4GBRMVDVP8:00000001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-01-20T12:00:00Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"environment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Development"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="example-3-fluent-exception-mapping">Example 3: Fluent exception mapping<a class="headerlink" href="#example-3-fluent-exception-mapping" title="Permanent link">&para;</a></h3>
@@ -5511,19 +5511,19 @@
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EnableLogging</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 
 <span class="w">    </span><span class="c1">// Map simple cases</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">NotFoundException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status404NotFound</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Not Found&quot;</span><span class="p">)</span>
-<span class="w">           </span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">ConflictException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status409Conflict</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Conflict&quot;</span><span class="p">)</span>
-<span class="w">           </span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">UnauthorizedException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status401Unauthorized</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Unauthorized&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">NotFoundException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status404NotFound</span><span class="p">,</span><span class="w"> </span><span class="s">"Not Found"</span><span class="p">)</span>
+<span class="w">           </span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">ConflictException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status409Conflict</span><span class="p">,</span><span class="w"> </span><span class="s">"Conflict"</span><span class="p">)</span>
+<span class="w">           </span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">UnauthorizedException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status401Unauthorized</span><span class="p">,</span><span class="w"> </span><span class="s">"Unauthorized"</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// Map with custom factory for complex logic</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">ValidationException</span><span class="o">&gt;</span><span class="p">((</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ProblemDetails</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Validation Failed&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Validation Failed"</span><span class="p">,</span>
 <span class="w">        </span><span class="n">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status422UnprocessableEntity</span><span class="p">,</span>
 <span class="w">        </span><span class="n">Detail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ex</span><span class="p">.</span><span class="n">Message</span><span class="p">,</span>
 <span class="w">        </span><span class="n">Extensions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">object</span><span class="o">&gt;</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="na">[&quot;errors&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ex</span><span class="p">.</span><span class="n">Errors</span>
+<span class="w">            </span><span class="na">["errors"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ex</span><span class="p">.</span><span class="n">Errors</span>
 <span class="w">                </span><span class="p">.</span><span class="n">GroupBy</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">PropertyName</span><span class="p">)</span>
 <span class="w">                </span><span class="p">.</span><span class="n">ToDictionary</span><span class="p">(</span><span class="n">g</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">g</span><span class="p">.</span><span class="n">Key</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">g</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">ErrorMessage</span><span class="p">).</span><span class="n">ToArray</span><span class="p">())</span>
 <span class="w">        </span><span class="p">}</span>
@@ -5580,7 +5580,7 @@
 <h3 id="example-6-conditional-handler-registration">Example 6: Conditional handler registration<a class="headerlink" href="#example-6-conditional-handler-registration" title="Permanent link">&para;</a></h3>
 <p>Register handlers based on environment or feature flags:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">environment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">;</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">featureFlags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">GetSection</span><span class="p">(</span><span class="s">&quot;FeatureFlags&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">featureFlags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">GetSection</span><span class="p">(</span><span class="s">"FeatureFlags"</span><span class="p">);</span>
 
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddExceptionHandler</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
@@ -5599,12 +5599,12 @@
 
 <span class="w">    </span><span class="c1">// Analytics handler if enabled</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">AnalyticsExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span>
-<span class="w">        </span><span class="k">when</span><span class="p">:</span><span class="w"> </span><span class="n">featureFlags</span><span class="p">.</span><span class="n">GetValue</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;EnableExceptionAnalytics&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="k">when</span><span class="p">:</span><span class="w"> </span><span class="n">featureFlags</span><span class="p">.</span><span class="n">GetValue</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"EnableExceptionAnalytics"</span><span class="p">),</span>
 <span class="w">        </span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// Add database handlers if using EF Core</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddEntityFrameworkHandlers</span><span class="p">(</span>
-<span class="w">        </span><span class="k">when</span><span class="p">:</span><span class="w"> </span><span class="n">featureFlags</span><span class="p">.</span><span class="n">GetValue</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;UseEntityFramework&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="k">when</span><span class="p">:</span><span class="w"> </span><span class="n">featureFlags</span><span class="p">.</span><span class="n">GetValue</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"UseEntityFramework"</span><span class="p">));</span>
 <span class="p">});</span>
 
 <span class="n">app</span><span class="p">.</span><span class="n">UseExceptionHandler</span><span class="p">();</span>
@@ -5623,10 +5623,10 @@
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">DebugExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="k">when</span><span class="p">:</span><span class="w"> </span><span class="n">isDevelopment</span><span class="p">,</span><span class="w"> </span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">999</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// --- Exception Mapping ---</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">NotFoundException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status404NotFound</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Resource Not Found&quot;</span><span class="p">)</span>
-<span class="w">           </span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">ConflictException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status409Conflict</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Conflict&quot;</span><span class="p">)</span>
-<span class="w">           </span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">UnauthorizedException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status401Unauthorized</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Unauthorized&quot;</span><span class="p">)</span>
-<span class="w">           </span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">ForbiddenException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status403Forbidden</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Forbidden&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">NotFoundException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status404NotFound</span><span class="p">,</span><span class="w"> </span><span class="s">"Resource Not Found"</span><span class="p">)</span>
+<span class="w">           </span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">ConflictException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status409Conflict</span><span class="p">,</span><span class="w"> </span><span class="s">"Conflict"</span><span class="p">)</span>
+<span class="w">           </span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">UnauthorizedException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status401Unauthorized</span><span class="p">,</span><span class="w"> </span><span class="s">"Unauthorized"</span><span class="p">)</span>
+<span class="w">           </span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">ForbiddenException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status403Forbidden</span><span class="p">,</span><span class="w"> </span><span class="s">"Forbidden"</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// --- Exception Filtering ---</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Ignore</span><span class="o">&lt;</span><span class="n">OperationCanceledException</span><span class="o">&gt;</span><span class="p">()</span>
@@ -5639,16 +5639,16 @@
 <span class="w">    </span><span class="c1">// --- Problem Details Enrichment ---</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EnrichProblemDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">problem</span><span class="p">,</span><span class="w"> </span><span class="n">exception</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">&quot;traceId&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">TraceIdentifier</span><span class="p">;</span>
-<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">&quot;timestamp&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">;</span>
+<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">"traceId"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">TraceIdentifier</span><span class="p">;</span>
+<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">"timestamp"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">;</span>
 
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">isDevelopment</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// Don&#39;t expose additional info in production</span>
+<span class="w">            </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// Don't expose additional info in production</span>
 <span class="w">        </span><span class="p">}</span>
 
-<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">&quot;path&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Path</span><span class="p">;</span>
-<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">&quot;method&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Method</span><span class="p">;</span>
+<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">"path"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Path</span><span class="p">;</span>
+<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">"method"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Method</span><span class="p">;</span>
 <span class="w">    </span><span class="p">};</span>
 <span class="p">});</span>
 
@@ -5797,21 +5797,21 @@
 </code></pre></div>
 <p><strong>Production response:</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://httpstatuses.io/409&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Concurrency Conflict&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">409</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The record was modified by another user. Please refresh and try again.&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;instance&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/api/products/1&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;traceId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0HN4GBRMVDVP8:00000001&quot;</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://httpstatuses.io/409"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Concurrency Conflict"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">409</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The record was modified by another user. Please refresh and try again."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"instance"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/api/products/1"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"traceId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0HN4GBRMVDVP8:00000001"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>In development</strong> (when <code>IncludeExceptionDetails = true</code>), the detail and affected entities are included:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[DbUpdateConcurrencyException] Concurrency conflict detected for: Product. Store update, insert, or delete statement affected an unexpected number of rows.&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;affectedEntities&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[DbUpdateConcurrencyException] Concurrency conflict detected for: Product. Store update, insert, or delete statement affected an unexpected number of rows."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"affectedEntities"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;entity&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Product&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Modified&quot;</span>
+<span class="w">      </span><span class="nt">"entity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Product"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Modified"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -5821,37 +5821,37 @@
 <p><strong>Exception:</strong> <code>DbUpdateException</code><br />
 <strong>Status Code:</strong> 409 (Unique/Duplicate) or 422 (Other violations)</p>
 <p><strong>Unique Constraint Violation:</strong></p>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;john@example.com&quot;</span><span class="w"> </span><span class="p">};</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"john@example.com"</span><span class="w"> </span><span class="p">};</span>
 <span class="n">dbContext</span><span class="p">.</span><span class="n">Users</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">user</span><span class="p">);</span>
 <span class="k">await</span><span class="w"> </span><span class="n">dbContext</span><span class="p">.</span><span class="n">SaveChangesAsync</span><span class="p">();</span><span class="w"> </span><span class="c1">// Email already exists (unique index)</span>
 <span class="c1">// Throws DbUpdateException</span>
 </code></pre></div>
 <p><strong>Response with exception details enabled (409 Conflict):</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://httpstatuses.io/409&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Database Update Failed&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">409</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Violation of UNIQUE KEY constraint &#39;UQ_Users_Email&#39;.&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;instance&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/api/users&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;errorType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UniqueConstraintViolation&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;traceId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0HN4GBRMVDVP8:00000001&quot;</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://httpstatuses.io/409"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Database Update Failed"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">409</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Violation of UNIQUE KEY constraint 'UQ_Users_Email'."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"instance"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/api/users"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"errorType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UniqueConstraintViolation"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"traceId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0HN4GBRMVDVP8:00000001"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>Foreign Key Constraint Violation:</strong></p>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Order</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CustomerId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">999</span><span class="w"> </span><span class="p">};</span><span class="w"> </span><span class="c1">// CustomerId doesn&#39;t exist</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Order</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CustomerId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">999</span><span class="w"> </span><span class="p">};</span><span class="w"> </span><span class="c1">// CustomerId doesn't exist</span>
 <span class="n">dbContext</span><span class="p">.</span><span class="n">Orders</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">order</span><span class="p">);</span>
 <span class="k">await</span><span class="w"> </span><span class="n">dbContext</span><span class="p">.</span><span class="n">SaveChangesAsync</span><span class="p">();</span>
 <span class="c1">// Throws DbUpdateException</span>
 </code></pre></div>
 <p><strong>Response with exception details enabled (422 Unprocessable Entity):</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://httpstatuses.io/422&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Database Update Failed&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">422</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The INSERT, UPDATE, or DELETE statement conflicted with a FOREIGN KEY constraint.&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;instance&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/api/orders&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;errorType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ForeignKeyViolation&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;traceId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0HN4GBRMVDVP8:00000001&quot;</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://httpstatuses.io/422"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Database Update Failed"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">422</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The INSERT, UPDATE, or DELETE statement conflicted with a FOREIGN KEY constraint."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"instance"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/api/orders"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"errorType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ForeignKeyViolation"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"traceId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0HN4GBRMVDVP8:00000001"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>Error type classification:</strong></p>
@@ -5907,34 +5907,34 @@
 </code></pre></div>
 <p><strong>Response:</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://httpstatuses.io/503&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Database Error&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">503</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A database error occurred. Please try again later.&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;instance&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/api/products&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;traceId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0HN4GBRMVDVP8:00000001&quot;</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://httpstatuses.io/503"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Database Error"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">503</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A database error occurred. Please try again later."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"instance"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/api/products"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"traceId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0HN4GBRMVDVP8:00000001"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>In development:</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[SqlException] Timeout expired. The timeout period elapsed prior to completion of the operation.&quot;</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[SqlException] Timeout expired. The timeout period elapsed prior to completion of the operation."</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>The handler writes the provider error code to the server log; it does not add that code to the response.</p>
 <h2 id="problem-details-response-format">Problem Details response format<a class="headerlink" href="#problem-details-response-format" title="Permanent link">&para;</a></h2>
 <p>Exception handlers produce Problem Details responses. Extension members such as <code>traceId</code> and <code>timestamp</code> appear only when a handler or <code>EnrichProblemDetails</code> adds them:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://httpstatuses.io/400&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bad Request&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[ValidationException] A model validation error has occurred while executing the request&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;instance&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/api/products&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Name is required&quot;</span><span class="p">],</span>
-<span class="w">    </span><span class="nt">&quot;price&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Price must be greater than 0&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://httpstatuses.io/400"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bad Request"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[ValidationException] A model validation error has occurred while executing the request"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"instance"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/api/products"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"errors"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Name is required"</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"price"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Price must be greater than 0"</span><span class="p">]</span>
 <span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;traceId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0HN4GBRMVDVP8:00000001&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-01-20T12:00:00Z&quot;</span>
+<span class="w">  </span><span class="nt">"traceId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0HN4GBRMVDVP8:00000001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-01-20T12:00:00Z"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="standard-properties">Standard properties<a class="headerlink" href="#standard-properties" title="Permanent link">&para;</a></h3>
@@ -5948,11 +5948,11 @@
 </ul>
 <h2 id="using-exception-handlers-in-minimal-apis">Using exception handlers in Minimal APIs<a class="headerlink" href="#using-exception-handlers-in-minimal-apis" title="Permanent link">&para;</a></h2>
 <p>Exception handlers apply globally by default:</p>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">&quot;/api/products&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">"/api/products"</span><span class="p">);</span>
 
-<span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">GetProducts</span><span class="p">);</span>
-<span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/{id}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">GetProduct</span><span class="p">);</span>
-<span class="k">group</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">CreateProduct</span><span class="p">);</span>
+<span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/"</span><span class="p">,</span><span class="w"> </span><span class="n">GetProducts</span><span class="p">);</span>
+<span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/{id}"</span><span class="p">,</span><span class="w"> </span><span class="n">GetProduct</span><span class="p">);</span>
+<span class="k">group</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">"/"</span><span class="p">,</span><span class="w"> </span><span class="n">CreateProduct</span><span class="p">);</span>
 
 <span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetProducts</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="n">_service</span><span class="p">.</span><span class="n">GetAllAsync</span><span class="p">());</span>
 
@@ -5962,7 +5962,7 @@
 <span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CreateProduct</span><span class="p">(</span><span class="n">CreateProductRequest</span><span class="w"> </span><span class="n">request</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">_service</span><span class="p">.</span><span class="n">CreateAsync</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Created</span><span class="p">(</span><span class="s">$&quot;/api/products/{product.Id}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">product</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Created</span><span class="p">(</span><span class="s">$"/api/products/{product.Id}"</span><span class="p">,</span><span class="w"> </span><span class="n">product</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>How it works:</strong></p>
@@ -5996,13 +5996,13 @@
 
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">StatusCode</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status422UnprocessableEntity</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;Business Error&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">"Business Error"</span><span class="p">;</span>
 
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="nf">GetDetail</span><span class="p">(</span><span class="n">MyBusinessException</span><span class="w"> </span><span class="n">exception</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Options</span><span class="p">.</span><span class="n">IncludeExceptionDetails</span>
-<span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="s">$&quot;[{exception.ErrorCode}] {exception.Message}&quot;</span>
-<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;A business error occurred.&quot;</span><span class="p">;</span>
+<span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="s">$"[{exception.ErrorCode}] {exception.Message}"</span>
+<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="s">"A business error occurred."</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">ProblemDetails</span><span class="w"> </span><span class="nf">CreateProblemDetails</span><span class="p">(</span>
@@ -6013,12 +6013,12 @@
 
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrEmpty</span><span class="p">(</span><span class="n">exception</span><span class="p">.</span><span class="n">ErrorCode</span><span class="p">))</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">problemDetails</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">&quot;errorCode&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exception</span><span class="p">.</span><span class="n">ErrorCode</span><span class="p">;</span>
+<span class="w">            </span><span class="n">problemDetails</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">"errorCode"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exception</span><span class="p">.</span><span class="n">ErrorCode</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">exception</span><span class="p">.</span><span class="n">Context</span><span class="o">?.</span><span class="n">Count</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">problemDetails</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">&quot;context&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exception</span><span class="p">.</span><span class="n">Context</span><span class="p">;</span>
+<span class="w">            </span><span class="n">problemDetails</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">"context"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exception</span><span class="p">.</span><span class="n">Context</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">problemDetails</span><span class="p">;</span>
@@ -6047,12 +6047,12 @@
 </ol>
 <p>Wrong:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SQL syntax error on line 45 of UserRepository.cs&quot;</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SQL syntax error on line 45 of UserRepository.cs"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Correct:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A database error occurred. Please try again later.&quot;</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A database error occurred. Please try again later."</span>
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
@@ -6108,9 +6108,9 @@ Check handler priority and execution order:</p>
 <li><strong>Enable detailed logging</strong></li>
 </ol>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;LogLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;BridgingIT.DevKit.Presentation.Web&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Debug&quot;</span>
+<span class="w">  </span><span class="nt">"Logging"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"LogLevel"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"BridgingIT.DevKit.Presentation.Web"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Debug"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -6125,7 +6125,7 @@ Check handler priority and execution order:</p>
 </ol>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">handler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ValidationExceptionHandler</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">);</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DefaultHttpContext</span><span class="p">();</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">exception</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ValidationException</span><span class="p">(</span><span class="s">&quot;test error&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">exception</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ValidationException</span><span class="p">(</span><span class="s">"test error"</span><span class="p">);</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">handled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">handler</span><span class="p">.</span><span class="n">TryHandleAsync</span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">exception</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">Assert</span><span class="p">.</span><span class="n">IsTrue</span><span class="p">(</span><span class="n">handled</span><span class="p">);</span>
@@ -6214,10 +6214,10 @@ Check handler priority and execution order:</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

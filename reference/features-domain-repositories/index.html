@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5725,7 +5725,7 @@ without materializing the corresponding entities.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">affected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">UpdateSetAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">set</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">set</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">IsActive</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Archived&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="s">"Archived"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LoginCount</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LoginCount</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
@@ -5741,7 +5741,7 @@ without materializing the corresponding entities.</p>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">deleted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">DeleteSetAsync</span><span class="p">(</span>
 <span class="na">[</span>
-<span class="na">    new CustomerCountrySpecification(&quot;DE&quot;),</span>
+<span class="na">    new CustomerCountrySpecification("DE"),</span>
 <span class="na">    new CustomerIsInactiveSpecification()</span>
 <span class="na">]</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
@@ -5749,7 +5749,7 @@ without materializing the corresponding entities.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">affected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">UpdateSetAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">IsActive</span><span class="p">,</span>
 <span class="w">    </span><span class="k">set</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">set</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Archived&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="s">"Archived"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LoginCount</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LoginCount</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
@@ -5774,7 +5774,7 @@ without materializing the corresponding entities.</p>
 <span class="kt">var</span><span class="w"> </span><span class="n">affected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">UpdateSetAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="n">filter</span><span class="p">,</span>
 <span class="w">    </span><span class="k">set</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">set</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Archived&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="s">"Archived"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LoginCount</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">LoginCount</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
@@ -6075,7 +6075,7 @@ in-memory implementation for tests.</p>
 <p>Configure sequences in the <code>OnModelCreating</code> method of your DbContext. This step is provider-specific.</p>
 <div class="highlight"><pre><span></span><code><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnModelCreating</span><span class="p">(</span><span class="n">ModelBuilder</span><span class="w"> </span><span class="n">modelBuilder</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">modelBuilder</span><span class="p">.</span><span class="n">HasSequence</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;OrderNumbers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;CoreSchema&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">modelBuilder</span><span class="p">.</span><span class="n">HasSequence</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"OrderNumbers"</span><span class="p">,</span><span class="w"> </span><span class="s">"CoreSchema"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">StartsAt</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">IncrementsBy</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
 <span class="w">    </span><span class="c1">// Add more sequences as needed</span>
@@ -6124,7 +6124,7 @@ in-memory implementation.</p>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">CreateOrderAsync</span><span class="p">(</span><span class="n">Order</span><span class="w"> </span><span class="n">order</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">numberResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">GetNextAsync</span><span class="p">(</span><span class="s">&quot;OrderNumbers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;CoreSchema&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">);</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">numberResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">GetNextAsync</span><span class="p">(</span><span class="s">"OrderNumbers"</span><span class="p">,</span><span class="w"> </span><span class="s">"CoreSchema"</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">);</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">numberResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">().</span><span class="n">WithErrors</span><span class="p">(</span><span class="n">numberResult</span><span class="p">.</span><span class="n">Errors</span><span class="p">);</span>
@@ -6142,30 +6142,30 @@ in-memory implementation.</p>
 <ul>
 <li><strong>Metadata Query</strong>: Retrieve details like current value.</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">infoResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">GetSequenceInfoAsync</span><span class="p">(</span><span class="s">&quot;OrderNumbers&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">infoResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">GetSequenceInfoAsync</span><span class="p">(</span><span class="s">"OrderNumbers"</span><span class="p">);</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">infoResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Current: {infoResult.Value.CurrentValue}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Current: {infoResult.Value.CurrentValue}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <ul>
 <li><strong>Reset</strong>: Restart the sequence (e.g., for administrative tasks).</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">ResetSequenceAsync</span><span class="p">(</span><span class="s">&quot;OrderNumbers&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">ResetSequenceAsync</span><span class="p">(</span><span class="s">"OrderNumbers"</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
 </code></pre></div>
 <ul>
 <li><strong>Batch Generation</strong>: Get multiple sequences in one call.</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">GetNextMultipleAsync</span><span class="p">(</span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;OrderNumbers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;InvoiceNumbers&quot;</span><span class="w"> </span><span class="p">});</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">GetNextMultipleAsync</span><span class="p">(</span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">"OrderNumbers"</span><span class="p">,</span><span class="w"> </span><span class="s">"InvoiceNumbers"</span><span class="w"> </span><span class="p">});</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">results</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">order</span><span class="p">.</span><span class="n">OrderNumber</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">.</span><span class="n">Value</span><span class="p">[</span><span class="s">&quot;OrderNumbers&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">order</span><span class="p">.</span><span class="n">OrderNumber</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">.</span><span class="n">Value</span><span class="p">[</span><span class="s">"OrderNumbers"</span><span class="p">];</span>
 <span class="p">}</span>
 </code></pre></div>
 <ul>
 <li><strong>Entity convention</strong>: Use the same sequence-name convention as <code>GetNextForEntityAsync&lt;TEntity&gt;</code>.</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">numberResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">GetNextAsync</span><span class="p">(</span><span class="s">&quot;OrderSequence&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;CoreSchema&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">numberResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">GetNextAsync</span><span class="p">(</span><span class="s">"OrderSequence"</span><span class="p">,</span><span class="w"> </span><span class="s">"CoreSchema"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>GetNextForEntityAsync&lt;TEntity&gt;</code> is available on concrete generators derived from
 <code>SequenceNumberGeneratorBase&lt;TContext&gt;</code>, but it is not part of <code>ISequenceNumberGenerator</code>.</p>
@@ -6252,10 +6252,10 @@ reduce database calls. The in-memory generator supports isolated tests without a
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

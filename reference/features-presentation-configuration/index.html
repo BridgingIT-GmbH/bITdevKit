@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4748,16 +4748,16 @@
 
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/configuration-check&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/configuration-check"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">Environment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">EnvironmentName</span><span class="p">,</span>
-<span class="w">    </span><span class="n">Region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">[</span><span class="s">&quot;Application:Region&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">Region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">[</span><span class="s">"Application:Region"</span><span class="p">]</span>
 <span class="p">}));</span>
 
 <span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
 </code></pre></div>
 <p>Set an override before starting the process:</p>
-<div class="highlight"><pre><span></span><code><span class="nv">$env:Application__Region</span> <span class="p">=</span> <span class="s1">&#39;eu-central&#39;</span>
+<div class="highlight"><pre><span></span><code><span class="nv">$env:Application__Region</span> <span class="p">=</span> <span class="s1">'eu-central'</span>
 <span class="n">dotnet</span> <span class="n">run</span>
 </code></pre></div>
 <p><code>GET /configuration-check</code> returns <code>Region</code> as <code>eu-central</code>. The double underscore maps the environment variable to the <code>Application:Region</code> configuration key.</p>
@@ -4782,10 +4782,10 @@
 <h2 id="azure-key-vault">Azure Key Vault<a class="headerlink" href="#azure-key-vault" title="Permanent link">&para;</a></h2>
 <p>Key Vault registration reads these bootstrap keys:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;AzureKeyVault&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;inventory-production&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ManagedIdentityClientId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00000000-0000-0000-0000-000000000000&quot;</span>
+<span class="w">    </span><span class="nt">"AzureKeyVault"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"inventory-production"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"ManagedIdentityClientId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"00000000-0000-0000-0000-000000000000"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -4796,18 +4796,18 @@
 <p>Azure App Configuration supports two connection modes. A connection string takes precedence over an endpoint.</p>
 <p>Connection-string mode reads:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;AzureAppConfig&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ConnectionString&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;supply through a protected source&gt;&quot;</span>
+<span class="w">    </span><span class="nt">"AzureAppConfig"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;supply through a protected source&gt;"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Managed-identity mode reads:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;AzureAppConfig&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;Endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://inventory.azconfig.io&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ManagedIdentityClientId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00000000-0000-0000-0000-000000000000&quot;</span>
+<span class="w">    </span><span class="nt">"AzureAppConfig"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"Endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://inventory.azconfig.io"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"ManagedIdentityClientId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"00000000-0000-0000-0000-000000000000"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -4816,7 +4816,7 @@
 <h2 id="host-registration-variants">Host registration variants<a class="headerlink" href="#host-registration-variants" title="Permanent link">&para;</a></h2>
 <p>Use the fluent devkit host API for a web application:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DevKitWebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">AddConfiguration</span><span class="p">(</span><span class="n">environment</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Development&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddConfiguration</span><span class="p">(</span><span class="n">environment</span><span class="p">:</span><span class="w"> </span><span class="s">"Development"</span><span class="p">);</span>
 </code></pre></div>
 <p>The same method works on <code>DevKitApplication</code> for a generic host:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DevKitApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
@@ -4830,7 +4830,7 @@
 <h2 id="environment-variables">Environment variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h2>
 <p>The combined registration calls <code>AddEnvironmentVariablesProvider()</code> without a prefix. It reads all environment variables using the normal .NET key mapping.</p>
 <p>For a bounded prefix, call the provider directly:</p>
-<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">AddEnvironmentVariablesProvider</span><span class="p">(</span><span class="s">&quot;INVENTORY_&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">AddEnvironmentVariablesProvider</span><span class="p">(</span><span class="s">"INVENTORY_"</span><span class="p">);</span>
 </code></pre></div>
 <p>With that prefix, <code>INVENTORY_Application__Region</code> maps to <code>Application:Region</code>.</p>
 <h2 id="related-documentation">Related documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
@@ -4917,10 +4917,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

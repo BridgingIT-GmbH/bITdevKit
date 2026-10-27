@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4797,17 +4797,17 @@ than concrete handlers, while each generated handler resolves only the services 
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">RetryPipelineBehavior</span><span class="o">&lt;</span><span class="p">,</span><span class="o">&gt;</span><span class="p">));</span>
 </code></pre></div>
 <p>Add the code generation package to the project that contains the commands and queries:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;BridgingIT.DevKit.Common.Utilities.CodeGen&quot;</span>
-<span class="w">                  </span><span class="na">Version=</span><span class="s">&quot;x.y.z&quot;</span>
-<span class="w">                  </span><span class="na">PrivateAssets=</span><span class="s">&quot;all&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">"BridgingIT.DevKit.Common.Utilities.CodeGen"</span>
+<span class="w">                  </span><span class="na">Version=</span><span class="s">"x.y.z"</span>
+<span class="w">                  </span><span class="na">PrivateAssets=</span><span class="s">"all"</span><span class="w"> </span><span class="nt">/&gt;</span>
 </code></pre></div>
 <p>After defining <code>CustomerCreateCommand</code> as shown below, dispatch it and handle both outcomes:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">CustomerCreateCommand</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Ada&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="n">LastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lovelace&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ada@example.test&quot;</span>
+<span class="w">        </span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Ada"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">LastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Lovelace"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ada@example.test"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
@@ -4819,7 +4819,7 @@ than concrete handlers, while each generated handler resolves only the services 
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Created customer {result.Value.Id}&quot;</span><span class="p">);</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Created customer {result.Value.Id}"</span><span class="p">);</span>
 </code></pre></div>
 <p>The success path prints the identifier returned by the handler, for example:</p>
 <div class="highlight"><pre><span></span><code>Created customer 5f6b5ba2-85d5-44bb-87a7-f876a65cdb09
@@ -4856,11 +4856,11 @@ than concrete handlers, while each generated handler resolves only the services 
 <div class="highlight"><pre><span></span><code><span class="na">[Command]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">CustomerRenameCommand</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="na">[ValidateNotEmptyGuid(&quot;CustomerId is required.&quot;)]</span>
+<span class="w">    </span><span class="na">[ValidateNotEmptyGuid("CustomerId is required.")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">CustomerId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">init</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
-<span class="w">    </span><span class="na">[ValidateNotEmpty(&quot;Display name is required.&quot;)]</span>
-<span class="w">    </span><span class="na">[ValidateLength(3, 100, &quot;Display name must be between 3 and 100 characters.&quot;)]</span>
+<span class="w">    </span><span class="na">[ValidateNotEmpty("Display name is required.")]</span>
+<span class="w">    </span><span class="na">[ValidateLength(3, 100, "Display name must be between 3 and 100 characters.")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">DisplayName</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">init</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Handle]</span>
@@ -4874,15 +4874,15 @@ than concrete handlers, while each generated handler resolves only the services 
 <div class="highlight"><pre><span></span><code><span class="na">[Command]</span><span class="w"> </span><span class="c1">// Marker attribute to indicate this is a command</span>
 <span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">CustomerImportCommand</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="na">[ValidateNotEmpty(&quot;At least one email address is required.&quot;)]</span>
-<span class="w">    </span><span class="na">[ValidateEachNotEmpty(&quot;Email entries cannot be empty.&quot;)]</span>
+<span class="w">    </span><span class="na">[ValidateNotEmpty("At least one email address is required.")]</span>
+<span class="w">    </span><span class="na">[ValidateEachNotEmpty("Email entries cannot be empty.")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Emails</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">init</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Validate]</span>
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Validate</span><span class="p">(</span><span class="n">InlineValidator</span><span class="o">&lt;</span><span class="n">CustomerImportCommand</span><span class="o">&gt;</span><span class="w"> </span><span class="n">validator</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">validator</span><span class="p">.</span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Emails</span><span class="p">)</span><span class="w"> </span><span class="c1">// regular fluent validation</span>
-<span class="w">            </span><span class="p">.</span><span class="n">Must</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Count</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">100</span><span class="p">).</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;A maximum of 100 email addresses is allowed.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Must</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Count</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">100</span><span class="p">).</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"A maximum of 100 email addresses is allowed."</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Handle]</span>
@@ -4902,7 +4902,7 @@ than concrete handlers, while each generated handler resolves only the services 
 <span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">CustomerId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customerId</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="na">[ValidateNotEmptyGuid(&quot;CustomerId is required.&quot;)]</span>
+<span class="w">    </span><span class="na">[ValidateNotEmptyGuid("CustomerId is required.")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">CustomerId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Handle]</span>
@@ -4916,7 +4916,7 @@ than concrete handlers, while each generated handler resolves only the services 
 <span class="w">        </span><span class="c1">// Returning Success with a value, which will be the Result&lt;Customer&gt; type of the query</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span>
 <span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="n">Success</span><span class="p">(</span><span class="n">customer</span><span class="p">)</span>
-<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">Failure</span><span class="p">(</span><span class="s">$&quot;Customer with ID {this.CustomerId} was not found.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">Failure</span><span class="p">(</span><span class="s">$"Customer with ID {this.CustomerId} was not found."</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -4927,30 +4927,30 @@ than concrete handlers, while each generated handler resolves only the services 
 
 <span class="kt">var</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CustomerCreateCommand</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;John&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;john.doe@example.com&quot;</span>
+<span class="w">    </span><span class="n">FirstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"John"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Doe"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"john.doe@example.com"</span>
 <span class="p">};</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">commandResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="n">command</span><span class="p">);</span><span class="w"> </span><span class="c1">// Returns Result&lt;Customer&gt;</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">commandResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Created customer: {commandResult.Value.Id}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Created customer: {commandResult.Value.Id}"</span><span class="p">);</span>
 <span class="p">}</span>
 <span class="k">else</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Errors: {string.Join(&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;, commandResult.Errors.Select(e =&gt; e.Message))}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Errors: {string.Join("</span><span class="p">,</span><span class="w"> </span><span class="s">", commandResult.Errors.Select(e =&gt; e.Message))}"</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="kt">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CustomerFindOneQuery</span><span class="p">(</span><span class="s">&quot;5f6b5ba2-85d5-44bb-87a7-f876a65cdb09&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CustomerFindOneQuery</span><span class="p">(</span><span class="s">"5f6b5ba2-85d5-44bb-87a7-f876a65cdb09"</span><span class="p">);</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">queryResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="n">query</span><span class="p">);</span><span class="w"> </span><span class="c1">// Returns Result&lt;Customer&gt;</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">queryResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Found customer: {queryResult.Value.FirstName}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Found customer: {queryResult.Value.FirstName}"</span><span class="p">);</span>
 <span class="p">}</span>
 <span class="k">else</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot;, &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">queryResult</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">", "</span><span class="p">,</span><span class="w"> </span><span class="n">queryResult</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h3>
@@ -5040,10 +5040,10 @@ than concrete handlers, while each generated handler resolves only the services 
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

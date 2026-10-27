@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5570,7 +5570,7 @@ item rules. See <a href="#architecture-details">Architecture details</a> for the
 <p>The Rules feature provides a fluent API for validating conditions and enforcing business rules. Here
 are the most common usage patterns:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rule</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="s">&quot;Ada&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="s">"Ada"</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span><span class="w"> </span><span class="mi">17</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Check</span><span class="p">();</span>
 
@@ -5581,7 +5581,7 @@ are the most common usage patterns:</p>
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;All rules passed.&quot;</span><span class="p">);</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"All rules passed."</span><span class="p">);</span>
 </code></pre></div>
 <p>Output:</p>
 <div class="highlight"><pre><span></span><code>All rules passed.
@@ -5904,7 +5904,7 @@ items do not turn the result into a failure. Use <code>Switch</code> when both g
 <span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">            </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">o</span><span class="p">.</span><span class="n">IsInternational</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">CustomsDeclaration</span><span class="p">),</span>
-<span class="w">            </span><span class="s">&quot;International orders require a customs declaration.&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="s">"International orders require a customs declaration."</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">orders</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5946,7 +5946,7 @@ items do not turn the result into a failure. Use <code>Switch</code> when both g
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">        </span><span class="s">&quot;Operation must be performed during business hours (9 AM - 5 PM)&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="s">"Operation must be performed during business hours (9 AM - 5 PM)"</span><span class="p">;</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">Execute</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
@@ -6041,7 +6041,7 @@ This appendix provides a brief overview of async usage patterns.</p>
 <span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">customerService</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customerService</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;Customer evaluation failed&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">"Customer evaluation failed"</span><span class="p">;</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ExecuteAsync</span><span class="p">(</span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
@@ -6173,10 +6173,10 @@ the bITdevKit philosophy of simple, effective solutions to common development pr
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

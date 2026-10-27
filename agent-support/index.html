@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4652,31 +4652,31 @@
 </code></pre></div>
 <p>The host now has a local runtime descriptor and IPC endpoint.</p>
 <h3 id="4-configure-the-mcp-client">4. Configure the MCP client<a class="headerlink" href="#4-configure-the-mcp-client" title="Permanent link">&para;</a></h3>
-<p><strong>Github Copilot:</strong>
-For VS Code, add <code>.vscode/mcp.json</code> to the project repository:</p>
+<p><strong>GitHub Copilot (VS Code):</strong>
+Add a workspace-root <code>.mcp.json</code> to the project repository. It uses the portable <code>mcpServers</code> format, which VS Code and the Copilot harness both read:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;servers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;bdk&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdio&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dotnet&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;bdk&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mcp&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
+<p>Enable the experimental <code>chat.mcp.workspaceRootConfig.enabled</code> setting and run <strong>Developer: Reload Window</strong>. Then open <strong>Chat: Open Customizations</strong>, select <strong>MCP Servers</strong> under the Copilot harness, and approve the <code>bdk</code> server if prompted. The default <strong>Configure Tools</strong> picker in the chat input does not list workspace-root servers.</p>
 <p><strong>Codex:</strong>
-For VS Code, add <code>.codex/config.toml</code> to the project repository:</p>
+Add <code>.codex/config.toml</code> to the project repository:</p>
 <div class="highlight"><pre><span></span><code>[mcp_servers.bdk]
-command = &quot;dotnet&quot;
+command = "dotnet"
 args = [
-  &quot;tool&quot;, &quot;run&quot;, &quot;bdk&quot;, &quot;mcp&quot;
+  "tool", "run", "bdk", "mcp"
 ]
-cwd = &quot;..&quot;
+cwd = ".."
 startup_timeout_sec = 60
 tool_timeout_sec = 120
 enabled = true
 </code></pre></div>
-<p>Other clients use different configuration files. Keep the command and arguments equivalent. See <a href="../reference/features-cli-mcp-clients/">MCP Client Configuration</a> for VS Code, Visual Studio, Rider, and other supported clients.</p>
+<p>Other clients use different configuration files. Keep the command and arguments equivalent. To enable the operations and admin tools, append <code>--toolset diagnostics,operations,admin</code> to the arguments (<code>["tool", "run", "bdk", "mcp", "--toolset", "diagnostics,operations,admin"]</code>). See <a href="../reference/features-cli-mcp-clients/#full-toolset">MCP Client Configuration</a> for the full-toolset variants for VS Code, Visual Studio, Rider, and other supported clients, including the differences between the portable and VS Code formats.</p>
 <h3 id="5-verify-the-connection">5. Verify the connection<a class="headerlink" href="#5-verify-the-connection" title="Permanent link">&para;</a></h3>
 <p>Ask the agent:</p>
 <div class="highlight"><pre><span></span><code>Use the bdk MCP self-test and tell me whether the selected runtime is healthy.
@@ -4770,10 +4770,10 @@ enabled = true
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

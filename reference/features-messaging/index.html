@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5197,7 +5197,7 @@
 <h3 id="di-setup">DI setup<a class="headerlink" href="#di-setup" title="Permanent link">&para;</a></h3>
 <p>The following registration uses the in-process broker so the example requires no external infrastructure. <code>WithSubscription</code> registers the handler before the broker is created.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// In Program.cs or your composition root</span>
-<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddMessaging</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="s">&quot;00:00:30&quot;</span><span class="p">))</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddMessaging</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="s">"00:00:30"</span><span class="p">))</span>
 <span class="w">  </span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">UserRegisteredMessage</span><span class="p">,</span><span class="w"> </span><span class="n">UserRegisteredHandler</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">  </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">RetryMessageHandlerBehavior</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">  </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">TimeoutMessageHandlerBehavior</span><span class="o">&gt;</span><span class="p">()</span>
@@ -5216,7 +5216,7 @@
 <span class="p">{</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">UserRegisteredMessage</span><span class="w"> </span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">&quot;Welcome email scheduled for {UserId} ({Email})&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">.</span><span class="n">UserId</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">.</span><span class="n">Email</span><span class="p">);</span>
+<span class="w">    </span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Welcome email scheduled for {UserId} ({Email})"</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">.</span><span class="n">UserId</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">.</span><span class="n">Email</span><span class="p">);</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -5241,7 +5241,7 @@
 <span class="w">  </span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">UserRegisteredMessage</span><span class="p">,</span><span class="w"> </span><span class="n">UserRegisteredHandler</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
 <h3 id="publish-a-message">Publish a message<a class="headerlink" href="#publish-a-message" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/users/{userId:guid}/registered&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">"/users/{userId:guid}/registered"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
 <span class="w">  </span><span class="n">Guid</span><span class="w"> </span><span class="n">userId</span><span class="p">,</span>
 <span class="w">  </span><span class="n">UserRegistrationRequest</span><span class="w"> </span><span class="n">request</span><span class="p">,</span>
 <span class="w">  </span><span class="n">IMessageBroker</span><span class="w"> </span><span class="n">broker</span><span class="p">,</span>
@@ -5443,50 +5443,50 @@
 </ul>
 <p>Entity Framework broker configuration example:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Messaging&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;StartupDelay&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00:00:10&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;EntityFramework&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;StartupDelay&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00:00:05&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;ProcessingInterval&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00:00:05&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;ProcessingDelay&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00:00:00.100&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;ProcessingCount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;LeaseDuration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00:00:30&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;LeaseRenewalInterval&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00:00:10&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;MaxDeliveryAttempts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;MessageExpiration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;7.00:00:00&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;AutoArchiveAfter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;14.00:00:00&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;AutoArchiveStatuses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;Succeeded&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Expired&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;DeadLettered&quot;</span><span class="w"> </span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"Messaging"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"StartupDelay"</span><span class="p">:</span><span class="w"> </span><span class="s2">"00:00:10"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"EntityFramework"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"StartupDelay"</span><span class="p">:</span><span class="w"> </span><span class="s2">"00:00:05"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"ProcessingInterval"</span><span class="p">:</span><span class="w"> </span><span class="s2">"00:00:05"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"ProcessingDelay"</span><span class="p">:</span><span class="w"> </span><span class="s2">"00:00:00.100"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"ProcessingCount"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"LeaseDuration"</span><span class="p">:</span><span class="w"> </span><span class="s2">"00:00:30"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"LeaseRenewalInterval"</span><span class="p">:</span><span class="w"> </span><span class="s2">"00:00:10"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"MaxDeliveryAttempts"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"MessageExpiration"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7.00:00:00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"AutoArchiveAfter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"14.00:00:00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"AutoArchiveStatuses"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"Succeeded"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Expired"</span><span class="p">,</span><span class="w"> </span><span class="s2">"DeadLettered"</span><span class="w"> </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>RabbitMQ broker configuration example:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Messaging&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;RabbitMQ&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;ConnectionString&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;amqp://guest:guest@localhost:5672/&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;ExchangeName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;messaging&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;QueueName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-module-queue&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;MessageExpiration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.00:00:00&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;ProcessDelay&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="nt">"Messaging"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"RabbitMQ"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"amqp://guest:guest@localhost:5672/"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"ExchangeName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"messaging"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"QueueName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my-module-queue"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"MessageExpiration"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.00:00:00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"ProcessDelay"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Azure Queue Storage broker configuration example:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Messaging&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;AzureQueueStorage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;ConnectionString&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UseDevelopmentStorage=true&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;QueueNamePrefix&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bit&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;QueueNameSuffix&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prod&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;AutoCreateQueue&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;MaxConcurrentCalls&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;VisibilityTimeout&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00:00:30&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;PollingInterval&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00:00:01&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;MessageExpiration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;7.00:00:00&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;ProcessDelay&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="nt">"Messaging"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"AzureQueueStorage"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UseDevelopmentStorage=true"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"QueueNamePrefix"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bit"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"QueueNameSuffix"</span><span class="p">:</span><span class="w"> </span><span class="s2">"prod"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"AutoCreateQueue"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"MaxConcurrentCalls"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"VisibilityTimeout"</span><span class="p">:</span><span class="w"> </span><span class="s2">"00:00:30"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"PollingInterval"</span><span class="p">:</span><span class="w"> </span><span class="s2">"00:00:01"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"MessageExpiration"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7.00:00:00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"ProcessDelay"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -5579,7 +5579,7 @@
 <span class="w">    </span><span class="n">MessagePublisherDelegate</span><span class="w"> </span><span class="n">next</span><span class="p">)</span>
 <span class="w">    </span><span class="k">where</span><span class="w"> </span><span class="n">TMessage</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IMessage</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">&quot;Publishing {MessageType} with id {MessageId}&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">typeof</span><span class="p">(</span><span class="n">TMessage</span><span class="p">).</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">.</span><span class="n">MessageId</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Publishing {MessageType} with id {MessageId}"</span><span class="p">,</span><span class="w"> </span><span class="k">typeof</span><span class="p">(</span><span class="n">TMessage</span><span class="p">).</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">.</span><span class="n">MessageId</span><span class="p">);</span>
 <span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nf">next</span><span class="p">();</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -5610,7 +5610,7 @@
 <span class="w">    </span><span class="k">finally</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">      </span><span class="n">sw</span><span class="p">.</span><span class="n">Stop</span><span class="p">();</span>
-<span class="w">      </span><span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">&quot;Handled {MessageType} in {Elapsed} ms&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">typeof</span><span class="p">(</span><span class="n">TMessage</span><span class="p">).</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">sw</span><span class="p">.</span><span class="n">ElapsedMilliseconds</span><span class="p">);</span>
+<span class="w">      </span><span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Handled {MessageType} in {Elapsed} ms"</span><span class="p">,</span><span class="w"> </span><span class="k">typeof</span><span class="p">(</span><span class="n">TMessage</span><span class="p">).</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">sw</span><span class="p">.</span><span class="n">ElapsedMilliseconds</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -5770,10 +5770,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

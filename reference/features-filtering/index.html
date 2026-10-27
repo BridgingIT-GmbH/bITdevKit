@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -7633,7 +7633,7 @@
 </ul>
 <h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
 <p>The following minimal API accepts a JSON filter model, validates that a body was supplied, executes a paged repository query, and returns either the result or a visible problem response:</p>
-<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/api/users/search&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Http</span><span class="p">.</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span>
+<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">"/api/users/search"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Http</span><span class="p">.</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">HttpContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span>
 <span class="w">    </span><span class="n">IGenericReadOnlyRepository</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="n">repository</span><span class="p">,</span>
 <span class="w">    </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -7643,7 +7643,7 @@
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">HasStarted</span>
 <span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Empty</span>
-<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">BadRequest</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;A valid filter model is required.&quot;</span><span class="w"> </span><span class="p">});</span>
+<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">BadRequest</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"A valid filter model is required."</span><span class="w"> </span><span class="p">});</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">FindAllResultPagedAsync</span><span class="p">(</span>
@@ -7653,8 +7653,8 @@
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span>
 <span class="w">        </span><span class="o">?</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 <span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span>
-<span class="w">            </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;User search failed&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="n">detail</span><span class="p">:</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot;; &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
+<span class="w">            </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="s">"User search failed"</span><span class="p">,</span>
+<span class="w">            </span><span class="n">detail</span><span class="p">:</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">"; "</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="p">})</span>
 <span class="p">.</span><span class="n">WithFilterSchema</span><span class="p">(</span><span class="n">isRequestBody</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
 </code></pre></div>
@@ -7692,33 +7692,33 @@
 comprehensive examples and best practices for common scenarios.</p>
 <h2 id="filter-model-structure">Filter model structure<a class="headerlink" href="#filter-model-structure" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;page&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;pageSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;filters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pageSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"filters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Name&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eq|neq|isnull|isnotnull|isempty|isnotempty|gt|gte|lt|lte|contains|doesnotcontain|startswith|doesnotstartwith|endswith|doesnotendwith|any|all|none&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;any&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;logic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;and|or&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;none|fulltextsearch|daterange|daterelative|timerange|timerelative|numericrange|isnull|isnotnull|enumvalues|textin|textnotin|numericin|numericnotin|namedspecification|compositespecification&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;value&quot;</span>
+<span class="w">      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Name"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq|neq|isnull|isnotnull|isempty|isnotempty|gt|gte|lt|lte|contains|doesnotcontain|startswith|doesnotstartwith|endswith|doesnotendwith|any|all|none"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"any"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"logic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"and|or"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"none|fulltextsearch|daterange|daterelative|timerange|timerelative|numericrange|isnull|isnotnull|enumvalues|textin|textnotin|numericin|numericnotin|namedspecification|compositespecification"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"value"</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;specificationName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;name&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;specificationArguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<span class="w">      </span><span class="nt">&quot;compositeSpecification&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;nodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">      </span><span class="nt">"specificationName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"specificationArguments"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="nt">"compositeSpecification"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"nodes"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;orderings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"orderings"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Name&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;direction&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;asc|desc&quot;</span>
+<span class="w">      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Name"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"direction"</span><span class="p">:</span><span class="w"> </span><span class="s2">"asc|desc"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;includes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;name&quot;</span>
+<span class="w">  </span><span class="nt">"includes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"name"</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -7726,7 +7726,7 @@ comprehensive examples and best practices for common scenarios.</p>
 <h2 id="api-implementation">API implementation<a class="headerlink" href="#api-implementation" title="Permanent link">&para;</a></h2>
 <h3 id="aspnet-controller-example">ASP.NET controller example<a class="headerlink" href="#aspnet-controller-example" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="na">[ApiController]</span>
-<span class="na">[Route(&quot;api/[controller]</span><span class="s">&quot;)]</span>
+<span class="na">[Route("api/[controller]</span><span class="s">")]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">UsersController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ControllerBase</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="na">[HttpGet]</span>
@@ -7739,7 +7739,7 @@ comprehensive examples and best practices for common scenarios.</p>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nf">Ok</span><span class="p">(</span><span class="n">response</span><span class="p">);</span><span class="w"> </span><span class="c1">// should ideally return a ResultPaged&lt;UserModel&gt; (mapped)</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="na">[HttpPost(&quot;search&quot;)]</span>
+<span class="w">    </span><span class="na">[HttpPost("search")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ActionResult</span><span class="o">&lt;</span><span class="n">ResultPaged</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">Search</span><span class="p">(</span>
 <span class="w">        </span><span class="na">[FromBodyFilter]</span><span class="w"> </span><span class="n">FilterModel</span><span class="w"> </span><span class="n">filter</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
@@ -7751,7 +7751,7 @@ comprehensive examples and best practices for common scenarios.</p>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="aspnet-minimal-api-example">ASP.NET minimal API example<a class="headerlink" href="#aspnet-minimal-api-example" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/api/users/search&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Results</span><span class="o">&lt;</span><span class="n">Ok</span><span class="o">&lt;</span><span class="n">ResultPaged</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">NotFound</span><span class="o">&gt;&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/api/users/search"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Results</span><span class="o">&lt;</span><span class="n">Ok</span><span class="o">&lt;</span><span class="n">ResultPaged</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">NotFound</span><span class="o">&gt;&gt;</span>
 <span class="w">  </span><span class="p">(</span><span class="n">HttpContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">IMediator</span><span class="w"> </span><span class="n">mediator</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">FromQueryFilterAsync</span><span class="p">();</span>
@@ -7761,7 +7761,7 @@ comprehensive examples and best practices for common scenarios.</p>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">TypedResults</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">response</span><span class="p">);</span><span class="w"> </span><span class="c1">// should ideally return a ResultPaged&lt;UserModel&gt; (mapped)</span>
 <span class="p">}).</span><span class="n">WithFilterSchema</span><span class="p">();</span><span class="w"> </span><span class="c1">// adds openapi schema for the filter model</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/api/users/search&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Results</span><span class="o">&lt;</span><span class="n">Ok</span><span class="o">&lt;</span><span class="n">ResultPaged</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">NotFound</span><span class="o">&gt;&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">"/api/users/search"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Results</span><span class="o">&lt;</span><span class="n">Ok</span><span class="o">&lt;</span><span class="n">ResultPaged</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">NotFound</span><span class="o">&gt;&gt;</span>
 <span class="w">  </span><span class="p">(</span><span class="n">HttpContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">IMediator</span><span class="w"> </span><span class="n">mediator</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">FromBodyFilterAsync</span><span class="p">();</span>
@@ -7794,20 +7794,20 @@ comprehensive examples and best practices for common scenarios.</p>
 <h2 id="http-request-examples">HTTP request examples<a class="headerlink" href="#http-request-examples" title="Permanent link">&para;</a></h2>
 <h3 id="get-request">GET request<a class="headerlink" href="#get-request" title="Permanent link">&para;</a></h3>
 <p>Simple filter as URL parameters:</p>
-<div class="highlight"><pre><span></span><code><span class="nf">GET</span> <span class="nn">/api/core/cities?filter={&quot;page&quot;:1,&quot;pageSize&quot;:10,&quot;filters&quot;:[{&quot;field&quot;:&quot;Name&quot;,&quot;operator&quot;:&quot;eq&quot;,&quot;value&quot;:&quot;Berlin&quot;}]}</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight"><pre><span></span><code><span class="nf">GET</span> <span class="nn">/api/core/cities?filter={"page":1,"pageSize":10,"filters":[{"field":"Name","operator":"eq","value":"Berlin"}]}</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Accept</span><span class="o">:</span> <span class="l">application/json</span>
 </code></pre></div>
 <p>URL-encoded for more complex filters:</p>
 <p><a href="https://en.wikipedia.org/wiki/Percent-encoding">URL-encode</a> the filter JSON and put it into a
 single query string parameter named <code>filter</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;page&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;pageSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;filters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pageSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"filters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Name&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eq&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John&quot;</span>
+<span class="w">      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Name"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -7830,34 +7830,34 @@ single query string parameter named <code>filter</code>:</p>
 <span class="na">Accept</span><span class="o">:</span> <span class="l">application/json</span>
 
 <span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;page&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;pageSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;filters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"pageSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"filters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daterange&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CreatedAt&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;startDate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;endDate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-12-31T23:59:59Z&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;inclusive&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">            </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"daterange"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CreatedAt"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"startDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-01T00:00:00Z"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"endDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-12-31T23:59:59Z"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"inclusive"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Department.Name&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eq&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Engineering&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;logic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;and&quot;</span>
+<span class="w">            </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Department.Name"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Engineering"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"logic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"and"</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
-<span class="w">    </span><span class="nt">&quot;orderings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nt">"orderings"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LastName&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;direction&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;asc&quot;</span>
+<span class="w">            </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LastName"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"direction"</span><span class="p">:</span><span class="w"> </span><span class="s2">"asc"</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
-<span class="w">    </span><span class="nt">&quot;includes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="s2">&quot;department&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;assignments&quot;</span>
+<span class="w">    </span><span class="nt">"includes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"department"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"assignments"</span>
 <span class="w">    </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -7871,50 +7871,50 @@ single query string parameter named <code>filter</code>:</p>
 <h2 id="http-response-format">HTTP response format<a class="headerlink" href="#http-response-format" title="Permanent link">&para;</a></h2>
 <h3 id="successful-response">Successful response<a class="headerlink" href="#successful-response" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;isSuccess&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;Data retrieved successfully&quot;</span>
+<span class="w">  </span><span class="nt">"isSuccess"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"messages"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"Data retrieved successfully"</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"errors"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;firstName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;lastName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Doe&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;john.doe@example.com&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;department&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Engineering&quot;</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"firstName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"lastName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Doe"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"john.doe@example.com"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"department"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Engineering"</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;currentPage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;totalPages&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;totalCount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;pageSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;hasPreviousPage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;hasNextPage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"currentPage"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"totalPages"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"totalCount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pageSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"hasPreviousPage"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"hasNextPage"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="error-response">Error response<a class="headerlink" href="#error-response" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;isSuccess&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;Failed to retrieve data&quot;</span>
+<span class="w">  </span><span class="nt">"isSuccess"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"messages"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"Failed to retrieve data"</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"errors"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INVALID_FILTER&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Invalid filter parameters provided&quot;</span>
+<span class="w">      </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"INVALID_FILTER"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Invalid filter parameters provided"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<span class="w">  </span><span class="nt">&quot;currentPage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;totalPages&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;totalCount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;pageSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;hasPreviousPage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;hasNextPage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">"currentPage"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"totalPages"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"totalCount"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pageSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"hasPreviousPage"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"hasNextPage"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="response-properties">Response properties<a class="headerlink" href="#response-properties" title="Permanent link">&para;</a></h3>
@@ -7964,150 +7964,150 @@ single query string parameter named <code>filter</code>:</p>
 <h4 id="equal-eq">Equal (<code>eq</code>)<a class="headerlink" href="#equal-eq" title="Permanent link">&para;</a></h4>
 <p>Matches exact values</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Status&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eq&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;active&quot;</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Status"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="not-equal-neq">Not equal (<code>neq</code>)<a class="headerlink" href="#not-equal-neq" title="Permanent link">&para;</a></h4>
 <p>Matches values that are not equal</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Status&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;neq&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deleted&quot;</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Status"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"neq"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"deleted"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="greater-than-gt">Greater than (<code>gt</code>)<a class="headerlink" href="#greater-than-gt" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Age&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gt&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Age"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gt"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="greater-than-or-equal-gte">Greater than or equal (<code>gte</code>)<a class="headerlink" href="#greater-than-or-equal-gte" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Price&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gte&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">100.00</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Price"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gte"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">100.00</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="less-than-lt">Less than (<code>lt</code>)<a class="headerlink" href="#less-than-lt" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Stock&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lt&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Stock"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lt"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="less-than-or-equal-lte">Less than or equal (<code>lte</code>)<a class="headerlink" href="#less-than-or-equal-lte" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lte&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">25.5</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Temperature"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lte"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">25.5</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="string-operators">String operators<a class="headerlink" href="#string-operators" title="Permanent link">&para;</a></h3>
 <h4 id="contains">Contains<a class="headerlink" href="#contains" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Description&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;contains&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;premium&quot;</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Description"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"contains"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"premium"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="does-not-contain">Does not contain<a class="headerlink" href="#does-not-contain" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Title&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;doesnotcontain&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;test&quot;</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Title"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"doesnotcontain"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="starts-with">Starts with<a class="headerlink" href="#starts-with" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Email&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Email"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"startswith"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"admin"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="does-not-start-with">Does not start with<a class="headerlink" href="#does-not-start-with" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Code&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;doesnotstartwith&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TMP&quot;</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Code"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"doesnotstartwith"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TMP"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="ends-with">Ends with<a class="headerlink" href="#ends-with" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FileName&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;.pdf&quot;</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FileName"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"endswith"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">".pdf"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="does-not-end-with">Does not end with<a class="headerlink" href="#does-not-end-with" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Url&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;doesnotendwith&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/temp&quot;</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Url"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"doesnotendwith"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/temp"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="null-checks">Null checks<a class="headerlink" href="#null-checks" title="Permanent link">&para;</a></h3>
 <h4 id="is-null">Is null<a class="headerlink" href="#is-null" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DeletedAt&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;isnull&quot;</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DeletedAt"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"isnull"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="is-not-null">Is not null<a class="headerlink" href="#is-not-null" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Email&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;isnotnull&quot;</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Email"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"isnotnull"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="empty-checks">Empty checks<a class="headerlink" href="#empty-checks" title="Permanent link">&para;</a></h3>
 <h4 id="is-empty">Is empty<a class="headerlink" href="#is-empty" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Notes&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;isempty&quot;</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Notes"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"isempty"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="is-not-empty">Is not empty<a class="headerlink" href="#is-not-empty" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PhoneNumber&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;isnotempty&quot;</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PhoneNumber"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"isnotempty"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="collection-operators">Collection operators<a class="headerlink" href="#collection-operators" title="Permanent link">&para;</a></h3>
 <h4 id="any">Any<a class="headerlink" href="#any" title="Permanent link">&para;</a></h4>
 <p>Matches if any child element satisfies the condition</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Orders&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;any&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Total&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gt&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Orders"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"any"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Total"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gt"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="all">All<a class="headerlink" href="#all" title="Permanent link">&para;</a></h4>
 <p>Matches if all child elements satisfy the condition</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OrderItems&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Quantity&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gt&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OrderItems"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"all"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Quantity"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gt"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="none">None<a class="headerlink" href="#none" title="Permanent link">&para;</a></h4>
 <p>Matches if no child elements satisfy the condition</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reviews&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rating&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lt&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Reviews"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"none"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Rating"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lt"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -8121,48 +8121,48 @@ single query string parameter named <code>filter</code>:</p>
 <h4 id="date-range">Date range<a class="headerlink" href="#date-range" title="Permanent link">&para;</a></h4>
 <p>Filter entries within a specific date range</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daterange&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CreatedAt&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;startDate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;endDate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-12-31T23:59:59Z&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;inclusive&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"daterange"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CreatedAt"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"startDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-01T00:00:00Z"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"endDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-12-31T23:59:59Z"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"inclusive"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="date-relative">Date relative<a class="headerlink" href="#date-relative" title="Permanent link">&para;</a></h4>
 <p>Filter based on relative date periods</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daterelative&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LastLogin&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;day&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;direction&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;past&quot;</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"daterelative"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LastLogin"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"day"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"direction"</span><span class="p">:</span><span class="w"> </span><span class="s2">"past"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="time-range">Time range<a class="headerlink" href="#time-range" title="Permanent link">&para;</a></h4>
 <p>Filter entries within a specific time range</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;timerange&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ShiftStart&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;startTime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;09:00:00&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;endTime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;17:00:00&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;inclusive&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"timerange"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ShiftStart"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"startTime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"09:00:00"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"endTime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"17:00:00"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"inclusive"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="time-relative">Time relative<a class="headerlink" href="#time-relative" title="Permanent link">&para;</a></h4>
 <p><code>timerelative</code> is part of the serialized <code>FilterCustomType</code> contract, but <code>CustomSpecificationBuilder</code> does not currently dispatch it. Sending this filter to the standard builder throws <code>NotSupportedException</code>. The payload shape reserved by the contract is:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;timerelative&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LastActivity&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;direction&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;past&quot;</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"timerelative"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LastActivity"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hour"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"direction"</span><span class="p">:</span><span class="w"> </span><span class="s2">"past"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -8170,13 +8170,13 @@ single query string parameter named <code>filter</code>:</p>
 <h4 id="full-text-search">Full-text search<a class="headerlink" href="#full-text-search" title="Permanent link">&para;</a></h4>
 <p>Search across multiple fields</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fulltextsearch&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;searchTerm&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;important document&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;fields&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">      </span><span class="s2">&quot;Title&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;Description&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;Content&quot;</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fulltextsearch"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"searchTerm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"important document"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"fields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="s2">"Title"</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">"Description"</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">"Content"</span>
 <span class="w">    </span><span class="p">]</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -8184,20 +8184,20 @@ single query string parameter named <code>filter</code>:</p>
 <h4 id="text-in">Text in<a class="headerlink" href="#text-in" title="Permanent link">&para;</a></h4>
 <p>Match against a list of possible values</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;textin&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Status&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;values&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;active;pending;review&quot;</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"textin"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Status"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active;pending;review"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="text-not-in">Text not in<a class="headerlink" href="#text-not-in" title="Permanent link">&para;</a></h4>
 <p>Exclude matches from a list of values</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;textnotin&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Category&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;values&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;archived;deleted;draft&quot;</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"textnotin"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Category"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="s2">"archived;deleted;draft"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -8205,32 +8205,32 @@ single query string parameter named <code>filter</code>:</p>
 <h4 id="numeric-range">Numeric range<a class="headerlink" href="#numeric-range" title="Permanent link">&para;</a></h4>
 <p>Filter numbers within a range</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;numericrange&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Price&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.00</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">50.00</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;inclusive&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"numericrange"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Price"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"min"</span><span class="p">:</span><span class="w"> </span><span class="mf">10.00</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"max"</span><span class="p">:</span><span class="w"> </span><span class="mf">50.00</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"inclusive"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="numeric-in">Numeric in<a class="headerlink" href="#numeric-in" title="Permanent link">&para;</a></h4>
 <p>Match against a list of numeric values</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;numericin&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Priority&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;values&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1;2;3&quot;</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"numericin"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Priority"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1;2;3"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="numeric-not-in">Numeric not in<a class="headerlink" href="#numeric-not-in" title="Permanent link">&para;</a></h4>
 <p>Exclude specific numeric values</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;numericnotin&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ErrorCode&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;values&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;404;500;503&quot;</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"numericnotin"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ErrorCode"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="s2">"404;500;503"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -8238,10 +8238,10 @@ single query string parameter named <code>filter</code>:</p>
 <h4 id="enum-values">Enum values<a class="headerlink" href="#enum-values" title="Permanent link">&para;</a></h4>
 <p>Filter by enum values using names or integers</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;enumvalues&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Status&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;values&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Active;Pending&quot;</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"enumvalues"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Status"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Active;Pending"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -8249,18 +8249,18 @@ single query string parameter named <code>filter</code>:</p>
 <h4 id="is-null_1">Is null<a class="headerlink" href="#is-null_1" title="Permanent link">&para;</a></h4>
 <p>Explicit null check filter</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;isnull&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CanceledAt&quot;</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"isnull"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CanceledAt"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="is-not-null_1">Is not null<a class="headerlink" href="#is-not-null_1" title="Permanent link">&para;</a></h4>
 <p>Explicit non-null check filter</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;isnotnull&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CompletedAt&quot;</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"isnotnull"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CompletedAt"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -8269,32 +8269,32 @@ single query string parameter named <code>filter</code>:</p>
 <p>Use pre-registered domain specifications</p>
 <p>For the underlying specification model itself, including <code>ISpecification&lt;T&gt;</code>, composition, and built-in uniqueness specifications, see <a href="../features-domain-specifications/">Domain Specifications</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;namedspecification&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;specificationName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IsActive&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;specificationArguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"namedspecification"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"specificationName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"IsActive"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"specificationArguments"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="composite-specification">Composite specification<a class="headerlink" href="#composite-specification" title="Permanent link">&para;</a></h4>
 <p>Combine multiple specifications with logical operators</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;compositespecification&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;compositeSpecification&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;nodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"compositespecification"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"compositeSpecification"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"nodes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">      </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IsActive&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;arguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"IsActive"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"arguments"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
 <span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;logic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;and&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;nodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="nt">"logic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"and"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"nodes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">          </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HasValidLicense&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;arguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HasValidLicense"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"arguments"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
 <span class="w">          </span><span class="p">},</span>
 <span class="w">          </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IsInRegion&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;arguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">              </span><span class="s2">&quot;EU&quot;</span>
+<span class="w">            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"IsInRegion"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"arguments"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">              </span><span class="s2">"EU"</span>
 <span class="w">            </span><span class="p">]</span>
 <span class="w">          </span><span class="p">}</span>
 <span class="w">        </span><span class="p">]</span>
@@ -8315,23 +8315,23 @@ equality or comparison filters aren't sufficient.</p>
 <h4 id="1-date-range-with-status-filter">1. Date range with status filter<a class="headerlink" href="#1-date-range-with-status-filter" title="Permanent link">&para;</a></h4>
 <p>Useful for finding records within a specific date range that match certain status criteria.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;page&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;pageSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;filters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pageSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"filters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daterange&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CreatedAt&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;startDate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;endDate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-12-31T23:59:59Z&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;inclusive&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">      </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"daterange"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CreatedAt"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"startDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-01T00:00:00Z"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"endDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-12-31T23:59:59Z"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"inclusive"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Status&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eq&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;active&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;logic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;and&quot;</span>
+<span class="w">      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Status"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"logic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"and"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -8340,16 +8340,16 @@ equality or comparison filters aren't sufficient.</p>
 <h4 id="2-full-text-search-with-multiple-fields">2. Full-text search with multiple fields<a class="headerlink" href="#2-full-text-search-with-multiple-fields" title="Permanent link">&para;</a></h4>
 <p>Perfect for implementing search functionality across multiple text fields.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;filters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"filters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fulltextsearch&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;searchTerm&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;project management&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;fields&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">          </span><span class="s2">&quot;Title&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="s2">&quot;Description&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="s2">&quot;Skills&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="s2">&quot;Notes&quot;</span>
+<span class="w">      </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fulltextsearch"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"searchTerm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"project management"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"fields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="s2">"Title"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"Description"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"Skills"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"Notes"</span>
 <span class="w">        </span><span class="p">]</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
@@ -8360,26 +8360,26 @@ equality or comparison filters aren't sufficient.</p>
 <h4 id="3-nested-entity-filtering">3. Nested entity filtering<a class="headerlink" href="#3-nested-entity-filtering" title="Permanent link">&para;</a></h4>
 <p>Useful when you need to filter based on related entity properties.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;filters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"filters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Department.Name&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eq&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Engineering&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;logic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;and&quot;</span>
+<span class="w">      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Department.Name"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Engineering"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"logic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"and"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Projects&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;any&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Status&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eq&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Active&quot;</span>
+<span class="w">      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Projects"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"any"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Status"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Active"</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;includes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;Department&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;Projects&quot;</span>
+<span class="w">  </span><span class="nt">"includes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"Department"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"Projects"</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -8387,25 +8387,25 @@ equality or comparison filters aren't sufficient.</p>
 <h4 id="4-multiple-date-related-conditions">4. Multiple date-related conditions<a class="headerlink" href="#4-multiple-date-related-conditions" title="Permanent link">&para;</a></h4>
 <p>Combines multiple date-based filters for temporal analysis.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;filters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"filters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daterange&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HireDate&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;startDate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-01T00:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;endDate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-12-31T23:59:59Z&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;inclusive&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">      </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"daterange"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HireDate"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"startDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-01-01T00:00:00Z"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"endDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-12-31T23:59:59Z"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"inclusive"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daterelative&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LastActivity&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;day&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;direction&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;past&quot;</span>
+<span class="w">      </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"daterelative"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LastActivity"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"day"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"direction"</span><span class="p">:</span><span class="w"> </span><span class="s2">"past"</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;logic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;and&quot;</span>
+<span class="w">      </span><span class="nt">"logic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"and"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -8414,30 +8414,30 @@ equality or comparison filters aren't sufficient.</p>
 <h4 id="5-complex-numeric-conditions">5. Complex numeric conditions<a class="headerlink" href="#5-complex-numeric-conditions" title="Permanent link">&para;</a></h4>
 <p>Useful for financial or metric-based filtering.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;filters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"filters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;numericrange&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Salary&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50000</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100000</span>
+<span class="w">      </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"numericrange"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Salary"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">50000</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">100000</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Performance.Rating&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gte&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;logic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;and&quot;</span>
+<span class="w">      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Performance.Rating"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gte"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"logic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"and"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Projects&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;any&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Budget&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gt&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100000</span>
+<span class="w">      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Projects"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"any"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Budget"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gt"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">100000</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;logic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;and&quot;</span>
+<span class="w">      </span><span class="nt">"logic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"and"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -8447,21 +8447,21 @@ high-budget projects.</p>
 <h4 id="6-time-based-working-hours-filter">6. Time-based working-hours filter<a class="headerlink" href="#6-time-based-working-hours-filter" title="Permanent link">&para;</a></h4>
 <p>Useful for scheduling and availability queries.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;filters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"filters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;timerange&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WorkingHoursStart&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;startTime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;09:00:00&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;endTime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;17:00:00&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;inclusive&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">      </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"timerange"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"WorkingHoursStart"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"startTime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"09:00:00"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"endTime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"17:00:00"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"inclusive"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TimeZone&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eq&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UTC+1&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;logic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;and&quot;</span>
+<span class="w">      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TimeZone"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UTC+1"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"logic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"and"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -8470,23 +8470,23 @@ high-budget projects.</p>
 <h4 id="7-enum-and-collection-filtering">7. Enum and collection filtering<a class="headerlink" href="#7-enum-and-collection-filtering" title="Permanent link">&para;</a></h4>
 <p>Combines enum values with collection checks.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;filters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"filters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;enumvalues&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EmploymentType&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;values&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FullTime;PartTime&quot;</span>
+<span class="w">      </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"enumvalues"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EmploymentType"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FullTime;PartTime"</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Skills&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Level&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eq&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Expert&quot;</span>
+<span class="w">      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Skills"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"all"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Level"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Expert"</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;logic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;and&quot;</span>
+<span class="w">      </span><span class="nt">"logic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"and"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -8495,25 +8495,25 @@ high-budget projects.</p>
 <h4 id="8-complex-text-pattern-matching">8. Complex text-pattern matching<a class="headerlink" href="#8-complex-text-pattern-matching" title="Permanent link">&para;</a></h4>
 <p>Useful for advanced text search scenarios.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;filters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"filters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Email&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;@company.com&quot;</span>
+<span class="w">      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Email"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"endswith"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@company.com"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;textin&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Department&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;values&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Engineering;Research;Development&quot;</span>
+<span class="w">      </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"textin"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Department"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Engineering;Research;Development"</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;logic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;and&quot;</span>
+<span class="w">      </span><span class="nt">"logic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"and"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Notes&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;contains&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;leadership&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;logic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;and&quot;</span>
+<span class="w">      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Notes"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"contains"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"leadership"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"logic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"and"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -8523,40 +8523,40 @@ notes.</p>
 <h3 id="advanced-combinations">Advanced combinations<a class="headerlink" href="#advanced-combinations" title="Permanent link">&para;</a></h3>
 <h4 id="combined-project-and-team-filter">Combined project and team filter<a class="headerlink" href="#combined-project-and-team-filter" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;filters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"filters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Teams&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;any&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Members&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Skills&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;any&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Level&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gte&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
+<span class="w">      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Teams"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"any"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Members"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"all"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Skills"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"any"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Level"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gte"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
 <span class="w">          </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;customType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daterange&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;customParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ProjectDeadline&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;startDate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;endDate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-12-31T23:59:59Z&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;inclusive&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">      </span><span class="nt">"customType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"daterange"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"customParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ProjectDeadline"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"startDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-01T00:00:00Z"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"endDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-12-31T23:59:59Z"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"inclusive"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;logic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;and&quot;</span>
+<span class="w">      </span><span class="nt">"logic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"and"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;includes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;Teams&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;Teams.Members&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;Teams.Members.Skills&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;Projects&quot;</span>
+<span class="w">  </span><span class="nt">"includes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"Teams"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"Teams.Members"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"Teams.Members.Skills"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"Projects"</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -8582,7 +8582,7 @@ Angular application.</p>
 <span class="w">  </span><span class="nx">field?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">operator?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">value?</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">;</span>
-<span class="w">  </span><span class="nx">logic</span><span class="o">?:</span><span class="w"> </span><span class="s1">&#39;and&#39;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">&#39;or&#39;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">logic</span><span class="o">?:</span><span class="w"> </span><span class="s1">'and'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'or'</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">filters?</span><span class="o">:</span><span class="w"> </span><span class="kt">FilterCriteria</span><span class="p">[];</span>
 <span class="w">  </span><span class="nx">customType?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">customParameters?</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">;</span>
@@ -8597,7 +8597,7 @@ Angular application.</p>
 <span class="w">  </span><span class="nx">filters</span><span class="o">:</span><span class="w"> </span><span class="kt">FilterCriteria</span><span class="p">[];</span>
 <span class="w">  </span><span class="nx">orderings?</span><span class="o">:</span><span class="w"> </span><span class="kt">Array</span><span class="o">&lt;</span><span class="p">{</span>
 <span class="w">    </span><span class="nx">field</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
-<span class="w">    </span><span class="nx">direction</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;asc&#39;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">&#39;desc&#39;</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">direction</span><span class="o">:</span><span class="w"> </span><span class="s1">'asc'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'desc'</span><span class="p">;</span>
 <span class="w">  </span><span class="p">}</span><span class="o">&gt;</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">includes?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[];</span>
 <span class="w">  </span><span class="nx">hierarchy?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
@@ -8620,14 +8620,14 @@ Angular application.</p>
 <h3 id="service-implementation">Service implementation<a class="headerlink" href="#service-implementation" title="Permanent link">&para;</a></h3>
 <h4 id="api-service">API service<a class="headerlink" href="#api-service" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="c1">// services/api.service.ts</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">Injectable</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">HttpClient</span><span class="p">,</span><span class="w"> </span><span class="nx">HttpParams</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@angular/common/http&#39;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">Observable</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;rxjs&#39;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">environment</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;../environments/environment&#39;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">FilterModel</span><span class="p">,</span><span class="w"> </span><span class="nx">ResultPaged</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;../models&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">Injectable</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@angular/core'</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">HttpClient</span><span class="p">,</span><span class="w"> </span><span class="nx">HttpParams</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@angular/common/http'</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">Observable</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'rxjs'</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">environment</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'../environments/environment'</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">FilterModel</span><span class="p">,</span><span class="w"> </span><span class="nx">ResultPaged</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'../models'</span><span class="p">;</span>
 
 <span class="kd">@Injectable</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">providedIn</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;root&#39;</span>
+<span class="w">  </span><span class="nx">providedIn</span><span class="o">:</span><span class="w"> </span><span class="s1">'root'</span>
 <span class="p">})</span>
 <span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">ApiService</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kr">constructor</span><span class="p">(</span>
@@ -8644,7 +8644,7 @@ Angular application.</p>
 <span class="w">  </span><span class="c1">// GET (querystring)</span>
 <span class="w">  </span><span class="nx">getFiltered</span><span class="p">(</span><span class="nx">filterModel</span><span class="o">:</span><span class="w"> </span><span class="kt">FilterModel</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">Observable</span><span class="o">&lt;</span><span class="nx">ResultPaged</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">HttpParams</span><span class="p">()</span>
-<span class="w">      </span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;filter&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">filterModel</span><span class="p">));</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'filter'</span><span class="p">,</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">filterModel</span><span class="p">));</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">http</span><span class="p">.</span><span class="nx">get</span><span class="o">&lt;</span><span class="nx">ResultPaged</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">baseUrl</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="nx">params</span><span class="p">});</span>
 <span class="w">  </span><span class="p">}</span>
@@ -8652,14 +8652,14 @@ Angular application.</p>
 </code></pre></div>
 <h4 id="entity-specific-service">Entity-specific service<a class="headerlink" href="#entity-specific-service" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="c1">// services/user.service.ts</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">Injectable</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">HttpClient</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@angular/common/http&#39;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">environment</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;../environments/environment&#39;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">User</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;../models&#39;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">ApiService</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./api.service&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">Injectable</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@angular/core'</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">HttpClient</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@angular/common/http'</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">environment</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'../environments/environment'</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">User</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'../models'</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">ApiService</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'./api.service'</span><span class="p">;</span>
 
 <span class="kd">@Injectable</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">providedIn</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;root&#39;</span>
+<span class="w">  </span><span class="nx">providedIn</span><span class="o">:</span><span class="w"> </span><span class="s1">'root'</span>
 <span class="p">})</span>
 <span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">UserService</span><span class="w"> </span><span class="k">extends</span><span class="w"> </span><span class="nx">ApiService</span><span class="o">&lt;</span><span class="nx">User</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kr">constructor</span><span class="p">(</span><span class="nx">http</span><span class="o">:</span><span class="w"> </span><span class="kt">HttpClient</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -8670,30 +8670,30 @@ Angular application.</p>
 <h3 id="component-implementation">Component implementation<a class="headerlink" href="#component-implementation" title="Permanent link">&para;</a></h3>
 <h4 id="list-component-example">List component example<a class="headerlink" href="#list-component-example" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="c1">// components/user-list/user-list.component.ts</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">Component</span><span class="p">,</span><span class="w"> </span><span class="nx">OnInit</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">UserService</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;../../services/user.service&#39;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">User</span><span class="p">,</span><span class="w"> </span><span class="nx">FilterModel</span><span class="p">,</span><span class="w"> </span><span class="nx">ResultPaged</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;../../models&#39;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">finalize</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;rxjs/operators&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">Component</span><span class="p">,</span><span class="w"> </span><span class="nx">OnInit</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@angular/core'</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">UserService</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'../../services/user.service'</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">User</span><span class="p">,</span><span class="w"> </span><span class="nx">FilterModel</span><span class="p">,</span><span class="w"> </span><span class="nx">ResultPaged</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'../../models'</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">finalize</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'rxjs/operators'</span><span class="p">;</span>
 
 <span class="kd">@Component</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">selector</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;app-user-list&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">selector</span><span class="o">:</span><span class="w"> </span><span class="s1">'app-user-list'</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">template</span><span class="o">:</span><span class="w"> </span><span class="sb">`</span>
-<span class="sb">        &lt;div class=&quot;filters&quot;&gt;</span>
-<span class="sb">            &lt;button (click)=&quot;applyDepartmentFilter(&#39;Engineering&#39;)&quot;&gt;</span>
+<span class="sb">        &lt;div class="filters"&gt;</span>
+<span class="sb">            &lt;button (click)="applyDepartmentFilter('Engineering')"&gt;</span>
 <span class="sb">                Engineering Only</span>
 <span class="sb">            &lt;/button&gt;</span>
-<span class="sb">            &lt;button (click)=&quot;applyDateRangeFilter()&quot;&gt;</span>
+<span class="sb">            &lt;button (click)="applyDateRangeFilter()"&gt;</span>
 <span class="sb">                Last 30 Days</span>
 <span class="sb">            &lt;/button&gt;</span>
 <span class="sb">        &lt;/div&gt;</span>
 
-<span class="sb">        &lt;div *ngIf=&quot;loading&quot;&gt;Loading...&lt;/div&gt;</span>
+<span class="sb">        &lt;div *ngIf="loading"&gt;Loading...&lt;/div&gt;</span>
 
-<span class="sb">        &lt;div *ngIf=&quot;error&quot; class=&quot;error&quot;&gt;</span>
+<span class="sb">        &lt;div *ngIf="error" class="error"&gt;</span>
 <span class="sb">            {{ error }}</span>
 <span class="sb">        &lt;/div&gt;</span>
 
-<span class="sb">        &lt;table *ngIf=&quot;users&quot;&gt;</span>
+<span class="sb">        &lt;table *ngIf="users"&gt;</span>
 <span class="sb">            &lt;thead&gt;</span>
 <span class="sb">                &lt;tr&gt;</span>
 <span class="sb">                    &lt;th&gt;Name&lt;/th&gt;</span>
@@ -8702,7 +8702,7 @@ Angular application.</p>
 <span class="sb">                &lt;/tr&gt;</span>
 <span class="sb">            &lt;/thead&gt;</span>
 <span class="sb">            &lt;tbody&gt;</span>
-<span class="sb">                &lt;tr *ngFor=&quot;let user of users.value&quot;&gt;</span>
+<span class="sb">                &lt;tr *ngFor="let user of users.value"&gt;</span>
 <span class="sb">                    &lt;td&gt;{{ user.firstName }} {{ user.lastName }}&lt;/td&gt;</span>
 <span class="sb">                    &lt;td&gt;{{ user.email }}&lt;/td&gt;</span>
 <span class="sb">                    &lt;td&gt;{{ user.department }}&lt;/td&gt;</span>
@@ -8710,12 +8710,12 @@ Angular application.</p>
 <span class="sb">            &lt;/tbody&gt;</span>
 <span class="sb">        &lt;/table&gt;</span>
 
-<span class="sb">        &lt;div class=&quot;pagination&quot; *ngIf=&quot;users&quot;&gt;</span>
-<span class="sb">            &lt;button (click)=&quot;previousPage()&quot; [disabled]=&quot;!users.hasPreviousPage&quot;&gt;</span>
+<span class="sb">        &lt;div class="pagination" *ngIf="users"&gt;</span>
+<span class="sb">            &lt;button (click)="previousPage()" [disabled]="!users.hasPreviousPage"&gt;</span>
 <span class="sb">                Previous</span>
 <span class="sb">            &lt;/button&gt;</span>
 <span class="sb">            &lt;span&gt;Page {{ users.currentPage }} of {{ users.totalPages }}&lt;/span&gt;</span>
-<span class="sb">            &lt;button (click)=&quot;nextPage()&quot; [disabled]=&quot;!users.hasNextPage&quot;&gt;</span>
+<span class="sb">            &lt;button (click)="nextPage()" [disabled]="!users.hasNextPage"&gt;</span>
 <span class="sb">                Next</span>
 <span class="sb">            &lt;/button&gt;</span>
 <span class="sb">        &lt;/div&gt;</span>
@@ -8752,12 +8752,12 @@ Angular application.</p>
 <span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">isSuccess</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">result</span><span class="p">;</span>
 <span class="w">          </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">errors</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">error</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;; &#39;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">errors</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">error</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s1">'; '</span><span class="p">);</span>
 <span class="w">          </span><span class="p">}</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="k">this</span><span class="p">.</span><span class="nx">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Failed to load users. Please try again.&#39;</span><span class="p">;</span>
-<span class="w">          </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Error loading users:&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">);</span>
+<span class="w">          </span><span class="k">this</span><span class="p">.</span><span class="nx">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Failed to load users. Please try again.'</span><span class="p">;</span>
+<span class="w">          </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Error loading users:'</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">});</span>
 <span class="w">  </span><span class="p">}</span>
@@ -8767,8 +8767,8 @@ Angular application.</p>
 <span class="w">      </span><span class="p">...</span><span class="k">this</span><span class="p">.</span><span class="nx">currentFilter</span><span class="p">,</span>
 <span class="w">      </span><span class="nx">filters</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">          </span><span class="nx">field</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Department&#39;</span><span class="p">,</span>
-<span class="w">          </span><span class="nx">operator</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;eq&#39;</span><span class="p">,</span>
+<span class="w">          </span><span class="nx">field</span><span class="o">:</span><span class="w"> </span><span class="s1">'Department'</span><span class="p">,</span>
+<span class="w">          </span><span class="nx">operator</span><span class="o">:</span><span class="w"> </span><span class="s1">'eq'</span><span class="p">,</span>
 <span class="w">          </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">department</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">]</span>
@@ -8785,9 +8785,9 @@ Angular application.</p>
 <span class="w">      </span><span class="p">...</span><span class="k">this</span><span class="p">.</span><span class="nx">currentFilter</span><span class="p">,</span>
 <span class="w">      </span><span class="nx">filters</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">          </span><span class="nx">customType</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;daterange&#39;</span><span class="p">,</span>
+<span class="w">          </span><span class="nx">customType</span><span class="o">:</span><span class="w"> </span><span class="s1">'daterange'</span><span class="p">,</span>
 <span class="w">          </span><span class="nx">customParameters</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">field</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;CreatedAt&#39;</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">field</span><span class="o">:</span><span class="w"> </span><span class="s1">'CreatedAt'</span><span class="p">,</span>
 <span class="w">            </span><span class="nx">startDate</span><span class="o">:</span><span class="w"> </span><span class="kt">startDate.toISOString</span><span class="p">(),</span>
 <span class="w">            </span><span class="nx">endDate</span><span class="o">:</span><span class="w"> </span><span class="kt">endDate.toISOString</span><span class="p">(),</span>
 <span class="w">            </span><span class="nx">inclusive</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span>
@@ -8835,14 +8835,14 @@ Angular application.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">filterModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterModelBuilder</span><span class="p">.</span><span class="n">For</span><span class="o">&lt;</span><span class="n">PersonStub</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">      </span><span class="p">.</span><span class="n">SetPaging</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">PageSize</span><span class="p">.</span><span class="n">Large</span><span class="p">)</span><span class="w"> </span><span class="c1">// Fluent paging setup</span>
 <span class="w">      </span><span class="p">.</span><span class="n">AddFilter</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">Age</span><span class="p">,</span><span class="w"> </span><span class="n">FilterOperator</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">,</span><span class="w"> </span><span class="mi">25</span><span class="p">)</span><span class="w"> </span><span class="c1">// Age &gt; 25</span>
-<span class="w">      </span><span class="p">.</span><span class="n">AddFilter</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">FirstName</span><span class="p">,</span><span class="w"> </span><span class="n">FilterOperator</span><span class="p">.</span><span class="n">Contains</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// FirstName contains &quot;A&quot;</span>
+<span class="w">      </span><span class="p">.</span><span class="n">AddFilter</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">FirstName</span><span class="p">,</span><span class="w"> </span><span class="n">FilterOperator</span><span class="p">.</span><span class="n">Contains</span><span class="p">,</span><span class="w"> </span><span class="s">"A"</span><span class="p">)</span><span class="w"> </span><span class="c1">// FirstName contains "A"</span>
 <span class="w">      </span><span class="p">.</span><span class="n">AddFilter</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">Locations</span><span class="p">,</span>
 <span class="w">          </span><span class="n">FilterOperator</span><span class="p">.</span><span class="n">Any</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">b</span>
-<span class="w">              </span><span class="p">.</span><span class="n">AddFilter</span><span class="p">(</span><span class="n">loc</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">loc</span><span class="p">.</span><span class="n">City</span><span class="p">,</span><span class="w"> </span><span class="n">FilterOperator</span><span class="p">.</span><span class="n">Equal</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Berlin&quot;</span><span class="p">)</span>
-<span class="w">              </span><span class="p">.</span><span class="n">AddFilter</span><span class="p">(</span><span class="n">loc</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">loc</span><span class="p">.</span><span class="n">PostalCode</span><span class="p">,</span><span class="w"> </span><span class="n">FilterOperator</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;100&quot;</span><span class="p">))</span><span class="w"> </span><span class="c1">// Any location with City = New York or ZipCode starts with &quot;100&quot;</span>
+<span class="w">              </span><span class="p">.</span><span class="n">AddFilter</span><span class="p">(</span><span class="n">loc</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">loc</span><span class="p">.</span><span class="n">City</span><span class="p">,</span><span class="w"> </span><span class="n">FilterOperator</span><span class="p">.</span><span class="n">Equal</span><span class="p">,</span><span class="w"> </span><span class="s">"Berlin"</span><span class="p">)</span>
+<span class="w">              </span><span class="p">.</span><span class="n">AddFilter</span><span class="p">(</span><span class="n">loc</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">loc</span><span class="p">.</span><span class="n">PostalCode</span><span class="p">,</span><span class="w"> </span><span class="n">FilterOperator</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">,</span><span class="w"> </span><span class="s">"100"</span><span class="p">))</span><span class="w"> </span><span class="c1">// Any location with City = New York or ZipCode starts with "100"</span>
 <span class="w">      </span><span class="p">.</span><span class="n">AddCustomFilter</span><span class="p">(</span><span class="n">FilterCustomType</span><span class="p">.</span><span class="n">FullTextSearch</span><span class="p">)</span>
-<span class="w">      </span><span class="p">.</span><span class="n">AddParameter</span><span class="p">(</span><span class="s">&quot;searchTerm&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;John&quot;</span><span class="p">)</span>
-<span class="w">      </span><span class="p">.</span><span class="n">AddParameter</span><span class="p">(</span><span class="s">&quot;fields&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;FirstName&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;LastName&quot;</span><span class="w"> </span><span class="p">}).</span><span class="n">Done</span><span class="p">()</span>
+<span class="w">      </span><span class="p">.</span><span class="n">AddParameter</span><span class="p">(</span><span class="s">"searchTerm"</span><span class="p">,</span><span class="w"> </span><span class="s">"John"</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">AddParameter</span><span class="p">(</span><span class="s">"fields"</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">"FirstName"</span><span class="p">,</span><span class="w"> </span><span class="s">"LastName"</span><span class="w"> </span><span class="p">}).</span><span class="n">Done</span><span class="p">()</span>
 <span class="w">      </span><span class="p">.</span><span class="n">AddOrdering</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="n">OrderDirection</span><span class="p">.</span><span class="n">Descending</span><span class="p">)</span><span class="w"> </span><span class="c1">// Order by LastName Descending</span>
 <span class="w">      </span><span class="p">.</span><span class="n">AddOrdering</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">FirstName</span><span class="p">,</span><span class="w"> </span><span class="n">OrderDirection</span><span class="p">.</span><span class="n">Ascending</span><span class="p">)</span><span class="w"> </span><span class="c1">// Then order by FirstName Ascending</span>
 <span class="w">      </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">Locations</span><span class="p">)</span>
@@ -8864,9 +8864,9 @@ Angular application.</p>
 <h4 id="string-based-include-flexible">String-based include (flexible)<a class="headerlink" href="#string-based-include-flexible" title="Permanent link">&para;</a></h4>
 <p>Use string paths for dynamic includes or nested navigation properties:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">filterModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterModelBuilder</span><span class="p">.</span><span class="n">For</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="s">&quot;Orders&quot;</span><span class="p">)</span><span class="w">                </span><span class="c1">// Simple property path</span>
-<span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="s">&quot;Orders.OrderItems&quot;</span><span class="p">)</span><span class="w">     </span><span class="c1">// Nested navigation path</span>
-<span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="s">&quot;Addresses.City&quot;</span><span class="p">)</span><span class="w">        </span><span class="c1">// Multiple levels deep</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="s">"Orders"</span><span class="p">)</span><span class="w">                </span><span class="c1">// Simple property path</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="s">"Orders.OrderItems"</span><span class="p">)</span><span class="w">     </span><span class="c1">// Nested navigation path</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="s">"Addresses.City"</span><span class="p">)</span><span class="w">        </span><span class="c1">// Multiple levels deep</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 </code></pre></div>
 <h4 id="conditional-includes">Conditional includes<a class="headerlink" href="#conditional-includes" title="Permanent link">&para;</a></h4>
@@ -8876,7 +8876,7 @@ Angular application.</p>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">filterModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterModelBuilder</span><span class="p">.</span><span class="n">For</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Orders</span><span class="p">,</span><span class="w"> </span><span class="n">condition</span><span class="p">:</span><span class="w"> </span><span class="n">includeOrders</span><span class="p">)</span><span class="w">        </span><span class="c1">// Will be included</span>
-<span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="s">&quot;Addresses&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">condition</span><span class="p">:</span><span class="w"> </span><span class="n">includeAddresses</span><span class="p">)</span><span class="w">       </span><span class="c1">// Will be skipped</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="s">"Addresses"</span><span class="p">,</span><span class="w"> </span><span class="n">condition</span><span class="p">:</span><span class="w"> </span><span class="n">includeAddresses</span><span class="p">)</span><span class="w">       </span><span class="c1">// Will be skipped</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 </code></pre></div>
 <h4 id="when-to-use-each-overload">When to use each overload<a class="headerlink" href="#when-to-use-each-overload" title="Permanent link">&para;</a></h4>
@@ -8897,11 +8897,11 @@ Angular application.</p>
 <h4 id="combined-example">Combined example<a class="headerlink" href="#combined-example" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">filterModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterModelBuilder</span><span class="p">.</span><span class="n">For</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">SetPaging</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">AddFilter</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Status</span><span class="p">,</span><span class="w"> </span><span class="n">FilterOperator</span><span class="p">.</span><span class="n">Equal</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Shipped&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddFilter</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Status</span><span class="p">,</span><span class="w"> </span><span class="n">FilterOperator</span><span class="p">.</span><span class="n">Equal</span><span class="p">,</span><span class="w"> </span><span class="s">"Shipped"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Customer</span><span class="p">)</span><span class="w">                    </span><span class="c1">// Type-safe</span>
-<span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="s">&quot;Customer.Addresses&quot;</span><span class="p">)</span><span class="w">               </span><span class="c1">// Nested path</span>
-<span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="s">&quot;OrderItems.Product&quot;</span><span class="p">)</span><span class="w">               </span><span class="c1">// Multi-level navigation</span>
-<span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="s">&quot;OrderItems.Product.Category&quot;</span><span class="p">)</span><span class="w">      </span><span class="c1">// Deep navigation</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="s">"Customer.Addresses"</span><span class="p">)</span><span class="w">               </span><span class="c1">// Nested path</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="s">"OrderItems.Product"</span><span class="p">)</span><span class="w">               </span><span class="c1">// Multi-level navigation</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="s">"OrderItems.Product.Category"</span><span class="p">)</span><span class="w">      </span><span class="c1">// Deep navigation</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 </code></pre></div>
 <h3 id="theninclude-nested-navigation-properties"><code>ThenInclude</code> - nested navigation properties<a class="headerlink" href="#theninclude-nested-navigation-properties" title="Permanent link">&para;</a></h3>
@@ -9063,10 +9063,10 @@ the bITdevKit philosophy of simple, effective solutions to common development pr
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5718,7 +5718,7 @@ provides query and opt-in restore services without making domain entities depend
 </code></pre></div>
 <p>Apply an explicit change, persist it, and inspect the recorded values:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">changeResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">Change</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Ada Lovelace&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="s">"Ada Lovelace"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Apply</span><span class="p">();</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">changeResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
@@ -5751,11 +5751,11 @@ provides query and opt-in restore services without making domain entities depend
 
 <span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">historyResult</span><span class="p">.</span><span class="n">Value</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;{row.PropertyName}: {row.OldValue} -&gt; {row.NewValue}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"{row.PropertyName}: {row.OldValue} -&gt; {row.NewValue}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>For a customer renamed from <code>Ada</code> to <code>Ada Lovelace</code>, the output is:</p>
-<div class="highlight"><pre><span></span><code>Name: &quot;Ada&quot; -&gt; &quot;Ada Lovelace&quot;
+<div class="highlight"><pre><span></span><code>Name: "Ada" -&gt; "Ada Lovelace"
 </code></pre></div>
 <h2 id="core-concepts">Core concepts<a class="headerlink" href="#core-concepts" title="Permanent link">&para;</a></h2>
 <h3 id="change-rows">Change rows<a class="headerlink" href="#change-rows" title="Permanent link">&para;</a></h3>
@@ -6881,10 +6881,10 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 <span class="w">    </span><span class="p">.</span><span class="n">CaptureDirectMutations</span><span class="p">(</span><span class="n">ChangeHistoryCaptureStrategy</span><span class="p">.</span><span class="n">RepositorySnapshot</span><span class="p">,</span><span class="w"> </span><span class="n">ChangeHistoryCaptureMode</span><span class="p">.</span><span class="n">Required</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">CaptureOwned</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">BillingAddress</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">CaptureCollection</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Tags</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">tag</span><span class="p">.</span><span class="n">Id</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">CaptureGraph</span><span class="p">(</span><span class="s">&quot;Orders&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">graph</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">graph</span>
-<span class="w">        </span><span class="p">.</span><span class="n">UseIdentity</span><span class="o">&lt;</span><span class="n">Order</span><span class="p">,</span><span class="w"> </span><span class="n">Guid</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Orders&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">order</span><span class="p">.</span><span class="n">Id</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">UseIdentity</span><span class="o">&lt;</span><span class="n">OrderItem</span><span class="p">,</span><span class="w"> </span><span class="n">Guid</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Orders.Items&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">item</span><span class="p">.</span><span class="n">Id</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">UseRestorePlan</span><span class="p">(</span><span class="s">&quot;OrderItemsRestore&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="p">.</span><span class="n">CaptureGraph</span><span class="p">(</span><span class="s">"Orders"</span><span class="p">,</span><span class="w"> </span><span class="n">graph</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">graph</span>
+<span class="w">        </span><span class="p">.</span><span class="n">UseIdentity</span><span class="o">&lt;</span><span class="n">Order</span><span class="p">,</span><span class="w"> </span><span class="n">Guid</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"Orders"</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">order</span><span class="p">.</span><span class="n">Id</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">UseIdentity</span><span class="o">&lt;</span><span class="n">OrderItem</span><span class="p">,</span><span class="w"> </span><span class="n">Guid</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"Orders.Items"</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">item</span><span class="p">.</span><span class="n">Id</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">UseRestorePlan</span><span class="p">(</span><span class="s">"OrderItemsRestore"</span><span class="p">));</span>
 </code></pre></div>
 <p>Collection and graph capture needs stable item identity. EF key metadata can infer simple identities in some cases, but explicit identity configuration is the clearest option for application code.</p>
 <h2 id="bulk-update-capture">Bulk update capture<a class="headerlink" href="#bulk-update-capture" title="Permanent link">&para;</a></h2>
@@ -6923,9 +6923,9 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 <h2 id="http-endpoints">HTTP endpoints<a class="headerlink" href="#http-endpoints" title="Permanent link">&para;</a></h2>
 <p><code>Presentation.Web.EntityFramework</code> can expose minimal API endpoints for one entity/context pair:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddChangeHistoryEndpoints</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
-<span class="w">    </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/_bdk/api/customers/history&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">RequireReadPolicy</span><span class="p">(</span><span class="s">&quot;Customers.History.Read&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">RequireRestorePolicy</span><span class="p">(</span><span class="s">&quot;Customers.History.Restore&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">"/_bdk/api/customers/history"</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">RequireReadPolicy</span><span class="p">(</span><span class="s">"Customers.History.Read"</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">RequireRestorePolicy</span><span class="p">(</span><span class="s">"Customers.History.Restore"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">IncludeValues</span><span class="p">());</span>
 
 <span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">();</span>
@@ -7101,10 +7101,10 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

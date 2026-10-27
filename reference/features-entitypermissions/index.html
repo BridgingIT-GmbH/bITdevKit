@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5576,7 +5576,7 @@
 <span class="w">    </span><span class="p">});</span>
 <span class="p">});</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/employees/{employeeId}&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Http</span><span class="p">.</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/employees/{employeeId}"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Http</span><span class="p">.</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="n">employeeId</span><span class="p">,</span>
 <span class="w">    </span><span class="n">IEntityPermissionEvaluator</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="w"> </span><span class="n">evaluator</span><span class="p">,</span>
 <span class="w">    </span><span class="n">ICurrentUserAccessor</span><span class="w"> </span><span class="n">currentUser</span><span class="p">,</span>
@@ -5589,16 +5589,16 @@
 <span class="w">        </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">allowed</span>
-<span class="w">        </span><span class="o">?</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">employeeId</span><span class="p">,</span><span class="w"> </span><span class="n">permission</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Read&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">allowed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="w"> </span><span class="p">})</span>
+<span class="w">        </span><span class="o">?</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">employeeId</span><span class="p">,</span><span class="w"> </span><span class="n">permission</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Read"</span><span class="p">,</span><span class="w"> </span><span class="n">allowed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="w"> </span><span class="p">})</span>
 <span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Forbid</span><span class="p">();</span>
 <span class="p">})</span>
 <span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">();</span>
 </code></pre></div>
 <p>For <code>employeeId = "emp1"</code>, the default provider produces:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;employeeId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;emp1&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;permission&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Read&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;allowed&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"employeeId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"emp1"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"permission"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Read"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"allowed"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
@@ -5629,11 +5629,11 @@
 <span class="n">services</span><span class="p">.</span><span class="n">AddHttpContextAccessor</span><span class="p">();</span>
 <span class="n">services</span><span class="p">.</span><span class="n">AddScoped</span><span class="o">&lt;</span><span class="n">ICurrentUserAccessor</span><span class="p">,</span><span class="w"> </span><span class="n">HttpCurrentUserAccessor</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="n">services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="o">&lt;</span><span class="n">CoreDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseSqlServer</span><span class="p">(</span><span class="s">&quot;Server=.;Database=YourDb;Trusted_Connection=True;&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseSqlServer</span><span class="p">(</span><span class="s">"Server=.;Database=YourDb;Trusted_Connection=True;"</span><span class="p">));</span>
 </code></pre></div>
 <h3 id="first-secured-endpoint">First secured endpoint<a class="headerlink" href="#first-secured-endpoint" title="Permanent link">&para;</a></h3>
 <p>Secure a Minimal API endpoint:</p>
-<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/employees&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">())</span>
+<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/employees"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">())</span>
 <span class="w">    </span><span class="p">.</span><span class="n">RequireEntityPermission</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Permission</span><span class="p">.</span><span class="n">List</span><span class="p">);</span>
 </code></pre></div>
 <p>This keeps the example focused on authorization itself. Application-specific request handling can be plugged into the endpoint however the host prefers.</p>
@@ -5654,7 +5654,7 @@
 <span class="w">                </span><span class="n">Permission</span><span class="p">.</span><span class="n">Write</span><span class="p">,</span>
 <span class="w">                </span><span class="n">Permission</span><span class="p">.</span><span class="n">Delete</span><span class="p">,</span>
 <span class="w">                </span><span class="n">Permission</span><span class="p">.</span><span class="n">List</span><span class="p">,</span>
-<span class="w">                </span><span class="n">Permission</span><span class="p">.</span><span class="n">For</span><span class="p">(</span><span class="s">&quot;Review&quot;</span><span class="p">))</span>
+<span class="w">                </span><span class="n">Permission</span><span class="p">.</span><span class="n">For</span><span class="p">(</span><span class="s">"Review"</span><span class="p">))</span>
 <span class="w">            </span><span class="p">.</span><span class="n">AddDefaultPermissions</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Permission</span><span class="p">.</span><span class="n">Read</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">UseDefaultPermissionProvider</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">            </span><span class="p">.</span><span class="n">EnableCaching</span><span class="p">()</span>
@@ -5698,7 +5698,7 @@
 <h3 id="securing-controllers">Securing controllers<a class="headerlink" href="#securing-controllers" title="Permanent link">&para;</a></h3>
 <p>For controller-based scenarios, use <code>EntityPermissionRequirementAttribute</code> from the presentation layer:</p>
 <div class="highlight"><pre><span></span><code><span class="na">[Authorize]</span>
-<span class="na">[Route(&quot;api/employees&quot;)]</span>
+<span class="na">[Route("api/employees")]</span>
 <span class="na">[ApiController]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">EmployeeController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ControllerBase</span>
 <span class="p">{</span>
@@ -5709,11 +5709,11 @@
 </code></pre></div>
 <h3 id="securing-minimal-apis">Securing Minimal APIs<a class="headerlink" href="#securing-minimal-apis" title="Permanent link">&para;</a></h3>
 <p>Use <code>RequireEntityPermission(...)</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/employees&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">())</span>
+<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/employees"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">())</span>
 <span class="w">    </span><span class="p">.</span><span class="n">RequireEntityPermission</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Permission</span><span class="p">.</span><span class="n">List</span><span class="p">);</span>
 </code></pre></div>
 <p>For route groups:</p>
-<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">&quot;/employees&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">"/employees"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">RequireEntityPermission</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Permission</span><span class="p">.</span><span class="n">Read</span><span class="p">);</span>
 </code></pre></div>
 <h3 id="important-boundary-note">Important boundary note<a class="headerlink" href="#important-boundary-note" title="Permanent link">&para;</a></h3>
@@ -5731,16 +5731,16 @@
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IEntityPermissionProvider</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">GrantUserPermissionAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;user123&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"user123"</span><span class="p">,</span>
 <span class="w">    </span><span class="k">typeof</span><span class="p">(</span><span class="n">Employee</span><span class="p">).</span><span class="n">FullName</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;emp1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"emp1"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">Permission</span><span class="p">.</span><span class="n">Write</span><span class="p">);</span>
 
 <span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">GrantRolePermissionAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;Admins&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Admins"</span><span class="p">,</span>
 <span class="w">    </span><span class="k">typeof</span><span class="p">(</span><span class="n">Employee</span><span class="p">).</span><span class="n">FullName</span><span class="p">,</span>
 <span class="w">    </span><span class="k">null</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;Review&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="s">"Review"</span><span class="p">);</span>
 </code></pre></div>
 <p>The provider also supports:</p>
 <ul>
@@ -5752,10 +5752,10 @@
 <h3 id="using-entitypermissionproviderbuilder">Using <code>EntityPermissionProviderBuilder</code><a class="headerlink" href="#using-entitypermissionproviderbuilder" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">EntityPermissionProviderBuilder</span><span class="p">(</span>
 <span class="w">    </span><span class="n">services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IEntityPermissionProvider</span><span class="o">&gt;</span><span class="p">())</span>
-<span class="w">    </span><span class="p">.</span><span class="n">ForUser</span><span class="p">(</span><span class="s">&quot;user123&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithPermission</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;emp1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Permission</span><span class="p">.</span><span class="n">Write</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithPermission</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;emp1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Review&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">ForRole</span><span class="p">(</span><span class="s">&quot;Admins&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">ForUser</span><span class="p">(</span><span class="s">"user123"</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithPermission</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"emp1"</span><span class="p">,</span><span class="w"> </span><span class="n">Permission</span><span class="p">.</span><span class="n">Write</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithPermission</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"emp1"</span><span class="p">,</span><span class="w"> </span><span class="s">"Review"</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">ForRole</span><span class="p">(</span><span class="s">"Admins"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithPermission</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Permission</span><span class="p">.</span><span class="n">List</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 </code></pre></div>
@@ -5783,16 +5783,16 @@
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">evaluator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IEntityPermissionEvaluator</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;&gt;</span><span class="p">();</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">canWrite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">evaluator</span><span class="p">.</span><span class="n">HasPermissionAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;user123&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="na">[&quot;Admins&quot;]</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;emp1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"user123"</span><span class="p">,</span>
+<span class="w">    </span><span class="na">["Admins"]</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"emp1"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">Permission</span><span class="p">.</span><span class="n">Write</span><span class="p">);</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">canReview</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">evaluator</span><span class="p">.</span><span class="n">HasPermissionAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;user123&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"user123"</span><span class="p">,</span>
 <span class="w">    </span><span class="na">[]</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;emp1&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;Review&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="s">"emp1"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Review"</span><span class="p">);</span>
 </code></pre></div>
 <p>The evaluator supports several shapes:</p>
 <ul>
@@ -5901,9 +5901,9 @@
 </table>
 <p>Request body for grant/revoke:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;entityType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MyApp.Domain.Model.Employee&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;entityId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;emp1&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;permission&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Write&quot;</span>
+<span class="w">  </span><span class="nt">"entityType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MyApp.Domain.Model.Employee"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"entityId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"emp1"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"permission"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Write"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>The management <code>GET</code> endpoints return persisted grants. They do not add permissions supplied by default providers.</p>
@@ -5933,11 +5933,11 @@
 </table>
 <p>Example response:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;entityType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MyApp.Domain.Model.Employee&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;entityId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;emp1&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;permission&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Read&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;hasAccess&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"entityType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MyApp.Domain.Model.Employee"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"entityId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"emp1"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"permission"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Read"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"source"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"hasAccess"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Notes:</p>
@@ -5971,8 +5971,8 @@
 <h2 id="appendix-working-with-hierarchical-entities">Appendix: Working with hierarchical entities<a class="headerlink" href="#appendix-working-with-hierarchical-entities" title="Permanent link">&para;</a></h2>
 <h3 id="example-employee-hierarchy">Example: Employee hierarchy<a class="headerlink" href="#example-employee-hierarchy" title="Permanent link">&para;</a></h3>
 <h4 id="structure">Structure<a class="headerlink" href="#structure" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>CEO (ceo1)       &lt;- &quot;Read&quot;
-  Manager (mgr1) &lt;- &quot;Write&quot;, &quot;Delete&quot; (Admins role)
+<div class="highlight"><pre><span></span><code>CEO (ceo1)       &lt;- "Read"
+  Manager (mgr1) &lt;- "Write", "Delete" (Admins role)
     Employee (emp1)
 </code></pre></div>
 <h4 id="step-1-configure">Step 1: Configure<a class="headerlink" href="#step-1-configure" title="Permanent link">&para;</a></h4>
@@ -5992,34 +5992,34 @@
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IEntityPermissionProvider</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">GrantUserPermissionAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;user123&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"user123"</span><span class="p">,</span>
 <span class="w">    </span><span class="k">typeof</span><span class="p">(</span><span class="n">Employee</span><span class="p">).</span><span class="n">FullName</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;ceo1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"ceo1"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">Permission</span><span class="p">.</span><span class="n">Read</span><span class="p">);</span>
 
 <span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">GrantUserPermissionAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;user123&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"user123"</span><span class="p">,</span>
 <span class="w">    </span><span class="k">typeof</span><span class="p">(</span><span class="n">Employee</span><span class="p">).</span><span class="n">FullName</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;mgr1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"mgr1"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">Permission</span><span class="p">.</span><span class="n">Write</span><span class="p">);</span>
 
 <span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">GrantRolePermissionAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;Admins&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Admins"</span><span class="p">,</span>
 <span class="w">    </span><span class="k">typeof</span><span class="p">(</span><span class="n">Employee</span><span class="p">).</span><span class="n">FullName</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;mgr1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"mgr1"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">Permission</span><span class="p">.</span><span class="n">Delete</span><span class="p">);</span>
 </code></pre></div>
 <h4 id="step-3-check-effective-permissions">Step 3: Check effective permissions<a class="headerlink" href="#step-3-check-effective-permissions" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">evaluator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IEntityPermissionEvaluator</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;&gt;</span><span class="p">();</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">permissions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">evaluator</span><span class="p">.</span><span class="n">GetPermissionsAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;user123&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="na">[&quot;Admins&quot;]</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;emp1&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="s">"user123"</span><span class="p">,</span>
+<span class="w">    </span><span class="na">["Admins"]</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"emp1"</span><span class="p">);</span>
 
 <span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">permission</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">permissions</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;{permission.Permission} from {permission.Source}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"{permission.Permission} from {permission.Source}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Possible output:</p>
@@ -6112,10 +6112,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

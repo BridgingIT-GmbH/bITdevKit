@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -6761,7 +6761,7 @@ builders register handlers, behaviors, and discovered validators.</p>
 </code></pre></div>
 <p>Dispatch a request and publish a notification, checking each result before using it:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">requestResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">DoSomethingCommand</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Index customer records&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">DoSomethingCommand</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Index customer records"</span><span class="w"> </span><span class="p">},</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">requestResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
@@ -6775,8 +6775,8 @@ builders register handlers, behaviors, and discovered validators.</p>
 <span class="kt">var</span><span class="w"> </span><span class="n">notificationResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">notifier</span><span class="p">.</span><span class="n">PublishAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">UserRegisteredNotification</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">UserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;5f6b5ba2-85d5-44bb-87a7-f876a65cdb09&quot;</span><span class="p">),</span>
-<span class="w">        </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ada@example.test&quot;</span>
+<span class="w">        </span><span class="n">UserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">"5f6b5ba2-85d5-44bb-87a7-f876a65cdb09"</span><span class="p">),</span>
+<span class="w">        </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ada@example.test"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
@@ -6788,7 +6788,7 @@ builders register handlers, behaviors, and discovered validators.</p>
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Request and notification completed.&quot;</span><span class="p">);</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Request and notification completed."</span><span class="p">);</span>
 </code></pre></div>
 <p>The success path ends with:</p>
 <div class="highlight"><pre><span></span><code>Request and notification completed.
@@ -6798,7 +6798,7 @@ builders register handlers, behaviors, and discovered validators.</p>
 <h3 id="basic-usage_1">Basic usage<a class="headerlink" href="#basic-usage_1" title="Permanent link">&para;</a></h3>
 <h4 id="request-dispatching">Request dispatching<a class="headerlink" href="#request-dispatching" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="c1">// Creating a command</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DoSomethingCommand</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Performing task...&quot;</span><span class="w"> </span><span class="p">};</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DoSomethingCommand</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Performing task..."</span><span class="w"> </span><span class="p">};</span>
 
 <span class="c1">// Dispatching the command</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">requester</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IRequester</span><span class="o">&gt;</span><span class="p">();</span>
@@ -6807,11 +6807,11 @@ builders register handlers, behaviors, and discovered validators.</p>
 <span class="c1">// Checking result status</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Task performed successfully.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Task performed successfully."</span><span class="p">);</span>
 <span class="p">}</span>
 <span class="k">else</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Failed: {result.Errors.FirstOrDefault()?.Message}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Failed: {result.Errors.FirstOrDefault()?.Message}"</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="c1">// Dispatching a query with a value</span>
@@ -6820,7 +6820,7 @@ builders register handlers, behaviors, and discovered validators.</p>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">queryResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;User found: {queryResult.Value.Username}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"User found: {queryResult.Value.Username}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="command-with-unit-result">Command with unit result<a class="headerlink" href="#command-with-unit-result" title="Permanent link">&para;</a></h4>
@@ -6833,7 +6833,7 @@ builders register handlers, behaviors, and discovered validators.</p>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="nf">Validator</span><span class="p">()</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Message</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Message cannot be empty.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Message</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Message cannot be empty."</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -6866,7 +6866,7 @@ builders register handlers, behaviors, and discovered validators.</p>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="nf">Validator</span><span class="p">()</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">UserId</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;UserId cannot be empty.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">UserId</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"UserId cannot be empty."</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -6886,7 +6886,7 @@ builders register handlers, behaviors, and discovered validators.</p>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">userRepository</span><span class="p">.</span><span class="n">FindOneAsync</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">UserId</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span>
 <span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">$&quot;User with ID {request.UserId} not found.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">$"User with ID {request.UserId} not found."</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -6901,8 +6901,8 @@ builders register handlers, behaviors, and discovered validators.</p>
 <span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="nf">Validator</span><span class="p">()</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Email</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Email cannot be empty.&quot;</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">EmailAddress</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Invalid email format.&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Email cannot be empty."</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">EmailAddress</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Invalid email format."</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -6924,8 +6924,8 @@ builders register handlers, behaviors, and discovered validators.</p>
 <span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="nf">Validator</span><span class="p">()</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Email</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Email cannot be empty.&quot;</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">EmailAddress</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Invalid email format.&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Email cannot be empty."</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">EmailAddress</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Invalid email format."</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -6954,12 +6954,12 @@ builders register handlers, behaviors, and discovered validators.</p>
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">);</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;User found: {result.Value.Username}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"User found: {result.Value.Username}"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 <span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Error: {ex.Message}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Error: {ex.Message}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="request-metadata-and-cancellation">Request metadata and cancellation<a class="headerlink" href="#request-metadata-and-cancellation" title="Permanent link">&para;</a></h4>
@@ -6972,7 +6972,7 @@ builders register handlers, behaviors, and discovered validators.</p>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Unit</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">HandleAsync</span><span class="p">(</span><span class="n">CancelableCommand</span><span class="w"> </span><span class="n">request</span><span class="p">,</span><span class="w"> </span><span class="n">SendOptions</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Request ID: {request.RequestId}, Timestamp: {request.RequestTimestamp}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Request ID: {request.RequestId}, Timestamp: {request.RequestTimestamp}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Delay</span><span class="p">(</span><span class="mi">5000</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span><span class="w"> </span><span class="c1">// Long-running operation</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Unit</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="n">Unit</span><span class="p">.</span><span class="n">Value</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
@@ -6994,7 +6994,7 @@ builders register handlers, behaviors, and discovered validators.</p>
 <ol>
 <li><strong>Meaningful Messages</strong>: Include context in error messages for better debugging.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Unit</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="s">$&quot;Failed to process task {request.TaskId}: Invalid input&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Unit</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">(</span><span class="s">$"Failed to process task {request.TaskId}: Invalid input"</span><span class="p">);</span>
 </code></pre></div>
 <ol>
 <li><strong>Order Behaviors</strong>: Place critical behaviors (e.g., validation, transactions) early in the pipeline.</li>
@@ -7152,16 +7152,16 @@ has another cancellation mechanism.</p>
 <span class="n">services</span><span class="p">.</span><span class="n">AddRequester</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddHandlers</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">DatabaseTransactionPipelineBehavior</span><span class="o">&lt;</span><span class="p">,</span><span class="o">&gt;</span><span class="p">))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithDatabaseTransactionOptions</span><span class="p">(</span><span class="n">defaultContextName</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Core&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// Default to &quot;CoreDbContext&quot;</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithDatabaseTransactionOptions</span><span class="p">(</span><span class="n">defaultContextName</span><span class="p">:</span><span class="w"> </span><span class="s">"Core"</span><span class="p">);</span><span class="w"> </span><span class="c1">// Default to "CoreDbContext"</span>
 
 <span class="c1">// Using action</span>
 <span class="n">services</span><span class="p">.</span><span class="n">AddRequester</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddHandlers</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">DatabaseTransactionPipelineBehavior</span><span class="o">&lt;</span><span class="p">,</span><span class="o">&gt;</span><span class="p">))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithDatabaseTransactionOptions</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">DefaultContextName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Core&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithDatabaseTransactionOptions</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">DefaultContextName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Core"</span><span class="p">);</span>
 
 <span class="c1">// Handler usage</span>
-<span class="na">[HandlerDatabaseTransaction]</span><span class="w"> </span><span class="c1">// Uses default &quot;Core&quot; from DatabaseTransactionOptions</span>
+<span class="na">[HandlerDatabaseTransaction]</span><span class="w"> </span><span class="c1">// Uses default "Core" from DatabaseTransactionOptions</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">UpdateUserCommandHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">RequestHandlerBase</span><span class="o">&lt;</span><span class="n">UpdateUserCommand</span><span class="p">,</span><span class="w"> </span><span class="n">Unit</span><span class="o">&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IGenericRepository</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="n">userRepository</span><span class="p">;</span>
@@ -7208,7 +7208,7 @@ has another cancellation mechanism.</p>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">ChaosPipelineBehavior</span><span class="o">&lt;</span><span class="p">,</span><span class="o">&gt;</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithChaosOptions</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">DatabaseTransactionPipelineBehavior</span><span class="o">&lt;</span><span class="p">,</span><span class="o">&gt;</span><span class="p">))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithDatabaseTransactionOptions</span><span class="p">(</span><span class="s">&quot;Core&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithDatabaseTransactionOptions</span><span class="p">(</span><span class="s">"Core"</span><span class="p">);</span>
 </code></pre></div>
 <h4 id="configuration-priority">Configuration priority<a class="headerlink" href="#configuration-priority" title="Permanent link">&para;</a></h4>
 <p>When both default options and handler attributes are present, the handler attribute values take precedence:</p>
@@ -7258,7 +7258,7 @@ has another cancellation mechanism.</p>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="nf">Validator</span><span class="p">()</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Message</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Message cannot be empty.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Message</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Message cannot be empty."</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7273,16 +7273,16 @@ has another cancellation mechanism.</p>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
-<span class="kt">var</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DoSomethingCommand</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Performing task...&quot;</span><span class="w"> </span><span class="p">};</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DoSomethingCommand</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Performing task..."</span><span class="w"> </span><span class="p">};</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="n">command</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Task performed successfully.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Task performed successfully."</span><span class="p">);</span>
 <span class="p">}</span>
 <span class="k">else</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Failed: {result.Errors.FirstOrDefault()?.Message}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Failed: {result.Errors.FirstOrDefault()?.Message}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="query-handling-example">Query handling example<a class="headerlink" href="#query-handling-example" title="Permanent link">&para;</a></h4>
@@ -7302,7 +7302,7 @@ has another cancellation mechanism.</p>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="nf">Validator</span><span class="p">()</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">UserId</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;UserId cannot be empty.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">UserId</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"UserId cannot be empty."</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7322,7 +7322,7 @@ has another cancellation mechanism.</p>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">userRepository</span><span class="p">.</span><span class="n">FindOneAsync</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">UserId</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span>
 <span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">$&quot;User with ID {request.UserId} not found.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">$"User with ID {request.UserId} not found."</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
@@ -7331,11 +7331,11 @@ has another cancellation mechanism.</p>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;User found: {result.Value.Username}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"User found: {result.Value.Username}"</span><span class="p">);</span>
 <span class="p">}</span>
 <span class="k">else</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Failed: {result.Errors.FirstOrDefault()?.Message}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Failed: {result.Errors.FirstOrDefault()?.Message}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <hr />
@@ -7373,7 +7373,7 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <h3 id="basic-usage_2">Basic usage<a class="headerlink" href="#basic-usage_2" title="Permanent link">&para;</a></h3>
 <h4 id="notification-dispatching">Notification dispatching<a class="headerlink" href="#notification-dispatching" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="c1">// Creating a notification</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">notification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UserRegisteredNotification</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">UserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">(),</span><span class="w"> </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user@example.com&quot;</span><span class="w"> </span><span class="p">};</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">notification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UserRegisteredNotification</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">UserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">(),</span><span class="w"> </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"user@example.com"</span><span class="w"> </span><span class="p">};</span>
 
 <span class="c1">// Dispatching the notification</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">notifier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">INotifier</span><span class="o">&gt;</span><span class="p">();</span>
@@ -7382,11 +7382,11 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="c1">// Checking result status</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Notification processed successfully by all handlers.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Notification processed successfully by all handlers."</span><span class="p">);</span>
 <span class="p">}</span>
 <span class="k">else</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Failed: {result.Errors.FirstOrDefault()?.Message}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Failed: {result.Errors.FirstOrDefault()?.Message}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="notification-with-multiple-handlers">Notification with multiple handlers<a class="headerlink" href="#notification-with-multiple-handlers" title="Permanent link">&para;</a></h4>
@@ -7400,10 +7400,10 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="nf">Validator</span><span class="p">()</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">UserId</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;UserId cannot be empty.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">UserId</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"UserId cannot be empty."</span><span class="p">);</span>
 <span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Email</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Email cannot be empty.&quot;</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">EmailAddress</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Invalid email format.&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Email cannot be empty."</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">EmailAddress</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Invalid email format."</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7415,7 +7415,7 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// Simulate sending an email</span>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Delay</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Email sent to {notification.Email} for user {notification.UserId}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Email sent to {notification.Email} for user {notification.UserId}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7427,7 +7427,7 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// Simulate logging</span>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Delay</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Logged registration for user {notification.UserId}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Logged registration for user {notification.UserId}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7436,16 +7436,16 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">notifier</span><span class="p">.</span><span class="n">PublishAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">UserRegisteredNotification</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">UserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">(),</span>
-<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user@example.com&quot;</span>
+<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"user@example.com"</span>
 <span class="p">});</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;User registration notification processed successfully.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"User registration notification processed successfully."</span><span class="p">);</span>
 <span class="p">}</span>
 <span class="k">else</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Failed: {result.Errors.FirstOrDefault()?.Message}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Failed: {result.Errors.FirstOrDefault()?.Message}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="fluentvalidation-setup-in-notifications">FluentValidation setup in notifications<a class="headerlink" href="#fluentvalidation-setup-in-notifications" title="Permanent link">&para;</a></h4>
@@ -7459,15 +7459,15 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="nf">Validator</span><span class="p">()</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">EmailAddress</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Email cannot be empty.&quot;</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">EmailAddress</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Invalid email format.&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Email cannot be empty."</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">EmailAddress</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Invalid email format."</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="using-publishoptions">Using <code>PublishOptions</code><a class="headerlink" href="#using-publishoptions" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">notifier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">INotifier</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">notification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UserRegisteredNotification</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">UserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">(),</span><span class="w"> </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user@example.com&quot;</span><span class="w"> </span><span class="p">};</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">notification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UserRegisteredNotification</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">UserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">(),</span><span class="w"> </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"user@example.com"</span><span class="w"> </span><span class="p">};</span>
 
 <span class="c1">// Configure PublishOptions for concurrent execution</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PublishOptions</span>
@@ -7480,11 +7480,11 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Notification processed successfully by all handlers.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Notification processed successfully by all handlers."</span><span class="p">);</span>
 <span class="p">}</span>
 <span class="k">else</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Failed: {result.Errors.FirstOrDefault()?.Message}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Failed: {result.Errors.FirstOrDefault()?.Message}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="notification-metadata-and-cancellation">Notification metadata and cancellation<a class="headerlink" href="#notification-metadata-and-cancellation" title="Permanent link">&para;</a></h4>
@@ -7497,14 +7497,14 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="p">{</span>
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">HandleAsync</span><span class="p">(</span><span class="n">SystemEventNotification</span><span class="w"> </span><span class="n">notification</span><span class="p">,</span><span class="w"> </span><span class="n">PublishOptions</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Notification ID: {notification.NotificationId}, Timestamp: {notification.NotificationTimestamp}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Notification ID: {notification.NotificationId}, Timestamp: {notification.NotificationTimestamp}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Delay</span><span class="p">(</span><span class="mi">5000</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span><span class="w"> </span><span class="c1">// Long-running operation</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">cts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CancellationTokenSource</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">notifier</span><span class="p">.</span><span class="n">PublishAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SystemEventNotification</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">EventType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SystemStarted&quot;</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cts</span><span class="p">.</span><span class="n">Token</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">notifier</span><span class="p">.</span><span class="n">PublishAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SystemEventNotification</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">EventType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"SystemStarted"</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cts</span><span class="p">.</span><span class="n">Token</span><span class="p">);</span>
 </code></pre></div>
 <h4 id="practices_1">Practices<a class="headerlink" href="#practices_1" title="Permanent link">&para;</a></h4>
 <ol>
@@ -7524,7 +7524,7 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="p">{</span>
 <span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Handler error: {error.Message}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Handler error: {error.Message}"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -7547,10 +7547,10 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="nf">Validator</span><span class="p">()</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">UserId</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;UserId cannot be empty.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">UserId</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"UserId cannot be empty."</span><span class="p">);</span>
 <span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Email</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Email cannot be empty.&quot;</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">EmailAddress</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Invalid email format.&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Email cannot be empty."</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">EmailAddress</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Invalid email format."</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7560,7 +7560,7 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">HandleAsync</span><span class="p">(</span><span class="n">UserRegisteredNotification</span><span class="w"> </span><span class="n">notification</span><span class="p">,</span><span class="w"> </span><span class="n">PublishOptions</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Delay</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Email sent to {notification.Email} for user {notification.UserId}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Email sent to {notification.Email} for user {notification.UserId}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7570,7 +7570,7 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">HandleAsync</span><span class="p">(</span><span class="n">UserRegisteredNotification</span><span class="w"> </span><span class="n">notification</span><span class="p">,</span><span class="w"> </span><span class="n">PublishOptions</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Delay</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Logged registration for user {notification.UserId}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Logged registration for user {notification.UserId}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7583,17 +7583,17 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="kt">var</span><span class="w"> </span><span class="n">notification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UserRegisteredNotification</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">UserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">(),</span>
-<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user@example.com&quot;</span>
+<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"user@example.com"</span>
 <span class="p">};</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">notifier</span><span class="p">.</span><span class="n">PublishAsync</span><span class="p">(</span><span class="n">notification</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;User registration notification processed successfully.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"User registration notification processed successfully."</span><span class="p">);</span>
 <span class="p">}</span>
 <span class="k">else</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Failed: {result.Errors.FirstOrDefault()?.Message}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Failed: {result.Errors.FirstOrDefault()?.Message}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="notification-with-concurrent-execution">Notification with concurrent execution<a class="headerlink" href="#notification-with-concurrent-execution" title="Permanent link">&para;</a></h4>
@@ -7602,16 +7602,16 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">notifier</span><span class="p">.</span><span class="n">PublishAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">UserRegisteredNotification</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">UserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">(),</span>
-<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user@example.com&quot;</span>
+<span class="w">    </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"user@example.com"</span>
 <span class="p">},</span><span class="w"> </span><span class="n">options</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;User registration notification processed concurrently by all handlers.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"User registration notification processed concurrently by all handlers."</span><span class="p">);</span>
 <span class="p">}</span>
 <span class="k">else</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Failed: {result.Errors.FirstOrDefault()?.Message}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Failed: {result.Errors.FirstOrDefault()?.Message}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="notification-with-fire-and-forget-execution">Notification with fire-and-forget execution<a class="headerlink" href="#notification-with-fire-and-forget-execution" title="Permanent link">&para;</a></h4>
@@ -7625,7 +7625,7 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">HandleAsync</span><span class="p">(</span><span class="n">CacheUpdateNotification</span><span class="w"> </span><span class="n">notification</span><span class="p">,</span><span class="w"> </span><span class="n">PublishOptions</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Delay</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span><span class="w"> </span><span class="c1">// Simulate cache update</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Cache updated for entity {notification.EntityId}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Cache updated for entity {notification.EntityId}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7636,7 +7636,7 @@ handler outcomes; fire-and-forget returns success after scheduling the handlers.
 <span class="w">    </span><span class="n">EntityId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">()</span>
 <span class="p">},</span><span class="w"> </span><span class="n">options</span><span class="p">);</span>
 
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Notification dispatched in fire-and-forget mode.&quot;</span><span class="p">);</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Notification dispatched in fire-and-forget mode."</span><span class="p">);</span>
 </code></pre></div>
 <p>The returned result confirms dispatch only. It does not contain handler failures, and the supplied
 cancellation token must remain valid long enough for scheduled handlers that observe it.</p>
@@ -7687,9 +7687,9 @@ cancellation token must remain valid long enough for scheduled handlers that obs
 
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">TResponse</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Process</span><span class="p">(</span><span class="n">TRequest</span><span class="w"> </span><span class="n">request</span><span class="p">,</span><span class="w"> </span><span class="n">Type</span><span class="w"> </span><span class="n">handlerType</span><span class="p">,</span><span class="w"> </span><span class="n">Func</span><span class="o">&lt;</span><span class="n">Task</span><span class="o">&lt;</span><span class="n">TResponse</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">next</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">&quot;Processing message {MessageType}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">GetType</span><span class="p">().</span><span class="n">Name</span><span class="p">);</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Processing message {MessageType}"</span><span class="p">,</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">GetType</span><span class="p">().</span><span class="n">Name</span><span class="p">);</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">next</span><span class="p">();</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">&quot;Message processed (success={IsSuccess})&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">);</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Message processed (success={IsSuccess})"</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -7718,7 +7718,7 @@ cancellation token must remain valid long enough for scheduled handlers that obs
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">Progress</span><span class="o">?.</span><span class="n">Report</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ProgressReport</span><span class="p">(</span><span class="s">&quot;LongRunningCommand&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">$&quot;Processing {i}%&quot;</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">i</span><span class="p">));</span>
+<span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">Progress</span><span class="o">?.</span><span class="n">Report</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ProgressReport</span><span class="p">(</span><span class="s">"LongRunningCommand"</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">$"Processing {i}%"</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">i</span><span class="p">));</span>
 <span class="w">            </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Delay</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Unit</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="n">Unit</span><span class="p">.</span><span class="n">Value</span><span class="p">);</span>
@@ -7728,7 +7728,7 @@ cancellation token must remain valid long enough for scheduled handlers that obs
 <span class="c1">// Dispatch with progress reporting</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SendOptions</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Progress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Progress</span><span class="o">&lt;</span><span class="n">ProgressReport</span><span class="o">&gt;</span><span class="p">(</span><span class="n">report</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Progress: {report.Messages.First()} ({report.PercentageComplete}%)&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="n">Progress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Progress</span><span class="o">&lt;</span><span class="n">ProgressReport</span><span class="o">&gt;</span><span class="p">(</span><span class="n">report</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Progress: {report.Messages.First()} ({report.PercentageComplete}%)"</span><span class="p">))</span>
 <span class="p">};</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">LongRunningCommand</span><span class="p">(),</span><span class="w"> </span><span class="n">options</span><span class="p">);</span>
 </code></pre></div>
@@ -7752,13 +7752,13 @@ cancellation token must remain valid long enough for scheduled handlers that obs
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="nf">Validator</span><span class="p">()</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">UserId</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;UserId cannot be empty.&quot;</span><span class="p">);</span>
-<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Username</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Username cannot be empty.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">UserId</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"UserId cannot be empty."</span><span class="p">);</span>
+<span class="w">            </span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Username</span><span class="p">).</span><span class="n">NotEmpty</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Username cannot be empty."</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
-<span class="na">[HandlerDatabaseTransaction(contextName: &quot;Core&quot;)]</span><span class="w"> </span><span class="c1">// Resolves CoreDbContext by its logical name</span>
+<span class="na">[HandlerDatabaseTransaction(contextName: "Core")]</span><span class="w"> </span><span class="c1">// Resolves CoreDbContext by its logical name</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">UpdateUserCommandHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">RequestHandlerBase</span><span class="o">&lt;</span><span class="n">UpdateUserCommand</span><span class="p">,</span><span class="w"> </span><span class="n">Unit</span><span class="o">&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IGenericRepository</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="n">userRepository</span><span class="p">;</span>
@@ -7773,7 +7773,7 @@ cancellation token must remain valid long enough for scheduled handlers that obs
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">userRepository</span><span class="p">.</span><span class="n">FindOneAsync</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">UserId</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">user</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Unit</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">$&quot;User with ID {request.UserId} not found.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Unit</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Failure</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">$"User with ID {request.UserId} not found."</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="n">user</span><span class="p">.</span><span class="n">Username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">Username</span><span class="p">;</span>
@@ -7783,7 +7783,7 @@ cancellation token must remain valid long enough for scheduled handlers that obs
 <span class="p">}</span>
 
 <span class="c1">// Register the behavior</span>
-<span class="n">services</span><span class="p">.</span><span class="n">AddSqlServerDbContext</span><span class="o">&lt;</span><span class="n">CoreDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;connection_string&quot;</span><span class="p">);</span>
+<span class="n">services</span><span class="p">.</span><span class="n">AddSqlServerDbContext</span><span class="o">&lt;</span><span class="n">CoreDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"connection_string"</span><span class="p">);</span>
 <span class="n">services</span><span class="p">.</span><span class="n">AddRequester</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddHandlers</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">ValidationPipelineBehavior</span><span class="o">&lt;</span><span class="p">,</span><span class="o">&gt;</span><span class="p">))</span>
@@ -7846,7 +7846,7 @@ values do not count as breaker failures.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Command to clear user cache</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ClearUserCacheCommand</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">RequestBase</span><span class="o">&lt;</span><span class="n">Unit</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
 
-<span class="na">[HandlerCacheInvalidate(&quot;user-cache&quot;)]</span><span class="w"> </span><span class="c1">// Invalidate cache entries starting with &quot;user-cache&quot;</span>
+<span class="na">[HandlerCacheInvalidate("user-cache")]</span><span class="w"> </span><span class="c1">// Invalidate cache entries starting with "user-cache"</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ClearUserCacheCommandHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">RequestHandlerBase</span><span class="o">&lt;</span><span class="n">ClearUserCacheCommand</span><span class="p">,</span><span class="w"> </span><span class="n">Unit</span><span class="o">&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Unit</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">HandleAsync</span><span class="p">(</span><span class="n">ClearUserCacheCommand</span><span class="w"> </span><span class="n">request</span><span class="p">,</span><span class="w"> </span><span class="n">SendOptions</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
@@ -7866,7 +7866,7 @@ values do not count as breaker failures.</p>
 <li>Configured with <code>HandlerAuthorizePolicyAttribute</code> on the handler class; all listed policies must succeed.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="c1">// Require both policies to pass before executing the handler</span>
-<span class="na">[HandlerAuthorizePolicy(&quot;Customers.Write&quot;, &quot;Audited&quot;)]</span>
+<span class="na">[HandlerAuthorizePolicy("Customers.Write", "Audited")]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">CreateCustomerCommandHandler</span>
 <span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="n">RequestHandlerBase</span><span class="o">&lt;</span><span class="n">CreateCustomerCommand</span><span class="p">,</span><span class="w"> </span><span class="n">Unit</span><span class="o">&gt;</span>
 <span class="p">{</span>
@@ -7900,7 +7900,7 @@ corrected in the implementation.</p>
 <li>Configured with <code>HandlerAuthorizeRolesAttribute</code> on the handler class; user must be in at least one of the specified roles.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="c1">// Allow either Admin or Manager to execute the handler</span>
-<span class="na">[HandlerAuthorizeRoles(&quot;Admin&quot;, &quot;Manager&quot;)]</span>
+<span class="na">[HandlerAuthorizeRoles("Admin", "Manager")]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">DeleteCustomerCommandHandler</span>
 <span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="n">RequestHandlerBase</span><span class="o">&lt;</span><span class="n">DeleteCustomerCommand</span><span class="p">,</span><span class="w"> </span><span class="n">Unit</span><span class="o">&gt;</span>
 <span class="p">{</span>
@@ -8022,7 +8022,7 @@ configuration differ:</p>
 <span class="w">        </span><span class="n">SendOptions</span><span class="w"> </span><span class="n">options</span><span class="p">,</span>
 <span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="s">$&quot;Processed: {request.Data.Id}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="s">$"Processed: {request.Data.Id}"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
@@ -8030,8 +8030,8 @@ configuration differ:</p>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">UserData</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IDataItem</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Id</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
 
 <span class="c1">// Dispatching</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">userRequest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ProcessDataRequest</span><span class="o">&lt;</span><span class="n">UserData</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UserData</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user123&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">};</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="n">userRequest</span><span class="p">);</span><span class="w"> </span><span class="c1">// &quot;Processed: user123&quot;</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">userRequest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ProcessDataRequest</span><span class="o">&lt;</span><span class="n">UserData</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UserData</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"user123"</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">};</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="n">userRequest</span><span class="p">);</span><span class="w"> </span><span class="c1">// "Processed: user123"</span>
 </code></pre></div>
 <h4 id="generic-notification-handler-notifier">Generic notification handler (Notifier)<a class="headerlink" href="#generic-notification-handler-notifier" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">GenericNotification</span><span class="o">&lt;</span><span class="n">TData</span><span class="o">&gt;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">NotificationBase</span>
@@ -8056,14 +8056,14 @@ configuration differ:</p>
 <span class="w">        </span><span class="n">PublishOptions</span><span class="w"> </span><span class="n">options</span><span class="p">,</span>
 <span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Handled: {notification.Data.Id}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Handled: {notification.Data.Id}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
 <span class="c1">// Dispatching</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">userNotification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">GenericNotification</span><span class="o">&lt;</span><span class="n">UserData</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UserData</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user123&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">};</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">notifier</span><span class="p">.</span><span class="n">PublishAsync</span><span class="p">(</span><span class="n">userNotification</span><span class="p">);</span><span class="w"> </span><span class="c1">// Logs: &quot;Handled: user123&quot;</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">userNotification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">GenericNotification</span><span class="o">&lt;</span><span class="n">UserData</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UserData</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"user123"</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">};</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">notifier</span><span class="p">.</span><span class="n">PublishAsync</span><span class="p">(</span><span class="n">userNotification</span><span class="p">);</span><span class="w"> </span><span class="c1">// Logs: "Handled: user123"</span>
 </code></pre></div>
 <hr />
 <h2 id="appendix-d-source-generated-commands-queries-and-events"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="source-generation" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m10 9-7 7 7 7M22 9l7 7-7 7" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m18 3-5 26M21 4h8M25 1v7" /></g></svg></span> Appendix D: Source-generated commands, queries, and events<a class="headerlink" href="#appendix-d-source-generated-commands-queries-and-events" title="Permanent link">&para;</a></h2>
@@ -8083,16 +8083,16 @@ configuration differ:</p>
 <p>The <code>[Handle]</code> method is an instance method, so message properties can be used directly inside the method body.
 Services can be added as parameters and are resolved from DI.</p>
 <p>For a package reference, use:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;BridgingIT.DevKit.Common.Utilities.CodeGen&quot;</span>
-<span class="w">                  </span><span class="na">Version=</span><span class="s">&quot;x.y.z&quot;</span>
-<span class="w">                  </span><span class="na">PrivateAssets=</span><span class="s">&quot;all&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">"BridgingIT.DevKit.Common.Utilities.CodeGen"</span>
+<span class="w">                  </span><span class="na">Version=</span><span class="s">"x.y.z"</span>
+<span class="w">                  </span><span class="na">PrivateAssets=</span><span class="s">"all"</span><span class="w"> </span><span class="nt">/&gt;</span>
 </code></pre></div>
 <h3 id="command-without-response">Command without response<a class="headerlink" href="#command-without-response" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="na">[Command]</span>
 <span class="na">[HandlerRetry(3, 200)]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">DoSomethingCommand</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="na">[ValidateNotEmpty(&quot;Message cannot be empty.&quot;)]</span>
+<span class="w">    </span><span class="na">[ValidateNotEmpty("Message cannot be empty.")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Handle]</span>
@@ -8112,10 +8112,10 @@ Services can be added as parameters and are resolved from DI.</p>
 <span class="p">}</span>
 
 <span class="na">[Command]</span>
-<span class="na">[HandlerDatabaseTransaction(contextName: &quot;Core&quot;)]</span>
+<span class="na">[HandlerDatabaseTransaction(contextName: "Core")]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">CreateUserCommand</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="na">[ValidateNotEmpty(&quot;Username cannot be empty.&quot;)]</span>
+<span class="w">    </span><span class="na">[ValidateNotEmpty("Username cannot be empty.")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Username</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Handle]</span>
@@ -8144,7 +8144,7 @@ Services can be added as parameters and are resolved from DI.</p>
 <span class="na">[HandlerTimeout(5000)]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">GetUserQuery</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="na">[ValidateNotEmpty(&quot;UserId cannot be empty.&quot;)]</span>
+<span class="w">    </span><span class="na">[ValidateNotEmpty("UserId cannot be empty.")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Guid</span><span class="w"> </span><span class="n">UserId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Handle]</span>
@@ -8158,7 +8158,7 @@ Services can be added as parameters and are resolved from DI.</p>
 
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span>
 <span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="n">Success</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">Failure</span><span class="p">(</span><span class="s">$&quot;User with ID {UserId} not found.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">Failure</span><span class="p">(</span><span class="s">$"User with ID {UserId} not found."</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -8175,7 +8175,7 @@ Services can be added as parameters and are resolved from DI.</p>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">validator</span><span class="p">.</span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Items</span><span class="p">)</span><span class="w"> </span><span class="c1">// Supports validation of the entire request object graph</span>
 <span class="w">            </span><span class="p">.</span><span class="n">Must</span><span class="p">(</span><span class="n">items</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">items</span><span class="p">.</span><span class="n">Count</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;A maximum of 100 items is allowed.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"A maximum of 100 items is allowed."</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Handle]</span>
@@ -8198,14 +8198,14 @@ Services can be added as parameters and are resolved from DI.</p>
 <span class="na">[HandlerRetry(2, 300)]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">UserRegisteredEvent</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="na">[ValidateNotEmpty(&quot;Email is required.&quot;)]</span>
-<span class="w">    </span><span class="na">[ValidateEmail(&quot;Email must be valid.&quot;)]</span>
+<span class="w">    </span><span class="na">[ValidateNotEmpty("Email is required.")]</span>
+<span class="w">    </span><span class="na">[ValidateEmail("Email must be valid.")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Email</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">init</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Handle]</span>
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">Audit</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Audit user registration for {Email}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Audit user registration for {Email}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nf">Success</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -8232,7 +8232,7 @@ Services can be added as parameters and are resolved from DI.</p>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">validator</span><span class="p">.</span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">OrderIds</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">Must</span><span class="p">(</span><span class="n">ids</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">ids</span><span class="p">.</span><span class="n">Count</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;A maximum of 100 order ids is allowed.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"A maximum of 100 order ids is allowed."</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Handle]</span>
@@ -8252,14 +8252,14 @@ Services can be added as parameters and are resolved from DI.</p>
 <span class="w">    </span><span class="na">[Handle]</span>
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">Audit</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Audit: {Email}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Audit: {Email}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nf">Success</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Handle]</span>
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">UpdateReadModel</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Projection updated for {Email}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Projection updated for {Email}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nf">Success</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -8268,7 +8268,7 @@ Services can be added as parameters and are resolved from DI.</p>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">HandleAsync</span><span class="p">(</span><span class="n">CustomerSignedUpEvent</span><span class="w"> </span><span class="n">notification</span><span class="p">,</span><span class="w"> </span><span class="n">PublishOptions</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Metrics tracked for {notification.Email}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Metrics tracked for {notification.Email}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">());</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -8363,10 +8363,10 @@ Services can be added as parameters and are resolved from DI.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

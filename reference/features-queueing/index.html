@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5109,8 +5109,8 @@
 <span class="w">  </span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">  </span><span class="p">.</span><span class="n">WithServiceBusBroker</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ServiceBusQueueBrokerConfiguration</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="n">ConnectionString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">configuration</span><span class="p">[</span><span class="s">&quot;Queueing:ServiceBus:ConnectionString&quot;</span><span class="p">],</span>
-<span class="w">    </span><span class="n">QueueNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bit&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ConnectionString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">configuration</span><span class="p">[</span><span class="s">"Queueing:ServiceBus:ConnectionString"</span><span class="p">],</span>
+<span class="w">    </span><span class="n">QueueNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"bit"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">AutoCreateQueue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
 <span class="w">    </span><span class="n">MaxConcurrentCalls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
 <span class="w">    </span><span class="n">MaxDeliveryAttempts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span>
@@ -5122,8 +5122,8 @@
 <span class="w">  </span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">  </span><span class="p">.</span><span class="n">WithAzureQueueStorageBroker</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">AzureQueueStorageQueueBrokerConfiguration</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">   </span><span class="n">ConnectionString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">configuration</span><span class="p">[</span><span class="s">&quot;Queueing:AzureQueueStorage:ConnectionString&quot;</span><span class="p">],</span>
-<span class="w">   </span><span class="n">QueueNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bit&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="n">ConnectionString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">configuration</span><span class="p">[</span><span class="s">"Queueing:AzureQueueStorage:ConnectionString"</span><span class="p">],</span>
+<span class="w">   </span><span class="n">QueueNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"bit"</span><span class="p">,</span>
 <span class="w">   </span><span class="n">AutoCreateQueue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
 <span class="w">   </span><span class="n">MaxConcurrentCalls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
 <span class="w">   </span><span class="n">MaxDeliveryAttempts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
@@ -5149,7 +5149,7 @@
 <span class="p">{</span>
 <span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">OrderQueuedMessage</span><span class="w"> </span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">&quot;Processing queued order {OrderId}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">.</span><span class="n">OrderId</span><span class="p">);</span>
+<span class="w">  </span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Processing queued order {OrderId}"</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">.</span><span class="n">OrderId</span><span class="p">);</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
 <span class="w"> </span><span class="p">}</span>
 <span class="p">}</span>
@@ -5166,7 +5166,7 @@
 <p>Expose a small endpoint and map the optional operational endpoints:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/orders/{orderId:guid}/queue&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">"/orders/{orderId:guid}/queue"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
 <span class="w">  </span><span class="n">Guid</span><span class="w"> </span><span class="n">orderId</span><span class="p">,</span>
 <span class="w">  </span><span class="n">IQueueBroker</span><span class="w"> </span><span class="n">queueBroker</span><span class="p">,</span>
 <span class="w">  </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -5193,8 +5193,8 @@
 <span class="w">  </span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">  </span><span class="p">.</span><span class="n">WithEntityFrameworkBroker</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">  </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
-<span class="w">    </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/_bdk/api/queueing&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">GroupTag</span><span class="p">(</span><span class="s">&quot;_bdk.Queueing&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">"/_bdk/api/queueing"</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">GroupTag</span><span class="p">(</span><span class="s">"_bdk.Queueing"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">());</span>
 </code></pre></div>
 <p>If you prefer separate registration, the existing <code>builder.Services.AddQueueingEndpoints(options =&gt; options.RequireAuthorization())</code> helper is also available.</p>
@@ -5572,10 +5572,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

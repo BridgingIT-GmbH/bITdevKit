@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4869,16 +4869,16 @@ events, see <a href="../features-domain-events/">Domain Events</a>.</p>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">RetryPipelineBehavior</span><span class="o">&lt;</span><span class="p">,</span><span class="o">&gt;</span><span class="p">));</span>
 </code></pre></div>
 <p>If you want to use the source-generated authoring model, add the code generation package to the project that contains the events:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;BridgingIT.DevKit.Common.Utilities.CodeGen&quot;</span>
-<span class="w">                  </span><span class="na">Version=</span><span class="s">&quot;x.y.z&quot;</span>
-<span class="w">                  </span><span class="na">PrivateAssets=</span><span class="s">&quot;all&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">"BridgingIT.DevKit.Common.Utilities.CodeGen"</span>
+<span class="w">                  </span><span class="na">Version=</span><span class="s">"x.y.z"</span>
+<span class="w">                  </span><span class="na">PrivateAssets=</span><span class="s">"all"</span><span class="w"> </span><span class="nt">/&gt;</span>
 </code></pre></div>
 <p>After defining <code>UserRegisteredEvent</code> as shown below, publish it and inspect the aggregated result:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">notifier</span><span class="p">.</span><span class="n">PublishAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">UserRegisteredEvent</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">UserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;5f6b5ba2-85d5-44bb-87a7-f876a65cdb09&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ada@example.test&quot;</span>
+<span class="w">        </span><span class="n">UserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"5f6b5ba2-85d5-44bb-87a7-f876a65cdb09"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ada@example.test"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
@@ -4890,7 +4890,7 @@ events, see <a href="../features-domain-events/">Domain Events</a>.</p>
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;User registration handlers completed.&quot;</span><span class="p">);</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"User registration handlers completed."</span><span class="p">);</span>
 </code></pre></div>
 <p>After all handlers succeed, the final line is:</p>
 <div class="highlight"><pre><span></span><code>User registration handlers completed.
@@ -4901,17 +4901,17 @@ events, see <a href="../features-domain-events/">Domain Events</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="na">[Event]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">UserRegisteredEvent</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="na">[ValidateNotEmptyGuid(&quot;UserId is required.&quot;)]</span>
+<span class="w">    </span><span class="na">[ValidateNotEmptyGuid("UserId is required.")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">UserId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">init</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
-<span class="w">    </span><span class="na">[ValidateNotEmpty(&quot;Email is required.&quot;)]</span>
-<span class="w">    </span><span class="na">[ValidateEmail(&quot;Email must be valid.&quot;)]</span>
+<span class="w">    </span><span class="na">[ValidateNotEmpty("Email is required.")]</span>
+<span class="w">    </span><span class="na">[ValidateEmail("Email must be valid.")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Email</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">init</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Handle]</span>
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">Audit</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Audit registration for {UserId}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Audit registration for {UserId}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nf">Success</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -4923,8 +4923,8 @@ events, see <a href="../features-domain-events/">Domain Events</a>.</p>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">EmailMessage</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">(),</span>
-<span class="w">            </span><span class="n">Subject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Welcome&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="n">Body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Your account is ready.&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Subject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Welcome"</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Your account is ready."</span><span class="p">,</span>
 <span class="w">            </span><span class="n">To</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">Email</span><span class="p">]</span>
 <span class="w">        </span><span class="p">};</span>
 
@@ -4932,7 +4932,7 @@ events, see <a href="../features-domain-events/">Domain Events</a>.</p>
 
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">sendResult</span><span class="p">.</span><span class="n">IsSuccess</span>
 <span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="n">Success</span><span class="p">()</span>
-<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">Failure</span><span class="p">(</span><span class="s">&quot;Welcome email could not be sent.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">Failure</span><span class="p">(</span><span class="s">"Welcome email could not be sent."</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -4947,7 +4947,7 @@ implementation, so one event can fan out to multiple generated subscribers.</p>
 <span class="w">        </span><span class="n">PublishOptions</span><span class="w"> </span><span class="n">options</span><span class="p">,</span>
 <span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Metrics tracked for {notification.UserId}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Metrics tracked for {notification.UserId}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">());</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -4977,10 +4977,10 @@ implementation, so one event can fan out to multiple generated subscribers.</p>
 <div class="highlight"><pre><span></span><code><span class="na">[Event]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">InvoiceApprovedEvent</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="na">[ValidateNotEmptyGuid(&quot;InvoiceId is required.&quot;)]</span>
+<span class="w">    </span><span class="na">[ValidateNotEmptyGuid("InvoiceId is required.")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">InvoiceId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">init</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
-<span class="w">    </span><span class="na">[ValidateNotEmpty(&quot;ApprovedBy is required.&quot;)]</span>
+<span class="w">    </span><span class="na">[ValidateNotEmpty("ApprovedBy is required.")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ApprovedBy</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">init</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Handle]</span>
@@ -5002,7 +5002,7 @@ implementation, so one event can fan out to multiple generated subscribers.</p>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">validator</span><span class="p">.</span><span class="n">RuleFor</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">ImportedCustomerIds</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">Must</span><span class="p">(</span><span class="n">ids</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">ids</span><span class="p">.</span><span class="n">Count</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">1000</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;A maximum of 1000 imported customers is allowed.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"A maximum of 1000 imported customers is allowed."</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[Handle]</span>
@@ -5035,7 +5035,7 @@ implementation, so one event can fan out to multiple generated subscribers.</p>
 <span class="w">        </span><span class="n">ICache</span><span class="w"> </span><span class="n">cache</span><span class="p">,</span>
 <span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">cache</span><span class="p">.</span><span class="n">RemoveAsync</span><span class="p">(</span><span class="s">$&quot;report:{ReportId}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">cache</span><span class="p">.</span><span class="n">RemoveAsync</span><span class="p">(</span><span class="s">$"report:{ReportId}"</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nf">Success</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -5145,10 +5145,10 @@ implementation, so one event can fan out to multiple generated subscribers.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

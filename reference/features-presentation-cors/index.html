@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5347,15 +5347,15 @@
 <h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
 <p>Configure one exact frontend origin in <code>appsettings.json</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;DefaultPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Frontend&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;Policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;Frontend&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;AllowedOrigins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://app.example.com&quot;</span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyHeader&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"Cors"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"DefaultPolicy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Frontend"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Policies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"Frontend"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"AllowedOrigins"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://app.example.com"</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">"AllowAnyMethod"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowAnyHeader"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowCredentials"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
@@ -5371,7 +5371,7 @@
 <span class="n">app</span><span class="p">.</span><span class="n">UseCors</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">);</span>
 <span class="n">app</span><span class="p">.</span><span class="n">UseAuthorization</span><span class="p">();</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/api/status&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ready&quot;</span><span class="w"> </span><span class="p">}));</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/api/status"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ready"</span><span class="w"> </span><span class="p">}));</span>
 <span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
 </code></pre></div>
 <p>A browser request to <code>/api/status</code> from <code>https://app.example.com</code> receives <code>Access-Control-Allow-Origin: https://app.example.com</code>. Other origins do not receive an allow-origin response header.</p>
@@ -5492,7 +5492,7 @@
 <td><code>bool?</code></td>
 <td>No</td>
 <td><code>null</code> (false)</td>
-<td>Enable matching for wildcard origins such as <code>https://*.example.com</code>.</td>
+<td>Enable subdomain matching for configured base origins such as <code>https://example.com</code>.</td>
 </tr>
 <tr>
 <td><code>PreflightMaxAgeSeconds</code></td>
@@ -5507,19 +5507,19 @@
 <h3 id="example-1-production-configuration">Example 1: Production configuration<a class="headerlink" href="#example-1-production-configuration" title="Permanent link">&para;</a></h3>
 <p>Specific origins with credentials support:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;DefaultPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ProductionPolicy&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;Policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;ProductionPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;AllowedOrigins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">          </span><span class="s2">&quot;https://www.example.com&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="s2">&quot;https://app.example.com&quot;</span>
+<span class="w">  </span><span class="nt">"Cors"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"DefaultPolicy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ProductionPolicy"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Policies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"ProductionPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"AllowedOrigins"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="s2">"https://www.example.com"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"https://app.example.com"</span>
 <span class="w">        </span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyHeader&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;PreflightMaxAgeSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span>
+<span class="w">        </span><span class="nt">"AllowAnyMethod"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowAnyHeader"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowCredentials"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"PreflightMaxAgeSeconds"</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
@@ -5528,25 +5528,25 @@
 <h3 id="example-2-development-configuration">Example 2: Development configuration<a class="headerlink" href="#example-2-development-configuration" title="Permanent link">&para;</a></h3>
 <p>Allow common localhost ports (included in <code>appsettings.Development.json</code>):</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;DefaultPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LocalhostPolicy&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;Policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;LocalhostPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;AllowedOrigins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">          </span><span class="s2">&quot;https://localhost:5001&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="s2">&quot;https://localhost:5000&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="s2">&quot;https://localhost:3000&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="s2">&quot;https://localhost:3001&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="s2">&quot;https://localhost:4200&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="s2">&quot;http://localhost:5001&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="s2">&quot;http://localhost:5000&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="s2">&quot;http://localhost:3000&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="s2">&quot;http://localhost:3001&quot;</span>
+<span class="w">  </span><span class="nt">"Cors"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"DefaultPolicy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LocalhostPolicy"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Policies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"LocalhostPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"AllowedOrigins"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="s2">"https://localhost:5001"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"https://localhost:5000"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"https://localhost:3000"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"https://localhost:3001"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"https://localhost:4200"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"http://localhost:5001"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"http://localhost:5000"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"http://localhost:3000"</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">"http://localhost:3001"</span>
 <span class="w">        </span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyHeader&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">        </span><span class="nt">"AllowAnyMethod"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowAnyHeader"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowCredentials"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
@@ -5561,15 +5561,15 @@
 <h3 id="example-3-public-api-without-credentials">Example 3: Public API without credentials<a class="headerlink" href="#example-3-public-api-without-credentials" title="Permanent link">&para;</a></h3>
 <p>Allow any origin without credentials:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;DefaultPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PublicApiPolicy&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;Policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;PublicApiPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyOrigin&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyHeader&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;PreflightMaxAgeSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span>
+<span class="w">  </span><span class="nt">"Cors"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"DefaultPolicy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PublicApiPolicy"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Policies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"PublicApiPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"AllowAnyOrigin"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowAnyMethod"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowAnyHeader"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"PreflightMaxAgeSeconds"</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
@@ -5579,18 +5579,18 @@
 <h3 id="example-4-wildcard-subdomains">Example 4: Wildcard subdomains<a class="headerlink" href="#example-4-wildcard-subdomains" title="Permanent link">&para;</a></h3>
 <p>Allow any subdomain of example.com:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;DefaultPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SubdomainPolicy&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;Policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;SubdomainPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;AllowedOrigins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">          </span><span class="s2">&quot;https://*.example.com&quot;</span>
+<span class="w">  </span><span class="nt">"Cors"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"DefaultPolicy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SubdomainPolicy"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Policies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"SubdomainPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"AllowedOrigins"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="s2">"https://example.com"</span>
 <span class="w">        </span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;AllowWildcardSubdomains&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyHeader&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">        </span><span class="nt">"AllowWildcardSubdomains"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowAnyMethod"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowAnyHeader"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowCredentials"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
@@ -5606,26 +5606,26 @@
 <h3 id="example-5-multiple-named-policies">Example 5: Multiple named policies<a class="headerlink" href="#example-5-multiple-named-policies" title="Permanent link">&para;</a></h3>
 <p>Different policies for different endpoints:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;DefaultPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;Policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;FrontendPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;AllowedOrigins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://app.example.com&quot;</span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyHeader&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"Cors"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"DefaultPolicy"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Policies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"FrontendPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"AllowedOrigins"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://app.example.com"</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">"AllowAnyMethod"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowAnyHeader"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowCredentials"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;PublicApiPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyOrigin&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowedMethods&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyHeader&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">      </span><span class="nt">"PublicApiPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"AllowAnyOrigin"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowedMethods"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"GET"</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">"AllowAnyHeader"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;AdminPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;AllowedOrigins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://admin.example.com&quot;</span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;AllowedMethods&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;DELETE&quot;</span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyHeader&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">      </span><span class="nt">"AdminPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"AllowedOrigins"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://admin.example.com"</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">"AllowedMethods"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"GET"</span><span class="p">,</span><span class="w"> </span><span class="s2">"POST"</span><span class="p">,</span><span class="w"> </span><span class="s2">"PUT"</span><span class="p">,</span><span class="w"> </span><span class="s2">"DELETE"</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">"AllowAnyHeader"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowCredentials"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
@@ -5634,17 +5634,17 @@
 <h3 id="example-6-api-with-specific-methods-and-headers">Example 6: API with specific methods and headers<a class="headerlink" href="#example-6-api-with-specific-methods-and-headers" title="Permanent link">&para;</a></h3>
 <p>Restrictive configuration for internal API:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;DefaultPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;RestrictivePolicy&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;Policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;RestrictivePolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;AllowedOrigins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://internal.example.com&quot;</span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;AllowedMethods&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;AllowedHeaders&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Authorization&quot;</span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;ExposeHeaders&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;X-Total-Count&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;X-Page-Number&quot;</span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;AllowCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;PreflightMaxAgeSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span>
+<span class="w">  </span><span class="nt">"Cors"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"DefaultPolicy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RestrictivePolicy"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Policies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"RestrictivePolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"AllowedOrigins"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://internal.example.com"</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">"AllowedMethods"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"GET"</span><span class="p">,</span><span class="w"> </span><span class="s2">"POST"</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">"AllowedHeaders"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Content-Type"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Authorization"</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">"ExposeHeaders"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"X-Total-Count"</span><span class="p">,</span><span class="w"> </span><span class="s2">"X-Page-Number"</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">"AllowCredentials"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"PreflightMaxAgeSeconds"</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
@@ -5654,14 +5654,14 @@
 <h3 id="global-default-policy">Global default policy<a class="headerlink" href="#global-default-policy" title="Permanent link">&para;</a></h3>
 <p>Apply a policy to all endpoints by specifying <code>DefaultPolicy</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;DefaultPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DefaultPolicy&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;Policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;DefaultPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyOrigin&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;AllowAnyHeader&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"Cors"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"DefaultPolicy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DefaultPolicy"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Policies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"DefaultPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"AllowAnyOrigin"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowAnyMethod"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"AllowAnyHeader"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
@@ -5675,28 +5675,28 @@
 <h3 id="per-endpoint-policy-for-minimal-apis">Per-endpoint policy for Minimal APIs<a class="headerlink" href="#per-endpoint-policy-for-minimal-apis" title="Permanent link">&para;</a></h3>
 <p>Apply different policies to specific Minimal API endpoints using <code>RequireCors()</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Use default policy (configured in DefaultPolicy setting)</span>
-<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/api/products&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">products</span><span class="p">))</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/api/products"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">products</span><span class="p">))</span>
 <span class="w">   </span><span class="p">.</span><span class="n">RequireCors</span><span class="p">();</span>
 
 <span class="c1">// Use specific named policy</span>
-<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/api/products/frontend&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">frontendData</span><span class="p">))</span>
-<span class="w">   </span><span class="p">.</span><span class="n">RequireCors</span><span class="p">(</span><span class="s">&quot;FrontendPolicy&quot;</span><span class="p">);</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/api/products/frontend"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">frontendData</span><span class="p">))</span>
+<span class="w">   </span><span class="p">.</span><span class="n">RequireCors</span><span class="p">(</span><span class="s">"FrontendPolicy"</span><span class="p">);</span>
 
 <span class="c1">// Use different policy for admin endpoint</span>
-<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/api/products/admin&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">Product</span><span class="w"> </span><span class="n">product</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">"/api/products/admin"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">Product</span><span class="w"> </span><span class="n">product</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="c1">// Create product logic</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Created</span><span class="p">(</span><span class="s">$&quot;/api/products/{product.Id}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">product</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Created</span><span class="p">(</span><span class="s">$"/api/products/{product.Id}"</span><span class="p">,</span><span class="w"> </span><span class="n">product</span><span class="p">);</span>
 <span class="p">})</span>
-<span class="p">.</span><span class="n">RequireCors</span><span class="p">(</span><span class="s">&quot;AdminPolicy&quot;</span><span class="p">);</span>
+<span class="p">.</span><span class="n">RequireCors</span><span class="p">(</span><span class="s">"AdminPolicy"</span><span class="p">);</span>
 
 <span class="c1">// Group multiple endpoints with same policy</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">productsGroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">&quot;/api/products&quot;</span><span class="p">)</span>
-<span class="w">                       </span><span class="p">.</span><span class="n">RequireCors</span><span class="p">(</span><span class="s">&quot;FrontendPolicy&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">productsGroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">"/api/products"</span><span class="p">)</span>
+<span class="w">                       </span><span class="p">.</span><span class="n">RequireCors</span><span class="p">(</span><span class="s">"FrontendPolicy"</span><span class="p">);</span>
 
-<span class="n">productsGroup</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">products</span><span class="p">));</span>
-<span class="n">productsGroup</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/{id}&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">GetProduct</span><span class="p">(</span><span class="n">id</span><span class="p">)));</span>
-<span class="n">productsGroup</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">Product</span><span class="w"> </span><span class="n">product</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Created</span><span class="p">(</span><span class="s">$&quot;/api/products/{product.Id}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">product</span><span class="p">));</span>
+<span class="n">productsGroup</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">products</span><span class="p">));</span>
+<span class="n">productsGroup</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/{id}"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">GetProduct</span><span class="p">(</span><span class="n">id</span><span class="p">)));</span>
+<span class="n">productsGroup</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">"/"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">Product</span><span class="w"> </span><span class="n">product</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Created</span><span class="p">(</span><span class="s">$"/api/products/{product.Id}"</span><span class="p">,</span><span class="w"> </span><span class="n">product</span><span class="p">));</span>
 </code></pre></div>
 <p>Use <code>.DisableCors()</code> on a Minimal API endpoint or route group when it must opt out of inherited CORS metadata. Omitting <code>RequireCors()</code> is sufficient only when no default or parent-group policy applies.</p>
 <h3 id="per-endpoint-policy-for-controllers">Per-endpoint policy for controllers<a class="headerlink" href="#per-endpoint-policy-for-controllers" title="Permanent link">&para;</a></h3>
@@ -5704,7 +5704,7 @@
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.AspNetCore.Cors</span><span class="p">;</span>
 
 <span class="na">[ApiController]</span>
-<span class="na">[Route(&quot;api/[controller]</span><span class="s">&quot;)]</span>
+<span class="na">[Route("api/[controller]</span><span class="s">")]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ProductsController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ControllerBase</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="c1">// Use default policy (configured in DefaultPolicy setting)</span>
@@ -5716,16 +5716,16 @@
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="c1">// Use specific named policy</span>
-<span class="w">    </span><span class="na">[EnableCors(&quot;FrontendPolicy&quot;)]</span>
-<span class="w">    </span><span class="na">[HttpGet(&quot;frontend&quot;)]</span>
+<span class="w">    </span><span class="na">[EnableCors("FrontendPolicy")]</span>
+<span class="w">    </span><span class="na">[HttpGet("frontend")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IActionResult</span><span class="w"> </span><span class="nf">GetFrontendData</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// ...</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="c1">// Use different policy for admin endpoint</span>
-<span class="w">    </span><span class="na">[EnableCors(&quot;AdminPolicy&quot;)]</span>
-<span class="w">    </span><span class="na">[HttpPost(&quot;admin&quot;)]</span>
+<span class="w">    </span><span class="na">[EnableCors("AdminPolicy")]</span>
+<span class="w">    </span><span class="na">[HttpPost("admin")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IActionResult</span><span class="w"> </span><span class="nf">CreateProduct</span><span class="p">([</span><span class="n">FromBody</span><span class="p">]</span><span class="w"> </span><span class="n">Product</span><span class="w"> </span><span class="n">product</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// ...</span>
@@ -5733,7 +5733,7 @@
 
 <span class="w">    </span><span class="c1">// Disable CORS for specific endpoint</span>
 <span class="w">    </span><span class="na">[DisableCors]</span>
-<span class="w">    </span><span class="na">[HttpGet(&quot;internal&quot;)]</span>
+<span class="w">    </span><span class="na">[HttpGet("internal")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IActionResult</span><span class="w"> </span><span class="nf">GetInternalData</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// ...</span>
@@ -5755,33 +5755,33 @@
 <span class="n">app</span><span class="p">.</span><span class="n">UseCors</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">);</span>
 
 <span class="c1">// Group with specific policy</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">apiGroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">&quot;/api&quot;</span><span class="p">)</span>
-<span class="w">                  </span><span class="p">.</span><span class="n">RequireCors</span><span class="p">(</span><span class="s">&quot;ApiPolicy&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">apiGroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">"/api"</span><span class="p">)</span>
+<span class="w">                  </span><span class="p">.</span><span class="n">RequireCors</span><span class="p">(</span><span class="s">"ApiPolicy"</span><span class="p">);</span>
 
-<span class="n">apiGroup</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/products&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">products</span><span class="p">));</span><span class="w"> </span><span class="c1">// Uses ApiPolicy</span>
+<span class="n">apiGroup</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/products"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">products</span><span class="p">));</span><span class="w"> </span><span class="c1">// Uses ApiPolicy</span>
 
 <span class="c1">// Use a separate group for another named policy</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">specialGroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">&quot;/api/special&quot;</span><span class="p">)</span>
-<span class="w">                      </span><span class="p">.</span><span class="n">RequireCors</span><span class="p">(</span><span class="s">&quot;SpecialPolicy&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">specialGroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">"/api/special"</span><span class="p">)</span>
+<span class="w">                      </span><span class="p">.</span><span class="n">RequireCors</span><span class="p">(</span><span class="s">"SpecialPolicy"</span><span class="p">);</span>
 
-<span class="n">specialGroup</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/products&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">specialProducts</span><span class="p">));</span>
+<span class="n">specialGroup</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/products"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">specialProducts</span><span class="p">));</span>
 
 <span class="c1">// No CORS policy applies to this endpoint</span>
-<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/internal&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="s">&quot;internal data&quot;</span><span class="p">));</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/internal"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="s">"internal data"</span><span class="p">));</span>
 </code></pre></div>
 <p><strong>Controller-based example:</strong></p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ValuesController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ControllerBase</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="na">[EnableCors(&quot;DefaultPolicy&quot;)]</span>
+<span class="w">    </span><span class="na">[EnableCors("DefaultPolicy")]</span>
 <span class="w">    </span><span class="na">[HttpGet]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IActionResult</span><span class="w"> </span><span class="nf">Get</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
 
-<span class="w">    </span><span class="na">[EnableCors(&quot;SpecialPolicy&quot;)]</span>
-<span class="w">    </span><span class="na">[HttpGet(&quot;special&quot;)]</span>
+<span class="w">    </span><span class="na">[EnableCors("SpecialPolicy")]</span>
+<span class="w">    </span><span class="na">[HttpGet("special")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IActionResult</span><span class="w"> </span><span class="nf">GetSpecial</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[DisableCors]</span><span class="w"> </span><span class="c1">// Disables CORS</span>
-<span class="w">    </span><span class="na">[HttpGet(&quot;internal&quot;)]</span>
+<span class="w">    </span><span class="na">[HttpGet("internal")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IActionResult</span><span class="w"> </span><span class="nf">GetInternal</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5797,9 +5797,9 @@
 <p><strong>Always specify exact origins in production</strong></p>
 </li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;AllowedOrigins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">  </span><span class="s2">&quot;https://www.example.com&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s2">&quot;https://app.example.com&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="nt">"AllowedOrigins"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="s2">"https://www.example.com"</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">"https://app.example.com"</span>
 <span class="p">]</span>
 </code></pre></div>
 <ol>
@@ -5819,15 +5819,15 @@
 <p><strong>Limit methods to what's needed</strong></p>
 </li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;AllowedMethods&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;DELETE&quot;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="nt">"AllowedMethods"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"GET"</span><span class="p">,</span><span class="w"> </span><span class="s2">"POST"</span><span class="p">,</span><span class="w"> </span><span class="s2">"PUT"</span><span class="p">,</span><span class="w"> </span><span class="s2">"DELETE"</span><span class="p">]</span>
 </code></pre></div>
 <p>Instead of:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;AllowAnyMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<div class="highlight"><pre><span></span><code><span class="nt">"AllowAnyMethod"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
 <ol>
 <li><strong>Set preflight cache duration</strong></li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;PreflightMaxAgeSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span>
+<div class="highlight"><pre><span></span><code><span class="nt">"PreflightMaxAgeSeconds"</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span>
 </code></pre></div>
 <p>Reduces overhead by caching preflight responses</p>
 <h3 id="development-and-production">Development and production<a class="headerlink" href="#development-and-production" title="Permanent link">&para;</a></h3>
@@ -5846,9 +5846,9 @@
 <h3 id="wildcard-subdomains">Wildcard subdomains<a class="headerlink" href="#wildcard-subdomains" title="Permanent link">&para;</a></h3>
 <p><strong>Safe</strong> when you control all subdomains:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;AllowedOrigins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://*.example.com&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;AllowWildcardSubdomains&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;AllowCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"AllowedOrigins"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://example.com"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"AllowWildcardSubdomains"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"AllowCredentials"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>Unsafe</strong> with public subdomains:</p>
@@ -5858,15 +5858,15 @@
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <h3 id="issue-cors-error-no-access-control-allow-origin-header">Issue: CORS error "No 'Access-Control-Allow-Origin' header"<a class="headerlink" href="#issue-cors-error-no-access-control-allow-origin-header" title="Permanent link">&para;</a></h3>
 <p><strong>Symptoms:</strong></p>
-<div class="highlight"><pre><span></span><code>Access to fetch at &#39;https://api.example.com/data&#39; from origin &#39;https://app.example.com&#39;
-has been blocked by CORS policy: No &#39;Access-Control-Allow-Origin&#39; header is present.
+<div class="highlight"><pre><span></span><code>Access to fetch at 'https://api.example.com/data' from origin 'https://app.example.com'
+has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present.
 </code></pre></div>
 <p><strong>Solutions:</strong></p>
 <ol>
 <li><strong>Check if CORS is enabled</strong></li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<div class="highlight"><pre><span></span><code><span class="nt">"Cors"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </code></pre></div>
 <ol>
@@ -5890,22 +5890,22 @@ has been blocked by CORS policy: No &#39;Access-Control-Allow-Origin&#39; header
 </ol>
 <h3 id="issue-cors-policy-response-to-preflight-request-doesnt-pass">Issue: "CORS policy: Response to preflight request doesn't pass"<a class="headerlink" href="#issue-cors-policy-response-to-preflight-request-doesnt-pass" title="Permanent link">&para;</a></h3>
 <p><strong>Symptoms:</strong></p>
-<div class="highlight"><pre><span></span><code>Response to preflight request doesn&#39;t pass access control check:
-The value of the &#39;Access-Control-Allow-Origin&#39; header must not be the wildcard &#39;*&#39;
-when the request&#39;s credentials mode is &#39;include&#39;.
+<div class="highlight"><pre><span></span><code>Response to preflight request doesn't pass access control check:
+The value of the 'Access-Control-Allow-Origin' header must not be the wildcard '*'
+when the request's credentials mode is 'include'.
 </code></pre></div>
 <p><strong>Solution:</strong></p>
 <p>Cannot use <code>AllowAnyOrigin: true</code> with <code>AllowCredentials: true</code>:</p>
 <p><strong>Invalid:</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;AllowAnyOrigin&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;AllowCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"AllowAnyOrigin"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"AllowCredentials"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>Valid:</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;AllowedOrigins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://app.example.com&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;AllowCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"AllowedOrigins"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://app.example.com"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"AllowCredentials"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="issue-preflight-options-request-fails">Issue: Preflight OPTIONS request fails<a class="headerlink" href="#issue-preflight-options-request-fails" title="Permanent link">&para;</a></h3>
@@ -5918,19 +5918,19 @@ when the request&#39;s credentials mode is &#39;include&#39;.
 <ol>
 <li><strong>Ensure methods are allowed</strong></li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;AllowedMethods&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;DELETE&quot;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="nt">"AllowedMethods"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"GET"</span><span class="p">,</span><span class="w"> </span><span class="s2">"POST"</span><span class="p">,</span><span class="w"> </span><span class="s2">"PUT"</span><span class="p">,</span><span class="w"> </span><span class="s2">"DELETE"</span><span class="p">]</span>
 </code></pre></div>
 <p>Or:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;AllowAnyMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<div class="highlight"><pre><span></span><code><span class="nt">"AllowAnyMethod"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
 <p>Configure the method used by the actual request. The CORS middleware handles the <code>OPTIONS</code> preflight request.</p>
 <ol>
 <li><strong>Check custom headers are allowed</strong></li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;AllowedHeaders&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Authorization&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;X-Custom-Header&quot;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="nt">"AllowedHeaders"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Content-Type"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Authorization"</span><span class="p">,</span><span class="w"> </span><span class="s2">"X-Custom-Header"</span><span class="p">]</span>
 </code></pre></div>
 <p>Or:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;AllowAnyHeader&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<div class="highlight"><pre><span></span><code><span class="nt">"AllowAnyHeader"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
 <ol>
 <li><strong>Verify Content-Type is allowed</strong></li>
@@ -5945,24 +5945,24 @@ when the request&#39;s credentials mode is &#39;include&#39;.
 <ol>
 <li><strong>Server-side: Enable AllowCredentials</strong></li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;AllowCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<div class="highlight"><pre><span></span><code><span class="nt">"AllowCredentials"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
 <ol>
 <li><strong>Client-side: Set credentials mode</strong></li>
 </ol>
 <p>Fetch API:</p>
-<div class="highlight"><pre><span></span><code><span class="nx">fetch</span><span class="p">(</span><span class="s1">&#39;https://api.example.com/data&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">credentials</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;include&#39;</span><span class="w"> </span><span class="c1">// Send cookies</span>
+<div class="highlight"><pre><span></span><code><span class="nx">fetch</span><span class="p">(</span><span class="s1">'https://api.example.com/data'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">credentials</span><span class="o">:</span><span class="w"> </span><span class="s1">'include'</span><span class="w"> </span><span class="c1">// Send cookies</span>
 <span class="p">});</span>
 </code></pre></div>
 <p>Axios:</p>
-<div class="highlight"><pre><span></span><code><span class="nx">axios</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;https://api.example.com/data&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="nx">axios</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'https://api.example.com/data'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">withCredentials</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">});</span>
 </code></pre></div>
 <p>jQuery:</p>
 <div class="highlight"><pre><span></span><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">url</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;https://api.example.com/data&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">url</span><span class="o">:</span><span class="w"> </span><span class="s1">'https://api.example.com/data'</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">xhrFields</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">withCredentials</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">  </span><span class="p">}</span>
@@ -5975,23 +5975,23 @@ when the request&#39;s credentials mode is &#39;include&#39;.
 <p><strong>Solution:</strong>
 Add at least one policy when <code>Enabled: true</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;Policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;DefaultPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">"Cors"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"Enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Policies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"DefaultPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>Error:</strong></p>
-<div class="highlight"><pre><span></span><code>InvalidOperationException: CORS DefaultPolicy &#39;MyPolicy&#39; is not defined in Cors:Policies.
+<div class="highlight"><pre><span></span><code>InvalidOperationException: CORS DefaultPolicy 'MyPolicy' is not defined in Cors:Policies.
 </code></pre></div>
 <p><strong>Solution:</strong>
 Ensure <code>DefaultPolicy</code> name matches a policy in <code>Policies</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;DefaultPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MyPolicy&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;MyPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">"DefaultPolicy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MyPolicy"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Policies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"MyPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -6005,17 +6005,17 @@ Ensure <code>DefaultPolicy</code> name matches a policy in <code>Policies</code>
 <li><strong>Test with curl</strong> to isolate browser vs server issues:</li>
 </ol>
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>OPTIONS<span class="w"> </span>https://api.example.com/endpoint<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Origin: https://app.example.com&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Access-Control-Request-Method: POST&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Origin: https://app.example.com"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Access-Control-Request-Method: POST"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-i
 </code></pre></div>
 <ol>
 <li><strong>Temporarily use permissive settings</strong> for debugging:</li>
 </ol>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;AllowAnyOrigin&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;AllowAnyMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;AllowAnyHeader&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"AllowAnyOrigin"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"AllowAnyMethod"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"AllowAnyHeader"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Then narrow down to identify the specific restriction causing issues.</p>
@@ -6135,10 +6135,10 @@ Ensure <code>DefaultPolicy</code> name matches a policy in <code>Policies</code>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

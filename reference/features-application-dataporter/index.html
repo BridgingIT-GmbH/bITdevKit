@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5605,8 +5605,8 @@
 <h3 id="service-registration">Service registration<a class="headerlink" href="#service-registration" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDataPorter</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithExcel</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">UseTableFormatting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithCsv</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Delimiter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithCsvTyped</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Delimiter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithCsv</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Delimiter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">","</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithCsvTyped</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Delimiter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">","</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithJson</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithXml</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithPdf</span><span class="p">();</span>
@@ -5638,18 +5638,18 @@
 <span class="w">            </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">AsExcel</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">WithProgress</span><span class="p">(</span><span class="n">report</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">                </span><span class="p">{</span>
-<span class="w">                    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Exported {report.ProcessedRows} rows&quot;</span><span class="p">);</span>
+<span class="w">                    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Exported {report.ProcessedRows} rows"</span><span class="p">);</span>
 <span class="w">                </span><span class="p">}),</span>
 <span class="w">            </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span>
-<span class="w">                </span><span class="s">$&quot;Export failed: {string.Join(&quot;</span><span class="p">;</span><span class="w"> </span><span class="s">&quot;, result.Errors.Select(error =&gt; error.Message))}&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="s">$"Export failed: {string.Join("</span><span class="p">;</span><span class="w"> </span><span class="s">", result.Errors.Select(error =&gt; error.Message))}"</span><span class="p">);</span>
 <span class="w">            </span><span class="k">return</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
 
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Exported {result.Value.TotalRows} rows&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Exported {result.Value.TotalRows} rows"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5659,7 +5659,7 @@
 <h3 id="export-to-filecontent">Export to <code>FileContent</code><a class="headerlink" href="#export-to-filecontent" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">exporter</span><span class="p">.</span><span class="n">ExportToFileContentAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="n">orders</span><span class="p">,</span>
-<span class="w">    </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">AsCsv</span><span class="p">().</span><span class="n">WithFileName</span><span class="p">(</span><span class="s">&quot;orders-export.csv&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">AsCsv</span><span class="p">().</span><span class="n">WithFileName</span><span class="p">(</span><span class="s">"orders-export.csv"</span><span class="p">));</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
@@ -5672,16 +5672,16 @@
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">importer</span><span class="p">.</span><span class="n">ImportAsync</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">        </span><span class="n">input</span><span class="p">,</span>
 <span class="w">        </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">AsCsv</span><span class="p">()</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithCulture</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">(</span><span class="s">&quot;de-DE&quot;</span><span class="p">))</span>
+<span class="w">            </span><span class="p">.</span><span class="n">WithCulture</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">(</span><span class="s">"de-DE"</span><span class="p">))</span>
 <span class="w">            </span><span class="p">.</span><span class="n">WithProgress</span><span class="p">(</span><span class="n">report</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Processed {report.ProcessedRows} rows&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Processed {report.ProcessedRows} rows"</span><span class="p">);</span>
 <span class="w">            </span><span class="p">}));</span>
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span>
-<span class="w">            </span><span class="s">$&quot;Import failed: {string.Join(&quot;</span><span class="p">;</span><span class="w"> </span><span class="s">&quot;, result.Errors.Select(error =&gt; error.Message))}&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="s">$"Import failed: {string.Join("</span><span class="p">;</span><span class="w"> </span><span class="s">", result.Errors.Select(error =&gt; error.Message))}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">[];</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -5692,7 +5692,7 @@
 
 <span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Errors</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Row {error.RowNumber}: {error.Message}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Row {error.RowNumber}: {error.Message}"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">[];</span>
@@ -5712,7 +5712,7 @@
 <span class="w">        </span><span class="p">.</span><span class="n">WithProgress</span><span class="p">(</span><span class="n">report</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span>
-<span class="w">                </span><span class="s">$&quot;Rows={report.ProcessedRows}, Bytes={report.BytesWritten}, Percent={report.PercentageComplete}&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="s">$"Rows={report.ProcessedRows}, Bytes={report.BytesWritten}, Percent={report.PercentageComplete}"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}));</span>
 
 <span class="k">await</span><span class="w"> </span><span class="n">importer</span><span class="p">.</span><span class="n">ImportAsync</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span>
@@ -5721,7 +5721,7 @@
 <span class="w">        </span><span class="p">.</span><span class="n">WithProgress</span><span class="p">(</span><span class="n">report</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span>
-<span class="w">                </span><span class="s">$&quot;Processed={report.ProcessedRows}, Success={report.SuccessfulRows}, Errors={report.ErrorCount}&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="s">$"Processed={report.ProcessedRows}, Success={report.SuccessfulRows}, Errors={report.ErrorCount}"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}));</span>
 </code></pre></div>
 <p>For true streaming operations, <code>TotalRows</code> and <code>PercentageComplete</code> can remain <code>null</code> until the final completion report because the total row count is not always known up front.</p>
@@ -5740,7 +5740,7 @@
 
 <span class="kt">var</span><span class="w"> </span><span class="n">importResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">importer</span><span class="p">.</span><span class="n">ImportAsync</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">    </span><span class="n">input</span><span class="p">,</span>
-<span class="w">    </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">AsCsv</span><span class="p">().</span><span class="n">WithZipCompression</span><span class="p">(</span><span class="s">&quot;orders.csv&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">AsCsv</span><span class="p">().</span><span class="n">WithZipCompression</span><span class="p">(</span><span class="s">"orders.csv"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
 <p>For ZIP packaging, DataPorter currently supports one payload entry per archive.</p>
@@ -5772,7 +5772,7 @@
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">exporter</span><span class="p">.</span><span class="n">GenerateTemplateAsync</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">    </span><span class="n">output</span><span class="p">,</span>
 <span class="w">    </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">AsExcel</span><span class="p">()</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithSheetName</span><span class="p">(</span><span class="s">&quot;Orders&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithSheetName</span><span class="p">(</span><span class="s">"Orders"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">IncludeHints</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithAnnotationStyle</span><span class="p">(</span><span class="n">TemplateAnnotationStyle</span><span class="p">.</span><span class="n">Annotated</span><span class="p">));</span>
 
@@ -5802,9 +5802,9 @@
 <p>Custom provider support:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">EdiX12TemplateProvider</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IDataExportProvider</span><span class="p">,</span><span class="w"> </span><span class="n">IDataTemplateProvider</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Format</span><span class="w"> </span><span class="n">Format</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span><span class="p">(</span><span class="s">&quot;edi-x12&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Format</span><span class="w"> </span><span class="n">Format</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span><span class="p">(</span><span class="s">"edi-x12"</span><span class="p">);</span>
 
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IReadOnlyCollection</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">SupportedExtensions</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;.edi&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IReadOnlyCollection</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">SupportedExtensions</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">[</span><span class="s">".edi"</span><span class="p">];</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">SupportsImport</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
 
@@ -5851,7 +5851,7 @@
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Item</span><span class="p">.</span><span class="n">Status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Cancelled</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">RowInterceptionDecision</span><span class="p">.</span><span class="n">Skip</span><span class="p">(</span><span class="s">&quot;Cancelled orders are not exported.&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">RowInterceptionDecision</span><span class="p">.</span><span class="n">Skip</span><span class="p">(</span><span class="s">"Cancelled orders are not exported."</span><span class="p">));</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="n">context</span><span class="p">.</span><span class="n">Item</span><span class="p">.</span><span class="n">ExportTimestamp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">;</span>
@@ -5869,7 +5869,7 @@
 
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Item</span><span class="p">.</span><span class="n">CustomerName</span><span class="p">))</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">RowInterceptionDecision</span><span class="p">.</span><span class="n">Skip</span><span class="p">(</span><span class="s">&quot;CustomerName is empty after normalization.&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">RowInterceptionDecision</span><span class="p">.</span><span class="n">Skip</span><span class="p">(</span><span class="s">"CustomerName is empty after normalization."</span><span class="p">));</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">RowInterceptionDecision</span><span class="p">.</span><span class="n">Continue</span><span class="p">());</span>
@@ -5886,14 +5886,14 @@
 </ul>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyFormats</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">Format</span><span class="w"> </span><span class="n">EdiX12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">(</span><span class="s">&quot;edi-x12&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">Format</span><span class="w"> </span><span class="n">EdiX12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">(</span><span class="s">"edi-x12"</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">EdiX12DataPorterProvider</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IDataExportProvider</span><span class="p">,</span><span class="w"> </span><span class="n">IDataImportProvider</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Format</span><span class="w"> </span><span class="n">Format</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">MyFormats</span><span class="p">.</span><span class="n">EdiX12</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IReadOnlyCollection</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">SupportedExtensions</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;.edi&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IReadOnlyCollection</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">SupportedExtensions</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">[</span><span class="s">".edi"</span><span class="p">];</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">SupportsImport</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 
@@ -5984,7 +5984,7 @@
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">importer</span><span class="p">.</span><span class="n">ImportAsync</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">    </span><span class="n">input</span><span class="p">,</span>
 <span class="w">    </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">AsCsv</span><span class="p">()</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithCulture</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">(</span><span class="s">&quot;de-DE&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithCulture</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">(</span><span class="s">"de-DE"</span><span class="p">))</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithHeaderRowIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="c1">// row 0 contains a title/preamble</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithSkipRows</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
 </code></pre></div>
@@ -6044,19 +6044,19 @@ ORD-1001;Ada;1,23
 <h2 id="configuration-approaches">Configuration approaches<a class="headerlink" href="#configuration-approaches" title="Permanent link">&para;</a></h2>
 <h3 id="attribute-based-configuration">Attribute-based configuration<a class="headerlink" href="#attribute-based-configuration" title="Permanent link">&para;</a></h3>
 <p>Use attributes directly on your DTOs for simple scenarios:</p>
-<div class="highlight"><pre><span></span><code><span class="na">[DataPorterSheet(&quot;Products&quot;)]</span>
+<div class="highlight"><pre><span></span><code><span class="na">[DataPorterSheet("Products")]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ProductDto</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="na">[DataPorterColumn(&quot;Product ID&quot;, Order = 0)]</span>
+<span class="w">    </span><span class="na">[DataPorterColumn("Product ID", Order = 0)]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Id</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
-<span class="w">    </span><span class="na">[DataPorterColumn(&quot;Name&quot;, Order = 1, Required = true)]</span>
+<span class="w">    </span><span class="na">[DataPorterColumn("Name", Order = 1, Required = true)]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
-<span class="w">    </span><span class="na">[DataPorterColumn(&quot;Price&quot;, Format = &quot;C2&quot;, HorizontalAlignment = HorizontalAlignment.Right)]</span>
+<span class="w">    </span><span class="na">[DataPorterColumn("Price", Format = "C2", HorizontalAlignment = HorizontalAlignment.Right)]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">decimal</span><span class="w"> </span><span class="n">Price</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
-<span class="w">    </span><span class="na">[DataPorterColumn(&quot;In Stock&quot;, Order = 3)]</span>
+<span class="w">    </span><span class="na">[DataPorterColumn("In Stock", Order = 3)]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">InStock</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[DataPorterIgnore]</span>
@@ -6107,37 +6107,37 @@ ORD-1001;Ada;1,23
 <span class="p">{</span>
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Configure</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">ToSheet</span><span class="p">(</span><span class="s">&quot;Orders&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">ToSheet</span><span class="p">(</span><span class="s">"Orders"</span><span class="p">);</span>
 
 <span class="w">        </span><span class="n">ForColumn</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Id</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">HasName</span><span class="p">(</span><span class="s">&quot;Order ID&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">HasName</span><span class="p">(</span><span class="s">"Order ID"</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">HasOrder</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 
 <span class="w">        </span><span class="n">ForColumn</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">CustomerName</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">HasName</span><span class="p">(</span><span class="s">&quot;Customer&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">HasName</span><span class="p">(</span><span class="s">"Customer"</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">HasOrder</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">HasWidth</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
 
 <span class="w">        </span><span class="n">ForColumn</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">TotalAmount</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">HasName</span><span class="p">(</span><span class="s">&quot;Total&quot;</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">HasFormat</span><span class="p">(</span><span class="s">&quot;C2&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">HasName</span><span class="p">(</span><span class="s">"Total"</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">HasFormat</span><span class="p">(</span><span class="s">"C2"</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">Align</span><span class="p">(</span><span class="n">HorizontalAlignment</span><span class="p">.</span><span class="n">Right</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">StyleWhen</span><span class="p">(</span><span class="n">amount</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w"> </span><span class="n">style</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">style</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Bold</span><span class="p">()</span>
-<span class="w">                </span><span class="p">.</span><span class="n">WithBackgroundColor</span><span class="p">(</span><span class="s">&quot;#FFFF00&quot;</span><span class="p">));</span>
+<span class="w">                </span><span class="p">.</span><span class="n">WithBackgroundColor</span><span class="p">(</span><span class="s">"#FFFF00"</span><span class="p">));</span>
 
 <span class="w">        </span><span class="n">ForColumn</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">OrderDate</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">HasName</span><span class="p">(</span><span class="s">&quot;Date&quot;</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">HasFormat</span><span class="p">(</span><span class="s">&quot;yyyy-MM-dd&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">.</span><span class="n">HasName</span><span class="p">(</span><span class="s">"Date"</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">HasFormat</span><span class="p">(</span><span class="s">"yyyy-MM-dd"</span><span class="p">);</span>
 
 <span class="w">        </span><span class="n">ForColumn</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">IsShipped</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">HasName</span><span class="p">(</span><span class="s">&quot;Shipped&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">HasName</span><span class="p">(</span><span class="s">"Shipped"</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">UseConverter</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BooleanYesNoConverter</span><span class="p">());</span>
 
 <span class="w">        </span><span class="n">Ignore</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">InternalNotes</span><span class="p">);</span>
 
-<span class="w">        </span><span class="n">AddHeader</span><span class="p">(</span><span class="s">&quot;Order Report&quot;</span><span class="p">);</span>
-<span class="w">        </span><span class="n">AddFooter</span><span class="p">(</span><span class="n">orders</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$&quot;Total Orders: {orders.Count()}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">AddHeader</span><span class="p">(</span><span class="s">"Order Report"</span><span class="p">);</span>
+<span class="w">        </span><span class="n">AddFooter</span><span class="p">(</span><span class="n">orders</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$"Total Orders: {orders.Count()}"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -6146,27 +6146,27 @@ ORD-1001;Ada;1,23
 <span class="p">{</span>
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Configure</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">FromSheet</span><span class="p">(</span><span class="s">&quot;Orders&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">FromSheet</span><span class="p">(</span><span class="s">"Orders"</span><span class="p">);</span>
 <span class="w">        </span><span class="n">HeaderRow</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 <span class="w">        </span><span class="n">SkipDataRows</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 <span class="w">        </span><span class="n">OnValidationFailure</span><span class="p">(</span><span class="n">ImportValidationBehavior</span><span class="p">.</span><span class="n">CollectErrors</span><span class="p">);</span>
 
 <span class="w">        </span><span class="n">ForColumn</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Id</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">FromHeader</span><span class="p">(</span><span class="s">&quot;Order ID&quot;</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">IsRequired</span><span class="p">(</span><span class="s">&quot;Order ID is required&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">.</span><span class="n">FromHeader</span><span class="p">(</span><span class="s">"Order ID"</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">IsRequired</span><span class="p">(</span><span class="s">"Order ID is required"</span><span class="p">);</span>
 
 <span class="w">        </span><span class="n">ForColumn</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">CustomerName</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">FromHeader</span><span class="p">(</span><span class="s">&quot;Customer&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">FromHeader</span><span class="p">(</span><span class="s">"Customer"</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">IsRequired</span><span class="p">()</span>
-<span class="w">            </span><span class="p">.</span><span class="n">Validate</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">name</span><span class="p">.</span><span class="n">Length</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Customer name too long&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Validate</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">name</span><span class="p">.</span><span class="n">Length</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="s">"Customer name too long"</span><span class="p">);</span>
 
 <span class="w">        </span><span class="n">ForColumn</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">TotalAmount</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">FromHeader</span><span class="p">(</span><span class="s">&quot;Total&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">FromHeader</span><span class="p">(</span><span class="s">"Total"</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">ParseWith</span><span class="p">(</span><span class="k">value</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kt">decimal</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="k">value</span><span class="p">,</span><span class="w"> </span><span class="n">NumberStyles</span><span class="p">.</span><span class="n">Currency</span><span class="p">));</span>
 
 <span class="w">        </span><span class="n">ForColumn</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">OrderDate</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">FromHeader</span><span class="p">(</span><span class="s">&quot;Date&quot;</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">HasFormat</span><span class="p">(</span><span class="s">&quot;yyyy-MM-dd&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">.</span><span class="n">FromHeader</span><span class="p">(</span><span class="s">"Date"</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">HasFormat</span><span class="p">(</span><span class="s">"yyyy-MM-dd"</span><span class="p">);</span>
 
 <span class="w">        </span><span class="n">Ignore</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">InternalNotes</span><span class="p">);</span>
 
@@ -6188,7 +6188,7 @@ ORD-1001;Ada;1,23
 <span class="w">    </span><span class="p">.</span><span class="n">WithExcel</span><span class="p">(</span><span class="n">config</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">UseTableFormatting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
-<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">DefaultTableStyleName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;TableStyleMedium2&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">DefaultTableStyleName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"TableStyleMedium2"</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">AutoFitColumns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">FreezeHeaderRow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">MaxColumnWidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
@@ -6199,7 +6199,7 @@ ORD-1001;Ada;1,23
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDataPorter</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithCsvTyped</span><span class="p">(</span><span class="n">config</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">Delimiter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">Delimiter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">","</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">Encoding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">Culture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">.</span><span class="n">InvariantCulture</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">TrimFields</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
@@ -6272,7 +6272,7 @@ PreviousAddress,person-2,prev-3,person-2,PreviousAddresses,0,,,,,,,,Cobol Lane 1
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDataPorter</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithCsv</span><span class="p">(</span><span class="n">config</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">Delimiter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">Delimiter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">","</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">Encoding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">Culture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">.</span><span class="n">InvariantCulture</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">TrimFields</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
@@ -6345,11 +6345,11 @@ Flattened column names use underscore-separated segments, for example:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDataPorter</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithXml</span><span class="p">(</span><span class="n">config</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">RootElementName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Data&quot;</span><span class="p">;</span>
-<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">ItemElementName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Item&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">RootElementName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Data"</span><span class="p">;</span>
+<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">ItemElementName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Item"</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">UseAttributes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">WriteIndented</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
-<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">DateFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;yyyy-MM-dd&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">DateFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"yyyy-MM-dd"</span><span class="p">;</span>
 <span class="w">    </span><span class="p">});</span>
 </code></pre></div>
 <p>Behavior:</p>
@@ -6370,19 +6370,19 @@ Flattened column names use underscore-separated segments, for example:</p>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">PageSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PdfPageSize</span><span class="p">.</span><span class="n">A4</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">Orientation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PdfPageOrientation</span><span class="p">.</span><span class="n">Landscape</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">Margin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="p">;</span>
-<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Report&quot;</span><span class="p">;</span>
-<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">HeaderText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;My Report&quot;</span><span class="p">;</span>
-<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">FooterText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Confidential&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Report"</span><span class="p">;</span>
+<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">HeaderText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"My Report"</span><span class="p">;</span>
+<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">FooterText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Confidential"</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">ShowPageNumbers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">ShowSummaryHeader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">ShowGenerationDate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
-<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">FontFamily</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Helvetica&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">FontFamily</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Helvetica"</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">HeaderFontSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">BodyFontSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9</span><span class="p">;</span>
-<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">TableHeaderBackgroundColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#4472C4&quot;</span><span class="p">;</span>
-<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">TableHeaderTextColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#FFFFFF&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">TableHeaderBackgroundColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"#4472C4"</span><span class="p">;</span>
+<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">TableHeaderTextColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"#FFFFFF"</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">UseAlternatingRowColors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
-<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">AlternateRowBackgroundColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#F2F2F2&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">AlternateRowBackgroundColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"#F2F2F2"</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">UseNesting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">RenderTemplate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PdfRenderTemplate</span><span class="p">.</span><span class="n">Table</span><span class="p">;</span>
 <span class="w">        </span><span class="c1">// Optional: override PDFsharp font resolution</span>
@@ -6426,28 +6426,28 @@ Flattened column names use underscore-separated segments, for example:</p>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">validationResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span>
-<span class="w">        </span><span class="s">$&quot;Validation failed: {string.Join(&quot;</span><span class="p">;</span><span class="w"> </span><span class="s">&quot;, validationResult.Errors.Select(error =&gt; error.Message))}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="s">$"Validation failed: {string.Join("</span><span class="p">;</span><span class="w"> </span><span class="s">", validationResult.Errors.Select(error =&gt; error.Message))}"</span><span class="p">);</span>
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">validationResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">IsValid</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;All {validationResult.Value.TotalRows} rows are valid&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"All {validationResult.Value.TotalRows} rows are valid"</span><span class="p">);</span>
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">validationResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Errors</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Row {error.RowNumber}, Column {error.Column}: {error.Message}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Row {error.RowNumber}, Column {error.Column}: {error.Message}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="multi-dataset-export">Multi-dataset export<a class="headerlink" href="#multi-dataset-export" title="Permanent link">&para;</a></h3>
 <p>Export multiple data sets in a single operation. Depending on the provider this becomes worksheets, top-level sections, or sequential sections in the generated output:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">dataSets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">ExportDataSet</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">orders</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Orders&quot;</span><span class="p">),</span>
-<span class="w">    </span><span class="n">ExportDataSet</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">products</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Products&quot;</span><span class="p">),</span>
-<span class="w">    </span><span class="n">ExportDataSet</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">customers</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Customers&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">ExportDataSet</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">orders</span><span class="p">,</span><span class="w"> </span><span class="s">"Orders"</span><span class="p">),</span>
+<span class="w">    </span><span class="n">ExportDataSet</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">products</span><span class="p">,</span><span class="w"> </span><span class="s">"Products"</span><span class="p">),</span>
+<span class="w">    </span><span class="n">ExportDataSet</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">customers</span><span class="p">,</span><span class="w"> </span><span class="s">"Customers"</span><span class="p">)</span>
 <span class="p">};</span>
 
 <span class="k">await</span><span class="w"> </span><span class="n">exporter</span><span class="p">.</span><span class="n">ExportAsync</span><span class="p">(</span><span class="n">dataSets</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">AsExcel</span><span class="p">());</span>
@@ -6455,8 +6455,8 @@ Flattened column names use underscore-separated segments, for example:</p>
 <p>Async multi-dataset export is also supported:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">dataSets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">AsyncExportDataSet</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">GetOrdersAsync</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot;Orders&quot;</span><span class="p">),</span>
-<span class="w">    </span><span class="n">AsyncExportDataSet</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">GetProductsAsync</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot;Products&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">AsyncExportDataSet</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">GetOrdersAsync</span><span class="p">(),</span><span class="w"> </span><span class="s">"Orders"</span><span class="p">),</span>
+<span class="w">    </span><span class="n">AsyncExportDataSet</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">GetProductsAsync</span><span class="p">(),</span><span class="w"> </span><span class="s">"Products"</span><span class="p">)</span>
 <span class="p">};</span>
 
 <span class="k">await</span><span class="w"> </span><span class="n">exporter</span><span class="p">.</span><span class="n">ExportAsync</span><span class="p">(</span><span class="n">dataSets</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">AsJson</span><span class="p">());</span>
@@ -6469,11 +6469,11 @@ Flattened column names use underscore-separated segments, for example:</p>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="k">switch</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Pending</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;Pending&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Processing</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;In Progress&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Shipped</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;Shipped&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Delivered</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;Delivered&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;Unknown&quot;</span>
+<span class="w">            </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Pending</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">"Pending"</span><span class="p">,</span>
+<span class="w">            </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Processing</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">"In Progress"</span><span class="p">,</span>
+<span class="w">            </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Shipped</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">"Shipped"</span><span class="p">,</span>
+<span class="w">            </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Delivered</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">"Delivered"</span><span class="p">,</span>
+<span class="w">            </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">"Unknown"</span>
 <span class="w">        </span><span class="p">};</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -6482,10 +6482,10 @@ Flattened column names use underscore-separated segments, for example:</p>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="o">?.</span><span class="n">ToString</span><span class="p">();</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">str</span><span class="w"> </span><span class="k">switch</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="s">&quot;Pending&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Pending</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;In Progress&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Processing</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;Shipped&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Shipped</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;Delivered&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Delivered</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"Pending"</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Pending</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"In Progress"</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Processing</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"Shipped"</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Shipped</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"Delivered"</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Delivered</span><span class="p">,</span>
 <span class="w">            </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Pending</span>
 <span class="w">        </span><span class="p">};</span>
 <span class="w">    </span><span class="p">}</span>
@@ -6574,15 +6574,15 @@ Flattened column names use underscore-separated segments, for example:</p>
 <div class="highlight"><pre><span></span><code><span class="n">ForColumn</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">OrderDate</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">UseConverter</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">DateTimeFormatConverter</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dd.MM.yyyy HH:mm:ss&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="n">Culture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">(</span><span class="s">&quot;de-DE&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="n">Format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"dd.MM.yyyy HH:mm:ss"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Culture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">(</span><span class="s">"de-DE"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">});</span>
 
 <span class="n">ForColumn</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">TotalAmount</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">UseConverter</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">DecimalFormatConverter</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;N2&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="n">Culture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">(</span><span class="s">&quot;de-DE&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="n">Format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"N2"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Culture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">(</span><span class="s">"de-DE"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">});</span>
 </code></pre></div>
 <p>Runtime culture can also be set per import/export operation through <code>ImportOptions.Culture</code> and <code>ExportOptions.Culture</code>. Provider configuration and runtime options serve different purposes:</p>
@@ -6597,13 +6597,13 @@ Flattened column names use underscore-separated segments, for example:</p>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">ImportMappings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">OrderStatus</span><span class="o">&gt;</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="na">[&quot;P&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Pending</span><span class="p">,</span>
-<span class="w">            </span><span class="na">[&quot;S&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Shipped</span>
+<span class="w">            </span><span class="na">["P"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Pending</span><span class="p">,</span>
+<span class="w">            </span><span class="na">["S"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OrderStatus</span><span class="p">.</span><span class="n">Shipped</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="n">ExportMappings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="n">OrderStatus</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="na">[OrderStatus.Pending]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;P&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="na">[OrderStatus.Shipped]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;S&quot;</span>
+<span class="w">            </span><span class="na">[OrderStatus.Pending]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"P"</span><span class="p">,</span>
+<span class="w">            </span><span class="na">[OrderStatus.Shipped]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"S"</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">});</span>
 </code></pre></div>
@@ -6631,12 +6631,12 @@ Flattened column names use underscore-separated segments, for example:</p>
 <span class="w">    </span><span class="p">.</span><span class="n">StyleWhen</span><span class="p">(</span>
 <span class="w">        </span><span class="n">amount</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">        </span><span class="n">style</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">style</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithForegroundColor</span><span class="p">(</span><span class="s">&quot;#FF0000&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">WithForegroundColor</span><span class="p">(</span><span class="s">"#FF0000"</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">Bold</span><span class="p">())</span>
 <span class="w">    </span><span class="p">.</span><span class="n">StyleWhen</span><span class="p">(</span>
 <span class="w">        </span><span class="n">amount</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span>
 <span class="w">        </span><span class="n">style</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">style</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithBackgroundColor</span><span class="p">(</span><span class="s">&quot;#00FF00&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="p">.</span><span class="n">WithBackgroundColor</span><span class="p">(</span><span class="s">"#00FF00"</span><span class="p">));</span>
 </code></pre></div>
 <h2 id="error-handling">Error handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
 <p>The framework uses the Result pattern for consistent error handling:</p>
@@ -6648,11 +6648,11 @@ Flattened column names use underscore-separated segments, for example:</p>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">FormatNotSupportedError</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Format not supported&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Format not supported"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">ExportError</span><span class="w"> </span><span class="n">exportError</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Export failed: {exportError.Message}&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Export failed: {exportError.Message}"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -6660,24 +6660,24 @@ Flattened column names use underscore-separated segments, for example:</p>
 <h2 id="configuration-through-appsettingsjson">Configuration through appsettings.json<a class="headerlink" href="#configuration-through-appsettingsjson" title="Permanent link">&para;</a></h2>
 <p>Providers can be configured via configuration:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;DataPorter&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;Excel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;UseTableFormatting&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;AutoFitColumns&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"DataPorter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"Excel"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"UseTableFormatting"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"AutoFitColumns"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;Csv&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;Delimiter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;;&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;Culture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;de-DE&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;TrimFields&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="nt">"Csv"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"Delimiter"</span><span class="p">:</span><span class="w"> </span><span class="s2">";"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"Culture"</span><span class="p">:</span><span class="w"> </span><span class="s2">"de-DE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"TrimFields"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;CsvTyped&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;Delimiter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;;&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;Culture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;de-DE&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;TrimFields&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="nt">"CsvTyped"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"Delimiter"</span><span class="p">:</span><span class="w"> </span><span class="s2">";"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"Culture"</span><span class="p">:</span><span class="w"> </span><span class="s2">"de-DE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"TrimFields"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;Pdf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;PageSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A4&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;Orientation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Landscape&quot;</span>
+<span class="w">    </span><span class="nt">"Pdf"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"PageSize"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A4"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"Orientation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Landscape"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -6744,7 +6744,7 @@ Flattened column names use underscore-separated segments, for example:</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.DataPorter</span><span class="p">;</span>
 <span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/api/orders/export&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Http</span><span class="p">.</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/api/orders/export"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Http</span><span class="p">.</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">HttpContext</span><span class="w"> </span><span class="n">httpContext</span><span class="p">,</span>
 <span class="w">    </span><span class="n">IDataExporter</span><span class="w"> </span><span class="n">exporter</span><span class="p">,</span>
 <span class="w">    </span><span class="n">OrderRepository</span><span class="w"> </span><span class="n">repository</span><span class="p">,</span>
@@ -6753,7 +6753,7 @@ Flattened column names use underscore-separated segments, for example:</p>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">httpContext</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">StatusCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status200OK</span><span class="p">;</span>
 <span class="w">    </span><span class="n">httpContext</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">CSV</span><span class="p">.</span><span class="n">MimeType</span><span class="p">();</span>
-<span class="w">    </span><span class="n">httpContext</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="n">ContentDisposition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;attachment; filename=orders.csv&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">httpContext</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="n">ContentDisposition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"attachment; filename=orders.csv"</span><span class="p">;</span>
 
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">exporter</span><span class="p">.</span><span class="n">ExportAsync</span><span class="p">(</span>
 <span class="w">        </span><span class="n">repository</span><span class="p">.</span><span class="n">StreamOrdersAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">),</span>
@@ -6763,16 +6763,16 @@ Flattened column names use underscore-separated segments, for example:</p>
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">logger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">loggerFactory</span><span class="p">.</span><span class="n">CreateLogger</span><span class="p">(</span><span class="s">&quot;OrdersExport&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">logger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">loggerFactory</span><span class="p">.</span><span class="n">CreateLogger</span><span class="p">(</span><span class="s">"OrdersExport"</span><span class="p">);</span>
 <span class="w">        </span><span class="n">logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;Order export failed: {Errors}&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot;, &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
+<span class="w">            </span><span class="s">"Order export failed: {Errors}"</span><span class="p">,</span>
+<span class="w">            </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">", "</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">httpContext</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">HasStarted</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">TypedResults</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span>
-<span class="w">                </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Order export failed&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="n">detail</span><span class="p">:</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot;; &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
+<span class="w">                </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Order export failed"</span><span class="p">,</span>
+<span class="w">                </span><span class="n">detail</span><span class="p">:</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">"; "</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="n">httpContext</span><span class="p">.</span><span class="n">Abort</span><span class="p">();</span>
@@ -6780,24 +6780,24 @@ Flattened column names use underscore-separated segments, for example:</p>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Empty</span><span class="p">;</span>
 <span class="p">})</span>
-<span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">&quot;ExportOrders&quot;</span><span class="p">)</span>
+<span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">"ExportOrders"</span><span class="p">)</span>
 <span class="p">.</span><span class="n">Produces</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status200OK</span><span class="p">,</span><span class="w"> </span><span class="n">contentType</span><span class="p">:</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">CSV</span><span class="p">.</span><span class="n">MimeType</span><span class="p">())</span>
 <span class="p">.</span><span class="n">ProducesProblem</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status500InternalServerError</span><span class="p">);</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/api/orders/import&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Http</span><span class="p">.</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">"/api/orders/import"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Http</span><span class="p">.</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">HttpRequest</span><span class="w"> </span><span class="n">request</span><span class="p">,</span>
 <span class="w">    </span><span class="n">IDataImporter</span><span class="w"> </span><span class="n">importer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">OrderRepository</span><span class="w"> </span><span class="n">repository</span><span class="p">,</span>
 <span class="w">    </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">requestContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentTypeExtensions</span><span class="p">.</span><span class="n">FromMimeType</span><span class="p">(</span>
-<span class="w">        </span><span class="n">request</span><span class="p">.</span><span class="n">ContentType</span><span class="o">?.</span><span class="n">Split</span><span class="p">(</span><span class="sc">&#39;;&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="n">Trim</span><span class="p">()</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">);</span>
+<span class="w">        </span><span class="n">request</span><span class="p">.</span><span class="n">ContentType</span><span class="o">?.</span><span class="n">Split</span><span class="p">(</span><span class="sc">';'</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="n">Trim</span><span class="p">()</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">);</span>
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">requestContentType</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">CSV</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">TypedResults</span><span class="p">.</span><span class="n">BadRequest</span><span class="p">(</span><span class="k">new</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">$&quot;Expected &#39;{ContentType.CSV.MimeType()}&#39; request content type.&quot;</span>
+<span class="w">            </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">$"Expected '{ContentType.CSV.MimeType()}' request content type."</span>
 <span class="w">        </span><span class="p">});</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -6838,7 +6838,7 @@ Flattened column names use underscore-separated segments, for example:</p>
 <span class="w">        </span><span class="n">errors</span>
 <span class="w">    </span><span class="p">});</span>
 <span class="p">})</span>
-<span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">&quot;ImportOrders&quot;</span><span class="p">)</span>
+<span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">"ImportOrders"</span><span class="p">)</span>
 <span class="p">.</span><span class="n">Accepts</span><span class="o">&lt;</span><span class="n">Stream</span><span class="o">&gt;</span><span class="p">(</span><span class="n">ContentType</span><span class="p">.</span><span class="n">CSV</span><span class="p">.</span><span class="n">MimeType</span><span class="p">())</span>
 <span class="p">.</span><span class="n">Produces</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status200OK</span><span class="p">)</span>
 <span class="p">.</span><span class="n">Produces</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status400BadRequest</span><span class="p">);</span>
@@ -6929,9 +6929,9 @@ ORD-1002,Linus,18.25
 <span class="w">                </span><span class="k">else</span>
 <span class="w">                </span><span class="p">{</span>
 <span class="w">                    </span><span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="n">LogWarning</span><span class="p">(</span>
-<span class="w">                        </span><span class="s">&quot;Import error in {FileName}: {Errors}&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="s">"Import error in {FileName}: {Errors}"</span><span class="p">,</span>
 <span class="w">                        </span><span class="n">file</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span>
-<span class="w">                        </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot;; &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">row</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
+<span class="w">                        </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">"; "</span><span class="p">,</span><span class="w"> </span><span class="n">row</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="w">                </span><span class="p">}</span>
 <span class="w">            </span><span class="p">}</span>
 
@@ -6970,7 +6970,7 @@ ORD-1002,Linus,18.25
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">RunAsync</span><span class="p">(</span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">$&quot;feeds/orders-{DateTime.UtcNow:yyyyMMdd}.csv&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">$"feeds/orders-{DateTime.UtcNow:yyyyMMdd}.csv"</span><span class="p">;</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">openResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">fileStorageProvider</span><span class="p">.</span><span class="n">OpenWriteFileAsync</span><span class="p">(</span>
 <span class="w">            </span><span class="n">path</span><span class="p">,</span>
 <span class="w">            </span><span class="n">useTemporaryWrite</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">,</span>
@@ -6980,7 +6980,7 @@ ORD-1002,Linus,18.25
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">openResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">InvalidOperationException</span><span class="p">(</span>
-<span class="w">                </span><span class="s">$&quot;Unable to open partner feed output &#39;{path}&#39;: {string.Join(&quot;</span><span class="p">;</span><span class="w"> </span><span class="s">&quot;, openResult.Errors.Select(e =&gt; e.Message))}&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="s">$"Unable to open partner feed output '{path}': {string.Join("</span><span class="p">;</span><span class="w"> </span><span class="s">", openResult.Errors.Select(e =&gt; e.Message))}"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">openResult</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span><span class="w"> </span><span class="c1">// write directly to the provider stream without buffering</span>
@@ -6994,7 +6994,7 @@ ORD-1002,Linus,18.25
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">InvalidOperationException</span><span class="p">(</span>
-<span class="w">                </span><span class="s">$&quot;Partner feed export failed: {string.Join(&quot;</span><span class="p">;</span><span class="w"> </span><span class="s">&quot;, result.Errors.Select(e =&gt; e.Message))}&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="s">$"Partner feed export failed: {string.Join("</span><span class="p">;</span><span class="w"> </span><span class="s">", result.Errors.Select(e =&gt; e.Message))}"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -7032,7 +7032,7 @@ ORD-1002,Linus,18.25
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExportThenImportAsync</span><span class="p">(</span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;roundtrip/orders.csv&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"roundtrip/orders.csv"</span><span class="p">;</span>
 
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="nf">using</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MemoryStream</span><span class="p">())</span>
 <span class="w">        </span><span class="p">{</span>
@@ -7045,7 +7045,7 @@ ORD-1002,Linus,18.25
 <span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">exportResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">            </span><span class="p">{</span>
 <span class="w">                </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">InvalidOperationException</span><span class="p">(</span>
-<span class="w">                    </span><span class="s">$&quot;Export failed: {string.Join(&quot;</span><span class="p">;</span><span class="w"> </span><span class="s">&quot;, exportResult.Errors.Select(e =&gt; e.Message))}&quot;</span><span class="p">);</span>
+<span class="w">                    </span><span class="s">$"Export failed: {string.Join("</span><span class="p">;</span><span class="w"> </span><span class="s">", exportResult.Errors.Select(e =&gt; e.Message))}"</span><span class="p">);</span>
 <span class="w">            </span><span class="p">}</span>
 
 <span class="w">            </span><span class="n">buffer</span><span class="p">.</span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
@@ -7059,7 +7059,7 @@ ORD-1002,Linus,18.25
 <span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">writeResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">            </span><span class="p">{</span>
 <span class="w">                </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">InvalidOperationException</span><span class="p">(</span>
-<span class="w">                    </span><span class="s">$&quot;Persisting export failed: {string.Join(&quot;</span><span class="p">;</span><span class="w"> </span><span class="s">&quot;, writeResult.Errors.Select(e =&gt; e.Message))}&quot;</span><span class="p">);</span>
+<span class="w">                    </span><span class="s">$"Persisting export failed: {string.Join("</span><span class="p">;</span><span class="w"> </span><span class="s">", writeResult.Errors.Select(e =&gt; e.Message))}"</span><span class="p">);</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span>
 
@@ -7068,7 +7068,7 @@ ORD-1002,Linus,18.25
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">readResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">InvalidOperationException</span><span class="p">(</span>
-<span class="w">                </span><span class="s">$&quot;Opening exported file failed: {string.Join(&quot;</span><span class="p">;</span><span class="w"> </span><span class="s">&quot;, readResult.Errors.Select(e =&gt; e.Message))}&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="s">$"Opening exported file failed: {string.Join("</span><span class="p">;</span><span class="w"> </span><span class="s">", readResult.Errors.Select(e =&gt; e.Message))}"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">readResult</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
@@ -7081,7 +7081,7 @@ ORD-1002,Linus,18.25
 <span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">row</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">            </span><span class="p">{</span>
 <span class="w">                </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">InvalidOperationException</span><span class="p">(</span>
-<span class="w">                    </span><span class="s">$&quot;Import failed: {string.Join(&quot;</span><span class="p">;</span><span class="w"> </span><span class="s">&quot;, row.Errors.Select(e =&gt; e.Message))}&quot;</span><span class="p">);</span>
+<span class="w">                    </span><span class="s">$"Import failed: {string.Join("</span><span class="p">;</span><span class="w"> </span><span class="s">", row.Errors.Select(e =&gt; e.Message))}"</span><span class="p">);</span>
 <span class="w">            </span><span class="p">}</span>
 
 <span class="w">            </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">repository</span><span class="p">.</span><span class="n">UpsertAsync</span><span class="p">(</span><span class="n">row</span><span class="p">.</span><span class="n">Value</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
@@ -7174,10 +7174,10 @@ ORD-1002,Linus,18.25
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

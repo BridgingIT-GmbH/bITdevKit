@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4866,7 +4866,7 @@ stored events through mediator requests, notifications, or the event-store outbo
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
 <h3 id="aggregate-events">Aggregate events<a class="headerlink" href="#aggregate-events" title="Permanent link">&para;</a></h3>
 <p>Aggregate events inherit from <code>AggregateEvent</code>, which extends the domain-event concept with aggregate versioning:</p>
-<div class="highlight"><pre><span></span><code><span class="na">[ImmutableName(&quot;person-created-v1&quot;)]</span>
+<div class="highlight"><pre><span></span><code><span class="na">[ImmutableName("person-created-v1")]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">PersonCreated</span><span class="p">(</span><span class="n">Guid</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">version</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">firstName</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">lastName</span><span class="p">)</span>
 <span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="n">AggregateEvent</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">version</span><span class="p">)</span>
 <span class="p">{</span>
@@ -4910,7 +4910,7 @@ stored events through mediator requests, notifications, or the event-store outbo
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddEventStoreContextSqlServer</span><span class="o">&lt;</span><span class="n">AppEventStoreDbContext</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">    </span><span class="n">connectionString</span><span class="p">,</span>
 <span class="w">    </span><span class="n">nameOfMigrationsAssembly</span><span class="p">:</span><span class="w"> </span><span class="k">typeof</span><span class="p">(</span><span class="n">AppEventStoreDbContext</span><span class="p">).</span><span class="n">Assembly</span><span class="p">.</span><span class="n">GetName</span><span class="p">().</span><span class="n">Name</span><span class="p">,</span>
-<span class="w">    </span><span class="n">defaultSchema</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;events&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">defaultSchema</span><span class="p">:</span><span class="w"> </span><span class="s">"events"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">eventStorePublishingModes</span><span class="p">:</span><span class="w"> </span><span class="n">EventStorePublishingModes</span><span class="p">.</span><span class="n">AddToOutbox</span><span class="p">,</span>
 <span class="w">    </span><span class="n">maxRetryCount</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
 <span class="w">    </span><span class="n">maxRetryDelaySeconds</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span>
@@ -4924,17 +4924,17 @@ stored events through mediator requests, notifications, or the event-store outbo
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExecuteAsync</span><span class="p">(</span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">person</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Person</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">PersonCreatedEvent</span><span class="p">(</span><span class="s">&quot;Lovelace&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Ada&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">person</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Person</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">PersonCreatedEvent</span><span class="p">(</span><span class="s">"Lovelace"</span><span class="p">,</span><span class="w"> </span><span class="s">"Ada"</span><span class="p">));</span>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">eventStore</span><span class="p">.</span><span class="n">SaveEventsAsync</span><span class="p">(</span><span class="n">person</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">reloaded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">eventStore</span><span class="p">.</span><span class="n">GetAsync</span><span class="p">(</span><span class="n">person</span><span class="p">.</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">reloaded</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;The saved person could not be reloaded.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"The saved person could not be reloaded."</span><span class="p">);</span>
 <span class="w">            </span><span class="k">return</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
 
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;{reloaded.Firstname} {reloaded.Lastname}, version {reloaded.Version}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"{reloaded.Firstname} {reloaded.Lastname}, version {reloaded.Version}"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -4946,7 +4946,7 @@ stored events through mediator requests, notifications, or the event-store outbo
 <h3 id="1-register-the-event-store">1. Register the event store<a class="headerlink" href="#1-register-the-event-store" title="Permanent link">&para;</a></h3>
 <p>At the lower level, the EF-backed store can be registered directly:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddEfCoreEventStore</span><span class="o">&lt;</span><span class="n">MyEventStoreDbContext</span><span class="o">&gt;</span><span class="p">(</span>
-<span class="w">    </span><span class="n">defaultSchema</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dbo&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">defaultSchema</span><span class="p">:</span><span class="w"> </span><span class="s">"dbo"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">eventStorePublishingModes</span><span class="p">:</span><span class="w"> </span><span class="n">EventStorePublishingModes</span><span class="p">.</span><span class="n">AddToOutbox</span><span class="p">);</span>
 </code></pre></div>
 <p>That registration wires the core event-store services, aggregate-event repositories, snapshot support, and the EF-backed event-store outbox infrastructure.</p>
@@ -4954,7 +4954,7 @@ stored events through mediator requests, notifications, or the event-store outbo
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddEventStoreContextSqlServer</span><span class="o">&lt;</span><span class="n">MyEventStoreDbContext</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">    </span><span class="n">connectionString</span><span class="p">,</span>
 <span class="w">    </span><span class="n">nameOfMigrationsAssembly</span><span class="p">,</span>
-<span class="w">    </span><span class="n">defaultSchema</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dbo&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">defaultSchema</span><span class="p">:</span><span class="w"> </span><span class="s">"dbo"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">eventStorePublishingModes</span><span class="p">:</span><span class="w"> </span><span class="n">EventStorePublishingModes</span><span class="p">.</span><span class="n">AddToOutbox</span><span class="p">,</span>
 <span class="w">    </span><span class="n">maxRetryCount</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">    </span><span class="n">maxRetryDelaySeconds</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
@@ -5089,10 +5089,10 @@ unhandled messages and marks a message as processed after the configured downstr
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

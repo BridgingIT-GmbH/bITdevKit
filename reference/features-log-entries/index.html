@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5168,7 +5168,7 @@
 
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/ops/recent-errors&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/ops/recent-errors"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">ILogEntryService</span><span class="w"> </span><span class="n">logs</span><span class="p">,</span>
 <span class="w">    </span><span class="n">ILoggerFactory</span><span class="w"> </span><span class="n">loggerFactory</span><span class="p">,</span>
 <span class="w">    </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -5195,9 +5195,9 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="w">    </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">exception</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">loggerFactory</span><span class="p">.</span><span class="n">CreateLogger</span><span class="p">(</span><span class="s">&quot;LogEntries&quot;</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">exception</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Could not query persisted log entries&quot;</span><span class="p">);</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="s">&quot;The log query failed.&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">loggerFactory</span><span class="p">.</span><span class="n">CreateLogger</span><span class="p">(</span><span class="s">"LogEntries"</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">exception</span><span class="p">,</span><span class="w"> </span><span class="s">"Could not query persisted log entries"</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="s">"The log query failed."</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">});</span>
 
@@ -5243,78 +5243,78 @@
 <p>The DoFiesta example wires those pieces together in <a href="https://github.com/bridgingIT/bITdevKit/blob/main/examples/DoFiesta/DoFiesta.Presentation.Web.Server/Program.cs">Program.cs</a> and <a href="https://github.com/bridgingIT/bITdevKit/blob/main/examples/DoFiesta/DoFiesta.Infrastructure/Modules/Core/EntityFramework/CoreDbContext.cs">CoreDbContext.cs</a>.</p>
 <h3 id="1-persist-logs">1. Persist logs<a class="headerlink" href="#1-persist-logs" title="Permanent link">&para;</a></h3>
 <p>The query feature only works if your logging pipeline writes log events into a durable store. Serilog needs to be configured with the <a href="https://github.com/serilog-mssql/serilog-sinks-mssqlserver">MSSQL</a> sink in appsettings.json.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;Serilog&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;WriteTo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<div class="highlight"><pre><span></span><code><span class="nt">"Serilog"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"WriteTo"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">      </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MSSqlServer&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;Args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;connectionString&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Server=localhost,14333;Database=db;User Id=sa;Password=pw&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;sinkOptionsSection&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;tableName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;__Logging_LogEntries&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;schemaName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;core&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;autoCreateSqlTable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;batchPostingLimit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;batchPeriod&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00:00:15&quot;</span>
+<span class="w">        </span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MSSqlServer"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"Args"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"connectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Server=localhost,14333;Database=db;User Id=sa;Password=pw"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"sinkOptionsSection"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"tableName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"__Logging_LogEntries"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"schemaName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"core"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"autoCreateSqlTable"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"batchPostingLimit"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"batchPeriod"</span><span class="p">:</span><span class="w"> </span><span class="s2">"00:00:15"</span>
 <span class="w">          </span><span class="p">},</span>
-<span class="w">          </span><span class="nt">&quot;columnOptionsSection&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;disableTriggers&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;clusteredColumnstoreIndex&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;primaryKeyColumnName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Id&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;addStandardColumns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="nt">"columnOptionsSection"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"disableTriggers"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"clusteredColumnstoreIndex"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"primaryKeyColumnName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Id"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"addStandardColumns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">              </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;ColumnName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Id&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;DataType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bigint&quot;</span>
+<span class="w">                </span><span class="nt">"ColumnName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Id"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"DataType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bigint"</span>
 <span class="w">              </span><span class="p">},</span>
-<span class="w">              </span><span class="s2">&quot;Message&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="s2">&quot;MessageTemplate&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="s2">&quot;Level&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="s2">&quot;TimeStamp&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="s2">&quot;Exception&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="s2">&quot;LogEvent&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="s2">&quot;TraceId&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="s2">&quot;SpanId&quot;</span>
+<span class="w">              </span><span class="s2">"Message"</span><span class="p">,</span>
+<span class="w">              </span><span class="s2">"MessageTemplate"</span><span class="p">,</span>
+<span class="w">              </span><span class="s2">"Level"</span><span class="p">,</span>
+<span class="w">              </span><span class="s2">"TimeStamp"</span><span class="p">,</span>
+<span class="w">              </span><span class="s2">"Exception"</span><span class="p">,</span>
+<span class="w">              </span><span class="s2">"LogEvent"</span><span class="p">,</span>
+<span class="w">              </span><span class="s2">"TraceId"</span><span class="p">,</span>
+<span class="w">              </span><span class="s2">"SpanId"</span>
 <span class="w">            </span><span class="p">],</span>
-<span class="w">            </span><span class="nt">&quot;removeStandardColumns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;Properties&quot;</span><span class="w"> </span><span class="p">],</span>
-<span class="w">            </span><span class="nt">&quot;timeStamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">              </span><span class="nt">&quot;columnName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TimeStamp&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;DataType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;datetimeoffset&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;convertToUtc&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">            </span><span class="nt">"removeStandardColumns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"Properties"</span><span class="w"> </span><span class="p">],</span>
+<span class="w">            </span><span class="nt">"timeStamp"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">"columnName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TimeStamp"</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">"DataType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"datetimeoffset"</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">"convertToUtc"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">            </span><span class="p">},</span>
-<span class="w">            </span><span class="nt">&quot;additionalColumns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="nt">"additionalColumns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">              </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;ColumnName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CorrelationId&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;PropertyName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CorrelationId&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;DataType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nvarchar&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;DataLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;AllowNull&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">                </span><span class="nt">"ColumnName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CorrelationId"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"PropertyName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CorrelationId"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"DataType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nvarchar"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"DataLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"AllowNull"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">              </span><span class="p">},</span>
 <span class="w">              </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;ColumnName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LogKey&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;PropertyName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LogKey&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;DataType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nvarchar&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;DataLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;AllowNull&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">                </span><span class="nt">"ColumnName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LogKey"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"PropertyName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LogKey"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"DataType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nvarchar"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"DataLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"AllowNull"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">              </span><span class="p">},</span>
 <span class="w">              </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;ColumnName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ModuleName&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;PropertyName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ModuleName&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;DataType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nvarchar&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;DataLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;AllowNull&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">                </span><span class="nt">"ColumnName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ModuleName"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"PropertyName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ModuleName"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"DataType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nvarchar"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"DataLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"AllowNull"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">              </span><span class="p">},</span>
 <span class="w">              </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;ColumnName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ThreadId&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;PropertyName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ThreadId&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;DataType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nvarchar&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;DataLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;AllowNull&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">                </span><span class="nt">"ColumnName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ThreadId"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"PropertyName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ThreadId"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"DataType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nvarchar"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"DataLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"AllowNull"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">              </span><span class="p">},</span>
 <span class="w">              </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;ColumnName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ShortTypeName&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;PropertyName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ShortTypeName&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;DataType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nvarchar&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;DataLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;AllowNull&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">                </span><span class="nt">"ColumnName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ShortTypeName"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"PropertyName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ShortTypeName"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"DataType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nvarchar"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"DataLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"AllowNull"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">              </span><span class="p">}</span>
 <span class="w">            </span><span class="p">]</span>
 <span class="w">          </span><span class="p">}</span>
@@ -5455,7 +5455,7 @@
 <span class="w">    </span><span class="n">pollingInterval</span><span class="p">:</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">))</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;{entry.TimeStamp:u} {entry.Level} {entry.Message}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"{entry.TimeStamp:u} {entry.Level} {entry.Message}"</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="exporting">Exporting<a class="headerlink" href="#exporting" title="Permanent link">&para;</a></h3>
@@ -5463,7 +5463,7 @@
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">LogEntryQueryRequest</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">Age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromDays</span><span class="p">(</span><span class="mi">7</span><span class="p">),</span>
-<span class="w">        </span><span class="n">ModuleName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Sales&quot;</span>
+<span class="w">        </span><span class="n">ModuleName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Sales"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="n">LogEntryExportFormat</span><span class="p">.</span><span class="n">Csv</span><span class="p">,</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
@@ -5624,10 +5624,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

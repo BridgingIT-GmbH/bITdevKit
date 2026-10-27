@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5397,7 +5397,7 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
 
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithGroupPath</span><span class="p">(</span><span class="s">&quot;/_bdk/dashboard&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithGroupPath</span><span class="p">(</span><span class="s">"/_bdk/dashboard"</span><span class="p">));</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 <span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">();</span>
@@ -5513,16 +5513,16 @@
 <p>Register the dashboard during service configuration.</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">WithGroupPath</span><span class="p">(</span><span class="s">&quot;/_bdk/dashboard&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">WithGroupPath</span><span class="p">(</span><span class="s">"/_bdk/dashboard"</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre></div>
 <p>Hide auto-discovered feature pages by stable page key when a host wants to keep the feature registered but remove its dashboard navigation and index card:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
-<span class="w">    </span><span class="p">.</span><span class="n">DisablePages</span><span class="p">(</span><span class="s">&quot;metrics&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;storage.documents&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="p">.</span><span class="n">DisablePages</span><span class="p">(</span><span class="s">"metrics"</span><span class="p">,</span><span class="w"> </span><span class="s">"storage.documents"</span><span class="p">));</span>
 </code></pre></div>
 <p>The final argument may be a boolean switch, which is useful for environment-specific setup:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
-<span class="w">    </span><span class="p">.</span><span class="n">DisablePages</span><span class="p">(</span><span class="s">&quot;metrics&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;storage.documents&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">!</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">()));</span>
+<span class="w">    </span><span class="p">.</span><span class="n">DisablePages</span><span class="p">(</span><span class="s">"metrics"</span><span class="p">,</span><span class="w"> </span><span class="s">"storage.documents"</span><span class="p">,</span><span class="w"> </span><span class="o">!</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">()));</span>
 </code></pre></div>
 <p>Built-in page keys:</p>
 <table>
@@ -5665,7 +5665,7 @@
 </table>
 <p>Project-specific pages declared with <code>DashboardPageSet</code> use the key passed to <code>.Page(...)</code>. For example, a page declared as <code>.Page("customer-management", "/app/core/customers")</code> can be hidden with:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
-<span class="w">    </span><span class="p">.</span><span class="n">DisablePages</span><span class="p">(</span><span class="s">&quot;customer-management&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="p">.</span><span class="n">DisablePages</span><span class="p">(</span><span class="s">"customer-management"</span><span class="p">));</span>
 </code></pre></div>
 <p>Map registered endpoints once during application startup.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
@@ -5696,7 +5696,7 @@
 <p>If the host application already has an interactive cookie login, reuse that cookie scheme. This is common when the Web API is hosted together with a Blazor, Angular, or other SPA shell.</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Authorize</span><span class="p">(</span><span class="n">authorization</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">authorization</span>
-<span class="w">        </span><span class="p">.</span><span class="n">UseCookie</span><span class="p">(</span><span class="s">&quot;ApplicationCookie&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">signOut</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">)</span><span class="w"> </span><span class="c1">// use an existing cookie scheme by name</span>
+<span class="w">        </span><span class="p">.</span><span class="n">UseCookie</span><span class="p">(</span><span class="s">"ApplicationCookie"</span><span class="p">,</span><span class="w"> </span><span class="n">signOut</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">)</span><span class="w"> </span><span class="c1">// use an existing cookie scheme by name</span>
 <span class="w">        </span><span class="c1">// .UseCookie(CookieAuthenticationDefaults.AuthenticationScheme, signOut: true) // use default asp.net cookie scheme</span>
 <span class="w">        </span><span class="c1">//.UseCookie(signOut: true) // use default asp.net cookie scheme</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RequireRole</span><span class="p">(</span><span class="n">Role</span><span class="p">.</span><span class="n">Administrators</span><span class="p">)));</span>
@@ -5705,7 +5705,7 @@
 <p>For server-rendered dashboards that should trigger an interactive login but the host API only has JWT bearer authentication, let the dashboard register its own cookie, OIDC, and policy schemes. The dashboard does not perform client-credentials login for page access; browser access uses an interactive authorization-code flow. The default dashboard client id is <code>dashboard</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Authorize</span><span class="p">(</span><span class="n">authorization</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">authorization</span>
-<span class="w">        </span><span class="p">.</span><span class="n">UseOpenIdConnect</span><span class="p">(</span><span class="s">&quot;https://idp.example&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">UseOpenIdConnect</span><span class="p">(</span><span class="s">"https://idp.example"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RequireRole</span><span class="p">(</span><span class="n">Role</span><span class="p">.</span><span class="n">Administrators</span><span class="p">)));</span>
 </code></pre></div>
 <p>The fluent OIDC overload sets these values by convention:</p>
@@ -5726,15 +5726,15 @@
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Authorize</span><span class="p">(</span><span class="n">authorization</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">authorization</span>
 <span class="w">        </span><span class="p">.</span><span class="n">UseOpenIdConnect</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;https://idp.example&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="n">oidc</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">oidc</span><span class="p">.</span><span class="n">WithClientId</span><span class="p">(</span><span class="s">&quot;operations-dashboard&quot;</span><span class="p">))</span>
+<span class="w">            </span><span class="s">"https://idp.example"</span><span class="p">,</span>
+<span class="w">            </span><span class="n">oidc</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">oidc</span><span class="p">.</span><span class="n">WithClientId</span><span class="p">(</span><span class="s">"operations-dashboard"</span><span class="p">))</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RequireRole</span><span class="p">(</span><span class="n">Role</span><span class="p">.</span><span class="n">Administrators</span><span class="p">)));</span>
 </code></pre></div>
 <p>For providers where the dashboard should require signed tokens and issuer signing key validation, opt in explicitly.</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Authorize</span><span class="p">(</span><span class="n">authorization</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">authorization</span>
 <span class="w">        </span><span class="p">.</span><span class="n">UseOpenIdConnect</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;https://idp.example&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"https://idp.example"</span><span class="p">,</span>
 <span class="w">            </span><span class="n">oidc</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">oidc</span><span class="p">.</span><span class="n">RequireSignedTokens</span><span class="p">())</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RequireRole</span><span class="p">(</span><span class="n">Role</span><span class="p">.</span><span class="n">Administrators</span><span class="p">)));</span>
 </code></pre></div>
@@ -5742,7 +5742,7 @@
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Authorize</span><span class="p">(</span><span class="n">authorization</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">authorization</span>
 <span class="w">        </span><span class="p">.</span><span class="n">UseOpenIdConnect</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;http://localhost:8080&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"http://localhost:8080"</span><span class="p">,</span>
 <span class="w">            </span><span class="n">oidc</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">oidc</span><span class="p">.</span><span class="n">RequireHttpsMetadata</span><span class="p">(</span><span class="k">false</span><span class="p">))</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RequireRole</span><span class="p">(</span><span class="n">Role</span><span class="p">.</span><span class="n">Administrators</span><span class="p">)));</span>
 </code></pre></div>
@@ -5751,17 +5751,17 @@
 <span class="w">    </span><span class="p">.</span><span class="n">Authorize</span><span class="p">(</span><span class="n">authorization</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">authorization</span>
 <span class="w">        </span><span class="p">.</span><span class="n">UseOpenIdConnect</span><span class="p">(</span><span class="n">oidc</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">oidc</span><span class="p">.</span><span class="n">Authority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://idp.example&quot;</span><span class="p">;</span>
-<span class="w">            </span><span class="n">oidc</span><span class="p">.</span><span class="n">ClientId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dashboard&quot;</span><span class="p">;</span>
-<span class="w">            </span><span class="n">oidc</span><span class="p">.</span><span class="n">ResponseMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;form_post&quot;</span><span class="p">;</span>
+<span class="w">            </span><span class="n">oidc</span><span class="p">.</span><span class="n">Authority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"https://idp.example"</span><span class="p">;</span>
+<span class="w">            </span><span class="n">oidc</span><span class="p">.</span><span class="n">ClientId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"dashboard"</span><span class="p">;</span>
+<span class="w">            </span><span class="n">oidc</span><span class="p">.</span><span class="n">ResponseMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"form_post"</span><span class="p">;</span>
 <span class="w">        </span><span class="p">})</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RequireRole</span><span class="p">(</span><span class="n">Role</span><span class="p">.</span><span class="n">Administrators</span><span class="p">)));</span>
 </code></pre></div>
 <p>Use <code>UseExistingScheme(...)</code> for advanced host-owned schemes that are not cookies.</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Authorize</span><span class="p">(</span><span class="n">authorization</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">authorization</span>
-<span class="w">        </span><span class="p">.</span><span class="n">UseExistingScheme</span><span class="p">(</span><span class="s">&quot;MyScheme&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">signOut</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">RequirePolicy</span><span class="p">(</span><span class="s">&quot;DashboardAccess&quot;</span><span class="p">)));</span>
+<span class="w">        </span><span class="p">.</span><span class="n">UseExistingScheme</span><span class="p">(</span><span class="s">"MyScheme"</span><span class="p">,</span><span class="w"> </span><span class="n">signOut</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">RequirePolicy</span><span class="p">(</span><span class="s">"DashboardAccess"</span><span class="p">)));</span>
 </code></pre></div>
 <p>When the dashboard registers its own OIDC flow, it automatically uses the built-in access-denied page and sign-out route. When the current dashboard principal is authenticated, the dashboard shell shows a sign-out action in the header. The action posts to the built-in dashboard sign-out route and redirects back to the current dashboard URL, which triggers the configured authentication challenge again. Configure <code>.SignOutAuthenticationScheme(...)</code> manually only when using a custom scheme that needs separate sign-out behavior.</p>
 <h3 id="include-plugin-assemblies">Include plugin assemblies<a class="headerlink" href="#include-plugin-assemblies" title="Permanent link">&para;</a></h3>
@@ -5875,7 +5875,7 @@
 <p>The page shows the overall status, number of registered checks, unhealthy count, total duration, and individual check cards. It has its own content fragment endpoint and refresh controls for updating only the health body.</p>
 <p>Register health checks in the host application with the standard ASP.NET Core API:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddHealthChecks</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">AddCheck</span><span class="p">(</span><span class="s">&quot;self&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">HealthCheckResult</span><span class="p">.</span><span class="n">Healthy</span><span class="p">());</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddCheck</span><span class="p">(</span><span class="s">"self"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">HealthCheckResult</span><span class="p">.</span><span class="n">Healthy</span><span class="p">());</span>
 </code></pre></div>
 <p>If <code>AddHealthChecks()</code> is not registered, the page and card show an unavailable state instead of failing the dashboard.</p>
 <p><a href="../../assets/dashboard/05-health-health.png"><img alt="Health dashboard with overall status and registered check durations" src="../../assets/dashboard/05-health-health.png" /></a></p>
@@ -5907,7 +5907,7 @@ Modules/
 <h3 id="project-package-reference">Project package reference<a class="headerlink" href="#project-package-reference" title="Permanent link">&para;</a></h3>
 <p>The application or plugin assembly that owns the <code>.cshtml</code> files must reference <code>RazorSlices</code> directly so RazorSlice proxy types are generated for that assembly. With central package management, add the reference without a version:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&lt;ItemGroup&gt;</span>
-<span class="w">  </span><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;RazorSlices&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">"RazorSlices"</span><span class="w"> </span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/ItemGroup&gt;</span>
 </code></pre></div>
 <h3 id="page-set">Page set<a class="headerlink" href="#page-set" title="Permanent link">&para;</a></h3>
@@ -5921,27 +5921,27 @@ Modules/
 <span class="p">{</span>
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Configure</span><span class="p">(</span><span class="n">DashboardPageSetBuilder</span><span class="w"> </span><span class="n">pages</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">pages</span><span class="p">.</span><span class="n">WithTags</span><span class="p">(</span><span class="s">&quot;_bdk.Dashboard.Catalog&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">pages</span><span class="p">.</span><span class="n">WithTags</span><span class="p">(</span><span class="s">"_bdk.Dashboard.Catalog"</span><span class="p">);</span>
 
-<span class="w">        </span><span class="n">pages</span><span class="p">.</span><span class="n">Group</span><span class="p">(</span><span class="s">&quot;Catalog&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">Page</span><span class="p">(</span><span class="s">&quot;overview&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/catalog&quot;</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">Title</span><span class="p">(</span><span class="s">&quot;Overview&quot;</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">Icon</span><span class="p">(</span><span class="s">&quot;boxes&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="n">pages</span><span class="p">.</span><span class="n">Group</span><span class="p">(</span><span class="s">"Catalog"</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Page</span><span class="p">(</span><span class="s">"overview"</span><span class="p">,</span><span class="w"> </span><span class="s">"/catalog"</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Title</span><span class="p">(</span><span class="s">"Overview"</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Icon</span><span class="p">(</span><span class="s">"boxes"</span><span class="p">)</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Order</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">Description</span><span class="p">(</span><span class="s">&quot;Catalog overview&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Description</span><span class="p">(</span><span class="s">"Catalog overview"</span><span class="p">)</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Razor</span><span class="o">&lt;</span><span class="n">Pages</span><span class="p">.</span><span class="n">Overview</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Content</span><span class="o">&lt;</span><span class="n">Pages</span><span class="p">.</span><span class="n">OverviewContent</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Card</span><span class="p">(</span><span class="n">GetOverviewCardAsync</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">Page</span><span class="p">(</span><span class="s">&quot;product-management&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/catalog/products&quot;</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">Title</span><span class="p">(</span><span class="s">&quot;Product Management&quot;</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">Icon</span><span class="p">(</span><span class="s">&quot;box-seam&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Page</span><span class="p">(</span><span class="s">"product-management"</span><span class="p">,</span><span class="w"> </span><span class="s">"/catalog/products"</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Title</span><span class="p">(</span><span class="s">"Product Management"</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Icon</span><span class="p">(</span><span class="s">"box-seam"</span><span class="p">)</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Order</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">Description</span><span class="p">(</span><span class="s">&quot;Manage catalog products&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Description</span><span class="p">(</span><span class="s">"Manage catalog products"</span><span class="p">)</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Razor</span><span class="o">&lt;</span><span class="n">Pages</span><span class="p">.</span><span class="n">ProductManagement</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Content</span><span class="o">&lt;</span><span class="n">Pages</span><span class="p">.</span><span class="n">ProductManagementContent</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">HideFromIndex</span><span class="p">()</span>
-<span class="w">                </span><span class="p">.</span><span class="n">Post</span><span class="p">(</span><span class="s">&quot;/create&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">CreateProductAsync</span><span class="p">)</span>
-<span class="w">                    </span><span class="p">.</span><span class="n">Name</span><span class="p">(</span><span class="s">&quot;_bdk.Dashboard.Catalog.ProductCreate&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Post</span><span class="p">(</span><span class="s">"/create"</span><span class="p">,</span><span class="w"> </span><span class="n">CreateProductAsync</span><span class="p">)</span>
+<span class="w">                    </span><span class="p">.</span><span class="n">Name</span><span class="p">(</span><span class="s">"_bdk.Dashboard.Catalog.ProductCreate"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">ValueTask</span><span class="o">&lt;</span><span class="n">DashboardPageCard</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetOverviewCardAsync</span><span class="p">(</span><span class="n">DashboardPageCardContext</span><span class="w"> </span><span class="n">card</span><span class="p">)</span>
@@ -5949,13 +5949,13 @@ Modules/
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">requester</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">card</span><span class="p">.</span><span class="n">HttpContext</span><span class="p">.</span><span class="n">RequestServices</span><span class="p">.</span><span class="n">GetService</span><span class="o">&lt;</span><span class="n">IRequester</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">requester</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">card</span><span class="p">.</span><span class="n">Unavailable</span><span class="p">(</span><span class="s">&quot;Requester unavailable&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">card</span><span class="p">.</span><span class="n">Unavailable</span><span class="p">(</span><span class="s">"Requester unavailable"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ProductSummaryQuery</span><span class="p">(),</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">card</span><span class="p">.</span><span class="n">HttpContext</span><span class="p">.</span><span class="n">RequestAborted</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span>
-<span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="n">card</span><span class="p">.</span><span class="n">Value</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">ProductCount</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="n">CultureInfo</span><span class="p">.</span><span class="n">InvariantCulture</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;products&quot;</span><span class="p">)</span>
-<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">card</span><span class="p">.</span><span class="n">Error</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">()</span><span class="o">?.</span><span class="n">Message</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s">&quot;Could not load products&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="n">card</span><span class="p">.</span><span class="n">Value</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">ProductCount</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="n">CultureInfo</span><span class="p">.</span><span class="n">InvariantCulture</span><span class="p">),</span><span class="w"> </span><span class="s">"products"</span><span class="p">)</span>
+<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="n">card</span><span class="p">.</span><span class="n">Error</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">()</span><span class="o">?.</span><span class="n">Message</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s">"Could not load products"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5986,32 +5986,32 @@ Modules/
 @inherits DashboardPageSlice
 
 @{
-    var contentPath = this.Dashboard.Url(&quot;overview&quot;, &quot;content&quot;);
+    var contentPath = this.Dashboard.Url("overview", "content");
 }
 
-&lt;div class=&quot;d-flex justify-content-between align-items-center py-2 mb-2 border-bottom&quot;&gt;
+&lt;div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom"&gt;
     &lt;div&gt;
-        &lt;h4 class=&quot;m-0&quot;&gt;Catalog&lt;/h4&gt;
-        &lt;div class=&quot;text-muted small&quot;&gt;Product inventory overview&lt;/div&gt;
+        &lt;h4 class="m-0"&gt;Catalog&lt;/h4&gt;
+        &lt;div class="text-muted small"&gt;Product inventory overview&lt;/div&gt;
     &lt;/div&gt;
-    &lt;span class=&quot;text-muted small&quot;&gt;Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString(&quot;T&quot;, CultureInfo.InvariantCulture)&lt;/span&gt;
+    &lt;span class="text-muted small"&gt;Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)&lt;/span&gt;
 &lt;/div&gt;
 
-&lt;div id=&quot;catalog-overview-content&quot;&gt;
-    &lt;div class=&quot;text-muted small py-2&quot;&gt;Loading catalog content...&lt;/div&gt;
+&lt;div id="catalog-overview-content"&gt;
+    &lt;div class="text-muted small py-2"&gt;Loading catalog content...&lt;/div&gt;
 &lt;/div&gt;
 
 &lt;script&gt;
     (() =&gt; {
         window.bdkDashboard.createRefresher({
-            contentUrl: &#39;@contentPath&#39;,
-            contentSelector: &#39;#catalog-overview-content&#39;
+            contentUrl: '@contentPath',
+            contentSelector: '#catalog-overview-content'
         }).refresh(true);
     })();
 &lt;/script&gt;
 
 @functions {
-    public override string PageTitle =&gt; &quot;Catalog&quot;;
+    public override string PageTitle =&gt; "Catalog";
 }
 </code></pre></div>
 <h3 id="page-descriptor-guidance">Page descriptor guidance<a class="headerlink" href="#page-descriptor-guidance" title="Permanent link">&para;</a></h3>
@@ -6039,9 +6039,9 @@ Modules/
 <p>The sidebar groups pages by <code>DashboardPage.Group</code>. Groups are visually separated. Built-in bITdevKit pages use the <code>bdk</code> group. Application pages should use an application-specific group such as <code>Application</code>, <code>Catalog</code>, <code>Operations</code>, or the module name.</p>
 <p>Built-in navigation items use the <a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/assets/features/README.md">feature SVG icons</a>, selected by <code>DashboardPage.Key</code>. Their colors follow the selected dashboard theme in both expanded and collapsed navigation. Custom pages and legacy navigation items use their configured Bootstrap <code>Icon</code> value as a fallback.</p>
 <p>Use <code>GroupOrder</code> to place groups predictably:</p>
-<div class="highlight"><pre><span></span><code><span class="k">new</span><span class="w"> </span><span class="nf">DashboardPage</span><span class="p">(</span><span class="s">&quot;orders&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Orders&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;receipt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/_bdk/dashboard/orders&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">new</span><span class="w"> </span><span class="nf">DashboardPage</span><span class="p">(</span><span class="s">"orders"</span><span class="p">,</span><span class="w"> </span><span class="s">"Orders"</span><span class="p">,</span><span class="w"> </span><span class="s">"receipt"</span><span class="p">,</span><span class="w"> </span><span class="s">"/_bdk/dashboard/orders"</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Application&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Application"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">GroupOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
 <span class="w">    </span><span class="n">Order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span>
 <span class="p">};</span>
@@ -6097,33 +6097,33 @@ Modules/
 <span class="p">{</span>
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Configure</span><span class="p">(</span><span class="n">DashboardPageSetBuilder</span><span class="w"> </span><span class="n">pages</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">pages</span><span class="p">.</span><span class="n">Group</span><span class="p">(</span><span class="s">&quot;Application&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">Page</span><span class="p">(</span><span class="s">&quot;health&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/health&quot;</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">Title</span><span class="p">(</span><span class="s">&quot;Health&quot;</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">Icon</span><span class="p">(</span><span class="s">&quot;activity&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="n">pages</span><span class="p">.</span><span class="n">Group</span><span class="p">(</span><span class="s">"Application"</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Page</span><span class="p">(</span><span class="s">"health"</span><span class="p">,</span><span class="w"> </span><span class="s">"/health"</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Title</span><span class="p">(</span><span class="s">"Health"</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Icon</span><span class="p">(</span><span class="s">"activity"</span><span class="p">)</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Order</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Razor</span><span class="o">&lt;</span><span class="n">Pages</span><span class="p">.</span><span class="n">Health</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Card</span><span class="p">(</span><span class="n">card</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">ValueTask</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span>
-<span class="w">                    </span><span class="n">card</span><span class="p">.</span><span class="n">Value</span><span class="p">(</span><span class="s">&quot;OK&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Application is responding&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;System&quot;</span><span class="p">)));</span>
+<span class="w">                    </span><span class="n">card</span><span class="p">.</span><span class="n">Value</span><span class="p">(</span><span class="s">"OK"</span><span class="p">,</span><span class="w"> </span><span class="s">"Application is responding"</span><span class="p">,</span><span class="w"> </span><span class="s">"System"</span><span class="p">)));</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>@inherits DashboardPageSlice
 
-&lt;div class=&quot;d-flex justify-content-between align-items-center py-2 mb-2 border-bottom&quot;&gt;
-    &lt;h4 class=&quot;m-0&quot;&gt;Health&lt;/h4&gt;
-    &lt;span class=&quot;text-muted small&quot;&gt;Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString(&quot;T&quot;, CultureInfo.InvariantCulture)&lt;/span&gt;
+&lt;div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom"&gt;
+    &lt;h4 class="m-0"&gt;Health&lt;/h4&gt;
+    &lt;span class="text-muted small"&gt;Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)&lt;/span&gt;
 &lt;/div&gt;
 
-&lt;div class=&quot;card&quot;&gt;
-    &lt;div class=&quot;card-body p-3&quot;&gt;
-        &lt;h6 class=&quot;card-title&quot;&gt;Application&lt;/h6&gt;
-        &lt;div class=&quot;fs-4 fw-semibold&quot;&gt;OK&lt;/div&gt;
+&lt;div class="card"&gt;
+    &lt;div class="card-body p-3"&gt;
+        &lt;h6 class="card-title"&gt;Application&lt;/h6&gt;
+        &lt;div class="fs-4 fw-semibold"&gt;OK&lt;/div&gt;
     &lt;/div&gt;
 &lt;/div&gt;
 
 @functions {
-    public override string PageTitle =&gt; &quot;Health&quot;;
+    public override string PageTitle =&gt; "Health";
 }
 </code></pre></div>
 <p>Register external plugin assemblies explicitly:</p>
@@ -6210,10 +6210,10 @@ Modules/
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

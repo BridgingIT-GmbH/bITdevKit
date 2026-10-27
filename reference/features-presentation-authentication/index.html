@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4734,17 +4734,17 @@
 <h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
 <p>Configure the authority and enable the validation checks used by the API:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;Authentication&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;Authority&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://identity.example.com&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ValidIssuer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://identity.example.com&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ValidAudience&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;inventory-api&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ValidateIssuer&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ValidateAudience&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ValidateLifetime&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ValidateSigningKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;RequireSignedTokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;RequireHttpsMetadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;SaveToken&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">    </span><span class="nt">"Authentication"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"Authority"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://identity.example.com"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"ValidIssuer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://identity.example.com"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"ValidAudience"</span><span class="p">:</span><span class="w"> </span><span class="s2">"inventory-api"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"ValidateIssuer"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"ValidateAudience"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"ValidateLifetime"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"ValidateSigningKey"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"RequireSignedTokens"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"RequireHttpsMetadata"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"SaveToken"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -4764,7 +4764,7 @@
 <span class="n">app</span><span class="p">.</span><span class="n">UseAuthentication</span><span class="p">();</span>
 <span class="n">app</span><span class="p">.</span><span class="n">UseAuthorization</span><span class="p">();</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/me&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">ICurrentUserAccessor</span><span class="w"> </span><span class="n">currentUser</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/me"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">ICurrentUserAccessor</span><span class="w"> </span><span class="n">currentUser</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">currentUser</span><span class="p">.</span><span class="n">UserId</span><span class="p">,</span>
 <span class="w">    </span><span class="n">currentUser</span><span class="p">.</span><span class="n">UserName</span><span class="p">,</span>
@@ -4878,7 +4878,7 @@
 <p>If the authentication handler saved tokens, the page also has collapsible token entries with copy and JWT-inspection controls. Token values remain collapsed in this image. The page describes the signed-in dashboard user; it is not a directory of all application users or a view of another client's principal. See <a href="../features-presentation-dashboard/#authentication-and-authorization">dashboard authorization</a> for dashboard-owned and host-owned sign-in options.</p>
 <h2 id="role-and-policy-metadata"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="roles" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="9" r="4" /><path d="M3 26v-3a7 7 0 0 1 14 0v3" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m24 12 2 5 5 1-4 3 1 5-4-3-4 3 1-5-4-3 5-1 2-5Z" /></g></svg></span> Role and policy metadata<a class="headerlink" href="#role-and-policy-metadata" title="Permanent link">&para;</a></h2>
 <p><code>AuthorizeRolesAttribute</code> joins its role names with commas. ASP.NET Core treats the roles in one attribute as alternatives:</p>
-<div class="highlight"><pre><span></span><code><span class="na">[AuthorizeRoles(&quot;Administrators&quot;, &quot;Operators&quot;)]</span>
+<div class="highlight"><pre><span></span><code><span class="na">[AuthorizeRoles("Administrators", "Operators")]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">OperationsEndpoints</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EndpointsBase</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="c1">// Either role satisfies this attribute.</span>
@@ -4886,10 +4886,10 @@
 </code></pre></div>
 <p><code>AuthorizePermissionAttribute</code> uses its string as the policy name:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddAuthorization</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddPolicy</span><span class="p">(</span><span class="s">&quot;inventory.write&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">        </span><span class="n">policy</span><span class="p">.</span><span class="n">RequireClaim</span><span class="p">(</span><span class="s">&quot;permission&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;inventory.write&quot;</span><span class="p">)));</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddPolicy</span><span class="p">(</span><span class="s">"inventory.write"</span><span class="p">,</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="n">policy</span><span class="p">.</span><span class="n">RequireClaim</span><span class="p">(</span><span class="s">"permission"</span><span class="p">,</span><span class="w"> </span><span class="s">"inventory.write"</span><span class="p">)));</span>
 
-<span class="na">[AuthorizePermission(&quot;inventory.write&quot;)]</span>
+<span class="na">[AuthorizePermission("inventory.write")]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">InventoryEndpoints</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EndpointsBase</span>
 <span class="p">{</span>
 <span class="p">}</span>
@@ -4901,7 +4901,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">AddJwtBearerAuthentication</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddCookieAuthentication</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">Cookie</span><span class="p">.</span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;.Inventory.Refresh&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">Cookie</span><span class="p">.</span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">".Inventory.Refresh"</span><span class="p">;</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">Cookie</span><span class="p">.</span><span class="n">HttpOnly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">Cookie</span><span class="p">.</span><span class="n">SecurePolicy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CookieSecurePolicy</span><span class="p">.</span><span class="n">Always</span><span class="p">;</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">Cookie</span><span class="p">.</span><span class="n">SameSite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SameSiteMode</span><span class="p">.</span><span class="n">Strict</span><span class="p">;</span>
@@ -5004,10 +5004,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

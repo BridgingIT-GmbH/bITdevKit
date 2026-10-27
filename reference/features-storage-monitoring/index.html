@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4933,46 +4933,46 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
 
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddFileStorage</span><span class="p">(</span><span class="n">factory</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">factory</span>
-<span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">&quot;inbox&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">storage</span>
-<span class="w">        </span><span class="p">.</span><span class="n">UseInMemory</span><span class="p">(</span><span class="s">&quot;Inbox&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">"inbox"</span><span class="p">,</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">storage</span>
+<span class="w">        </span><span class="p">.</span><span class="n">UseInMemory</span><span class="p">(</span><span class="s">"Inbox"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">)));</span>
 
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddFileMonitoring</span><span class="p">(</span><span class="n">monitoring</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">monitoring</span><span class="p">.</span><span class="n">UseProvider</span><span class="p">(</span><span class="s">&quot;inbox&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;inbox&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="n">monitoring</span><span class="p">.</span><span class="n">UseProvider</span><span class="p">(</span><span class="s">"inbox"</span><span class="p">,</span><span class="w"> </span><span class="s">"inbox"</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">UseOnDemandOnly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
-<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">FileFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;*.csv&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">FileFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"*.csv"</span><span class="p">;</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">UseProcessor</span><span class="o">&lt;</span><span class="n">FileLoggerProcessor</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">    </span><span class="p">});</span>
 <span class="p">});</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/monitoring/scan&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">"/monitoring/scan"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">IFileStorageProviderFactory</span><span class="w"> </span><span class="n">storageFactory</span><span class="p">,</span>
 <span class="w">    </span><span class="n">IFileMonitoringService</span><span class="w"> </span><span class="n">monitoring</span><span class="p">,</span>
 <span class="w">    </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">storageFactory</span><span class="p">.</span><span class="n">CreateProvider</span><span class="p">(</span><span class="s">&quot;inbox&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">storageFactory</span><span class="p">.</span><span class="n">CreateProvider</span><span class="p">(</span><span class="s">"inbox"</span><span class="p">);</span>
 <span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MemoryStream</span><span class="p">(</span>
-<span class="w">        </span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="s">&quot;orderId,total\n1001,42.50&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="s">"orderId,total\n1001,42.50"</span><span class="p">),</span>
 <span class="w">        </span><span class="n">writable</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
 
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">write</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">storage</span><span class="p">.</span><span class="n">WriteFileAsync</span><span class="p">(</span>
-<span class="w">        </span><span class="s">&quot;orders.csv&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">"orders.csv"</span><span class="p">,</span>
 <span class="w">        </span><span class="n">content</span><span class="p">,</span>
 <span class="w">        </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">write</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;; &quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"; "</span><span class="p">,</span>
 <span class="w">            </span><span class="n">write</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">scan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">monitoring</span><span class="p">.</span><span class="n">ScanLocationAsync</span><span class="p">(</span>
-<span class="w">        </span><span class="s">&quot;inbox&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">"inbox"</span><span class="p">,</span>
 <span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">FileScanOptions</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">WaitForProcessing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="w"> </span><span class="p">},</span>
 <span class="w">        </span><span class="n">token</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
@@ -5010,20 +5010,20 @@
 application storage that is already exposed through a named provider, such as an Entity Framework
 backed operational document store.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddFileStorage</span><span class="p">(</span><span class="n">factory</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">factory</span>
-<span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">&quot;documents&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">storage</span>
+<span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">"documents"</span><span class="p">,</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">storage</span>
 <span class="w">        </span><span class="p">.</span><span class="n">UseEntityFramework</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;Documents&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;Operational document storage&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="s">"Documents"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"Operational document storage"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">)))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">());</span>
 
 <span class="n">services</span><span class="p">.</span><span class="n">AddFileMonitoring</span><span class="p">(</span><span class="n">monitoring</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">monitoring</span><span class="p">.</span><span class="n">UseProvider</span><span class="p">(</span><span class="s">&quot;documents&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;documents&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="n">monitoring</span><span class="p">.</span><span class="n">UseProvider</span><span class="p">(</span><span class="s">"documents"</span><span class="p">,</span><span class="w"> </span><span class="s">"documents"</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">UseOnDemandOnly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
-<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">FileFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;*.*&quot;</span><span class="p">;</span>
-<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">FileBlackListFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;*.tmp&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;*.log&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">FileFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"*.*"</span><span class="p">;</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">FileBlackListFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"*.tmp"</span><span class="p">,</span><span class="w"> </span><span class="s">"*.log"</span><span class="p">];</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">UseProcessor</span><span class="o">&lt;</span><span class="n">FileLoggerProcessor</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">    </span><span class="p">});</span>
 <span class="p">});</span>
@@ -5055,16 +5055,16 @@ makes them a good fit for scheduled reconciliation jobs and admin-driven reproce
 <span class="p">{</span>
 <span class="w">    </span><span class="n">monitoring</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">LoggingBehavior</span><span class="o">&gt;</span><span class="p">()</span>
-<span class="w">        </span><span class="p">.</span><span class="n">UseLocal</span><span class="p">(</span><span class="s">&quot;inbound&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;C:\\data\\inbound&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="p">.</span><span class="n">UseLocal</span><span class="p">(</span><span class="s">"inbound"</span><span class="p">,</span><span class="w"> </span><span class="s">"C:\\data\\inbound"</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">FileFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;*.csv&quot;</span><span class="p">;</span>
-<span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">FileBlackListFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;*.tmp&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;*.bak&quot;</span><span class="p">];</span>
+<span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">FileFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"*.csv"</span><span class="p">;</span>
+<span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">FileBlackListFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"*.tmp"</span><span class="p">,</span><span class="w"> </span><span class="s">"*.bak"</span><span class="p">];</span>
 <span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">RateLimit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RateLimitOptions</span><span class="p">.</span><span class="n">MediumSpeed</span><span class="p">;</span>
 
 <span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">UseProcessor</span><span class="o">&lt;</span><span class="n">FileLoggerProcessor</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">UseProcessor</span><span class="o">&lt;</span><span class="n">FileMoverProcessor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">config</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">                </span><span class="n">config</span><span class="p">.</span><span class="n">WithConfiguration</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">                    </span><span class="p">((</span><span class="n">FileMoverProcessor</span><span class="p">)</span><span class="n">p</span><span class="p">).</span><span class="n">DestinationRoot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;C:\\data\\processed&quot;</span><span class="p">));</span>
+<span class="w">                    </span><span class="p">((</span><span class="n">FileMoverProcessor</span><span class="p">)</span><span class="n">p</span><span class="p">).</span><span class="n">DestinationRoot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"C:\\data\\processed"</span><span class="p">));</span>
 <span class="w">        </span><span class="p">});</span>
 <span class="p">});</span>
 </code></pre></div>
@@ -5083,12 +5083,12 @@ makes them a good fit for scheduled reconciliation jobs and admin-driven reproce
 <h2 id="on-demand-scans">On-demand scans<a class="headerlink" href="#on-demand-scans" title="Permanent link">&para;</a></h2>
 <p><code>ScanLocationAsync(...)</code> lets application code or scheduled jobs trigger a controlled reconciliation pass over a location.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">fileMonitoringService</span><span class="p">.</span><span class="n">ScanLocationAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;inbound&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"inbound"</span><span class="p">,</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">FileScanOptions</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">WaitForProcessing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
-<span class="w">        </span><span class="n">FileFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;*.csv&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="n">FileBlackListFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;*.tmp&quot;</span><span class="p">],</span>
+<span class="w">        </span><span class="n">FileFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"*.csv"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">FileBlackListFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"*.tmp"</span><span class="p">],</span>
 <span class="w">        </span><span class="n">BatchSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
 <span class="w">        </span><span class="n">ProgressIntervalPercentage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
 <span class="w">        </span><span class="n">Timeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -5166,16 +5166,16 @@ multi-node or database-backed deployments where real-time watchers are not avail
 <p>When a monitored location is also exposed through <code>Presentation.Web.Storage</code>, the same provider
 name can be used to query file events and trigger scans over HTTP.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddFileStorage</span><span class="p">(</span><span class="n">factory</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">factory</span>
-<span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">&quot;documents&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">storage</span>
+<span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">"documents"</span><span class="p">,</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">storage</span>
 <span class="w">        </span><span class="p">.</span><span class="n">UseEntityFramework</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;Documents&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;Operational document storage&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="s">"Documents"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"Operational document storage"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">)))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">());</span>
 
 <span class="n">services</span><span class="p">.</span><span class="n">AddFileMonitoring</span><span class="p">(</span><span class="n">monitoring</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">monitoring</span><span class="p">.</span><span class="n">UseProvider</span><span class="p">(</span><span class="s">&quot;documents&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;documents&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="n">monitoring</span><span class="p">.</span><span class="n">UseProvider</span><span class="p">(</span><span class="s">"documents"</span><span class="p">,</span><span class="w"> </span><span class="s">"documents"</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">UseOnDemandOnly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">UseProcessor</span><span class="o">&lt;</span><span class="n">FileLoggerProcessor</span><span class="o">&gt;</span><span class="p">();</span>
@@ -5305,10 +5305,10 @@ name can be used to query file events and trigger scans over HTTP.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5044,21 +5044,21 @@
 
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/documents/customers/{id}&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">"/documents/customers/{id}"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">,</span>
 <span class="w">    </span><span class="n">IDocumentStoreClient</span><span class="o">&lt;</span><span class="n">CustomerDocument</span><span class="o">&gt;</span><span class="w"> </span><span class="n">documents</span><span class="p">,</span>
 <span class="w">    </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DocumentKey</span><span class="p">(</span><span class="s">&quot;customers&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DocumentKey</span><span class="p">(</span><span class="s">"customers"</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">);</span>
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">stored</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">UpsertAsync</span><span class="p">(</span>
 <span class="w">        </span><span class="n">key</span><span class="p">,</span>
-<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">CustomerDocument</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">$&quot;Customer {id}&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">CustomerDocument</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">$"Customer {id}"</span><span class="w"> </span><span class="p">},</span>
 <span class="w">        </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">stored</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;; &quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"; "</span><span class="p">,</span>
 <span class="w">            </span><span class="n">stored</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -5066,7 +5066,7 @@
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">read</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;; &quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"; "</span><span class="p">,</span>
 <span class="w">            </span><span class="n">read</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -5102,9 +5102,9 @@
 <p>Use Blob Storage for stream-first binary objects and Key/Value Storage for low-latency scalar/shared-state workloads.</p>
 <h2 id="contract">Contract<a class="headerlink" href="#contract" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span><span class="p">();</span>
-<span class="n">properties</span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="s">&quot;region&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;eu&quot;</span><span class="p">);</span>
+<span class="n">properties</span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="s">"region"</span><span class="p">,</span><span class="w"> </span><span class="s">"eu"</span><span class="p">);</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">created</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">UpsertAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">DocumentKey</span><span class="p">(</span><span class="s">&quot;customers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;42&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">DocumentKey</span><span class="p">(</span><span class="s">"customers"</span><span class="p">,</span><span class="w"> </span><span class="s">"42"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">customer</span><span class="p">,</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">DocumentWriteOptions</span>
 <span class="w">    </span><span class="p">{</span>
@@ -5117,19 +5117,19 @@
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">created</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
-<span class="w">        </span><span class="s">&quot;; &quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">"; "</span><span class="p">,</span>
 <span class="w">        </span><span class="n">created</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">GetAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">DocumentKey</span><span class="p">(</span><span class="s">&quot;customers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;42&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">DocumentKey</span><span class="p">(</span><span class="s">"customers"</span><span class="p">,</span><span class="w"> </span><span class="s">"42"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">current</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
-<span class="w">        </span><span class="s">&quot;; &quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">"; "</span><span class="p">,</span>
 <span class="w">        </span><span class="n">current</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
@@ -5145,7 +5145,7 @@
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">updated</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
-<span class="w">        </span><span class="s">&quot;; &quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">"; "</span><span class="p">,</span>
 <span class="w">        </span><span class="n">updated</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5205,8 +5205,8 @@
 <h2 id="named-clients-and-di">Named clients and DI<a class="headerlink" href="#named-clients-and-di" title="Permanent link">&para;</a></h2>
 <p><code>AddDocumentStorage</code> is the feature registration entry point. Registrations are keyed by document CLR type and normalized case-insensitive client name. At most one registration for a type is the explicit default exposed through direct <code>IDocumentStoreClient&lt;T&gt;</code> injection. Resolve other clients through <code>IDocumentStoreClientFactory.CreateClient&lt;T&gt;(name)</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithAzureTableClient</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tableServiceClient</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;primary&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">isDefault</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">StorageDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;archive&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">isDefault</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithAzureTableClient</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tableServiceClient</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">"primary"</span><span class="p">,</span><span class="w"> </span><span class="n">isDefault</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">StorageDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">"archive"</span><span class="p">,</span><span class="w"> </span><span class="n">isDefault</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
 </code></pre></div>
 <p>Singleton, scoped, and transient client lifetimes follow normal keyed DI semantics. The factory is scoped and lookup-only; it does not construct or cache clients. Entity Framework providers receive <code>IServiceScopeFactory</code> and own one scope and <code>DbContext</code> per operation.</p>
 <p>Both <code>IDocumentStoreProvider</code> and <code>IDocumentStoreClient&lt;T&gt;</code> are keyed by the same type/name identity at the configured lifetime. Retention resolves the keyed provider directly, so custom client behaviors cannot hide retention support.</p>
@@ -5215,7 +5215,7 @@
 <p>Register Profiling before other named-client behaviors to include their downstream work:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithProfilingBehavior</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">InMemoryDocumentStoreProvider</span><span class="p">(),</span><span class="w"> </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;archive&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">InMemoryDocumentStoreProvider</span><span class="p">(),</span><span class="w"> </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">"archive"</span><span class="p">);</span>
 </code></pre></div>
 <p>Every typed client method is measured, including count, key-only paging, property updates and batch writes/deletes. <code>DocumentStorage</code> keys use <code>documentstorage:{type name}:{operation}</code>. Dimensions are <code>documentstorage.client</code>, <code>documentstorage.documentType</code> and <code>documentstorage.operation</code>; partition keys, row keys, query tokens and document payloads are omitted. A partially completed batch keeps its original result while profiling records <code>PartialBatch</code> failure. Direct <code>DocumentStoreBuilderContext&lt;T&gt;</code> registration also offers <code>.WithProfilingBehavior()</code>. See <a href="../features-profiling/#storage-behaviors">Storage profiling behaviors</a> for ownership and comparison rules.</p>
 <h2 id="behaviors">Behaviors<a class="headerlink" href="#behaviors" title="Permanent link">&para;</a></h2>
@@ -5345,10 +5345,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

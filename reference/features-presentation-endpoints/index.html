@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5129,9 +5129,9 @@
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="n">app</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">);</span>
 
-<span class="w">        </span><span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;pong&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">""</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"pong"</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">                </span><span class="n">TypedResults</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">EchoResponse</span><span class="p">(</span><span class="n">message</span><span class="p">)))</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Get&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="s">"Get"</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">Produces</span><span class="o">&lt;</span><span class="n">EchoResponse</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -5140,9 +5140,9 @@
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">EchoEndpointsOptions</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">GroupPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/api/echo&quot;</span><span class="p">;</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">GroupTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Echo&quot;</span><span class="p">;</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">RouteNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Echo&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">GroupPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"/api/echo"</span><span class="p">;</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">GroupTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Echo"</span><span class="p">;</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">RouteNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Echo"</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5259,7 +5259,7 @@
 <span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">();</span>
 
 <span class="c1">// Optionally map within a preconfigured RouteGroup</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">&quot;/api&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">"/api"</span><span class="p">);</span>
 <span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">(</span><span class="n">api</span><span class="p">);</span>
 </code></pre></div>
 <h3 id="grouping-and-authorization">Grouping and authorization<a class="headerlink" href="#grouping-and-authorization" title="Permanent link">&para;</a></h3>
@@ -5270,8 +5270,8 @@
 <span class="w">  </span><span class="p">{</span>
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="n">app</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">);</span>
 
-<span class="w">    </span><span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;items&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">())</span>
-<span class="w">      </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ListItems&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"items"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">())</span>
+<span class="w">      </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="s">"ListItems"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 
@@ -5279,10 +5279,10 @@
 <span class="p">{</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nf">MyEndpointsOptions</span><span class="p">()</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="n">GroupPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/api/items&quot;</span><span class="p">;</span>
-<span class="w">    </span><span class="n">GroupTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Items&quot;</span><span class="p">;</span>
-<span class="w">    </span><span class="n">GroupName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;items&quot;</span><span class="p">;</span>
-<span class="w">    </span><span class="n">RouteNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Items&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">GroupPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"/api/items"</span><span class="p">;</span>
+<span class="w">    </span><span class="n">GroupTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Items"</span><span class="p">;</span>
+<span class="w">    </span><span class="n">GroupName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"items"</span><span class="p">;</span>
+<span class="w">    </span><span class="n">RouteNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Items"</span><span class="p">;</span>
 <span class="w">    </span><span class="n">RequireAuthorization</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -5292,13 +5292,13 @@
 <span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="n">EndpointsOptionsBuilderBase</span><span class="o">&lt;</span><span class="n">MyEndpointsOptions</span><span class="p">,</span><span class="w"> </span><span class="n">MyEndpointsOptionsBuilder</span><span class="o">&gt;</span><span class="p">;</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyEndpointsOptionsBuilder</span><span class="p">()</span>
-<span class="w">  </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/api/items&quot;</span><span class="p">)</span>
-<span class="w">  </span><span class="p">.</span><span class="n">GroupTag</span><span class="p">(</span><span class="s">&quot;Items&quot;</span><span class="p">)</span>
-<span class="w">  </span><span class="p">.</span><span class="n">GroupName</span><span class="p">(</span><span class="s">&quot;items&quot;</span><span class="p">)</span>
-<span class="w">  </span><span class="p">.</span><span class="n">RouteNamePrefix</span><span class="p">(</span><span class="s">&quot;Items&quot;</span><span class="p">)</span>
-<span class="w">  </span><span class="p">.</span><span class="n">RequirePolicy</span><span class="p">(</span><span class="s">&quot;Items.Read&quot;</span><span class="p">)</span>
-<span class="w">  </span><span class="p">.</span><span class="n">RequireCorsPolicy</span><span class="p">(</span><span class="s">&quot;PublicApi&quot;</span><span class="p">)</span>
-<span class="w">  </span><span class="p">.</span><span class="n">RequireRateLimitingPolicy</span><span class="p">(</span><span class="s">&quot;DefaultApi&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">"/api/items"</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">GroupTag</span><span class="p">(</span><span class="s">"Items"</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">GroupName</span><span class="p">(</span><span class="s">"items"</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">RouteNamePrefix</span><span class="p">(</span><span class="s">"Items"</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">RequirePolicy</span><span class="p">(</span><span class="s">"Items.Read"</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">RequireCorsPolicy</span><span class="p">(</span><span class="s">"PublicApi"</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">RequireRateLimitingPolicy</span><span class="p">(</span><span class="s">"DefaultApi"</span><span class="p">)</span>
 <span class="w">  </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 </code></pre></div>
 <h2 id="built-in-endpoints">Built-in endpoints<a class="headerlink" href="#built-in-endpoints" title="Permanent link">&para;</a></h2>
@@ -5326,10 +5326,10 @@
 <span class="w">  </span><span class="p">{</span>
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="n">app</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">);</span>
 
-<span class="w">    </span><span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;echo&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">([</span><span class="n">FromQuery</span><span class="p">]</span><span class="w"> </span><span class="kt">string?</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">        </span><span class="n">TypedResults</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">EchoModel</span><span class="p">{</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s">&quot;pong&quot;</span><span class="w"> </span><span class="p">}))</span>
-<span class="w">      </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Get&quot;</span><span class="p">)</span>
-<span class="w">      </span><span class="p">.</span><span class="n">WithDescription</span><span class="p">(</span><span class="s">&quot;Simple echo endpoint.&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"echo"</span><span class="p">,</span><span class="w"> </span><span class="p">([</span><span class="n">FromQuery</span><span class="p">]</span><span class="w"> </span><span class="kt">string?</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="n">TypedResults</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">EchoModel</span><span class="p">{</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s">"pong"</span><span class="w"> </span><span class="p">}))</span>
+<span class="w">      </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="s">"Get"</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">WithDescription</span><span class="p">(</span><span class="s">"Simple echo endpoint."</span><span class="p">)</span>
 <span class="w">      </span><span class="p">.</span><span class="n">Produces</span><span class="o">&lt;</span><span class="n">EchoModel</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">      </span><span class="p">.</span><span class="n">ProducesResultProblem</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status400BadRequest</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
@@ -5339,9 +5339,9 @@
 <span class="p">{</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nf">EchoEndpointsOptions</span><span class="p">()</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="n">GroupPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/api/system&quot;</span><span class="p">;</span>
-<span class="w">    </span><span class="n">GroupTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;System&quot;</span><span class="p">;</span>
-<span class="w">    </span><span class="n">RouteNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Echo&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">GroupPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"/api/system"</span><span class="p">;</span>
+<span class="w">    </span><span class="n">GroupTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"System"</span><span class="p">;</span>
+<span class="w">    </span><span class="n">RouteNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Echo"</span><span class="p">;</span>
 <span class="w">    </span><span class="n">RequireAuthorization</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -5368,7 +5368,7 @@
 <h2 id="appendix-a-minimal-api-syntax">Appendix A: minimal API syntax<a class="headerlink" href="#appendix-a-minimal-api-syntax" title="Permanent link">&para;</a></h2>
 <p>Endpoints follow ASP.NET Core Minimal API conventions via fluent mapping on <code>RouteGroupBuilder</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Requester-based GET (Result&lt;T&gt; → HTTP)</span>
-<span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;items&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">([</span><span class="n">FromServices</span><span class="p">]</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span>
+<span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"items"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">([</span><span class="n">FromServices</span><span class="p">]</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span>
 <span class="w">                              </span><span class="na">[FromQuery]</span><span class="w"> </span><span class="n">FilterModel</span><span class="w"> </span><span class="n">filter</span><span class="p">,</span>
 <span class="w">                              </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="n">requester</span>
@@ -5376,23 +5376,23 @@
 <span class="w">        </span><span class="p">.</span><span class="n">MapHttpOkAll</span><span class="p">())</span>
 <span class="w">  </span><span class="p">.</span><span class="n">Produces</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">ItemModel</span><span class="o">&gt;&gt;</span><span class="p">()</span>
 <span class="w">  </span><span class="p">.</span><span class="n">Produces</span><span class="o">&lt;</span><span class="n">ProblemDetails</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status500InternalServerError</span><span class="p">)</span>
-<span class="w">  </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">&quot;Items.Get&quot;</span><span class="p">)</span>
-<span class="w">  </span><span class="p">.</span><span class="n">WithDescription</span><span class="p">(</span><span class="s">&quot;Retrieves items matching the optional filter.&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">"Items.Get"</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithDescription</span><span class="p">(</span><span class="s">"Retrieves items matching the optional filter."</span><span class="p">);</span>
 
 <span class="c1">// Requester-based POST create (Result&lt;T&gt; → HTTP)</span>
-<span class="k">group</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;items&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">([</span><span class="n">FromServices</span><span class="p">]</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span>
+<span class="k">group</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">"items"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">([</span><span class="n">FromServices</span><span class="p">]</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span>
 <span class="w">                               </span><span class="na">[FromBody]</span><span class="w"> </span><span class="n">ItemModel</span><span class="w"> </span><span class="n">model</span><span class="p">,</span>
 <span class="w">                               </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="n">requester</span>
 <span class="w">        </span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ItemCreateCommand</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">ct</span><span class="p">))</span>
-<span class="w">        </span><span class="p">.</span><span class="n">MapHttpCreated</span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$&quot;/api/items/{v.Id}&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">MapHttpCreated</span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$"/api/items/{v.Id}"</span><span class="p">))</span>
 <span class="w">  </span><span class="p">.</span><span class="n">Produces</span><span class="o">&lt;</span><span class="n">ItemModel</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status201Created</span><span class="p">)</span>
 <span class="w">  </span><span class="p">.</span><span class="n">Produces</span><span class="o">&lt;</span><span class="n">ProblemDetails</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status400BadRequest</span><span class="p">)</span>
-<span class="w">  </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">&quot;Items.Create&quot;</span><span class="p">)</span>
-<span class="w">  </span><span class="p">.</span><span class="n">WithDescription</span><span class="p">(</span><span class="s">&quot;Creates a new item.&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">"Items.Create"</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithDescription</span><span class="p">(</span><span class="s">"Creates a new item."</span><span class="p">);</span>
 
 <span class="c1">// Requester-based DELETE (Result → HTTP)</span>
-<span class="k">group</span><span class="p">.</span><span class="n">MapDelete</span><span class="p">(</span><span class="s">&quot;items/{id}&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">([</span><span class="n">FromServices</span><span class="p">]</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span>
+<span class="k">group</span><span class="p">.</span><span class="n">MapDelete</span><span class="p">(</span><span class="s">"items/{id}"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">([</span><span class="n">FromServices</span><span class="p">]</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span>
 <span class="w">                                      </span><span class="na">[FromRoute]</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">,</span>
 <span class="w">                                      </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="n">requester</span>
@@ -5400,8 +5400,8 @@
 <span class="w">        </span><span class="p">.</span><span class="n">MapHttpNoContent</span><span class="p">())</span>
 <span class="w">  </span><span class="p">.</span><span class="n">Produces</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status204NoContent</span><span class="p">)</span>
 <span class="w">  </span><span class="p">.</span><span class="n">Produces</span><span class="o">&lt;</span><span class="n">ProblemDetails</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status404NotFound</span><span class="p">)</span>
-<span class="w">  </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">&quot;Items.Delete&quot;</span><span class="p">)</span>
-<span class="w">  </span><span class="p">.</span><span class="n">WithDescription</span><span class="p">(</span><span class="s">&quot;Deletes the specified item.&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">"Items.Delete"</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithDescription</span><span class="p">(</span><span class="s">"Deletes the specified item."</span><span class="p">);</span>
 
 <span class="c1">// Requester signature (Result&lt;T&gt;)</span>
 <span class="c1">// Task&lt;Result&lt;TValue&gt;&gt; SendAsync&lt;TValue&gt;(IRequest&lt;TValue&gt; request, SendOptions options = null, CancellationToken ct = default);</span>
@@ -5479,37 +5479,37 @@
 <p>All helpers perform error-to-HTTP mapping and support optional logging via <code>ILogger</code>.</p>
 <h4 id="usage-examples">Usage examples<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="c1">// Paged listing (ResultPaged&lt;T&gt; → HTTP)</span>
-<span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;items&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">([</span><span class="n">FromServices</span><span class="p">]</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">FromQuery</span><span class="p">]</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">page</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">FromQuery</span><span class="p">]</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"items"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">([</span><span class="n">FromServices</span><span class="p">]</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">FromQuery</span><span class="p">]</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">page</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">FromQuery</span><span class="p">]</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ItemsFindPagedQuery</span><span class="p">(</span><span class="n">page</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">),</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">ct</span><span class="p">))</span>
 <span class="w">        </span><span class="p">.</span><span class="n">MapHttpOkPaged</span><span class="p">())</span>
 <span class="w">  </span><span class="p">.</span><span class="n">Produces</span><span class="o">&lt;</span><span class="n">PagedResponse</span><span class="o">&lt;</span><span class="n">ItemModel</span><span class="o">&gt;&gt;</span><span class="p">()</span>
-<span class="w">  </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">&quot;Items.GetPaged&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">"Items.GetPaged"</span><span class="p">);</span>
 
 <span class="c1">// Long-running job trigger (Result → HTTP 202 Accepted)</span>
-<span class="k">group</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;jobs/{id}/run&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">([</span><span class="n">FromServices</span><span class="p">]</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">FromRoute</span><span class="p">]</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="k">group</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">"jobs/{id}/run"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">([</span><span class="n">FromServices</span><span class="p">]</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">FromRoute</span><span class="p">]</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">JobRunCommand</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">ct</span><span class="p">))</span>
-<span class="w">        </span><span class="p">.</span><span class="n">MapHttpAccepted</span><span class="p">(</span><span class="s">$&quot;/api/jobs/{id}/runs/last&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">MapHttpAccepted</span><span class="p">(</span><span class="s">$"/api/jobs/{id}/runs/last"</span><span class="p">))</span>
 <span class="w">  </span><span class="p">.</span><span class="n">Produces</span><span class="o">&lt;</span><span class="n">Accepted</span><span class="o">&gt;</span><span class="p">()</span>
-<span class="w">  </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">&quot;Jobs.Run&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">"Jobs.Run"</span><span class="p">);</span>
 
 <span class="c1">// File export (Result&lt;FileContent&gt; → HTTP file)</span>
-<span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;items/export&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">([</span><span class="n">FromServices</span><span class="p">]</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"items/export"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">([</span><span class="n">FromServices</span><span class="p">]</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ItemsExportQuery</span><span class="p">(),</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">ct</span><span class="p">))</span>
-<span class="w">        </span><span class="p">.</span><span class="n">MapHttpFile</span><span class="p">(</span><span class="n">fc</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$&quot;items-export-{DateTime.UtcNow:yyyyMMdd}.csv&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">MapHttpFile</span><span class="p">(</span><span class="n">fc</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">$"items-export-{DateTime.UtcNow:yyyyMMdd}.csv"</span><span class="p">))</span>
 <span class="w">  </span><span class="p">.</span><span class="n">Produces</span><span class="o">&lt;</span><span class="n">FileContentHttpResult</span><span class="o">&gt;</span><span class="p">()</span>
-<span class="w">  </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">&quot;Items.Export&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">"Items.Export"</span><span class="p">);</span>
 </code></pre></div>
 <h4 id="custom-error-handlers">Custom error handlers<a class="headerlink" href="#custom-error-handlers" title="Permanent link">&para;</a></h4>
 <p>You can plug in custom error-to-HTTP mapping for specific Result errors. Register handlers once at startup; the registry is consulted before default mapping.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// At startup (e.g., Program.cs)</span>
 <span class="n">ResultMapHttpExtensions</span><span class="p">.</span><span class="n">RegisterErrorHandler</span><span class="o">&lt;</span><span class="n">CustomBusinessError</span><span class="o">&gt;</span><span class="p">((</span><span class="n">logger</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
-<span class="w">  </span><span class="n">logger</span><span class="o">?.</span><span class="n">LogWarning</span><span class="p">(</span><span class="s">&quot;Business rule violation: {Error}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+<span class="w">  </span><span class="n">logger</span><span class="o">?.</span><span class="n">LogWarning</span><span class="p">(</span><span class="s">"Business rule violation: {Error}"</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">TypedResults</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span>
 <span class="w">    </span><span class="n">detail</span><span class="p">:</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">ToString</span><span class="p">(),</span>
 <span class="w">    </span><span class="n">statusCode</span><span class="p">:</span><span class="w"> </span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status422UnprocessableEntity</span><span class="p">,</span>
-<span class="w">    </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Business Rule Violation&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://example.com/errors/business-rule&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Business Rule Violation"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">type</span><span class="p">:</span><span class="w"> </span><span class="s">"https://example.com/errors/business-rule"</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre></div>
 <h4 id="notes-and-constraints">Notes and constraints<a class="headerlink" href="#notes-and-constraints" title="Permanent link">&para;</a></h4>
@@ -5597,10 +5597,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

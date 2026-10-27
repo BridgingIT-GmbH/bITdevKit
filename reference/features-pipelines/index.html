@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5960,7 +5960,7 @@ into the same problems:</p>
 <p>Packaged definitions are a good default when a pipeline is reusable or belongs clearly to one feature.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">OrderImportContext</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">PipelineContextBase</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="na">[ValidateNotEmpty(&quot;Source file name is required.&quot;)]</span>
+<span class="w">    </span><span class="na">[ValidateNotEmpty("Source file name is required.")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">SourceFileName</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">ImportedOrderCount</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
@@ -5989,10 +5989,10 @@ into the same problems:</p>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">SourceFileName</span><span class="p">))</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Terminate</span><span class="p">(</span>
-<span class="w">                </span><span class="n">result</span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Error</span><span class="p">(</span><span class="s">&quot;Source file name is required.&quot;</span><span class="p">)));</span>
+<span class="w">                </span><span class="n">result</span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Error</span><span class="p">(</span><span class="s">"Source file name is required."</span><span class="p">)));</span>
 <span class="w">        </span><span class="p">}</span>
 
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Continue</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Validation finished.&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Continue</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Validation finished."</span><span class="p">));</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
@@ -6007,7 +6007,7 @@ into the same problems:</p>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Delay</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="w">        </span><span class="n">context</span><span class="p">.</span><span class="n">ImportedOrderCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span>
 
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Continue</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Orders loaded.&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Continue</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Orders loaded."</span><span class="p">));</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -6020,23 +6020,23 @@ into the same problems:</p>
 <span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">serviceProvider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">BuildServiceProvider</span><span class="p">();</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">pipelineFactory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">serviceProvider</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IPipelineFactory</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipelineFactory</span><span class="p">.</span><span class="n">Create</span><span class="o">&lt;</span><span class="n">OrderImportPipeline</span><span class="p">,</span><span class="w"> </span><span class="n">OrderImportContext</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">OrderImportContext</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">SourceFileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;orders.csv&quot;</span><span class="w"> </span><span class="p">};</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">OrderImportContext</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">SourceFileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"orders.csv"</span><span class="w"> </span><span class="p">};</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">ExecuteAsync</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot;; &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">"; "</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Imported {context.ImportedOrderCount} orders.&quot;</span><span class="p">);</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Imported {context.ImportedOrderCount} orders."</span><span class="p">);</span>
 </code></pre></div>
 <p>The example writes <code>Imported 42 orders.</code> after both steps complete. It reports errors without reading success-only state from a failed result.</p>
 <h3 id="context-validation">Context validation<a class="headerlink" href="#context-validation" title="Permanent link">&para;</a></h3>
 <p>When the context type declares validation attributes or a static <code>[Validate]</code> method, the pipeline engine validates the context before hooks, behaviors, and steps run.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">OrderImportContext</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">PipelineContextBase</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="na">[ValidateNotEmpty(&quot;Source file name is required.&quot;)]</span>
+<span class="w">    </span><span class="na">[ValidateNotEmpty("Source file name is required.")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">SourceFileName</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">ImportedOrderCount</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
@@ -6049,9 +6049,9 @@ into the same problems:</p>
 <span class="p">}</span>
 </code></pre></div>
 <p>Add the code-generation analyzer package to the project that contains the pipeline context:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;BridgingIT.DevKit.Common.Utilities.CodeGen&quot;</span>
-<span class="w">                  </span><span class="na">Version=</span><span class="s">&quot;x.y.z&quot;</span>
-<span class="w">                  </span><span class="na">PrivateAssets=</span><span class="s">&quot;all&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">"BridgingIT.DevKit.Common.Utilities.CodeGen"</span>
+<span class="w">                  </span><span class="na">Version=</span><span class="s">"x.y.z"</span>
+<span class="w">                  </span><span class="na">PrivateAssets=</span><span class="s">"all"</span><span class="w"> </span><span class="nt">/&gt;</span>
 </code></pre></div>
 <h3 id="authoring-and-registration-options">Authoring and registration options<a class="headerlink" href="#authoring-and-registration-options" title="Permanent link">&para;</a></h3>
 <pre class="mermaid"><code>flowchart TD
@@ -6068,14 +6068,14 @@ into the same problems:</p>
     H --&gt; I</code></pre>
 <h3 id="direct-builder">Direct builder<a class="headerlink" href="#direct-builder" title="Permanent link">&para;</a></h3>
 <p>Use the builder directly when you need to inspect or test a definition programmatically. <code>Build()</code> creates an <code>IPipelineDefinition</code>; it does not add that definition to the dependency-injection registry. Use inline registration when the factory must resolve the pipeline.</p>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">definition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PipelineDefinitionBuilder</span><span class="o">&lt;</span><span class="n">OrderImportContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;order-import&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">definition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PipelineDefinitionBuilder</span><span class="o">&lt;</span><span class="n">OrderImportContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"order-import"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddStep</span><span class="o">&lt;</span><span class="n">ValidateOrderImportStep</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddStep</span><span class="o">&lt;</span><span class="n">LoadOrdersStep</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddStep</span><span class="p">(</span><span class="n">context</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">ImportedOrderCount</span><span class="o">++</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddAsyncStep</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="n">execution</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Yield</span><span class="p">();</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">execution</span><span class="p">.</span><span class="n">Continue</span><span class="p">(</span><span class="n">execution</span><span class="p">.</span><span class="n">Result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Inline step finished.&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">execution</span><span class="p">.</span><span class="n">Continue</span><span class="p">(</span><span class="n">execution</span><span class="p">.</span><span class="n">Result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Inline step finished."</span><span class="p">));</span>
 <span class="w">    </span><span class="p">})</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddBehavior</span><span class="o">&lt;</span><span class="n">PipelineTracingBehavior</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
@@ -6083,7 +6083,7 @@ into the same problems:</p>
 <h3 id="inline-registration-during-di-setup">Inline registration during DI setup<a class="headerlink" href="#inline-registration-during-di-setup" title="Permanent link">&para;</a></h3>
 <p>Inline registration is useful for small, local pipelines that do not need a dedicated class.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddPipelines</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithPipeline</span><span class="o">&lt;</span><span class="n">OrderImportContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;order-import&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">builder</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithPipeline</span><span class="o">&lt;</span><span class="n">OrderImportContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"order-import"</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">builder</span>
 <span class="w">        </span><span class="p">.</span><span class="n">AddStep</span><span class="o">&lt;</span><span class="n">ValidateOrderImportStep</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">AddStep</span><span class="o">&lt;</span><span class="n">LoadOrdersStep</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">AddStep</span><span class="p">(</span><span class="n">context</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">ImportedOrderCount</span><span class="o">++</span><span class="p">)</span>
@@ -6097,7 +6097,7 @@ into the same problems:</p>
 </code></pre></div>
 <p>Register inline pipelines:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddPipelines</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithPipeline</span><span class="o">&lt;</span><span class="n">OrderImportContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;order-import&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">builder</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithPipeline</span><span class="o">&lt;</span><span class="n">OrderImportContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"order-import"</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">builder</span>
 <span class="w">        </span><span class="p">.</span><span class="n">AddStep</span><span class="o">&lt;</span><span class="n">ValidateOrderImportStep</span><span class="o">&gt;</span><span class="p">());</span>
 </code></pre></div>
 <p>Register all packaged pipelines from one or more assemblies:</p>
@@ -6112,7 +6112,7 @@ into the same problems:</p>
 <p><code>AddPipelines()</code> is additive, so multiple modules in the same host may call it independently.</p>
 <h3 id="resolving-pipelines">Resolving pipelines<a class="headerlink" href="#resolving-pipelines" title="Permanent link">&para;</a></h3>
 <p>Resolve by name:</p>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipelineFactory</span><span class="p">.</span><span class="n">Create</span><span class="o">&lt;</span><span class="n">OrderImportContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;order-import&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipelineFactory</span><span class="p">.</span><span class="n">Create</span><span class="o">&lt;</span><span class="n">OrderImportContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"order-import"</span><span class="p">);</span>
 </code></pre></div>
 <p>Resolve by packaged definition type and context:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipelineFactory</span><span class="p">.</span><span class="n">Create</span><span class="o">&lt;</span><span class="n">OrderImportPipeline</span><span class="p">,</span><span class="w"> </span><span class="n">OrderImportContext</span><span class="o">&gt;</span><span class="p">();</span>
@@ -6124,7 +6124,7 @@ into the same problems:</p>
 <h3 id="awaited-execution">Awaited execution<a class="headerlink" href="#awaited-execution" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">OrderImportContext</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">SourceFileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;orders.csv&quot;</span>
+<span class="w">    </span><span class="n">SourceFileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"orders.csv"</span>
 <span class="p">};</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">ExecuteAsync</span><span class="p">(</span>
@@ -6138,7 +6138,7 @@ into the same problems:</p>
 <span class="w">    </span><span class="n">context</span><span class="p">,</span>
 <span class="w">    </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">WhenCompleted</span><span class="p">(</span><span class="n">completion</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Pipeline {completion.ExecutionId} finished with {completion.Status}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Pipeline {completion.ExecutionId} finished with {completion.Status}"</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ValueTask</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}));</span>
 
@@ -6174,7 +6174,7 @@ options builder passed to <code>ExecuteAsync(...)</code> and <code>ExecuteAndFor
 <span class="w">        </span><span class="p">.</span><span class="n">MaxRetryAttemptsPerStep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">AccumulateDiagnosticsOnFailure</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithProgress</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Progress</span><span class="o">&lt;</span><span class="n">ProgressReport</span><span class="o">&gt;</span><span class="p">(</span><span class="n">report</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;{report.Operation}: {report.PercentageComplete}%&quot;</span><span class="p">))));</span>
+<span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"{report.Operation}: {report.PercentageComplete}%"</span><span class="p">))));</span>
 </code></pre></div>
 <h3 id="runtime-execution-flow">Runtime execution flow<a class="headerlink" href="#runtime-execution-flow" title="Permanent link">&para;</a></h3>
 <pre class="mermaid"><code>sequenceDiagram
@@ -6217,14 +6217,14 @@ options builder passed to <code>ExecuteAsync(...)</code> and <code>ExecuteAndFor
 <span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">SaveAsync</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">ImportedOrderCount</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Continue</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Orders persisted.&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Continue</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Orders persisted."</span><span class="p">));</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="inline-steps">Inline steps<a class="headerlink" href="#inline-steps" title="Permanent link">&para;</a></h3>
 <p>Inline steps are convenient for small workflow fragments.</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span>
-<span class="w">    </span><span class="p">.</span><span class="n">AddStep</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;sync step&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddStep</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"sync step"</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddAsyncStep</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Yield</span><span class="p">())</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddStep</span><span class="p">(</span><span class="n">context</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">ImportedOrderCount</span><span class="o">++</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddAsyncStep</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -6244,7 +6244,7 @@ options builder passed to <code>ExecuteAsync(...)</code> and <code>ExecuteAndFor
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">SaveAsync</span><span class="p">(</span><span class="n">execution</span><span class="p">.</span><span class="n">CancellationToken</span><span class="p">);</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">execution</span><span class="p">.</span><span class="n">Continue</span><span class="p">(</span><span class="n">execution</span><span class="p">.</span><span class="n">Result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Saved from inline step.&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">execution</span><span class="p">.</span><span class="n">Continue</span><span class="p">(</span><span class="n">execution</span><span class="p">.</span><span class="n">Result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Saved from inline step."</span><span class="p">));</span>
 <span class="p">});</span>
 </code></pre></div>
 <h2 id="flow-control">Flow control<a class="headerlink" href="#flow-control" title="Permanent link">&para;</a></h2>
@@ -6255,19 +6255,19 @@ options builder passed to <code>ExecuteAsync(...)</code> and <code>ExecuteAndFor
 </ul>
 <h3 id="continue">Continue<a class="headerlink" href="#continue" title="Permanent link">&para;</a></h3>
 <p>Continue to the next step, or complete normally if this is the last step.</p>
-<div class="highlight"><pre><span></span><code><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Continue</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Validation passed.&quot;</span><span class="p">));</span>
+<div class="highlight"><pre><span></span><code><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Continue</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Validation passed."</span><span class="p">));</span>
 </code></pre></div>
 <h3 id="retry"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="retry" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M27 13a12 12 0 1 0 0 8M28 4v10h-10" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 11 8 5-8 5Z" /></g></svg></span> Retry<a class="headerlink" href="#retry" title="Permanent link">&para;</a></h3>
 <p>Retry the same step immediately, bounded by <code>MaxRetryAttemptsPerStep</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Retry</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Transient failure, retrying.&quot;</span><span class="p">));</span>
+<div class="highlight"><pre><span></span><code><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Retry</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"Transient failure, retrying."</span><span class="p">));</span>
 </code></pre></div>
 <h3 id="break">Break<a class="headerlink" href="#break" title="Permanent link">&para;</a></h3>
 <p>End the pipeline early in a controlled way.</p>
-<div class="highlight"><pre><span></span><code><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Break</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;No work required.&quot;</span><span class="p">));</span>
+<div class="highlight"><pre><span></span><code><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Break</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"No work required."</span><span class="p">));</span>
 </code></pre></div>
 <h3 id="terminate">Terminate<a class="headerlink" href="#terminate" title="Permanent link">&para;</a></h3>
 <p>Stop the pipeline intentionally without continuing.</p>
-<div class="highlight"><pre><span></span><code><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Terminate</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Error</span><span class="p">(</span><span class="s">&quot;Import blocked.&quot;</span><span class="p">)));</span>
+<div class="highlight"><pre><span></span><code><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Terminate</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithError</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Error</span><span class="p">(</span><span class="s">"Import blocked."</span><span class="p">)));</span>
 </code></pre></div>
 <h3 id="failures-and-exceptions">Failures and exceptions<a class="headerlink" href="#failures-and-exceptions" title="Permanent link">&para;</a></h3>
 <p>If a step throws:</p>
@@ -6308,7 +6308,7 @@ options builder passed to <code>ExecuteAsync(...)</code> and <code>ExecuteAndFor
 <span class="w">        </span><span class="n">PipelineContextBase</span><span class="w"> </span><span class="n">context</span><span class="p">,</span>
 <span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">&quot;Pipeline {Name} started&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Pipeline</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span>
+<span class="w">        </span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Pipeline {Name} started"</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Pipeline</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ValueTask</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -6533,7 +6533,7 @@ manual packaged pipelines:</p>
 <span class="w">    </span><span class="na">[PipelineStep(10)]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">Validate</span><span class="p">(</span><span class="n">OrderImportContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="n">result</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;validated&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"validated"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[PipelineStep(20)]</span>
@@ -6545,22 +6545,22 @@ manual packaged pipelines:</p>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">orders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">LoadAsync</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">SourceFileName</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="w">        </span><span class="n">context</span><span class="p">.</span><span class="n">ImportedOrderCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">orders</span><span class="p">.</span><span class="n">Count</span><span class="p">;</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">$&quot;loaded {orders.Count} orders&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">$"loaded {orders.Count} orders"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="na">[PipelineStep(30, Name = &quot;persist-generated&quot;)]</span>
+<span class="w">    </span><span class="na">[PipelineStep(30, Name = "persist-generated")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">PipelineControl</span><span class="w"> </span><span class="nf">Persist</span><span class="p">(</span>
 <span class="w">        </span><span class="n">OrderImportContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span>
 <span class="w">        </span><span class="n">Result</span><span class="w"> </span><span class="n">result</span><span class="p">,</span>
 <span class="w">        </span><span class="n">IOrderRepository</span><span class="w"> </span><span class="n">repository</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">repository</span><span class="p">.</span><span class="n">SaveImportedOrders</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">TenantId</span><span class="p">);</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Continue</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;persisted&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PipelineControl</span><span class="p">.</span><span class="n">Continue</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">"persisted"</span><span class="p">));</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">partial</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnConfigureGenerated</span><span class="p">(</span><span class="n">IPipelineDefinitionBuilder</span><span class="o">&lt;</span><span class="n">OrderImportContext</span><span class="o">&gt;</span><span class="w"> </span><span class="n">builder</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">builder</span><span class="p">.</span><span class="n">AddStep</span><span class="p">(</span><span class="n">ctx</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">ctx</span><span class="p">.</span><span class="n">Pipeline</span><span class="p">.</span><span class="n">Items</span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="s">&quot;extended&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">),</span><span class="w"> </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;manual-extension&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">builder</span><span class="p">.</span><span class="n">AddStep</span><span class="p">(</span><span class="n">ctx</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">ctx</span><span class="p">.</span><span class="n">Pipeline</span><span class="p">.</span><span class="n">Items</span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="s">"extended"</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">),</span><span class="w"> </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">"manual-extension"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -6611,7 +6611,7 @@ container.</p>
 <h2 id="optional-operation-profiling">Optional Operation Profiling<a class="headerlink" href="#optional-operation-profiling" title="Permanent link">&para;</a></h2>
 <p>Register Operations independently and attach the optional behavior to a pipeline definition:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddProfiling</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">Enabled</span><span class="p">()).</span><span class="n">WithOperationProfiling</span><span class="p">();</span>
-<span class="n">services</span><span class="p">.</span><span class="n">AddPipelines</span><span class="p">().</span><span class="n">WithPipeline</span><span class="o">&lt;</span><span class="n">OrderImportContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;order-import&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">definition</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="n">services</span><span class="p">.</span><span class="n">AddPipelines</span><span class="p">().</span><span class="n">WithPipeline</span><span class="o">&lt;</span><span class="n">OrderImportContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"order-import"</span><span class="p">,</span><span class="w"> </span><span class="n">definition</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="n">definition</span><span class="p">.</span><span class="n">AddStep</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}).</span><span class="n">AddBehavior</span><span class="o">&lt;</span><span class="n">PipelineProfilingBehavior</span><span class="o">&gt;</span><span class="p">());</span>
 </code></pre></div>
 <p>A run joins an existing owner or owns <code>pipeline:&lt;pipeline-name&gt;</code>. Actually executed steps become child segments; repeated attempts aggregate by step path while retaining completed/failed/canceled outcomes. Disabled or unreachable steps create no fabricated timings. The behavior preserves the pipeline's native ValueTask contract and consumes each delegate result once.</p>
@@ -6695,10 +6695,10 @@ container.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

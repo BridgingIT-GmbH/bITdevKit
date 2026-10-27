@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -6070,19 +6070,19 @@
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddAuthorization</span><span class="p">();</span>
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddFakeIdentityProvider</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">())</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithIssuer</span><span class="p">(</span><span class="s">&quot;https://localhost:5001&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithIssuer</span><span class="p">(</span><span class="s">"https://localhost:5001"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithUsers</span><span class="p">([</span>
 <span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="nf">FakeUser</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;luke.skywalker@starwars.com&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;Luke Skywalker&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="na">[&quot;Administrators&quot;, &quot;Users&quot;]</span><span class="p">,</span>
-<span class="w">            </span><span class="n">password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;development-only&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"luke.skywalker@starwars.com"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"Luke Skywalker"</span><span class="p">,</span>
+<span class="w">            </span><span class="na">["Administrators", "Users"]</span><span class="p">,</span>
+<span class="w">            </span><span class="n">password</span><span class="p">:</span><span class="w"> </span><span class="s">"development-only"</span><span class="p">,</span>
 <span class="w">            </span><span class="n">isDefault</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">)</span>
 <span class="w">    </span><span class="p">])</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithClient</span><span class="p">(</span>
-<span class="w">        </span><span class="s">&quot;Local SPA&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s">&quot;spa-client&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s">&quot;https://localhost:5001/authentication/login-callback&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="s">"Local SPA"</span><span class="p">,</span>
+<span class="w">        </span><span class="s">"spa-client"</span><span class="p">,</span>
+<span class="w">        </span><span class="s">"https://localhost:5001/authentication/login-callback"</span><span class="p">));</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 
@@ -6097,11 +6097,11 @@
 <p>After the application starts, request the discovery document and check the HTTP result before reading it:</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HttpClient</span><span class="p">();</span>
 <span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">GetAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;https://localhost:5001/_bdk/api/identity/connect/.well-known/openid-configuration&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="s">"https://localhost:5001/_bdk/api/identity/connect/.well-known/openid-configuration"</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">response</span><span class="p">.</span><span class="n">IsSuccessStatusCode</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Identity discovery failed: {(int)response.StatusCode}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"Identity discovery failed: {(int)response.StatusCode}"</span><span class="p">);</span>
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
@@ -6110,12 +6110,12 @@
 <p>A successful response contains the configured issuer and URLs for the authorize, token, user-info and logout endpoints.</p>
 <h2 id="detailed-setup">Detailed setup<a class="headerlink" href="#detailed-setup" title="Permanent link">&para;</a></h2>
 <h3 id="install-the-package">Install the package<a class="headerlink" href="#install-the-package" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;BridgingIT.DevKit.Presentation.Web&quot;</span><span class="w"> </span><span class="na">Version=</span><span class="s">&quot;x.y.z&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">"BridgingIT.DevKit.Presentation.Web"</span><span class="w"> </span><span class="na">Version=</span><span class="s">"x.y.z"</span><span class="w"> </span><span class="nt">/&gt;</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddFakeIdentityProvider</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">())</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithIssuer</span><span class="p">(</span><span class="s">&quot;https://localhost:5001&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithIssuer</span><span class="p">(</span><span class="s">"https://localhost:5001"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithUsers</span><span class="p">(</span><span class="n">Fakes</span><span class="p">.</span><span class="n">Users</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithTokenLifetimes</span><span class="p">(</span>
 <span class="w">            </span><span class="n">accessToken</span><span class="p">:</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
@@ -6124,37 +6124,37 @@
 <span class="w">        </span><span class="p">.</span><span class="n">EnablePersistentRefreshTokens</span><span class="p">()</span><span class="w"> </span><span class="c1">// Required for cookie SSO; enabled by default</span>
 <span class="w">        </span><span class="c1">// Public client (SPA)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithClient</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;Angular SPA&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;spa-client&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;http://localhost:4200/callback&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="s">"Angular SPA"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"spa-client"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"http://localhost:4200/callback"</span><span class="p">)</span>
 <span class="w">        </span><span class="c1">// Blazor WebAssembly public client</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithClient</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;Blazor WebAssembly frontend&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;blazor-wasm&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;https://localhost:5001/authentication/login-callback&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;https://localhost:5001/authentication/logout-callback&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="s">"Blazor WebAssembly frontend"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"blazor-wasm"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"https://localhost:5001/authentication/login-callback"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"https://localhost:5001/authentication/logout-callback"</span><span class="p">)</span>
 <span class="w">        </span><span class="c1">// Confidential server client</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithConfidentalClient</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;MVC server&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;mvc-app&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;mvc-secret&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="na">[&quot;https://localhost:5002/signin-oidc&quot;]</span><span class="p">)</span>
+<span class="w">            </span><span class="s">"MVC server"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"mvc-app"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"mvc-secret"</span><span class="p">,</span>
+<span class="w">            </span><span class="na">["https://localhost:5002/signin-oidc"]</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithConfidentalClient</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;Blazor Server frontend&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;blazor-server&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;server-secret&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="na">[&quot;https://localhost:5003/signin-oidc&quot;]</span><span class="p">)</span>
+<span class="w">            </span><span class="s">"Blazor Server frontend"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"blazor-server"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"server-secret"</span><span class="p">,</span>
+<span class="w">            </span><span class="na">["https://localhost:5003/signin-oidc"]</span><span class="p">)</span>
 <span class="w">        </span><span class="c1">// Web API backend</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithConfidentalClient</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;API backend&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;api-backend&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;api-secret&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="na">[&quot;https://localhost:5001&quot;]</span><span class="p">)</span>
+<span class="w">            </span><span class="s">"API backend"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"api-backend"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"api-secret"</span><span class="p">,</span>
+<span class="w">            </span><span class="na">["https://localhost:5001"]</span><span class="p">)</span>
 <span class="w">        </span><span class="c1">// API documentation client</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithClient</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;Swagger UI&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;swagger&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;https://localhost:5001/swagger/oauth2-redirect.html&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="s">"Swagger UI"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"swagger"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"https://localhost:5001/swagger/oauth2-redirect.html"</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre></div>
 <p>The <code>WithClient</code> and <code>WithConfidentalClient</code> methods take the display name first and the client ID second. <code>WithConfidentalClient</code> retains its current misspelling for API compatibility.</p>
@@ -6163,11 +6163,11 @@
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Fakes</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">FakeUser</span><span class="p">[]</span><span class="w"> </span><span class="n">Users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">&quot;luke.skywalker@starwars.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Luke Skywalker&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">"luke.skywalker@starwars.com"</span><span class="p">,</span><span class="w"> </span><span class="s">"Luke Skywalker"</span><span class="p">,</span>
 <span class="w">            </span><span class="na">[Role.Administrators, Role.Users]</span><span class="p">,</span>
-<span class="w">            </span><span class="n">password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;development-only&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">password</span><span class="p">:</span><span class="w"> </span><span class="s">"development-only"</span><span class="p">,</span>
 <span class="w">            </span><span class="n">isDefault</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">),</span>
-<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">&quot;yoda@starwars.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Yoda&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">"yoda@starwars.com"</span><span class="p">,</span><span class="w"> </span><span class="s">"Yoda"</span><span class="p">,</span>
 <span class="w">            </span><span class="na">[Role.Administrators]</span><span class="p">)</span>
 <span class="w">        </span><span class="c1">// ...... Add more users</span>
 <span class="w">    </span><span class="p">];</span>
@@ -6304,13 +6304,13 @@
 </ul>
 <h2 id="client-integration-examples">Client integration examples<a class="headerlink" href="#client-integration-examples" title="Permanent link">&para;</a></h2>
 <h3 id="angular-public-client">Angular public client<a class="headerlink" href="#angular-public-client" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">AuthConfig</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;angular-oauth2-oidc&#39;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">AuthConfig</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'angular-oauth2-oidc'</span><span class="p">;</span>
 
 <span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">authConfig</span><span class="o">:</span><span class="w"> </span><span class="kt">AuthConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">issuer</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;https://localhost:5001&#39;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">redirectUri</span><span class="o">:</span><span class="w"> </span><span class="kt">window.location.origin</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;/callback&#39;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">clientId</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;spa-client&#39;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">scope</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;openid profile email roles&#39;</span>
+<span class="w">  </span><span class="nx">issuer</span><span class="o">:</span><span class="w"> </span><span class="s1">'https://localhost:5001'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">redirectUri</span><span class="o">:</span><span class="w"> </span><span class="kt">window.location.origin</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">'/callback'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">clientId</span><span class="o">:</span><span class="w"> </span><span class="s1">'spa-client'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">scope</span><span class="o">:</span><span class="w"> </span><span class="s1">'openid profile email roles'</span>
 <span class="p">};</span>
 </code></pre></div>
 <h3 id="aspnet-core-mvc-confidential-client">ASP.NET Core MVC confidential client<a class="headerlink" href="#aspnet-core-mvc-confidential-client" title="Permanent link">&para;</a></h3>
@@ -6320,10 +6320,10 @@
 <span class="p">})</span>
 <span class="p">.</span><span class="n">AddCookie</span><span class="p">()</span>
 <span class="p">.</span><span class="n">AddOpenIdConnect</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Authority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://localhost:5001&quot;</span><span class="p">;</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ClientId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;mvc-app&quot;</span><span class="p">;</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ClientSecret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;mvc-secret&quot;</span><span class="p">;</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ResponseType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;code&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Authority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"https://localhost:5001"</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ClientId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"mvc-app"</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ClientSecret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"mvc-secret"</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ResponseType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"code"</span><span class="p">;</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">SaveTokens</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <span class="p">});</span>
 </code></pre></div>
@@ -6331,19 +6331,19 @@
 <div class="highlight"><pre><span></span><code><span class="c1">// Client Program.cs</span>
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddOidcAuthentication</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">Authority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://localhost:5001&quot;</span><span class="p">;</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">ClientId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;blazor-wasm&quot;</span><span class="p">;</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">DefaultScopes</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;roles&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">ResponseType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;code&quot;</span><span class="p">;</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">PostLogoutRedirectUri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;authentication/logout-callback&quot;</span><span class="p">;</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">RedirectUri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;authentication/login-callback&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">Authority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"https://localhost:5001"</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">ClientId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"blazor-wasm"</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">DefaultScopes</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">"roles"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">ResponseType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"code"</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">PostLogoutRedirectUri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"authentication/logout-callback"</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">RedirectUri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"authentication/login-callback"</span><span class="p">;</span>
 <span class="p">});</span>
 
 <span class="c1">// Client App.razor</span>
 <span class="o">&lt;</span><span class="n">CascadingAuthenticationState</span><span class="o">&gt;</span>
-<span class="w">    </span><span class="o">&lt;</span><span class="n">Router</span><span class="w"> </span><span class="n">AppAssembly</span><span class="o">=</span><span class="s">&quot;@typeof(App).Assembly&quot;</span><span class="o">&gt;</span>
-<span class="w">        </span><span class="o">&lt;</span><span class="n">Found</span><span class="w"> </span><span class="n">Context</span><span class="o">=</span><span class="s">&quot;routeData&quot;</span><span class="o">&gt;</span>
-<span class="w">            </span><span class="o">&lt;</span><span class="n">AuthorizeRouteView</span><span class="w"> </span><span class="n">RouteData</span><span class="o">=</span><span class="s">&quot;@routeData&quot;</span><span class="w"> </span><span class="n">DefaultLayout</span><span class="o">=</span><span class="s">&quot;@typeof(MainLayout)&quot;</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="o">&lt;</span><span class="n">Router</span><span class="w"> </span><span class="n">AppAssembly</span><span class="o">=</span><span class="s">"@typeof(App).Assembly"</span><span class="o">&gt;</span>
+<span class="w">        </span><span class="o">&lt;</span><span class="n">Found</span><span class="w"> </span><span class="n">Context</span><span class="o">=</span><span class="s">"routeData"</span><span class="o">&gt;</span>
+<span class="w">            </span><span class="o">&lt;</span><span class="n">AuthorizeRouteView</span><span class="w"> </span><span class="n">RouteData</span><span class="o">=</span><span class="s">"@routeData"</span><span class="w"> </span><span class="n">DefaultLayout</span><span class="o">=</span><span class="s">"@typeof(MainLayout)"</span><span class="o">&gt;</span>
 <span class="w">                </span><span class="o">&lt;</span><span class="n">NotAuthorized</span><span class="o">&gt;</span>
 <span class="w">                    </span><span class="o">&lt;</span><span class="n">RedirectToLogin</span><span class="w"> </span><span class="o">/&gt;</span>
 <span class="w">                </span><span class="o">&lt;/</span><span class="n">NotAuthorized</span><span class="o">&gt;</span>
@@ -6357,25 +6357,25 @@
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddAuthentication</span><span class="p">(</span><span class="n">JwtBearerDefaults</span><span class="p">.</span><span class="n">AuthenticationScheme</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddJwtBearer</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">Authority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://localhost:5001&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">Authority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"https://localhost:5001"</span><span class="p">;</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">TokenValidationParameters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TokenValidationParameters</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="n">ValidateAudience</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
-<span class="w">            </span><span class="n">ValidAudience</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;api-backend&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">ValidAudience</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"api-backend"</span><span class="p">,</span>
 <span class="w">            </span><span class="n">ValidateIssuer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
-<span class="w">            </span><span class="n">ValidIssuer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://localhost:5001&quot;</span>
+<span class="w">            </span><span class="n">ValidIssuer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"https://localhost:5001"</span>
 <span class="w">        </span><span class="p">};</span>
 <span class="w">    </span><span class="p">});</span>
 
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddAuthorization</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddPolicy</span><span class="p">(</span><span class="s">&quot;RequireAdminRole&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">        </span><span class="n">policy</span><span class="p">.</span><span class="n">RequireRole</span><span class="p">(</span><span class="s">&quot;Administrators&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddPolicy</span><span class="p">(</span><span class="s">"RequireAdminRole"</span><span class="p">,</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="n">policy</span><span class="p">.</span><span class="n">RequireRole</span><span class="p">(</span><span class="s">"Administrators"</span><span class="p">));</span>
 <span class="p">});</span>
 
 <span class="c1">// WeatherForecastController.cs</span>
 <span class="na">[ApiController]</span>
-<span class="na">[Route(&quot;[controller]</span><span class="s">&quot;)]</span>
+<span class="na">[Route("[controller]</span><span class="s">")]</span>
 <span class="na">[Authorize]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">WeatherForecastController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ControllerBase</span>
 <span class="p">{</span>
@@ -6387,7 +6387,7 @@
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="na">[HttpPost]</span>
-<span class="w">    </span><span class="na">[Authorize(Policy = &quot;RequireAdminRole&quot;)]</span>
+<span class="w">    </span><span class="na">[Authorize(Policy = "RequireAdminRole")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IActionResult</span><span class="w"> </span><span class="nf">Create</span><span class="p">(</span><span class="n">WeatherForecast</span><span class="w"> </span><span class="n">forecast</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// Implementation</span>
@@ -6449,14 +6449,14 @@
 </code></pre></div>
 <p>Response:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;access_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eyJhbGci...&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;expires_in&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;refresh_expires_in&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">86400</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;refresh_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eyJhbGci...&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;token_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bearer&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;scope&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openid profile&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;id_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eyJhbGci...&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;session_state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5adfe1762f184803a0b321c678c49b5b&quot;</span>
+<span class="w">  </span><span class="nt">"access_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJhbGci..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"refresh_expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">86400</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"refresh_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJhbGci..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"token_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bearer"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"openid profile"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"id_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJhbGci..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"session_state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5adfe1762f184803a0b321c678c49b5b"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>The ID token is present only when the requested scope contains <code>openid</code>. Client-credentials responses contain an access token but no refresh token or ID token.</p>
@@ -6468,14 +6468,14 @@
 </code></pre></div>
 <p>Response:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;sub&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User Name&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;given_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;family_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Name&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;preferred_username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user@example.com&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user@example.com&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;email_verified&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Admin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;User&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"sub"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user_id"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User Name"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"given_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"family_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Name"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"preferred_username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"email_verified"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Admin"</span><span class="p">,</span><span class="w"> </span><span class="s2">"User"</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="debug-endpoint">Debug endpoint<a class="headerlink" href="#debug-endpoint" title="Permanent link">&para;</a></h3>
@@ -6484,21 +6484,21 @@
 </code></pre></div>
 <p>Response:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;tokenIssuer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;tokenProvider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Default&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;configuredClients&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"tokenIssuer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://localhost:5001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"tokenProvider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Default"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"configuredClients"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;clientId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;spa-client&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SPA App&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;redirectUris&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;http://localhost:4200/callback&quot;</span><span class="p">],</span>
-<span class="w">      </span><span class="nt">&quot;allowedScopes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;openid&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;profile&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;email&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;roles&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;offline_access&quot;</span><span class="p">]</span>
+<span class="w">      </span><span class="nt">"clientId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"spa-client"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SPA App"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"redirectUris"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"http://localhost:4200/callback"</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"allowedScopes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"openid"</span><span class="p">,</span><span class="w"> </span><span class="s2">"profile"</span><span class="p">,</span><span class="w"> </span><span class="s2">"email"</span><span class="p">,</span><span class="w"> </span><span class="s2">"roles"</span><span class="p">,</span><span class="w"> </span><span class="s2">"offline_access"</span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;configuredUsers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"configuredUsers"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user@example.com&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User Name&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Admin&quot;</span><span class="p">]</span>
+<span class="w">      </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User Name"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Admin"</span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -6510,16 +6510,16 @@
 </code></pre></div>
 <p>Response:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;issuer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;authorization_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/_bdk/api/identity/connect/authorize&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;token_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/_bdk/api/identity/connect/token&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;userinfo_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/_bdk/api/identity/connect/userinfo&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;end_session_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/_bdk/api/identity/connect/logout&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;grant_types_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;authorization_code&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;password&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;client_credentials&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;refresh_token&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;response_types_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;response_modes_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;form_post&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;scopes_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;openid&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;profile&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;email&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;roles&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;offline_access&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;token_endpoint_auth_methods_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;client_secret_post&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;client_secret_basic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;none&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"issuer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://localhost:5001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"authorization_endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://localhost:5001/_bdk/api/identity/connect/authorize"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"token_endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://localhost:5001/_bdk/api/identity/connect/token"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"userinfo_endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://localhost:5001/_bdk/api/identity/connect/userinfo"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"end_session_endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://localhost:5001/_bdk/api/identity/connect/logout"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"grant_types_supported"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"authorization_code"</span><span class="p">,</span><span class="w"> </span><span class="s2">"password"</span><span class="p">,</span><span class="w"> </span><span class="s2">"client_credentials"</span><span class="p">,</span><span class="w"> </span><span class="s2">"refresh_token"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"response_types_supported"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"code"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"response_modes_supported"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"query"</span><span class="p">,</span><span class="w"> </span><span class="s2">"form_post"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"scopes_supported"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"openid"</span><span class="p">,</span><span class="w"> </span><span class="s2">"profile"</span><span class="p">,</span><span class="w"> </span><span class="s2">"email"</span><span class="p">,</span><span class="w"> </span><span class="s2">"roles"</span><span class="p">,</span><span class="w"> </span><span class="s2">"offline_access"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"token_endpoint_auth_methods_supported"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"client_secret_post"</span><span class="p">,</span><span class="w"> </span><span class="s2">"client_secret_basic"</span><span class="p">,</span><span class="w"> </span><span class="s2">"none"</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="logout-endpoint">Logout endpoint<a class="headerlink" href="#logout-endpoint" title="Permanent link">&para;</a></h3>
@@ -6530,8 +6530,8 @@
 <h2 id="error-handling">Error handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
 <p>OAuth 2.0 failures use responses such as:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;invalid_request&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;error_description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Error details&quot;</span>
+<span class="w">  </span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="s2">"invalid_request"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"error_description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Error details"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Common error codes include <code>invalid_request</code>, <code>invalid_client</code>, <code>invalid_grant</code>, <code>unsupported_response_type</code> and <code>unsupported_grant_type</code>.</p>
@@ -6562,16 +6562,16 @@
 <h3 id="custom-client-setup">Custom client setup<a class="headerlink" href="#custom-client-setup" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1">// Multiple redirect URIs</span>
 <span class="p">.</span><span class="n">WithClient</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;Angular Frontend&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;angular-app&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="na">[&quot;http://localhost:4200/callback&quot;,</span>
-<span class="na">     &quot;http://localhost:4200/silent-refresh&quot;]</span><span class="p">)</span>
+<span class="w">    </span><span class="s">"Angular Frontend"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"angular-app"</span><span class="p">,</span>
+<span class="w">    </span><span class="na">["http://localhost:4200/callback",</span>
+<span class="na">     "http://localhost:4200/silent-refresh"]</span><span class="p">)</span>
 
 <span class="c1">// API documentation tools</span>
 <span class="p">.</span><span class="n">WithClient</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;Swagger UI&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;swagger&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;https://localhost:5001/swagger/oauth2-redirect.html&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="s">"Swagger UI"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"swagger"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"https://localhost:5001/swagger/oauth2-redirect.html"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="testing-scenarios">Testing scenarios<a class="headerlink" href="#testing-scenarios" title="Permanent link">&para;</a></h3>
 <ul>
@@ -6598,27 +6598,27 @@
 </ul>
 <h3 id="minimal-setup">Minimal setup<a class="headerlink" href="#minimal-setup" title="Permanent link">&para;</a></h3>
 <h4 id="install-the-package_1">Install the package<a class="headerlink" href="#install-the-package_1" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;BridgingIT.DevKit.Presentation.Web&quot;</span><span class="w"> </span><span class="na">Version=</span><span class="s">&quot;x.y.z&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">"BridgingIT.DevKit.Presentation.Web"</span><span class="w"> </span><span class="na">Version=</span><span class="s">"x.y.z"</span><span class="w"> </span><span class="nt">/&gt;</span>
 </code></pre></div>
 <h4 id="configure-services">Configure services<a class="headerlink" href="#configure-services" title="Permanent link">&para;</a></h4>
 <p>In <code>Program.cs</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddFakeIdentityProvider</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">())</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithIssuer</span><span class="p">(</span><span class="s">&quot;https://localhost:5001&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithIssuer</span><span class="p">(</span><span class="s">"https://localhost:5001"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithUsers</span><span class="p">(</span><span class="n">Fakes</span><span class="p">.</span><span class="n">Users</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithGroupPath</span><span class="p">(</span><span class="s">&quot;/_bdk/api/identity/connect&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithClient</span><span class="p">(</span><span class="s">&quot;Angular application&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;spa-client&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;http://localhost:4200/callback&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithGroupPath</span><span class="p">(</span><span class="s">"/_bdk/api/identity/connect"</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithClient</span><span class="p">(</span><span class="s">"Angular application"</span><span class="p">,</span><span class="w"> </span><span class="s">"spa-client"</span><span class="p">,</span><span class="w"> </span><span class="s">"http://localhost:4200/callback"</span><span class="p">));</span>
 </code></pre></div>
 <h4 id="define-users_1">Define users<a class="headerlink" href="#define-users_1" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Fakes</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">FakeUser</span><span class="p">[]</span><span class="w"> </span><span class="n">Users</span><span class="w"> </span><span class="o">=</span>
 <span class="w">    </span><span class="na">[</span>
-<span class="na">        new(&quot;luke.skywalker@starwars.com&quot;, &quot;Luke Skywalker&quot;,</span>
+<span class="na">        new("luke.skywalker@starwars.com", "Luke Skywalker",</span>
 <span class="na">            [Role.Administrators, Role.Users]</span><span class="p">,</span>
-<span class="w">            </span><span class="n">password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;development-only&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">password</span><span class="p">:</span><span class="w"> </span><span class="s">"development-only"</span><span class="p">,</span>
 <span class="w">            </span><span class="n">isDefault</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">),</span>
-<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">&quot;yoda@starwars.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Yoda&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">"yoda@starwars.com"</span><span class="p">,</span><span class="w"> </span><span class="s">"Yoda"</span><span class="p">,</span>
 <span class="w">            </span><span class="na">[Role.Administrators]</span><span class="p">)</span>
 <span class="w">    </span><span class="p">];</span>
 <span class="p">}</span>
@@ -6626,14 +6626,14 @@
 <h3 id="client-integration-examples_1">Client integration examples<a class="headerlink" href="#client-integration-examples_1" title="Permanent link">&para;</a></h3>
 <h4 id="angular-application-authorization-code-flow">Angular application (authorization-code flow)<a class="headerlink" href="#angular-application-authorization-code-flow" title="Permanent link">&para;</a></h4>
 <p>Configure your Angular application with OIDC client library:</p>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">AuthConfig</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;angular-oauth2-oidc&#39;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">AuthConfig</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'angular-oauth2-oidc'</span><span class="p">;</span>
 
 <span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">authConfig</span><span class="o">:</span><span class="w"> </span><span class="kt">AuthConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">issuer</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;https://localhost:5001&#39;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">redirectUri</span><span class="o">:</span><span class="w"> </span><span class="kt">window.location.origin</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;/callback&#39;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">clientId</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;spa-client&#39;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">scope</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;openid profile email roles&#39;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">responseType</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;code&#39;</span>
+<span class="w">  </span><span class="nx">issuer</span><span class="o">:</span><span class="w"> </span><span class="s1">'https://localhost:5001'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">redirectUri</span><span class="o">:</span><span class="w"> </span><span class="kt">window.location.origin</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">'/callback'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">clientId</span><span class="o">:</span><span class="w"> </span><span class="s1">'spa-client'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">scope</span><span class="o">:</span><span class="w"> </span><span class="s1">'openid profile email roles'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">responseType</span><span class="o">:</span><span class="w"> </span><span class="s1">'code'</span>
 <span class="p">};</span>
 </code></pre></div>
 <h5 id="authorization-code-flow">Authorization-code flow<a class="headerlink" href="#authorization-code-flow" title="Permanent link">&para;</a></h5>
@@ -6698,13 +6698,13 @@
 </code></pre></div>
 <p>Sample response:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;access_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eyJhbGci...&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;expires_in&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;refresh_expires_in&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;refresh_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eyJhbGci...&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;token_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bearer&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;scope&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openid email profile roles&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;session_state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5adfe176-2f18-4803-a0b3-21c678c49b5b&quot;</span>
+<span class="w">  </span><span class="nt">"access_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJhbGci..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"refresh_expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"refresh_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJhbGci..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"token_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bearer"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"openid email profile roles"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"session_state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5adfe176-2f18-4803-a0b3-21c678c49b5b"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="user-info-endpoint_1">User-info endpoint<a class="headerlink" href="#user-info-endpoint_1" title="Permanent link">&para;</a></h4>
@@ -6714,14 +6714,14 @@
 </code></pre></div>
 <p>Response:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;sub&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;749ecbc50c2364add0caa40f9afc2bbf&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Luke Skywalker&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;given_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Luke&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;family_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Skywalker&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;preferred_username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;luke.skywalker@starwars.com&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;luke.skywalker@starwars.com&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;email_verified&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Administrators&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Users&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"sub"</span><span class="p">:</span><span class="w"> </span><span class="s2">"749ecbc50c2364add0caa40f9afc2bbf"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Luke Skywalker"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"given_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Luke"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"family_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Skywalker"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"preferred_username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"luke.skywalker@starwars.com"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"luke.skywalker@starwars.com"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"email_verified"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Administrators"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Users"</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="openid-connect-configuration">OpenID Connect configuration<a class="headerlink" href="#openid-connect-configuration" title="Permanent link">&para;</a></h4>
@@ -6730,31 +6730,31 @@
 </code></pre></div>
 <p>Response:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;issuer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;authorization_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/_bdk/api/identity/connect/authorize&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;token_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/_bdk/api/identity/connect/token&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;userinfo_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/_bdk/api/identity/connect/userinfo&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;end_session_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/_bdk/api/identity/connect/logout&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;grant_types_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;authorization_code&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;password&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;client_credentials&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;refresh_token&quot;</span>
+<span class="w">  </span><span class="nt">"issuer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://localhost:5001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"authorization_endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://localhost:5001/_bdk/api/identity/connect/authorize"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"token_endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://localhost:5001/_bdk/api/identity/connect/token"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"userinfo_endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://localhost:5001/_bdk/api/identity/connect/userinfo"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"end_session_endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://localhost:5001/_bdk/api/identity/connect/logout"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"grant_types_supported"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"authorization_code"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"password"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"client_credentials"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"refresh_token"</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;response_types_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;response_modes_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;form_post&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;scopes_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;openid&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;profile&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;email&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;roles&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;offline_access&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;claims_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;sub&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;name&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;family_name&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;given_name&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;preferred_username&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;email&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;email_verified&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;nonce&quot;</span>
+<span class="w">  </span><span class="nt">"response_types_supported"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"code"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"response_modes_supported"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"query"</span><span class="p">,</span><span class="w"> </span><span class="s2">"form_post"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"scopes_supported"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"openid"</span><span class="p">,</span><span class="w"> </span><span class="s2">"profile"</span><span class="p">,</span><span class="w"> </span><span class="s2">"email"</span><span class="p">,</span><span class="w"> </span><span class="s2">"roles"</span><span class="p">,</span><span class="w"> </span><span class="s2">"offline_access"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"claims_supported"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"sub"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"name"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"family_name"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"given_name"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"preferred_username"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"email"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"email_verified"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"nonce"</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;token_endpoint_auth_methods_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;client_secret_post&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;client_secret_basic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;none&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"token_endpoint_auth_methods_supported"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"client_secret_post"</span><span class="p">,</span><span class="w"> </span><span class="s2">"client_secret_basic"</span><span class="p">,</span><span class="w"> </span><span class="s2">"none"</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="logout-endpoint_1">Logout endpoint<a class="headerlink" href="#logout-endpoint_1" title="Permanent link">&para;</a></h4>
@@ -6766,8 +6766,8 @@
 <h3 id="error-response-example">Error response example<a class="headerlink" href="#error-response-example" title="Permanent link">&para;</a></h3>
 <p>OAuth-related endpoint failures use an <code>OAuth2Error</code> response such as:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;invalid_request&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;error_description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The request is missing a required parameter&quot;</span>
+<span class="w">  </span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="s2">"invalid_request"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"error_description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The request is missing a required parameter"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>The exact error codes depend on the endpoint and validation branch. See <a href="#error-handling">Error handling</a> for the implemented common cases.</p>
@@ -6858,10 +6858,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

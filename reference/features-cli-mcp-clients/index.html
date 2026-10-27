@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -2806,16 +2806,22 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#visual-studio" class="md-nav__link">
+    <nav class="md-nav" aria-label="Repository configurations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#full-toolset" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Visual Studio
+        Full toolset
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4486,16 +4492,22 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#visual-studio" class="md-nav__link">
+    <nav class="md-nav" aria-label="Repository configurations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#full-toolset" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Visual Studio
+        Full toolset
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4658,8 +4670,10 @@
 <li><a href="#architecture">Architecture</a></li>
 <li><a href="#use-cases">Use Cases</a></li>
 <li><a href="#basic-usage">Basic Usage</a></li>
-<li><a href="#repository-configurations">Repository configurations</a></li>
-<li><a href="#visual-studio">Visual Studio</a></li>
+<li><a href="#repository-configurations">Repository configurations</a><ul>
+<li><a href="#full-toolset">Full toolset</a></li>
+</ul>
+</li>
 <li><a href="#vs-code">VS Code</a></li>
 <li><a href="#rider">Rider</a></li>
 <li><a href="#verification">Verification</a></li>
@@ -4676,8 +4690,8 @@
 <p>Use a source-controlled STDIO server definition where the client supports one. Point DevKit repository configurations at <code>src/Presentation.Cli/Presentation.Cli.csproj</code>; point consuming repositories at <code>dotnet tool run bdk mcp</code>. Keep the application host separate because the MCP process discovers an already-running Development host.</p>
 <h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Repository-level configuration for Visual Studio through <code>.mcp.json</code>.</li>
-<li>Repository-level configuration for VS Code through <code>.vscode/mcp.json</code>.</li>
+<li>Repository-level configuration for VS Code and GitHub Copilot through a workspace-root <code>.mcp.json</code>.</li>
+<li>Visual Studio configuration through <code>.vs/mcp.json</code>.</li>
 <li>A documented Rider server definition without committing <code>.idea</code> user state.</li>
 <li>Separate source-run and packaged-tool command shapes.</li>
 <li>Diagnostics-only defaults for consuming applications, with optional toolset expansion.</li>
@@ -4700,57 +4714,70 @@
 </ul>
 <h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
 <p>In a consuming repository, create a local tool manifest if one does not exist, install the CLI and verify the command before configuring the MCP client:</p>
-<div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="p">(</span><span class="o">-not</span> <span class="p">(</span><span class="nb">Test-Path</span> <span class="s1">&#39;.config/dotnet-tools.json&#39;</span><span class="p">))</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="p">(</span><span class="o">-not</span> <span class="p">(</span><span class="nb">Test-Path</span> <span class="s1">'.config/dotnet-tools.json'</span><span class="p">))</span> <span class="p">{</span>
     <span class="n">dotnet</span> <span class="n">new</span> <span class="n">tool-manifest</span>
     <span class="k">if</span> <span class="p">(</span><span class="nv">$LASTEXITCODE</span> <span class="o">-ne</span> <span class="n">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">throw</span> <span class="s2">&quot;Could not create the local tool manifest.&quot;</span>
+        <span class="k">throw</span> <span class="s2">"Could not create the local tool manifest."</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="nv">$localTools</span> <span class="p">=</span> <span class="n">dotnet</span> <span class="n">tool</span> <span class="n">list</span> <span class="p">-</span><span class="n">-local</span>
-<span class="k">if</span> <span class="p">(</span><span class="nv">$localTools</span> <span class="o">-match</span> <span class="s1">&#39;bridgingit\.devkit\.cli&#39;</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">if</span> <span class="p">(</span><span class="nv">$localTools</span> <span class="o">-match</span> <span class="s1">'bridgingit\.devkit\.cli'</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">dotnet</span> <span class="n">tool</span> <span class="n">restore</span>
 <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
     <span class="n">dotnet</span> <span class="n">tool</span> <span class="n">install</span> <span class="n">BridgingIT</span><span class="p">.</span><span class="n">DevKit</span><span class="p">.</span><span class="nb">Cli</span>
 <span class="p">}</span>
 
 <span class="k">if</span> <span class="p">(</span><span class="nv">$LASTEXITCODE</span> <span class="o">-ne</span> <span class="n">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">throw</span> <span class="s2">&quot;Could not install or restore repository tools.&quot;</span>
+    <span class="k">throw</span> <span class="s2">"Could not install or restore repository tools."</span>
 <span class="p">}</span>
 
 <span class="n">dotnet</span> <span class="n">tool</span> <span class="n">run</span> <span class="n">bdk</span> <span class="n">version</span> <span class="p">-</span><span class="n">-output</span> <span class="n">json</span>
 <span class="k">if</span> <span class="p">(</span><span class="nv">$LASTEXITCODE</span> <span class="o">-ne</span> <span class="n">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">throw</span> <span class="s2">&quot;The bdk tool did not start successfully.&quot;</span>
+    <span class="k">throw</span> <span class="s2">"The bdk tool did not start successfully."</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>Add this server definition to the client-specific file described below:</p>
+<p>Add this server definition to the client-specific file described below. VS Code and Copilot read the portable <code>mcpServers</code> shape from a workspace-root <code>.mcp.json</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;servers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;bdk&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdio&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dotnet&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;bdk&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mcp&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Visual Studio (<code>.vs/mcp.json</code>) uses a top-level <code>servers</code> object with an explicit <code>type</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"servers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stdio"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Reload the MCP client and call <code>bdk_mcp_status</code>. Treat <code>available: false</code> as a handled unavailable result and use its <code>code</code>, <code>reason</code> and suggested next calls. An available response shows the resolved workspace and server status.</p>
 <h2 id="repository-configurations">Repository configurations<a class="headerlink" href="#repository-configurations" title="Permanent link">&para;</a></h2>
-<p>This repository is the <code>bdk</code> CLI source repository. The checked-in Visual Studio configuration starts the server from source, and the VS Code configuration offers both <code>bdk_local</code> (source) and <code>bdk</code> (the packaged local tool):</p>
+<p>This repository is the <code>bdk</code> CLI source repository. The checked-in workspace-root <code>.mcp.json</code> offers both <code>bdk_local</code> (source) and <code>bdk</code> (the packaged local tool):</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;servers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;bdk&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdio&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dotnet&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="s2">&quot;run&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;--project&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;src/Presentation.Cli/Presentation.Cli.csproj&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;--&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;mcp&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;--toolset&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;diagnostics,operations,admin&quot;</span>
+<span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"bdk_local"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"run"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--project"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"src/Presentation.Cli/Presentation.Cli.csproj"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"mcp"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--toolset"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"diagnostics,operations,admin"</span>
 <span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -4760,41 +4787,93 @@
 <div class="highlight"><pre><span></span><code>dotnet<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>BridgingIT.DevKit.Cli
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;servers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;bdk&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdio&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dotnet&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;bdk&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mcp&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="visual-studio">Visual Studio<a class="headerlink" href="#visual-studio" title="Permanent link">&para;</a></h2>
-<p>Visual Studio discovers the repository-level <code>.mcp.json</code> file. In this repository it defines the <code>bdk</code> server and runs the CLI project from source.</p>
+<h3 id="full-toolset">Full toolset<a class="headerlink" href="#full-toolset" title="Permanent link">&para;</a></h3>
+<p>Add <code>--toolset diagnostics,operations,admin</code> to enable the operations and admin tools in addition to diagnostics. Admin tools still require operation-specific confirmation arguments, so enable this only where the repository needs it.</p>
+<p>VS Code (workspace-root <code>.mcp.json</code>), GitHub Copilot and other portable-format clients:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"tool"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"run"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"bdk"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"mcp"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--toolset"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"diagnostics,operations,admin"</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Visual Studio (<code>.vs/mcp.json</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"servers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stdio"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"tool"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"run"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"bdk"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"mcp"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--toolset"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"diagnostics,operations,admin"</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Rider: use <code>dotnet</code> as the command and these arguments:</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">,</span><span class="w"> </span><span class="s2">"--toolset"</span><span class="p">,</span><span class="w"> </span><span class="s2">"diagnostics,operations,admin"</span><span class="p">]</span>
+</code></pre></div>
+<p>Visual Studio discovers <code>.vs/mcp.json</code> with a top-level <code>servers</code> object (the <code>servers</code> shape shown above, with <code>"type": "stdio"</code>).</p>
 <h2 id="vs-code">VS Code<a class="headerlink" href="#vs-code" title="Permanent link">&para;</a></h2>
-<p>VS Code discovers <code>.vscode/mcp.json</code>. The checked-in file defines <code>bdk_local</code> for the source project and <code>bdk</code> for the manifest-pinned packaged tool.</p>
+<p>VS Code and GitHub Copilot read a workspace-root <code>.mcp.json</code> with a top-level <code>mcpServers</code> object. A plain <code>command</code> and <code>args</code> entry is enough; <code>type</code> and <code>tools</code> are not required. For a personal configuration shared across workspaces, use <code>$COPILOT_HOME/mcp-config.json</code> (<code>~/.copilot/mcp-config.json</code>) with the same format.</p>
+<p>Portable files support environment variable references as <code>${NAME}</code> or <code>${NAME:-default}</code>, but not VS Code input variables or <code>envFile</code>. The <code>bdk</code> servers need none of these.</p>
+<p>To make VS Code pick up the workspace-root <code>.mcp.json</code>:</p>
+<ol>
+<li>
+<p>Enable the experimental setting, then run <strong>Developer: Reload Window</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">"chat.mcp.workspaceRootConfig.enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</code></pre></div>
+</li>
+<li>
+<p>Open <strong>Chat: Open Customizations</strong> and select <strong>MCP Servers</strong> under the Copilot harness. <code>bdk</code> appears there and may ask for trust or start approval.</p>
+</li>
+</ol>
+<p>The default (Local) <strong>Configure Tools</strong> picker in the chat input does not list servers from the workspace-root <code>.mcp.json</code>; use the Copilot harness view instead. You can also start, stop and restart the server with the actions shown above its entry in the <code>.mcp.json</code> editor.</p>
 <h2 id="rider">Rider<a class="headerlink" href="#rider" title="Permanent link">&para;</a></h2>
 <p>Rider stores MCP server definitions through JetBrains AI Assistant settings rather than a documented source-controlled project file. Add this server in Rider's MCP settings:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;bdk&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dotnet&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="s2">&quot;run&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;--project&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;src/Presentation.Cli/Presentation.Cli.csproj&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;--&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;mcp&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;--toolset&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;diagnostics,operations,admin&quot;</span>
+<span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"run"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--project"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"src/Presentation.Cli/Presentation.Cli.csproj"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"mcp"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--toolset"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"diagnostics,operations,admin"</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>For consuming applications, replace the Rider <code>args</code> with:</p>
-<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;bdk&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mcp&quot;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
 </code></pre></div>
+<p>Append <code>"--toolset", "diagnostics,operations,admin"</code> for the <a href="#full-toolset">full toolset</a>.</p>
 <h2 id="verification">Verification<a class="headerlink" href="#verification" title="Permanent link">&para;</a></h2>
 <p>After reloading the client:</p>
 <ol>
@@ -4804,7 +4883,7 @@
 <li>Call <code>bdk_runtimes_list</code> and select a runtime when more than one is ready.</li>
 <li>Call <code>bdk_mcp_self_test</code> to check IPC, protocol and capability discovery.</li>
 </ol>
-<p>The source configurations enable <code>diagnostics</code>, <code>operations</code> and <code>admin</code> so contributors can test the full catalog. Admin tools still require operation-specific confirmation arguments. Consuming applications should keep the diagnostics-only command unless broader toolsets are needed.</p>
+<p>The source configurations enable <code>diagnostics</code>, <code>operations</code> and <code>admin</code> so contributors can test the full catalog. Admin tools still require operation-specific confirmation arguments. Consuming applications should keep the diagnostics-only command unless broader toolsets are needed; see <a href="#full-toolset">Full toolset</a> for the packaged-tool variant.</p>
 <h2 id="related-documentation">Related documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../features-cli-mcp/">DevKit MCP</a></li>
@@ -4888,10 +4967,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

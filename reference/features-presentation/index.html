@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5278,7 +5278,7 @@
 
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">"/"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">Application</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">ApplicationName</span><span class="p">,</span>
 <span class="w">    </span><span class="n">Environment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">EnvironmentName</span>
@@ -5482,7 +5482,7 @@
 </code></pre></div>
 <p>You can pass an environment override when needed.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DevKitWebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">AddConfiguration</span><span class="p">(</span><span class="n">environment</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Development&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddConfiguration</span><span class="p">(</span><span class="n">environment</span><span class="p">:</span><span class="w"> </span><span class="s">"Development"</span><span class="p">);</span>
 </code></pre></div>
 <h3 id="addlogging">AddLogging<a class="headerlink" href="#addlogging" title="Permanent link">&para;</a></h3>
 <p><code>AddLogging()</code> configures Serilog using the existing host builder logging extension from <code>Presentation.Serilog</code>.</p>
@@ -5492,7 +5492,7 @@
 <p>Optional parameters mirror the existing logging setup.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DevKitWebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddLogging</span><span class="p">(</span>
-<span class="w">        </span><span class="n">exclusionPatterns</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;RequestPath like &#39;/internal%&#39;&quot;</span><span class="p">],</span>
+<span class="w">        </span><span class="n">exclusionPatterns</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s">"RequestPath like '/internal%'"</span><span class="p">],</span>
 <span class="w">        </span><span class="n">selfLogEnabled</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">,</span>
 <span class="w">        </span><span class="n">registerLogCommands</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
 </code></pre></div>
@@ -5601,7 +5601,7 @@
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">hostBuilder</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">InvalidOperationException</span><span class="p">(</span><span class="s">&quot;The DevKit builder does not expose a generic host builder.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">InvalidOperationException</span><span class="p">(</span><span class="s">"The DevKit builder does not expose a generic host builder."</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Use the <code>BridgingIT.DevKit.Presentation.Web</code> namespace for web-host starter extensions so consuming applications that already import <code>Presentation.Web</code> can discover them naturally.</p>
@@ -5723,10 +5723,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

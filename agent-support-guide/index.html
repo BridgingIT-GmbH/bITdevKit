@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4791,7 +4791,7 @@
 <p>The guidance API uses one generic operation. For a request to add, create, or build DevKit code, call <code>bdk_guidance_get</code> with the request in <code>query</code>. The tool selects one or more relevant topics.</p>
 <p>Example guidance call:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;how to implement a new job that triggers an orchestration&quot;</span>
+<span class="w">  </span><span class="nt">"query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"how to implement a new job that triggers an orchestration"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Guidance covers these DevKit areas:</p>
@@ -4804,7 +4804,7 @@
 </ul>
 <p>For profiling implementation guidance, request the exact topic:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;topic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;profiling&quot;</span>
+<span class="w">  </span><span class="nt">"topic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"profiling"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>The guide explains how to start or join an operation, record nested or repeated segments, preserve results and cancellation, and choose stable grouping dimensions. Use <code>bdk_api_search</code> and <code>bdk_api_get</code> to confirm the signatures of <code>IOperationProfiler</code> and <code>OperationProfilingHelpers</code> before changing code. Guidance is available without a running application.</p>
@@ -4983,9 +4983,9 @@ After the change, use bdk_jobs_list to verify the running app advertises the job
 </table>
 <p>For example, find slow retained HTTP requests:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HttpRequest&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;view&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Slow&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;take&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
+<span class="w">  </span><span class="nt">"kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HttpRequest"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"view"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Slow"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"take"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Pass this object to <code>bdk_profiling_query</code>, then use a returned execution ID with <code>bdk_profiling_details</code>. Without date bounds, query and insights select the last 15 minutes. Date bounds select execution start times, with an inclusive <code>fromUtc</code> and exclusive <code>toUtc</code>.</p>
@@ -5043,7 +5043,7 @@ After the change, use bdk_jobs_list to verify the running app advertises the job
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Use bdk_guidance_get with topic profiling, read the linked docs, and confirm IOperationProfiler and OperationProfilingHelpers with the API tools. Add operation recordings and aggregate segments with stable dimensions to this feature. When the app is running, verify the captured work with bdk_profiling_query and bdk_profiling_details.
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Use bdk_project_summary to orient on this app&#39;s modules and MCP capabilities. Then choose the right DevKit guidance topic before proposing code changes.
+<div class="highlight"><pre><span></span><code>Use bdk_project_summary to orient on this app's modules and MCP capabilities. Then choose the right DevKit guidance topic before proposing code changes.
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Use bdk_api_search for IRepository and Specification. Call bdk_api_get for the exact symbols you plan to use before editing repository code.
 </code></pre></div>
@@ -5161,10 +5161,10 @@ After the change, use bdk_jobs_list to verify the running app advertises the job
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

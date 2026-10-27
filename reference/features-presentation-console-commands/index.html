@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5634,7 +5634,7 @@
 <span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Succeeded</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 </code></pre></div>
 <p>With the example command defined below, this invocation writes two numbered uppercase lines and exits with code <code>0</code>:</p>
-<div class="highlight"><pre><span></span><code>app<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;hello&quot;</span><span class="w"> </span>--repeat<span class="o">=</span><span class="m">2</span><span class="w"> </span>--upper
+<div class="highlight"><pre><span></span><code>app<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"hello"</span><span class="w"> </span>--repeat<span class="o">=</span><span class="m">2</span><span class="w"> </span>--upper
 </code></pre></div>
 <p>Unknown commands and binding errors write help or error details and return a failed result, allowing the process to exit with code <code>1</code>.</p>
 <h2 id="detailed-setup">Detailed setup<a class="headerlink" href="#detailed-setup" title="Permanent link">&para;</a></h2>
@@ -5701,17 +5701,17 @@
 <h3 id="example-simple-echo-command">Example: simple echo command<a class="headerlink" href="#example-simple-echo-command" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">EchoConsoleCommand</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ConsoleCommandBase</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="na">[ConsoleCommandArgument(0, Description = &quot;Text to echo&quot;, Required = true)]</span>
+<span class="w">    </span><span class="na">[ConsoleCommandArgument(0, Description = "Text to echo", Required = true)]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Text</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
-<span class="w">    </span><span class="na">[ConsoleCommandOption(&quot;repeat&quot;, Alias = &quot;r&quot;, Description = &quot;Repeat count&quot;, Default = 1)]</span>
+<span class="w">    </span><span class="na">[ConsoleCommandOption("repeat", Alias = "r", Description = "Repeat count", Default = 1)]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Repeat</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
-<span class="w">    </span><span class="na">[ConsoleCommandOption(&quot;upper&quot;, Alias = &quot;u&quot;, Description = &quot;Uppercase output&quot;)]</span>
+<span class="w">    </span><span class="na">[ConsoleCommandOption("upper", Alias = "u", Description = "Uppercase output")]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">Upper</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">EchoConsoleCommand</span><span class="p">()</span>
-<span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="k">base</span><span class="p">(</span><span class="s">&quot;echo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Echo text with optional repetition&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="k">base</span><span class="p">(</span><span class="s">"echo"</span><span class="p">,</span><span class="w"> </span><span class="s">"Echo text with optional repetition"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExecuteAsync</span><span class="p">(</span>
 <span class="w">        </span><span class="n">IAnsiConsole</span><span class="w"> </span><span class="n">console</span><span class="p">,</span>
@@ -5721,7 +5721,7 @@
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Upper</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Text</span><span class="p">.</span><span class="n">ToUpperInvariant</span><span class="p">()</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Text</span><span class="p">;</span>
 <span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Repeat</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">console</span><span class="p">.</span><span class="n">MarkupLine</span><span class="p">(</span><span class="s">$&quot;[green]{Markup.Escape(output)}[/]&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">console</span><span class="p">.</span><span class="n">MarkupLine</span><span class="p">(</span><span class="s">$"[green]{Markup.Escape(output)}[/]"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
@@ -5729,7 +5729,7 @@
 <span class="p">}</span>
 </code></pre></div>
 <p>Usage:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;hello world&quot;</span><span class="w"> </span>--repeat<span class="o">=</span><span class="m">3</span><span class="w"> </span>--upper
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">"hello world"</span><span class="w"> </span>--repeat<span class="o">=</span><span class="m">3</span><span class="w"> </span>--upper
 </code></pre></div>
 <h3 id="example-grouped-command">Example: grouped command<a class="headerlink" href="#example-grouped-command" title="Permanent link">&para;</a></h3>
 <p>Grouped commands share a <code>GroupName</code> token followed by subcommand names.</p>
@@ -6124,10 +6124,10 @@ Additions<span class="w"> </span><span class="o">(</span>future<span class="o">)
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

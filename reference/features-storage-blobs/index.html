@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5311,22 +5311,22 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
 
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">"reports"</span><span class="p">);</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapPut</span><span class="p">(</span><span class="s">&quot;/blobs/reports/{name}&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapPut</span><span class="p">(</span><span class="s">"/blobs/reports/{name}"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span>
 <span class="w">    </span><span class="n">IBlobStoreClientFactory</span><span class="w"> </span><span class="n">factory</span><span class="p">,</span>
 <span class="w">    </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">blobs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factory</span><span class="p">.</span><span class="n">CreateClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="s">$&quot;Report: {name}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">blobs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factory</span><span class="p">.</span><span class="n">CreateClient</span><span class="p">(</span><span class="s">"reports"</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="s">$"Report: {name}"</span><span class="p">);</span>
 <span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MemoryStream</span><span class="p">(</span><span class="n">content</span><span class="p">,</span><span class="w"> </span><span class="n">writable</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
 
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">uploaded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BlobUpload</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">),</span>
+<span class="w">        </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">),</span>
 <span class="w">        </span><span class="n">Content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="p">,</span>
 <span class="w">        </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">TXT</span>
 <span class="w">    </span><span class="p">},</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
@@ -5334,7 +5334,7 @@
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">uploaded</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;; &quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"; "</span><span class="p">,</span>
 <span class="w">            </span><span class="n">uploaded</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -5345,7 +5345,7 @@
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">downloaded</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;; &quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"; "</span><span class="p">,</span>
 <span class="w">            </span><span class="n">downloaded</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -5416,17 +5416,17 @@
 <span class="w">    </span><span class="p">})</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithRetryBehavior</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithTimeoutBehavior</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;transient&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">"transient"</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">MaxBlobSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
 <span class="w">    </span><span class="p">})</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">MaxBlobSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">50</span><span class="p">);</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">ChunkSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">AllowFullScans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <span class="w">    </span><span class="p">})</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithAzureBlobClient</span><span class="p">(</span><span class="s">&quot;media&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">configure</span><span class="p">:</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithAzureBlobClient</span><span class="p">(</span><span class="s">"media"</span><span class="p">,</span><span class="w"> </span><span class="n">configure</span><span class="p">:</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">MaxBlobSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">DefaultTake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
@@ -5439,7 +5439,7 @@
 <p>Register Profiling before other behaviors to measure their downstream work:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithProfilingBehavior</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;archive&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">"archive"</span><span class="p">);</span>
 </code></pre></div>
 <p>All seven client methods join an existing operation or create a <code>BlobStorage</code> operation with key <code>blobstorage:{operation}</code>. Dimensions are <code>blobstorage.store</code>, <code>blobstorage.container</code> and <code>blobstorage.operation</code>. Container names come from the key, upload, property update or listing query; blob names, prefixes, tokens and content are omitted. Returned download streams retain caller ownership, and timing ends when the download method returns. See <a href="../features-profiling/#storage-behaviors">Storage profiling behaviors</a> for optional registration, classification and dimension comparisons.</p>
 <h2 id="high-volume-uploads"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="storage-uploads" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v7h24v-7" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 23V3m-6 6 6-6 6 6" /></g></svg></span> High-volume uploads<a class="headerlink" href="#high-volume-uploads" title="Permanent link">&para;</a></h2>
@@ -5455,7 +5455,7 @@
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">MaxQueuedUploads</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">QueueWaitTimeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
 <span class="w">    </span><span class="p">})</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">ChunkSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">ChunkFlushCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
@@ -5476,15 +5476,15 @@
 <p><code>Presentation.Web.Storage</code> can expose Blob Storage over Minimal API endpoints. Maintenance endpoints and read-only content endpoints are deliberately separate so applications can protect or expose them differently.</p>
 <p>Both endpoint groups require authorization by default. Use the shared endpoint-options methods to select policies or roles. Call <code>AllowAnonymous()</code> explicitly only for content that is intentionally public.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">AllowFullScans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <span class="w">    </span><span class="p">})</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddMaintenanceEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
-<span class="w">        </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/_bdk/api/storage/blobs&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">"/_bdk/api/storage/blobs"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">())</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddReadEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
-<span class="w">        </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/_bdk/api/storage/blobs&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">"/_bdk/api/storage/blobs"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">AllowAnonymous</span><span class="p">());</span>
 
 <span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">();</span>
@@ -5507,7 +5507,7 @@
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">();</span>
 
 <span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">AllowFullScans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <span class="w">    </span><span class="p">});</span>
@@ -5539,10 +5539,10 @@
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">System.IO.Compression</span><span class="p">;</span>
 
 <span class="n">services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="o">&lt;</span><span class="n">IEncryptionKeyProvider</span><span class="o">&gt;</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">DictionaryEncryptionKeyProvider</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;primary&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"primary"</span><span class="p">,</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">byte</span><span class="p">[]</span><span class="o">&gt;</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="na">[&quot;primary&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Convert</span><span class="p">.</span><span class="n">FromBase64String</span><span class="p">(</span><span class="n">configuration</span><span class="p">[</span><span class="s">&quot;BlobStorage:EncryptionKey&quot;</span><span class="p">])</span>
+<span class="w">        </span><span class="na">["primary"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Convert</span><span class="p">.</span><span class="n">FromBase64String</span><span class="p">(</span><span class="n">configuration</span><span class="p">[</span><span class="s">"BlobStorage:EncryptionKey"</span><span class="p">])</span>
 <span class="w">    </span><span class="p">}));</span>
 
 <span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
@@ -5551,7 +5551,7 @@
 <span class="w">        </span><span class="n">compression</span><span class="p">.</span><span class="n">Level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CompressionLevel</span><span class="p">.</span><span class="n">Optimal</span><span class="p">;</span>
 <span class="w">    </span><span class="p">})</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithEncryptionBehavior</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithAzureBlobClient</span><span class="p">(</span><span class="s">&quot;media&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithAzureBlobClient</span><span class="p">(</span><span class="s">"media"</span><span class="p">);</span>
 </code></pre></div>
 <p>Compression uses GZip. Encryption uses AES with a random initialization vector per upload. Both behaviors write transformed bytes to the underlying provider and keep the logical blob shape visible to callers:</p>
 <p><code>IEncryptionKeyProvider.GetActiveKeyAsync</code> selects the key used for new uploads. Downloads resolve the key id stored with the encrypted blob through <code>GetKeyAsync</code>, so providers can retain old keys while rotating the active write key. Encrypted clients fail when the active key or a referenced historical key is unavailable.</p>
@@ -5568,18 +5568,18 @@
 <p>Use <code>WithContentTypeDetectionBehavior()</code> when uploads that omit <code>ContentType</code> should infer it from the blob name extension. The behavior uses <code>ContentTypeExtensions.FromFileName(...)</code> and does not inspect or sniff stream content. Extensionless blob names stay unchanged.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithContentTypeDetectionBehavior</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">"reports"</span><span class="p">);</span>
 
 <span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BlobUpload</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/summary.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/summary.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">Content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span>
 <span class="p">},</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
 <p>Use <code>WithChecksumVerificationBehavior()</code> when every <code>DownloadAsync</code> call should verify downloaded bytes against <code>BlobInfo.ContentHash</code> before the caller receives a stream.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithChecksumVerificationBehavior</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">"reports"</span><span class="p">);</span>
 </code></pre></div>
 <p>Checksum verification returns <code>BlobStoreIntegrityError</code> when the stored hash is missing or when downloaded bytes do not match the hash. Set <code>AllowMissingContentHash</code> only for stores where missing hashes are accepted:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
@@ -5594,7 +5594,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">WithChecksumVerificationBehavior</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithCompressionBehavior</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithEncryptionBehavior</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithAzureBlobClient</span><span class="p">(</span><span class="s">&quot;media&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithAzureBlobClient</span><span class="p">(</span><span class="s">"media"</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="download-caching-behavior">Download caching behavior<a class="headerlink" href="#download-caching-behavior" title="Permanent link">&para;</a></h2>
 <p>Use <code>WithCacheBehavior()</code> when repeated exact-key downloads should be served from an <code>ICacheProvider</code>. The behavior caches only successful <code>DownloadAsync</code> results and stores <code>BlobInfo</code> plus the downloaded bytes. Every cache hit returns a new read-only <code>MemoryStream</code>, so callers still own and dispose the returned <code>BlobDownload</code>.</p>
@@ -5604,7 +5604,7 @@
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">SlidingExpiration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">MaxCachedBlobSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
 <span class="w">    </span><span class="p">})</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">"reports"</span><span class="p">);</span>
 </code></pre></div>
 <p>Register an <code>ICacheProvider</code> before resolving blob clients. The same cache providers used by document storage can be reused for blob downloads.</p>
 <p>Caching is exact-key only:</p>
@@ -5620,7 +5620,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">WithChecksumVerificationBehavior</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithCompressionBehavior</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithEncryptionBehavior</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithAzureBlobClient</span><span class="p">(</span><span class="s">&quot;media&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithAzureBlobClient</span><span class="p">(</span><span class="s">"media"</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="chaos-behavior">Chaos behavior<a class="headerlink" href="#chaos-behavior" title="Permanent link">&para;</a></h2>
 <p>Use <code>WithChaosBehavior()</code> in tests, local development, or controlled resilience drills to inject Result-native upload and download failures without changing providers or application code.</p>
@@ -5630,7 +5630,7 @@
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">UploadFailureRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="p">;</span>
 <span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">DownloadFailureRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="p">;</span>
 <span class="w">    </span><span class="p">})</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">"reports"</span><span class="p">);</span>
 </code></pre></div>
 <p>Injected failures return <code>BlobStoreProviderError</code>, so retry behavior treats them like transient provider failures when retry wraps chaos. Register retry first when you want injected failures to be retried because the first registered behavior is outermost:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
@@ -5666,31 +5666,31 @@
 <h2 id="named-clients">Named clients<a class="headerlink" href="#named-clients" title="Permanent link">&para;</a></h2>
 <p>Resolve clients by configured store name only.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">factory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">serviceProvider</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IBlobStoreClientFactory</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">blobs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factory</span><span class="p">.</span><span class="n">CreateClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">blobs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factory</span><span class="p">.</span><span class="n">CreateClient</span><span class="p">(</span><span class="s">"reports"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>factory.GetRegistrations()</code> returns the configured names, provider names, capabilities, and lifetimes for diagnostics without exposing provider instances.</p>
 <p>Named providers and clients are keyed DI services. Singleton, scoped, and transient lifetimes follow standard container semantics; the factory only performs keyed lookup and does not construct or cache clients itself. EF-backed singleton clients remain safe because each provider operation creates and owns a new DI scope and <code>DbContext</code>. A downloaded EF stream keeps its operation scope alive until the returned <code>BlobDownload</code> is disposed.</p>
 <p>Register an <code>IContinuationTokenProtector</code> to require HMAC-protected paging tokens across all Blob Storage clients:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="o">&lt;</span><span class="n">IContinuationTokenProtector</span><span class="o">&gt;</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">HmacContinuationTokenProtector</span><span class="p">(</span><span class="n">configuration</span><span class="p">.</span><span class="n">GetValue</span><span class="o">&lt;</span><span class="kt">byte</span><span class="p">[]</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Storage:ContinuationTokenKey&quot;</span><span class="p">)));</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">HmacContinuationTokenProtector</span><span class="p">(</span><span class="n">configuration</span><span class="p">.</span><span class="n">GetValue</span><span class="o">&lt;</span><span class="kt">byte</span><span class="p">[]</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"Storage:ContinuationTokenKey"</span><span class="p">)));</span>
 </code></pre></div>
 <p>When protection is configured, unsigned, modified, incorrectly signed, and wrong-purpose tokens are rejected. Without a protector, Blob Storage emits unsigned opaque tokens.</p>
 <h2 id="upload"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="storage-uploads" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v7h24v-7" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 23V3m-6 6 6-6 6 6" /></g></svg></span> Upload<a class="headerlink" href="#upload" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
 
-<span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">.</span><span class="n">OpenRead</span><span class="p">(</span><span class="s">&quot;report.pdf&quot;</span><span class="p">);</span>
+<span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">.</span><span class="n">OpenRead</span><span class="p">(</span><span class="s">"report.pdf"</span><span class="p">);</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">uploadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobUpload</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
 <span class="w">        </span><span class="n">Content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="p">,</span>
 <span class="w">        </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">PDF</span><span class="p">,</span>
 <span class="w">        </span><span class="n">ExpiresAt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="n">AddDays</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
 <span class="w">        </span><span class="n">Properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="na">[&quot;customerId&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;42&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="na">[&quot;source&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;monthly-export&quot;</span>
+<span class="w">            </span><span class="na">["customerId"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"42"</span><span class="p">,</span>
+<span class="w">            </span><span class="na">["source"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"monthly-export"</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="n">OverwriteMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlobOverwriteMode</span><span class="p">.</span><span class="n">Overwrite</span>
 <span class="w">    </span><span class="p">},</span>
@@ -5710,7 +5710,7 @@
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">uploadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobUpload</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">&quot;exports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;daily/report.csv&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">"exports"</span><span class="p">,</span><span class="w"> </span><span class="s">"daily/report.csv"</span><span class="p">),</span>
 <span class="w">        </span><span class="n">Content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="p">,</span>
 <span class="w">        </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">CSV</span><span class="p">,</span>
 <span class="w">        </span><span class="n">ExpiresAt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="n">AddDays</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
@@ -5720,12 +5720,12 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">propertiesResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UpdatePropertiesAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobPropertiesUpdate</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">&quot;exports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;daily/report.csv&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">"exports"</span><span class="p">,</span><span class="w"> </span><span class="s">"daily/report.csv"</span><span class="p">),</span>
 <span class="w">        </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">CSV</span><span class="p">,</span>
 <span class="w">        </span><span class="n">ExpiresAt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="n">AddDays</span><span class="p">(</span><span class="mi">14</span><span class="p">),</span>
 <span class="w">        </span><span class="n">Properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="na">[&quot;source&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;daily-export&quot;</span>
+<span class="w">            </span><span class="na">["source"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"daily-export"</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
@@ -5740,7 +5740,7 @@
 <p>Multiple application nodes can run the background service at the same time. Provider sweeps must be idempotent and lease- or condition-protected; a blob already deleted by another node is treated as a successful cleanup outcome.</p>
 <h2 id="expected-hash">Expected hash<a class="headerlink" href="#expected-hash" title="Permanent link">&para;</a></h2>
 <p>Use the blob hash helper when the content stream is seekable. Reset the stream before upload because hashing reads from the current position.</p>
-<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">.</span><span class="n">OpenRead</span><span class="p">(</span><span class="s">&quot;report.pdf&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">.</span><span class="n">OpenRead</span><span class="p">(</span><span class="s">"report.pdf"</span><span class="p">);</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">hashResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">BlobContentHash</span><span class="p">.</span><span class="n">ComputeSha256Async</span><span class="p">(</span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">hashResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
@@ -5753,7 +5753,7 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">uploadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobUpload</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
 <span class="w">        </span><span class="n">Content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="p">,</span>
 <span class="w">        </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">PDF</span><span class="p">,</span>
 <span class="w">        </span><span class="n">ExpectedContentHash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hashResult</span><span class="p">.</span><span class="n">Value</span>
@@ -5763,7 +5763,7 @@
 <p>The expected value must use <code>sha256:&lt;lowercase-64-character-hex&gt;</code>. A mismatch returns <code>BlobStoreIntegrityError</code> and does not commit partial content.</p>
 <h2 id="download"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="storage-downloads" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v7h24v-7" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3v20m-6-6 6 6 6-6" /></g></svg></span> Download<a class="headerlink" href="#download" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">downloadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">downloadResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
@@ -5775,10 +5775,10 @@
 <p>The caller owns and disposes the returned <code>BlobDownload</code>, which disposes the returned content stream.</p>
 <h2 id="verified-download"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="storage-integrity" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 11 4v8c0 7-6 11-11 14C11 26 5 22 5 15V7l11-4Z" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 16 4 4 7-8" /></g></svg></span> Verified download<a class="headerlink" href="#verified-download" title="Permanent link">&para;</a></h2>
 <p>Use <code>DownloadVerifiedToAsync</code> when the destination should only be considered valid after the downloaded bytes match the stored SHA-256 content hash.</p>
-<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="s">&quot;report.pdf&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="s">"report.pdf"</span><span class="p">);</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">verifiedResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadVerifiedToAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">target</span><span class="p">,</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
@@ -5791,28 +5791,28 @@
 <p>By default the helper requires <code>BlobInfo.ContentHash</code>. Set <code>AllowMissingContentHash</code> only when the caller explicitly accepts an unverified copy.</p>
 <p>The file-storage variant stages to a temporary provider path and promotes it only after verification succeeds:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">verifiedFileResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadVerifiedToFileAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">fileStorage</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;incoming/report.pdf&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"incoming/report.pdf"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="file-storage-integration">File Storage integration<a class="headerlink" href="#file-storage-integration" title="Permanent link">&para;</a></h2>
 <p>Blob Storage can transfer content to and from any <code>IFileStorageProvider</code> without changing the core blob client contract. This keeps blob operations provider-neutral while allowing files to come from local disk, in-memory storage, network shares, SQL-backed file storage, or any other configured file provider.</p>
 <p>Upload a file-provider path into blob storage:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">fileFactory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">serviceProvider</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IFileStorageProviderFactory</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">fileStorage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fileFactory</span><span class="p">.</span><span class="n">CreateProvider</span><span class="p">(</span><span class="s">&quot;exports&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">fileStorage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fileFactory</span><span class="p">.</span><span class="n">CreateProvider</span><span class="p">(</span><span class="s">"exports"</span><span class="p">);</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">uploadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadFileAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="n">fileStorage</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;outgoing/report.pdf&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="s">"outgoing/report.pdf"</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobFileUploadOptions</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">InferContentTypeFromFileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
 <span class="w">        </span><span class="n">ExpectedContentHash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expectedHash</span><span class="p">,</span>
 <span class="w">        </span><span class="n">Properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="na">[&quot;source&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;file-storage&quot;</span>
+<span class="w">            </span><span class="na">["source"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"file-storage"</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="n">OverwriteMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlobOverwriteMode</span><span class="p">.</span><span class="n">Overwrite</span>
 <span class="w">    </span><span class="p">},</span>
@@ -5821,9 +5821,9 @@
 <p><code>UploadFileAsync</code> opens and disposes the file-provider read stream after the blob upload completes. If <code>ContentType</code> is not supplied and <code>InferContentTypeFromFileName</code> is true, the content type is inferred through <code>ContentTypeExtensions.FromFileName</code>.</p>
 <p>Download a blob into file storage:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">transferResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadToFileAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">fileStorage</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;incoming/report.pdf&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"incoming/report.pdf"</span><span class="p">,</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobFileDownloadOptions</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">UseTemporaryWrite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span>
@@ -5839,7 +5839,7 @@
 <p><code>DownloadToFileAsync</code> disposes the returned <code>BlobDownload</code> after the file write. When <code>UseTemporaryWrite</code> is true, the file provider can stage the write and publish it on successful close.</p>
 <p>An existing <code>BlobDownload</code> can also be written to file storage:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">downloadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">downloadResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
@@ -5848,7 +5848,7 @@
 
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">saveResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">download</span><span class="p">.</span><span class="n">SaveToFileAsync</span><span class="p">(</span>
 <span class="w">        </span><span class="n">fileStorage</span><span class="p">,</span>
-<span class="w">        </span><span class="s">&quot;incoming/report.pdf&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">"incoming/report.pdf"</span><span class="p">,</span>
 <span class="w">        </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5857,21 +5857,21 @@
 <p>Blob Storage also includes small convenience helpers for textual content and serialized class instances. These helpers are extension methods on <code>IBlobStoreClient</code>; they do not change the core stream-first blob client contract.</p>
 <p>Use <code>UploadTextAsync</code> and <code>DownloadTextAsync</code> for text payloads:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">uploadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadTextAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;notes&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;release-notes.txt&quot;</span><span class="p">),</span>
-<span class="w">    </span><span class="s">&quot;Released on 2026-07-14&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"notes"</span><span class="p">,</span><span class="w"> </span><span class="s">"release-notes.txt"</span><span class="p">),</span>
+<span class="w">    </span><span class="s">"Released on 2026-07-14"</span><span class="p">,</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobTextUploadOptions</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">TXT</span><span class="p">,</span>
 <span class="w">        </span><span class="n">Properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="na">[&quot;source&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;release&quot;</span>
+<span class="w">            </span><span class="na">["source"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"release"</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="n">OverwriteMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlobOverwriteMode</span><span class="p">.</span><span class="n">Overwrite</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">textResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadTextAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;notes&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;release-notes.txt&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"notes"</span><span class="p">,</span><span class="w"> </span><span class="s">"release-notes.txt"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">textResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
@@ -5883,7 +5883,7 @@
 <p>Text helpers use UTF-8 by default. Supply <code>Encoding</code> in <code>BlobTextUploadOptions</code> or <code>BlobTextDownloadOptions</code> when a different encoding is required.</p>
 <p>Use <code>UploadObjectAsync&lt;T&gt;</code> and <code>DownloadObjectAsync&lt;T&gt;</code> for class instances:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">uploadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadObjectAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;profiles&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ada.json&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"profiles"</span><span class="p">,</span><span class="w"> </span><span class="s">"ada.json"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">profile</span><span class="p">,</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobObjectUploadOptions</span>
 <span class="w">    </span><span class="p">{</span>
@@ -5893,7 +5893,7 @@
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">profileResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadObjectAsync</span><span class="o">&lt;</span><span class="n">UserProfile</span><span class="o">&gt;</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;profiles&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ada.json&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"profiles"</span><span class="p">,</span><span class="w"> </span><span class="s">"ada.json"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">profileResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
@@ -5906,32 +5906,32 @@
 <p>The text and object helpers use <code>ContentTypeExtensions.IsText()</code> and <code>IsBinary()</code> to reject binary content types by default. Missing content types are allowed for downloads unless <code>RequireTextContentType</code> is set. These helpers buffer the text or serialized object in memory; use <code>UploadAsync</code>, <code>DownloadAsync</code>, <code>UploadFileAsync</code>, and <code>DownloadToFileAsync</code> for large files and binary streams.</p>
 <p>Use <code>UploadBytesAsync</code> and <code>DownloadBytesAsync</code> for small binary payloads that are already in memory:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">uploadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadBytesAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;assets&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;thumbnail.bin&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"assets"</span><span class="p">,</span><span class="w"> </span><span class="s">"thumbnail.bin"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">bytes</span><span class="p">,</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobBytesUploadOptions</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">BIN</span><span class="p">,</span>
 <span class="w">        </span><span class="n">Properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="na">[&quot;kind&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;thumbnail&quot;</span>
+<span class="w">            </span><span class="na">["kind"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"thumbnail"</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">bytesResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadBytesAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;assets&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;thumbnail.bin&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"assets"</span><span class="p">,</span><span class="w"> </span><span class="s">"thumbnail.bin"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
 <p>The byte helpers intentionally buffer content in memory and are not a replacement for stream-first large blob operations.</p>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <p>Properties operations return or update <code>BlobInfo</code> without downloading content.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">propertiesResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">GetPropertiesAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">propertiesResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">customerId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">propertiesResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">Get</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;customerId&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">customerId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">propertiesResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">Get</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"customerId"</span><span class="p">);</span>
 
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">updateResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UpdatePropertiesAsync</span><span class="p">(</span>
 <span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">BlobPropertiesUpdate</span>
@@ -5941,8 +5941,8 @@
 <span class="w">            </span><span class="n">IfMatchETag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">propertiesResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">ETag</span><span class="p">,</span>
 <span class="w">            </span><span class="n">Properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span>
 <span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="na">[&quot;customerId&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customerId</span><span class="p">,</span>
-<span class="w">                </span><span class="na">[&quot;reviewed&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span>
+<span class="w">                </span><span class="na">["customerId"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customerId</span><span class="p">,</span>
+<span class="w">                </span><span class="na">["reviewed"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="n">cancellationToken</span><span class="p">);</span>
@@ -5951,28 +5951,28 @@
 <p>When supplied, <code>IfMatchETag</code> is used for optimistic property updates. A stale ETag returns a conflict Result failure.</p>
 <p>For small property-only changes, patch helpers read current properties, apply a local mutation, and update with the current ETag:</p>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">SetPropertyAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
-<span class="w">    </span><span class="s">&quot;reviewed&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
+<span class="w">    </span><span class="s">"reviewed"</span><span class="p">,</span>
 <span class="w">    </span><span class="k">true</span><span class="p">,</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">MergePropertiesAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="na">[&quot;reviewer&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;qa&quot;</span>
+<span class="w">        </span><span class="na">["reviewer"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"qa"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">RemovePropertyAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
-<span class="w">    </span><span class="s">&quot;temporary&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
+<span class="w">    </span><span class="s">"temporary"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
 <p>These helpers do not download or rewrite blob content.</p>
 <h2 id="exists">Exists<a class="headerlink" href="#exists" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">existsResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">ExistsAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">existsResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">existsResult</span><span class="p">.</span><span class="n">Value</span><span class="p">)</span>
@@ -5984,8 +5984,8 @@
 <p>Use prefix listing for bounded reads. Continuation tokens are opaque and query-bound.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">pageResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">ListPageAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="n">BlobQueries</span><span class="p">.</span><span class="n">Query</span><span class="p">()</span>
-<span class="w">        </span><span class="p">.</span><span class="n">InContainer</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithPrefix</span><span class="p">(</span><span class="s">&quot;2026/06/&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">InContainer</span><span class="p">(</span><span class="s">"reports"</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithPrefix</span><span class="p">(</span><span class="s">"2026/06/"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Take</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Build</span><span class="p">(),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
@@ -6002,8 +6002,8 @@
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">nextPageResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">ListPageAsync</span><span class="p">(</span>
 <span class="w">            </span><span class="n">BlobQueries</span><span class="p">.</span><span class="n">Query</span><span class="p">()</span>
-<span class="w">                </span><span class="p">.</span><span class="n">InContainer</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">WithPrefix</span><span class="p">(</span><span class="s">&quot;2026/06/&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">InContainer</span><span class="p">(</span><span class="s">"reports"</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">WithPrefix</span><span class="p">(</span><span class="s">"2026/06/"</span><span class="p">)</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Take</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
 <span class="w">                </span><span class="p">.</span><span class="n">ContinueWith</span><span class="p">(</span><span class="n">pageResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">ContinuationToken</span><span class="p">)</span>
 <span class="w">                </span><span class="p">.</span><span class="n">Build</span><span class="p">(),</span>
@@ -6015,7 +6015,7 @@
 <p>Full scans require both <code>BlobStoreOptions.AllowFullScans = true</code> on the named client and <code>.AllowFullScan()</code> on the query.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">pageResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">ListPageAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="n">BlobQueries</span><span class="p">.</span><span class="n">Query</span><span class="p">()</span>
-<span class="w">        </span><span class="p">.</span><span class="n">InContainer</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">InContainer</span><span class="p">(</span><span class="s">"reports"</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">AllowFullScan</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Take</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Build</span><span class="p">(),</span>
@@ -6026,8 +6026,8 @@
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="nf">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">EnumerateAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobQuery</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;reports&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="n">Prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2026/06/&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"reports"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"2026/06/"</span><span class="p">,</span>
 <span class="w">        </span><span class="n">Take</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">))</span>
@@ -6044,8 +6044,8 @@
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">allResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">ListAllAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobQuery</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;reports&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="n">Prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2026/06/&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"reports"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"2026/06/"</span><span class="p">,</span>
 <span class="w">        </span><span class="n">Take</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobEnumerationOptions</span>
@@ -6056,7 +6056,7 @@
 </code></pre></div>
 <h2 id="delete">Delete<a class="headerlink" href="#delete" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">deleteResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DeleteAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
 <p>Deleting a missing blob returns success.</p>
@@ -6070,23 +6070,23 @@
 <h2 id="copy-move-and-prefix-delete"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="storage-transfers" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h25m-5-5 5 5-5 5M29 23H4m5-5-5 5 5 5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14v4M29 14v4" /></g></svg></span> Copy, move, and prefix delete<a class="headerlink" href="#copy-move-and-prefix-delete" title="Permanent link">&para;</a></h2>
 <p>Blob-to-blob transfer helpers are extension methods over the public <code>IBlobStoreClient</code> contract. They can copy or move between different providers because they only depend on download, upload, and delete operations.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">archiveResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">CopyToAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">archiveBlobs</span><span class="p">,</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;archive&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"archive"</span><span class="p">,</span><span class="w"> </span><span class="s">"2026/06/report.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">moveResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">MoveToAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;tmp/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"reports"</span><span class="p">,</span><span class="w"> </span><span class="s">"tmp/report.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">archiveBlobs</span><span class="p">,</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;archive&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;tmp/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">"archive"</span><span class="p">,</span><span class="w"> </span><span class="s">"tmp/report.pdf"</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
 <p>Copies and moves preserve the source expiration by default. Set <code>BlobCopyOptions.PreserveExpiration</code> to <code>false</code> to create a non-expiring target, or use <code>ExpiresAtOverride</code> to set a new expiration. The override wins when both are supplied.</p>
 <p><code>MoveToAsync</code> copies first and conditionally deletes the source using the ETag observed during the copy. If the source changes, the copied target remains and <code>BlobStoreTransferError</code> reports that the source was not deleted. Moving to the same client and key verifies that the blob exists and returns a successful no-op with <code>SourceDeleted = false</code>.</p>
 <p>Use <code>DeleteByPrefixAsync</code> for guarded cleanup workflows:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">dryRun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DeleteByPrefixAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;reports&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;tmp/&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"reports"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"tmp/"</span><span class="p">,</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobDeletePrefixOptions</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">DryRun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
@@ -6095,8 +6095,8 @@
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">deleteResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DeleteByPrefixAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;reports&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;tmp/&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"reports"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"tmp/"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
 <p>Prefix delete requires a non-empty prefix unless <code>AllowFullScan</code> is explicitly set. Use dry runs before scheduled cleanup jobs.</p>
@@ -6156,17 +6156,17 @@
 <h2 id="maintenance-jobs"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="storage-cleanup" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h15M5 8v19h11M7 4h7v4" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m17 19 9-10 4 4-9 10M17 19l-2 8h8l-6-8Z" /></g></svg></span> Maintenance jobs<a class="headerlink" href="#maintenance-jobs" title="Permanent link">&para;</a></h2>
 <p><code>Application.Storage.Jobs</code> includes <code>BlobDeletePrefixMaintenanceJob</code> for deleting blobs by prefix through a named blob client.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddJobScheduler</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">BlobDeletePrefixMaintenanceJob</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;blob-delete-prefix&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">job</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Description</span><span class="p">(</span><span class="s">&quot;Deletes temporary report blobs.&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">BlobDeletePrefixMaintenanceJob</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"blob-delete-prefix"</span><span class="p">,</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">job</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Description</span><span class="p">(</span><span class="s">"Deletes temporary report blobs."</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithConcurrency</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithRetry</span><span class="p">(</span><span class="n">retry</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">retry</span><span class="p">.</span><span class="n">MaxAttempts</span><span class="p">(</span><span class="mi">3</span><span class="p">).</span><span class="n">FixedDelay</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
-<span class="w">        </span><span class="p">.</span><span class="n">AddTrigger</span><span class="p">(</span><span class="s">&quot;nightly&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">trigger</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">trigger</span>
+<span class="w">        </span><span class="p">.</span><span class="n">AddTrigger</span><span class="p">(</span><span class="s">"nightly"</span><span class="p">,</span><span class="w"> </span><span class="n">trigger</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">trigger</span>
 <span class="w">            </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">CronExpressions</span><span class="p">.</span><span class="n">DailyAt2AM</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">Data</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BlobDeletePrefixMaintenanceJobData</span>
 <span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="n">StoreName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;reports&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="n">Container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;reports&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="n">Prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tmp/&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="n">StoreName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"reports"</span><span class="p">,</span>
+<span class="w">                </span><span class="n">Container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"reports"</span><span class="p">,</span>
+<span class="w">                </span><span class="n">Prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"tmp/"</span><span class="p">,</span>
 <span class="w">                </span><span class="n">DryRun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
 <span class="w">                </span><span class="n">MaxItems</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span>
 <span class="w">            </span><span class="p">})));</span>
@@ -6271,10 +6271,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

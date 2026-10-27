@@ -408,4 +408,273 @@ public class ConfigurationMergerTests
         result.UseMetadataWrapper.ShouldBeFalse();
         result.ProviderOptions["strict"].ShouldBe(true);
     }
+
+    [Fact]
+    public void BuildExportConfiguration_WithMergingProfile_MergesColumnsAndFiltersIgnoredColumns()
+    {
+        // Arrange
+        this.profileRegistry.RegisterExportProfile(new MergingExportProfile());
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+
+        // Act
+        var result = sut.BuildExportConfiguration<EntityWithColumnAttributes>();
+
+        // Assert
+        result.Columns.Count.ShouldBe(1);
+
+        var column = result.Columns[0];
+        column.PropertyName.ShouldBe(nameof(EntityWithColumnAttributes.Name));
+        column.HeaderName.ShouldBe("Profile Name");
+        column.Order.ShouldBe(2);
+        column.Format.ShouldBe("0.00");
+        column.Width.ShouldBe(150);
+        column.NullValue.ShouldBe("(missing)");
+        column.ConditionalStyles.Count.ShouldBe(1);
+        result.HeaderRows.Count.ShouldBe(1);
+        result.FooterRows.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void BuildExportConfiguration_WithMergingProfile_ReturnsIndependentConfigurationsAcrossCalls()
+    {
+        // Arrange
+        this.profileRegistry.RegisterExportProfile(new MergingExportProfile());
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+
+        // Act
+        var first = sut.BuildExportConfiguration<EntityWithColumnAttributes>();
+        first.Columns[0].HeaderName = "Mutated";
+        var second = sut.BuildExportConfiguration<EntityWithColumnAttributes>();
+
+        // Assert
+        second.Columns[0].HeaderName.ShouldBe("Profile Name");
+    }
+
+    [Fact]
+    public void BuildImportConfiguration_WithMergingProfile_MergesColumnsAndPreservesRequiredFlags()
+    {
+        // Arrange
+        this.profileRegistry.RegisterImportProfile(new MergingImportProfile());
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+
+        // Act
+        var result = sut.BuildImportConfiguration<EntityWithRequiredColumn>();
+
+        // Assert
+        var requiredColumn = result.Columns.Single(column => column.PropertyName == nameof(EntityWithRequiredColumn.RequiredField));
+        requiredColumn.SourceName.ShouldBe("Profile Required");
+        requiredColumn.SourceIndex.ShouldBe(4);
+        requiredColumn.Order.ShouldBe(1);
+        requiredColumn.IsRequired.ShouldBeTrue();
+        requiredColumn.RequiredMessage.ShouldBe("Profile required message");
+        requiredColumn.Validators.Count.ShouldBe(1);
+        result.SheetIndex.ShouldBe(3);
+        result.HeaderRowIndex.ShouldBe(0);
+        result.SkipRows.ShouldBe(0);
+        result.ValidationBehavior.ShouldBe(ImportValidationBehavior.CollectErrors);
+    }
+
+    [Fact]
+    public void BuildImportConfiguration_WithFactoryProfile_UsesFactoryFromProfile()
+    {
+        // Arrange
+        this.profileRegistry.RegisterImportProfile(new MergingImportProfile());
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+
+        // Act
+        var result = sut.BuildImportConfiguration<EntityWithRequiredColumn>();
+        var created = (EntityWithRequiredColumn)result.Factory();
+
+        // Assert
+        created.Id.ShouldBe(99);
+    }
+
+    [Fact]
+    public void BuildTemplateConfiguration_WithProfileOnlyMetadata_UsesImportAndExportFallbacks()
+    {
+        // Arrange
+        this.profileRegistry.RegisterExportProfile(new TemplateMergeExportProfile());
+        this.profileRegistry.RegisterImportProfile(new TemplateMergeImportProfile());
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+
+        // Act
+        var result = sut.BuildTemplateConfiguration<TemplateMergeEntity>(new TemplateOptions { UseAttributes = false });
+
+        // Assert
+        result.Fields.Count.ShouldBe(2);
+        result.Fields[0].PropertyName.ShouldBe(nameof(TemplateMergeEntity.Id));
+        result.Fields[0].HeaderName.ShouldBe("Identifier");
+
+        result.Fields[1].PropertyName.ShouldBe(nameof(TemplateMergeEntity.Name));
+        result.Fields[1].HeaderName.ShouldBe("Profile Display Name");
+        result.Fields[1].Order.ShouldBe(3);
+        result.Fields[1].Format.ShouldBe("N0");
+        result.Fields[1].ValidationHints.Count.ShouldBe(1);
+        result.Fields[1].ValidationHints[0].ShouldBe("Too long");
+    }
+
+    [Fact]
+    public void BuildTemplateConfiguration_WithoutImportOrExportSheetName_UsesTypeName()
+    {
+        // Arrange
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+
+        // Act
+        var result = sut.BuildTemplateConfiguration<SimpleEntity>(new TemplateOptions { UseAttributes = false });
+
+        // Assert
+        result.SheetName.ShouldBe(nameof(SimpleEntity));
+    }
+
+    private sealed class MergingExportProfile : IExportProfile<EntityWithColumnAttributes>
+    {
+        public Type SourceType => typeof(EntityWithColumnAttributes);
+
+        public IReadOnlyList<ColumnConfiguration> Columns { get; } =
+        [
+            new()
+            {
+                PropertyName = nameof(EntityWithColumnAttributes.Name),
+                HeaderName = "Profile Name",
+                Order = 2,
+                Width = 150,
+                NullValue = "(missing)",
+                ConditionalStyles =
+                [
+                    new ConditionalStyle
+                    {
+                        Condition = _ => true,
+                        IsBold = true
+                    }
+                ]
+            },
+            new()
+            {
+                PropertyName = "Ignored",
+                HeaderName = "Ignored",
+                Ignore = true,
+                Order = 0
+            }
+        ];
+
+        public string SheetName => string.Empty;
+
+        public IReadOnlyList<HeaderRowConfiguration> HeaderRows { get; } = [new HeaderRowConfiguration { Content = "Header" }];
+
+        public IReadOnlyList<FooterRowConfiguration> FooterRows { get; } = [new FooterRowConfiguration { Content = "Footer" }];
+    }
+
+    private sealed class MergingImportProfile : IImportProfile<EntityWithRequiredColumn>
+    {
+        public Type TargetType => typeof(EntityWithRequiredColumn);
+
+        public IReadOnlyList<ImportColumnConfiguration> Columns { get; } =
+        [
+            new()
+            {
+                PropertyName = nameof(EntityWithRequiredColumn.RequiredField),
+                SourceName = "Profile Required",
+                SourceIndex = 4,
+                Order = 1,
+                IsRequired = false,
+                RequiredMessage = "Profile required message",
+                Validators = [new ColumnValidator { Validate = _ => false, ErrorMessage = "Invalid required field" }]
+            },
+            new()
+            {
+                PropertyName = nameof(EntityWithRequiredColumn.Id),
+                Ignore = true,
+                Order = 0
+            }
+        ];
+
+        public string SheetName => string.Empty;
+
+        public int SheetIndex => 3;
+
+        public int HeaderRowIndex => 2;
+
+        public int SkipRows => 1;
+
+        public ImportValidationBehavior ValidationBehavior => ImportValidationBehavior.StopImport;
+
+        public Func<EntityWithRequiredColumn> Factory => () => new EntityWithRequiredColumn { Id = 99, RequiredField = "from profile" };
+
+        Func<object> IImportProfile.Factory => () => new EntityWithRequiredColumn { Id = 99, RequiredField = "from profile" };
+    }
+
+    private sealed class TemplateMergeEntity
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+    }
+
+    private sealed class TemplateMergeExportProfile : IExportProfile<TemplateMergeEntity>
+    {
+        public Type SourceType => typeof(TemplateMergeEntity);
+
+        public IReadOnlyList<ColumnConfiguration> Columns { get; } =
+        [
+            new()
+            {
+                PropertyName = nameof(TemplateMergeEntity.Id),
+                HeaderName = "Identifier",
+                Order = 0
+            },
+            new()
+            {
+                PropertyName = nameof(TemplateMergeEntity.Name),
+                HeaderName = "Profile Display Name",
+                Order = 3,
+                Format = "N0"
+            }
+        ];
+
+        public string SheetName => string.Empty;
+
+        public IReadOnlyList<HeaderRowConfiguration> HeaderRows { get; } = [];
+
+        public IReadOnlyList<FooterRowConfiguration> FooterRows { get; } = [];
+    }
+
+    private sealed class TemplateMergeImportProfile : IImportProfile<TemplateMergeEntity>
+    {
+        public Type TargetType => typeof(TemplateMergeEntity);
+
+        public IReadOnlyList<ImportColumnConfiguration> Columns { get; } =
+        [
+            new()
+            {
+                PropertyName = nameof(TemplateMergeEntity.Name),
+                Order = -1,
+                Validators =
+                [
+                    new ColumnValidator { Validate = _ => true, ErrorMessage = "Too long" },
+                    new ColumnValidator { Validate = _ => true, ErrorMessage = "too long" },
+                    new ColumnValidator { Validate = _ => true, ErrorMessage = "  " }
+                ]
+            },
+            new()
+            {
+                PropertyName = nameof(TemplateMergeEntity.Id),
+                SourceName = "Identifier",
+                Order = 0
+            }
+        ];
+
+        public string SheetName => string.Empty;
+
+        public int SheetIndex => -1;
+
+        public int HeaderRowIndex => 0;
+
+        public int SkipRows => 0;
+
+        public ImportValidationBehavior ValidationBehavior => ImportValidationBehavior.CollectErrors;
+
+        public Func<TemplateMergeEntity> Factory => () => new TemplateMergeEntity();
+
+        Func<object> IImportProfile.Factory => () => new TemplateMergeEntity();
+    }
 }

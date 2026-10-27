@@ -10,7 +10,7 @@
       "rollForward": false
     },
     "microsoft.dotnet-openapi": {
-      "version": "10.0.13",
+      "version": "10.0.14",
       "commands": [
         "dotnet-openapi"
       ],
@@ -38,7 +38,7 @@
       "rollForward": false
     },
     "dotnet-ef": {
-      "version": "10.0.13",
+      "version": "10.0.14",
       "commands": [
         "dotnet-ef"
       ],
@@ -59,7 +59,7 @@
       "rollForward": false
     },
     "bridgingit.devkit.cli": {
-      "version": "10.0.112",
+      "version": "10.0.114",
       "commands": [
         "bdk"
       ],

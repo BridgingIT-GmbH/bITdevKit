@@ -108,7 +108,14 @@ Add a workspace-root `.mcp.json` to the project repository. It uses the portable
   "mcpServers": {
     "bdk": {
       "command": "dotnet",
-      "args": ["tool", "run", "bdk", "mcp"]
+      "args": [
+        "tool",
+        "run",
+        "bdk",
+        "mcp",
+        "--toolset",
+        "diagnostics,operations,admin"
+      ]
     }
   }
 }
@@ -124,7 +131,8 @@ Add `.codex/config.toml` to the project repository:
 [mcp_servers.bdk]
 command = "dotnet"
 args = [
-  "tool", "run", "bdk", "mcp"
+  "tool", "run", "bdk", "mcp",
+  "--toolset", "diagnostics,operations,admin"
 ]
 cwd = ".."
 startup_timeout_sec = 60
@@ -132,7 +140,7 @@ tool_timeout_sec = 120
 enabled = true
 ```
 
-Other clients use different configuration files. Keep the command and arguments equivalent. To enable the operations and admin tools, append `--toolset diagnostics,operations,admin` to the arguments (`["tool", "run", "bdk", "mcp", "--toolset", "diagnostics,operations,admin"]`). See [MCP Client Configuration](reference/features-cli-mcp-clients.md#full-toolset) for the full-toolset variants for VS Code, Visual Studio, Rider, and other supported clients, including the differences between the portable and VS Code formats.
+Other clients use different configuration files. Keep the command and arguments equivalent, including `--toolset diagnostics,operations,admin`; remove it for a diagnostics-only server. See [MCP Client Configuration](reference/features-cli-mcp-clients.md) for VS Code, Visual Studio, Rider, and other supported clients, including the differences between the portable and Visual Studio formats.
 
 ### 5. Verify the connection
 

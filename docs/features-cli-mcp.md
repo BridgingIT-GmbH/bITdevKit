@@ -91,7 +91,14 @@ Restore the local tool and configure the MCP client to launch `bdk mcp` over STD
   "mcpServers": {
     "bdk": {
       "command": "dotnet",
-      "args": ["tool", "run", "bdk", "mcp"]
+      "args": [
+        "tool",
+        "run",
+        "bdk",
+        "mcp",
+        "--toolset",
+        "diagnostics,operations,admin"
+      ]
     }
   }
 }
@@ -147,7 +154,14 @@ MCP clients usually need the command split into executable and arguments. VS Cod
   "mcpServers": {
     "bdk": {
       "command": "dotnet",
-      "args": ["tool", "run", "bdk", "mcp"]
+      "args": [
+        "tool",
+        "run",
+        "bdk",
+        "mcp",
+        "--toolset",
+        "diagnostics,operations,admin"
+      ]
     }
   }
 }
@@ -161,7 +175,14 @@ Visual Studio (`.vs/mcp.json`):
     "bdk": {
       "type": "stdio",
       "command": "dotnet",
-      "args": ["tool", "run", "bdk", "mcp"]
+      "args": [
+        "tool",
+        "run",
+        "bdk",
+        "mcp",
+        "--toolset",
+        "diagnostics,operations,admin"
+      ]
     }
   }
 }
@@ -179,7 +200,9 @@ When developing the DevKit repository itself, run the CLI from source (`mcpServe
         "--project",
         "src/Presentation.Cli/Presentation.Cli.csproj",
         "--",
-        "mcp"
+        "mcp",
+        "--toolset",
+        "diagnostics,operations,admin"
       ]
     }
   }

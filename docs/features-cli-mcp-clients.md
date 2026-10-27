@@ -22,7 +22,7 @@ Use a source-controlled STDIO server definition where the client supports one. P
 - Visual Studio configuration through `.vs/mcp.json`.
 - A documented Rider server definition without committing `.idea` user state.
 - Separate source-run and packaged-tool command shapes.
-- Diagnostics-only defaults for consuming applications, with optional toolset expansion.
+- Diagnostics, operations and admin toolsets enabled in every documented client configuration, with a diagnostics-only fallback.
 
 ## Architecture
 
@@ -81,7 +81,14 @@ Add this server definition to the client-specific file described below. VS Code 
   "mcpServers": {
     "bdk": {
       "command": "dotnet",
-      "args": ["tool", "run", "bdk", "mcp"]
+      "args": [
+        "tool",
+        "run",
+        "bdk",
+        "mcp",
+        "--toolset",
+        "diagnostics,operations,admin"
+      ]
     }
   }
 }
@@ -95,7 +102,14 @@ Visual Studio (`.vs/mcp.json`) uses a top-level `servers` object with an explici
     "bdk": {
       "type": "stdio",
       "command": "dotnet",
-      "args": ["tool", "run", "bdk", "mcp"]
+      "args": [
+        "tool",
+        "run",
+        "bdk",
+        "mcp",
+        "--toolset",
+        "diagnostics,operations,admin"
+      ]
     }
   }
 }
@@ -124,7 +138,36 @@ This repository is the `bdk` CLI source repository. The checked-in workspace-roo
     },
     "bdk": {
       "command": "dotnet",
-      "args": ["tool", "run", "bdk", "mcp"]
+      "args": [
+        "tool",
+        "run",
+        "bdk",
+        "mcp",
+        "--toolset",
+        "diagnostics,operations,admin"
+      ]
+    }
+  }
+}
+```
+
+Visual Studio (`.vs/mcp.json`) running the CLI from source:
+
+```json
+{
+  "servers": {
+    "bdk": {
+      "type": "stdio",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "src/Presentation.Cli/Presentation.Cli.csproj",
+        "--",
+        "mcp",
+        "--toolset",
+        "diagnostics,operations,admin"
+      ]
     }
   }
 }
@@ -143,7 +186,14 @@ dotnet tool install BridgingIT.DevKit.Cli
   "mcpServers": {
     "bdk": {
       "command": "dotnet",
-      "args": ["tool", "run", "bdk", "mcp"]
+      "args": [
+        "tool",
+        "run",
+        "bdk",
+        "mcp",
+        "--toolset",
+        "diagnostics,operations,admin"
+      ]
     }
   }
 }
@@ -151,50 +201,9 @@ dotnet tool install BridgingIT.DevKit.Cli
 
 ### Full toolset
 
-Add `--toolset diagnostics,operations,admin` to enable the operations and admin tools in addition to diagnostics. Admin tools still require operation-specific confirmation arguments, so enable this only where the repository needs it.
+Every configuration on this page passes `--toolset diagnostics,operations,admin`, which enables the operations and admin tools in addition to diagnostics. Admin tools still require operation-specific confirmation arguments.
 
-VS Code (workspace-root `.mcp.json`), GitHub Copilot and other portable-format clients:
-
-```json
-{
-  "mcpServers": {
-    "bdk": {
-      "command": "dotnet",
-      "args": [
-        "tool",
-        "run",
-        "bdk",
-        "mcp",
-        "--toolset",
-        "diagnostics,operations,admin"
-      ]
-    }
-  }
-}
-```
-
-Visual Studio (`.vs/mcp.json`):
-
-```json
-{
-  "servers": {
-    "bdk": {
-      "type": "stdio",
-      "command": "dotnet",
-      "args": [
-        "tool",
-        "run",
-        "bdk",
-        "mcp",
-        "--toolset",
-        "diagnostics,operations,admin"
-      ]
-    }
-  }
-}
-```
-
-Rider: use `dotnet` as the command and these arguments:
+To restrict a client to diagnostics only, remove `"--toolset"` and its value from `args`. Rider uses the same arguments as the other clients:
 
 ```json
 ["tool", "run", "bdk", "mcp", "--toolset", "diagnostics,operations,admin"]
@@ -246,10 +255,8 @@ Rider stores MCP server definitions through JetBrains AI Assistant settings rath
 For consuming applications, replace the Rider `args` with:
 
 ```json
-["tool", "run", "bdk", "mcp"]
+["tool", "run", "bdk", "mcp", "--toolset", "diagnostics,operations,admin"]
 ```
-
-Append `"--toolset", "diagnostics,operations,admin"` for the [full toolset](#full-toolset).
 
 ## Verification
 
@@ -261,7 +268,7 @@ After reloading the client:
 4. Call `bdk_runtimes_list` and select a runtime when more than one is ready.
 5. Call `bdk_mcp_self_test` to check IPC, protocol and capability discovery.
 
-The source configurations enable `diagnostics`, `operations` and `admin` so contributors can test the full catalog. Admin tools still require operation-specific confirmation arguments. Consuming applications should keep the diagnostics-only command unless broader toolsets are needed; see [Full toolset](#full-toolset) for the packaged-tool variant.
+All configurations enable `diagnostics`, `operations` and `admin` so the full catalog is available. Admin tools still require operation-specific confirmation arguments. Remove the `--toolset` argument for a diagnostics-only server; see [Full toolset](#full-toolset).
 
 ## Related documentation
 

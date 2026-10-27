@@ -60,6 +60,8 @@ Update all NuGet packages and dotnet tools of this repository to the latest stab
 
 ## Process
 
+Test environment: the sandbox has no writable `/run/user`, which makes four Presentation unit tests fail with `UnauthorizedAccessException` in `LocalIpcEndpointState`. Run `mkdir -p /tmp/gh-aw/agent/xdg` once and prefix every `dotnet test` with `XDG_RUNTIME_DIR=/tmp/gh-aw/agent/xdg` (the variable does not persist between commands).
+
 1. Check for an existing open pull request whose title starts with `[package update]`. If one exists, do not create another one: call the `noop` tool and mention the existing pull request.
 2. Establish a baseline before changing anything: `dotnet build bITdevKit.slnx` and the unit tests (`dotnet test bITdevKit.slnx --no-build --filter "FullyQualifiedName~UnitTests"`). Re-run any failing test alone; a test that fails consistently on the untouched code is a pre-existing failure. If the baseline is not green, call the `noop` tool listing the failing tests. Do not open a pull request on top of a red baseline.
 3. Read `.agents/skills/update-packages/SKILL.md` and follow it end to end (preflight, bulk upgrade, restore, build, deprecated check, vulnerability scan, tests, dotnet tools, Kiota regeneration, final check). Its rules take precedence, in particular:

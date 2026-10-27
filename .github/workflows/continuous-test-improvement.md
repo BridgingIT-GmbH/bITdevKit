@@ -64,6 +64,8 @@ Raise the unit test coverage of bITdevKit in **small steps**. Every run adds tes
 
 ## Process
 
+Test environment: the sandbox has no writable `/run/user`, which makes Presentation unit tests that use `LocalIpcEndpointState` fail with `UnauthorizedAccessException`. Run `mkdir -p /tmp/gh-aw/agent/xdg` once and prefix every `dotnet test` with `XDG_RUNTIME_DIR=/tmp/gh-aw/agent/xdg` (the variable does not persist between commands).
+
 1. If a pull request whose title starts with `[test improvement]` is still open, call the `noop` tool and mention it. Do not stack pull requests.
 2. Read the memory file `state.json` (it may not exist yet). It holds per unit test project the date of the last run and the last measured line coverage, plus a list of classes already improved or deliberately skipped.
 3. **Pick one project** among the unit test projects in `tests/` (`Common.UnitTests`, `Domain.UnitTests`, `Application.UnitTests`, `Infrastructure.UnitTests`, `Presentation.UnitTests`): the one not improved for the longest time. Never run integration test projects: Docker is not available.

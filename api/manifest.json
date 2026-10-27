@@ -31567,7 +31567,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ServiceCollectionExtensions",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ServiceCollectionExtensions.yml\" sourcestartlinenumber=\"1\">Provides dependency-injection registration for Requester and Notifier services and behaviors.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ServiceCollectionExtensions.yml\" sourcestartlinenumber=\"1\">Provides helpers for inspecting service registrations.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -54715,11 +54715,11 @@
       "type": "Toc",
       "source_relative_path": "obj/api/toc.yml",
       "output": {
-        ".html": {
-          "relative_path": "obj/api/toc.html"
-        },
         ".json": {
           "relative_path": "obj/api/toc.json"
+        },
+        ".html": {
+          "relative_path": "obj/api/toc.html"
         }
       },
       "version": ""
@@ -54728,11 +54728,11 @@
       "type": "Toc",
       "source_relative_path": "toc.yml",
       "output": {
-        ".html": {
-          "relative_path": "toc.html"
-        },
         ".json": {
           "relative_path": "toc.json"
+        },
+        ".html": {
+          "relative_path": "toc.html"
         }
       },
       "version": ""

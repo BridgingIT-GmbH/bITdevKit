@@ -2,7 +2,21 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
-## [10.0.113] - Unreleased
+## [10.0.115] - 2026-10-27
+
+- Added CBOR serialization (`CborSerializer`) for compact binary payloads, with the `[CborConstructor]` attribute for constructor-based mapping and the `IBufferSerializer` contract for serializers that work on complete buffers. `System.Formats.Cbor` is now a dependency of `Common.Serialization`.
+- Changed the dashboard sidebar to show the feature SVG icons, falling back to the previous Bootstrap icon for items without one.
+
+## [10.0.114] - 2026-10-20
+
+- Added the `project_mcp_tools` guidance topic to `bdk_guidance_get`, explaining how to add project-owned MCP operations: capability metadata, argument schemas, toolset selection, bounded responses, registration, and verification with `bdk_project_operations` and `bdk_project_call`.
+
+## [10.0.113] - 2026-10-19
+
+- Added `AddLogEntryServices<TContext>(...)` to register the log entry service, maintenance queue, and background maintenance service with fluent options (including enabling or disabling them per environment). It returns a builder context for exposing endpoints.
+- Added the matte-black dashboard theme and improved the accessibility of the theme picker.
+- Fixed hosted services of profiling and log entry maintenance starting during build-time OpenAPI generation.
+- Updated the .NET SDK baseline to 10.0.402 and refreshed packages, including OpenTelemetry 1.20.0. `PDFsharp-MigraDoc` stays pinned to 6.2.4 because 6.5 requires AGPL or commercial license activation.
 
 - Changed the retry, timeout, circuit-breaker, and chaos behaviors of commands, queries, the requester, startup tasks, message handlers, job scheduling, jobs, and file storage to run on `Microsoft.Extensions.Resilience` pipelines. The direct `Polly`, `Polly.Contrib.Simmy`, and `Microsoft.Extensions.Http.Polly` references are removed because direct Polly references fall under the new Polly Open Source Maintenance Fee. Timeouts stay pessimistic, `BackoffExponential` now really doubles the delay between attempts, and circuit breakers open after the configured number of consecutive failures within one execution (at least 2, break duration at least 500 ms).
 - Note: `Microsoft.Extensions.Resilience` brings in `Microsoft.Extensions.Telemetry.Abstractions`, which replaces the standard `[LoggerMessage]` source generator with the stricter `Microsoft.Gen.Logging` one in consuming projects. The repository keeps the standard generator through its `Directory.Build.targets`; consumers who want the same can copy that file's property and `RemoveTelemetryAbstractionsAnalyzers` target into their build.

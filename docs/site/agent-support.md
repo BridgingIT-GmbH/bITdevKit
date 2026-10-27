@@ -100,14 +100,13 @@ The host now has a local runtime descriptor and IPC endpoint.
 
 ### 4. Configure the MCP client
 
-**Github Copilot:**
-For VS Code, add `.vscode/mcp.json` to the project repository:
+**GitHub Copilot (VS Code):**
+Add a workspace-root `.mcp.json` to the project repository. It uses the portable `mcpServers` format, which VS Code and the Copilot harness both read:
 
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "bdk": {
-      "type": "stdio",
       "command": "dotnet",
       "args": ["tool", "run", "bdk", "mcp"]
     }
@@ -115,8 +114,12 @@ For VS Code, add `.vscode/mcp.json` to the project repository:
 }
 ```
 
+Enable the experimental `chat.mcp.workspaceRootConfig.enabled` setting and run **Developer: Reload Window**. Then open **Chat: Open Customizations**, select **MCP Servers** under the Copilot harness, and approve the `bdk` server if prompted. The default **Configure Tools** picker in the chat input does not list workspace-root servers.
+
+The previous `.vscode/mcp.json` file with a top-level `servers` object still works but is deprecated in VS Code. Keep it only if you need VS Code input variables, `cwd`, or per-server sandboxing.
+
 **Codex:**
-For VS Code, add `.codex/config.toml` to the project repository:
+Add `.codex/config.toml` to the project repository:
 
 ```text
 [mcp_servers.bdk]
@@ -130,7 +133,7 @@ tool_timeout_sec = 120
 enabled = true
 ```
 
-Other clients use different configuration files. Keep the command and arguments equivalent. See [MCP Client Configuration](reference/features-cli-mcp-clients.md) for VS Code, Visual Studio, Rider, and other supported clients.
+Other clients use different configuration files. Keep the command and arguments equivalent. To enable the operations and admin tools, append `--toolset diagnostics,operations,admin` to the arguments (`["tool", "run", "bdk", "mcp", "--toolset", "diagnostics,operations,admin"]`). See [MCP Client Configuration](reference/features-cli-mcp-clients.md#full-toolset) for the full-toolset variants for VS Code, Visual Studio, Rider, and other supported clients, including the differences between the portable and VS Code formats.
 
 ### 5. Verify the connection
 

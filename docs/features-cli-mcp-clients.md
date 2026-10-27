@@ -19,7 +19,7 @@ Use a source-controlled STDIO server definition where the client supports one. P
 ## Key Features
 
 - Repository-level configuration for Visual Studio through `.mcp.json`.
-- Repository-level configuration for VS Code through `.vscode/mcp.json`.
+- Repository-level configuration for VS Code through the portable workspace-root `.mcp.json` (`mcpServers`), with `.vscode/mcp.json` (`servers`) still supported.
 - A documented Rider server definition without committing `.idea` user state.
 - Separate source-run and packaged-tool command shapes.
 - Diagnostics-only defaults for consuming applications, with optional toolset expansion.
@@ -74,7 +74,20 @@ if ($LASTEXITCODE -ne 0) {
 }
 ```
 
-Add this server definition to the client-specific file described below:
+Add this server definition to the client-specific file described below. VS Code and Copilot read the portable `mcpServers` shape from a workspace-root `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "bdk": {
+      "command": "dotnet",
+      "args": ["tool", "run", "bdk", "mcp"]
+    }
+  }
+}
+```
+
+Visual Studio and the legacy VS Code `.vscode/mcp.json` use a top-level `servers` object with an explicit `type`:
 
 ```json
 {
@@ -92,13 +105,12 @@ Reload the MCP client and call `bdk_mcp_status`. Treat `available: false` as a h
 
 ## Repository configurations
 
-This repository is the `bdk` CLI source repository. The checked-in Visual Studio configuration starts the server from source, and the VS Code configuration offers both `bdk_local` (source) and `bdk` (the packaged local tool):
+This repository is the `bdk` CLI source repository. The checked-in workspace-root `.mcp.json` offers both `bdk_local` (source) and `bdk` (the packaged local tool):
 
 ```json
 {
-  "servers": {
-    "bdk": {
-      "type": "stdio",
+  "mcpServers": {
+    "bdk_local": {
       "command": "dotnet",
       "args": [
         "run",
@@ -109,6 +121,10 @@ This repository is the `bdk` CLI source repository. The checked-in Visual Studio
         "--toolset",
         "diagnostics,operations,admin"
       ]
+    },
+    "bdk": {
+      "command": "dotnet",
+      "args": ["tool", "run", "bdk", "mcp"]
     }
   }
 }
@@ -124,9 +140,8 @@ dotnet tool install BridgingIT.DevKit.Cli
 
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "bdk": {
-      "type": "stdio",
       "command": "dotnet",
       "args": ["tool", "run", "bdk", "mcp"]
     }
@@ -134,13 +149,86 @@ dotnet tool install BridgingIT.DevKit.Cli
 }
 ```
 
-## Visual Studio
+### Full toolset
 
-Visual Studio discovers the repository-level `.mcp.json` file. In this repository it defines the `bdk` server and runs the CLI project from source.
+Add `--toolset diagnostics,operations,admin` to enable the operations and admin tools in addition to diagnostics. Admin tools still require operation-specific confirmation arguments, so enable this only where the repository needs it.
+
+VS Code (workspace-root `.mcp.json`), GitHub Copilot and other portable-format clients:
+
+```json
+{
+  "mcpServers": {
+    "bdk": {
+      "command": "dotnet",
+      "args": [
+        "tool",
+        "run",
+        "bdk",
+        "mcp",
+        "--toolset",
+        "diagnostics,operations,admin"
+      ]
+    }
+  }
+}
+```
+
+Visual Studio and legacy VS Code `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "bdk": {
+      "type": "stdio",
+      "command": "dotnet",
+      "args": [
+        "tool",
+        "run",
+        "bdk",
+        "mcp",
+        "--toolset",
+        "diagnostics,operations,admin"
+      ]
+    }
+  }
+}
+```
+
+Rider: use `dotnet` as the command and these arguments:
+
+```json
+["tool", "run", "bdk", "mcp", "--toolset", "diagnostics,operations,admin"]
+```
+
+Visual Studio discovers a repository-level `.mcp.json` file with a top-level `servers` object (the `servers` shape shown above, with `"type": "stdio"`).
 
 ## VS Code
 
-VS Code discovers `.vscode/mcp.json`. The checked-in file defines `bdk_local` for the source project and `bdk` for the manifest-pinned packaged tool.
+Recent VS Code versions use two file formats:
+
+| | Portable (recommended) | VS Code (legacy) |
+| --- | --- | --- |
+| Location | Workspace-root `.mcp.json`, or `$COPILOT_HOME/mcp-config.json` (`~/.copilot/mcp-config.json`) for your user | `.vscode/mcp.json` or user-profile `mcp.json` |
+| Top-level object | `mcpServers` | `servers` |
+| Transports | stdio, HTTP | stdio, HTTP, SSE |
+| Env references | `${NAME}` or `${NAME:-default}` | `${env:NAME}` |
+| Input variables, `cwd`, `envFile`, sandboxing | Not supported | Supported |
+
+The portable file is shared with Copilot harness sessions. The `.vscode/mcp.json` file still works, but VS Code labels it deprecated and the Copilot agent does not read it directly.
+
+Do not copy a definition between the two formats without checking the top-level key. The `bdk` servers need no input variables, so the portable file is sufficient. A plain `command` and `args` entry is enough; `type` and `tools` are not required.
+
+To make VS Code pick up the workspace-root `.mcp.json`:
+
+1. Enable the experimental setting, then run **Developer: Reload Window**:
+
+    ```json
+    "chat.mcp.workspaceRootConfig.enabled": true
+    ```
+
+2. Open **Chat: Open Customizations** and select **MCP Servers** under the Copilot harness. `bdk` appears there and may ask for trust or start approval.
+
+The default (Local) **Configure Tools** picker in the chat input does not list servers from the workspace-root `.mcp.json`; use the Copilot harness view instead. You can also start, stop and restart the server with the actions shown above its entry in the `.mcp.json` editor.
 
 ## Rider
 
@@ -171,6 +259,8 @@ For consuming applications, replace the Rider `args` with:
 ["tool", "run", "bdk", "mcp"]
 ```
 
+Append `"--toolset", "diagnostics,operations,admin"` for the [full toolset](#full-toolset).
+
 ## Verification
 
 After reloading the client:
@@ -181,7 +271,7 @@ After reloading the client:
 4. Call `bdk_runtimes_list` and select a runtime when more than one is ready.
 5. Call `bdk_mcp_self_test` to check IPC, protocol and capability discovery.
 
-The source configurations enable `diagnostics`, `operations` and `admin` so contributors can test the full catalog. Admin tools still require operation-specific confirmation arguments. Consuming applications should keep the diagnostics-only command unless broader toolsets are needed.
+The source configurations enable `diagnostics`, `operations` and `admin` so contributors can test the full catalog. Admin tools still require operation-specific confirmation arguments. Consuming applications should keep the diagnostics-only command unless broader toolsets are needed; see [Full toolset](#full-toolset) for the packaged-tool variant.
 
 ## Related documentation
 

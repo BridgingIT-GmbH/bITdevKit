@@ -84,19 +84,20 @@ Guidance and documentation tools are available even before a runtime is selected
 
 ## Basic Usage
 
-Restore the local tool and configure the MCP client to launch `bdk mcp` over STDIO:
+Restore the local tool and configure the MCP client to launch `bdk mcp` over STDIO. For VS Code, create a workspace-root `.mcp.json`:
 
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "bdk": {
-      "type": "stdio",
       "command": "dotnet",
       "args": ["tool", "run", "bdk", "mcp"]
     }
   }
 }
 ```
+
+The older `.vscode/mcp.json` (`servers` with `"type": "stdio"`) still works but is deprecated in VS Code; see [MCP Client Configuration](./features-cli-mcp-clients.md#vs-code).
 
 Restart or reload the MCP client, then call `bdk_mcp_status`. Check the response's `available` value before using `data`. A successful call identifies the resolved workspace and MCP server state. If no application is running, documentation and guidance tools remain available while runtime-bound calls return a structured `no_runtime_found` response.
 
@@ -139,7 +140,20 @@ dotnet tool restore
 dotnet tool run bdk mcp
 ```
 
-MCP clients usually need the command split into executable and arguments:
+MCP clients usually need the command split into executable and arguments. VS Code (workspace-root `.mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "bdk": {
+      "command": "dotnet",
+      "args": ["tool", "run", "bdk", "mcp"]
+    }
+  }
+}
+```
+
+Visual Studio and legacy `.vscode/mcp.json`:
 
 ```json
 {
@@ -153,13 +167,12 @@ MCP clients usually need the command split into executable and arguments:
 }
 ```
 
-When developing the DevKit repository itself, run the CLI from source:
+When developing the DevKit repository itself, run the CLI from source (`mcpServers` shape shown; wrap in `servers` with `"type": "stdio"` for Visual Studio):
 
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "bdk": {
-      "type": "stdio",
       "command": "dotnet",
       "args": [
         "run",

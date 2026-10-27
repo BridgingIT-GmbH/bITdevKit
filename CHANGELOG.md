@@ -2,6 +2,10 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.117] - 2026-10-27
+
+- Updated the MCP client configuration documentation for current VS Code and GitHub Copilot: the workspace-root `.mcp.json` with `mcpServers` (enabled through `chat.mcp.workspaceRootConfig.enabled`), Visual Studio through `.vs/mcp.json`, and the `diagnostics,operations,admin` toolsets in every documented configuration.
+
 ## [10.0.116] - 2026-10-27
 
 - Updated the package baseline to ASP.NET Core, EF Core and Microsoft.Extensions 10.0.14, OpenTelemetry 1.20.1, MailKit 4.18.2, Azure Cosmos 3.63.3, and Azure App Configuration 8.6.1.

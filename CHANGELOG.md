@@ -2,6 +2,10 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.116] - 2026-10-27
+
+- Updated the package baseline to ASP.NET Core, EF Core and Microsoft.Extensions 10.0.14, OpenTelemetry 1.20.1, MailKit 4.18.2, Azure Cosmos 3.63.3, and Azure App Configuration 8.6.1.
+
 ## [10.0.115] - 2026-10-27
 
 - Added CBOR serialization (`CborSerializer`) for compact binary payloads, with the `[CborConstructor]` attribute for constructor-based mapping and the `IBufferSerializer` contract for serializers that work on complete buffers. `System.Formats.Cbor` is now a dependency of `Common.Serialization`.

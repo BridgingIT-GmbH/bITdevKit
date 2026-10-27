@@ -559,8 +559,8 @@ Documentation tools are different from runtime tools. `bdk_docs_search` and `bdk
 
 MCP client configuration can be source-controlled for the repo:
 
-- `.mcp.json` for VS Code, Copilot and other clients that read repo-level MCP configuration (portable `mcpServers` format).
-- `.vscode/mcp.json` for the legacy VS Code `servers` format.
+- `.mcp.json` for VS Code, GitHub Copilot and other clients that read repo-level MCP configuration.
+- `.vs/mcp.json` for Visual Studio.
 - Rider and Visual Studio can be configured with the same command shape documented in [MCP Clients](./features-cli-mcp-clients.md).
 
 ## Appendix: adding new MCP tools

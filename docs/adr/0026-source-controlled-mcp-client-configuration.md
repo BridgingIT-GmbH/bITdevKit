@@ -26,8 +26,7 @@ IDE configuration should avoid committing user-specific state such as `.vs/` or 
 
 Add source-controlled MCP client configuration where the IDE supports stable repo-level files:
 
-- `.mcp.json` for Visual Studio
-- `.vscode/mcp.json` for VS Code
+- `.mcp.json` for VS Code and GitHub Copilot
 
 For Rider, document the MCP server JSON in `docs/features-cli-mcp-clients.md` instead of committing `.idea` files, because Rider stores MCP server definitions through JetBrains AI Assistant settings.
 
@@ -97,5 +96,4 @@ dotnet tool run bdk mcp
 ### Implementation Files
 
 - `.mcp.json`
-- `.vscode/mcp.json`
 - `docs/features-cli-mcp-clients.md`

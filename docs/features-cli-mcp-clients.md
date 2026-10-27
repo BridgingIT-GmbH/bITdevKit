@@ -18,8 +18,8 @@ Use a source-controlled STDIO server definition where the client supports one. P
 
 ## Key Features
 
-- Repository-level configuration for Visual Studio through `.mcp.json`.
-- Repository-level configuration for VS Code through the portable workspace-root `.mcp.json` (`mcpServers`), with `.vscode/mcp.json` (`servers`) still supported.
+- Repository-level configuration for VS Code and GitHub Copilot through a workspace-root `.mcp.json`.
+- Visual Studio configuration through `.vs/mcp.json`.
 - A documented Rider server definition without committing `.idea` user state.
 - Separate source-run and packaged-tool command shapes.
 - Diagnostics-only defaults for consuming applications, with optional toolset expansion.
@@ -87,7 +87,7 @@ Add this server definition to the client-specific file described below. VS Code 
 }
 ```
 
-Visual Studio and the legacy VS Code `.vscode/mcp.json` use a top-level `servers` object with an explicit `type`:
+Visual Studio (`.vs/mcp.json`) uses a top-level `servers` object with an explicit `type`:
 
 ```json
 {
@@ -173,7 +173,7 @@ VS Code (workspace-root `.mcp.json`), GitHub Copilot and other portable-format c
 }
 ```
 
-Visual Studio and legacy VS Code `.vscode/mcp.json`:
+Visual Studio (`.vs/mcp.json`):
 
 ```json
 {
@@ -200,23 +200,13 @@ Rider: use `dotnet` as the command and these arguments:
 ["tool", "run", "bdk", "mcp", "--toolset", "diagnostics,operations,admin"]
 ```
 
-Visual Studio discovers a repository-level `.mcp.json` file with a top-level `servers` object (the `servers` shape shown above, with `"type": "stdio"`).
+Visual Studio discovers `.vs/mcp.json` with a top-level `servers` object (the `servers` shape shown above, with `"type": "stdio"`).
 
 ## VS Code
 
-Recent VS Code versions use two file formats:
+VS Code and GitHub Copilot read a workspace-root `.mcp.json` with a top-level `mcpServers` object. A plain `command` and `args` entry is enough; `type` and `tools` are not required. For a personal configuration shared across workspaces, use `$COPILOT_HOME/mcp-config.json` (`~/.copilot/mcp-config.json`) with the same format.
 
-| | Portable (recommended) | VS Code (legacy) |
-| --- | --- | --- |
-| Location | Workspace-root `.mcp.json`, or `$COPILOT_HOME/mcp-config.json` (`~/.copilot/mcp-config.json`) for your user | `.vscode/mcp.json` or user-profile `mcp.json` |
-| Top-level object | `mcpServers` | `servers` |
-| Transports | stdio, HTTP | stdio, HTTP, SSE |
-| Env references | `${NAME}` or `${NAME:-default}` | `${env:NAME}` |
-| Input variables, `cwd`, `envFile`, sandboxing | Not supported | Supported |
-
-The portable file is shared with Copilot harness sessions. The `.vscode/mcp.json` file still works, but VS Code labels it deprecated and the Copilot agent does not read it directly.
-
-Do not copy a definition between the two formats without checking the top-level key. The `bdk` servers need no input variables, so the portable file is sufficient. A plain `command` and `args` entry is enough; `type` and `tools` are not required.
+Portable files support environment variable references as `${NAME}` or `${NAME:-default}`, but not VS Code input variables or `envFile`. The `bdk` servers need none of these.
 
 To make VS Code pick up the workspace-root `.mcp.json`:
 

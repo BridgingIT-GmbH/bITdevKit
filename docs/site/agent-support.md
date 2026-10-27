@@ -116,7 +116,6 @@ Add a workspace-root `.mcp.json` to the project repository. It uses the portable
 
 Enable the experimental `chat.mcp.workspaceRootConfig.enabled` setting and run **Developer: Reload Window**. Then open **Chat: Open Customizations**, select **MCP Servers** under the Copilot harness, and approve the `bdk` server if prompted. The default **Configure Tools** picker in the chat input does not list workspace-root servers.
 
-The previous `.vscode/mcp.json` file with a top-level `servers` object still works but is deprecated in VS Code. Keep it only if you need VS Code input variables, `cwd`, or per-server sandboxing.
 
 **Codex:**
 Add `.codex/config.toml` to the project repository:

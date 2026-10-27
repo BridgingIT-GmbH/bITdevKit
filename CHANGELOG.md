@@ -2,6 +2,10 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.119] - 2026-10-27
+
+- Changed NuGet package publishing to run for version tags only, so preview packages are no longer published from `main`. Branch publishing can be turned back on with the `PUBLISHABLE_BRANCHES` repository variable, and a tag can be built and published again with a manual run of the CI workflow.
+
 ## [10.0.118] - 2026-10-27
 
 - Improved NuGet package publishing so releases no longer fail on nuget.org push limits: tagged commits are published once by the tag run, versions that already exist are skipped, throttled pushes retry with backoff, and a quota-exceeded response waits before the job stops with a summary of what was pushed.

@@ -4694,7 +4694,7 @@
 <li>Visual Studio configuration through <code>.vs/mcp.json</code>.</li>
 <li>A documented Rider server definition without committing <code>.idea</code> user state.</li>
 <li>Separate source-run and packaged-tool command shapes.</li>
-<li>Diagnostics-only defaults for consuming applications, with optional toolset expansion.</li>
+<li>Diagnostics, operations and admin toolsets enabled in every documented client configuration, with a diagnostics-only fallback.</li>
 </ul>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>flowchart LR
@@ -4742,7 +4742,14 @@
 <span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"tool"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"run"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"bdk"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"mcp"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--toolset"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"diagnostics,operations,admin"</span>
+<span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -4753,7 +4760,14 @@
 <span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stdio"</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"tool"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"run"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"bdk"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"mcp"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--toolset"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"diagnostics,operations,admin"</span>
+<span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -4777,7 +4791,33 @@
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"tool"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"run"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"bdk"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"mcp"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--toolset"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"diagnostics,operations,admin"</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Visual Studio (<code>.vs/mcp.json</code>) running the CLI from source:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"servers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stdio"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"run"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--project"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"src/Presentation.Cli/Presentation.Cli.csproj"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"mcp"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--toolset"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"diagnostics,operations,admin"</span>
+<span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -4790,49 +4830,21 @@
 <span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"tool"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"run"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"bdk"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"mcp"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--toolset"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"diagnostics,operations,admin"</span>
+<span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="full-toolset">Full toolset<a class="headerlink" href="#full-toolset" title="Permanent link">&para;</a></h3>
-<p>Add <code>--toolset diagnostics,operations,admin</code> to enable the operations and admin tools in addition to diagnostics. Admin tools still require operation-specific confirmation arguments, so enable this only where the repository needs it.</p>
-<p>VS Code (workspace-root <code>.mcp.json</code>), GitHub Copilot and other portable-format clients:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="s2">"tool"</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">"run"</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">"bdk"</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">"mcp"</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">"--toolset"</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">"diagnostics,operations,admin"</span>
-<span class="w">      </span><span class="p">]</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-<p>Visual Studio (<code>.vs/mcp.json</code>):</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">"servers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stdio"</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="s2">"tool"</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">"run"</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">"bdk"</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">"mcp"</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">"--toolset"</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">"diagnostics,operations,admin"</span>
-<span class="w">      </span><span class="p">]</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-<p>Rider: use <code>dotnet</code> as the command and these arguments:</p>
+<p>Every configuration on this page passes <code>--toolset diagnostics,operations,admin</code>, which enables the operations and admin tools in addition to diagnostics. Admin tools still require operation-specific confirmation arguments.</p>
+<p>To restrict a client to diagnostics only, remove <code>"--toolset"</code> and its value from <code>args</code>. Rider uses the same arguments as the other clients:</p>
 <div class="highlight"><pre><span></span><code><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">,</span><span class="w"> </span><span class="s2">"--toolset"</span><span class="p">,</span><span class="w"> </span><span class="s2">"diagnostics,operations,admin"</span><span class="p">]</span>
 </code></pre></div>
 <p>Visual Studio discovers <code>.vs/mcp.json</code> with a top-level <code>servers</code> object (the <code>servers</code> shape shown above, with <code>"type": "stdio"</code>).</p>
@@ -4871,9 +4883,8 @@
 <span class="p">}</span>
 </code></pre></div>
 <p>For consuming applications, replace the Rider <code>args</code> with:</p>
-<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">,</span><span class="w"> </span><span class="s2">"--toolset"</span><span class="p">,</span><span class="w"> </span><span class="s2">"diagnostics,operations,admin"</span><span class="p">]</span>
 </code></pre></div>
-<p>Append <code>"--toolset", "diagnostics,operations,admin"</code> for the <a href="#full-toolset">full toolset</a>.</p>
 <h2 id="verification">Verification<a class="headerlink" href="#verification" title="Permanent link">&para;</a></h2>
 <p>After reloading the client:</p>
 <ol>
@@ -4883,7 +4894,7 @@
 <li>Call <code>bdk_runtimes_list</code> and select a runtime when more than one is ready.</li>
 <li>Call <code>bdk_mcp_self_test</code> to check IPC, protocol and capability discovery.</li>
 </ol>
-<p>The source configurations enable <code>diagnostics</code>, <code>operations</code> and <code>admin</code> so contributors can test the full catalog. Admin tools still require operation-specific confirmation arguments. Consuming applications should keep the diagnostics-only command unless broader toolsets are needed; see <a href="#full-toolset">Full toolset</a> for the packaged-tool variant.</p>
+<p>All configurations enable <code>diagnostics</code>, <code>operations</code> and <code>admin</code> so the full catalog is available. Admin tools still require operation-specific confirmation arguments. Remove the <code>--toolset</code> argument for a diagnostics-only server; see <a href="#full-toolset">Full toolset</a>.</p>
 <h2 id="related-documentation">Related documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../features-cli-mcp/">DevKit MCP</a></li>

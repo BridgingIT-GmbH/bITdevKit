@@ -4658,7 +4658,14 @@ Add a workspace-root <code>.mcp.json</code> to the project repository. It uses t
 <span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"bdk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dotnet"</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"run"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bdk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"tool"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"run"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"bdk"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"mcp"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"--toolset"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"diagnostics,operations,admin"</span>
+<span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -4669,14 +4676,15 @@ Add <code>.codex/config.toml</code> to the project repository:</p>
 <div class="highlight"><pre><span></span><code>[mcp_servers.bdk]
 command = "dotnet"
 args = [
-  "tool", "run", "bdk", "mcp"
+  "tool", "run", "bdk", "mcp",
+  "--toolset", "diagnostics,operations,admin"
 ]
 cwd = ".."
 startup_timeout_sec = 60
 tool_timeout_sec = 120
 enabled = true
 </code></pre></div>
-<p>Other clients use different configuration files. Keep the command and arguments equivalent. To enable the operations and admin tools, append <code>--toolset diagnostics,operations,admin</code> to the arguments (<code>["tool", "run", "bdk", "mcp", "--toolset", "diagnostics,operations,admin"]</code>). See <a href="../reference/features-cli-mcp-clients/#full-toolset">MCP Client Configuration</a> for the full-toolset variants for VS Code, Visual Studio, Rider, and other supported clients, including the differences between the portable and VS Code formats.</p>
+<p>Other clients use different configuration files. Keep the command and arguments equivalent, including <code>--toolset diagnostics,operations,admin</code>; remove it for a diagnostics-only server. See <a href="../reference/features-cli-mcp-clients/">MCP Client Configuration</a> for VS Code, Visual Studio, Rider, and other supported clients, including the differences between the portable and Visual Studio formats.</p>
 <h3 id="5-verify-the-connection">5. Verify the connection<a class="headerlink" href="#5-verify-the-connection" title="Permanent link">&para;</a></h3>
 <p>Ask the agent:</p>
 <div class="highlight"><pre><span></span><code>Use the bdk MCP self-test and tell me whether the selected runtime is healthy.

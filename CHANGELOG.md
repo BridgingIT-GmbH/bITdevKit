@@ -2,6 +2,10 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.118] - 2026-10-27
+
+- Improved NuGet package publishing so releases no longer fail on nuget.org push limits: tagged commits are published once by the tag run, versions that already exist are skipped, throttled pushes retry with backoff, and a quota-exceeded response waits before the job stops with a summary of what was pushed.
+
 ## [10.0.117] - 2026-10-27
 
 - Updated the MCP client configuration documentation for current VS Code and GitHub Copilot: the workspace-root `.mcp.json` with `mcpServers` (enabled through `chat.mcp.workspaceRootConfig.enabled`), Visual Studio through `.vs/mcp.json`, and the `diagnostics,operations,admin` toolsets in every documented configuration.

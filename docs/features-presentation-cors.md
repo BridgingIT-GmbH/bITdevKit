@@ -120,7 +120,7 @@ A browser request to `/api/status` from `https://app.example.com` receives `Acce
 | `AllowAnyOrigin` | `bool?` | No | `null` (false) | Allow any origin (`*`). Use only for credential-free public endpoints or controlled development scenarios. |
 | `AllowAnyMethod` | `bool?` | No | `null` (false) | Allow any HTTP method. Overrides `AllowedMethods`. |
 | `AllowAnyHeader` | `bool?` | No | `null` (false) | Allow any request header. Overrides `AllowedHeaders`. |
-| `AllowWildcardSubdomains` | `bool?` | No | `null` (false) | Enable matching for wildcard origins such as `https://*.example.com`. |
+| `AllowWildcardSubdomains` | `bool?` | No | `null` (false) | Enable subdomain matching for configured base origins such as `https://example.com`. |
 | `PreflightMaxAgeSeconds` | `int?` | No | `null` | Preflight cache duration in seconds. Recommended: 600-3600 for production. |
 
 ## Configuration examples
@@ -222,7 +222,7 @@ Allow any subdomain of example.com:
     "Policies": {
       "SubdomainPolicy": {
         "AllowedOrigins": [
-          "https://*.example.com"
+          "https://example.com"
         ],
         "AllowWildcardSubdomains": true,
         "AllowAnyMethod": true,
@@ -520,7 +520,7 @@ public class ValuesController : ControllerBase
 
 ```json
 {
-  "AllowedOrigins": ["https://*.example.com"],
+  "AllowedOrigins": ["https://example.com"],
   "AllowWildcardSubdomains": true,
   "AllowCredentials": true
 }

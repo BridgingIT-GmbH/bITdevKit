@@ -179,6 +179,24 @@ public sealed record UserRegistrationRequest(string Email);
 
 A successful request returns HTTP 202. With the in-process broker, the handler writes `Welcome email scheduled for ...` to the application log before `Publish` completes. Message validation or cancellation exceptions are left to the application's standard exception handling rather than being treated as a successful publish.
 
+## Entity command integration
+
+If you use `Application.Commands` with `Application.Entities`, you can publish entity lifecycle messages from the command pipeline. Register `WithEntityCommandMessagingBehavior(...)` on the command builder.
+
+```csharp
+services.AddCommands()
+  .WithEntityCommandMessagingBehavior(o => o
+    .PublishDelay(100));
+```
+
+After a successful entity command result, the behavior publishes one of these message types to the configured `IMessageBroker`:
+
+- `EntityCreatedMessage<TEntity>` for successful create commands
+- `EntityUpdatedMessage<TEntity>` for successful update commands
+- `EntityDeletedMessage<TEntity>` for successful delete commands
+
+The behavior only publishes when a broker is registered. If no `IMessageBroker` is available, it logs a warning and returns the command result unchanged.
+
 ## <img class="bdk-doc-icon" src="assets/features/outbox.svg" width="24" height="24" alt=""> Outbox reliability
 
 Use the transactional outbox for "at least once" delivery. The same transaction persists the domain changes and the outbox record. A background worker publishes the message from the outbox until a handler processes it.

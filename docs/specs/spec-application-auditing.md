@@ -21,6 +21,8 @@ The feature has its own application module, `Application.Auditing`. Devkit featu
 
 The design follows bITdevKit conventions for behavior composition, public contracts, storage providers, and operational tooling.
 
+The feature is described as **supporting audit-control requirements**. It supplies capture, storage, protection integration points, retention, and review capabilities that applications can use as evidence for their selected controls. A control mapping identifies those capabilities and their verification; it does not certify a library or establish compliance for a deployed application. The host owns required business-event coverage, operating policies, storage privileges, time synchronization, and any stronger deployment-specific guarantees. Section 16 defines the boundaries and mapping.
+
 This is a proposed design. New types and fluent APIs below describe the intended public contract, not existing functionality. Existing symbols and source references appear in section 20.
 
 ### 1.1 Existing capabilities to reuse
@@ -60,7 +62,7 @@ This is a proposed design. New types and fluent APIs below describe the intended
 
 ## 2. Scope and required behavior
 
-The complete feature includes its recorder, abstractions, behaviors, both storage providers, an explicitly selectable adapter for the optional ChangeHistory feature, query services, endpoints, dashboard, documentation, tests, and working WeatherFiesta integration for user city actions. Delivery phases organize this work; they do not defer the operational UI beyond the feature.
+The complete feature includes its recorder, abstractions, behaviors, both storage providers with optional HMAC-SHA-256 protection, an explicitly selectable adapter for the optional ChangeHistory feature, query services, endpoints, dashboard, documentation, tests, and working WeatherFiesta integration for user city actions. Delivery phases organize this work; they do not defer the operational UI beyond the feature.
 
 Public endpoints are an explicit AddAuditing builder option. The dashboard is part of the delivered feature and appears automatically when the host enables AddDashboard and Auditing is registered. Both must be implemented and tested. No Auditing-specific dashboard opt-in or policy setup is required.
 
@@ -95,6 +97,11 @@ Public endpoints are an explicit AddAuditing builder option. The dashboard is pa
 | REQ-027 | Deliver working WeatherFiesta integration for real user city-add/create and update actions, with EF-persisted evidence, automatic dashboard discovery, and end-to-end verification.                                                                                                          |
 | REQ-028 | Provide configurable age-based archive-then-remove retention for both EF and in-memory providers. Keep archived data out of normal active query paths and enforce total in-memory count/byte bounds.                                                                                         |
 | REQ-029 | Support explicit Active/Archived/All search selection through the existing FilterModel API and dashboard, defaulting ordinary queries to Active without loading archive payloads.                                                                                                            |
+| REQ-030 | Support demonstrable coverage through an application-owned business-event/entry-point plan and end-to-end evidence, preserving explicit behavior selection and intentional exclusions. |
+| REQ-031 | Distinguish logical record immutability from protection of stored evidence. Declare provider/host protection boundaries and verify any advertised tamper-evidence mechanism. |
+| REQ-032 | Declare mode-specific delivery, acknowledgement, visibility, capacity, and failure-response guarantees. Preserve execution timestamps separately from delivery metadata and report evidence-loss limits honestly. |
+| REQ-033 | Keep retained active/archived evidence interpretable and retrievable across the supported retention period through versioned readers or reviewed lossless migrations, including upgrade/restore verification. |
+| REQ-034 | Supply opt-in HMAC-SHA-256 authentication tags for complete finalized records in both built-in providers, with external key resolution, versioned canonical input, strict verification, rotation support, and no unsigned fallback when enabled. |
 
 ## 3. Terminology and identity
 
@@ -129,7 +136,7 @@ Linked executions form a read projection over immutable records. They do not req
 | Location                                  | Responsibility                                                                                                                                                                                                        |
 | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Common.Abstractions/Auditing`            | Small contracts usable by Domain and feature behaviors: `IAuditContext`, scope handles, descriptors, safe values, resource references, and `IAuditDetails`. No EF, ASP.NET, or application implementation references. |
-| `Application.Auditing`                    | Recorder, ambient execution management, policies, contributors, enrichment, provider contracts, in-memory provider, query services, Result errors, fluent builder, and maintenance coordination.                      |
+| `Application.Auditing`                    | Recorder, ambient execution management, policies, contributors, enrichment, provider contracts, optional integrity/key-provider contracts and HMAC-SHA-256 protection, in-memory provider, query services, Result errors, fluent builder, and maintenance coordination.                      |
 | Participating feature packages | Provide explicitly selectable adapters for their behavior contracts. The host chooses where to register them. Resolve Common auditing contracts optionally and pass through when Auditing is unavailable or disabled. |
 | `Infrastructure.EntityFramework/Auditing` | EF provider working directly with a DbContext exposing audit entities, model configuration, and provider queries. ChangeHistory exposes explicit selection of its optional audit-evidence bridge through its own builder. |
 | `Presentation.Web.Auditing`               | HTTP middleware, read endpoints, DTOs, dashboard page provider, Razor slices, and HTTP capture options.                                                                                                               |
@@ -167,6 +174,8 @@ The confirmed lifecycle persists one immutable logical record only when its owni
 | Owned data       | Business actions, job-dispatch references, optional change evidence, safe errors, resource references, details, and capture-completeness notes.                                                                          |
 | Completeness     | `Complete`, `Truncated`, or `Incomplete`, reason codes, and omitted counts. This describes captured instrumentation, not all activity in the application.                                                                |
 
+An optional `AuditIntegrityProtection` envelope accompanies the frozen document: `ProtectionVersion`, `Algorithm`, `KeyId`, `CanonicalizationVersion`, and `Tag`. For the built-in HMAC option, the algorithm is `HMAC-SHA-256` and `Tag` is the complete 32-byte authentication code encoded as Base64. The content hash remains separate. Verification status is computed read metadata, never a stored boolean that a database writer can set to trusted. Section 16.2.1 defines the protected input and verification policy.
+
 Reading a record does not require a live identity lookup. Exclude email, roles, claims, authentication headers, and cookies by default. An absent accessor produces an anonymous or explicitly configured service actor, never an invented user ID.
 
 ### 5.2 Action fields
@@ -191,7 +200,7 @@ The confirmed capture policy records request/handler identity automatically. Bus
 
 Details accept bounded scalars, UTC timestamps, string arrays, and explicitly projected JSON values. Completed documents retain no live entities, requests, delegates, streams, exception objects, or principals.
 
-Reuse the serializer abstraction with a deterministic JSON profile. The persisted format has a numeric schema version and stable names. Readers tolerate additive fields and return a typed error for incompatible versions. Reading JSON never activates application CLR types.
+Reuse the serializer abstraction with a deterministic JSON profile. The persisted format has a numeric schema version and stable names. Readers tolerate additive fields and return a typed error for incompatible versions. Reading JSON never activates application CLR types. Retained active/archived records also need the historical-readability strategy in section 16.4; an incompatible-version error does not by itself fulfil a retained-readability claim.
 
 ### 5.5 Optional current module
 
@@ -653,6 +662,8 @@ Record identity is assigned before append. Duplicate in-flight ID/content reuses
 
 Provider capabilities are explicit. Both built-ins must support all required filters, nested action/change predicates, JSON detail predicates, aggregates, facets, and deterministic paging. A custom provider cannot silently ignore unsupported criteria or apply them after paging.
 
+The same capability declaration identifies mode-specific acknowledgement/visibility/durability, process-local queue/storage bounds, supported historical formats, and any optional protection/verification mechanism from section 16. Report which guarantees are intrinsic to the provider and which depend on host configuration or separate verification. Without the optional HMAC setup, built-ins disclose that they provide no cryptographic authenticity. With it, they advertise keyed content-integrity verification under section 16.2.1, while continuing to disclose the absence of deletion detection. Capability support is not a verified protection result for every record; no stronger guarantee is inferred from a content hash or the mere presence of a tag.
+
 ### 10.2 In-memory provider
 
 The in-memory provider stores immutable document snapshots and uses the same predicates and comparison rules as EF. Search observes a stable snapshot for one operation.
@@ -710,6 +721,8 @@ The proposed default uses three tables:
 | `__Auditing_Actions`       | One action occurrence owned by an audit record.                                                      | Audit/action/parent IDs; business key/kind/label; current module and correlation; request/handler identity; timestamps and outcome; job-dispatch identity when present. Reasons, resource references, safe error references, and extensible details remain JSON.                                                                                                                                                                                     |
 | `__Auditing_EntityChanges` | One entity/change-set evidence group owned by an audit record, optionally associated with an action. | Entity type/ID; source store/change-set/bulk IDs; operation, capture source, timestamp, and persistence state. Property/path deltas, collection details, source row references, and allowed old/new values remain JSON.                                                                                                                                                                                                                              |
 
+The optional integrity envelope is stored as nullable owned JSON on `__Auditing_Records`; it adds no table. Append the envelope and the entire protected graph in the same audit-store transaction. Archive/restore preserves the envelope unchanged alongside its original logical content. In-memory storage keeps the same envelope with its immutable snapshot.
+
 This keeps actions and entity-change groups directly searchable without adding a table for each property, actor, resource, exception, or metadata entry. Actual change details remain optional. The table is an audit snapshot/reference store, not a replacement for ChangeHistory's own storage.
 
 A two-table alternative can keep records and actions separate while embedding entity-change groups as JSON owned by their record. It is acceptable if it satisfies the same business filters, ownership, and provider conformance contract. The specification does not require shipping configurable table-layout variants; the final default mapping is reviewed before implementation.
@@ -730,7 +743,7 @@ Keep indexes focused on business lookups, including actor/time, module/correlati
 
 The EF provider can own a bounded in-process queue of finalized audit documents and a hosted background writer. Buffered EF persistence is explicitly best effort: an abrupt process crash can lose accepted documents before they are saved. This crash-loss window is an accepted design decision. Buffered mode is the EF default, including when `WithEntityFrameworkProvider<TContext>()` has no options callback, so request/handler completion does not wait for audit database writes. Inline mode remains an explicit option. The in-memory provider stores records immediately.
 
-Finalize, sanitize, copy, and freeze the record before enqueueing it. The queue retains only the immutable audit document and provider-owned receipt metadata. It must not retain the request scope, DbContext, principal, entity instances, or scoped contributors.
+Finalize, sanitize, copy, and freeze the record before enqueueing it. If HMAC protection is enabled, seal that frozen record before queue admission under section 16.2.1. The queue retains only the immutable audit document, its optional integrity envelope, and provider-owned receipt metadata. It must not retain the request scope, DbContext, principal, entity instances, or scoped contributors.
 
 `AppendAsync` performs nonblocking queue admission in buffered mode and returns `Queued` with an acceptance receipt. It returns `Persisted` or `AlreadyPresent` only when storage completion is actually confirmed. A queued record is not durable and is not visible in audit searches until saved. The provider contract makes that distinction visible to callers.
 
@@ -981,7 +994,7 @@ A linked record outside the caller's access scope is not exposed through its lab
 
 ### 13.5 Evidence coverage and availability
 
-The dashboard identifies the source store, whether it is durable or process-local, the available evidence period, and known capture omissions. Buffered records become searchable after persistence; queued acceptance is not presented as a stored audit record. These facts let a business auditor judge the completeness of the trail.
+The dashboard identifies the source store, selected delivery mode, acknowledgement/visibility boundary, available evidence period, and known capture omissions. Buffered records become searchable after persistence; queued acceptance is not presented as a stored audit record. Show the configured protection capability and its verification state when provided, including not-protected/unavailable states rather than an inferred trust badge. Distinguish a host-declared coverage plan from observed record completeness and retained availability. These facts let a business auditor judge the trail under the controls in section 16.
 
 Provider failures show an unavailable state rather than an empty list. An absent downstream execution record does not prove that a requested job never ran. The detail page distinguishes the recorded dispatch fact from available execution evidence.
 
@@ -1052,6 +1065,18 @@ Simple local composition is `AddAuditing()`, which uses the default bounded in-m
 
 New participating features expose explicitly selectable auditing adapters through their own builder and the same optional Common contracts. Core Auditing remains independent of their packages; adding a feature requires no new integration-enablement method on the Auditing builder.
 
+HMAC-SHA-256 is an optional, provider-independent AddAuditing capability. The proposed minimal opt-in is:
+
+```csharp
+services.AddAuditing()
+	.WithHmacSha256<HostAuditIntegrityKeyProvider>()
+	.WithEntityFrameworkProvider<AppDbContext>()
+	.WithHttpRequests()
+	.WithEndpoints();
+```
+
+`HostAuditIntegrityKeyProvider` implements the proposed `IAuditIntegrityKeyProvider` contract in `Application.Auditing`. It supplies the active key identity/material for sealing and resolves historical keys for verification, using a protected host-managed secret source outside the audit database. The generic registration uses normal DI; a factory overload supports an existing provider instance or custom construction. There is no default secret, key column, or dashboard key-entry UI. The same opt-in works with `WithInMemoryProvider()` and custom storage that preserves the envelope; selecting an incompatible provider fails startup. Omitting it leaves ordinary capture unchanged. No algorithm, tag length, or verify-on-detail-read configuration is needed for the safe defaults in section 16.2.1.
+
 ### 14.2 Default policies and resource limits
 
 These are the default design settings. Parameterless fluent calls use them directly; every options object starts with these values and supports partial overrides. They bound captured evidence and storage use.
@@ -1061,6 +1086,7 @@ These are the default design settings. Parameterless fluent calls use them direc
 | Feature enabled / failure handling                 | `AddAuditing()` enables capture with `ReportOnly`; no explicit `Enabled()` or `OnFailure(...)` is needed. Absent registration does no work.                                                                |
 | Application name                                   | Explicit override, otherwise DevKit host name, generic-host name, entry assembly simple name, then `Application`.                                                                                          |
 | Configuration callbacks                            | Optional throughout root/provider/buffer/HTTP/endpoint setup; empty callbacks retain all defaults and partial overrides retain unspecified values.                                                         |
+| HMAC integrity | Off until `WithHmacSha256<TKeys>()`; when enabled, full HMAC-SHA-256 tags, protected host-supplied keys, required protection on writes/detail verification, and no unsigned fallback. |
 | Provider                                           | In-memory until an explicit provider is selected.                                                                                                                                                          |
 | Manual scope options | Fluent key/type factory; readable display name, `Business` kind, `JoinOrStart` mode. Runtime details/resources are explicit; disposal alone never implies success. |
 | Feature participation | Off at each source boundary until its audit behavior/bridge is explicitly registered on that feature's builder. Omission is local; no implicit registrations. |
@@ -1140,7 +1166,7 @@ Actor and tenant fields come from trusted server context. A details interface ca
 
 Treat display text and JSON as untrusted content in the dashboard. HTML-encode values and never execute or render stored markup. Parameterize queries and enforce response size limits. Storage error reports contain safe identities/counts, not audited payloads.
 
-Append-only application APIs do not prevent database administrators from changing records. Cryptographic signing, external immutable storage, legal hold, and regulatory certification are separate provider/application requirements.
+Logical append-only APIs protect ordinary application paths. Direct storage access, lifecycle operations, and stronger evidence protection follow the provider/host boundaries in section 16.2. Signing, protected external storage, and legal-hold enforcement remain optional capabilities with explicit configuration and verification. The feature supports audit-control requirements through declared capabilities and evidence.
 
 ## 16. Evidence reliability and capture completeness
 
@@ -1153,6 +1179,124 @@ Buffer admission is not proof of durable storage. If buffered mode is selected, 
 Business outcomes and evidence completeness are separate. A successful business action can have incomplete capture, and a failed request can contain committed actions or an accepted job that later succeeded. Related execution records add evidence without rewriting those original facts.
 
 Business actions, attribution, related work, and trustworthy evidence are the feature's subject.
+
+### 16.1 Demonstrable business-event coverage
+
+Each application maintains a small, versioned coverage plan for its required business events. Record the action, HTTP/manual/job entry points, expected actor/resource/outcome fields, explicitly selected behaviors or bridge, required ChangeHistory evidence if any, intentional exclusions, and verification case. The plan is application/deployment evidence; it does not introduce a required registration service or turn on omitted behaviors.
+
+Verify the complete route from business trigger to persisted, searchable evidence. Exercise success, rejection/failure, no effective change, blacklisted requests, independent jobs, and capture omissions relevant to that action. Inspecting DI registrations alone cannot prove coverage. The WeatherFiesta proof supplies a concrete plan for city add/create/update and its actual paths.
+
+Keep three facts separate: planned coverage of an application, completeness of one captured record, and availability of retained evidence. No record for an event can mean exclusion, missing instrumentation, failed delivery, pending persistence, removal, or that the event did not occur. Searches must not turn that ambiguity into a claim that nothing happened.
+
+The host reviews coverage when routes, handlers, behavior selectors, naming aliases, source-feature configuration, or blacklists change. Existing contributors can attach a safe coverage-policy/deployment reference when traceability requires it. This keeps explicit feature and per-repository opt-outs while making the application's intended coverage reviewable.
+
+### 16.2 Protected evidence and honest protection claims
+
+Built-in providers preserve the append-only Auditing provider/API contract and immutable logical record/owned graph. Same-ID/different-content appends cannot overwrite evidence. Host storage credentials and general access rules govern direct access, maintenance, and deletion; migrations and maintenance can need different privileges from ordinary capture/review.
+
+The content hash supports identity/idempotency checks. A hash stored beside editable data is not independent proof against an actor able to replace both. Optional HMAC-SHA-256 adds the specific keyed content-integrity protection in section 16.2.1. Built-ins must not advertise cryptographic tamper evidence merely from API immutability or a plain content hash; even with HMAC, they do not provide tamper-proof storage, non-repudiation, or prevention of privileged deletion.
+
+A provider can add signed evidence, a protected external digest, immutable storage, or other protection appropriate to the host's selected requirements. Declare the mechanism, trust/verification boundary, protected data, and limitations. If protection verification is available, surface its actual result and unavailable/not-checked states; capability support is not evidence that a particular record passed verification. A provider advertising protection must prove its advertised mutation/deletion-detection cases.
+
+Capture settings, retention controls, source history, archives, and backups are also part of the host's protection policy. The feature reuses general host access rules and requires no new Auditing dashboard policies. Record the deployed privileges/protection arrangements and their verification with the application's coverage evidence.
+
+#### 16.2.1 Hashes and optional HMAC-SHA-256 protection
+
+A hash mitigates tampering only when verification has a trustworthy comparison value. It does not stop a database write.
+
+| Mechanism | Useful protection | Boundary |
+| --- | --- | --- |
+| Plain content hash stored with the record | Idempotency and detection of a mismatch against an unchanged expected hash. | A writer able to replace record and hash can recompute both. This is the content-hash role, not a cryptographic authenticity claim. |
+| Optional built-in HMAC-SHA-256 tag with a protected key outside the audit database | Detects changed/forged protected content from a database-only attacker who cannot obtain or use the key. | Writers and verifiers share a secret; compromised capture/key access remains inside the trust boundary. An intact tag on each surviving record does not prove no records were deleted. |
+| Optional digital signature or independently protected digest/checkpoint extension | Supports verification across a separate trust boundary; anchored manifests/chains can additionally expose missing or reordered records within their documented scope. | Depends on key/trust-anchor protection and verification. An unanchored chain in the same editable database can be rewritten or truncated. |
+
+**Registration and key custody.** `WithHmacSha256<TKeys>()` selects the supplied HMAC mechanism for either built-in provider through the same Application integrity service. Its `IAuditIntegrityKeyProvider` dependency resolves an active key with a stable, bounded non-secret key ID and historical keys by ID. Host-managed keys contain at least 256 bits of cryptographically random secret material and remain outside the audit database, record JSON, logs, endpoints, and browser. There is no generated process-local production key or unsigned fallback. The host manages secret-source access, rotation, backup, compromise response, and key retention; HMAC verification access also grants the cryptographic ability to forge tags, so it is a trusted backend privilege. No key-management service or asymmetric signing implementation is required by this feature.
+
+**Protected input.** Sanitize and apply size limits, reserving bounded envelope overhead before freezing the complete logical record. If the final envelope cannot fit, return a typed size failure rather than changing already sealed content. Compute the tag over a versioned, deterministic UTF-8 canonical frame containing a fixed Auditing purpose identifier, the protection version/algorithm/key ID/canonicalization version, and the complete immutable document: audit/source/schema identities, actor snapshots, business facts, module/correlation/causation, timestamps/outcomes, every retained action, change group/property value, error, detail, and completeness marker. The frame has an unambiguous structured encoding; do not concatenate variable strings without framing. The tag itself, the separate derived idempotency content hash, computed verification results, and mutable provider lifecycle/delivery metadata are excluded. Authenticate the key ID and algorithm with the content rather than trusting editable header values.
+
+Canonicalization defines field/value representation, deterministic object-key ordering, and stable child ordering/identity. Reassembly from EF rows and owned JSON must reproduce the same logical input without dropping unknown retained fields or substituting a current DTO. Unknown profiles produce an explicit unavailable/unsupported result. Searchable scalar copies must agree with the corresponding authenticated facts; verification cannot accept a valid payload while displaying inconsistent copied fields.
+
+**Sealing and delivery.** Seal once before in-memory append or EF queue admission. The queue retains the frozen content/envelope, never secret keys or a key-provider service; writer retries reuse it unchanged, including after active-key rotation. Key-source resolution can add finalization latency and must use a bounded host policy; hosts can pre-load/cache protected keys to avoid a remote lookup for each request. Buffered mode still avoids waiting for audit database writes, not all possible integrity-provider work. Invalid configuration fails startup. Runtime key/sealing failures return a typed protection failure through the existing ReportOnly/Propagate rules and safe host hook; the record is not admitted unsigned and a successful business outcome is not rewritten. Tag/envelope bytes count toward record, storage, and queue byte limits.
+
+Idempotency remains based on immutable content, independent of key rotation. A duplicate append must verify an existing protected record before acknowledging AlreadyPresent under the enabled protection policy; matching an editable plain hash is insufficient. An invalid or unavailable existing protection result cannot be converted to a successful duplicate acknowledgement or overwrite. Append commits content and envelope atomically.
+
+**Verification and exposure.** With HMAC selected, the default trusted read policy requires valid protection for a successful detail read. Verify the complete original stored graph before read-time redaction/projection, using platform HMAC-SHA-256 and constant-time tag comparison. A missing tag, malformed/full-length mismatch, changed content/header, unsupported algorithm/profile, or unresolved key cannot pass. The persisted envelope cannot disable verification or select a weaker algorithm. Missing protection is distinct from a known unprotected record when the trusted host policy explicitly allows one; older unsigned history needs an explicit host-owned allowance outside editable record fields and is never marked Verified.
+
+Return computed `Verified`, `Invalid`, `MissingProtection`, `NotProtected`, `Unavailable`, or `NotChecked` metadata as appropriate. A failed required verification returns a typed integrity error and safe identifiers/status, rather than presenting unverified business values as trusted evidence. The dashboard surfaces that failure through existing general access rules. Search/facet/count operations do not verify every candidate graph; tagged summaries remain NotChecked unless actually verified, and there is no Verified badge based only on tag presence. Per-record verification does not prove search completeness, that indexes were not altered, or that omitted/deleted records never existed. No extra public route or dashboard policy is needed.
+
+Detected integrity failures use the existing non-recursive safe host reporting hook with audit ID, stage, key ID when safe, and reason; never emit key material or record payload. The host connects this hook to designated recipients/response timing and can run separate periodic verification. Read-time verification alone is not continuous monitoring and cannot alert about evidence that was never read.
+
+**Rotation, retention, and limits.** Persist the protection metadata and full tag with each record, preserve them through archive/restore, and retain required historical keys for the applicable evidence-retention period. Switching the active key affects new recordings, not old envelopes. Unsupported or retired keys yield Unavailable, never Verified; loss of a required key means the deployment no longer meets its verification/readability claim. Do not rewrite old evidence to silently repair a failed tag. Use published RFC 4231 test vectors plus round-trip/tamper/rotation/archive tests for both providers.
+
+HMAC authenticates the captured facts under the application's key; it does not establish that they were truthful when captured, that the named user personally signed them, that all required events were captured, or that the process survived before persistence. It provides no confidentiality, per-user non-repudiation, deletion/replay completeness, or protection of audit tooling/configuration by itself. Mutable archive/lifecycle metadata is outside the authenticated business document and needs host controls or a separate protected lifecycle mechanism. Chaining/checkpoint extensions must define concurrent append ordering and authorized retention; they cannot silently re-chain surviving evidence to conceal removals. Digital signatures, protected checkpoints, immutable external storage, and broader key-management facilities remain optional extensions, rather than requirements of the HMAC opt-in.
+
+### 16.3 Delivery guarantees and audit-failure response
+
+Provider capabilities and delivery receipts must state where an acknowledgement is established and which failure modes it covers:
+
+| Built-in mode | Acknowledgement and visibility | Guarantee boundary |
+| --- | --- | --- |
+| In-memory | Immediate append makes a finalized record searchable in this process. | Process-local evidence with hard capacity limits; restart/eviction can remove it. |
+| EF buffered, the default | Queued means accepted into the bounded process-memory queue. Persisted/AlreadyPresent requires confirmed complete-graph storage; searches expose stored evidence. | Best effort before database commit, including an accepted crash-loss window. Flush confirms only its acceptance boundary and does not provide crash durability. |
+| EF inline, explicitly selected | Persisted/AlreadyPresent requires the independent audit-store transaction to complete. | Confirms that audit write; it does not join arbitrary business commits, undo business effects, or repair an already-started response. |
+
+ReportOnly remains the default. Full queues and failed writes preserve the business result and produce safe failure notifications through the existing host hook/logging integration. Include audit identity when available, delivery stage, reason, and affected counts when known, without payloads. Finite retries, admission rejection, terminal failure, and flush failure are distinguishable. Delivery problems must not appear as successful storage or a zero-result business search.
+
+The host defines how it receives and responds to those failures. Requirements needing stronger delivery must select and verify a capable provider/persistence strategy and an appropriate failure response. Inline mode or Propagate alone does not guarantee an audit for every committed business change; coordination with the actual business-commit boundary is an additional application/provider requirement. Neither a durable handoff nor a shared business/audit transaction is added to the built-in buffered provider by this mapping.
+
+Preserve event StartedUtc/CompletedUtc from execution time. Provider-owned admission/persistence times describe delivery separately and never replace event timestamps or change frozen content. The host supplies appropriate clock synchronization; storing UTC alone does not prove clocks agree. Capacity loss, unavailable history, and uncertain coverage after a crash are evidence limitations, not invented exact counts.
+
+### 16.4 Retained and archived evidence remains usable
+
+The supported reader/upgrade strategy must cover the application's configured retention period. Preserve schema version, stable action/resource identities, captured labels and actor snapshots, typed safe values, UTC timestamp meaning, redaction markers, provenance, and the format/canonicalization metadata needed to interpret or validate the original document.
+
+Historical readers or safe projection adapters can produce current DTOs without rewriting captured facts, changing the source version, or invalidating the original content hash. They never load arbitrary application CLR types. A typed incompatible-version error is an honest failure response, but does not satisfy a claim that retained evidence remains readable; compatibility or a reviewed, lossless migration is required before dropping reader support.
+
+Archived search/detail and backup restoration must work after application upgrades, type/member renames, user/entity removal, and independent ChangeHistory expiration. Original actor/resource references and captured permitted details remain intelligible; unavailable source links are labelled. Current exposure policy still restricts reads and cannot recover previously omitted values. New naming conventions affect new records rather than relabelling historical evidence.
+
+Verify restoration and interpretation using supported older record versions and a current application reader. Prove that original event times, outcomes, unknown commit states, identities, value-policy markers, and hashes retain their meaning. Archive/remove retention still follows the configured ages; this requirement supplies no universal retention duration, automatic legal hold, or extra audit table.
+
+### 16.5 Audit-control support mapping
+
+Use the NIST SP 800-53 Rev. 5 Audit and Accountability family as a concrete control reference. The rows map selected concerns to feature capabilities and reviewable evidence. Organizations select applicable controls, parameters, and enhancements; this is not a claim that all controls or an entire standard are implemented. ISO/IEC 27001/27002 provide broader management/control context, and OWASP supplies application/business-logging guidance.
+
+| Audit-control concern | Capability supporting the requirement | Verification evidence |
+| --- | --- | --- |
+| Event selection and generation — AU-2, AU-12 | Explicit feature behaviors, selectors, bridges, manual scopes, documented suppression, and a host-owned coverage plan. | Business-action/entry-point cases proving required capture and intentional exclusions, including blacklists and independent jobs. |
+| Record content and time — AU-3, AU-8 | Actor/resource/action/outcome, optional module, correlation/causation, execution timestamps, separate delivery state, and bounded safe details. | Authenticated/service/anonymous cases, execution-time versus queue-time checks, and host clock configuration evidence. |
+| Protection of audit information — AU-9, with a contribution to AU-9(3) when HMAC is enabled | Append-only application semantics, general host access controls, optional HMAC-SHA-256 content verification, and extensible stronger protection. | Append-conflict tests, deployed access/maintenance permissions, HMAC/key-rotation/tamper tests, and evidence for any separately claimed tool or deletion protection. |
+| Capacity and logging failures — AU-4, AU-5 | Bounded storage/queue, typed failures, finite retries, honest receipts/flush, ReportOnly response, and provider guarantee declarations. | Queue/storage fault injection, notifications, crash-window documentation, receipt/visibility checks, and the host's selected response. |
+| Review and reporting — AU-6, AU-7 | Business-first dashboard, FilterModel search, access-scoped review, preserved chronology, and completeness/availability notes. | Real reviewer searches with correct predicates/counts and original facts/ordering preserved by presentation projections. |
+| Retention and long-term retrieval — AU-11, AU-11(1) | Configurable archive/remove lifecycle, Active/Archived/All reads, versioned documents, and supported historical readers/restoration. | Retention conformance, archive/restore checks, and current-reader cases for older evidence with missing live users/entities/source history. |
+
+The mapping is backed by the references in section 20.2 and the verification evidence in section 18.2. Sector-specific durations, mandatory event lists, stronger delivery/protection, or other additional requirements remain explicit host/provider choices.
+
+### 16.6 NIST AU-family readiness and remaining responsibilities
+
+This is a design-support assessment, not a compliance result. No Auditing implementation or deployment has yet been verified. An application selects its applicable controls/enhancements and organization-defined parameters, records inherited/external controls, then assesses the implemented system using SP 800-53A. A percentage or a Low/Moderate/High conformance claim cannot be derived from the presence of this feature or HMAC alone.
+
+| AU control | Contribution in this design | Remaining responsibility and evidence |
+| --- | --- | --- |
+| AU-1 — Policy and procedures | Documented capture/guarantee boundaries and the application evidence set support an operating policy. | Organization owns approved policy/procedures, accountable roles, dissemination, review frequency, and updates. |
+| AU-2 — Event logging | Explicit behaviors/selectors, scopes, and coverage plan identify capturable and selected business events. | Select and justify required events across the entire assessed system, coordinate stakeholders, review selections, and prove all required entry points. Business capture is not an OS/security-event collector. |
+| AU-3 — Content of audit records | Type/action, time, source/application/module, actor/resource, and outcome fields; explicit safe additional details and privacy limits. | Prove required fields for every selected event, including sufficient source/location and actor assurance. Optional actor/module/client fields are not guaranteed without host context/configuration. |
+| AU-4 — Audit log storage capacity | Configurable bounds, provider capacity declarations, archive/removal, and explicit overflow reporting. | Size deployed storage for the required volume/retention and test capacity/loss handling. A bounded queue or evicting local in-memory store is not proof of adequate retained capacity. |
+| AU-5 — Response to audit logging process failures | Typed capture/delivery/protection failures, safe reporting hook, retries, receipts, flush, and explicit ReportOnly behavior. | Route alerts to designated roles within the selected time, exercise response/runbooks, and demonstrate any required stronger delivery/failure actions. Alert-only response can be an explicit organizational choice; crash-loss and in-memory eviction still need acceptance or a different deployment strategy. |
+| AU-6 — Audit record review, analysis, and reporting | Business dashboard, scoped search, related-work navigation, and evidence/protection status support investigations. | Set review frequency, analyze/report findings to assigned roles, adapt review to risk, and integrate any required cross-system analysis/alerts. A dashboard does not carry out that process. |
+| AU-7 — Audit record reduction and report generation | Server-side filtering, ordering, summaries, and aggregates support on-demand review while preserving original facts/time order. | Verify the selected reporting requirements, report content, preservation of originals, and any additional automated or cross-source reporting. No universal report/export capability is implied. |
+| AU-8 — Time stamps | UTC execution timestamps, preserved independently of queue/persistence time. | Demonstrate clock source, required precision/granularity, and host synchronization. Related authoritative-time arrangements are host controls; UTC formatting alone is insufficient. |
+| AU-9 — Protection of audit information | Append-only APIs, general host access integration, optional HMAC-SHA-256 detection of protected-content changes, and integrity-failure reporting. | Protect records, settings, archives, backups, reports, and tools against unauthorized access/modification/deletion; prove least privilege, alert routing, key custody, and any required immutable/separate storage. |
+| AU-9(3) — Cryptographic protection | Enabled HMAC supplies a cryptographic content-integrity mechanism for complete audit records under the declared database-only attacker boundary. | This is a contribution to the enhancement, not a complete satisfaction claim: assess cryptographic requirements/key management and integrity protection of audit tools and other required audit information. HMAC is not a digital signature or independent public verification. |
+| AU-10 — Non-repudiation | Actor snapshots and causation aid attribution. | HMAC holders can create valid tags; no per-user non-repudiation is provided. Required identity binding, signatures/receipts, and custody processes need separate capabilities and evidence. |
+| AU-11 — Audit record retention | Configurable archive/remove lifecycle, archived retrieval, versioned readers, and preserved HMAC verification material. | Set appropriate retention/availability, backup/restore and any hold requirements; prevent premature deletion/eviction and prove historical retrieval. The local in-memory provider is not durable retained evidence. |
+| AU-12 — Audit record generation | Selected components emit the defined record content through explicit behaviors/scopes and provider-backed storage. | Prove generation on all selected system components and authorized changes to logging selection. Linked jobs/correlation do not establish whole-system coverage or time-correlated fleet collection. |
+| AU-13 — Monitoring for information disclosure | No direct capability. | External disclosure/site monitoring and its notification/response process remain outside business Auditing. |
+| AU-14 — Session audit | Business actions can identify activities within an execution. | Session content recording/replay/listening and its legal/privacy process are outside this feature; action capture is not session recording. |
+| AU-15 — Alternate audit logging capability | Withdrawn control in Rev. 5, moved to AU-5(5). | Assess the selected AU-5 enhancement if applicable. Process-local buffering is not an independent alternate audit capability. |
+| AU-16 — Cross-organizational audit logging | Correlation and trusted causation provide useful technical linkage within participating flows. | Cross-organization agreements, identity/trust preservation, permitted sharing, and coordination need an explicit external design; correlation alone does not meet the control. |
+
+Except for the explicitly discussed AU-9(3) and retrieval mapping in section 16.5, enhancements require their own selection and assessment; they are not automatically covered by a base-control row. No decision to exclude an organizational control from the library makes it inapplicable to the assessed system. The feature can support many application-facing AU requirements, while organizational processes, infrastructure protections, and out-of-scope capabilities remain documented dependencies. The proof set in section 18.2 must identify actual results and outstanding gaps before any deployment claim.
+
 
 ## 17. Acceptance criteria
 
@@ -1320,12 +1464,27 @@ As a host operator or business auditor, I want configurable age-based retention 
 4. When removal becomes eligible, then the archived record and owned data are removed without orphaned children or delayed writes restoring them.
 5. When the in-memory provider reaches its combined active-plus-archive count/byte limit, then it remains bounded independently of age settings and exposes capacity loss; short local/test retention profiles use the same options.
 
+### Story 16: Support audit-control requirements with reviewable evidence
+
+As an application owner or business auditor, I want declared coverage and guarantee boundaries with verification evidence so that I can assess how the deployed feature supports the selected audit controls.
+
+1. When an application declares required business events, then its coverage plan identifies capture boundaries/exclusions and end-to-end cases proving the actual persisted trail. Omitted behaviors and blacklisted paths remain explicit choices.
+2. When built-in storage is used without HMAC, then append-only APIs and content hashes are not presented as cryptographic tamper evidence. When HMAC is enabled, only its verified keyed content-integrity boundary is claimed. Neither mode claims prevention of privileged deletion; general host access and deployment protections are recorded separately.
+3. When either built-in provider uses `WithHmacSha256<TKeys>()`, then the complete finalized logical graph and protection header are authenticated before admission and verified before a successful detail read. Edited/forged roots, actions, changes, JSON values, copied tags, missing tags, unknown keys, and unsupported algorithms cannot produce Verified. Retries preserve the envelope, rotation preserves old verification, and archive/restore preserves the tag. Deletion/truncation detection requires a separately verified completeness mechanism.
+4. When a delivery mode acknowledges an audit or fails, then its queue/store/flush status, visibility, and safe notification match the declared guarantee; ReportOnly and buffered crash-loss defaults remain intact. Original event timestamps do not become persistence timestamps.
+5. When retained evidence is archived/restored or read after a supported application upgrade, then its original identities, labels, times, outcomes, source/version information, and permitted value-policy markers remain interpretable without live users/entities/ChangeHistory rows.
+6. When the control mapping is reviewed, then each capability points to actual application/provider/deployment evidence or a clearly identified unverified/external requirement; no library-wide certification claim is made.
+
 ## 18. Verification strategy
 
 The implementation must prove the acceptance criteria with focused tests.
 
 | Area                          | Required evidence                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Audit-control coverage | Versioned business-event/entry-point plan, explicit behavior/bridge choices and exclusions, required fields/change evidence, persisted end-to-end cases, and WeatherFiesta city coverage. |
+| Evidence protection | HMAC disabled/enabled on both built-ins; RFC 4231 vectors, complete graph/header tampering, tag stripping/copying, constant-time comparison, unknown/unavailable keys, key rotation, retry/idempotency, archive/restore, and no unsigned fallback. Honest capability claims, deployment privileges, safe alerts, and separately tested completeness for any deletion claim. |
+| Delivery guarantees | In-memory/buffered/inline acknowledgement and visibility semantics, graph-commit boundaries, queue/storage faults, safe failure notifications, finite retries, flush/crash-loss limits, and execution-time preservation. |
+| Historical readability | Older supported schemas, versioned canonicalization/hash interpretation, application upgrades and type/alias changes, restored archives with missing live users/entities/source history, and current exposure restrictions. |
 | Recorder unit tests           | Nested/parallel frames, repeated actions, suppression, no-op behavior, callback result preservation, manual unknown outcome, expiry, late writes, duplicate disposal, limits.                                                                                                                                                                                                                                                                                                            |
 | Descriptor builder | Minimal type-based defaults, fluent overrides, immutable/copy-on-build resources and details, stable keys/IDs, null optional text, invalid values, reserved fields, policy application, and no capture enablement from descriptor construction. |
 | Scope-options builder | Fluent BeginScope/RunAsync callbacks, eligible configuration/build once, no configuration callback under suppression/disabled capture, ReportOnly configuration failures preserve single business execution, standalone key/type/member factories, equivalent defaults, immutable snapshots, derived labels, custom kinds/modes, and no outcome inference or suppression bypass. |
@@ -1392,6 +1551,22 @@ Use ChangeHistory's supported capture strategy for `City.ChangeDetails`, which c
 
 Document the example setup and the exact create/update review steps in WeatherFiesta's existing README or REST examples. The feature is not accepted until these application scenarios and their persisted audit evidence are reviewable.
 
+### 18.2 Evidence for the application's selected audit controls
+
+Provide a small reviewable evidence set for each delivered host/application configuration:
+
+| Evidence item | Required content |
+| --- | --- |
+| Coverage plan | Required business actions and entry points, expected identities/resources/outcomes, selected behaviors/bridges, justified exclusions, retention requirements, and linked application cases. Record a policy/deployment revision. |
+| Effective guarantee statement | Selected provider/mode, receipt/visibility meaning, queue/capacity/failure behavior, and any independent business-commit boundary. Preserve the accepted buffered crash-loss limitation. |
+| Protection statement | Application and deployed storage/maintenance permissions, configured HMAC/key custody/rotation and trust boundary, any additional integrity/immutable-storage mechanism, actual verification results, and safe alert routing. Distinguish declared capability from verified deployment evidence. |
+| Retention/readability proof | Active/archive/remove conformance, supported historical versions, and upgrade plus backup/restore results with retained facts/identities/value-policy markers intact. |
+| Review proof | Representative actor/action/time/resource/job searches and detail views, correct counts/access scope, and visible completeness/delivery/source-availability limitations. |
+
+The evidence set maps back to sections 16.5–16.6; it does not turn an unrun test plan into verified control evidence. Application tests prove capture paths and provider semantics. Host deployment checks establish external permissions, clock arrangements, keys, backup/restore, and any storage protections that the library cannot infer.
+
+WeatherFiesta includes a concise city-action coverage plan and links its create/update/negative-path/blacklist/flush/search evidence to the relevant rows. Independent-job cases belong to the feature integration evidence unless a real WeatherFiesta flow actually dispatches that work; the example must not claim a job action that did not occur. Verify the built-in protection limitations honestly. Provider conformance covers the optional built-in HMAC mechanism; WeatherFiesta claims HMAC protection only when its actual setup enables it and verifies host key custody. Other optional cryptographic or external protection needs mechanism-specific evidence when claimed. No additional dashboard policies or mandatory feature behaviors are introduced.
+
 ## 19. Design decisions, trade-offs, and delivery
 
 ### 19.1 Proposed decisions for review
@@ -1416,7 +1591,7 @@ Promote significant accepted decisions to ADRs using the repository workflow aft
 
 1. Use the confirmed grill decisions as the behavioral baseline and finalize the public API/mapping details against the implementation checks.
 2. Add Common contracts and the Application recorder, policies, Result errors, and in-memory provider.
-3. Add provider conformance tests, the audit-DbSet EF model, its queued writer/batch/flush lifecycle, and shared configurable archive/remove retention with bounded in-memory storage.
+3. Add provider conformance tests, the audit-DbSet EF model, its queued writer/batch/flush lifecycle, shared configurable archive/remove retention with bounded in-memory storage, and optional HMAC-SHA-256 sealing/verification for both built-ins.
 4. Add HTTP and explicitly selectable current Requester/handler behaviors, with omission, ordering, and registration-order tests.
 5. Add ChangeHistory capture/commit hooks and expose its explicit audit-bridge opt-in on the ChangeHistory builder.
 6. Add current Jobs dispatch/execution causation and the other supported adapters, including rough entity-action behaviors, with explicit selection on each feature's own builder.
@@ -1436,6 +1611,7 @@ The grill session resolved the business-behavior decisions in section 19.4. Impl
 - Verify the proposed batch/flush budgets and capture limits under the required application scenarios; keep those settings configurable.
 - Complete the specified adapters and transaction-owner hooks, retaining Unknown evidence where commit cannot be observed.
 - Run provider, retention, queued-writer, dashboard-discovery, and end-to-end example checks before marking the feature implemented.
+- Deliver the coverage/guarantee/protection/retention evidence set in section 18.2 and populate the control mapping and AU readiness assessment in sections 16.5–16.6 with actual results, preserving unverified host dependencies and the accepted defaults. Prove HMAC against the published vectors and graph/key/retention cases before claiming protected content.
 
 ### 19.4 Confirmed grill-me decisions
 
@@ -1467,7 +1643,9 @@ HTTP request blacklisting follows `RequestLoggingMiddleware`, including its exac
 
 Fluent setup uses sane defaults throughout. Configuration callbacks are optional, parameterless EF registration enables the bounded buffered writer, and parameterless endpoint registration supplies the standard group path and contracts. Explicit configuration overrides selected values. Appendix A shows both explicit source-feature registrations and a handler adding its own business scope/details.
 
-## 20. Repository references
+## 20. References
+
+### 20.1 Repository references
 
 - [Repository architecture](../../ARCHITECTURE.md)
 - [WeatherFiesta host setup](../../examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/Program.cs)
@@ -1513,6 +1691,16 @@ Fluent setup uses sane defaults throughout. Configuration callbacks are optional
 - [ChangeHistory context contract](../../src/Infrastructure.EntityFramework/ChangeHistory/IChangeHistoryContext.cs)
 - [ChangeHistory application contracts](../../src/Application.Entities/ChangeHistory/ChangeHistoryContracts.cs)
 - [ChangeHistory dashboard provider](../../src/Presentation.Web.EntityFramework/ChangeHistory/Dashboard/DashboardPageProvider.cs)
+
+### 20.2 Audit-control and integrity references
+
+- [NIST SP 800-53 Rev. 5 — Security and Privacy Controls for Information Systems and Organizations](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final), including the linked Release 5.2.0 catalog; the [publication PDF](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf) contains the AU control statements used in sections 16.5–16.6. The release update changes related-control references for AU-2/AU-3, without changing the AU requirements assessed here.
+- [NIST SP 800-53A Rev. 5 — Assessing Security and Privacy Controls in Information Systems and Organizations](https://csrc.nist.gov/pubs/sp/800/53/a/r5/final), including its linked release updates, for deployment-specific assessment and evidence.
+- [ISO/IEC 27002:2022 — Information security controls](https://www.iso.org/standard/75652.html), including its relationship to ISO/IEC 27001 as organizational context.
+- [OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html), including audit/business-log purpose, event context, protection, and verification guidance.
+- [OWASP Business Logic Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Business_Logic_Security_Cheat_Sheet.html), especially business context and audit evidence.
+- [RFC 2104 — HMAC: Keyed-Hashing for Message Authentication](https://www.rfc-editor.org/rfc/rfc2104), the keyed integrity construction.
+- [RFC 4231 — HMAC-SHA test vectors](https://www.rfc-editor.org/rfc/rfc4231), for the optional HMAC-SHA-256 implementation’s conformance verification.
 
 ## Appendix A. Auditing, Requester, repositories, and ChangeHistory
 

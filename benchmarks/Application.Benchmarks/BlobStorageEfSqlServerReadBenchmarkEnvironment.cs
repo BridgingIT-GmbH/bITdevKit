@@ -159,7 +159,7 @@ internal sealed class BlobStorageEfSqlServerReadBenchmarkStore : IDisposable
         var serviceProvider = services.BuildServiceProvider();
 
         var ids = Enumerable.Range(0, IdCount)
-            .Select(i => new Guid(Enumerable.Range(0, 16).Select(b => (byte)(i * 16 + b + 1)).ToArray()).ToString("N"))
+            .Select(i => new Guid(i + 1, 0, 0, new byte[8]).ToString("N"))
             .ToArray();
         var start = new DateTime(2026, 1, 1);
         var keys = ids
@@ -255,6 +255,53 @@ internal sealed class BlobStorageEfSqlServerReadBenchmarkStore : IDisposable
                     ? await this.ReadRawSqlAsync(index, cancellationToken).ConfigureAwait(false)
                     : await this.ReadAsync(this.Request[index], cancellationToken).ConfigureAwait(false);
                 Interlocked.Add(ref total, length);
+            }).ConfigureAwait(false);
+
+        return total;
+    }
+
+    /// <summary>
+    /// Reads the request keys with hand-written multi-key SQL queries (one query per batch, batches run in
+    /// parallel). This is the ceiling a provider level multi-get could reach.
+    /// </summary>
+    public async Task<long> ReadRequestRawSqlBatchAsync(int batchSize, int parallelism)
+    {
+        long total = 0;
+        var batches = Enumerable.Range(0, this.requestHashes.Length)
+            .Chunk(batchSize)
+            .ToArray();
+        await Parallel.ForEachAsync(
+            batches,
+            new ParallelOptions { MaxDegreeOfParallelism = parallelism },
+            async (batch, cancellationToken) =>
+            {
+                await using var connection = new SqlConnection(this.ConnectionString);
+                await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
+                await using var command = connection.CreateCommand();
+                var names = batch.Select((requestIndex, i) => (Parameter: $"@n{i}", Hash: this.requestHashes[requestIndex].NameHash)).ToArray();
+                command.CommandText =
+                    "SELECT b.[NameHash], c.[Content] FROM [__Storage_Blobs] b " +
+                    "INNER JOIN [__Storage_BlobChunks] c ON c.[BlobId] = b.[Id] AND c.[Index] = 0 " +
+                    $"WHERE b.[ContainerHash] = @containerHash AND b.[NameHash] IN ({string.Join(", ", names.Select(n => n.Parameter))})";
+                command.Parameters.Add(new SqlParameter("@containerHash", SqlDbType.NVarChar, 64) { Value = this.requestHashes[batch[0]].ContainerHash });
+                foreach (var (parameter, hash) in names)
+                {
+                    command.Parameters.Add(new SqlParameter(parameter, SqlDbType.NVarChar, 64) { Value = hash });
+                }
+
+                var rows = 0;
+                await using var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+                while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    var content = await reader.GetFieldValueAsync<byte[]>(1, cancellationToken).ConfigureAwait(false);
+                    Interlocked.Add(ref total, this.Verify(content.Length));
+                    rows++;
+                }
+
+                if (rows != batch.Length)
+                {
+                    throw new InvalidOperationException($"Expected {batch.Length} rows but read {rows}.");
+                }
             }).ConfigureAwait(false);
 
         return total;

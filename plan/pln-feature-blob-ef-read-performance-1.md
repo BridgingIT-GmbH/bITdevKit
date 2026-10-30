@@ -116,18 +116,30 @@ Request of 100 blobs, `DevKit_ReadRequest` (parallel, mean per request): 10 KB P
 | TASK-020 | Add an ADR in `docs/adr/` using the `adr-architecture` skill, covering the single-query read and the end-of-stream rule (REQ-004). | | |
 | TASK-021 | Update `CHANGELOG.md` under the unreleased section. | | |
 
-### Implementation Phase 5 (gated): Bulk read helper
+### Implementation Phase 5 (gated): Bulk read
 
-- GOAL-005: Reduce time to read many keys per request. Execute only if, after Phase 3, 10 KB `DevKit_ReadRequest` at P=16 is above 16 ms or the user requests it.
+- GOAL-005: Reduce time to read many keys per request. Requested by the user (planned workload: read many items at once).
+
+**Spike result (2026-10-30, `BlobStorageEfSqlServerBatchReadBenchmarks`, request of 100 distinct keys, mean per request):**
+
+| Payload | DevKit, 16 parallel single reads | Raw SQL, 16 parallel | Raw SQL, 1 query of 100 keys | Raw SQL, 4 parallel queries of 25 keys | Raw SQL, 10 parallel queries of 10 keys |
+|---------|-----------|-----------|----------|----------|----------|
+| 10 KB | 20.5 ms (19.8 MB) | 11.0 ms | 6.4 ms | 5.4 ms | 6.9 ms |
+| 100 KB | 48.2 ms (44.4 MB) | 40.7 ms | 46.4 ms | 38.7 ms | 41.3 ms |
+| 1 MB | 413 ms (326 MB) | 402 ms | 448 ms | 375 ms | 379 ms |
+
+Findings: a client-side parallel helper cannot beat the existing `DevKit_Parallel16` row, because that row already is 16-way parallel; it would only add convenience. A provider level multi-get (`IN` list plus chunk join) removes the per-request overhead and reaches about 3.2 to 3.8x at 10 KB, where the workload is latency bound. At 100 KB and above the read is bandwidth bound and batching gains at most 10 to 20%. The best shape is a few parallel batches (4 x 25), not one huge query. DevKit allocates 19.8 MB per 100 reads at 10 KB against 3.1 MB for raw SQL, so scope and context creation per key is the other half of the gap.
 
 | Task | Description | Completed | Date |
 |------|-------------|-----------|------|
-| TASK-022 | Reapply the parallel `DownloadBytesManyAsync` helper from `C:\Users\mini3\.copilot\session-state\fbbc9b44-12bf-4d10-b0f6-fe2ad4cde6bb\files\blob-read-experiments.patch` (client extension only, bounded parallelism, results returned in input key order). | | |
-| TASK-023 | Add a benchmark method comparing the helper to `DevKit_ReadRequest_*` using the same key sets. Record the result. | | |
+| TASK-022 | Spike: add `ReadRequestRawSqlBatchAsync` and `BlobStorageEfSqlServerBatchReadBenchmarks` to measure the multi-get ceiling. Fix the benchmark seed ids, which collapsed 20 ids to 16 distinct values. | ✅ | 2026-10-30 |
+| TASK-023 | Decision (open): choose one of: (A) client extension `DownloadBytesManyAsync` only, parallel single reads, no speedup beyond the current baseline; (B) A plus an optional provider capability interface (for example `IBlobStoreBatchReader`) implemented by the EF provider with one `IN` query per batch of at most 25 keys (4 batches in parallel) and a per-key fallback for providers without it; (C) B plus compiled batch queries and a single scope per batch. | | |
+| TASK-024 | Implement the chosen option with result ordering by input key, per-key `BlobStoreNotFoundError` items, duplicate key handling, and `ContinueOnError`. Reuse the helper types from `blob-read-experiments.patch`. | | |
+| TASK-025 | Add benchmark methods that call the real DevKit batch API with the same key sets, record results and compare with the spike table. | | |
 
 ## 3. Alternatives
 
-- **ALT-001**: Batched multi-get with `WHERE NameHash IN (...)` plus chunk join. Rejected for now: needs a new `IBlobStoreProvider` method, hash-list parameter limits, and a per-key result contract. Revisit only if Phase 5 results are insufficient.
+- **ALT-001**: Batched multi-get with `WHERE NameHash IN (...)` plus chunk join. Previously rejected. The Phase 5 spike shows 3.2 to 3.8x for 10 KB blobs, so it is now option B or C of TASK-023. It needs an optional provider interface, a batch size limit (SQL Server allows 2100 parameters, PostgreSQL 32767), and a per-key result contract.
 - **ALT-002**: Store small blobs inline on `__Storage_Blobs` (new column). Rejected: schema change and migration, forbidden by CON-001. It would give the same single-row read as Phase 2 without a join.
 - **ALT-003**: Raw SQL read path for SQL Server only. Rejected: provider-specific code, bypasses model mapping, and the floor is already within about 1.3 to 1.5x of the Phase 2 target.
 - **ALT-004**: In-process cache of hot blobs. Rejected: outside this plan's scope, and the workload reads many distinct keys.

@@ -333,7 +333,7 @@ public sealed class MetricsService : IMetricsService, IDisposable
             var histogram = this.doubleHistograms.GetOrAdd(
                 (name, unit),
                 key => new Lazy<Histogram<double>>(
-                    () => this.meter.CreateHistogram<double>(key.Name, key.Unit),
+                    () => this.meter.CreateHistogram<double>(key.Name, key.Unit, advice: CreateAdvice(key.Unit)),
                     LazyThreadSafetyMode.ExecutionAndPublication)).Value;
             var tagList = CreateTagList(tags);
             histogram.Record(value, in tagList);
@@ -342,6 +342,19 @@ public sealed class MetricsService : IMetricsService, IDisposable
         {
         }
     }
+
+    // The default OpenTelemetry boundaries stop at 10000, which puts every throughput sample in the last bucket.
+    private static InstrumentAdvice<double> CreateAdvice(string unit) =>
+        unit == "By/s"
+            ? new InstrumentAdvice<double>
+            {
+                HistogramBucketBoundaries =
+                [
+                    1_000, 10_000, 100_000, 500_000, 1_000_000, 5_000_000, 10_000_000, 25_000_000, 50_000_000,
+                    100_000_000, 250_000_000, 500_000_000, 1_000_000_000
+                ]
+            }
+            : null;
 
     /// <inheritdoc />
     public void RecordHistogramDuration(

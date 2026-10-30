@@ -101,6 +101,141 @@ public sealed class BlobStoreClientBehaviorTests
     }
 
     [Fact]
+    public async Task MetricsBehavior_WithUpload_RecordsBytesPerSecond()
+    {
+        // Arrange
+        using var meterFactory = new TestMeterFactory();
+        using var recorder = new RecordingMetrics();
+        var sut = new MetricsBlobStoreClientBehavior(
+            new ScriptedBlobStoreClient
+            {
+                UploadHandlerAsync = async (upload, _) =>
+                {
+                    await Task.Delay(20);
+                    return Result<BlobInfo>.Success(new BlobInfo { Key = upload.Key, Length = 4096 });
+                }
+            },
+            new MetricsService(meterFactory),
+            "reports");
+
+        // Act
+        await sut.UploadAsync(new BlobUpload { Key = new BlobKey("reports", "a.bin"), Content = new MemoryStream(new byte[4096]) });
+
+        // Assert
+        var rates = recorder.HistogramValues("blobstorage_bytes_per_second");
+        rates.Count.ShouldBe(1);
+        rates.Single().ShouldBeGreaterThan(0);
+        rates.Single().ShouldBeLessThan(4096 / 0.015); // 20 ms delay bounds the rate
+    }
+
+    [Fact]
+    public async Task MetricsBehavior_WithInMemoryDownload_RecordsBytesPerSecondOnce()
+    {
+        // Arrange
+        using var meterFactory = new TestMeterFactory();
+        using var recorder = new RecordingMetrics();
+        var sut = new MetricsBlobStoreClientBehavior(
+            new ScriptedBlobStoreClient
+            {
+                Download = key => Result<BlobDownload>.Success(new BlobDownload
+                {
+                    Content = new MemoryStream(new byte[2048]),
+                    Info = new BlobInfo { Key = key, Length = 2048 }
+                })
+            },
+            new MetricsService(meterFactory),
+            "reports");
+
+        // Act
+        await using var download = (await sut.DownloadAsync(new BlobKey("reports", "a.bin"))).Value;
+
+        // Assert
+        recorder.HistogramValues("blobstorage_bytes_per_second").Count.ShouldBe(1);
+        download.Content.ShouldBeOfType<MemoryStream>();
+    }
+
+    [Fact]
+    public async Task MetricsBehavior_WithStreamingDownload_RecordsBytesPerSecondWhenDisposed()
+    {
+        // Arrange
+        using var meterFactory = new TestMeterFactory();
+        using var recorder = new RecordingMetrics();
+        var content = Enumerable.Range(0, 3000).Select(i => (byte)i).ToArray();
+        var sut = new MetricsBlobStoreClientBehavior(
+            new ScriptedBlobStoreClient
+            {
+                Download = key => Result<BlobDownload>.Success(new BlobDownload
+                {
+                    Content = new BufferedStream(new MemoryStream(content)),
+                    Info = new BlobInfo { Key = key, Length = content.Length }
+                })
+            },
+            new MetricsService(meterFactory),
+            "reports");
+
+        // Act
+        var download = (await sut.DownloadAsync(new BlobKey("reports", "a.bin"))).Value;
+        using var target = new MemoryStream();
+        await download.Content.CopyToAsync(target);
+        var recordedBeforeDispose = recorder.HistogramCount("blobstorage_bytes_per_second");
+        await download.DisposeAsync();
+        await download.DisposeAsync();
+
+        // Assert
+        target.ToArray().ShouldBe(content);
+        recordedBeforeDispose.ShouldBe(0);
+        recorder.HistogramValues("blobstorage_bytes_per_second").Count.ShouldBe(1);
+        recorder.HistogramValues("blobstorage_bytes_per_second").Single().ShouldBeGreaterThan(0);
+    }
+
+    [Fact]
+    public async Task MetricsBehavior_WithStreamingDownloadNeverRead_DoesNotRecordBytesPerSecond()
+    {
+        // Arrange
+        using var meterFactory = new TestMeterFactory();
+        using var recorder = new RecordingMetrics();
+        var sut = new MetricsBlobStoreClientBehavior(
+            new ScriptedBlobStoreClient
+            {
+                Download = key => Result<BlobDownload>.Success(new BlobDownload
+                {
+                    Content = new BufferedStream(new MemoryStream(new byte[10])),
+                    Info = new BlobInfo { Key = key, Length = 10 }
+                })
+            },
+            new MetricsService(meterFactory),
+            "reports");
+
+        // Act
+        await (await sut.DownloadAsync(new BlobKey("reports", "a.bin"))).Value.DisposeAsync();
+
+        // Assert
+        recorder.HistogramCount("blobstorage_bytes_per_second").ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task MetricsBehavior_WithFailedOrEmptyTransfers_DoesNotRecordBytesPerSecond()
+    {
+        // Arrange
+        using var meterFactory = new TestMeterFactory();
+        using var recorder = new RecordingMetrics();
+        var sut = new MetricsBlobStoreClientBehavior(
+            new ScriptedBlobStoreClient
+            {
+                Upload = upload => Result<BlobInfo>.Success(new BlobInfo { Key = upload.Key, Length = 0 })
+            },
+            new MetricsService(meterFactory),
+            "reports");
+
+        // Act
+        await sut.UploadAsync(new BlobUpload { Key = new BlobKey("reports", "empty.bin"), Content = new MemoryStream() });
+        await sut.DownloadAsync(new BlobKey("reports", "missing.bin"));
+
+        // Assert
+        recorder.HistogramCount("blobstorage_bytes_per_second").ShouldBe(0);
+    }
+
+    [Fact]
     public async Task MetricsBehavior_WithOperations_EmitsExpectedLowCardinalityMetrics()
     {
         // Arrange
@@ -756,13 +891,15 @@ public sealed class BlobStoreClientBehaviorTests
 
         public Func<BlobQuery, Result<BlobPage>> List { get; init; }
 
+        public Func<BlobKey, Result<BlobDownload>> Download { get; init; }
+
         public Task<Result<BlobInfo>> UploadAsync(BlobUpload upload, CancellationToken cancellationToken = default) =>
             this.UploadHandlerAsync is not null
                 ? this.UploadHandlerAsync(upload, cancellationToken)
                 : Task.FromResult(this.Upload?.Invoke(upload) ?? Result<BlobInfo>.Success(new BlobInfo { Key = upload.Key }));
 
         public Task<Result<BlobDownload>> DownloadAsync(BlobKey key, CancellationToken cancellationToken = default) =>
-            Task.FromResult(Result<BlobDownload>.Failure(new BlobStoreNotFoundError(key)));
+            Task.FromResult(this.Download?.Invoke(key) ?? Result<BlobDownload>.Failure(new BlobStoreNotFoundError(key)));
 
         public Task<Result<BlobInfo>> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken = default) =>
             Task.FromResult(Result<BlobInfo>.Success(new BlobInfo { Key = key }));
@@ -951,6 +1088,9 @@ public sealed class BlobStoreClientBehaviorTests
 
         public int HistogramCount(string series) =>
             this.histograms.TryGetValue(series, out var values) ? values.Count : 0;
+
+        public IReadOnlyCollection<double> HistogramValues(string series) =>
+            this.histograms.TryGetValue(series, out var values) ? [.. values] : [];
 
         public void Dispose() => this.listener.Dispose();
 

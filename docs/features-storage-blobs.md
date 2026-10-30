@@ -193,6 +193,28 @@ services.AddBlobStorage(options => options
 
 `AddBlobStorage` also registers the provider-neutral `IBlobStorageDiagnosticsService` and the blob-retention background service, so diagnostics snapshots and expiration sweeping are available without additional registration calls.
 
+## Metrics
+
+`WithMetricsBehavior()` emits these instruments through the `bdk` meter, all tagged with `operation` and `store` only:
+
+| Instrument | Type | Meaning |
+|---|---|---|
+| `blobstorage_operations` | counter | Completed operations. |
+| `blobstorage_operation_duration` | histogram (ms) | Operation duration. |
+| `blobstorage_operation_failures` | counter | Failed operations. |
+| `blobstorage_bytes` | counter | Cumulative bytes, taken from the blob metadata length. |
+| `blobstorage_bytes_per_second` | histogram (`By/s`) | Transfer rate of one successful upload or download. |
+| `blobstorage_list_items` | counter | Items returned by list operations. |
+
+`blobstorage_bytes_per_second` is recorded for `upload` and `download` only, and only when bytes and elapsed time are both greater than zero. Failed and empty transfers are skipped. The `operation` tag separates write rates from read rates.
+
+- **Upload:** bytes are the stored length and the duration is the whole call, including any wait for upload admission. The rate is lower than raw provider throughput while uploads queue.
+- **Download of an in-memory result** (every EF blob up to `ChunkSize`): recorded when the download method returns, using the content length.
+- **Streaming download** (larger blobs, Azure): the behavior wraps the content stream, counts the bytes the caller actually reads, and records once when the download is disposed. The duration is the time to open the stream plus the time spent inside reads, so a slow consumer does not lower the rate. A stream disposed without reading records nothing.
+- **Batched reads** (`DownloadBytesManyAsync`): each key records its own sample, and each sample includes the wait on the shared batch read. Treat the per-key rate as a lower bound. The aggregate rate of a batch is higher.
+
+The metrics service gives `By/s` histograms explicit bucket boundaries from 1 KB/s to 1 GB/s. Without them the default OpenTelemetry boundaries (up to 10,000) would put every sample in the overflow bucket. Use the rate of the `blobstorage_bytes` counter for sustained throughput and the histogram for the per-transfer distribution.
+
 ## Operation profiling
 
 Register Profiling before other behaviors to measure their downstream work:
@@ -1198,3 +1220,69 @@ Expected failures are Result failures, not exceptions. Common typed errors inclu
 - `BlobStoreUploadOverloadedError`
 - `BlobStoreUploadAdmissionTimeoutError`
 - `BlobStoreTimeoutError`
+
+## Appendix: Entity Framework read performance
+
+These figures come from the benchmarks in `benchmarks/Application.Benchmarks` (BenchmarkDotNet, 12 iterations, one request in flight). They show what the Entity Framework provider can do and how the read paths compare. They are not a guarantee for your hardware, network, or schema.
+
+**Test setup.** AMD Ryzen 9 9900X, .NET 10, SQL Server 2022 in a local Docker container, so there is no network latency between the application and the database. Only SQL Server was benchmarked. PostgreSQL and SQLite are covered by the integration contract tests, not by timings. "Cold" means the SQL Server buffer pool was emptied with `DBCC DROPCLEANBUFFERS` before each iteration. The operating system file cache stayed warm, so real disks will be slower.
+
+Each figure below is one request for 100 keys.
+
+### Reading 100 blobs
+
+Throughput is the payload bytes of the 100 blobs divided by the mean time. SQL Server, warm cache, blobs below `ChunkSize`.
+
+| Blob size | Read path | Time | Blobs/s | MiB/s |
+|---|---|---|---|---|
+| 10 KB | 16 parallel `DownloadBytesAsync` calls | 20.1 ms | 4,970 | 48 |
+| 10 KB | `DownloadBytesManyAsync` | 9.4 ms | 10,670 | 104 |
+| 100 KB | 16 parallel `DownloadBytesAsync` calls | 47.5 ms | 2,110 | 206 |
+| 100 KB | `DownloadBytesManyAsync` | 39.6 ms | 2,520 | 247 |
+| 1 MB | 16 parallel `DownloadBytesAsync` calls | 409.8 ms | 244 | 244 |
+| 1 MB | `DownloadBytesManyAsync` | 385.0 ms | 260 | 260 |
+
+The batch API gains most for small blobs, where round trips and per-call overhead dominate: 2.1 times faster at 10 KB with 67% less allocation. For 1 MB blobs the transfer itself dominates, and both paths settle near 250 MiB/s on this machine. A hand-written SQL batch over the same data reached 378 to 463 ms at 1 MB, so the provider is within the range of raw SQL.
+
+A single read of a 10 KB blob went from 3.28 ms to 1.40 ms after the single-query read path (ADR-0031).
+
+### Scaling to 1,000,000 blobs
+
+The table was seeded with 1,000,000 blobs of 1 KB each. Each request read 100 random keys, rotating through a fixed set of precomputed random requests. SQL Server, random keys.
+
+| Read path | Warm, 1,000 rows | Warm, 1,000,000 rows | Cold, 1,000,000 rows | Warm MiB/s at 1M | Cold MiB/s at 1M |
+|---|---|---|---|---|---|
+| One by one | 125.6 ms | 116.2 ms | 302.2 ms | 0.84 | 0.32 |
+| 16 parallel | 17.0 ms | 18.9 ms | 49.6 ms | 5.2 | 2.0 |
+| `DownloadBytesManyAsync` | 6.1 ms | 5.8 ms | 31.4 ms | 17 | 3.1 |
+
+- With a warm cache the table size does not matter. Lookups use the unique index on the hashes of container and name and stay index seeks.
+- With a cold cache every key needs its own page reads, so time is spent on I/O and not on the DevKit. The batch API still reads 100 keys about 10 times faster than one by one.
+- 1 KB blobs measure per-blob overhead, not bandwidth. Throughput in MiB/s rises with blob size, as the table above shows.
+
+### Row ids
+
+New blob rows use time-ordered GUIDs (ADR-0033). Random ids fragment the clustered primary key because every insert lands on a random page.
+
+| At 1,000,000 blobs | Random ids | Time-ordered ids |
+|---|---|---|
+| Blob primary key | 135,464 pages, 99% fragmented | 90,910 pages, 0.1% fragmented |
+| Chunk primary key | 215,698 pages, 98.8% fragmented | 142,858 pages, 0% fragmented |
+| Data file size | 4.1 GB | 3.0 GB |
+| Cold read of recently written blobs, one by one | 307 ms | 196 ms |
+| Cold read of recently written blobs, batch API | 34.5 ms | 26.4 ms |
+
+Reads of random keys do not change (32 ms either way), because they are decided by the hash index, which stays random. Warm reads do not change either.
+
+### Measuring in production
+
+Use `blobstorage_bytes_per_second` and `blobstorage_operation_duration` from the metrics behavior (see [Metrics](#metrics)), split by `operation`. Compare the two rates with your own blob sizes, since the same store reads 1 KB blobs at a few MiB/s and 1 MB blobs at hundreds of MiB/s.
+
+### Limits of these figures
+
+- One request was in flight at a time, except for the parallel rows. A sustained load test with many concurrent workers reading the full 1,000,000 blobs was not run.
+- There was no network between the application and SQL Server. Over a network each query adds a round trip, which favors the batch API, but this was not measured.
+- Only SQL Server was benchmarked.
+- Blob sizes above `ChunkSize` stream chunk by chunk and are not part of these figures.
+
+See [ADR-0031](adr/0031-single-query-ef-blob-read-for-small-blobs.md), [ADR-0032](adr/0032-batched-ef-blob-reads-for-many-keys.md) and [ADR-0033](adr/0033-time-ordered-ef-blob-row-ids.md) for the design decisions behind these results.

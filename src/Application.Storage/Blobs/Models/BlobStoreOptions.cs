@@ -100,6 +100,17 @@ public sealed class BlobStoreOptions
     public long MaxPendingChunkBytes { get; set; } = ByteSize.Megabytes(16);
 
     /// <summary>
+    /// Gets or sets the maximum number of blobs a provider reads with one query when
+    /// <c>DownloadBytesManyAsync</c> is used on a provider that supports batched downloads (Entity Framework).
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// options.DownloadBatchSize = 25;
+    /// </code>
+    /// </example>
+    public int DownloadBatchSize { get; set; } = 25;
+
+    /// <summary>
     /// Gets or sets the internal lease duration used by providers that require leases.
     /// </summary>
     /// <example>
@@ -163,6 +174,11 @@ public sealed class BlobStoreOptions
         if (this.MaxPendingChunkBytes <= 0)
         {
             return Result.Failure(new BlobStoreValidationError("MaxPendingChunkBytes must be greater than zero."));
+        }
+
+        if (this.DownloadBatchSize is <= 0 or > 1000)
+        {
+            return Result.Failure(new BlobStoreValidationError("DownloadBatchSize must be between 1 and 1000."));
         }
 
         if (this.LeaseDuration <= TimeSpan.Zero)

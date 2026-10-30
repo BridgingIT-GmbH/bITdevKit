@@ -50,7 +50,9 @@ We use the **MADR (Markdown Architectural Decision Records)** format for consist
 | [ADR-0028](0028-domain-entity-bulk-insert-behavior-pipeline.md) | Expose Entity Bulk Insert as a Domain Capability with Explicit Behavior Compatibility | Superseded by ADR-0029 |
 | [ADR-0029](0029-independent-entity-bulk-inserter-decorator-behaviors.md) | Register Entity Bulk Inserters Independently with Explicit Decorators | Accepted |
 | [ADR-0030](0030-bounded-blob-upload-admission-and-ef-chunk-flushing.md) | Bound Blob Upload Admission and Group EF Chunk Flushes | Accepted |
-
+| [ADR-0031](0031-single-query-ef-blob-read-for-small-blobs.md) | Read Small EF Blobs With a Single Compiled Query | Accepted |
+| [ADR-0032](0032-batched-ef-blob-reads-for-many-keys.md) | Batch EF Blob Reads for Many Keys Behind an Ambient Scope | Accepted |
+| [ADR-0033](0033-time-ordered-ef-blob-row-ids.md) | Use Time-Ordered GUIDs for EF Blob Row Ids | Accepted |
 ## When to Write an ADR
 
 Create an ADR when making decisions about:

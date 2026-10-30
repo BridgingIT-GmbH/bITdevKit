@@ -75,7 +75,20 @@ public sealed class StorageBlob
     [Key]
     [Required]
     [MaxLength(64)]
-    public string Id { get; set; } = Guid.NewGuid().ToString("N");
+    public string Id { get; set; } = CreateId();
+
+    /// <summary>
+    /// Creates a new blob row identifier. The identifier is a time ordered (version 7) GUID in the 32 character
+    /// <c>N</c> format, so new rows are appended to the end of the clustered primary key and of the chunk table
+    /// instead of splitting random pages. Identifiers created before this change stay random and remain valid.
+    /// </summary>
+    /// <returns>The new identifier.</returns>
+    /// <example>
+    /// <code>
+    /// var blob = new StorageBlob { Id = StorageBlob.CreateId() };
+    /// </code>
+    /// </example>
+    public static string CreateId() => Guid.CreateVersion7().ToString("N");
 
     /// <summary>
     /// Gets or sets the logical top-level blob container.

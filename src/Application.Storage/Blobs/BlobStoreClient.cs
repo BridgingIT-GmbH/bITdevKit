@@ -160,7 +160,9 @@ public sealed class BlobStoreClient : IBlobStoreClient, IBlobStoreContainerCatal
             provider.UploadAsync(upload, cancellationToken);
 
         public Task<Result<BlobDownload>> DownloadAsync(BlobKey key, CancellationToken cancellationToken = default) =>
-            provider.DownloadAsync(key, cancellationToken);
+            provider is IBlobStoreBatchDownloadProvider batchProvider && BlobDownloadBatchScope.Current is { } scope
+                ? scope.DownloadAsync(provider, batchProvider, key, cancellationToken)
+                : provider.DownloadAsync(key, cancellationToken);
 
         public Task<Result<BlobInfo>> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken = default) =>
             provider.GetPropertiesAsync(key, cancellationToken);

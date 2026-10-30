@@ -55,7 +55,7 @@ public sealed class MetricsBlobStoreClientBehavior(
             var result = await next(cancellationToken).ConfigureAwait(false);
             this.Record(operation, started, result, GetBytes(result), GetListItemCount(result), telemetry);
 
-            return result;
+            return this.RecordThroughput(operation, started, result);
         }
         catch (OperationCanceledException)
         {
@@ -172,6 +172,55 @@ public sealed class MetricsBlobStoreClientBehavior(
         }
     }
 
+    // Uploads and in-memory downloads are timed until the call returns. A streaming download is timed from the
+    // start of the call plus the time spent inside its reads, so a slow consumer does not lower the rate.
+    private Result<T> RecordThroughput<T>(string operation, long started, Result<T> result)
+    {
+        if (result.IsFailure)
+        {
+            return result;
+        }
+
+        if (operation == "upload" && result.Value is BlobInfo info)
+        {
+            this.RecordBytesPerSecond(operation, info.Length, Stopwatch.GetElapsedTime(started));
+        }
+        else if (operation == "download" && result.Value is BlobDownload { Content: not null } download)
+        {
+            if (download.Content is MemoryStream memory)
+            {
+                this.RecordBytesPerSecond(operation, memory.Length, Stopwatch.GetElapsedTime(started));
+
+                return result;
+            }
+
+            var metered = new BlobDownload
+            {
+                Content = new MeteredReadStream(
+                    download.Content,
+                    Stopwatch.GetElapsedTime(started),
+                    (bytes, elapsed) => this.RecordBytesPerSecond(operation, bytes, elapsed)),
+                Info = download.Info
+            };
+
+            return (Result<T>)(object)Result<BlobDownload>.Success(metered);
+        }
+
+        return result;
+    }
+
+    private void RecordBytesPerSecond(string operation, long bytes, TimeSpan elapsed)
+    {
+        if (bytes > 0 && elapsed > TimeSpan.Zero)
+        {
+            metricsService.RecordHistogram(
+                "blobstorage_bytes_per_second",
+                bytes / elapsed.TotalSeconds,
+                "By/s",
+                this.Tags(operation));
+        }
+    }
+
     private static long GetBytes<T>(Result<T> result) =>
         result is { IsSuccess: true, Value: BlobInfo info } ? info.Length :
         result is { IsSuccess: true, Value: BlobDownload download } ? download.Info?.Length ?? 0 :
@@ -195,4 +244,100 @@ public sealed class MetricsBlobStoreClientBehavior(
         new("operation", operation),
         new("store", this.StoreName)
     ];
+
+    // Counts the bytes actually read from a streaming download and records the rate once, when the stream is disposed.
+    private sealed class MeteredReadStream(Stream inner, TimeSpan opened, Action<long, TimeSpan> record) : Stream
+    {
+        private long bytes;
+        private long readTicks;
+        private int recorded;
+
+        public override bool CanRead => inner.CanRead;
+
+        public override bool CanSeek => inner.CanSeek;
+
+        public override bool CanWrite => false;
+
+        public override long Length => inner.Length;
+
+        public override long Position
+        {
+            get => inner.Position;
+            set => inner.Position = value;
+        }
+
+        public override void Flush() => inner.Flush();
+
+        public override long Seek(long offset, SeekOrigin origin) => inner.Seek(offset, origin);
+
+        public override void SetLength(long value) => throw new NotSupportedException();
+
+        public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+        public override int Read(byte[] buffer, int offset, int count) =>
+            this.Track(() => inner.Read(buffer, offset, count));
+
+        public override int Read(Span<byte> buffer)
+        {
+            var started = Stopwatch.GetTimestamp();
+            var read = inner.Read(buffer);
+            this.Add(read, started);
+
+            return read;
+        }
+
+        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) =>
+            this.ReadAsync(buffer.AsMemory(offset, count), cancellationToken).AsTask();
+
+        public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+        {
+            var started = Stopwatch.GetTimestamp();
+            var read = await inner.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+            this.Add(read, started);
+
+            return read;
+        }
+
+        public override async ValueTask DisposeAsync()
+        {
+            this.Complete();
+            await inner.DisposeAsync().ConfigureAwait(false);
+            await base.DisposeAsync().ConfigureAwait(false);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.Complete();
+                inner.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        private int Track(Func<int> read)
+        {
+            var started = Stopwatch.GetTimestamp();
+            var count = read();
+            this.Add(count, started);
+
+            return count;
+        }
+
+        private void Add(int count, long started)
+        {
+            Interlocked.Add(ref this.bytes, count);
+            Interlocked.Add(ref this.readTicks, Stopwatch.GetTimestamp() - started);
+        }
+
+        private void Complete()
+        {
+            if (Interlocked.Exchange(ref this.recorded, 1) == 0)
+            {
+                var reading = TimeSpan.FromSeconds((double)Interlocked.Read(ref this.readTicks) / Stopwatch.Frequency);
+                record(Interlocked.Read(ref this.bytes), opened + reading);
+            }
+        }
+    }
 }

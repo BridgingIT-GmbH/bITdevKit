@@ -193,6 +193,28 @@ services.AddBlobStorage(options => options
 
 `AddBlobStorage` also registers the provider-neutral `IBlobStorageDiagnosticsService` and the blob-retention background service, so diagnostics snapshots and expiration sweeping are available without additional registration calls.
 
+## Metrics
+
+`WithMetricsBehavior()` emits these instruments through the `bdk` meter, all tagged with `operation` and `store` only:
+
+| Instrument | Type | Meaning |
+|---|---|---|
+| `blobstorage_operations` | counter | Completed operations. |
+| `blobstorage_operation_duration` | histogram (ms) | Operation duration. |
+| `blobstorage_operation_failures` | counter | Failed operations. |
+| `blobstorage_bytes` | counter | Cumulative bytes, taken from the blob metadata length. |
+| `blobstorage_bytes_per_second` | histogram (`By/s`) | Transfer rate of one successful upload or download. |
+| `blobstorage_list_items` | counter | Items returned by list operations. |
+
+`blobstorage_bytes_per_second` is recorded for `upload` and `download` only, and only when bytes and elapsed time are both greater than zero. Failed and empty transfers are skipped. The `operation` tag separates write rates from read rates.
+
+- **Upload:** bytes are the stored length and the duration is the whole call, including any wait for upload admission. The rate is lower than raw provider throughput while uploads queue.
+- **Download of an in-memory result** (every EF blob up to `ChunkSize`): recorded when the download method returns, using the content length.
+- **Streaming download** (larger blobs, Azure): the behavior wraps the content stream, counts the bytes the caller actually reads, and records once when the download is disposed. The duration is the time to open the stream plus the time spent inside reads, so a slow consumer does not lower the rate. A stream disposed without reading records nothing.
+- **Batched reads** (`DownloadBytesManyAsync`): each key records its own sample, and each sample includes the wait on the shared batch read. Treat the per-key rate as a lower bound. The aggregate rate of a batch is higher.
+
+The metrics service gives `By/s` histograms explicit bucket boundaries from 1 KB/s to 1 GB/s. Without them the default OpenTelemetry boundaries (up to 10,000) would put every sample in the overflow bucket. Use the rate of the `blobstorage_bytes` counter for sustained throughput and the histogram for the per-transfer distribution.
+
 ## Operation profiling
 
 Register Profiling before other behaviors to measure their downstream work:
@@ -650,6 +672,16 @@ if (downloadResult.IsSuccess)
 
 The caller owns and disposes the returned `BlobDownload`, which disposes the returned content stream.
 
+### Entity Framework read path
+
+The EF provider reads blobs up to `ChunkSize` (4 MB by default) with a single query that loads the metadata and the first chunk together. It releases its internal lease before returning, so the content stream is an in-memory stream that does not hold a database connection. Larger blobs return a forward-only stream that reads one chunk per query and keeps the lease until it is disposed. A missing chunk fails the read with `InvalidDataException` instead of returning truncated content.
+
+`DownloadBytesAsync` returns the buffer of a small blob without an extra copy, and pre-sizes its buffer from the blob length for other streams. Blobs of at most 100 KB are the best case, because the read is dominated by the round trip, not the transfer.
+
+This applies to SQL Server, PostgreSQL and SQLite. The read query is compiled once per provider instance. See [ADR-0031](adr/0031-single-query-ef-blob-read-for-small-blobs.md).
+
+Blobs are found through a unique index on the SHA-256 hashes of the container and the name, so a lookup stays an index seek as the table grows. With a warm cache, 1,000,000 blobs read as fast as 1,000. New blob rows get time-ordered GUID ids, which keeps the clustered keys unfragmented and stores blobs written together close together. See [ADR-0033](adr/0033-time-ordered-ef-blob-row-ids.md).
+
 ## <img class="bdk-doc-icon" src="assets/features/storage-integrity.svg" width="24" height="24" alt=""> Verified download
 
 Use `DownloadVerifiedToAsync` when the destination should only be considered valid after the downloaded bytes match the stored SHA-256 content hash.
@@ -836,6 +868,42 @@ var bytesResult = await blobs.DownloadBytesAsync(
 ```
 
 The byte helpers intentionally buffer content in memory and are not a replacement for stream-first large blob operations.
+
+### Reading many blobs at once
+
+Use `DownloadBytesManyAsync` when a request needs many small blobs, for example all days of a set of ids:
+
+```csharp
+var keys = days.SelectMany(day => ids.Select(id => new BlobKey("telemetry", $"{id}/{day:yyyy-MM-dd}")));
+
+var result = await blobs.DownloadBytesManyAsync(
+    keys,
+    new BlobBytesDownloadManyOptions
+    {
+        MaxDegreeOfParallelism = 16, // concurrent key workers
+        MaxConcurrentBatches = 4,    // concurrent multi-key queries on a batching provider
+        ContinueOnError = true       // report per-key failures instead of failing the whole call
+    },
+    cancellationToken);
+
+foreach (var item in result.Value)
+{
+    if (item.Result.IsSuccess)
+    {
+        Process(item.Key, item.Result.Value.Bytes);
+    }
+    else if (item.Result.HasError<BlobStoreNotFoundError>())
+    {
+        // this key does not exist, the other keys are unaffected
+    }
+}
+```
+
+The result has one item per requested key in input order. A missing blob is a `BlobStoreNotFoundError` item, not a failed call. With `ContinueOnError = false` the first failure fails the whole result. All content is buffered in memory, so use it for many small blobs, not for large files.
+
+A provider can implement the optional `IBlobStoreBatchDownloadProvider` capability. The Entity Framework provider does, and reads the keys with a few multi-key queries (`DownloadBatchSize` keys per query, 25 by default) instead of one query per key. Every key still passes through the complete client behavior pipeline on its own, so compression, encryption, caching, retry, and other behaviors keep working per blob. Providers without the capability, and blobs larger than `ChunkSize`, are read one key at a time with the same bounded parallelism. Duplicate keys are read once per occurrence, but only the first occurrence is batched.
+
+Configure the batch size with `BlobStoreOptions.DownloadBatchSize` (1 to 1000). See [ADR-0032](adr/0032-batched-ef-blob-reads-for-many-keys.md).
 
 ## Properties
 
@@ -1152,3 +1220,74 @@ Expected failures are Result failures, not exceptions. Common typed errors inclu
 - `BlobStoreUploadOverloadedError`
 - `BlobStoreUploadAdmissionTimeoutError`
 - `BlobStoreTimeoutError`
+
+## Appendix: Entity Framework read performance
+
+These figures come from the benchmarks in `benchmarks/Application.Benchmarks` (BenchmarkDotNet, 12 iterations, one request in flight). They show what the Entity Framework provider can do and how the read paths compare. They are not a guarantee for your hardware, network, or schema.
+
+**Test setup.** AMD Ryzen 9 9900X, .NET 10, SQL Server 2022 in a local Docker container, so there is no network latency between the application and the database. Only SQL Server was benchmarked. PostgreSQL and SQLite are covered by the integration contract tests, not by timings. "Cold" means the SQL Server buffer pool was emptied with `DBCC DROPCLEANBUFFERS` before each iteration. The operating system file cache stayed warm, so real disks will be slower.
+
+Each figure below is one request for 100 keys.
+
+### Reading 100 blobs
+
+Throughput is the payload bytes of the 100 blobs divided by the mean time. SQL Server, warm cache, blobs below `ChunkSize`. All sizes come from one benchmark run. The raw SQL column is the fastest hand-written multi-key query over the same data (25 keys per query, 4 queries in parallel), with no DevKit pipeline. It shows the ceiling for this setup.
+
+| Blob size | 16 parallel `DownloadBytesAsync` | `DownloadBytesManyAsync` | Raw SQL ceiling | Batch vs parallel |
+|---|---|---|---|---|
+| 1 KB | 20.4 ms, 4,912 blobs/s, 4.8 MiB/s | 6.0 ms, 16,664 blobs/s, 16.3 MiB/s | 1.8 ms, 55,772 blobs/s, 54.5 MiB/s | 3.4x faster |
+| 4 KB | 17.6 ms, 5,671 blobs/s, 22.2 MiB/s | 7.0 ms, 14,225 blobs/s, 55.6 MiB/s | 2.5 ms, 39,698 blobs/s, 155.1 MiB/s | 2.5x faster |
+| 10 KB | 18.7 ms, 5,338 blobs/s, 52.1 MiB/s | 8.1 ms, 12,294 blobs/s, 120.1 MiB/s | 5.1 ms, 19,755 blobs/s, 192.9 MiB/s | 2.3x faster |
+| 32 KB | 24.6 ms, 4,066 blobs/s, 127.0 MiB/s | 17.5 ms, 5,727 blobs/s, 179.0 MiB/s | 12.8 ms, 7,816 blobs/s, 244.3 MiB/s | 1.4x faster |
+| 64 KB | 33.4 ms, 2,996 blobs/s, 187.3 MiB/s | 27.0 ms, 3,701 blobs/s, 231.3 MiB/s | 24.5 ms, 4,083 blobs/s, 255.2 MiB/s | 1.2x faster |
+| 100 KB | 44.5 ms, 2,248 blobs/s, 219.6 MiB/s | 42.8 ms, 2,335 blobs/s, 228.0 MiB/s | 37.8 ms, 2,644 blobs/s, 258.2 MiB/s | 1.0x |
+| 1 MB | 408.5 ms, 245 blobs/s, 244.8 MiB/s | 374.3 ms, 267 blobs/s, 267.2 MiB/s | 369.9 ms, 270 blobs/s, 270.3 MiB/s | 1.1x faster |
+
+- **Small blobs (up to about 10 KB)** are limited by per-blob cost, not bandwidth. The batch API removes most of it: 2.3 to 3.4 times faster than parallel single reads with 67% to 75% less allocation. Its throughput in MiB/s rises with blob size because each blob costs about the same time.
+- **Between 32 KB and 100 KB** the gain shrinks from 1.4x to none, as moving the bytes starts to dominate.
+- **From about 64 KB** the batch API sits at roughly 230 to 270 MiB/s on this machine and within about 15% of raw SQL (1% at 1 MB).
+- **Remaining overhead for tiny blobs.** At 1 KB the batch API is about three times slower than the raw SQL ceiling (6.0 ms against 1.8 ms) and allocates about 4.8 MB per 100 blobs against 0.4 MB. That is the cost of passing every key through the behavior pipeline, validation and a result object per blob. It is not a database limit.
+- Figures vary by a few percent between runs. The ADR and changelog numbers for 10 KB (20.1 ms and 9.4 ms) come from an earlier run of the same benchmark.
+
+A single read of a 10 KB blob went from 3.28 ms to 1.40 ms after the single-query read path (ADR-0031).
+
+### Scaling to 1,000,000 blobs
+
+The table was seeded with 1,000,000 blobs of 1 KB each. Each request read 100 random keys, rotating through a fixed set of precomputed random requests. SQL Server, random keys.
+
+| Read path | Warm, 1,000 rows | Warm, 1,000,000 rows | Cold, 1,000,000 rows | Warm MiB/s at 1M | Cold MiB/s at 1M |
+|---|---|---|---|---|---|
+| One by one | 125.6 ms | 116.2 ms | 302.2 ms | 0.84 | 0.32 |
+| 16 parallel | 17.0 ms | 18.9 ms | 49.6 ms | 5.2 | 2.0 |
+| `DownloadBytesManyAsync` | 6.1 ms | 5.8 ms | 31.4 ms | 17 | 3.1 |
+
+- With a warm cache the table size does not matter. Lookups use the unique index on the hashes of container and name and stay index seeks.
+- With a cold cache every key needs its own page reads, so time is spent on I/O and not on the DevKit. The batch API still reads 100 keys about 10 times faster than one by one.
+- 1 KB blobs measure per-blob overhead, not bandwidth. Throughput in MiB/s rises with blob size, as the table above shows.
+
+### Row ids
+
+New blob rows use time-ordered GUIDs (ADR-0033). Random ids fragment the clustered primary key because every insert lands on a random page.
+
+| At 1,000,000 blobs | Random ids | Time-ordered ids |
+|---|---|---|
+| Blob primary key | 135,464 pages, 99% fragmented | 90,910 pages, 0.1% fragmented |
+| Chunk primary key | 215,698 pages, 98.8% fragmented | 142,858 pages, 0% fragmented |
+| Data file size | 4.1 GB | 3.0 GB |
+| Cold read of recently written blobs, one by one | 307 ms | 196 ms |
+| Cold read of recently written blobs, batch API | 34.5 ms | 26.4 ms |
+
+Reads of random keys do not change (32 ms either way), because they are decided by the hash index, which stays random. Warm reads do not change either.
+
+### Measuring in production
+
+Use `blobstorage_bytes_per_second` and `blobstorage_operation_duration` from the metrics behavior (see [Metrics](#metrics)), split by `operation`. Compare the two rates with your own blob sizes, since the same store reads 1 KB blobs at a few MiB/s and 1 MB blobs at hundreds of MiB/s.
+
+### Limits of these figures
+
+- One request was in flight at a time, except for the parallel rows. A sustained load test with many concurrent workers reading the full 1,000,000 blobs was not run.
+- There was no network between the application and SQL Server. Over a network each query adds a round trip, which favors the batch API, but this was not measured.
+- Only SQL Server was benchmarked.
+- Blob sizes above `ChunkSize` stream chunk by chunk and are not part of these figures.
+
+See [ADR-0031](adr/0031-single-query-ef-blob-read-for-small-blobs.md), [ADR-0032](adr/0032-batched-ef-blob-reads-for-many-keys.md) and [ADR-0033](adr/0033-time-ordered-ef-blob-row-ids.md) for the design decisions behind these results.

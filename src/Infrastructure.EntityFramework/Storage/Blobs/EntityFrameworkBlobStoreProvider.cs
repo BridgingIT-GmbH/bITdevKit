@@ -276,15 +276,55 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
         try
         {
             var identity = CreateKeyIdentity(key);
-            var blob = await this.QueryExactBlob(lease.Context, identity)
-                .AsNoTracking()
+            var inlineLimit = this.options.ChunkSize;
+
+            // Blobs up to one chunk are loaded together with their first chunk in a single round trip.
+            var row = await (
+                from b in lease.Context.StorageBlobs.AsNoTracking()
+                where b.ContainerHash == identity.ContainerHash && b.NameHash == identity.NameHash
+                join c in lease.Context.StorageBlobChunks.AsNoTracking().Where(c => c.Index == 0)
+                    on b.Id equals c.BlobId into chunks
+                from c in chunks.DefaultIfEmpty()
+                select new
+                {
+                    Blob = b,
+                    Content = b.Length <= inlineLimit ? c.Content : null,
+                    ChunkLength = b.Length <= inlineLimit && c != null ? (int?)c.Length : null
+                })
                 .SingleOrDefaultAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            if (blob is null)
+            if (row is null)
             {
                 await lease.DisposeAsync().ConfigureAwait(false);
                 return Result<BlobDownload>.Failure(new BlobStoreNotFoundError(key));
+            }
+
+            var blob = row.Blob;
+            byte[] inlineBytes = null;
+            if (blob.Length <= inlineLimit)
+            {
+                if (row.ChunkLength is { } chunkLength && chunkLength == blob.Length && row.Content?.Length >= chunkLength)
+                {
+                    inlineBytes = row.Content.Length == chunkLength
+                        ? row.Content
+                        : row.Content.AsSpan(0, chunkLength).ToArray();
+                }
+                else if (blob.Length == 0 && row.ChunkLength is null)
+                {
+                    inlineBytes = [];
+                }
+            }
+
+            if (inlineBytes is not null)
+            {
+                await lease.DisposeAsync().ConfigureAwait(false);
+
+                return Result<BlobDownload>.Success(new BlobDownload
+                {
+                    Info = ToInfo(blob),
+                    Content = new MemoryStream(inlineBytes, writable: false)
+                });
             }
 
             return Result<BlobDownload>.Success(new BlobDownload
@@ -1309,6 +1349,13 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
                 return true;
             }
 
+            // The blob length is known, so no extra lookup is needed to detect the end of the stream.
+            if (this.Position >= this.Length)
+            {
+                this.completed = true;
+                return false;
+            }
+
             var chunk = await lease.Context.StorageBlobChunks
                 .AsNoTracking()
                 .Where(e => e.BlobId == blobId && e.Index == this.nextIndex)
@@ -1318,15 +1365,14 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
 
             if (chunk is null)
             {
-                this.completed = true;
-                return false;
+                throw new InvalidDataException($"Blob chunk {this.nextIndex} of blob {blobId} is missing.");
             }
 
             this.nextIndex++;
             this.currentOffset = 0;
             this.currentChunk = chunk.Length == chunk.Content.Length
                 ? chunk.Content
-                : chunk.Content.Take(chunk.Length).ToArray();
+                : chunk.Content.AsSpan(0, chunk.Length).ToArray();
 
             return true;
         }

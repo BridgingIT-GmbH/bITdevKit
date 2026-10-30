@@ -1231,18 +1231,23 @@ Each figure below is one request for 100 keys.
 
 ### Reading 100 blobs
 
-Throughput is the payload bytes of the 100 blobs divided by the mean time. SQL Server, warm cache, blobs below `ChunkSize`.
+Throughput is the payload bytes of the 100 blobs divided by the mean time. SQL Server, warm cache, blobs below `ChunkSize`. All sizes come from one benchmark run. The raw SQL column is the fastest hand-written multi-key query over the same data (25 keys per query, 4 queries in parallel), with no DevKit pipeline. It shows the ceiling for this setup.
 
-| Blob size | Read path | Time | Blobs/s | MiB/s |
+| Blob size | 16 parallel `DownloadBytesAsync` | `DownloadBytesManyAsync` | Raw SQL ceiling | Batch vs parallel |
 |---|---|---|---|---|
-| 10 KB | 16 parallel `DownloadBytesAsync` calls | 20.1 ms | 4,970 | 48 |
-| 10 KB | `DownloadBytesManyAsync` | 9.4 ms | 10,670 | 104 |
-| 100 KB | 16 parallel `DownloadBytesAsync` calls | 47.5 ms | 2,110 | 206 |
-| 100 KB | `DownloadBytesManyAsync` | 39.6 ms | 2,520 | 247 |
-| 1 MB | 16 parallel `DownloadBytesAsync` calls | 409.8 ms | 244 | 244 |
-| 1 MB | `DownloadBytesManyAsync` | 385.0 ms | 260 | 260 |
+| 1 KB | 20.4 ms, 4,912 blobs/s, 4.8 MiB/s | 6.0 ms, 16,664 blobs/s, 16.3 MiB/s | 1.8 ms, 55,772 blobs/s, 54.5 MiB/s | 3.4x faster |
+| 4 KB | 17.6 ms, 5,671 blobs/s, 22.2 MiB/s | 7.0 ms, 14,225 blobs/s, 55.6 MiB/s | 2.5 ms, 39,698 blobs/s, 155.1 MiB/s | 2.5x faster |
+| 10 KB | 18.7 ms, 5,338 blobs/s, 52.1 MiB/s | 8.1 ms, 12,294 blobs/s, 120.1 MiB/s | 5.1 ms, 19,755 blobs/s, 192.9 MiB/s | 2.3x faster |
+| 32 KB | 24.6 ms, 4,066 blobs/s, 127.0 MiB/s | 17.5 ms, 5,727 blobs/s, 179.0 MiB/s | 12.8 ms, 7,816 blobs/s, 244.3 MiB/s | 1.4x faster |
+| 64 KB | 33.4 ms, 2,996 blobs/s, 187.3 MiB/s | 27.0 ms, 3,701 blobs/s, 231.3 MiB/s | 24.5 ms, 4,083 blobs/s, 255.2 MiB/s | 1.2x faster |
+| 100 KB | 44.5 ms, 2,248 blobs/s, 219.6 MiB/s | 42.8 ms, 2,335 blobs/s, 228.0 MiB/s | 37.8 ms, 2,644 blobs/s, 258.2 MiB/s | 1.0x |
+| 1 MB | 408.5 ms, 245 blobs/s, 244.8 MiB/s | 374.3 ms, 267 blobs/s, 267.2 MiB/s | 369.9 ms, 270 blobs/s, 270.3 MiB/s | 1.1x faster |
 
-The batch API gains most for small blobs, where round trips and per-call overhead dominate: 2.1 times faster at 10 KB with 67% less allocation. For 1 MB blobs the transfer itself dominates, and both paths settle near 250 MiB/s on this machine. A hand-written SQL batch over the same data reached 378 to 463 ms at 1 MB, so the provider is within the range of raw SQL.
+- **Small blobs (up to about 10 KB)** are limited by per-blob cost, not bandwidth. The batch API removes most of it: 2.3 to 3.4 times faster than parallel single reads with 67% to 75% less allocation. Its throughput in MiB/s rises with blob size because each blob costs about the same time.
+- **Between 32 KB and 100 KB** the gain shrinks from 1.4x to none, as moving the bytes starts to dominate.
+- **From about 64 KB** the batch API sits at roughly 230 to 270 MiB/s on this machine and within about 15% of raw SQL (1% at 1 MB).
+- **Remaining overhead for tiny blobs.** At 1 KB the batch API is about three times slower than the raw SQL ceiling (6.0 ms against 1.8 ms) and allocates about 4.8 MB per 100 blobs against 0.4 MB. That is the cost of passing every key through the behavior pipeline, validation and a result object per blob. It is not a database limit.
+- Figures vary by a few percent between runs. The ADR and changelog numbers for 10 KB (20.1 ms and 9.4 ms) come from an earlier run of the same benchmark.
 
 A single read of a 10 KB blob went from 3.28 ms to 1.40 ms after the single-query read path (ADR-0031).
 

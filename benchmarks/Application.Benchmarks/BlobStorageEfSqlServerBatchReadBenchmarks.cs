@@ -21,7 +21,7 @@ public class BlobStorageEfSqlServerBatchReadBenchmarks
 {
     private BlobStorageEfSqlServerReadBenchmarkStore store;
 
-    [Params(10 * 1024, 100 * 1024, 1024 * 1024)]
+    [Params(1024, 4 * 1024, 10 * 1024, 32 * 1024, 64 * 1024, 100 * 1024, 1024 * 1024)]
     public int PayloadBytes { get; set; }
 
     [GlobalSetup]

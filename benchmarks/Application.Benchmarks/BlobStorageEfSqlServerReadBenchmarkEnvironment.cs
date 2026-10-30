@@ -261,6 +261,38 @@ internal sealed class BlobStorageEfSqlServerReadBenchmarkStore : IDisposable
     }
 
     /// <summary>
+    /// Reads the request keys through the DevKit bulk API, which batches the keys on the EF provider.
+    /// </summary>
+    public async Task<long> ReadRequestManyAsync(int parallelism, int maxConcurrentBatches)
+    {
+        var result = await this.Client.DownloadBytesManyAsync(
+            this.Request,
+            new BlobBytesDownloadManyOptions
+            {
+                MaxDegreeOfParallelism = parallelism,
+                MaxConcurrentBatches = maxConcurrentBatches
+            }).ConfigureAwait(false);
+        if (result.IsFailure)
+        {
+            throw new InvalidOperationException(
+                string.Join(Environment.NewLine, result.Errors.Select(error => error.Message)));
+        }
+
+        long total = 0;
+        foreach (var item in result.Value)
+        {
+            if (item.Result.IsFailure)
+            {
+                throw new InvalidOperationException($"Blob '{item.Key}' could not be read.");
+            }
+
+            total += this.Verify(item.Result.Value.Bytes.Length);
+        }
+
+        return total;
+    }
+
+    /// <summary>
     /// Reads the request keys with hand-written multi-key SQL queries (one query per batch, batches run in
     /// parallel). This is the ceiling a provider level multi-get could reach.
     /// </summary>

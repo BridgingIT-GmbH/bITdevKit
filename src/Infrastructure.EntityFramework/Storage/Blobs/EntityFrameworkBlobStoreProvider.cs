@@ -27,7 +27,7 @@ using Microsoft.Extensions.DependencyInjection;
 ///     .WithEntityFrameworkClient&lt;AppDbContext&gt;("reports");
 /// </code>
 /// </example>
-public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobStoreProvider, IBlobStoreRetentionProvider, IBlobStoreContainerCatalog
+public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobStoreProvider, IBlobStoreBatchDownloadProvider, IBlobStoreRetentionProvider, IBlobStoreContainerCatalog
     where TContext : DbContext, IBlobStoreContext
 {
     /// <summary>
@@ -49,6 +49,21 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
         EF.CompileAsyncQuery((TContext dbContext, string containerHash, string nameHash, long inlineLimit) =>
             from b in dbContext.StorageBlobs.AsNoTracking()
             where b.ContainerHash == containerHash && b.NameHash == nameHash
+            join c in dbContext.StorageBlobChunks.AsNoTracking().Where(c => c.Index == 0)
+                on b.Id equals c.BlobId into chunks
+            from c in chunks.DefaultIfEmpty()
+            select new BlobInlineReadRow
+            {
+                Blob = b,
+                Content = b.Length <= inlineLimit ? c.Content : null,
+                ChunkLength = b.Length <= inlineLimit && c != null ? (int?)c.Length : null
+            });
+
+    // Same projection for many blobs of one container, the name hashes travel as one collection parameter.
+    private readonly Func<TContext, string, string[], long, IAsyncEnumerable<BlobInlineReadRow>> readBlobsWithInlineContentQuery =
+        EF.CompileAsyncQuery((TContext dbContext, string containerHash, string[] nameHashes, long inlineLimit) =>
+            from b in dbContext.StorageBlobs.AsNoTracking()
+            where b.ContainerHash == containerHash && nameHashes.Contains(b.NameHash)
             join c in dbContext.StorageBlobChunks.AsNoTracking().Where(c => c.Index == 0)
                 on b.Id equals c.BlobId into chunks
             from c in chunks.DefaultIfEmpty()
@@ -309,22 +324,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
             }
 
             var blob = row.Blob;
-            byte[] inlineBytes = null;
-            if (blob.Length <= inlineLimit)
-            {
-                if (row.ChunkLength is { } chunkLength && chunkLength == blob.Length && row.Content?.Length >= chunkLength)
-                {
-                    inlineBytes = row.Content.Length == chunkLength
-                        ? row.Content
-                        : row.Content.AsSpan(0, chunkLength).ToArray();
-                }
-                else if (blob.Length == 0 && row.ChunkLength is null)
-                {
-                    inlineBytes = [];
-                }
-            }
-
-            if (inlineBytes is not null)
+            if (TryGetInlineBytes(row, inlineLimit, out var inlineBytes))
             {
                 await lease.DisposeAsync().ConfigureAwait(false);
 
@@ -351,6 +351,79 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
             await lease.DisposeAsync().ConfigureAwait(false);
             return Result<BlobDownload>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
         }
+    }
+
+    /// <inheritdoc />
+    public int MaxDownloadBatchSize => this.options.DownloadBatchSize;
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyDictionary<BlobKey, Result<BlobDownload>>> DownloadManyAsync(
+        IReadOnlyCollection<BlobKey> keys,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var results = new Dictionary<BlobKey, Result<BlobDownload>>();
+        if (keys is null || keys.Count == 0)
+        {
+            return results;
+        }
+
+        await using var lease = this.CreateContextLease();
+        try
+        {
+            var inlineLimit = this.options.ChunkSize;
+            var requested = keys.Where(key => BlobValidator.Validate(key).IsSuccess).Distinct();
+
+            foreach (var container in requested.GroupBy(key => key.Container))
+            {
+                var byNameHash = container.ToDictionary(key => HashHelper.ComputeSha256(key.Name));
+                var found = new HashSet<BlobKey>();
+
+                // One query and one context for every blob of the container, blobs up to one chunk arrive with their content.
+                await foreach (var row in this.readBlobsWithInlineContentQuery(
+                        lease.Context,
+                        HashHelper.ComputeSha256(container.Key),
+                        [.. byNameHash.Keys],
+                        inlineLimit)
+                    .WithCancellation(cancellationToken)
+                    .ConfigureAwait(false))
+                {
+                    if (!byNameHash.TryGetValue(row.Blob.NameHash, out var key))
+                    {
+                        continue;
+                    }
+
+                    found.Add(key);
+
+                    // Blobs above one chunk are left out and streamed by the single read.
+                    if (TryGetInlineBytes(row, inlineLimit, out var inlineBytes))
+                    {
+                        results[key] = Result<BlobDownload>.Success(new BlobDownload
+                        {
+                            Info = ToInfo(row.Blob),
+                            Content = new MemoryStream(inlineBytes, 0, inlineBytes.Length, writable: false, publiclyVisible: true)
+                        });
+                    }
+                }
+
+                foreach (var key in container.Where(key => !found.Contains(key)))
+                {
+                    results[key] = Result<BlobDownload>.Failure(new BlobStoreNotFoundError(key));
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception exception)
+        {
+            // The caller reads every key that is missing from the result with the single download.
+            TypedLogger.LogBatchDownloadFailed(this.logger, this.storeName, keys.Count, exception.GetFullMessage());
+        }
+
+        return results;
     }
 
     /// <inheritdoc />
@@ -1145,6 +1218,29 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
         return null;
     }
 
+    private static bool TryGetInlineBytes(BlobInlineReadRow row, long inlineLimit, out byte[] bytes)
+    {
+        var blob = row.Blob;
+        bytes = null;
+        if (blob.Length > inlineLimit)
+        {
+            return false;
+        }
+
+        if (row.ChunkLength is { } chunkLength && chunkLength == blob.Length && row.Content?.Length >= chunkLength)
+        {
+            bytes = row.Content.Length == chunkLength
+                ? row.Content
+                : row.Content.AsSpan(0, chunkLength).ToArray();
+        }
+        else if (blob.Length == 0 && row.ChunkLength is null)
+        {
+            bytes = [];
+        }
+
+        return bytes is not null;
+    }
+
     private static bool IsSqlite(DbContext dbContext) =>
         dbContext.Database.ProviderName?.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) == true;
 
@@ -1291,6 +1387,16 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
             string storeName,
             int chunkCount,
             long byteCount);
+
+        [LoggerMessage(
+            1,
+            LogLevel.Warning,
+            "blob EF batch download failed, falling back to single reads (store={StoreName}, provider=Entity Framework, keys={KeyCount}, error={Error})")]
+        public static partial void LogBatchDownloadFailed(
+            ILogger logger,
+            string storeName,
+            int keyCount,
+            string error);
     }
 
     private sealed class BlobChunkReadStream(ContextLease lease, string blobId, long length) : Stream

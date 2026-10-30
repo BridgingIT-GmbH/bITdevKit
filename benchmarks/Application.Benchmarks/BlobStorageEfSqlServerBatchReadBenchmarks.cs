@@ -32,6 +32,12 @@ public class BlobStorageEfSqlServerBatchReadBenchmarks
     public Task<long> DevKit_Parallel16() => this.store.ReadRequestParallelAsync(16, rawSql: false);
 
     [Benchmark]
+    public Task<long> DevKit_Many_Batches4() => this.store.ReadRequestManyAsync(16, 4);
+
+    [Benchmark]
+    public Task<long> DevKit_Many_Batches8() => this.store.ReadRequestManyAsync(32, 8);
+
+    [Benchmark]
     public Task<long> RawSql_Parallel16() => this.store.ReadRequestParallelAsync(16, rawSql: true);
 
     [Benchmark]

@@ -845,6 +845,42 @@ var bytesResult = await blobs.DownloadBytesAsync(
 
 The byte helpers intentionally buffer content in memory and are not a replacement for stream-first large blob operations.
 
+### Reading many blobs at once
+
+Use `DownloadBytesManyAsync` when a request needs many small blobs, for example all days of a set of ids:
+
+```csharp
+var keys = days.SelectMany(day => ids.Select(id => new BlobKey("telemetry", $"{id}/{day:yyyy-MM-dd}")));
+
+var result = await blobs.DownloadBytesManyAsync(
+    keys,
+    new BlobBytesDownloadManyOptions
+    {
+        MaxDegreeOfParallelism = 16, // concurrent key workers
+        MaxConcurrentBatches = 4,    // concurrent multi-key queries on a batching provider
+        ContinueOnError = true       // report per-key failures instead of failing the whole call
+    },
+    cancellationToken);
+
+foreach (var item in result.Value)
+{
+    if (item.Result.IsSuccess)
+    {
+        Process(item.Key, item.Result.Value.Bytes);
+    }
+    else if (item.Result.HasError<BlobStoreNotFoundError>())
+    {
+        // this key does not exist, the other keys are unaffected
+    }
+}
+```
+
+The result has one item per requested key in input order. A missing blob is a `BlobStoreNotFoundError` item, not a failed call. With `ContinueOnError = false` the first failure fails the whole result. All content is buffered in memory, so use it for many small blobs, not for large files.
+
+A provider can implement the optional `IBlobStoreBatchDownloadProvider` capability. The Entity Framework provider does, and reads the keys with a few multi-key queries (`DownloadBatchSize` keys per query, 25 by default) instead of one query per key. Every key still passes through the complete client behavior pipeline on its own, so compression, encryption, caching, retry, and other behaviors keep working per blob. Providers without the capability, and blobs larger than `ChunkSize`, are read one key at a time with the same bounded parallelism. Duplicate keys are read once per occurrence, but only the first occurrence is batched.
+
+Configure the batch size with `BlobStoreOptions.DownloadBatchSize` (1 to 1000). See [ADR-0032](adr/0032-batched-ef-blob-reads-for-many-keys.md).
+
 ## Properties
 
 Properties operations return or update `BlobInfo` without downloading content.

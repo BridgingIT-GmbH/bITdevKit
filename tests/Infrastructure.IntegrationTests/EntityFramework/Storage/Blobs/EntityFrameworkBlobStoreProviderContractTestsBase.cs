@@ -47,6 +47,38 @@ public abstract class EntityFrameworkBlobStoreProviderContractTestsBase(ITestOut
     }
 
     [Fact]
+    public async Task DownloadBytesManyAsync_WithManyBlobsMixedSizesAndMissingKey_ReturnsEachOutcomeInOrder()
+    {
+        // Arrange
+        var client = this.CreateClient(new BlobStoreOptions { ChunkSize = 64, DownloadBatchSize = 7 });
+        var contents = Enumerable.Range(0, 20)
+            .Select(i => (Key: CreateKey($"read-many-{i}.bin"), Content: i % 5 == 0 ? new string('x', 200 + i) : $"content-{i}"))
+            .ToArray();
+        foreach (var (key, content) in contents)
+        {
+            (await client.UploadAsync(CreateUpload(key, content))).IsSuccess.ShouldBeTrue();
+        }
+
+        var missing = CreateKey("read-many-missing.bin");
+        var keys = contents.Select(item => item.Key).Concat([missing, contents[0].Key]).ToArray();
+
+        // Act
+        var result = await client.DownloadBytesManyAsync(keys, new BlobBytesDownloadManyOptions { MaxDegreeOfParallelism = 8 });
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.Select(item => item.Key).ShouldBe(keys);
+        for (var i = 0; i < contents.Length; i++)
+        {
+            result.Value[i].Result.IsSuccess.ShouldBeTrue();
+            Encoding.UTF8.GetString(result.Value[i].Result.Value.Bytes).ShouldBe(contents[i].Content);
+        }
+
+        result.Value[20].Result.HasError<BlobStoreNotFoundError>().ShouldBeTrue();
+        Encoding.UTF8.GetString(result.Value[21].Result.Value.Bytes).ShouldBe(contents[0].Content);
+    }
+
+    [Fact]
     public async Task UploadAsync_WithSeveralFlushGroups_CommitsCompleteContent()
     {
         // Arrange

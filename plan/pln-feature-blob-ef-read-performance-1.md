@@ -12,7 +12,7 @@ tags: [feature, storage, blobs, entity-framework, sql-server, performance, read-
 
 ![Status: In progress](https://img.shields.io/badge/status-In%20progress-yellow)
 
-**Progress (2026-10-30):** Phases 1 to 3 are implemented (commits `2056b92dc`, `1941f83dc`) and verified on SQL Server, PostgreSQL and SQLite by the integration contract tests. Documentation, ADR-0031 and the changelog entry (TASK-019 to TASK-021) are done. Deviations: the compiled query is a per-instance field, not `static readonly` (TASK-014), because EF binds a compiled query to the first provider and a static field broke mixed-provider processes; the inline stream is a publicly visible `MemoryStream` instead of a new `BlobBufferedReadStream` (TASK-009, TASK-015). TASK-016 (hash cost) is not done. Measured after Phase 3 on SQL Server: 10 KB read 3.28 to 1.40 ms, 1 query instead of 3, allocation 255 to 185 KB; 100 KB read 3.67 to 1.76 ms, 708 to 458 KB. The results file (TASK-018), the benchmark re-run with the per-instance field, a PostgreSQL benchmark, and Phase 5 are open.
+**Progress (2026-10-30):** Phases 1 to 3 are implemented (commits `2056b92dc`, `1941f83dc`) and verified on SQL Server, PostgreSQL and SQLite by the integration contract tests. Documentation, ADR-0031 and the changelog entry (TASK-019 to TASK-021) are done. Deviations: the compiled query is a per-instance field, not `static readonly` (TASK-014), because EF binds a compiled query to the first provider and a static field broke mixed-provider processes; the inline stream is a publicly visible `MemoryStream` instead of a new `BlobBufferedReadStream` (TASK-009, TASK-015). TASK-016 (hash cost) is not done. Measured after Phase 3 on SQL Server: 10 KB read 3.28 to 1.40 ms, 1 query instead of 3, allocation 255 to 185 KB; 100 KB read 3.67 to 1.76 ms, 708 to 458 KB. The results file (TASK-018), the benchmark re-run with the per-instance field, and a PostgreSQL benchmark are open. Phase 5 (option C, `DownloadBytesManyAsync`) is implemented and measured: 100 keys of 10 KB went from 20.1 to 9.4 ms with 67% less allocation (ADR-0032).
 
 This plan improves the read path of `EntityFrameworkBlobStoreProvider<TContext>.DownloadAsync` for blobs up to the default `ChunkSize` of 4 MB, measured on SQL Server. The baseline was captured with the benchmarks in `benchmarks/Application.Benchmarks` (commit `ad8a599c3`). Workload: many blobs under 100 KB, keys `{32-char id}/{yyyy-MM-dd}`, direct key lookup (no listing), compressed payloads. Scope is reads only. No schema change, no public API change in Phases 1 to 4. After implementation the same benchmarks are re-run and compared against the baseline in section 1.
 
@@ -133,9 +133,19 @@ Findings: a client-side parallel helper cannot beat the existing `DevKit_Paralle
 | Task | Description | Completed | Date |
 |------|-------------|-----------|------|
 | TASK-022 | Spike: add `ReadRequestRawSqlBatchAsync` and `BlobStorageEfSqlServerBatchReadBenchmarks` to measure the multi-get ceiling. Fix the benchmark seed ids, which collapsed 20 ids to 16 distinct values. | ✅ | 2026-10-30 |
-| TASK-023 | Decision (open): choose one of: (A) client extension `DownloadBytesManyAsync` only, parallel single reads, no speedup beyond the current baseline; (B) A plus an optional provider capability interface (for example `IBlobStoreBatchReader`) implemented by the EF provider with one `IN` query per batch of at most 25 keys (4 batches in parallel) and a per-key fallback for providers without it; (C) B plus compiled batch queries and a single scope per batch. | | |
-| TASK-024 | Implement the chosen option with result ordering by input key, per-key `BlobStoreNotFoundError` items, duplicate key handling, and `ContinueOnError`. Reuse the helper types from `blob-read-experiments.patch`. | | |
-| TASK-025 | Add benchmark methods that call the real DevKit batch API with the same key sets, record results and compare with the spike table. | | |
+| TASK-023 | Decision: option (C), chosen by the user on 2026-10-30. A plus an optional provider capability (`IBlobStoreBatchDownloadProvider`) implemented by the EF provider with compiled multi-key queries and one scope per batch, and a per-key fallback for providers without it. | ✅ | 2026-10-30 |
+| TASK-024 | Implemented: `IBlobStoreBatchDownloadProvider`, `BlobDownloadBatchScope` (ambient scope, keeps the behavior pipeline per key), `DownloadBytesManyAsync` with `BlobBytesDownloadManyOptions`, `BlobStoreOptions.DownloadBatchSize`, and `EntityFrameworkBlobStoreProvider.DownloadManyAsync`. Result ordering, per-key `BlobStoreNotFoundError`, duplicate keys, and `ContinueOnError` are covered by unit, SQLite, and integration tests (SQL Server, PostgreSQL, SQLite). | ✅ | 2026-10-30 |
+| TASK-025 | Added `DevKit_Many_Batches4` and `DevKit_Many_Batches8` to `BlobStorageEfSqlServerBatchReadBenchmarks`. Results below. | ✅ | 2026-10-30 |
+
+**Result (2026-10-30, SQL Server, 100 distinct keys, mean per request):**
+
+| Payload | DevKit, 16 parallel single reads | DevKit `DownloadBytesManyAsync` (16 workers, 4 batches) | Raw SQL, 4 x 25 (ceiling) |
+|---------|-----------|-----------|----------|
+| 10 KB | 20.1 ms (22.8 MB) | 9.4 ms (7.6 MB), 2.1x faster, 67% less allocation | 5.9 ms (3.1 MB) |
+| 100 KB | 47.5 ms (46.4 MB) | 39.6 ms (35.3 MB), 17% faster | 38.2 ms (30 MB) |
+| 1 MB | 410 ms (326 MB) | 385 ms (316 MB), 6% faster | 378 ms (307 MB) |
+
+Eight batches in flight with 32 workers gave no further gain. The remaining gap to the raw ceiling at 10 KB is the per-key behavior pipeline, `DownloadBytesAsync`, and EF materialization.
 
 ## 3. Alternatives
 

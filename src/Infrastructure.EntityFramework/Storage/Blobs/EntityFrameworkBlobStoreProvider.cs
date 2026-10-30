@@ -43,6 +43,20 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
     private readonly string storeName;
     private readonly string leaseOwner = $"{Environment.MachineName}:{Guid.NewGuid():N}";
 
+    private static readonly Func<TContext, string, string, long, IAsyncEnumerable<BlobInlineReadRow>> ReadBlobWithInlineContentQuery =
+        EF.CompileAsyncQuery((TContext dbContext, string containerHash, string nameHash, long inlineLimit) =>
+            from b in dbContext.StorageBlobs.AsNoTracking()
+            where b.ContainerHash == containerHash && b.NameHash == nameHash
+            join c in dbContext.StorageBlobChunks.AsNoTracking().Where(c => c.Index == 0)
+                on b.Id equals c.BlobId into chunks
+            from c in chunks.DefaultIfEmpty()
+            select new BlobInlineReadRow
+            {
+                Blob = b,
+                Content = b.Length <= inlineLimit ? c.Content : null,
+                ChunkLength = b.Length <= inlineLimit && c != null ? (int?)c.Length : null
+            });
+
     /// <summary>
     /// Initializes a new instance of the <see cref="EntityFrameworkBlobStoreProvider{TContext}" /> class for
     /// DI-managed usage with fresh scoped contexts per operation.
@@ -279,20 +293,12 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
             var inlineLimit = this.options.ChunkSize;
 
             // Blobs up to one chunk are loaded together with their first chunk in a single round trip.
-            var row = await (
-                from b in lease.Context.StorageBlobs.AsNoTracking()
-                where b.ContainerHash == identity.ContainerHash && b.NameHash == identity.NameHash
-                join c in lease.Context.StorageBlobChunks.AsNoTracking().Where(c => c.Index == 0)
-                    on b.Id equals c.BlobId into chunks
-                from c in chunks.DefaultIfEmpty()
-                select new
-                {
-                    Blob = b,
-                    Content = b.Length <= inlineLimit ? c.Content : null,
-                    ChunkLength = b.Length <= inlineLimit && c != null ? (int?)c.Length : null
-                })
-                .SingleOrDefaultAsync(cancellationToken)
-                .ConfigureAwait(false);
+            var row = await ReadBlobWithInlineContentAsync(
+                lease.Context,
+                identity.ContainerHash,
+                identity.NameHash,
+                inlineLimit,
+                cancellationToken).ConfigureAwait(false);
 
             if (row is null)
             {
@@ -323,7 +329,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
                 return Result<BlobDownload>.Success(new BlobDownload
                 {
                     Info = ToInfo(blob),
-                    Content = new MemoryStream(inlineBytes, writable: false)
+                    Content = new MemoryStream(inlineBytes, 0, inlineBytes.Length, writable: false, publiclyVisible: true)
                 });
             }
 
@@ -1119,6 +1125,24 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
     private IQueryable<StorageBlob> QueryExactBlob(TContext dbContext, KeyIdentity key) =>
         dbContext.StorageBlobs.Where(e => e.ContainerHash == key.ContainerHash && e.NameHash == key.NameHash);
 
+    private static async Task<BlobInlineReadRow> ReadBlobWithInlineContentAsync(
+        TContext dbContext,
+        string containerHash,
+        string nameHash,
+        long inlineLimit,
+        CancellationToken cancellationToken)
+    {
+        // The unique (ContainerHash, NameHash) index guarantees at most one row.
+        await foreach (var row in ReadBlobWithInlineContentQuery(dbContext, containerHash, nameHash, inlineLimit)
+            .WithCancellation(cancellationToken)
+            .ConfigureAwait(false))
+        {
+            return row;
+        }
+
+        return null;
+    }
+
     private static bool IsSqlite(DbContext dbContext) =>
         dbContext.Database.ProviderName?.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) == true;
 
@@ -1233,6 +1257,15 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
         string PropertiesJson);
 
     private sealed record BlobSnapshot(KeyIdentity Key, StorageBlob Blob, IReadOnlyList<StorageBlobChunk> Chunks);
+
+    private sealed class BlobInlineReadRow
+    {
+        public StorageBlob Blob { get; init; }
+
+        public byte[] Content { get; init; }
+
+        public int? ChunkLength { get; init; }
+    }
 
     private readonly record struct ContentWriteResult(
         string Hash,

@@ -103,13 +103,30 @@ public static class BlobBytesStorageExtensions
         }
 
         await using var download = downloadResult.Value;
-        using var buffer = new MemoryStream();
+
+        // Providers that already hold the whole blob in a publicly visible buffer avoid a second copy.
+        if (download.Content is MemoryStream source &&
+            source.Position == 0 &&
+            source.TryGetBuffer(out var segment) &&
+            segment.Array is { } array &&
+            segment.Offset == 0 &&
+            segment.Count == array.Length)
+        {
+            return Result<BlobBytesContent>.Success(new BlobBytesContent
+            {
+                Info = download.Info,
+                Bytes = array
+            });
+        }
+
+        var capacity = download.Info?.Length is > 0 and <= int.MaxValue ? (int)download.Info.Length : 0;
+        using var buffer = new MemoryStream(capacity);
         await download.Content.CopyToAsync(buffer, cancellationToken).ConfigureAwait(false);
 
         return Result<BlobBytesContent>.Success(new BlobBytesContent
         {
             Info = download.Info,
-            Bytes = buffer.ToArray()
+            Bytes = buffer.Length == buffer.Capacity ? buffer.GetBuffer() : buffer.ToArray()
         });
     }
 }

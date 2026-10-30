@@ -6,6 +6,7 @@ This changelog includes unreleased changes on `main` and the full tagged release
 
 - Improved Entity Framework blob read performance for blobs up to `ChunkSize`: a read now uses one compiled query instead of three round trips, releases its lease before returning the content, and `DownloadBytesAsync` avoids extra buffer copies. A 10 KB read on SQL Server went from 3.28 ms to 1.40 ms with 27% to 54% less allocation. A missing chunk now fails the read with `InvalidDataException`. Added EF blob read benchmarks to `benchmarks/Application.Benchmarks`.
 - Added `DownloadBytesManyAsync` to read many small blobs at once. The Entity Framework provider reads the keys with a few multi-key queries (new optional `IBlobStoreBatchDownloadProvider`, new `BlobStoreOptions.DownloadBatchSize`, default 25) while every key still passes through the client behavior pipeline. Reading 100 keys of 10 KB on SQL Server went from 20.1 ms to 9.4 ms with 67% less allocation. Other providers read key by key. See ADR-0032.
+- Changed the Entity Framework blob provider to create row ids as time-ordered GUIDs (`Guid.CreateVersion7`, still 32 hex characters, no migration, existing ids stay valid). With 1,000,000 blobs on SQL Server the primary keys stay under 1% fragmented instead of 99%, the tables are about a third smaller, and reading recently written blobs from a cold cache is 23% to 36% faster. Reads of random keys are unchanged: 1,000,000 rows read as fast as 1,000 rows with a warm cache. Added a large-table benchmark. See ADR-0033.
 
 ## [10.0.119] - 2026-10-27
 

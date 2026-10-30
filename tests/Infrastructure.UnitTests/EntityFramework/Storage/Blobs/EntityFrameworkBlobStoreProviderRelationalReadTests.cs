@@ -323,6 +323,46 @@ public sealed class EntityFrameworkBlobStoreProviderRelationalReadTests : IDispo
             .ShouldBe([$"content-{keys[0].Name}", $"content-{keys[0].Name}"]);
     }
 
+    [Fact]
+    public async Task UploadAsync_WithSeveralBlobs_CreatesTimeOrderedRowIds()
+    {
+        // Arrange
+        var sut = this.CreateProvider(new BlobStoreOptions { ChunkSize = 1024 });
+        var keys = Enumerable.Range(0, 10).Select(i => new BlobKey("reports", $"ordered-{i}.bin")).ToArray();
+
+        // Act
+        foreach (var key in keys)
+        {
+            (await sut.UploadAsync(CreateUpload("x", key))).IsSuccess.ShouldBeTrue();
+            await Task.Delay(3); // the ids carry a millisecond timestamp
+        }
+
+        // Assert
+        using var scope = this.services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<RelationalBlobDbContext>();
+        var ids = await dbContext.StorageBlobs.AsNoTracking()
+            .Where(b => b.Name.StartsWith("ordered-"))
+            .OrderBy(b => b.Name)
+            .Select(b => b.Id)
+            .ToListAsync();
+        ids.Count.ShouldBe(10);
+        ids.ShouldBe(ids.OrderBy(id => id, StringComparer.Ordinal).ToList());
+        ids.ShouldAllBe(id => id.Length == 32 && id[12] == '7');
+    }
+
+    [Fact]
+    public void CreateId_ReturnsVersion7GuidInNFormat()
+    {
+        // Arrange & Act
+        var id = StorageBlob.CreateId();
+
+        // Assert
+        id.Length.ShouldBe(32);
+        Guid.TryParseExact(id, "N", out var guid).ShouldBeTrue();
+        guid.Version.ShouldBe(7);
+        new StorageBlob().Id.Length.ShouldBe(32);
+    }
+
     private async Task<BlobKey[]> UploadManyAsync(
         EntityFrameworkBlobStoreProvider<RelationalBlobDbContext> provider,
         int count)

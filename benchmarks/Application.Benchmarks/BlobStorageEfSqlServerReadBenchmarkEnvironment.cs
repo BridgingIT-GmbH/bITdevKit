@@ -54,6 +54,21 @@ internal static class BlobStorageEfSqlServerReadBenchmarkEnvironment
         }
     }
 
+    public static async Task<string> GetServerConnectionStringAsync()
+    {
+        await Gate.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            await EnsureServerAsync().ConfigureAwait(false);
+
+            return serverConnectionString;
+        }
+        finally
+        {
+            Gate.Release();
+        }
+    }
+
     private static async Task EnsureServerAsync()
     {
         if (serverConnectionString is not null)

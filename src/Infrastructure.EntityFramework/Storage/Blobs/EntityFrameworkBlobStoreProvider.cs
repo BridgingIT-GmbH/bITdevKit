@@ -198,7 +198,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
             {
                 blob = new StorageBlob
                 {
-                    Id = Guid.NewGuid().ToString("N"),
+                    Id = StorageBlob.CreateId(),
                     Container = upload.Key.Container,
                     Name = upload.Key.Name,
                     ContainerHash = key.ContainerHash,

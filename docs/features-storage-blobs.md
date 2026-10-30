@@ -650,6 +650,14 @@ if (downloadResult.IsSuccess)
 
 The caller owns and disposes the returned `BlobDownload`, which disposes the returned content stream.
 
+### Entity Framework read path
+
+The EF provider reads blobs up to `ChunkSize` (4 MB by default) with a single query that loads the metadata and the first chunk together. It releases its internal lease before returning, so the content stream is an in-memory stream that does not hold a database connection. Larger blobs return a forward-only stream that reads one chunk per query and keeps the lease until it is disposed. A missing chunk fails the read with `InvalidDataException` instead of returning truncated content.
+
+`DownloadBytesAsync` returns the buffer of a small blob without an extra copy, and pre-sizes its buffer from the blob length for other streams. Blobs of at most 100 KB are the best case, because the read is dominated by the round trip, not the transfer.
+
+This applies to SQL Server, PostgreSQL and SQLite. The read query is compiled once per provider instance. See [ADR-0031](adr/0031-single-query-ef-blob-read-for-small-blobs.md).
+
 ## <img class="bdk-doc-icon" src="assets/features/storage-integrity.svg" width="24" height="24" alt=""> Verified download
 
 Use `DownloadVerifiedToAsync` when the destination should only be considered valid after the downloaded bytes match the stored SHA-256 content hash.

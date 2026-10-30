@@ -66,6 +66,61 @@ public sealed class BlobStorageConvenienceExtensionsTests
     }
 
     [Fact]
+    public async Task DownloadBytesAsync_WithPubliclyVisibleBuffer_ReturnsBufferWithoutCopy()
+    {
+        // Arrange
+        var key = new BlobKey("assets", "image.bin");
+        var source = new byte[] { 1, 2, 3, 4 };
+        var client = CreateDownloadClient(
+            key,
+            new MemoryStream(source, 0, source.Length, writable: false, publiclyVisible: true),
+            source.Length);
+
+        // Act
+        var result = await client.DownloadBytesAsync(key);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.Bytes.ShouldBeSameAs(source);
+    }
+
+    [Fact]
+    public async Task DownloadBytesAsync_WithPrivateBuffer_CopiesContent()
+    {
+        // Arrange
+        var key = new BlobKey("assets", "image.bin");
+        var source = new byte[] { 1, 2, 3, 4 };
+        var client = CreateDownloadClient(key, new MemoryStream(source, writable: false), source.Length);
+
+        // Act
+        var result = await client.DownloadBytesAsync(key);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.Bytes.ShouldBe(source);
+        result.Value.Bytes.ShouldNotBeSameAs(source);
+    }
+
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(4, 4)]
+    [InlineData(4, 100)]
+    public async Task DownloadBytesAsync_WithForwardOnlyStream_ReturnsExactContent(int contentLength, int declaredLength)
+    {
+        // Arrange
+        var key = new BlobKey("assets", "image.bin");
+        var source = Enumerable.Range(1, contentLength).Select(i => (byte)i).ToArray();
+        var client = CreateDownloadClient(key, new NonSeekableReadStream(source), declaredLength);
+
+        // Act
+        var result = await client.DownloadBytesAsync(key);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.Bytes.ShouldBe(source);
+    }
+
+    [Fact]
     public async Task PropertyPatchHelpers_UpdatePropertiesWithoutChangingContent()
     {
         // Arrange
@@ -537,6 +592,16 @@ public sealed class BlobStorageConvenienceExtensionsTests
         methods.ShouldNotContain(nameof(BlobTransferStorageExtensions.CopyToAsync));
         methods.ShouldNotContain(nameof(BlobTransferStorageExtensions.DeleteByPrefixAsync));
     }
+
+    private static IBlobStoreClient CreateDownloadClient(BlobKey key, Stream content, long declaredLength) =>
+        new ScriptedBlobStoreClient
+        {
+            DownloadHandler = _ => Result<BlobDownload>.Success(new BlobDownload
+            {
+                Info = new BlobInfo { Key = key, Length = declaredLength },
+                Content = content
+            })
+        };
 
     private static IBlobStoreClient CreateClient()
     {

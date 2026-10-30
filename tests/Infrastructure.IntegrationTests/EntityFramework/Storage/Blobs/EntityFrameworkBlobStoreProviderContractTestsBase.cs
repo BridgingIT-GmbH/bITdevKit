@@ -25,6 +25,27 @@ public abstract class EntityFrameworkBlobStoreProviderContractTestsBase(ITestOut
 
     protected abstract StubDbContext CreateDbContext(bool forceNew = false);
 
+    [Theory]
+    [InlineData("", 1024)]
+    [InlineData("hello", 1024)]
+    [InlineData("exactly-one-chunk", 17)]
+    [InlineData("spans-several-chunks-of-four-bytes", 4)]
+    public async Task DownloadBytesAsync_WithContentAroundChunkBoundaries_ReturnsCompleteContent(string content, int chunkSize)
+    {
+        // Arrange
+        var client = this.CreateClient(new BlobStoreOptions { ChunkSize = chunkSize });
+        var key = CreateKey($"read-boundary-{chunkSize}-{content.Length}.bin");
+        (await client.UploadAsync(CreateUpload(key, content))).IsSuccess.ShouldBeTrue();
+
+        // Act
+        var result = await client.DownloadBytesAsync(key);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.Info.Length.ShouldBe(Encoding.UTF8.GetByteCount(content));
+        Encoding.UTF8.GetString(result.Value.Bytes).ShouldBe(content);
+    }
+
     [Fact]
     public async Task UploadAsync_WithSeveralFlushGroups_CommitsCompleteContent()
     {

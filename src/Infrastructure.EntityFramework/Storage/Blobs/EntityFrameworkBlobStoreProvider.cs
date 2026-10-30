@@ -43,7 +43,9 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
     private readonly string storeName;
     private readonly string leaseOwner = $"{Environment.MachineName}:{Guid.NewGuid():N}";
 
-    private static readonly Func<TContext, string, string, long, IAsyncEnumerable<BlobInlineReadRow>> ReadBlobWithInlineContentQuery =
+    // Per instance on purpose: EF binds a compiled query to the first provider it runs against, and the same
+    // TContext type can be used with different database providers in one process.
+    private readonly Func<TContext, string, string, long, IAsyncEnumerable<BlobInlineReadRow>> readBlobWithInlineContentQuery =
         EF.CompileAsyncQuery((TContext dbContext, string containerHash, string nameHash, long inlineLimit) =>
             from b in dbContext.StorageBlobs.AsNoTracking()
             where b.ContainerHash == containerHash && b.NameHash == nameHash
@@ -293,7 +295,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
             var inlineLimit = this.options.ChunkSize;
 
             // Blobs up to one chunk are loaded together with their first chunk in a single round trip.
-            var row = await ReadBlobWithInlineContentAsync(
+            var row = await this.ReadBlobWithInlineContentAsync(
                 lease.Context,
                 identity.ContainerHash,
                 identity.NameHash,
@@ -1125,7 +1127,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
     private IQueryable<StorageBlob> QueryExactBlob(TContext dbContext, KeyIdentity key) =>
         dbContext.StorageBlobs.Where(e => e.ContainerHash == key.ContainerHash && e.NameHash == key.NameHash);
 
-    private static async Task<BlobInlineReadRow> ReadBlobWithInlineContentAsync(
+    private async Task<BlobInlineReadRow> ReadBlobWithInlineContentAsync(
         TContext dbContext,
         string containerHash,
         string nameHash,
@@ -1133,7 +1135,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
         CancellationToken cancellationToken)
     {
         // The unique (ContainerHash, NameHash) index guarantees at most one row.
-        await foreach (var row in ReadBlobWithInlineContentQuery(dbContext, containerHash, nameHash, inlineLimit)
+        await foreach (var row in this.readBlobWithInlineContentQuery(dbContext, containerHash, nameHash, inlineLimit)
             .WithCancellation(cancellationToken)
             .ConfigureAwait(false))
         {

@@ -4,13 +4,15 @@ version: 1.0
 date_created: 2026-10-30
 last_updated: 2026-10-30
 owner: bITdevKit maintainers
-status: 'Planned'
+status: 'In progress'
 tags: [feature, storage, blobs, entity-framework, sql-server, performance, read-path]
 ---
 
 # Introduction
 
-![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
+![Status: In progress](https://img.shields.io/badge/status-In%20progress-yellow)
+
+**Progress (2026-10-30):** Phases 1 to 3 are implemented (commits `2056b92dc`, `1941f83dc`) and verified on SQL Server, PostgreSQL and SQLite by the integration contract tests. Documentation, ADR-0031 and the changelog entry (TASK-019 to TASK-021) are done. Deviations: the compiled query is a per-instance field, not `static readonly` (TASK-014), because EF binds a compiled query to the first provider and a static field broke mixed-provider processes; the inline stream is a publicly visible `MemoryStream` instead of a new `BlobBufferedReadStream` (TASK-009, TASK-015). TASK-016 (hash cost) is not done. Measured after Phase 3 on SQL Server: 10 KB read 3.28 to 1.40 ms, 1 query instead of 3, allocation 255 to 185 KB; 100 KB read 3.67 to 1.76 ms, 708 to 458 KB. The results file (TASK-018), the benchmark re-run with the per-instance field, a PostgreSQL benchmark, and Phase 5 are open.
 
 This plan improves the read path of `EntityFrameworkBlobStoreProvider<TContext>.DownloadAsync` for blobs up to the default `ChunkSize` of 4 MB, measured on SQL Server. The baseline was captured with the benchmarks in `benchmarks/Application.Benchmarks` (commit `ad8a599c3`). Workload: many blobs under 100 KB, keys `{32-char id}/{yyyy-MM-dd}`, direct key lookup (no listing), compressed payloads. Scope is reads only. No schema change, no public API change in Phases 1 to 4. After implementation the same benchmarks are re-run and compared against the baseline in section 1.
 

@@ -2,6 +2,10 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [Unreleased]
+
+- Improved Entity Framework blob read performance for blobs up to `ChunkSize`: a read now uses one compiled query instead of three round trips, releases its lease before returning the content, and `DownloadBytesAsync` avoids extra buffer copies. A 10 KB read on SQL Server went from 3.28 ms to 1.40 ms with 27% to 54% less allocation. A missing chunk now fails the read with `InvalidDataException`. Added EF blob read benchmarks to `benchmarks/Application.Benchmarks`.
+
 ## [10.0.119] - 2026-10-27
 
 - Changed NuGet package publishing to run for version tags only, so preview packages are no longer published from `main`. Branch publishing can be turned back on with the `PUBLISHABLE_BRANCHES` repository variable, and a tag can be built and published again with a manual run of the CI workflow.

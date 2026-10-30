@@ -205,23 +205,46 @@ No capability changes. `FullMatch` and `KeyListing` stay `SupportedEfficiently`.
 
 ## Benchmarks
 
-New benchmark classes live in `benchmarks\Application.Benchmarks`, reuse the blob SQL Server environment pattern (`BLOB_BENCH_SQL_CONNECTION` style variable, for example `DOC_BENCH_SQL_CONNECTION`) and run against a throwaway SQL Server container.
+The benchmarks are written in Phase 0, before any provider change, so every later phase has a baseline to beat. They mirror the blob benchmarks and reuse their infrastructure.
 
-| Benchmark | Measures |
-|---|---|
-| Single read | `GetAsync` latency for 1 KB, 10 KB and 100 KB payloads |
-| Batch read | `GetManyAsync` against parallel `GetAsync` and a raw SQL ceiling, with 1, 10, 25, 100 and 1000 keys |
-| Bulk write | `UpsertManyAsync` and `DeleteManyAsync` with 10, 100 and 1000 documents |
-| Insert at scale | Insert throughput and clustered index fragmentation at 1M rows, comparing random ids with EF sequential ids |
-| Large table reads | Cold and warm single and batch reads against 1M rows |
-| Paging | Full-type `FindPage` and `ListPage` page latency at 1M rows before and after the index and keyset change |
-| Expiration sweep | `SweepExpired` with 1M rows, 1% expiring, before and after the filtered index |
+### Environment
 
-Method:
+- Classes live in `benchmarks\Application.Benchmarks`, named `DocumentStorageEfSqlServer*Benchmarks`, with one shared environment class modeled on `BlobStorageEfSqlServerReadBenchmarkEnvironment`.
+- Server selection: `DOC_BENCH_SQL_CONNECTION` if set, otherwise the blob environment's server (`BLOB_BENCH_SQL_CONNECTION`, or a Testcontainers SQL Server 2022 container). BenchmarkDotNet runs each case in its own process, so a persistent server is required for seeded data to survive. `DOC_BENCH_RESEED=1` drops and reseeds.
+- A benchmark `DbContext` implements `IDocumentStoreContext`. Reads and writes go through a real `DocumentStoreClient<T>` over `EntityFrameworkDocumentStoreProvider<TContext>`, so the behavior pipeline cost is part of the figures, as in the blob appendix.
+- Benchmark document type: a small class with one string property. Its length controls the serialized size, so "payload size" means serialized JSON bytes (about the property length plus a few bytes).
+- A SQL command interceptor counts executed queries per operation, to confirm round trips (for example `sqlQueriesPerRead`).
+- Jobs use `RunStrategy.Monitoring` with a warm-up of 2 and 12 iterations, and `[MemoryDiagnoser]`, as the blob benchmarks do.
 
-- Phase 0 runs the full set against the unchanged provider and stores the raw reports under `docs\benchmarks` or the location the blob reports use. Every later phase reruns the affected subset.
-- Report blobs per second and MiB per second for reads and writes, in the same table format as the blob appendix.
-- Report fragmentation with `sys.dm_db_index_physical_stats` (`avg_fragmentation_in_percent`, page count) after seeding.
+### Seeding
+
+- Small tables (read benchmarks): per payload size, 20 partitions and up to 2000 documents (256 MB budget divided by payload size, clamped to 100 to 2000, rounded to a multiple of 20). Seeded through the client so stored rows are real. Request set: 100 keys, with a `Spread` parameter of `SinglePartition` (100 keys from one partition) or `AcrossPartitions` (100 keys sampled across all 20). The spread matters because the batch design issues one query per `(type, partition)` group.
+- 1M row tables: seeded with `SqlBulkCopy`. One template document is first written through the client and read back as a raw row. All other rows are copies of that row with a different `Id`, `PartitionKey`, `PartitionKeyHash`, `RowKey` and `RowKeyHash`. This keeps `ContentHash`, `StoredContentHash` and the transform envelope valid without running the client a million times, because none of them cover the key. Key layout: 20 partitions with sequential row keys. Rows are inserted in 20,000 row batches with the database in `SIMPLE` recovery.
+- Id strategy parameter for the 1M tables: `Random` (`Guid.NewGuid()`, today's behavior) and `SqlServerSequential` (EF's `SequentialGuidValueGenerator`, called with a null entry, which it ignores). `Guid.CreateVersion7` is deliberately not used because `uniqueidentifier` sorts by its last bytes first (see Row ids).
+- Databases are named per scenario (for example `docbench_{payload}`, `docbench_large_{rows}_{ids}`) and reused between runs.
+- After seeding, print page count, `avg_fragmentation_in_percent` and `avg_page_space_used_in_percent` for each index of `__Storage_Documents`.
+
+### Benchmarks
+
+| Class | Parameters | Methods | Measures |
+|---|---|---|---|
+| `DocumentStorageEfSqlServerReadBenchmarks` | Payload 1, 10, 100 KB; Spread | Sequential `GetAsync` x100 (baseline), parallel `GetAsync` x100 at 16, raw SQL single query per key, raw SQL multi-key query per batch of 25 (the ceiling a batch API can reach). After Phase 2: `GetManyAsync` | Latency, docs/s, MiB/s, allocations, SQL queries per read |
+| `DocumentStorageEfSqlServerBatchSizeBenchmarks` (Phase 2) | Keys 1, 10, 25, 100, 1000; `GetManyBatchSize` 10, 25, 100, 250 | `GetManyAsync` | Picks the default batch size and confirms query plan stability |
+| `DocumentStorageEfSqlServerWriteBenchmarks` | Count 10, 100, 1000; payload 1 KB | `UpsertManyAsync` insert path, `UpsertManyAsync` overwrite path, `DeleteManyAsync` | Docs/s and SQL queries per batch. Per-iteration setup creates fresh keys or documents so only the operation is timed |
+| `DocumentStorageEfSqlServerLargeTableReadBenchmarks` | Rows 1,000 and 1,000,000; Ids Random and SqlServerSequential; Access Random and Recent; Cache Warm and Cold | Sequential x100, parallel x100 at 16, and after Phase 2 `GetManyAsync` | Scaling with table size, fragmentation effect, cold reads (`DBCC DROPCLEANBUFFERS` before each iteration, needs sysadmin) |
+| `DocumentStorageEfSqlServerInsertBenchmarks` | Ids Random and SqlServerSequential | Single `UpsertAsync` into the 1M row table, and a sustained insert of 100,000 rows through the client | Insert throughput and fragmentation growth after the run |
+| `DocumentStorageEfSqlServerPagingBenchmarks` | Rows 1,000 and 1,000,000 | `FindPageAsync` and `ListPageAsync` for the first page, a middle page and a deep page of a full-type scan (`AllowFullScan`, take 100 and 1000); partition-scoped prefix page | Page latency against table size, before and after the index and keyset change |
+| `DocumentStorageEfSqlServerExpirationBenchmarks` | Rows 1,000,000 | `SweepExpiredAsync` with batch size 1000 | Sweep cost with 99% NULL expiry. Per-iteration setup bulk inserts 1000 already expired rows so each iteration deletes real work |
+
+Deep page tokens are crafted, not walked. Walking 10,000 pages of a 1M row scan would take hours. The provider reads only `NativeToken` from the envelope, so the paging benchmark calls the provider directly with a token built through `DocumentContinuationTokenSerializer.Serialize` (any non-empty `Provider` and `QueryHash`, `NativeToken` set to the serialized `DocumentKey` at the wanted position). The first-page and client-level paths still go through `DocumentStoreClient<T>`.
+
+### Method
+
+- Phase 0 runs the full set against the unchanged provider and stores the raw reports in the same place and format as the blob reports. Every later phase reruns the affected subset on the same databases, so figures stay comparable.
+- Report documents per second and MiB per second for reads and writes, in the same table format as the blob appendix (`docs\features-storage-blobs.md`, "Appendix: Entity Framework read performance"). Document the figures in `docs\features-storage-documents.md` in Phase 6.
+- Report fragmentation and page counts from `sys.dm_db_index_physical_stats` after seeding and after the insert benchmarks.
+- 1M row seeding is a one-time cost per database and is expected to take several minutes. The seeded databases are kept between runs.
+- Results from a shared CI machine are not used. Figures come from one machine with the container local, and the machine specification is stated next to the tables.
 
 Acceptance criteria (a change is kept only if met on SQL Server):
 

@@ -6,7 +6,9 @@
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
 using Application.Storage;
+using Infrastructure.EntityFramework;
 using Infrastructure.EntityFramework.Storage;
+using Microsoft.EntityFrameworkCore;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -96,6 +98,81 @@ public class EntityFrameworkSqliteDocumentStoreProviderTests(ITestOutputHelper o
     public override async Task UpsertResultAsync_WithRowKeyLongerThan256_ReturnsFailure()
     {
         await base.UpsertResultAsync_WithRowKeyLongerThan256_ReturnsFailure();
+    }
+
+    [Fact]
+    public override async Task GetManyAsync_WithKeysAcrossPartitionsAndChunks_ReturnsResultsInInputOrder()
+    {
+        await base.GetManyAsync_WithKeysAcrossPartitionsAndChunks_ReturnsResultsInInputOrder();
+    }
+
+    [Fact]
+    public override async Task GetManyAsync_WithExpiredDocument_ReturnsNotFound()
+    {
+        await base.GetManyAsync_WithExpiredDocument_ReturnsNotFound();
+    }
+
+    [Fact]
+    public override async Task UpsertResultAsync_GeneratesDistinctRowIdsInInsertOrder()
+    {
+        await base.UpsertResultAsync_GeneratesDistinctRowIdsInInsertOrder();
+    }
+
+    [Fact]
+    public override async Task UpsertManyAsync_WithInsertsOverwritesAndDuplicates_AppliesInOrder()
+    {
+        await base.UpsertManyAsync_WithInsertsOverwritesAndDuplicates_AppliesInOrder();
+    }
+
+    [Fact]
+    public override async Task UpsertManyAsync_WithCreateOnlyConflict_CommitsPrefixAndReportsFailedKey()
+    {
+        await base.UpsertManyAsync_WithCreateOnlyConflict_CommitsPrefixAndReportsFailedKey();
+    }
+
+    [Fact]
+    public override async Task UpsertManyAsync_WithStaleETag_CommitsPrefixAndReportsFailedKey()
+    {
+        await base.UpsertManyAsync_WithStaleETag_CommitsPrefixAndReportsFailedKey();
+    }
+
+    [Fact]
+    public override async Task UpsertManyAsync_WithRowKeyLongerThan256_CommitsPrefixAndReportsFailedKey()
+    {
+        await base.UpsertManyAsync_WithRowKeyLongerThan256_CommitsPrefixAndReportsFailedKey();
+    }
+
+    [Fact]
+    public override async Task DeleteManyAsync_WithMissingKeyAndETagMismatch_DeletesPrefixAndReportsFailedKey()
+    {
+        await base.DeleteManyAsync_WithMissingKeyAndETagMismatch_DeletesPrefixAndReportsFailedKey();
+    }
+
+    [Fact]
+    public override async Task ListPageResultAsync_WalkingFullTypeScan_ReturnsEveryKeyOnceInOrder()
+    {
+        await base.ListPageResultAsync_WalkingFullTypeScan_ReturnsEveryKeyOnceInOrder();
+    }
+
+    [Fact]
+    public override async Task SweepExpiredAsync_RemovesOnlyExpiredDocuments()
+    {
+        await base.SweepExpiredAsync_RemovesOnlyExpiredDocuments();
+    }
+
+    [Fact]
+    public async Task ApplyDocumentStoreConfiguration_FiltersExpirationIndexToExpiringRows()
+    {
+        // Arrange
+        await using var dbContext = this.fixture.EnsureSqliteDbContext(output, true);
+
+        // Act
+        var index = dbContext.Model.FindEntityType(typeof(StorageDocument)).GetIndexes()
+            .Single(x => x.Properties.Select(p => p.Name).SequenceEqual([nameof(StorageDocument.TypeHash), nameof(StorageDocument.ExpiresAtUnixMilliseconds)]));
+
+        // Assert
+        index.GetFilter().ShouldBe("\"ExpiresAtUnixMilliseconds\" IS NOT NULL");
+        await Task.CompletedTask;
     }
 
     protected override async Task ExecuteDbContextAsync(Func<StubDbContext, Task> action)

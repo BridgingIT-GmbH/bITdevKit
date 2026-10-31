@@ -297,6 +297,7 @@ public class StubDbContext : DbContext,
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
+        modelBuilder.ApplyDocumentStoreConfiguration();
 
         var provider = this.Database.ProviderName;
         if (provider?.Contains("sqlserver", StringComparison.OrdinalIgnoreCase) == true || provider?.Contains("postgres", StringComparison.OrdinalIgnoreCase) == true)

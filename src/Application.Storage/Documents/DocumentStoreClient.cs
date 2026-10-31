@@ -65,6 +65,67 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
     }
 
     /// <inheritdoc />
+    public async Task<Result<IReadOnlyList<Result<DocumentEntry<T>>>>> GetManyAsync(
+        IReadOnlyList<DocumentKey> keys,
+        CancellationToken cancellationToken = default)
+    {
+        if (keys is null)
+        {
+            return Result<IReadOnlyList<Result<DocumentEntry<T>>>>.Failure(new DocumentStoreInvalidQueryError("Keys must not be null."));
+        }
+
+        if (keys.Any(x => ValidateKey(x).IsFailure))
+        {
+            return Result<IReadOnlyList<Result<DocumentEntry<T>>>>.Failure(new DocumentStoreInvalidQueryError("PartitionKey and RowKey must not be null or whitespace."));
+        }
+
+        if (keys.Count > this.options.MaxTake)
+        {
+            return Result<IReadOnlyList<Result<DocumentEntry<T>>>>.Failure(new DocumentStoreInvalidQueryError($"GetMany accepts at most {this.options.MaxTake} keys."));
+        }
+
+        if (keys.Count == 0)
+        {
+            return Result<IReadOnlyList<Result<DocumentEntry<T>>>>.Success([]);
+        }
+
+        var distinct = keys.Distinct().ToArray();
+        var cutoff = this.timeProvider.GetUtcNow();
+        var found = new Dictionary<DocumentKey, Result<DocumentEntry<T>>>(distinct.Length);
+        if (this.Provider is IDocumentStoreBatchGetProvider batchProvider)
+        {
+            var batch = await batchProvider.GetManyAsync(this.type, distinct, cutoff, cancellationToken);
+            if (batch.IsFailure)
+            {
+                return batch.Wrap<IReadOnlyList<Result<DocumentEntry<T>>>>();
+            }
+
+            foreach (var stored in batch.Value)
+            {
+                found[stored.Key] = await this.DeserializeAsync(stored, cancellationToken);
+            }
+        }
+        else
+        {
+            foreach (var key in distinct)
+            {
+                var stored = await this.Provider.GetAsync(this.type, key, cutoff, cancellationToken);
+                found[key] = stored.IsFailure ? stored.Wrap<DocumentEntry<T>>() : await this.DeserializeAsync(stored.Value, cancellationToken);
+            }
+        }
+
+        var results = new Result<DocumentEntry<T>>[keys.Count];
+        for (var index = 0; index < results.Length; index++)
+        {
+            results[index] = found.TryGetValue(keys[index], out var entry)
+                ? entry
+                : Result<DocumentEntry<T>>.Failure(new DocumentStoreNotFoundError());
+        }
+
+        return Result<IReadOnlyList<Result<DocumentEntry<T>>>>.Success(results);
+    }
+
+    /// <inheritdoc />
     public async Task<Result<DocumentPage<T>>> FindPageAsync(DocumentQuery query, CancellationToken cancellationToken = default)
     {
         var validation = DocumentQueryValidator.ValidatePage<T>("find", this.type.Value, query, this.Provider.Capabilities, this.options);
@@ -136,67 +197,18 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
         DocumentWriteOptions options = null,
         CancellationToken cancellationToken = default)
     {
-        var validation = ValidateKey(key);
-        if (validation.IsFailure)
+        var prepared = await this.PrepareWriteAsync(key, value, options, cancellationToken);
+        if (prepared.IsFailure)
         {
-            return Result<DocumentInfo>.Failure(validation);
+            return prepared.Wrap<DocumentInfo>();
         }
 
-        if (value is null)
-        {
-            return Result<DocumentInfo>.Failure(new DocumentStoreInvalidQueryError("Document value must not be null."));
-        }
-
-        options ??= new DocumentWriteOptions();
         try
         {
-            using var stream = new MemoryStream();
-            this.serializer.Serialize(value, stream);
-            var content = stream.ToArray();
-            if (content.LongLength > this.options.MaxDocumentSize)
-            {
-                return Result<DocumentInfo>.Failure(new DocumentStoreSizeLimitError($"Document size {content.LongLength} exceeds {this.options.MaxDocumentSize} bytes."));
-            }
-
-            var hash = ContentHashHelper.ComputeSha256(content);
-            if (!string.IsNullOrWhiteSpace(options.ExpectedContentHash) &&
-                !string.Equals(hash, options.ExpectedContentHash, StringComparison.OrdinalIgnoreCase))
-            {
-                return Result<DocumentInfo>.Failure(new DocumentStoreIntegrityError("Serialized content does not match ExpectedContentHash."));
-            }
-
-            var storedContent = content;
-            var transformDescriptors = new List<ContentTransformDescriptor>(this.transforms.Count);
-            foreach (var transform in this.transforms)
-            {
-                var metadata = new PropertyBag();
-                storedContent = await transform.WriteAsync(storedContent, metadata, cancellationToken);
-                transformDescriptors.Add(new() { Id = transform.Identifier, Properties = metadata.Clone() });
-            }
-
-            var storedHash = ContentHashHelper.ComputeSha256(storedContent);
-            var transformMetadata = new PropertyBag();
-            transformMetadata.Set("bdk_transform_envelope", ContentTransformEnvelopeCodec.Encode(new()
-            {
-                LogicalLength = content.LongLength,
-                LogicalContentHash = hash,
-                StoredLength = storedContent.LongLength,
-                StoredContentHash = storedHash,
-                Transforms = transformDescriptors
-            }));
-            var expiration = ExpirationHelper.Resolve(options.Expiration, null, this.timeProvider);
-            return await this.Provider.UpsertAsync(this.type, new StoredDocumentWrite
-            {
-                Key = key,
-                Content = storedContent,
-                ContentHash = hash,
-                StoredContentHash = storedHash,
-                TransformMetadata = transformMetadata,
-                Properties = options.Properties?.Clone(),
-                ExpiresAt = expiration,
-                PreserveExpiration = options.Expiration.Mode == ExpirationChangeMode.Preserve,
-                Options = options
-            }, cancellationToken);
+            var written = await this.Provider.UpsertAsync(this.type, prepared.Value.Write, cancellationToken);
+            return written.IsFailure
+                ? written
+                : Result<DocumentInfo>.Success(written.Value with { ContentLength = prepared.Value.ContentLength }).WithMessages(written.Messages);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
@@ -220,6 +232,15 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
             return Result<DocumentBatchResult<DocumentInfo>>.Failure(new DocumentStoreInvalidQueryError("Every write must contain a valid key and value."));
         }
 
+        return this.Provider is IDocumentStoreBulkWriteProvider bulkProvider
+            ? await this.UpsertManyBulkAsync(bulkProvider, materialized, cancellationToken)
+            : await this.UpsertManySequentialAsync(materialized, cancellationToken);
+    }
+
+    private async Task<Result<DocumentBatchResult<DocumentInfo>>> UpsertManySequentialAsync(
+        DocumentWrite<T>[] materialized,
+        CancellationToken cancellationToken)
+    {
         var completed = new List<DocumentInfo>(materialized.Length);
         foreach (var write in materialized)
         {
@@ -239,6 +260,142 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
 
         return Result<DocumentBatchResult<DocumentInfo>>.Success(new() { Items = completed });
     }
+
+    private async Task<Result<DocumentBatchResult<DocumentInfo>>> UpsertManyBulkAsync(
+        IDocumentStoreBulkWriteProvider bulkProvider,
+        DocumentWrite<T>[] materialized,
+        CancellationToken cancellationToken)
+    {
+        // Prepare in input order until the first write that cannot be prepared. The writes before it still go to the
+        // provider, as they would have been committed one by one.
+        var prepared = new List<PreparedWrite>(materialized.Length);
+        DocumentWrite<T> preparationFailedWrite = null;
+        IReadOnlyList<string> preparationMessages = null;
+        foreach (var write in materialized)
+        {
+            var result = await this.PrepareWriteAsync(write.Key, write.Value, write.Options, cancellationToken);
+            if (result.IsFailure)
+            {
+                preparationFailedWrite = write;
+                preparationMessages = result.Messages;
+                break;
+            }
+
+            prepared.Add(result.Value);
+        }
+
+        var completed = new List<DocumentInfo>(prepared.Count);
+        if (prepared.Count > 0)
+        {
+            var batch = await bulkProvider.UpsertManyAsync(this.type, prepared.Select(x => x.Write).ToArray(), cancellationToken);
+            if (batch.IsFailure)
+            {
+                return batch;
+            }
+
+            for (var index = 0; index < batch.Value.Items.Count; index++)
+            {
+                completed.Add(batch.Value.Items[index] with { ContentLength = prepared[index].ContentLength });
+            }
+
+            if (batch.Value.FailedKey is not null)
+            {
+                return Result<DocumentBatchResult<DocumentInfo>>.Success(new()
+                {
+                    Items = completed,
+                    FailedKey = batch.Value.FailedKey,
+                    FailedKeys = batch.Value.FailedKeys
+                }).WithMessages(batch.Messages);
+            }
+        }
+
+        return preparationFailedWrite is null
+            ? Result<DocumentBatchResult<DocumentInfo>>.Success(new() { Items = completed })
+            : Result<DocumentBatchResult<DocumentInfo>>.Success(new()
+            {
+                Items = completed,
+                FailedKey = preparationFailedWrite.Key,
+                FailedKeys = [preparationFailedWrite.Key]
+            }).WithMessages(preparationMessages);
+    }
+
+    private async Task<Result<PreparedWrite>> PrepareWriteAsync(
+        DocumentKey key,
+        T value,
+        DocumentWriteOptions options,
+        CancellationToken cancellationToken)
+    {
+        var validation = ValidateKey(key);
+        if (validation.IsFailure)
+        {
+            return Result<PreparedWrite>.Failure(validation);
+        }
+
+        if (value is null)
+        {
+            return Result<PreparedWrite>.Failure(new DocumentStoreInvalidQueryError("Document value must not be null."));
+        }
+
+        options ??= new DocumentWriteOptions();
+        try
+        {
+            using var stream = new MemoryStream();
+            this.serializer.Serialize(value, stream);
+            var content = stream.ToArray();
+            if (content.LongLength > this.options.MaxDocumentSize)
+            {
+                return Result<PreparedWrite>.Failure(new DocumentStoreSizeLimitError($"Document size {content.LongLength} exceeds {this.options.MaxDocumentSize} bytes."));
+            }
+
+            var hash = ContentHashHelper.ComputeSha256(content);
+            if (!string.IsNullOrWhiteSpace(options.ExpectedContentHash) &&
+                !string.Equals(hash, options.ExpectedContentHash, StringComparison.OrdinalIgnoreCase))
+            {
+                return Result<PreparedWrite>.Failure(new DocumentStoreIntegrityError("Serialized content does not match ExpectedContentHash."));
+            }
+
+            var storedContent = content;
+            var transformDescriptors = new List<ContentTransformDescriptor>(this.transforms.Count);
+            foreach (var transform in this.transforms)
+            {
+                var metadata = new PropertyBag();
+                storedContent = await transform.WriteAsync(storedContent, metadata, cancellationToken);
+                transformDescriptors.Add(new() { Id = transform.Identifier, Properties = metadata.Clone() });
+            }
+
+            var storedHash = ContentHashHelper.ComputeSha256(storedContent);
+            var transformMetadata = new PropertyBag();
+            transformMetadata.Set("bdk_transform_envelope", ContentTransformEnvelopeCodec.Encode(new()
+            {
+                LogicalLength = content.LongLength,
+                LogicalContentHash = hash,
+                StoredLength = storedContent.LongLength,
+                StoredContentHash = storedHash,
+                Transforms = transformDescriptors
+            }));
+            var expiration = ExpirationHelper.Resolve(options.Expiration, null, this.timeProvider);
+            return Result<PreparedWrite>.Success(new PreparedWrite(
+                new StoredDocumentWrite
+                {
+                    Key = key,
+                    Content = storedContent,
+                    ContentHash = hash,
+                    StoredContentHash = storedHash,
+                    TransformMetadata = transformMetadata,
+                    Properties = options.Properties?.Clone(),
+                    ExpiresAt = expiration,
+                    PreserveExpiration = options.Expiration.Mode == ExpirationChangeMode.Preserve,
+                    Options = options
+                },
+                content.LongLength));
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return Result<PreparedWrite>.Failure(new DocumentStoreSerializationError("Document serialization failed.", ex));
+        }
+    }
+
+    private sealed record PreparedWrite(StoredDocumentWrite Write, long ContentLength);
 
     /// <inheritdoc />
     public Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default)
@@ -274,6 +431,13 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
         if (deletes is null || deletes.Any(x => x is null || ValidateKey(x.Key).IsFailure))
         {
             return Result<DocumentBatchResult<DocumentKey>>.Failure(new DocumentStoreInvalidQueryError("Every delete must contain a valid key."));
+        }
+
+        if (this.Provider is IDocumentStoreBulkWriteProvider bulkProvider)
+        {
+            return deletes.Count == 0
+                ? Result<DocumentBatchResult<DocumentKey>>.Success(new())
+                : await bulkProvider.DeleteManyAsync(this.type, deletes.ToArray(), cancellationToken);
         }
 
         var completed = new List<DocumentKey>(deletes.Count);
@@ -320,7 +484,8 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
                 return Result<DocumentEntry<T>>.Failure(new DocumentStoreIntegrityError());
             }
 
-            var logicalContent = stored.Content.ToArray();
+            // The provider returns a snapshot it owns, so the first reverse transform can read it without a defensive copy.
+            var logicalContent = stored.Content;
             for (var index = envelope.Transforms.Count - 1; index >= 0; index--)
             {
                 var descriptor = envelope.Transforms[index];
@@ -348,6 +513,7 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
                     Value = value,
                     ETag = stored.ETag,
                     ContentHash = stored.ContentHash,
+                    ContentLength = logicalContent.LongLength,
                     CreatedAt = stored.CreatedAt,
                     LastModifiedAt = stored.LastModifiedAt,
                     ExpiresAt = stored.ExpiresAt,

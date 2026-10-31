@@ -53,6 +53,9 @@ We use the **MADR (Markdown Architectural Decision Records)** format for consist
 | [ADR-0031](0031-single-query-ef-blob-read-for-small-blobs.md) | Read Small EF Blobs With a Single Compiled Query | Accepted |
 | [ADR-0032](0032-batched-ef-blob-reads-for-many-keys.md) | Batch EF Blob Reads for Many Keys Behind an Ambient Scope | Accepted |
 | [ADR-0033](0033-time-ordered-ef-blob-row-ids.md) | Use Time-Ordered GUIDs for EF Blob Row Ids | Accepted |
+| [ADR-0034](0034-sequential-ef-document-row-ids.md) | Let EF Core Generate Sequential Row Ids for Documents | Accepted |
+| [ADR-0035](0035-batched-ef-document-reads-and-bulk-writes.md) | Batch EF Document Reads and Writes Behind Optional Provider Interfaces | Accepted |
+| [ADR-0036](0036-keyset-and-filtered-indexes-for-ef-documents.md) | Add a Keyset Index and a Filtered Expiration Index for EF Documents | Accepted |
 ## When to Write an ADR
 
 Create an ADR when making decisions about:

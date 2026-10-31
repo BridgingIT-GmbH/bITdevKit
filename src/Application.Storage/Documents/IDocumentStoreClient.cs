@@ -46,6 +46,30 @@ public interface IDocumentStoreClient<T> where T : class, new()
     Task<Result<DocumentEntry<T>>> GetAsync(DocumentKey key, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Gets many documents by exact key with a bounded number of provider round trips.
+    /// </summary>
+    /// <param name="keys">The exact keys to read. Duplicates are allowed and are read once.</param>
+    /// <param name="cancellationToken">The token used to cancel the operation.</param>
+    /// <returns>
+    /// An outer failure for request-level errors (null keys, an invalid key, or more keys than
+    /// <see cref="DocumentStoreOptions.MaxTake" />) or a provider-wide failure. Otherwise a list with exactly one entry per
+    /// input key in input order. Each entry is the result <see cref="GetAsync" /> returns for that key, so missing and
+    /// expired documents are not-found failures and corrupt content is an integrity failure.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// var result = await documents.GetManyAsync(
+    ///     [new DocumentKey("customers", "42"), new DocumentKey("customers", "43")],
+    ///     cancellationToken);
+    /// foreach (var entry in result.Value)
+    /// {
+    ///     if (entry.IsSuccess) { var customer = entry.Value.Value; }
+    /// }
+    /// </code>
+    /// </example>
+    Task<Result<IReadOnlyList<Result<DocumentEntry<T>>>>> GetManyAsync(IReadOnlyList<DocumentKey> keys, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Finds one bounded, deterministically ordered page of visible documents and their metadata.
     /// </summary>
     /// <param name="query">

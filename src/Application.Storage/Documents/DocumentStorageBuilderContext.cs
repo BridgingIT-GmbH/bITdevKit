@@ -226,6 +226,11 @@ public sealed class DocumentStorageBuilderContext(
         public Task<Result<DocumentEntry<T>>> GetAsync(DocumentKey key, CancellationToken cancellationToken = default) =>
             IsValid(key) ? inner.GetAsync(key, cancellationToken) : Invalid<DocumentEntry<T>>();
 
+            public Task<Result<IReadOnlyList<Result<DocumentEntry<T>>>>> GetManyAsync(IReadOnlyList<DocumentKey> keys, CancellationToken cancellationToken = default) =>
+                keys is not null && keys.All(IsValid)
+                    ? inner.GetManyAsync(keys, cancellationToken)
+                    : Invalid<IReadOnlyList<Result<DocumentEntry<T>>>>();
+
         public async Task<Result<DocumentPage<T>>> FindPageAsync(DocumentQuery query, CancellationToken cancellationToken = default)
         {
             var prepared = this.PreparePage("find", query);

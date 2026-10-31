@@ -119,6 +119,86 @@ public class EntityFrameworkCosmosDocumentStoreProviderTests(ITestOutputHelper o
         await base.UpsertResultAsync_WithRowKeyLongerThan256_ReturnsFailure();
     }
 
+    [SkippableFact]
+    public override async Task GetManyAsync_WithKeysAcrossPartitionsAndChunks_ReturnsResultsInInputOrder()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.GetManyAsync_WithKeysAcrossPartitionsAndChunks_ReturnsResultsInInputOrder();
+    }
+
+    [SkippableFact]
+    public override async Task GetManyAsync_WithExpiredDocument_ReturnsNotFound()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.GetManyAsync_WithExpiredDocument_ReturnsNotFound();
+    }
+
+    [SkippableFact]
+    public override async Task UpsertResultAsync_GeneratesDistinctRowIdsInInsertOrder()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.UpsertResultAsync_GeneratesDistinctRowIdsInInsertOrder();
+    }
+
+    [SkippableFact]
+    public override async Task UpsertManyAsync_WithInsertsOverwritesAndDuplicates_AppliesInOrder()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.UpsertManyAsync_WithInsertsOverwritesAndDuplicates_AppliesInOrder();
+    }
+
+    [SkippableFact]
+    public override async Task UpsertManyAsync_WithCreateOnlyConflict_CommitsPrefixAndReportsFailedKey()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.UpsertManyAsync_WithCreateOnlyConflict_CommitsPrefixAndReportsFailedKey();
+    }
+
+    [SkippableFact]
+    public override async Task UpsertManyAsync_WithStaleETag_CommitsPrefixAndReportsFailedKey()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.UpsertManyAsync_WithStaleETag_CommitsPrefixAndReportsFailedKey();
+    }
+
+    [SkippableFact]
+    public override async Task UpsertManyAsync_WithRowKeyLongerThan256_CommitsPrefixAndReportsFailedKey()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.UpsertManyAsync_WithRowKeyLongerThan256_CommitsPrefixAndReportsFailedKey();
+    }
+
+    [SkippableFact]
+    public override async Task DeleteManyAsync_WithMissingKeyAndETagMismatch_DeletesPrefixAndReportsFailedKey()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.DeleteManyAsync_WithMissingKeyAndETagMismatch_DeletesPrefixAndReportsFailedKey();
+    }
+
+    [SkippableFact]
+    public override async Task ListPageResultAsync_WalkingFullTypeScan_ReturnsEveryKeyOnceInOrder()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.ListPageResultAsync_WalkingFullTypeScan_ReturnsEveryKeyOnceInOrder();
+    }
+
+    [SkippableFact]
+    public override async Task SweepExpiredAsync_RemovesOnlyExpiredDocuments()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.SweepExpiredAsync_RemovesOnlyExpiredDocuments();
+    }
+
     protected override async Task ExecuteDbContextAsync(Func<StubDbContext, Task> action)
     {
         ArgumentNullException.ThrowIfNull(action);

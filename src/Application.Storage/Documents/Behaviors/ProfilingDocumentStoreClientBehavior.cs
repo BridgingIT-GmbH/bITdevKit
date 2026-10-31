@@ -19,6 +19,9 @@ public sealed class ProfilingDocumentStoreClientBehavior<T>(IDocumentStoreClient
     /// <example><code>await documents.GetAsync(new("people", "42"));</code></example>
     public override Task<Result<DocumentEntry<T>>> GetAsync(DocumentKey key, CancellationToken cancellationToken = default) => this.ProfileAsync("get", () => this.Inner.GetAsync(key, cancellationToken), cancellationToken);
     /// <inheritdoc />
+    /// <example><code>await documents.GetManyAsync([new("people", "42"), new("people", "43")]);</code></example>
+    public override Task<Result<IReadOnlyList<Result<DocumentEntry<T>>>>> GetManyAsync(IReadOnlyList<DocumentKey> keys, CancellationToken cancellationToken = default) => this.ProfileAsync("get-many", () => this.Inner.GetManyAsync(keys, cancellationToken), cancellationToken);
+    /// <inheritdoc />
     /// <example><code>await documents.FindPageAsync(new DocumentQuery { AllowFullScan = true });</code></example>
     public override Task<Result<DocumentPage<T>>> FindPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.ProfileAsync("find-page", () => this.Inner.FindPageAsync(query, cancellationToken), cancellationToken);
     /// <inheritdoc />

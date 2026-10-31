@@ -62,6 +62,13 @@ public record DocumentInfo
     /// <example><code>var hash = info.ContentHash;</code></example>
     public string ContentHash { get; init; }
 
+    /// <summary>
+    /// Gets the logical serialized size in bytes before payload transforms, or zero when the operation does not know it
+    /// (for example a properties-only update).
+    /// </summary>
+    /// <example><code>var bytes = info.ContentLength;</code></example>
+    public long ContentLength { get; init; }
+
     /// <summary>Gets the UTC timestamp at which the physical document was first created.</summary>
     /// <example><code>var createdAt = info.CreatedAt;</code></example>
     public DateTimeOffset CreatedAt { get; init; }

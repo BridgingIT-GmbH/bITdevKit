@@ -98,6 +98,72 @@ public class EntityFrameworkPostgresDocumentStoreProviderTests(ITestOutputHelper
         await base.UpsertResultAsync_WithRowKeyLongerThan256_ReturnsFailure();
     }
 
+    [Fact]
+    public override async Task GetManyAsync_WithKeysAcrossPartitionsAndChunks_ReturnsResultsInInputOrder()
+    {
+        await base.GetManyAsync_WithKeysAcrossPartitionsAndChunks_ReturnsResultsInInputOrder();
+    }
+
+    [Fact]
+    public override async Task GetManyAsync_WithExpiredDocument_ReturnsNotFound()
+    {
+        await base.GetManyAsync_WithExpiredDocument_ReturnsNotFound();
+    }
+
+    [Fact]
+    public override async Task UpsertResultAsync_GeneratesDistinctRowIdsInInsertOrder()
+    {
+        await base.UpsertResultAsync_GeneratesDistinctRowIdsInInsertOrder();
+    }
+
+    [Fact]
+    public override async Task UpsertManyAsync_WithInsertsOverwritesAndDuplicates_AppliesInOrder()
+    {
+        await base.UpsertManyAsync_WithInsertsOverwritesAndDuplicates_AppliesInOrder();
+    }
+
+    [Fact]
+    public override async Task UpsertManyAsync_WithCreateOnlyConflict_CommitsPrefixAndReportsFailedKey()
+    {
+        await base.UpsertManyAsync_WithCreateOnlyConflict_CommitsPrefixAndReportsFailedKey();
+    }
+
+    [Fact]
+    public override async Task UpsertManyAsync_WithStaleETag_CommitsPrefixAndReportsFailedKey()
+    {
+        await base.UpsertManyAsync_WithStaleETag_CommitsPrefixAndReportsFailedKey();
+    }
+
+    [Fact]
+    public override async Task UpsertManyAsync_WithRowKeyLongerThan256_CommitsPrefixAndReportsFailedKey()
+    {
+        await base.UpsertManyAsync_WithRowKeyLongerThan256_CommitsPrefixAndReportsFailedKey();
+    }
+
+    [Fact]
+    public override async Task DeleteManyAsync_WithMissingKeyAndETagMismatch_DeletesPrefixAndReportsFailedKey()
+    {
+        await base.DeleteManyAsync_WithMissingKeyAndETagMismatch_DeletesPrefixAndReportsFailedKey();
+    }
+
+    [Fact]
+    public override async Task ListPageResultAsync_WalkingFullTypeScan_ReturnsEveryKeyOnceInOrder()
+    {
+        await base.ListPageResultAsync_WalkingFullTypeScan_ReturnsEveryKeyOnceInOrder();
+    }
+
+    [Fact]
+    public override async Task SweepExpiredAsync_RemovesOnlyExpiredDocuments()
+    {
+        await base.SweepExpiredAsync_RemovesOnlyExpiredDocuments();
+    }
+
+    // Postgres uuid sorts byte-wise.
+    protected override void AssertRowIdsInInsertOrder(IReadOnlyList<Guid> ids)
+    {
+        ids.Select(x => Convert.ToHexString(x.ToByteArray(bigEndian: true))).ShouldBeInOrder(SortDirection.Ascending);
+    }
+
     protected override async Task ExecuteDbContextAsync(Func<StubDbContext, Task> action)
     {
         ArgumentNullException.ThrowIfNull(action);

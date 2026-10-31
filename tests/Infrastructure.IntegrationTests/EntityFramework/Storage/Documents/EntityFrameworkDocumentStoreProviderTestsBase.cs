@@ -327,6 +327,302 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         result.IsFailure.ShouldBeTrue();
     }
 
+    public virtual async Task GetManyAsync_WithKeysAcrossPartitionsAndChunks_ReturnsResultsInInputOrder()
+    {
+        foreach (var parallelism in new[] { 1, 4 })
+        {
+            await this.AssertGetManyAcrossPartitionsAndChunksAsync(parallelism);
+        }
+    }
+
+    private async Task AssertGetManyAcrossPartitionsAndChunksAsync(int parallelism)
+    {
+        // Arrange
+        await this.ResetStoreAsync();
+        var ticks = DateTime.UtcNow.Ticks;
+        var provider = this.CreateProvider(documentStoreOptions: new DocumentStoreOptions { GetManyBatchSize = 2, GetManyMaxParallelism = parallelism });
+        var client = new DocumentStoreClient<PersonStub>(provider);
+        var keys = Enumerable.Range(0, 7).Select(i => new DocumentKey(i % 2 == 0 ? "partition-a" : "partition-b", "row" + ticks + "-" + i)).ToArray();
+        foreach (var (key, index) in keys.Select((k, i) => (k, i)))
+        {
+            (await client.UpsertAsync(key, this.CreatePerson("Person" + index))).IsSuccess.ShouldBeTrue();
+        }
+
+        var missing = new DocumentKey("partition-a", "missing" + ticks);
+        var request = new[] { keys[6], missing, keys[1], keys[0], keys[1], keys[4], keys[3], keys[2], keys[5] };
+
+        // Act
+        var result = await client.GetManyAsync(request);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.Count.ShouldBe(request.Length);
+        result.Value[1].Errors.ShouldContain(x => x is DocumentStoreNotFoundError);
+        for (var index = 0; index < request.Length; index++)
+        {
+            if (index == 1)
+            {
+                continue;
+            }
+
+            result.Value[index].IsSuccess.ShouldBeTrue();
+            result.Value[index].Value.Key.ShouldBe(request[index]);
+            result.Value[index].Value.Value.FirstName.ShouldBe("Person" + Array.IndexOf(keys, request[index]));
+        }
+    }
+
+    public virtual async Task GetManyAsync_WithExpiredDocument_ReturnsNotFound()
+    {
+        // Arrange
+        await this.ResetStoreAsync();
+        var ticks = DateTime.UtcNow.Ticks;
+        var provider = this.CreateProvider();
+        var client = new DocumentStoreClient<PersonStub>(provider);
+        var live = new DocumentKey("partition", "live" + ticks);
+        var expired = new DocumentKey("partition", "expired" + ticks);
+        (await client.UpsertAsync(live, this.CreatePerson("Live"))).IsSuccess.ShouldBeTrue();
+        (await client.UpsertAsync(expired, this.CreatePerson("Expired"), new() { Expiration = ExpirationChange.After(TimeSpan.FromMilliseconds(50)) })).IsSuccess.ShouldBeTrue();
+        await Task.Delay(TimeSpan.FromMilliseconds(200));
+
+        // Act
+        var result = await client.GetManyAsync([live, expired]);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value[0].IsSuccess.ShouldBeTrue();
+        result.Value[1].Errors.ShouldContain(x => x is DocumentStoreNotFoundError);
+    }
+
+    public virtual async Task ListPageResultAsync_WalkingFullTypeScan_ReturnsEveryKeyOnceInOrder()
+    {
+        // Arrange
+        await this.ResetStoreAsync();
+        var ticks = DateTime.UtcNow.Ticks;
+        var sut = this.CreateProvider(documentStoreOptions: new DocumentStoreOptions { AllowFullScans = true });
+        var expected = new List<DocumentKey>();
+        foreach (var partition in new[] { "p1", "p2", "p3" })
+        {
+            for (var row = 0; row < 5; row++)
+            {
+                var key = new DocumentKey(partition, $"r{ticks}-{row:D2}");
+                (await sut.UpsertResultAsync(key, this.CreatePerson("Person"))).IsSuccess.ShouldBeTrue();
+                expected.Add(key);
+            }
+        }
+
+        // Act
+        var seen = new List<DocumentKey>();
+        string token = null;
+        do
+        {
+            var builder = DocumentQueries.Query().AllowFullScan().Take(4);
+            var page = await sut.ListPageResultAsync<PersonStub>(token is null ? builder.Build() : builder.ContinueWith(token).Build());
+            page.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, page.Errors.Select(e => e.Message)));
+            seen.AddRange(page.Value.Items);
+            token = page.Value.ContinuationToken;
+        }
+        while (token is not null);
+
+        // Assert
+        seen.ShouldBe(expected);
+    }
+
+    public virtual async Task SweepExpiredAsync_RemovesOnlyExpiredDocuments()
+    {
+        // Arrange
+        await this.ResetStoreAsync();
+        var ticks = DateTime.UtcNow.Ticks;
+        var provider = this.CreateProvider();
+        var client = new DocumentStoreClient<PersonStub>(provider);
+        var keep = new DocumentKey("partition", "keep" + ticks);
+        var keepWithExpiry = new DocumentKey("partition", "future" + ticks);
+        (await client.UpsertAsync(keep, this.CreatePerson("Keep"))).IsSuccess.ShouldBeTrue();
+        (await client.UpsertAsync(keepWithExpiry, this.CreatePerson("Future"), new() { Expiration = ExpirationChange.After(TimeSpan.FromHours(1)) })).IsSuccess.ShouldBeTrue();
+        for (var index = 0; index < 3; index++)
+        {
+            (await client.UpsertAsync(new("partition", $"expired{ticks}-{index}"), this.CreatePerson("Expired"), new() { Expiration = ExpirationChange.After(TimeSpan.FromMilliseconds(20)) })).IsSuccess.ShouldBeTrue();
+        }
+
+        await Task.Delay(TimeSpan.FromMilliseconds(200));
+
+        // Act
+        var result = await provider.SweepExpiredAsync(new()
+        {
+            DocumentType = DocumentTypeIdentity.For<PersonStub>(),
+            VisibilityCutoff = DateTimeOffset.UtcNow,
+            BatchSize = 2,
+            MaxBatches = 5
+        });
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.DeletedCount.ShouldBe(3);
+        (await client.GetAsync(keep)).IsSuccess.ShouldBeTrue();
+        (await client.GetAsync(keepWithExpiry)).IsSuccess.ShouldBeTrue();
+    }
+
+    public virtual async Task UpsertResultAsync_GeneratesDistinctRowIdsInInsertOrder()
+    {
+        // Arrange
+        await this.ResetStoreAsync();
+        var ticks = DateTime.UtcNow.Ticks;
+        var sut = this.CreateProvider();
+        var keys = Enumerable.Range(0, 50).Select(i => new DocumentKey("partition", $"row{ticks}-{i:D3}")).ToArray();
+
+        // Act
+        foreach (var key in keys)
+        {
+            (await sut.UpsertResultAsync(key, this.CreatePerson("Person"))).IsSuccess.ShouldBeTrue();
+        }
+
+        // Assert
+        var rows = await this.ExecuteDbContextAsync(async dbContext =>
+            await dbContext.StorageDocuments.AsNoTracking().Where(e => e.PartitionKey == "partition").ToListAsync());
+        var ids = keys.Select(k => rows.Single(r => r.RowKey == k.RowKey).Id).ToArray();
+        ids.ShouldNotContain(Guid.Empty);
+        ids.Distinct().Count().ShouldBe(keys.Length);
+        this.AssertRowIdsInInsertOrder(ids);
+    }
+
+    public virtual async Task UpsertManyAsync_WithInsertsOverwritesAndDuplicates_AppliesInOrder()
+    {
+        // Arrange
+        await this.ResetStoreAsync();
+        var ticks = DateTime.UtcNow.Ticks;
+        var client = new DocumentStoreClient<PersonStub>(this.CreateProvider(documentStoreOptions: new DocumentStoreOptions { GetManyBatchSize = 2 }));
+        var existing = new DocumentKey("partition-a", "existing" + ticks);
+        var fresh = new DocumentKey("partition-b", "fresh" + ticks);
+        (await client.UpsertAsync(existing, this.CreatePerson("Old"))).IsSuccess.ShouldBeTrue();
+
+        // Act
+        var result = await client.UpsertManyAsync([
+            new(existing, this.CreatePerson("Overwritten")),
+            new(fresh, this.CreatePerson("First")),
+            new(fresh, this.CreatePerson("Second")),
+            new(new("partition-c", "other" + ticks), this.CreatePerson("Other"))]);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.FailedKey.ShouldBeNull();
+        result.Value.Items.Count.ShouldBe(4);
+        result.Value.Items.Select(x => x.Key).ShouldBe([existing, fresh, fresh, new("partition-c", "other" + ticks)]);
+        result.Value.Items[1].ETag.ShouldNotBe(result.Value.Items[2].ETag);
+        (await client.GetAsync(existing)).Value.Value.FirstName.ShouldBe("Overwritten");
+        (await client.GetAsync(fresh)).Value.Value.FirstName.ShouldBe("Second");
+        (await client.GetAsync(fresh)).Value.ETag.ShouldBe(result.Value.Items[2].ETag);
+        var rows = await this.ExecuteDbContextAsync(async dbContext =>
+            await dbContext.StorageDocuments.AsNoTracking().Where(e => e.RowKey == fresh.RowKey).ToListAsync());
+        rows.Count.ShouldBe(1);
+    }
+
+    public virtual async Task UpsertManyAsync_WithCreateOnlyConflict_CommitsPrefixAndReportsFailedKey()
+    {
+        // Arrange
+        await this.ResetStoreAsync();
+        var ticks = DateTime.UtcNow.Ticks;
+        var client = new DocumentStoreClient<PersonStub>(this.CreateProvider());
+        var first = new DocumentKey("partition", "a" + ticks);
+        var conflict = new DocumentKey("partition", "b" + ticks);
+        var last = new DocumentKey("partition", "c" + ticks);
+        (await client.UpsertAsync(conflict, this.CreatePerson("Existing"))).IsSuccess.ShouldBeTrue();
+
+        // Act
+        var result = await client.UpsertManyAsync([
+            new(first, this.CreatePerson("First")),
+            new(conflict, this.CreatePerson("Conflict"), new() { CreateOnly = true }),
+            new(last, this.CreatePerson("Last"))]);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.Items.Select(x => x.Key).ShouldBe([first]);
+        result.Value.FailedKey.ShouldBe(conflict);
+        (await client.GetAsync(first)).IsSuccess.ShouldBeTrue();
+        (await client.GetAsync(conflict)).Value.Value.FirstName.ShouldBe("Existing");
+        (await client.GetAsync(last)).IsFailure.ShouldBeTrue();
+    }
+
+    public virtual async Task UpsertManyAsync_WithStaleETag_CommitsPrefixAndReportsFailedKey()
+    {
+        // Arrange
+        await this.ResetStoreAsync();
+        var ticks = DateTime.UtcNow.Ticks;
+        var client = new DocumentStoreClient<PersonStub>(this.CreateProvider());
+        var first = new DocumentKey("partition", "a" + ticks);
+        var stale = new DocumentKey("partition", "b" + ticks);
+        var last = new DocumentKey("partition", "c" + ticks);
+        var created = await client.UpsertAsync(stale, this.CreatePerson("V1"));
+        (await client.UpsertAsync(stale, this.CreatePerson("V2"))).IsSuccess.ShouldBeTrue();
+
+        // Act
+        var result = await client.UpsertManyAsync([
+            new(first, this.CreatePerson("First")),
+            new(stale, this.CreatePerson("Stale"), new() { IfMatchETag = created.Value.ETag }),
+            new(last, this.CreatePerson("Last"))]);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.Items.Select(x => x.Key).ShouldBe([first]);
+        result.Value.FailedKey.ShouldBe(stale);
+        (await client.GetAsync(stale)).Value.Value.FirstName.ShouldBe("V2");
+        (await client.GetAsync(last)).IsFailure.ShouldBeTrue();
+    }
+
+    public virtual async Task UpsertManyAsync_WithRowKeyLongerThan256_CommitsPrefixAndReportsFailedKey()
+    {
+        // Arrange
+        await this.ResetStoreAsync();
+        var ticks = DateTime.UtcNow.Ticks;
+        var client = new DocumentStoreClient<PersonStub>(this.CreateProvider());
+        var first = new DocumentKey("partition", "a" + ticks);
+        var tooLong = new DocumentKey("partition", new string('x', 257));
+
+        // Act
+        var result = await client.UpsertManyAsync([
+            new(first, this.CreatePerson("First")),
+            new(tooLong, this.CreatePerson("TooLong"))]);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.Items.Select(x => x.Key).ShouldBe([first]);
+        result.Value.FailedKey.ShouldBe(tooLong);
+        (await client.GetAsync(first)).IsSuccess.ShouldBeTrue();
+    }
+
+    public virtual async Task DeleteManyAsync_WithMissingKeyAndETagMismatch_DeletesPrefixAndReportsFailedKey()
+    {
+        // Arrange
+        await this.ResetStoreAsync();
+        var ticks = DateTime.UtcNow.Ticks;
+        var client = new DocumentStoreClient<PersonStub>(this.CreateProvider());
+        var first = new DocumentKey("partition", "a" + ticks);
+        var missing = new DocumentKey("partition", "missing" + ticks);
+        var guarded = new DocumentKey("partition", "guarded" + ticks);
+        var last = new DocumentKey("partition", "last" + ticks);
+        (await client.UpsertAsync(first, this.CreatePerson("First"))).IsSuccess.ShouldBeTrue();
+        (await client.UpsertAsync(guarded, this.CreatePerson("Guarded"))).IsSuccess.ShouldBeTrue();
+        (await client.UpsertAsync(last, this.CreatePerson("Last"))).IsSuccess.ShouldBeTrue();
+
+        // Act
+        var result = await client.DeleteManyAsync([
+            new(first),
+            new(missing),
+            new(guarded, new() { IfMatchETag = Guid.NewGuid().ToString("N") }),
+            new(last)]);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.Items.ShouldBe([first, missing]);
+        result.Value.FailedKey.ShouldBe(guarded);
+        (await client.GetAsync(first)).IsFailure.ShouldBeTrue();
+        (await client.GetAsync(guarded)).IsSuccess.ShouldBeTrue();
+        (await client.GetAsync(last)).IsSuccess.ShouldBeTrue();
+    }
+
+    // Providers whose generator is sequential override this. The default accepts random ids (SQLite).
+    protected virtual void AssertRowIdsInInsertOrder(IReadOnlyList<Guid> ids)
+    {
+    }
+
     protected virtual async Task ResetStoreAsync()
     {
         await this.ExecuteDbContextAsync(async dbContext =>

@@ -97,7 +97,8 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
         "orchestrations_finish_failure",
         "composition_interception_operation_failures",
         "blobstorage_operation_failures",
-        "filestorage_operation_failures"
+        "filestorage_operation_failures",
+        "document.operation.failures"
     ];
 
     private static readonly HashSet<string> BaseCurrentSeries =

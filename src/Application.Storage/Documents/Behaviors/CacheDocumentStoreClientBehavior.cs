@@ -32,6 +32,63 @@ public class CacheDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
     }
 
     /// <inheritdoc />
+    public override async Task<Result<IReadOnlyList<Result<DocumentEntry<T>>>>> GetManyAsync(IReadOnlyList<DocumentKey> keys, CancellationToken cancellationToken = default)
+    {
+        if (keys is null || keys.Count == 0)
+        {
+            return await base.GetManyAsync(keys, cancellationToken);
+        }
+
+        var results = new Result<DocumentEntry<T>>[keys.Count];
+        var hits = new bool[keys.Count];
+        var misses = new List<DocumentKey>();
+        var missed = new HashSet<DocumentKey>();
+        for (var index = 0; index < keys.Count; index++)
+        {
+            if (await this.cache.TryGetAsync(this.Key(keys[index]), out DocumentEntry<T> cached, cancellationToken))
+            {
+                results[index] = Result<DocumentEntry<T>>.Success(cached);
+                hits[index] = true;
+            }
+            else if (missed.Add(keys[index]))
+            {
+                misses.Add(keys[index]);
+            }
+        }
+
+        if (misses.Count == 0)
+        {
+            return Result<IReadOnlyList<Result<DocumentEntry<T>>>>.Success(results);
+        }
+
+        var fetched = await base.GetManyAsync(misses, cancellationToken);
+        if (fetched.IsFailure)
+        {
+            return fetched;
+        }
+
+        var byKey = new Dictionary<DocumentKey, Result<DocumentEntry<T>>>(misses.Count);
+        for (var index = 0; index < misses.Count; index++)
+        {
+            byKey[misses[index]] = fetched.Value[index];
+            if (fetched.Value[index].IsSuccess)
+            {
+                await this.cache.SetAsync(this.Key(misses[index]), fetched.Value[index].Value, this.options.SlidingExpiration, this.options.AbsoluteExpiration, cancellationToken);
+            }
+        }
+
+        for (var index = 0; index < results.Length; index++)
+        {
+            if (!hits[index])
+            {
+                results[index] = byKey[keys[index]];
+            }
+        }
+
+        return Result<IReadOnlyList<Result<DocumentEntry<T>>>>.Success(results);
+    }
+
+    /// <inheritdoc />
     public override async Task<Result<DocumentInfo>> UpsertAsync(DocumentKey key, T value, DocumentWriteOptions options = null, CancellationToken cancellationToken = default)
     {
         var result = await base.UpsertAsync(key, value, options, cancellationToken);

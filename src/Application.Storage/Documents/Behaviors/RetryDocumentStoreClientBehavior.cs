@@ -15,6 +15,8 @@ public class RetryDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
     /// <inheritdoc />
     public override Task<Result<DocumentEntry<T>>> GetAsync(DocumentKey key, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.GetAsync(key, ct), cancellationToken);
     /// <inheritdoc />
+    public override Task<Result<IReadOnlyList<Result<DocumentEntry<T>>>>> GetManyAsync(IReadOnlyList<DocumentKey> keys, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.GetManyAsync(keys, ct), cancellationToken);
+    /// <inheritdoc />
     public override Task<Result<DocumentPage<T>>> FindPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.FindPageAsync(query, ct), cancellationToken);
     /// <inheritdoc />
     public override Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.ListPageAsync(query, ct), cancellationToken);

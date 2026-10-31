@@ -15,6 +15,8 @@ public class ChaosDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
     /// <inheritdoc />
     public override Task<Result<DocumentEntry<T>>> GetAsync(DocumentKey key, CancellationToken cancellationToken = default) { this.MaybeThrow(); return base.GetAsync(key, cancellationToken); }
     /// <inheritdoc />
+    public override Task<Result<IReadOnlyList<Result<DocumentEntry<T>>>>> GetManyAsync(IReadOnlyList<DocumentKey> keys, CancellationToken cancellationToken = default) { this.MaybeThrow(); return base.GetManyAsync(keys, cancellationToken); }
+    /// <inheritdoc />
     public override Task<Result<DocumentInfo>> UpsertAsync(DocumentKey key, T value, DocumentWriteOptions options = null, CancellationToken cancellationToken = default) { this.MaybeThrow(); return base.UpsertAsync(key, value, options, cancellationToken); }
     /// <inheritdoc />
     public override Task<Result> DeleteAsync(DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default) { this.MaybeThrow(); return base.DeleteAsync(key, options, cancellationToken); }

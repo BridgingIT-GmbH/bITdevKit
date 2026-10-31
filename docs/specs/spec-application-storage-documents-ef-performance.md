@@ -91,8 +91,9 @@ public interface IDocumentStoreBatchGetProvider
 | Option | Default | Valid range | Meaning |
 |---|---|---|---|
 | `GetManyBatchSize` | 25 | 1 to 1000 | Maximum number of row hashes per SQL query |
+| `GetManyMaxParallelism` | 4 | 1 to 32 | Maximum number of batches of one call read at the same time, each with its own scope, context and connection |
 
-Invalid values fail at options validation, matching `DownloadBatchSize` for blobs. The default is a starting point. Phase 2 confirms or changes it from benchmark data.
+Invalid values fail at options validation, matching `DownloadBatchSize` for blobs. The measured results are in "Results" below. Batches of 100 were faster for 1,000 keys but 17% slower for 100 KB documents, so the default stays 25.
 
 ### Behaviors
 
@@ -257,6 +258,18 @@ Acceptance criteria (a change is kept only if met on SQL Server):
 | Paging and indexes | Page latency independent of table size for full-type paging; sweep cost proportional to expiring rows |
 
 If a change misses its criterion, it is dropped or reworked and the result is recorded in the ADR.
+
+### Results
+
+Measured on SQL Server 2022 in local Docker (details and figures in the appendix of `docs\features-storage-documents.md`). A first sequential `GetManyAsync` missed its criterion and was reworked into parallel batches.
+
+| Change | Outcome |
+|---|---|
+| `GetManyAsync` | Partly met. 3.5x over 16 parallel `GetAsync` for 1 KB in one partition, 1.9x for 10 KB in one partition, 1.2x to 1.45x across 20 partitions, and parity (0.95x to 1.0x) at 100 KB. On a cold 1,000,000 row table it is slower than 16 parallel reads (40 to 52 ms against 28 to 29 ms). Against the sequential loop it is 10x to 29x faster |
+| Row ids | Met. Fragmentation 15.3% against 34.6% after 100,000 inserts, insert time equal within noise |
+| Compiled single read and copy removal | Met. Allocations down 11% to 16% at every size, latency down 6% to 8% at 1 KB and 10 KB, equal at 100 KB |
+| Bulk writes | Met. 6.2x to 7.4x at 100 documents |
+| Paging and indexes | Partly met. Deep pages at 1,000,000 rows are 18x to 20x faster and flat across depth, but about 3x to 5x slower than at 1,000 rows. Sweep cost follows the expiring rows. The filtered index is 29x smaller but not faster |
 
 ## Delivery Phases
 

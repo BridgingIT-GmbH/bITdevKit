@@ -33,6 +33,19 @@ public sealed class DocumentStoreOptions
     public bool RejectClientSideFilteredQueries { get; set; } = true;
 
     /// <summary>
+    /// Gets or sets the maximum number of keys a provider reads per round trip for
+    /// <see cref="IDocumentStoreClient{T}.GetManyAsync" />. Valid values are 1 to 1000.
+    /// </summary>
+    public int GetManyBatchSize { get; set; } = 25;
+
+    /// <summary>
+    /// Gets or sets the maximum number of batches a provider reads concurrently for
+    /// <see cref="IDocumentStoreClient{T}.GetManyAsync" />. Each concurrent batch uses its own scope and connection.
+    /// Valid values are 1 to 32, 1 reads the batches one after the other.
+    /// </summary>
+    public int GetManyMaxParallelism { get; set; } = 4;
+
+    /// <summary>
     /// Validates option values.
     /// </summary>
     public Result Validate()
@@ -55,6 +68,16 @@ public sealed class DocumentStoreOptions
         if (this.DefaultTake > this.MaxTake)
         {
             return Result.Failure(new DocumentStoreInvalidQueryError("DefaultTake must be less than or equal to MaxTake."));
+        }
+
+        if (this.GetManyBatchSize is < 1 or > 1000)
+        {
+            return Result.Failure(new DocumentStoreInvalidQueryError("GetManyBatchSize must be between 1 and 1000."));
+        }
+
+        if (this.GetManyMaxParallelism is < 1 or > 32)
+        {
+            return Result.Failure(new DocumentStoreInvalidQueryError("GetManyMaxParallelism must be between 1 and 32."));
         }
 
         return Result.Success();

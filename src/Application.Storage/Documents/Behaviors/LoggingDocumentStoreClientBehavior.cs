@@ -20,6 +20,15 @@ public class LoggingDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory,
     }
 
     /// <inheritdoc />
+    public override async Task<Result<IReadOnlyList<Result<DocumentEntry<T>>>>> GetManyAsync(IReadOnlyList<DocumentKey> keys, CancellationToken cancellationToken = default)
+    {
+        var result = await base.GetManyAsync(keys, cancellationToken);
+        var failed = result.IsSuccess ? result.Value.Count(x => x.IsFailure) : 0;
+        this.logger.LogInformation("{LogKey} documentclient: get-many (type={DocumentType}, keys={KeyCount}, failed={FailedCount}, success={Success})", Constants.LogKey, typeof(T).Name, keys?.Count ?? 0, failed, result.IsSuccess);
+        return result;
+    }
+
+    /// <inheritdoc />
     public override async Task<Result<DocumentInfo>> UpsertAsync(DocumentKey key, T value, DocumentWriteOptions options = null, CancellationToken cancellationToken = default)
     {
         var result = await base.UpsertAsync(key, value, options, cancellationToken);

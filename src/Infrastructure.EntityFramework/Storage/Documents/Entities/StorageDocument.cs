@@ -15,6 +15,7 @@ using System.Text.Json;
 [Table("__Storage_Documents")]
 [Index(nameof(TypeHash), nameof(PartitionKeyHash), nameof(RowKeyHash), IsUnique = true)]
 [Index(nameof(TypeHash), nameof(PartitionKeyHash), nameof(RowKey))]
+[Index(nameof(TypeHash), nameof(PartitionKey), nameof(RowKey))]
 [Index(nameof(TypeHash), nameof(ExpiresAtUnixMilliseconds))]
 public class StorageDocument
 {
@@ -24,8 +25,15 @@ public class StorageDocument
     public const int MaximumKeyLength = 256;
 
     /// <summary>
-    /// Gets or sets the internal row identifier.
+    /// Gets or sets the internal row identifier. It is generated on add by the Entity Framework value generator of the
+    /// database provider, which is sequential on SQL Server and keeps the clustered index append-only.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// var row = new StorageDocument();
+    /// // row.Id stays Guid.Empty until the entity is added to a DbContext.
+    /// </code>
+    /// </example>
     [Key]
     public Guid Id { get; set; }
 

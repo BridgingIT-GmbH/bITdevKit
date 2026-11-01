@@ -37,6 +37,11 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Order = 50,
             Description = "Browse and manage registered blob storage clients",
             Tooltip = "Blob storage clients",
+            RememberedViews = new Dictionary<string, string>
+            {
+                ["explorer"] = BlobStorageDashboardRoutes.BuildBlobsPath(options),
+                ["diagnostics"] = BlobStorageDashboardRoutes.BuildBlobsPath(options) + "/diagnostics"
+            },
             Card = GetCardAsync
         };
     }

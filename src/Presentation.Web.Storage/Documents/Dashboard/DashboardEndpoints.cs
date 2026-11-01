@@ -52,6 +52,17 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             "Dashboard Documents",
             "Shows registered document storage clients with key listing, viewing, editing, and delete actions.");
 
+        var metrics = new StorageDashboardMetrics("documents");
+        app.ServiceProvider.GetRequiredService<Microsoft.Extensions.Hosting.IHostApplicationLifetime>()
+            .ApplicationStopping.Register(metrics.Dispose);
+        group.MapDashboardPage<Pages.Diagnostics>(
+            DocumentsPath + "/diagnostics",
+            "_bdk.Dashboard.Storage.Documents.Diagnostics",
+            "Dashboard Documents Diagnostics",
+            "Shows recent storage transfer throughput and item counts.");
+        group.MapGet(DocumentsPath + "/diagnostics/data", () => Results.Json(metrics.Snapshot()))
+            .ExcludeFromDescription();
+
         group.MapDashboardPage<Pages.Content>(
             DocumentsContentPath,
             "_bdk.Dashboard.Storage.DocumentsContent",

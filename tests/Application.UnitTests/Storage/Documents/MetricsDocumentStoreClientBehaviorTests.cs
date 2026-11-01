@@ -27,6 +27,7 @@ public sealed class MetricsDocumentStoreClientBehaviorTests
         // Assert
         result.IsSuccess.ShouldBeTrue();
         result.Value.ContentLength.ShouldBeGreaterThan(4096);
+        recorder.CounterSum("document.items", "upsert").ShouldBe(1);
         recorder.CounterSum("document.bytes", "upsert").ShouldBe(result.Value.ContentLength);
         var rates = recorder.HistogramValues("document.bytes_per_second", "upsert");
         rates.Count.ShouldBe(1);
@@ -47,6 +48,7 @@ public sealed class MetricsDocumentStoreClientBehaviorTests
 
         // Assert
         result.Value.ContentLength.ShouldBe(written.Value.ContentLength);
+        recorder.CounterSum("document.items", "get").ShouldBe(1);
         recorder.CounterSum("document.bytes", "get").ShouldBe(written.Value.ContentLength);
         recorder.HistogramValues("document.bytes_per_second", "get").Count.ShouldBe(1);
     }
@@ -67,6 +69,7 @@ public sealed class MetricsDocumentStoreClientBehaviorTests
         ]);
 
         // Assert
+        recorder.CounterSum("document.items", "upsert-many").ShouldBe(2);
         recorder.CounterSum("document.bytes", "upsert-many").ShouldBe(result.Value.Items.Sum(x => x.ContentLength));
         recorder.HistogramValues("document.bytes_per_second", "upsert-many").Count.ShouldBe(1);
     }
@@ -86,6 +89,7 @@ public sealed class MetricsDocumentStoreClientBehaviorTests
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
+        recorder.CounterSum("document.items", "get-many").ShouldBe(2);
         recorder.CounterSum("document.bytes", "get-many").ShouldBe(first.Value.ContentLength + second.Value.ContentLength);
         recorder.HistogramValues("document.bytes_per_second", "get-many").Count.ShouldBe(1);
     }
@@ -105,6 +109,7 @@ public sealed class MetricsDocumentStoreClientBehaviorTests
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
+        recorder.CounterSum("document.items", "find").ShouldBe(2);
         recorder.CounterSum("document.bytes", "find").ShouldBe(result.Value.Items.Sum(x => x.ContentLength));
         recorder.HistogramValues("document.bytes_per_second", "find").Count.ShouldBe(1);
     }
@@ -124,6 +129,7 @@ public sealed class MetricsDocumentStoreClientBehaviorTests
         result.IsFailure.ShouldBeTrue();
         recorder.CounterSum("document.operations", "get").ShouldBe(1);
         recorder.CounterSum("document.operation.failures", "get").ShouldBe(1);
+        recorder.CounterSum("document.items", "get").ShouldBe(0);
         recorder.CounterSum("document.bytes", "get").ShouldBe(0);
         recorder.HistogramValues("document.bytes_per_second", "get").ShouldBeEmpty();
         recorder.HistogramValues("document.operation.duration", "get").Count.ShouldBe(1);
@@ -174,6 +180,7 @@ public sealed class MetricsDocumentStoreClientBehaviorTests
         // Assert
         result.Value.FailedKey.ShouldNotBeNull();
         recorder.CounterSum("document.operation.failures", "upsert-many").ShouldBe(1);
+        recorder.CounterSum("document.items", "upsert-many").ShouldBe(0);
     }
 
     [Fact]

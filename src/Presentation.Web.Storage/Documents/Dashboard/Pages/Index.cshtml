@@ -8,6 +8,11 @@
     var actionBase = StorageDashboardEndpoints.Actions(dashboardOptions);
 }
 
+<nav class="nav nav-pills gap-1 mb-2" aria-label="Storage views" data-dashboard-view="explorer">
+    <a class="nav-link active" aria-current="page" href="@(DocumentStorageDashboardRoutes.Documents(dashboardOptions))">Explorer</a>
+    <a class="nav-link" href="@(DocumentStorageDashboardRoutes.Documents(dashboardOptions) + "/diagnostics")">Diagnostics</a>
+</nav>
+
 <div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
     <div class="d-flex align-items-center gap-2">
         <span id="documents-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>

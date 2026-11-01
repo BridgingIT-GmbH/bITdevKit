@@ -37,6 +37,11 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Order = 49,
             Description = "Browse and manage registered document storage clients",
             Tooltip = "Document storage clients",
+            RememberedViews = new Dictionary<string, string>
+            {
+                ["explorer"] = DocumentStorageDashboardRoutes.Documents(options),
+                ["diagnostics"] = DocumentStorageDashboardRoutes.Documents(options) + "/diagnostics"
+            },
             Card = GetCardAsync
         };
     }

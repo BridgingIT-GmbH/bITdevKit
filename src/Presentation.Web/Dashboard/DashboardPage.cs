@@ -96,6 +96,8 @@ public class DashboardPage(string key, string title, string icon, string url)
 /// </example>
 public class DashboardPageCard(string title, string subtitle = null, string value = null)
 {
+    internal string PageKey { get; set; }
+
     /// <summary>
     /// Gets or sets the card title.
     /// </summary>

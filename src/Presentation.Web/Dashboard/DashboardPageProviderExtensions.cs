@@ -72,6 +72,7 @@ public static class DashboardPageProviderExtensions
 
                 if (card is not null)
                 {
+                    card.PageKey = page.Key;
                     cards.Add(card);
                 }
             }
@@ -80,6 +81,7 @@ public static class DashboardPageProviderExtensions
                 logger?.LogWarning(ex, "Dashboard page card provider failed (page={DashboardPageTitle})", page.Title);
                 cards.Add(new DashboardPageCard(page.Title)
                 {
+                    PageKey = page.Key,
                     Detail = "Card unavailable",
                     Icon = page.Icon,
                     Url = page.Url,

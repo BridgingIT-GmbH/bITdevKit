@@ -14,6 +14,31 @@ using BridgingIT.DevKit.Common;
 public class OrchestrationQueryService(IOrchestrationQueryStore queryStore) : IOrchestrationQueryService
 {
     /// <inheritdoc />
+    public async Task<ResultPaged<OrchestrationInstanceModel>> SearchAsync(FilterModel filter, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            filter ??= new FilterModel();
+            var snapshots = await this.GetSnapshotsAsync(new OrchestrationQueryRequest(), cancellationToken).ConfigureAwait(false);
+            var models = snapshots.Select(MapInstance).OrderByDescending(model => model.StartedUtc)
+                .ThenBy(model => model.InstanceId).AsQueryable().ApplyFilter(filter);
+            var total = models.LongCount();
+            var items = models.ApplyOrder(filter).ApplyPage(filter).ToArray();
+            return ResultPaged<OrchestrationInstanceModel>.Success(items, total,
+                filter.Page <= 0 ? 1 : filter.Page, filter.PageSize <= 0 ? 50 : Math.Min(filter.PageSize, 1000));
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultPaged<OrchestrationInstanceModel>.Failure().WithError(new Error("Orchestration search was canceled."));
+        }
+        catch (ArgumentException exception)
+        {
+            return ResultPaged<OrchestrationInstanceModel>.Failure().WithError(new ValidationError(exception.Message));
+        }
+    }
+
+    /// <inheritdoc />
     public async Task<Result<OrchestrationInstanceModel>> GetAsync(Guid instanceId, CancellationToken cancellationToken = default)
     {
         try

@@ -108,6 +108,11 @@ public sealed class MetricsBlobStoreClientBehavior(
             this.AddCounter("blobstorage_operation_failures", 1, operation);
         }
 
+        if (result.IsSuccess && operation is "upload" or "download")
+        {
+            this.AddCounter("blobstorage_items", 1, operation);
+        }
+
         if (bytes > 0)
         {
             this.AddCounter("blobstorage_bytes", bytes, operation);

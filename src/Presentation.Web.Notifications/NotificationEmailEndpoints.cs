@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Notifications;
 using System;
 using System.Net;
 using BridgingIT.DevKit.Application.Notifications;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Notifications.Models;
 using Microsoft.AspNetCore.Builder;
@@ -17,6 +18,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using IResult = Microsoft.AspNetCore.Http.IResult;
 
 /// <summary>
 /// Exposes operational REST endpoints for inspecting and managing notification email outbox state.
@@ -49,6 +51,14 @@ public class NotificationEmailEndpoints(
         }
 
         var group = this.MapGroup(app, this.options);
+
+        group.MapPost("search", this.SearchMessages)
+            .Produces<ResultPaged<NotificationEmailInfo>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .WithName("_bdk.Notifications.SearchEmails")
+            .WithSummary("Search notification emails")
+            .WithDescription("Filters, orders and pages scalar email fields. Excludes archived emails by default; isArchived scopes archive access.")
+            .WithFilterSchema(isRequestBody: true);
 
         group.MapGet("stats", this.GetMessageStats)
             .Produces<NotificationEmailStats>()
@@ -106,6 +116,29 @@ public class NotificationEmailEndpoints(
             .WithDescription("Purges persisted notification emails by age and optional status filters.");
 
         this.IsRegistered = true;
+    }
+
+    private async Task<IResult> SearchMessages(HttpContext context, CancellationToken cancellationToken, bool? isArchived = false)
+    {
+        try
+        {
+            var filter = await context.FromBodyFilterAsync();
+            if (context.Response.StatusCode == StatusCodes.Status400BadRequest)
+            {
+                return Results.Empty;
+            }
+
+            if (filter is null)
+            {
+                return Results.Problem("A FilterModel request body is required.", statusCode: StatusCodes.Status400BadRequest);
+            }
+
+            return Results.Ok(await this.WithOutboxService(service => service.SearchMessagesAsync(filter, isArchived, cancellationToken)));
+        }
+        catch (Exception exception) when (exception is ArgumentException or NotSupportedException or FormatException or OverflowException)
+        {
+            return Results.Problem(exception.Message, statusCode: StatusCodes.Status400BadRequest);
+        }
     }
 
     private async Task<IResult> GetMessages([AsParameters] NotificationEmailsQueryModel request, CancellationToken cancellationToken)

@@ -51,6 +51,14 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
 
         var group = this.MapGroup(app, this.options);
 
+        group.MapPost("search", this.SearchLogEntries)
+            .Produces<ResultPaged<LogEntryModel>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("_bdk.Logging.LogEntries.Search")
+            .WithSummary("Search active log summaries")
+            .WithFilterSchema(isRequestBody: true);
+
         group.MapGet("", this.GetLogEntries)
             .Produces<LogEntryQueryResponse>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
@@ -92,6 +100,20 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             .WithName("_bdk.Logging.LogEntries.Export")
             .WithSummary("Export logs")
             .WithDescription("Exports log entries as a downloadable file in the specified format (csv, json, txt). Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
+    }
+
+    private async Task<IResult> SearchLogEntries(
+        [FromServices] ILogEntryService queryService,
+        HttpContext context,
+        CancellationToken cancellationToken)
+    {
+        var filter = await context.FromBodyFilterAsync().ConfigureAwait(false);
+        if (context.Response.HasStarted) return Results.Empty;
+        if (filter is null) return Results.BadRequest("A filter model body is required.");
+        var result = await queryService.SearchAsync(filter, cancellationToken).ConfigureAwait(false);
+        return result.IsSuccess
+            ? Results.Ok(result)
+            : Results.Problem(statusCode: (int)HttpStatusCode.BadRequest, title: "Invalid log search");
     }
 
     private async Task<IResult> GetLogEntries(

@@ -58,6 +58,32 @@ public class QueueingEndpointsTests : IAsyncDisposable
     }
 
     [Fact]
+    public async Task SearchMessages_ShouldForwardFilterAndDefaultArchiveScope()
+    {
+        this.queueBrokerService.SearchMessagesAsync(Arg.Any<FilterModel>(), false, Arg.Any<CancellationToken>())
+            .Returns(ResultPaged<QueueMessageInfo>.Success([new QueueMessageInfo { MessageId = "found" }], 3, 2, 1));
+
+        var response = await this.client.PostAsJsonAsync("/_bdk/api/queueing/messages/search", new FilterModel { Page = 2, PageSize = 1 });
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        await this.queueBrokerService.Received(1).SearchMessagesAsync(
+            Arg.Is<FilterModel>(filter => filter.Page == 2 && filter.PageSize == 1), false, Arg.Any<CancellationToken>());
+        var body = await response.Content.ReadAsStringAsync();
+        body.ShouldContain("found");
+    }
+
+    [Fact]
+    public async Task SearchMessages_WhenFilterIsInvalid_ReturnsBadRequest()
+    {
+        this.queueBrokerService.SearchMessagesAsync(Arg.Any<FilterModel>(), false, Arg.Any<CancellationToken>())
+            .Returns<Task<ResultPaged<QueueMessageInfo>>>(_ => throw new ArgumentException("Unknown field"));
+
+        var response = await this.client.PostAsJsonAsync("/_bdk/api/queueing/messages/search", new FilterModel());
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
     public async Task GetSummary_ShouldReturnQueueBrokerSummary()
     {
         // Arrange

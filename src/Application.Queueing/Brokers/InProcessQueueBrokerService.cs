@@ -27,6 +27,23 @@ public class InProcessQueueBrokerService(
     }
 
     /// <inheritdoc />
+    public async Task<ResultPaged<QueueMessageInfo>> SearchMessagesAsync(
+        FilterModel filter,
+        bool? isArchived = false,
+        CancellationToken cancellationToken = default)
+    {
+        var messages = await this.GetMessagesAsync(isArchived: isArchived, take: null, cancellationToken: cancellationToken);
+        var query = messages.AsQueryable().ApplyFilter(filter);
+        var totalCount = query.LongCount();
+        var values = query.OrderByDescending(message => message.CreatedDate).ThenBy(message => message.Id)
+            .ApplyOrder(filter).ApplyPage(filter).ToArray();
+        var page = Math.Max(1, filter?.Page ?? 1);
+        var pageSize = Math.Clamp(filter?.PageSize > 0 ? filter.PageSize : 50, 1, 1000);
+
+        return ResultPaged<QueueMessageInfo>.Success(values, totalCount, page, pageSize);
+    }
+
+    /// <inheritdoc />
     public Task<QueueMessageInfo> GetMessageAsync(Guid id, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();

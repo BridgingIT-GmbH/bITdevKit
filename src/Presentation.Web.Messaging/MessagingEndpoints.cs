@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Messaging;
 
 using System.Net;
 using BridgingIT.DevKit.Application.Messaging;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Messaging.Models;
 using Microsoft.AspNetCore.Builder;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using IResult = Microsoft.AspNetCore.Http.IResult;
 
 /// <summary>
 /// Exposes operational REST endpoints for inspecting and managing persisted broker messages.
@@ -46,6 +48,14 @@ public class MessagingEndpoints(
         }
 
         var group = this.MapGroup(app, this.options);
+
+        group.MapPost("search", this.SearchMessages)
+            .Produces<ResultPaged<BrokerMessageInfo>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .WithName("_bdk.Messaging.SearchMessages")
+            .WithSummary("Search persisted broker messages")
+            .WithDescription("Filters, orders and pages scalar message fields. Excludes archived messages by default; isArchived scopes archive access and includeHandlers controls returned handler details.")
+            .WithFilterSchema(isRequestBody: true);
 
         group.MapGet("stats", this.GetMessageStats)
             .Produces<BrokerMessageStats>()
@@ -156,6 +166,29 @@ public class MessagingEndpoints(
             .WithDescription("Retrieves messages that were published with no handler registrations.");
 
         this.IsRegistered = true;
+    }
+
+    private async Task<IResult> SearchMessages(HttpContext context, CancellationToken cancellationToken, bool? isArchived = false, bool includeHandlers = false)
+    {
+        try
+        {
+            var filter = await context.FromBodyFilterAsync();
+            if (context.Response.StatusCode == StatusCodes.Status400BadRequest)
+            {
+                return Results.Empty;
+            }
+
+            if (filter is null)
+            {
+                return Results.Problem("A FilterModel request body is required.", statusCode: StatusCodes.Status400BadRequest);
+            }
+
+            return Results.Ok(await messageBrokerService.SearchMessagesAsync(filter, isArchived, includeHandlers, cancellationToken));
+        }
+        catch (Exception exception) when (exception is ArgumentException or NotSupportedException or FormatException or OverflowException)
+        {
+            return Results.Problem(exception.Message, statusCode: StatusCodes.Status400BadRequest);
+        }
     }
 
     private async Task<IResult> GetMessages([AsParameters] BrokerMessagesQueryModel request, CancellationToken cancellationToken)

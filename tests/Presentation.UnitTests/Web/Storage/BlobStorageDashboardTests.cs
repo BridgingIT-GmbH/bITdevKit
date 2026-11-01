@@ -52,6 +52,8 @@ public sealed class BlobStorageDashboardTests
         page.Key.ShouldBe("storage.blobs");
         page.Title.ShouldBe("Blobs");
         page.Url.ShouldBe("/_bdk/dashboard/storage/blobs");
+        page.RememberedViews["explorer"].ShouldBe(page.Url);
+        page.RememberedViews["diagnostics"].ShouldBe(page.Url + "/diagnostics");
         page.Group.ShouldBe("bdk");
         page.Card.ShouldNotBeNull();
     }
@@ -107,6 +109,8 @@ public sealed class BlobStorageDashboardTests
         action.ShouldNotThrow();
         var routes = ((IEndpointRouteBuilder)app).DataSources.SelectMany(source => source.Endpoints)
             .OfType<RouteEndpoint>().Select(endpoint => endpoint.RoutePattern.RawText).ToArray();
+        routes.ShouldContain(route => route.EndsWith("/storage/blobs/diagnostics", StringComparison.Ordinal));
+        routes.ShouldContain(route => route.EndsWith("/storage/blobs/diagnostics/data", StringComparison.Ordinal));
         routes.ShouldContain(route => route.EndsWith("/storage/blobs/actions/upload", StringComparison.Ordinal));
         routes.ShouldContain(route => route.EndsWith("/storage/blobs/actions/delete", StringComparison.Ordinal));
     }

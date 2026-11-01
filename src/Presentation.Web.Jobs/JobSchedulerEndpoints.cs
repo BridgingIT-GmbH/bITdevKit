@@ -55,6 +55,20 @@ public class JobSchedulerEndpoints(
         var maintenanceGroup = group.MapGroup("maintenance");
         var dashboard = group.MapGroup("dashboard");
 
+        group.MapPost("search", this.SearchJobs)
+            .Produces<ResultPaged<JobSchedulerJobModel>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .WithName("_bdk.Jobs.SearchJobs")
+            .WithSummary("Search jobs")
+            .WithFilterSchema(isRequestBody: true);
+
+        occurrences.MapPost("search", this.SearchOccurrences)
+            .Produces<ResultPaged<JobSchedulerOccurrenceModel>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .WithName("_bdk.Jobs.SearchOccurrences")
+            .WithSummary("Search job occurrences")
+            .WithFilterSchema(isRequestBody: true);
+
         group.MapGet(string.Empty, this.GetJobs)
             .Produces<ResultPaged<JobSchedulerJobModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
@@ -632,6 +646,22 @@ public class JobSchedulerEndpoints(
             .WithDescription("Detects runtime-state rows that no longer correspond to active code-first registrations.");
 
         this.IsRegistered = true;
+    }
+
+    private async Task<HttpResult> SearchJobs(HttpContext context, CancellationToken cancellationToken)
+    {
+        var filter = await context.FromBodyFilterAsync().ConfigureAwait(false);
+        if (context.Response.HasStarted) return Results.Empty;
+        if (filter is null) return Results.BadRequest("A filter model body is required.");
+        return this.OkOrProblem(await query.SearchAsync(filter, cancellationToken).ConfigureAwait(false), result => TypedResults.Ok(result));
+    }
+
+    private async Task<HttpResult> SearchOccurrences(HttpContext context, CancellationToken cancellationToken)
+    {
+        var filter = await context.FromBodyFilterAsync().ConfigureAwait(false);
+        if (context.Response.HasStarted) return Results.Empty;
+        if (filter is null) return Results.BadRequest("A filter model body is required.");
+        return this.OkOrProblem(await query.SearchOccurrencesAsync(filter, cancellationToken).ConfigureAwait(false), result => TypedResults.Ok(result));
     }
 
     private async Task<HttpResult> GetJobs([AsParameters] JobSchedulerJobQueryRequest request, CancellationToken cancellationToken)

@@ -12,6 +12,20 @@ using BridgingIT.DevKit.Common;
 /// </summary>
 public interface IJobSchedulerQueryService
 {
+    /// <summary>Searches registered jobs and their operational state with filtering, ordering, and paging.</summary>
+    /// <param name="filter">The filter model. Paging defaults to page 1 and 50 items.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The matching page and total count.</returns>
+    /// <example><code>var jobs = await queries.SearchAsync(new FilterModel { PageSize = 25 });</code></example>
+    Task<ResultPaged<JobSchedulerJobModel>> SearchAsync(FilterModel filter, CancellationToken cancellationToken = default);
+
+    /// <summary>Searches persisted occurrences with filtering, ordering, and paging.</summary>
+    /// <param name="filter">The filter model.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The matching page and total count.</returns>
+    /// <example><code>var occurrences = await queries.SearchOccurrencesAsync(new FilterModel { PageSize = 25 });</code></example>
+    Task<ResultPaged<JobSchedulerOccurrenceModel>> SearchOccurrencesAsync(FilterModel filter, CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Executes the query jobs operation.
     /// </summary>

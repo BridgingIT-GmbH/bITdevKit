@@ -37,6 +37,43 @@ public class LogEntryService<TContext>(
     private readonly LogEntryMaintenanceQueue purgeQueue = purgeQueue ?? throw new ArgumentNullException(nameof(purgeQueue));
     private static readonly string[] LogLevels = ["Verbose", "Debug", "Information", "Warning", "Error", "Fatal"];
 
+    /// <inheritdoc />
+    public async Task<ResultPaged<LogEntryModel>> SearchAsync(FilterModel filter, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            filter ??= new FilterModel();
+            var query = this.dbContext.LogEntries.AsNoTracking()
+                .Where(entry => entry.IsArchived == null || entry.IsArchived == false)
+                .Select(entry => new LogEntryModel
+                {
+                    Id = entry.Id,
+                    Message = entry.Message,
+                    MessageTemplate = entry.MessageTemplate,
+                    Level = entry.Level,
+                    TimeStamp = entry.TimeStamp,
+                    Exception = entry.Exception,
+                    TraceId = entry.TraceId,
+                    SpanId = entry.SpanId,
+                    CorrelationId = entry.CorrelationId,
+                    LogKey = entry.LogKey,
+                    ModuleName = entry.ModuleName,
+                    ThreadId = entry.ThreadId,
+                    ShortTypeName = entry.ShortTypeName
+                })
+                .ApplyFilter(filter);
+            var ordered = query.OrderByDescending(entry => entry.Id).ApplyOrder(filter, entry => entry.Id).ApplyPage(filter);
+            var total = await query.LongCountAsync(cancellationToken).ConfigureAwait(false);
+            var items = await ordered.ToArrayAsync(cancellationToken).ConfigureAwait(false);
+            return ResultPaged<LogEntryModel>.Success(items, total,
+                filter.Page <= 0 ? 1 : filter.Page, filter.PageSize <= 0 ? 50 : Math.Min(filter.PageSize, 1000));
+        }
+        catch (ArgumentException exception)
+        {
+            return ResultPaged<LogEntryModel>.Failure().WithError(new ValidationError(exception.Message));
+        }
+    }
+
     /// <inheritdoc/>
     public async Task<LogEntryQueryResponse> QueryAsync(LogEntryQueryRequest request, CancellationToken cancellationToken = default)
     {

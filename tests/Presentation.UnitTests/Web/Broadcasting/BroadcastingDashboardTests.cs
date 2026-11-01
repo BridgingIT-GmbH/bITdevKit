@@ -271,6 +271,10 @@ public sealed class BroadcastingDashboardTests
             CancellationToken cancellationToken = default
         ) => Task.FromResult(snapshot);
 
+        public Task<ResultPaged<BroadcastNodeRegistration>> SearchNodesAsync(
+            FilterModel filter,
+            CancellationToken cancellationToken = default) => throw new NotSupportedException();
+
         public Task<Result> RemoveAsync(
             string nodeIdentity,
             CancellationToken cancellationToken = default

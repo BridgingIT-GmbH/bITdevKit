@@ -1,0 +1,108 @@
+@using RazorSlices
+@inherits RazorSlice<string>
+
+<div id="storage-diagnostics" data-url="@(Model + "/diagnostics/data")">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 mb-2 border-bottom">
+        <span class="text-muted small">All clients on this node &middot; last 15 minutes &middot; 1-second intervals</span>
+        <div class="d-flex align-items-center gap-2">
+            <span id="storage-metrics-status" class="small text-muted" role="status">Loading metrics</span>
+            <select id="storage-metrics-interval" class="form-select form-select-sm" style="width:9rem" aria-label="Diagnostics refresh interval">
+                <option value="">Off</option>
+                <option value="1000" selected>1 sec</option>
+                <option value="5000">5 sec</option>
+                <option value="15000">15 sec</option>
+                <option value="30000">30 sec</option>
+            </select>
+            <button id="storage-metrics-refresh" class="btn btn-outline-secondary btn-sm" type="button" title="Refresh diagnostics" aria-label="Refresh diagnostics"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+        </div>
+    </div>
+    <div class="row g-2">
+        <div class="col-12 col-xl-6">
+            <div class="card">
+                <div class="card-header">Transfer speed <span class="text-muted small">MiB/s &middot; average per transfer</span></div>
+                <div id="storage-speed-chart" role="img" aria-label="Measured read and write transfer speed" style="height:300px;min-width:0"></div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-6">
+            <div class="card">
+                <div class="card-header">Operation latency <span class="text-muted small">ms &middot; average</span></div>
+                <div id="storage-latency-chart" role="img" aria-label="Read and write operation latency" style="height:300px;min-width:0"></div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-6">
+            <div class="card">
+                <div class="card-header">Transfer throughput <span class="text-muted small">MiB/s</span></div>
+                <div id="storage-throughput-chart" role="img" aria-label="Read and write throughput over time" style="height:300px;min-width:0"></div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-6">
+            <div class="card">
+                <div class="card-header">Items read / written <span class="text-muted small">items/s</span></div>
+                <div id="storage-items-chart" role="img" aria-label="Items read and written over time" style="height:300px;min-width:0"></div>
+            </div>
+        </div>
+    </div>
+    <p class="text-muted small mt-2">Speed and latency use recorded operation timings; gaps mean no measurements. Throughput and item rates show completed payload reads and writes. Logical bytes before storage transforms; blob downloads count the declared payload when opened. Collection starts with this dashboard host and resets on restart.</p>
+</div>
+<script>
+(() => {
+    const root = document.getElementById('storage-diagnostics');
+    let latest;
+    let disposed = false;
+    async function draw() {
+        if (!latest || disposed) return;
+        const plotly = await window.bdkDashboard.loadPlotly();
+        if (disposed) return;
+        const theme = window.bdkDashboard.getChartTheme();
+        const x = latest.samples.map(sample => sample.at);
+        for (const [id, fields, unit] of [
+            ['storage-speed-chart', ['readSpeedMiBPerSecond', 'writeSpeedMiBPerSecond'], 'MiB/s'],
+            ['storage-latency-chart', ['readLatencyMs', 'writeLatencyMs'], 'ms'],
+            ['storage-throughput-chart', ['readMiBPerSecond', 'writeMiBPerSecond'], 'MiB/s'],
+            ['storage-items-chart', ['readItems', 'writeItems'], 'items/s']
+        ]) {
+            const layout = window.bdkDashboard.createPlotlyLayout({ showlegend: true, margin: { l: 56, r: 16, t: 16, b: 60 } });
+            layout.xaxis.type = 'date';
+            if (x.length === 0) layout.xaxis.range = [new Date(Date.now() - 15 * 60 * 1000), new Date()];
+            layout.xaxis.nticks = window.innerWidth < 576 ? 3 : 6;
+            layout.xaxis.tickformat = '%H:%M:%S';
+            layout.xaxis.tickangle = 0;
+            layout.yaxis.title = unit;
+            if (id === 'storage-items-chart') layout.yaxis.tickformat = ',d';
+            await plotly.react(document.getElementById(id), fields.map((field, index) => ({
+                x, y: latest.samples.map(sample => sample[field]), type: 'scatter', mode: id === 'storage-speed-chart' || id === 'storage-latency-chart' ? 'lines+markers' : 'lines',
+                marker: { size: 4 },
+                name: index === 0 ? 'Read' : 'Write',
+                line: { color: index === 0 ? theme.primary : theme.secondary, dash: index === 0 ? 'solid' : 'dash' }
+            })), layout, { responsive: true, displayModeBar: false });
+        }
+    }
+    const refresher = window.bdkDashboard.createRefresher({
+        contentSelector: '#storage-diagnostics',
+        statusSelector: '#storage-metrics-status',
+        intervalSelector: '#storage-metrics-interval',
+        refreshButtonSelector: '#storage-metrics-refresh',
+        storageKey: 'bdk.storage.diagnostics.refresh:' + root.dataset.url,
+        buildUrl: () => root.dataset.url,
+        applyResponse: async (_, response) => {
+            latest = JSON.parse(response);
+            await draw();
+        }
+    });
+    const redraw = () => draw().catch(() => {
+        document.getElementById('storage-metrics-status').textContent = 'Chart unavailable';
+    });
+    document.addEventListener('bdk-dashboard-theme-changed', redraw);
+    window.addEventListener('pageshow', event => {
+        if (event.persisted) refresher.refresh();
+    });
+    window.addEventListener('pagehide', event => {
+        refresher.cancel();
+        if (event.persisted) return;
+        disposed = true;
+        document.removeEventListener('bdk-dashboard-theme-changed', redraw);
+        if (window.Plotly) ['storage-speed-chart', 'storage-latency-chart', 'storage-throughput-chart', 'storage-items-chart'].forEach(id => window.Plotly.purge(id));
+    });
+    refresher.refresh();
+})();
+</script>

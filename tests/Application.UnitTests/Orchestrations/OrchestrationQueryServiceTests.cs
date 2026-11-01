@@ -6,10 +6,80 @@
 namespace BridgingIT.DevKit.Application.UnitTests.Orchestrations;
 
 using BridgingIT.DevKit.Application.Orchestrations;
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 public class OrchestrationQueryServiceTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
+    [Theory]
+    [InlineData("Missing", FilterOperator.Equal, "value")]
+    [InlineData("OrchestrationName", FilterOperator.GreaterThan, "value")]
+    [InlineData("StartedUtc", FilterOperator.Equal, "invalid-date")]
+    public async Task SearchAsync_InvalidCriteria_ReturnsValidationFailure(string field, FilterOperator operation, string value)
+    {
+        using var provider = this.CreateServices();
+        var sut = provider.GetRequiredService<IOrchestrationQueryService>();
+
+        var result = await sut.SearchAsync(new FilterModel { Filters = [new(field, operation, value)] });
+
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldContain(error => error is ValidationError);
+    }
+
+    [Fact]
+    public async Task SearchAsync_NullFilter_ReturnsDefaultEmptyPage()
+    {
+        using var provider = this.CreateServices();
+        var sut = provider.GetRequiredService<IOrchestrationQueryService>();
+
+        var result = await sut.SearchAsync(null);
+
+        result.IsSuccess.ShouldBeTrue();
+        result.TotalCount.ShouldBe(0);
+        result.CurrentPage.ShouldBe(1);
+        result.PageSize.ShouldBe(50);
+        result.Value.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task SearchAsync_CanceledToken_ReturnsFailureResult()
+    {
+        using var provider = this.CreateServices();
+        var sut = provider.GetRequiredService<IOrchestrationQueryService>();
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+
+        var result = await sut.SearchAsync(new FilterModel(), cancellation.Token);
+
+        result.IsFailure.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task SearchAsync_FiltersAndOrdersBeforePaging_AndPreservesTotal()
+    {
+        using var provider = this.CreateServices();
+        var instances = provider.GetRequiredService<IOrchestrationInstanceStore>();
+        var sut = provider.GetRequiredService<IOrchestrationQueryService>();
+        var start = new DateTimeOffset(2026, 5, 7, 8, 0, 0, TimeSpan.Zero);
+        await instances.CreateAsync(CreateContext(Guid.NewGuid(), "Approval", OrchestrationStatus.Waiting, "Waiting", "first", start), "first");
+        await instances.CreateAsync(CreateContext(Guid.NewGuid(), "Approval", OrchestrationStatus.Waiting, "Waiting", "second", start.AddMinutes(1)), "second");
+        await instances.CreateAsync(CreateContext(Guid.NewGuid(), "Other", OrchestrationStatus.Waiting, "Waiting", "other", start.AddMinutes(2)), "other");
+
+        var result = await sut.SearchAsync(new FilterModel
+        {
+            Page = 2,
+            PageSize = 1,
+            Filters = [new FilterCriteria { Field = "OrchestrationName", Operator = FilterOperator.Equal, Value = "Approval" }],
+            Orderings = [new FilterOrderCriteria { Field = "StartedUtc", Direction = OrderDirection.Ascending }]
+        });
+
+        result.IsSuccess.ShouldBeTrue();
+        result.TotalCount.ShouldBe(2);
+        result.CurrentPage.ShouldBe(2);
+        result.PageSize.ShouldBe(1);
+        result.Value.Single().CorrelationId.ShouldBe("second");
+    }
+
     [Fact]
     public async Task GetAsync_AndGetContextAsync_WhenInstanceExists_ReturnPersistedModels()
     {

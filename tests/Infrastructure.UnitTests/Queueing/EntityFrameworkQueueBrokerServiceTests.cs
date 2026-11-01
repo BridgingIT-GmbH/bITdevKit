@@ -11,6 +11,50 @@ using Microsoft.EntityFrameworkCore;
 
 public class EntityFrameworkQueueBrokerServiceTests
 {
+    [Theory]
+    [InlineData("Unknown", false)]
+    [InlineData("Properties", false)]
+    [InlineData("Properties", true)]
+    public async Task SearchMessagesAsync_InvalidFilterOrOrdering_RejectsCriteria(string field, bool ordering)
+    {
+        await using var context = CreateContext();
+        var sut = new EntityFrameworkQueueBrokerService<TestQueueDbContext>(context, CreateOptions(), new QueueingRegistrationStore(), new QueueBrokerControlState());
+        var filter = ordering
+            ? new FilterModel { Orderings = [new() { Field = field }] }
+            : new FilterModel { Filters = [new(field, FilterOperator.Equal, null)] };
+
+        await Should.ThrowAsync<ArgumentException>(() => sut.SearchMessagesAsync(filter));
+    }
+
+    [Fact]
+    public async Task SearchMessagesAsync_AppliesDatabaseFilterAndPaging_PreservingArchiveScope()
+    {
+        await using var context = CreateContext();
+        var archived = CreateQueueMessage("match-archived", QueueMessageStatus.Pending, DateTimeOffset.UtcNow);
+        archived.IsArchived = true;
+        context.QueueMessages.AddRange(
+            CreateQueueMessage("match-b", QueueMessageStatus.Pending, DateTimeOffset.UtcNow),
+            CreateQueueMessage("unrelated", QueueMessageStatus.Pending, DateTimeOffset.UtcNow),
+            CreateQueueMessage("match-a", QueueMessageStatus.Pending, DateTimeOffset.UtcNow),
+            archived);
+        await context.SaveChangesAsync();
+        var sut = new EntityFrameworkQueueBrokerService<TestQueueDbContext>(context, CreateOptions(), new QueueingRegistrationStore(), new QueueBrokerControlState());
+        var filter = new FilterModel
+        {
+            Page = 2,
+            PageSize = 1,
+            Filters = [new("MessageId", FilterOperator.StartsWith, "match-")],
+            Orderings = [new() { Field = "MessageId", Direction = OrderDirection.Ascending }]
+        };
+
+        var result = await sut.SearchMessagesAsync(filter);
+        var all = await sut.SearchMessagesAsync(filter, isArchived: null);
+
+        result.TotalCount.ShouldBe(2);
+        result.Value.Single().MessageId.ShouldBe("match-b");
+        all.TotalCount.ShouldBe(3);
+    }
+
     [Fact]
     public async Task GetSummaryAsync_WhenMessagesExist_ReturnsPersistedCountsAndPausedState()
     {

@@ -6,11 +6,82 @@
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Messaging;
 
 using BridgingIT.DevKit.Application.Messaging;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 
 public class EntityFrameworkMessageBrokerStoreServiceTests(StubDbContextFixture fixture) : IClassFixture<StubDbContextFixture>
 {
+    [Fact]
+    public async Task SearchMessagesAsync_EqualSortValues_UsesIdentifierForStablePaging()
+    {
+        await this.ResetContext();
+        using var context = fixture.CreateContext();
+        var ids = new[] { Guid.Parse("00000000-0000-0000-0000-000000000003"),
+            Guid.Parse("00000000-0000-0000-0000-000000000001"),
+            Guid.Parse("00000000-0000-0000-0000-000000000002") };
+        context.BrokerMessages.AddRange(ids.Select(id => new BrokerMessage
+        {
+            Id = id, MessageId = id.ToString(), Type = typeof(StubMessage).AssemblyQualifiedName,
+            Content = "{}", CreatedDate = DateTimeOffset.UtcNow, Status = BrokerMessageStatus.Pending
+        }));
+        await context.SaveChangesAsync();
+        var filter = new FilterModel
+        {
+            Page = 2, PageSize = 1, Orderings = [new() { Field = "Status" }]
+        };
+
+        var result = await this.CreateSut().SearchMessagesAsync(filter);
+
+        result.IsSuccess.ShouldBeTrue();
+        result.TotalCount.ShouldBe(3);
+        result.Value.Single().Id.ShouldBe(ids[2]);
+        filter.Orderings.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task SearchMessagesAsync_FiltersBeforePagingAndPreservesArchiveScope()
+    {
+        await this.ResetContext();
+        using var context = fixture.CreateContext();
+        context.BrokerMessages.AddRange(Enumerable.Range(1, 5).Select(index => new BrokerMessage
+        {
+            Id = Guid.NewGuid(),
+            MessageId = $"search-{index}",
+            Type = typeof(StubMessage).AssemblyQualifiedName,
+            Content = "{}",
+            CreatedDate = DateTimeOffset.UtcNow.AddMinutes(index),
+            Status = index == 1 ? BrokerMessageStatus.Succeeded : BrokerMessageStatus.Pending,
+            IsArchived = index == 5
+        }));
+        await context.SaveChangesAsync();
+        var filter = new FilterModel
+        {
+            Page = 2,
+            PageSize = 1,
+            Filters = [new("Status", FilterOperator.Equal, BrokerMessageStatus.Pending)],
+            Orderings = [new() { Field = "MessageId", Direction = OrderDirection.Ascending }]
+        };
+
+        var result = await this.CreateSut().SearchMessagesAsync(filter);
+
+        result.TotalCount.ShouldBe(3);
+        result.CurrentPage.ShouldBe(2);
+        result.Value.Single().MessageId.ShouldBe("search-3");
+        filter.Page.ShouldBe(2);
+        filter.Orderings.Count.ShouldBe(1);
+        var allArchives = await this.CreateSut().SearchMessagesAsync(filter, isArchived: null);
+        allArchives.TotalCount.ShouldBe(4);
+    }
+
+    [Fact]
+    public async Task SearchMessagesAsync_RejectsPayloadFields()
+    {
+        var filter = new FilterModel { Filters = [new("Content", FilterOperator.Contains, "secret")] };
+
+        await Should.ThrowAsync<ArgumentException>(() => this.CreateSut().SearchMessagesAsync(filter));
+    }
+
     [Fact]
     public async Task GetMessagesAsync_ReturnsMappedBrokerMessages()
     {

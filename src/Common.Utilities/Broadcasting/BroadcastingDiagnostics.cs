@@ -60,6 +60,27 @@ public sealed class BroadcastingDiagnostics(
     }
 
     /// <inheritdoc />
+    public async Task<ResultPaged<BroadcastNodeRegistration>> SearchNodesAsync(
+        FilterModel filter,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (!options.Enabled)
+        {
+            return ResultPaged<BroadcastNodeRegistration>.Failure().WithError(new BroadcastingDisabledError());
+        }
+
+        var registrations = await registry.ListAsync(cancellationToken).ConfigureAwait(false);
+        var query = registrations.AsQueryable().ApplyFilter(filter);
+        var totalCount = query.LongCount();
+        var values = query.OrderBy(node => node.NodeIdentity).ApplyOrder(filter).ApplyPage(filter).ToArray();
+        var page = Math.Max(1, filter?.Page ?? 1);
+        var pageSize = Math.Clamp(filter?.PageSize > 0 ? filter.PageSize : 50, 1, 1000);
+
+        return ResultPaged<BroadcastNodeRegistration>.Success(values, totalCount, page, pageSize);
+    }
+
+    /// <inheritdoc />
     public async Task<Result> RemoveAsync(
         string nodeIdentity,
         CancellationToken cancellationToken = default

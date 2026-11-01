@@ -122,6 +122,7 @@ public sealed class BlobStoreClientBehaviorTests
         await sut.UploadAsync(new BlobUpload { Key = new BlobKey("reports", "a.bin"), Content = new MemoryStream(new byte[4096]) });
 
         // Assert
+        recorder.CounterSum("blobstorage_items").ShouldBe(1);
         var rates = recorder.HistogramValues("blobstorage_bytes_per_second");
         rates.Count.ShouldBe(1);
         rates.Single().ShouldBeGreaterThan(0);
@@ -150,6 +151,7 @@ public sealed class BlobStoreClientBehaviorTests
         await using var download = (await sut.DownloadAsync(new BlobKey("reports", "a.bin"))).Value;
 
         // Assert
+        recorder.CounterSum("blobstorage_items").ShouldBe(1);
         recorder.HistogramValues("blobstorage_bytes_per_second").Count.ShouldBe(1);
         download.Content.ShouldBeOfType<MemoryStream>();
     }

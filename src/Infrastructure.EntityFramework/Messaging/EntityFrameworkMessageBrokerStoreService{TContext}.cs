@@ -15,6 +15,31 @@ public class EntityFrameworkMessageBrokerStoreService<TContext>(IServiceProvider
     where TContext : DbContext, IMessagingContext
 {
     /// <inheritdoc />
+    public async Task<ResultPaged<BrokerMessageInfo>> SearchMessagesAsync(
+        FilterModel filter,
+        bool? isArchived = false,
+        bool includeHandlers = false,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateSearchFields(filter);
+        using var scope = serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<TContext>();
+        var query = context.BrokerMessages.AsNoTracking()
+            .WhereExpressionIf(message => message.IsArchived == isArchived, isArchived.HasValue)
+            .ApplyFilter(filter);
+        var total = await query.LongCountAsync(cancellationToken).AnyContext();
+        var messages = await query.OrderByDescending(message => message.Id)
+            .ApplyOrder(filter, message => message.Id).ApplyPage(filter)
+            .ToListAsync(cancellationToken).AnyContext();
+
+        return ResultPaged<BrokerMessageInfo>.Success(
+            messages.Select(message => MapInfo(message, includeHandlers)),
+            total,
+            Math.Max(1, filter?.Page ?? 1),
+            Math.Clamp(filter?.PageSize > 0 ? filter.PageSize : 50, 1, 1000));
+    }
+
+    /// <inheritdoc />
     public async Task<IEnumerable<BrokerMessageInfo>> GetMessagesAsync(
         BrokerMessageStatus? status = null,
         string type = null,
@@ -319,6 +344,36 @@ public class EntityFrameworkMessageBrokerStoreService<TContext>(IServiceProvider
         }
 
         return waiting.Select(m => MapInfo(m, false)).ToList();
+    }
+
+    private static void ValidateSearchFields(FilterModel filter)
+    {
+        var allowed = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "Id", "MessageId", "Type", "Status", "IsArchived", "ArchivedDate", "CreatedDate",
+            "ExpiresOn", "LockedBy", "LockedUntil", "ProcessedDate", "LastError"
+        };
+        ValidateFilters(filter?.Filters);
+        foreach (var ordering in filter?.Orderings ?? [])
+        {
+            if (ordering is null || !allowed.Contains(ordering.Field))
+            {
+                throw new ArgumentException("The search ordering field is not a supported broker message field.", nameof(filter));
+            }
+        }
+
+        void ValidateFilters(IEnumerable<FilterCriteria> criteria)
+        {
+            foreach (var criterion in criteria ?? [])
+            {
+                if (criterion is null || (!string.IsNullOrEmpty(criterion.Field) && !allowed.Contains(criterion.Field)))
+                {
+                    throw new ArgumentException("The search filter field is not a supported broker message field.", nameof(filter));
+                }
+
+                ValidateFilters(criterion.Filters);
+            }
+        }
     }
 
     private static BrokerMessageInfo MapInfo(BrokerMessage message, bool includeHandlers)

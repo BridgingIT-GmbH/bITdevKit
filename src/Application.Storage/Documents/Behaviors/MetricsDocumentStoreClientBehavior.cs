@@ -12,6 +12,7 @@ using BridgingIT.DevKit.Common;
 /// <remarks>
 /// Instruments (tags <c>operation</c> and <c>document.type</c>):
 /// <c>document.operations</c>, <c>document.operation.duration</c> (ms), <c>document.operation.failures</c>,
+/// <c>document.items</c> (successfully read or written items),
 /// <c>document.bytes</c> (logical serialized bytes read or written), and <c>document.bytes_per_second</c> (<c>By/s</c>,
 /// recorded for successful non-empty reads and writes only). A batch that stops at a failed key counts as a failure.
 /// </remarks>
@@ -96,6 +97,12 @@ public sealed class MetricsDocumentStoreClientBehavior<T> : DocumentStoreClientB
             return;
         }
 
+        var itemCount = IsTransfer(operation) ? GetItemCount(result) : 0;
+        if (itemCount > 0)
+        {
+            this.metricsService.AddCounter("document.items", itemCount, tags);
+        }
+
         var bytes = GetBytes(result);
         if (bytes <= 0)
         {
@@ -115,6 +122,16 @@ public sealed class MetricsDocumentStoreClientBehavior<T> : DocumentStoreClientB
     private static bool HasFailedKey(IResult result) =>
         result is Result<DocumentBatchResult<DocumentInfo>> { IsSuccess: true, Value.FailedKey: not null } ||
         result is Result<DocumentBatchResult<DocumentKey>> { IsSuccess: true, Value.FailedKey: not null };
+
+    private static long GetItemCount(IResult result) => result switch
+    {
+        Result<DocumentEntry<T>> { IsSuccess: true } => 1,
+        Result<IReadOnlyList<Result<DocumentEntry<T>>>> { IsSuccess: true } many => many.Value.Count(x => x.IsSuccess),
+        Result<DocumentInfo> { IsSuccess: true } => 1,
+        Result<DocumentPage<T>> { IsSuccess: true } page => page.Value.Items.Count,
+        Result<DocumentBatchResult<DocumentInfo>> { IsSuccess: true } batch => batch.Value.Items.Count,
+        _ => 0
+    };
 
     private static long GetBytes(IResult result) => result switch
     {

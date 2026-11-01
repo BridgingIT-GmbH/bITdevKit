@@ -42,6 +42,8 @@ public sealed class DocumentStorageDashboardTests
 
         page.Key.ShouldBe("storage.documents");
         page.Url.ShouldBe("/_bdk/dashboard/storage/documents");
+        page.RememberedViews["explorer"].ShouldBe(page.Url);
+        page.RememberedViews["diagnostics"].ShouldBe(page.Url + "/diagnostics");
         card.Value.ShouldBe("1");
         card.Url.ShouldBe(page.Url);
     }
@@ -69,6 +71,8 @@ public sealed class DocumentStorageDashboardTests
         action.ShouldNotThrow();
         var routes = ((IEndpointRouteBuilder)app).DataSources.SelectMany(source => source.Endpoints)
             .OfType<RouteEndpoint>().Select(endpoint => endpoint.RoutePattern.RawText).ToArray();
+        routes.ShouldContain(route => route.EndsWith("/storage/documents/diagnostics", StringComparison.Ordinal));
+        routes.ShouldContain(route => route.EndsWith("/storage/documents/diagnostics/data", StringComparison.Ordinal));
         routes.ShouldContain(route => route.EndsWith("/storage/documents/actions/delete", StringComparison.Ordinal));
         routes.ShouldNotContain(route => route.EndsWith("/storage/documents/actions/delete-batch", StringComparison.Ordinal));
     }

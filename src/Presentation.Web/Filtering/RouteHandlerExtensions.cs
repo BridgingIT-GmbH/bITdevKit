@@ -173,7 +173,7 @@ public static class RouteHandlerExtensions
                     operation.RequestBody = new OpenApiRequestBody
                     {
                         Required = true,
-                        Content =
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType { Schema = filterModelSchema }
                         }

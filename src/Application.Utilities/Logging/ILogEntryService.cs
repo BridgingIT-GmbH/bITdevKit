@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Application.Utilities;
 
 using System;
 using System.Collections.Generic;
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -14,6 +15,13 @@ using Microsoft.Extensions.Logging;
 /// </summary>
 public interface ILogEntryService
 {
+    /// <summary>Searches active log summaries by scalar fields, ordering, and page.</summary>
+    /// <param name="filter">The filter model. Includes and event payload fields are unsupported.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The matching summaries and total count. Event payloads are omitted.</returns>
+    /// <example><code>var logs = await service.SearchAsync(new FilterModel { PageSize = 25 });</code></example>
+    Task<ResultPaged<LogEntryModel>> SearchAsync(FilterModel filter, CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Exports log entries matching the specified request in the given format.
     /// </summary>

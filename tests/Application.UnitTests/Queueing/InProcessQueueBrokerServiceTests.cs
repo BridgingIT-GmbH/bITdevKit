@@ -10,6 +10,32 @@ using BridgingIT.DevKit.Application.Queueing;
 public class InProcessQueueBrokerServiceTests
 {
     [Fact]
+    public async Task SearchMessagesAsync_FiltersAndOrdersBeforePaging_WithAccurateTotal()
+    {
+        var options = CreateOptions();
+        var runtime = new InProcessQueueBrokerRuntime(options);
+        var sut = new InProcessQueueBrokerService(runtime, options, new QueueingRegistrationStore(), new QueueBrokerControlState());
+        foreach (var id in new[] { "match-b", "other", "match-a" })
+        {
+            var item = CreateTrackedItem(id, CreateQueueName(options, typeof(TestQueueMessage)), typeof(TestQueueMessage).PrettyName(false), DateTimeOffset.UtcNow);
+            await runtime.EnqueueAsync(item);
+        }
+
+        var result = await sut.SearchMessagesAsync(new FilterModel
+        {
+            Page = 2,
+            PageSize = 1,
+            Filters = [new("MessageId", FilterOperator.StartsWith, "match-")],
+            Orderings = [new() { Field = "MessageId", Direction = OrderDirection.Ascending }]
+        });
+
+        result.IsSuccess.ShouldBeTrue();
+        result.TotalCount.ShouldBe(2);
+        result.CurrentPage.ShouldBe(2);
+        result.Value.Single().MessageId.ShouldBe("match-b");
+    }
+
+    [Fact]
     public async Task GetSummaryAsync_WhenRuntimeContainsWaitingMessage_ReturnsCountsAndPausedState()
     {
         // Arrange

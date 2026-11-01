@@ -15,6 +15,142 @@ using Microsoft.Extensions.DependencyInjection;
 public class JobSchedulerQueryServiceTests(ITestOutputHelper output) : JobSchedulerTestBase(output)
 {
     [Fact]
+    public async Task SearchOccurrencesAsync_FilteredSecondPage_ReturnsAccurateTotalAndRedactedPayload()
+    {
+        using var harness = this.CreateHarness(jobs => jobs.WithJob<SecretPayloadJob>("sample",
+            job => job.AddTrigger("manual", trigger => trigger.Manual())));
+        foreach (var correlation in new[] { "match-b", "other", "match-a" })
+        {
+            var dispatch = await harness.DispatchAsync<SecretPayloadJob>(new SecretPayload("private-value"),
+                new JobDispatchOptions { CorrelationId = correlation });
+            dispatch.IsSuccess.ShouldBeTrue();
+        }
+
+        var filter = new FilterModel
+        {
+            Page = 2, PageSize = 1,
+            Filters = [new("CorrelationId", FilterOperator.StartsWith, "match-")],
+            Orderings = [new() { Field = "CorrelationId", Direction = OrderDirection.Descending }]
+        };
+        var sut = harness.Services.GetRequiredService<IJobSchedulerQueryService>();
+
+        var result = await sut.SearchOccurrencesAsync(filter);
+
+        result.IsSuccess.ShouldBeTrue();
+        result.TotalCount.ShouldBe(2);
+        result.CurrentPage.ShouldBe(2);
+        result.PageSize.ShouldBe(1);
+        result.Value.Single().CorrelationId.ShouldBe("match-a");
+        result.Value.Single().DataPreview.ShouldBe(nameof(SecretPayload));
+        result.Value.Single().DataPreview.ShouldNotContain("private-value");
+        filter.Page.ShouldBe(2);
+        filter.Orderings.Count.ShouldBe(1);
+    }
+
+    [Theory]
+    [InlineData("Missing", FilterOperator.Equal, "value")]
+    [InlineData("JobName", FilterOperator.GreaterThan, "value")]
+    public async Task SearchOccurrencesAsync_InvalidCriteria_ReturnsValidationFailure(string field, FilterOperator operation, string value)
+    {
+        using var harness = this.CreateHarness(jobs => jobs.WithJob<NoOpQueryJob>("sample",
+            job => job.AddTrigger("manual", trigger => trigger.Manual())));
+        var sut = harness.Services.GetRequiredService<IJobSchedulerQueryService>();
+
+        var result = await sut.SearchOccurrencesAsync(new FilterModel { Filters = [new(field, operation, value)] });
+
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldContain(error => error is ValidationError);
+    }
+
+    [Theory]
+    [InlineData(-1, 0, 1, 50)]
+    [InlineData(1, 5000, 1, 1000)]
+    [InlineData(20, 1, 20, 1)]
+    public async Task SearchAsync_PagingBoundaries_PreservesTotalAndCallerModel(int page, int size, int expectedPage, int expectedSize)
+    {
+        using var harness = this.CreateHarness(jobs => jobs.WithJob<NoOpQueryJob>("sample",
+            job => job.AddTrigger("manual", trigger => trigger.Manual())));
+        var sut = harness.Services.GetRequiredService<IJobSchedulerQueryService>();
+        var filter = new FilterModel { Page = page, PageSize = size };
+
+        var result = await sut.SearchAsync(filter);
+
+        result.IsSuccess.ShouldBeTrue();
+        result.TotalCount.ShouldBe(1);
+        result.CurrentPage.ShouldBe(expectedPage);
+        result.PageSize.ShouldBe(expectedSize);
+        result.Value.Count().ShouldBe(page == 20 ? 0 : 1);
+        filter.Page.ShouldBe(page);
+        filter.PageSize.ShouldBe(size);
+    }
+
+    [Fact]
+    public async Task SearchAsync_NullFilter_ReturnsDefaultPage()
+    {
+        using var harness = this.CreateHarness(jobs => jobs.WithJob<NoOpQueryJob>("sample",
+            job => job.AddTrigger("manual", trigger => trigger.Manual())));
+        var sut = harness.Services.GetRequiredService<IJobSchedulerQueryService>();
+
+        var result = await sut.SearchAsync(null);
+
+        result.IsSuccess.ShouldBeTrue();
+        result.CurrentPage.ShouldBe(1);
+        result.PageSize.ShouldBe(50);
+        result.Value.Single().JobName.ShouldBe("sample");
+    }
+
+    [Fact]
+    public async Task SearchMethods_CanceledToken_ReturnFailureResults()
+    {
+        using var harness = this.CreateHarness(jobs => jobs.WithJob<NoOpQueryJob>("sample",
+            job => job.AddTrigger("manual", trigger => trigger.Manual())));
+        var sut = harness.Services.GetRequiredService<IJobSchedulerQueryService>();
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+
+        (await sut.SearchAsync(null, cancellation.Token)).IsFailure.ShouldBeTrue();
+        (await sut.SearchOccurrencesAsync(null, cancellation.Token)).IsFailure.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task SearchAsync_FiltersAndOrdersBeforePaging_AndPreservesTotal()
+    {
+        using var harness = this.CreateHarness(jobs =>
+        {
+            jobs.WithJob<NoOpQueryJob>("alpha", job => job.AddTrigger("manual", trigger => trigger.Manual()));
+            jobs.WithJob<NoOpQueryJob>("beta", job => job.AddTrigger("manual", trigger => trigger.Manual()));
+            jobs.WithJob<NoOpQueryJob>("other", job => job.AddTrigger("manual", trigger => trigger.Manual()));
+        });
+        var sut = harness.Services.GetRequiredService<IJobSchedulerQueryService>();
+        var result = await sut.SearchAsync(new FilterModel
+        {
+            Page = 2,
+            PageSize = 1,
+            Filters = [new FilterCriteria { Field = "JobName", Operator = FilterOperator.NotEqual, Value = "other" }],
+            Orderings = [new FilterOrderCriteria { Field = "JobName", Direction = OrderDirection.Ascending }]
+        });
+
+        result.IsSuccess.ShouldBeTrue();
+        result.TotalCount.ShouldBe(2);
+        result.CurrentPage.ShouldBe(2);
+        result.PageSize.ShouldBe(1);
+        result.Value.Single().JobName.ShouldBe("beta");
+    }
+
+    [Fact]
+    public async Task SearchAsync_RejectsUnknownFields()
+    {
+        using var harness = this.CreateHarness(jobs => jobs.WithJob<NoOpQueryJob>("sample", job => job.AddTrigger("manual", trigger => trigger.Manual())));
+        var sut = harness.Services.GetRequiredService<IJobSchedulerQueryService>();
+        var result = await sut.SearchAsync(new FilterModel
+        {
+            Filters = [new FilterCriteria { Field = "UnknownField", Operator = FilterOperator.Equal, Value = "value" }]
+        });
+
+        result.IsFailure.ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task QueryJobsAsync_OverlaysPersistedRuntimeState()
     {
         using var harness = this.CreateHarness(jobs =>

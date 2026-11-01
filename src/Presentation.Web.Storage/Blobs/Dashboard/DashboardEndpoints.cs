@@ -52,6 +52,17 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             "Dashboard Blobs",
             "Shows registered blob storage clients with blob listing, upload, download, and delete actions.");
 
+        var metrics = new StorageDashboardMetrics("blobs");
+        app.ServiceProvider.GetRequiredService<Microsoft.Extensions.Hosting.IHostApplicationLifetime>()
+            .ApplicationStopping.Register(metrics.Dispose);
+        group.MapDashboardPage<Pages.Diagnostics>(
+            BlobsPath + "/diagnostics",
+            "_bdk.Dashboard.Storage.Blobs.Diagnostics",
+            "Dashboard Blobs Diagnostics",
+            "Shows recent storage transfer throughput and item counts.");
+        group.MapGet(BlobsPath + "/diagnostics/data", () => Results.Json(metrics.Snapshot()))
+            .ExcludeFromDescription();
+
         group.MapDashboardPage<Pages.Content>(
             BlobsContentPath,
             "_bdk.Dashboard.Storage.BlobsContent",

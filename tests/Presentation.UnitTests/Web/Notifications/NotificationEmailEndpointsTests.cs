@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 using System.Net;
 using System.Net.Http.Json;
 using BridgingIT.DevKit.Application.Notifications;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Notifications;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -41,6 +42,31 @@ public class NotificationEmailEndpointsApplication : WebApplicationFactory<Notif
 
 public class NotificationEmailEndpointsTests : IAsyncDisposable
 {
+    [Fact]
+    public async Task SearchMessages_ShouldPassFilterToService()
+    {
+        this.outboxService.SearchMessagesAsync(Arg.Any<FilterModel>(), false, Arg.Any<CancellationToken>())
+            .Returns(ResultPaged<NotificationEmailInfo>.Success([], 7, 2, 5));
+
+        var response = await this.client.PostAsJsonAsync("/_bdk/api/notifications/emails/search",
+            new FilterModel { Page = 2, PageSize = 5 });
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        await this.outboxService.Received(1).SearchMessagesAsync(
+            Arg.Is<FilterModel>(filter => filter.Page == 2 && filter.PageSize == 5), false, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task SearchMessages_ShouldRejectInvalidFilters()
+    {
+        this.outboxService.SearchMessagesAsync(Arg.Any<FilterModel>(), false, Arg.Any<CancellationToken>())
+            .Returns<Task<ResultPaged<NotificationEmailInfo>>>(_ => throw new ArgumentException("Unsupported search field."));
+
+        var response = await this.client.PostAsJsonAsync("/_bdk/api/notifications/emails/search", new FilterModel());
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
     private readonly NotificationEmailEndpointsApplication factory;
     private readonly HttpClient client;
     private readonly INotificationEmailOutboxService outboxService;

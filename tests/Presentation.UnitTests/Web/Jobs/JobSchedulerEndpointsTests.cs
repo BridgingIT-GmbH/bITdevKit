@@ -75,6 +75,66 @@ public class JobSchedulerEndpointsTests : IAsyncDisposable
     }
 
     [Fact]
+    public async Task SearchJobs_ShouldAcceptAliasesWithoutHostJsonConfiguration()
+    {
+        this.query.SearchAsync(Arg.Any<FilterModel>(), Arg.Any<CancellationToken>())
+            .Returns(ResultPaged<JobSchedulerJobModel>.Success([], 0, 1, 50));
+        using var body = new StringContent("""{"filters":[{"field":"Group","operator":"eq","value":"ops"}],"orderings":[{"field":"JobName","direction":"desc"}]}""", System.Text.Encoding.UTF8, "application/json");
+
+        var response = await this.client.PostAsync("/_bdk/api/jobs/search", body);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        await this.query.Received(1).SearchAsync(Arg.Is<FilterModel>(filter =>
+            filter.Filters.Single().Operator == FilterOperator.Equal && filter.Orderings.Single().Direction == OrderDirection.Descending), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task SearchJobs_UnknownField_ShouldReturnBadRequest()
+    {
+        this.query.SearchAsync(Arg.Any<FilterModel>(), Arg.Any<CancellationToken>())
+            .Returns(ResultPaged<JobSchedulerJobModel>.Failure().WithError(new ValidationError("Unknown search field 'Unknown'.")));
+
+        var response = await this.client.PostAsJsonAsync("/_bdk/api/jobs/search", new FilterModel
+        {
+            Filters = [new FilterCriteria { Field = "Unknown", Operator = FilterOperator.Equal, Value = "value" }]
+        }, BridgingIT.DevKit.Common.DefaultJsonSerializerOptions.Create());
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task SearchJobs_ShouldBindFilterBodyAndReturnPagedResult()
+    {
+        this.query.SearchAsync(Arg.Any<FilterModel>(), Arg.Any<CancellationToken>())
+            .Returns(ResultPaged<JobSchedulerJobModel>.Success([new JobSchedulerJobModel { JobName = "cleanup" }], 3, 2, 1));
+
+        var response = await this.client.PostAsJsonAsync("/_bdk/api/jobs/search", new FilterModel
+        {
+            Page = 2,
+            PageSize = 1,
+            Filters = [new FilterCriteria { Field = "Group", Operator = FilterOperator.Equal, Value = "ops" }]
+        }, BridgingIT.DevKit.Common.DefaultJsonSerializerOptions.Create());
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        await this.query.Received(1).SearchAsync(Arg.Is<FilterModel>(filter => filter.Page == 2 && filter.PageSize == 1 && filter.Filters.Single().Field == "Group"), Arg.Any<CancellationToken>());
+        var body = await response.Content.ReadAsStringAsync();
+        body.ShouldContain("cleanup");
+        body.ShouldContain("totalCount");
+    }
+
+    [Fact]
+    public async Task SearchOccurrences_ShouldBindFilterBody()
+    {
+        this.query.SearchOccurrencesAsync(Arg.Any<FilterModel>(), Arg.Any<CancellationToken>())
+            .Returns(ResultPaged<JobSchedulerOccurrenceModel>.Success([], 0, 1, 50));
+
+        var response = await this.client.PostAsJsonAsync("/_bdk/api/jobs/occurrences/search", new FilterModel());
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        await this.query.Received(1).SearchOccurrencesAsync(Arg.Any<FilterModel>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
     public async Task GetJobs_ShouldBindQueryParameters()
     {
         this.query.QueryJobsAsync(Arg.Any<JobSchedulerJobQueryRequest>(), Arg.Any<CancellationToken>())

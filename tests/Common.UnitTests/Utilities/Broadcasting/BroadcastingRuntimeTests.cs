@@ -141,6 +141,33 @@ public class BroadcastingRuntimeTests
     }
 
     [Fact]
+    public async Task Diagnostics_SearchNodes_FiltersAndOrdersBeforePaging_WithoutScopeDuplicates()
+    {
+        var services = new ServiceCollection();
+        services.AddBroadcasting();
+        using var provider = services.BuildServiceProvider();
+        var registry = provider.GetRequiredService<IBroadcastRegistryStore>();
+        var now = DateTimeOffset.UtcNow;
+        await registry.UpsertAsync(new("match-b", null, ["Alpha", "Beta"], now, now, null));
+        await registry.UpsertAsync(new("other", null, ["Alpha"], now, now, null));
+        await registry.UpsertAsync(new("match-a", null, ["Beta"], now, now, null));
+        var sut = provider.GetRequiredService<IBroadcastingDiagnostics>();
+
+        var result = await sut.SearchNodesAsync(new FilterModel
+        {
+            Page = 2,
+            PageSize = 1,
+            Filters = [new("NodeIdentity", FilterOperator.StartsWith, "match-")],
+            Orderings = [new() { Field = "NodeIdentity", Direction = OrderDirection.Ascending }]
+        });
+
+        result.IsSuccess.ShouldBeTrue();
+        result.TotalCount.ShouldBe(2);
+        result.Value.Single().NodeIdentity.ShouldBe("match-b");
+        result.Value.Single().Scopes.Count.ShouldBe(2);
+    }
+
+    [Fact]
     public async Task Diagnostics_DefaultAuthorizer_DeniesRemovalAndGroupsScopes()
     {
         // Arrange

@@ -3,6 +3,7 @@ namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 using System.Net;
 using System.Net.Http.Json;
 using BridgingIT.DevKit.Application.Orchestrations;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Orchestrations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
@@ -91,6 +92,51 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         await this.factory.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task SearchInstances_ShouldAcceptAliasesWithoutHostJsonConfiguration()
+    {
+        this.orchestrationQueryService.SearchAsync(Arg.Any<FilterModel>(), Arg.Any<CancellationToken>())
+            .Returns(ResultPaged<OrchestrationInstanceModel>.Success([], 0, 1, 50));
+        using var body = new StringContent("""{"filters":[{"field":"Status","operator":"eq","value":"Waiting"}],"orderings":[{"field":"StartedUtc","direction":"desc"}]}""", System.Text.Encoding.UTF8, "application/json");
+
+        var response = await this.client.PostAsync("/_bdk/api/orchestrations/search", body);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        await this.orchestrationQueryService.Received(1).SearchAsync(Arg.Is<FilterModel>(filter =>
+            filter.Filters.Single().Operator == FilterOperator.Equal && filter.Orderings.Single().Direction == OrderDirection.Descending), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task SearchInstances_UnknownField_ShouldReturnBadRequest()
+    {
+        this.orchestrationQueryService.SearchAsync(Arg.Any<FilterModel>(), Arg.Any<CancellationToken>())
+            .Returns(ResultPaged<OrchestrationInstanceModel>.Failure().WithError(new ValidationError("Unknown search field 'Unknown'.")));
+
+        var response = await this.client.PostAsJsonAsync("/_bdk/api/orchestrations/search", new FilterModel
+        {
+            Filters = [new FilterCriteria { Field = "Unknown", Operator = FilterOperator.Equal, Value = "value" }]
+        }, BridgingIT.DevKit.Common.DefaultJsonSerializerOptions.Create());
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task SearchInstances_ShouldBindFilterBodyAndReturnPagingMetadata()
+    {
+        this.orchestrationQueryService.SearchAsync(Arg.Any<FilterModel>(), Arg.Any<CancellationToken>())
+            .Returns(ResultPaged<OrchestrationInstanceModel>.Success(
+                [new OrchestrationInstanceModel { OrchestrationName = "Approval" }], 3, 2, 1));
+
+        var response = await this.client.PostAsJsonAsync("/_bdk/api/orchestrations/search", new FilterModel { Page = 2, PageSize = 1 });
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        await this.orchestrationQueryService.Received(1).SearchAsync(
+            Arg.Is<FilterModel>(filter => filter.Page == 2 && filter.PageSize == 1), Arg.Any<CancellationToken>());
+        var body = await response.Content.ReadAsStringAsync();
+        body.ShouldContain("Approval");
+        body.ShouldContain("totalCount");
     }
 
     [Fact]

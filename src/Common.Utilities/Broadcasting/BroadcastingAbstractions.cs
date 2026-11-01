@@ -141,6 +141,13 @@ public interface IBroadcastingDiagnostics
     /// <summary>Returns registrations grouped by their display scope.</summary>
     Task<BroadcastingDiagnosticSnapshot> GetAsync(CancellationToken cancellationToken = default);
 
+    /// <summary>Searches safe node registrations with scalar filters, ordering, and paging.</summary>
+    /// <param name="filter">The filter criteria and one-based page. The default page size is 50, with a maximum of 1000.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The matching registration page and the total number of matches.</returns>
+    /// <example><code>var nodes = await diagnostics.SearchNodesAsync(new FilterModel { PageSize = 25 });</code></example>
+    Task<ResultPaged<BroadcastNodeRegistration>> SearchNodesAsync(FilterModel filter, CancellationToken cancellationToken = default);
+
     /// <summary>Removes a stale registration when operational authorization permits it.</summary>
     Task<Result> RemoveAsync(string nodeIdentity, CancellationToken cancellationToken = default);
 }

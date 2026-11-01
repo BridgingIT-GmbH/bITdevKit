@@ -46,6 +46,13 @@ public class OrchestrationEndpoints(
 
         var group = this.MapGroup(app, this.options);
 
+        group.MapPost("search", this.SearchInstances)
+            .Produces<ResultPaged<OrchestrationInstanceModel>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .WithName("_bdk.Orchestrations.SearchInstances")
+            .WithSummary("Search orchestration instances")
+            .WithFilterSchema(isRequestBody: true);
+
         group.MapGet("definitions", this.GetDefinitions)
             .Produces<IEnumerable<string>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
@@ -223,6 +230,18 @@ public class OrchestrationEndpoints(
             .WithDescription("Purges retained orchestration data by age and optional status filters.");
 
         this.IsRegistered = true;
+    }
+
+    private async Task<HttpResult> SearchInstances(HttpContext context, CancellationToken cancellationToken)
+    {
+        var filter = await context.FromBodyFilterAsync().ConfigureAwait(false);
+        if (context.Response.HasStarted) return Results.Empty;
+        if (filter is null) return Results.BadRequest("A filter model body is required.");
+        var result = await orchestrationQueryService.SearchAsync(filter, cancellationToken).ConfigureAwait(false);
+        if (result.IsSuccess) return Results.Ok(result);
+        return result.Errors.Any(error => error is ValidationError)
+            ? Results.Problem(statusCode: (int)HttpStatusCode.BadRequest, title: "Invalid orchestration search")
+            : this.ToProblem(result.Errors, "Invalid orchestration search.");
     }
 
     private async Task<HttpResult> GetInstances(OrchestrationInstancesQueryModel request, CancellationToken cancellationToken)

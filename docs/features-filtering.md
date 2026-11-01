@@ -459,6 +459,57 @@ The following considerations apply to HTTP POST requests:
 - `hasPreviousPage`: Indicates if a previous page exists
 - `hasNextPage`: Indicates if a next page exists
 
+## Operational service searches
+
+Operational services expose additive search methods accepting a `FilterModel` and returning
+`ResultPaged<T>`. Their management endpoints accept the model directly as JSON in `POST /search`.
+Existing dashboard queries continue to use their existing methods.
+
+| Service | Method | Search route relative to its configured management group |
+| --- | --- | --- |
+| Jobs | `SearchAsync`, `SearchOccurrencesAsync` | `search`, `occurrences/search` |
+| Orchestrations | `SearchAsync` | `search` |
+| Messaging | `SearchMessagesAsync` | `search` |
+| Queueing | `SearchMessagesAsync` | `messages/search` |
+| Notification emails | `SearchMessagesAsync` | `search` |
+| Logs | `SearchAsync` | `search` |
+| Broadcasting diagnostics | `SearchNodesAsync` | `search` |
+
+For example, search a configured messaging management group with this request body:
+
+```json
+{
+  "page": 1,
+  "pageSize": 25,
+  "filters": [{ "field": "MessageId", "operator": "eq", "value": "order-42" }],
+  "orderings": [{ "field": "CreatedDate", "direction": "desc" }]
+}
+```
+
+Searches apply filters before counting matches and paging. Pages start at 1, default to 50 items,
+and contain at most 1000 items. Scalar fields support comparisons, null checks and string operators.
+Unknown fields, unsupported operator/type combinations, includes, hierarchy and custom specifications
+are rejected. Payload dictionaries cannot be filtered or sorted. Messaging and notification searches
+restrict fields to their supported summary properties. Filters cannot bypass the archive selection;
+message searches default to active entries, and log searches always select active entries.
+
+EF services execute filtering, counting and paging in the database.
+EF searches default to descending identifier order and append the identifier to explicit sorting
+for stable pages. Explicit date comparisons and sorting depend on the database provider's support.
+Scheduler, orchestration,
+Broadcasting and transport runtime searches evaluate complete snapshots in memory. Runtime queue
+searches cover the messages retained by that process, rather than every message held by the broker.
+
+Register Broadcasting management searches separately from its transport receiver:
+
+```csharp
+services.AddBroadcastingManagementEndpoints(options =>
+    options.RequirePolicy = "Operations.Read");
+```
+
+This registers `POST /_bdk/api/broadcasting/search` with authorization required. Other searches inherit
+the authorization configured for their existing management endpoint groups.
+
 ## Best practices
 
 ### Request method selection

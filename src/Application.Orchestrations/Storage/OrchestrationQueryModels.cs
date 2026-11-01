@@ -15,6 +15,13 @@ using BridgingIT.DevKit.Common;
 /// </remarks>
 public interface IOrchestrationQueryService
 {
+    /// <summary>Searches persisted orchestration summaries with filtering, ordering, and paging.</summary>
+    /// <param name="filter">The filter model. Paging defaults to page 1 and 50 items.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The matching page and total count.</returns>
+    /// <example><code>var instances = await queries.SearchAsync(new FilterModel { PageSize = 25 });</code></example>
+    Task<ResultPaged<OrchestrationInstanceModel>> SearchAsync(FilterModel filter, CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Loads the current persisted orchestration instance summary.
     /// </summary>

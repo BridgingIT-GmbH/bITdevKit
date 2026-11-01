@@ -14,6 +14,23 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 /// <example><code>services.AddBroadcasting().WithHttpTransport();</code></example>
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>Registers authenticated operational searches independently of the broadcast transport receiver.</summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configure">Optional management route and authorization settings.</param>
+    /// <returns>The service collection.</returns>
+    /// <example><code>services.AddBroadcastingManagementEndpoints(options => options.RequirePolicy = "Operations.Read");</code></example>
+    public static IServiceCollection AddBroadcastingManagementEndpoints(
+        this IServiceCollection services,
+        Action<BroadcastingManagementEndpointsOptions> configure = null)
+    {
+        var options = new BroadcastingManagementEndpointsOptions();
+        configure?.Invoke(options);
+        services.AddSingleton(options);
+        services.AddEndpoints<BroadcastingManagementEndpoints>();
+
+        return services;
+    }
+
     /// <summary>Registers Broadcasting inspection and probe console commands.</summary>
     /// <param name="context">The shared Broadcasting builder.</param>
     /// <param name="enabled">Whether the console commands should be registered.</param>

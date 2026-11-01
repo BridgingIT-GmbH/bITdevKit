@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.Notifications;
 
+using BridgingIT.DevKit.Common;
+
 /// <summary>
 /// Provides operational access to persisted notification email outbox entries.
 /// </summary>
@@ -18,6 +20,19 @@ namespace BridgingIT.DevKit.Application.Notifications;
 /// </example>
 public interface INotificationEmailOutboxService
 {
+    /// <summary>
+    /// Searches persisted emails by scalar operational fields, ordering and paging.
+    /// </summary>
+    /// <param name="filter">The filter model. Paging defaults to page 1 and 50 entries, with a maximum of 1000.</param>
+    /// <param name="isArchived">The archive scope. Use null to search both active and archived entries.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The matching page and total count before paging.</returns>
+    /// <example><code>var page = await service.SearchMessagesAsync(new FilterModel { Page = 2, PageSize = 25 });</code></example>
+    Task<ResultPaged<NotificationEmailInfo>> SearchMessagesAsync(
+        FilterModel filter,
+        bool? isArchived = false,
+        CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Retrieves notification emails with optional operational filters.
     /// </summary>

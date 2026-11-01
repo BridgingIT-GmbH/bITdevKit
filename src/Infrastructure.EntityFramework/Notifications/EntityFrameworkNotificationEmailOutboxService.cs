@@ -18,6 +18,30 @@ public class EntityFrameworkNotificationEmailOutboxService<TContext>(IServicePro
     where TContext : DbContext, INotificationEmailContext
 {
     /// <inheritdoc />
+    public async Task<ResultPaged<NotificationEmailInfo>> SearchMessagesAsync(
+        FilterModel filter,
+        bool? isArchived = false,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateSearchFields(filter);
+        using var scope = serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<TContext>();
+        var query = context.NotificationsEmails.AsNoTracking()
+            .WhereExpressionIf(message => message.IsArchived == isArchived, isArchived.HasValue)
+            .ApplyFilter(filter);
+        var total = await query.LongCountAsync(cancellationToken).AnyContext();
+        var messages = await query.Include(message => message.Attachments)
+            .OrderByDescending(message => message.Id)
+            .ApplyOrder(filter, message => message.Id).ApplyPage(filter)
+            .ToListAsync(cancellationToken).AnyContext();
+
+        return ResultPaged<NotificationEmailInfo>.Success(
+            messages.Select(MapInfo), total,
+            Math.Max(1, filter?.Page ?? 1),
+            Math.Clamp(filter?.PageSize > 0 ? filter.PageSize : 50, 1, 1000));
+    }
+
+    /// <inheritdoc />
     public async Task<IEnumerable<NotificationEmailInfo>> GetMessagesAsync(
         EmailMessageStatus? status = null,
         string subject = null,
@@ -240,6 +264,36 @@ public class EntityFrameworkNotificationEmailOutboxService<TContext>(IServicePro
         var messages = await query.ToListAsync(cancellationToken).AnyContext();
         context.NotificationsEmails.RemoveRange(messages);
         await context.SaveChangesAsync(cancellationToken).AnyContext();
+    }
+
+    private static void ValidateSearchFields(FilterModel filter)
+    {
+        var allowed = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "Id", "Subject", "IsHtml", "Priority", "Status", "RetryCount", "CreatedAt", "SentAt",
+            "IsArchived", "ArchivedDate", "LockedBy", "LockedUntil"
+        };
+        ValidateFilters(filter?.Filters);
+        foreach (var ordering in filter?.Orderings ?? [])
+        {
+            if (ordering is null || !allowed.Contains(ordering.Field))
+            {
+                throw new ArgumentException("The search ordering field is not a supported notification email field.", nameof(filter));
+            }
+        }
+
+        void ValidateFilters(IEnumerable<FilterCriteria> criteria)
+        {
+            foreach (var criterion in criteria ?? [])
+            {
+                if (criterion is null || (!string.IsNullOrEmpty(criterion.Field) && !allowed.Contains(criterion.Field)))
+                {
+                    throw new ArgumentException("The search filter field is not a supported notification email field.", nameof(filter));
+                }
+
+                ValidateFilters(criterion.Filters);
+            }
+        }
     }
 
     private static NotificationEmailInfo MapInfo(EmailMessageEntity message)

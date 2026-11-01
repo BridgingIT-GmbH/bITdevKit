@@ -46,6 +46,19 @@ public interface IQueueBrokerService
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Searches retained queue message summaries with filtering, ordering, and paging.
+    /// </summary>
+    /// <param name="filter">The search criteria. Paging defaults to page 1 and 50 items, with a maximum of 1000.</param>
+    /// <param name="isArchived">The archive scope. Use null to search active and archived messages.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A page of matching message summaries and the total match count.</returns>
+    /// <example><code>var page = await service.SearchMessagesAsync(new FilterModel { Page = 2, PageSize = 25 });</code></example>
+    Task<ResultPaged<QueueMessageInfo>> SearchMessagesAsync(
+        FilterModel filter,
+        bool? isArchived = false,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Retrieves a single queue message by its primary key.
     /// </summary>
     /// <param name="id">The queue message primary key.</param>

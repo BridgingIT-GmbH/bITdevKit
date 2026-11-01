@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Utilities;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,6 +50,44 @@ public class LogEntryServiceTests : IDisposable
         this.context = new StubDbContext(options);
         this.context.Database.EnsureCreated();
         this.context.SaveChanges();
+    }
+
+    [Fact]
+    public async Task SearchAsync_FiltersAndPagesInDatabase_ExcludesArchivedLogsAndEventPayloads()
+    {
+        this.context.LogEntries.AddRange(
+            new LogEntry { Message = "first", Level = "Error", TimeStamp = DateTimeOffset.UtcNow, IsArchived = null, LogEventsJson = "{\"secret\":true}" },
+            new LogEntry { Message = "second", Level = "Error", TimeStamp = DateTimeOffset.UtcNow, IsArchived = false },
+            new LogEntry { Message = "archived", Level = "Error", TimeStamp = DateTimeOffset.UtcNow, IsArchived = true },
+            new LogEntry { Message = "other", Level = "Information", TimeStamp = DateTimeOffset.UtcNow });
+        await this.context.SaveChangesAsync();
+        var service = this.serviceProvider.GetRequiredService<ILogEntryService>();
+
+        var result = await service.SearchAsync(new FilterModel
+        {
+            Page = 2,
+            PageSize = 1,
+            Filters = [new FilterCriteria { Field = "Level", Operator = FilterOperator.Equal, Value = "Error" }],
+            Orderings = [new FilterOrderCriteria { Field = "Id", Direction = OrderDirection.Ascending }]
+        });
+
+        result.IsSuccess.ShouldBeTrue();
+        result.TotalCount.ShouldBe(2);
+        result.CurrentPage.ShouldBe(2);
+        result.Value.Single().Message.ShouldBe("second");
+        result.Value.Single().LogEvents.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task SearchAsync_RejectsEventPayloadCriteria()
+    {
+        var service = this.serviceProvider.GetRequiredService<ILogEntryService>();
+        var result = await service.SearchAsync(new FilterModel
+        {
+            Filters = [new FilterCriteria { Field = "LogEvents", Operator = FilterOperator.IsNull }]
+        });
+
+        result.IsFailure.ShouldBeTrue();
     }
 
     private void SeedLogEntries()

@@ -120,6 +120,48 @@ public class EntityFrameworkQueueBrokerService<TContext> : IQueueBrokerService
     }
 
     /// <inheritdoc />
+    public async Task<ResultPaged<QueueMessageInfo>> SearchMessagesAsync(
+        FilterModel filter,
+        bool? isArchived = false,
+        CancellationToken cancellationToken = default)
+    {
+        using var lease = this.CreateContextLease(out var context);
+        var messages = context.QueueMessages.AsNoTracking();
+        if (isArchived.HasValue)
+        {
+            messages = messages.Where(message => message.IsArchived == isArchived.Value);
+        }
+
+        var query = messages.Select(message => new QueueMessageInfo
+        {
+                Id = message.Id,
+                MessageId = message.MessageId,
+                QueueName = message.QueueName,
+                Type = message.Type,
+                RegisteredHandlerType = message.RegisteredHandlerType,
+                IsArchived = message.IsArchived,
+                ArchivedDate = message.ArchivedDate,
+                Status = message.Status,
+                AttemptCount = message.AttemptCount,
+                CreatedDate = message.CreatedDate,
+                ExpiresOn = message.ExpiresOn,
+                LockedBy = message.LockedBy,
+                LockedUntil = message.LockedUntil,
+                ProcessingStartedDate = message.ProcessingStartedDate,
+                ProcessedDate = message.ProcessedDate,
+                LastError = message.LastError,
+                Properties = message.Properties
+        }).ApplyFilter(filter);
+        var totalCount = await query.LongCountAsync(cancellationToken).AnyContext();
+        var values = await query.OrderByDescending(message => message.Id)
+            .ApplyOrder(filter, message => message.Id).ApplyPage(filter).ToArrayAsync(cancellationToken).AnyContext();
+        var page = Math.Max(1, filter?.Page ?? 1);
+        var pageSize = Math.Clamp(filter?.PageSize > 0 ? filter.PageSize : 50, 1, 1000);
+
+        return ResultPaged<QueueMessageInfo>.Success(values, totalCount, page, pageSize);
+    }
+
+    /// <inheritdoc />
     public async Task<QueueMessageInfo> GetMessageAsync(Guid id, CancellationToken cancellationToken = default)
     {
         using var lease = this.CreateContextLease(out var context);

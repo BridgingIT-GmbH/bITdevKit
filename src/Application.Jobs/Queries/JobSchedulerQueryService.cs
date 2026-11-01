@@ -20,6 +20,57 @@ public class JobSchedulerQueryService(
 {
     private static readonly JobSchedulerQueryCapabilities Capabilities = new();
 
+    /// <inheritdoc />
+    public async Task<ResultPaged<JobSchedulerJobModel>> SearchAsync(FilterModel filter, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            return SearchPage(BuildJobModels(snapshot, false).OrderBy(model => model.JobName), filter);
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultPaged<JobSchedulerJobModel>.Failure().WithError(new Error("Job search was canceled."));
+        }
+        catch (ArgumentException exception)
+        {
+            return ResultPaged<JobSchedulerJobModel>.Failure().WithError(new ValidationError(exception.Message));
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<ResultPaged<JobSchedulerOccurrenceModel>> SearchOccurrencesAsync(FilterModel filter, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var models = snapshot.Occurrences.Select(occurrence => MapOccurrence(occurrence, snapshot))
+                .OrderByDescending(model => model.DueUtc).ThenBy(model => model.OccurrenceId);
+            return SearchPage(models, filter);
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultPaged<JobSchedulerOccurrenceModel>.Failure().WithError(new Error("Occurrence search was canceled."));
+        }
+        catch (ArgumentException exception)
+        {
+            return ResultPaged<JobSchedulerOccurrenceModel>.Failure().WithError(new ValidationError(exception.Message));
+        }
+    }
+
+    private static ResultPaged<T> SearchPage<T>(IEnumerable<T> models, FilterModel filter)
+        where T : class
+    {
+        filter ??= new FilterModel();
+        var filtered = models.AsQueryable().ApplyFilter(filter);
+        var total = filtered.LongCount();
+        var items = filtered.ApplyOrder(filter).ApplyPage(filter).ToArray();
+        return ResultPaged<T>.Success(items, total, filter.Page <= 0 ? 1 : filter.Page,
+            filter.PageSize <= 0 ? 50 : Math.Min(filter.PageSize, 1000));
+    }
+
     /// <summary>
     /// Executes the query jobs operation.
     /// </summary>

@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web.Queueing;
 
 using System.Net;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Queueing.Models;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using IResult = Microsoft.AspNetCore.Http.IResult;
 
 /// <summary>
 /// Exposes operational REST endpoints for inspecting and managing queue broker state.
@@ -61,6 +63,13 @@ public class QueueingEndpoints(
             .WithName("_bdk.Queueing.GetMessages")
             .WithSummary("List queue messages")
             .WithDescription("Retrieves retained queue messages with optional operational filters.");
+
+        messagesGroup.MapPost("search", this.SearchMessages)
+            .Produces<ResultPaged<QueueMessageInfo>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .WithName("_bdk.Queueing.SearchMessages")
+            .WithSummary("Search retained queue messages")
+            .WithFilterSchema(isRequestBody: true);
 
         messagesGroup.MapGet("{id:guid}", this.GetMessage)
             .Produces<QueueMessageInfo>()
@@ -168,6 +177,25 @@ public class QueueingEndpoints(
             .WithDescription("Resets the operational circuit state for the specified queue message type token.");
 
         this.IsRegistered = true;
+    }
+
+    private async Task<IResult> SearchMessages(HttpContext context, [FromQuery] bool? isArchived, CancellationToken cancellationToken)
+    {
+        var filter = await context.FromBodyFilterAsync();
+        if (filter is null)
+        {
+            return context.Response.HasStarted ? Results.Empty : Results.BadRequest("A FilterModel request body is required.");
+        }
+
+        try
+        {
+            var scope = context.Request.Query.ContainsKey("isArchived") ? isArchived : false;
+            return Results.Ok(await queueBrokerService.SearchMessagesAsync(filter, scope, cancellationToken));
+        }
+        catch (Exception exception) when (exception is ArgumentException or NotSupportedException or FormatException or InvalidCastException or OverflowException)
+        {
+            return Results.BadRequest(new ProblemDetails { Title = "Invalid search filter", Detail = exception.Message, Status = 400 });
+        }
     }
 
     private async Task<IResult> GetMessages([AsParameters] QueueMessagesQueryModel request, CancellationToken cancellationToken)

@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 using System.Net;
 using System.Net.Http.Json;
 using BridgingIT.DevKit.Application.Messaging;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Messaging;
 using BridgingIT.DevKit.Presentation.Web.Messaging.Models;
 using Microsoft.AspNetCore.Builder;
@@ -42,6 +43,31 @@ public class MessagingEndpointsApplication : WebApplicationFactory<MessagingEndp
 
 public class MessagingEndpointsTests : IAsyncDisposable
 {
+    [Fact]
+    public async Task SearchMessages_ShouldPassFilterAndArchiveScopeToService()
+    {
+        this.messageBrokerService.SearchMessagesAsync(Arg.Any<FilterModel>(), true, true, Arg.Any<CancellationToken>())
+            .Returns(ResultPaged<BrokerMessageInfo>.Success([], 12, 2, 5));
+
+        var response = await this.client.PostAsJsonAsync("/_bdk/api/messaging/messages/search?isArchived=true&includeHandlers=true",
+            new FilterModel { Page = 2, PageSize = 5 });
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        await this.messageBrokerService.Received(1).SearchMessagesAsync(
+            Arg.Is<FilterModel>(filter => filter.Page == 2 && filter.PageSize == 5), true, true, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task SearchMessages_ShouldRejectInvalidFilters()
+    {
+        this.messageBrokerService.SearchMessagesAsync(Arg.Any<FilterModel>(), false, false, Arg.Any<CancellationToken>())
+            .Returns<Task<ResultPaged<BrokerMessageInfo>>>(_ => throw new ArgumentException("Unsupported search field."));
+
+        var response = await this.client.PostAsJsonAsync("/_bdk/api/messaging/messages/search", new FilterModel());
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
     private readonly MessagingEndpointsApplication factory;
     private readonly HttpClient client;
     private readonly IMessageBrokerService messageBrokerService;

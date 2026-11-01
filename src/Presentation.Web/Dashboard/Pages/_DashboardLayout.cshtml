@@ -1310,7 +1310,7 @@
             border-inline-start: 3px solid var(--card-accent);
             background: color-mix(in srgb, var(--card-accent) 5%, var(--dashboard-surface));
         }
-        .dashboard-overview-card:is([data-dashboard-feature="folder2-open"], [data-dashboard-feature="file-earmark-code"], [data-dashboard-feature="database-fill"], [data-dashboard-feature="link-45deg"], [data-dashboard-feature="calendar2-check"], [data-dashboard-feature="diagram-3"], [data-dashboard-feature="stopwatch"]) {
+        .dashboard-overview-card:is([data-dashboard-feature="folder2-open"], [data-dashboard-feature="file-earmark-code"], [data-dashboard-feature="database-fill"], [data-dashboard-feature="link-45deg"], [data-dashboard-feature="calendar2-check"], [data-dashboard-feature="diagram-3"], [data-dashboard-feature="stopwatch"], [data-dashboard-feature="auditing"]) {
             --card-accent: var(--bs-analysis);
             --card-accent-text: var(--dashboard-analysis-text);
         }
@@ -1319,6 +1319,7 @@
             --card-accent-text: var(--dashboard-info-text);
         }
         .dashboard-overview-card .dashboard-card-icon { color: var(--card-accent-text); }
+        .dashboard-overview-card .dashboard-feature-icon { margin-right: 0 !important; vertical-align: top; }
         .dashboard-overview-card:hover { border-color: var(--card-accent); background: color-mix(in srgb, var(--card-accent) 9%, var(--dashboard-surface)); }
         .dashboard-metric {
             --metric-accent: var(--dashboard-panel-border);
@@ -1685,7 +1686,10 @@
     </div>
 
     @(await RenderPartialAsync<DateRangeScript>())
-    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Navigation>())
+    @foreach (var page in HttpContext.GetDashboardPages().Where(page => page.RememberedViews is { Count: > 0 }))
+    {
+        @(await RenderPartialAsync<ViewNavigation, DashboardPage>(page))
+    }
 
     <script>
         function setupSidebarToggle() {

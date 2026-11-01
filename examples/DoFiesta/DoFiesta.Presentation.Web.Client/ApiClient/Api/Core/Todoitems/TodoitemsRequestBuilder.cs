@@ -5,6 +5,7 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.Da
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.History;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.Item;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.Search;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.StreamNamespace;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models;
 using Microsoft.Kiota.Abstractions.Extensions;
 using Microsoft.Kiota.Abstractions.Serialization;
@@ -41,6 +42,11 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitem
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.Search.SearchRequestBuilder Search
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.Search.SearchRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The stream property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.StreamNamespace.StreamRequestBuilder Stream
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.StreamNamespace.StreamRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>Gets an item from the BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.api.core.todoitems.item collection</summary>
         /// <param name="position">Unique identifier of the item</param>

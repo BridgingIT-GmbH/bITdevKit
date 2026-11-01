@@ -27,6 +27,7 @@
   <ItemGroup>
     <PackageReference Include="Bogus" />
     <PackageReference Include="Microsoft.Azure.Cosmos" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
@@ -62,6 +63,10 @@
     <ProjectReference Include="..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.RabbitMQ\Infrastructure.RabbitMQ.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.Windows\Infrastructure.Windows.csproj" />
+    <ProjectReference Include="..\..\src\Application.Auditing\Application.Auditing.csproj" />
+    <ProjectReference Include="..\..\src\Application.DataPorter\Application.DataPorter.csproj" />
+    <ProjectReference Include="..\..\src\Application.Utilities\Application.Utilities.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.Postgres\Infrastructure.EntityFramework.Postgres.csproj" />
   </ItemGroup>
 
 </Project>

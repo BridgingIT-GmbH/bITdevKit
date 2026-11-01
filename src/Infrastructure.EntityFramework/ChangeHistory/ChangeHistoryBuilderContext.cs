@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using BridgingIT.DevKit.Domain.Model;
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -19,10 +20,13 @@ using Microsoft.Extensions.DependencyInjection;
 /// </example>
 public sealed class ChangeHistoryBuilderContext
 {
-    internal ChangeHistoryBuilderContext(IServiceCollection services, ChangeHistoryOptions options)
+    /// <summary>Creates a source-owned ChangeHistory configuration context.</summary>
+    /// <example><code>var context = new ChangeHistoryBuilderContext(services, options);</code></example>
+    public ChangeHistoryBuilderContext(IServiceCollection services, ChangeHistoryOptions options)
     {
         this.Services = services;
         this.Options = options;
+        AuditBoundaryRegistrationCatalog.GetOrAdd(services, "ChangeHistory", "Bridge");
     }
 
     /// <summary>

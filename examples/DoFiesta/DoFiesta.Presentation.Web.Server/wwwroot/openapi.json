@@ -6785,6 +6785,466 @@
         }
       }
     },
+    "/api/core/todoitems/stream": {
+      "get": {
+        "tags": [
+          "CoreModule.TodoItems"
+        ],
+        "summary": "Core.TodoItems.Stream",
+        "description": "Streams authorized Todos from detached batches; no snapshot or replay guarantee.",
+        "operationId": "Core.TodoItems.Stream",
+        "responses": {
+          "200": {
+            "description": "Incremental LF-delimited UTF-8 JSON values. HTTP success means admission. Raw failure aborts; envelope failure uses a safe terminal error or aborts. Generated JSON-array clients do not parse this stream.",
+            "headers": {
+              "X-Ndjson-Mode": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "example": "raw"
+              }
+            },
+            "content": {
+              "application/x-ndjson": {
+                "schema": {
+                  "type": "string",
+                  "description": "NDJSON text sequence; see x-ndjson-record-schema for one record."
+                },
+                "example": "{\"example\":1}\n{\"example\":2}\n",
+                "x-ndjson-record-schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "userId": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "number": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "title": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "description": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "status": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "priority": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "dueDate": {
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "format": "date-time"
+                    },
+                    "orderIndex": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "assignee": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "steps": {
+                      "type": [
+                        "null",
+                        "array"
+                      ],
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": [
+                              "null",
+                              "string"
+                            ]
+                          },
+                          "todoItemId": {
+                            "type": [
+                              "null",
+                              "string"
+                            ]
+                          },
+                          "description": {
+                            "type": [
+                              "null",
+                              "string"
+                            ]
+                          },
+                          "status": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "orderIndex": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "isDeleted": {
+                            "type": [
+                              "null",
+                              "boolean"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    "properties": {
+                      "type": [
+                        "null",
+                        "object"
+                      ],
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "concurrencyVersion": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "x-ndjson-mode": "raw"
+      }
+    },
+    "/api/core/todoitems/stream/enveloped": {
+      "get": {
+        "tags": [
+          "CoreModule.TodoItems"
+        ],
+        "summary": "Core.TodoItems.Stream.Enveloped",
+        "description": "Streams authorized Todos with version-one lifecycle envelopes.",
+        "operationId": "Core.TodoItems.Stream.Enveloped",
+        "responses": {
+          "200": {
+            "description": "Incremental LF-delimited UTF-8 JSON values. HTTP success means admission. Raw failure aborts; envelope failure uses a safe terminal error or aborts. Generated JSON-array clients do not parse this stream.",
+            "headers": {
+              "X-Ndjson-Mode": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "example": "envelope"
+              },
+              "X-Ndjson-Envelope-Version": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "example": "1"
+              }
+            },
+            "content": {
+              "application/x-ndjson": {
+                "schema": {
+                  "type": "string",
+                  "description": "NDJSON text sequence; see x-ndjson-record-schema for one record."
+                },
+                "example": "{\"version\":1,\"kind\":\"heartbeat\"}\n{\"version\":1,\"kind\":\"completed\",\"recordCount\":0}\n",
+                "x-ndjson-record-schema": {
+                  "oneOf": [
+                    {
+                      "required": [
+                        "version",
+                        "kind"
+                      ],
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "enum": [
+                            1
+                          ],
+                          "type": "integer"
+                        },
+                        "kind": {
+                          "enum": [
+                            "heartbeat"
+                          ],
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "required": [
+                        "version",
+                        "kind",
+                        "data"
+                      ],
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "enum": [
+                            1
+                          ],
+                          "type": "integer"
+                        },
+                        "kind": {
+                          "enum": [
+                            "data"
+                          ],
+                          "type": "string"
+                        },
+                        "data": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ]
+                                },
+                                "userId": {
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ]
+                                },
+                                "number": {
+                                  "type": "integer",
+                                  "format": "int64"
+                                },
+                                "title": {
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ]
+                                },
+                                "description": {
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ]
+                                },
+                                "status": {
+                                  "type": "integer",
+                                  "format": "int32"
+                                },
+                                "priority": {
+                                  "type": "integer",
+                                  "format": "int32"
+                                },
+                                "dueDate": {
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ],
+                                  "format": "date-time"
+                                },
+                                "orderIndex": {
+                                  "type": "integer",
+                                  "format": "int32"
+                                },
+                                "assignee": {
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ]
+                                },
+                                "steps": {
+                                  "type": [
+                                    "null",
+                                    "array"
+                                  ],
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": [
+                                          "null",
+                                          "string"
+                                        ]
+                                      },
+                                      "todoItemId": {
+                                        "type": [
+                                          "null",
+                                          "string"
+                                        ]
+                                      },
+                                      "description": {
+                                        "type": [
+                                          "null",
+                                          "string"
+                                        ]
+                                      },
+                                      "status": {
+                                        "type": "integer",
+                                        "format": "int32"
+                                      },
+                                      "orderIndex": {
+                                        "type": "integer",
+                                        "format": "int32"
+                                      },
+                                      "isDeleted": {
+                                        "type": [
+                                          "null",
+                                          "boolean"
+                                        ]
+                                      }
+                                    }
+                                  }
+                                },
+                                "properties": {
+                                  "type": [
+                                    "null",
+                                    "object"
+                                  ],
+                                  "additionalProperties": {
+                                    "type": "string"
+                                  }
+                                },
+                                "concurrencyVersion": {
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "required": [
+                        "version",
+                        "kind",
+                        "recordCount"
+                      ],
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "enum": [
+                            1
+                          ],
+                          "type": "integer"
+                        },
+                        "kind": {
+                          "enum": [
+                            "completed"
+                          ],
+                          "type": "string"
+                        },
+                        "recordCount": {
+                          "type": "integer",
+                          "description": "Non-negative count of data frames in this response.",
+                          "format": "int64"
+                        }
+                      }
+                    },
+                    {
+                      "required": [
+                        "version",
+                        "kind",
+                        "error"
+                      ],
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "enum": [
+                            1
+                          ],
+                          "type": "integer"
+                        },
+                        "kind": {
+                          "enum": [
+                            "error"
+                          ],
+                          "type": "string"
+                        },
+                        "error": {
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string"
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "traceId": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "x-ndjson-mode": "envelope"
+      }
+    },
     "/api/core/todoitems/{id}": {
       "get": {
         "tags": [
@@ -7418,6 +7878,211 @@
             }
           }
         }
+      }
+    },
+    "/api/core/streaming/ticks": {
+      "get": {
+        "tags": [
+          "CoreModule.Streaming"
+        ],
+        "summary": "Core.Streaming.Ticks",
+        "description": "Fictional live ticks until cancellation. Starts fresh on every request; no replay or automatic reconnection.",
+        "operationId": "Core.Streaming.Ticks",
+        "parameters": [
+          {
+            "name": "intervalMilliseconds",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Incremental LF-delimited UTF-8 JSON values. HTTP success means admission. Raw failure aborts; envelope failure uses a safe terminal error or aborts. Generated JSON-array clients do not parse this stream.",
+            "headers": {
+              "X-Ndjson-Mode": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "example": "envelope"
+              },
+              "X-Ndjson-Envelope-Version": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "example": "1"
+              }
+            },
+            "content": {
+              "application/x-ndjson": {
+                "schema": {
+                  "type": "string",
+                  "description": "NDJSON text sequence; see x-ndjson-record-schema for one record."
+                },
+                "example": "{\"version\":1,\"kind\":\"heartbeat\"}\n{\"version\":1,\"kind\":\"completed\",\"recordCount\":0}\n",
+                "x-ndjson-record-schema": {
+                  "oneOf": [
+                    {
+                      "required": [
+                        "version",
+                        "kind"
+                      ],
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "enum": [
+                            1
+                          ],
+                          "type": "integer"
+                        },
+                        "kind": {
+                          "enum": [
+                            "heartbeat"
+                          ],
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "required": [
+                        "version",
+                        "kind",
+                        "data"
+                      ],
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "enum": [
+                            1
+                          ],
+                          "type": "integer"
+                        },
+                        "kind": {
+                          "enum": [
+                            "data"
+                          ],
+                          "type": "string"
+                        },
+                        "data": {
+                          "anyOf": [
+                            {
+                              "required": [
+                                "sequence",
+                                "timestamp"
+                              ],
+                              "type": "object",
+                              "properties": {
+                                "sequence": {
+                                  "type": "integer",
+                                  "format": "int64"
+                                },
+                                "timestamp": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                }
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "required": [
+                        "version",
+                        "kind",
+                        "recordCount"
+                      ],
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "enum": [
+                            1
+                          ],
+                          "type": "integer"
+                        },
+                        "kind": {
+                          "enum": [
+                            "completed"
+                          ],
+                          "type": "string"
+                        },
+                        "recordCount": {
+                          "type": "integer",
+                          "description": "Non-negative count of data frames in this response.",
+                          "format": "int64"
+                        }
+                      }
+                    },
+                    {
+                      "required": [
+                        "version",
+                        "kind",
+                        "error"
+                      ],
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "enum": [
+                            1
+                          ],
+                          "type": "integer"
+                        },
+                        "kind": {
+                          "enum": [
+                            "error"
+                          ],
+                          "type": "string"
+                        },
+                        "error": {
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string"
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "traceId": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "x-ndjson-mode": "envelope"
       }
     },
     "/api/core/enumerations": {
@@ -16865,6 +17530,9 @@
     },
     {
       "name": "CoreModule.TodoItems"
+    },
+    {
+      "name": "CoreModule.Streaming"
     },
     {
       "name": "Core.Enumerations"

@@ -8,10 +8,16 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Stores additive pipeline registrations across repeated <c>AddPipelines()</c> calls.
 /// </summary>
-public class PipelineRegistrationState
+public class PipelineRegistrationState : IAuditBoundaryRegistrationSource
 {
     private readonly List<IPipelineDefinition> definitions = [];
     private readonly List<Type> definitionSourceTypes = [];
+
+    /// <summary>Returns bounded inline configuration and unknown packaged-source declarations without constructing definitions.</summary>
+    /// <example><code>var inventory = state.Registrations;</code></example>
+    public IReadOnlyList<AuditBoundaryRegistration> Registrations => this.definitions.Take(100).Select(definition =>
+        new AuditBoundaryRegistration("Pipelines", "Execution", definition.BehaviorTypes.Contains(typeof(PipelineAuditingBehavior)) ? "selected" : "omitted", definition.Name.Length <= 512 ? definition.Name : "Oversized"))
+        .Concat(this.definitionSourceTypes.Take(100).Select(type => new AuditBoundaryRegistration("Pipelines", "DefinitionSource", "unknown", type.Name))).Take(100).ToArray();
 
     /// <summary>
     /// Gets the inline-built pipeline definitions accumulated during registration.

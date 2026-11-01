@@ -1,5 +1,6 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Common;
 using Configuration;
@@ -16,6 +17,15 @@ using Configuration;
 /// </example>
 public static class ServiceCollectionQueueingExtensions
 {
+    /// <summary>Selects producer and consumer auditing independently on this source feature.</summary>
+    /// <example><code>builder.WithAuditing(consuming: true);</code></example>
+    public static QueueingBuilderContext WithAuditing(this QueueingBuilderContext context, bool producing = true, bool consuming = true)
+    {
+        if (producing) context.WithBehavior<AuditingQueueEnqueuerBehavior>((IQueueEnqueuerBehavior)null);
+        if (consuming) context.WithBehavior<AuditingQueueHandlerBehavior>((IQueueHandlerBehavior)null);
+        return context;
+    }
+
     /// <summary>
     /// Adds queueing with default options.
     /// </summary>
@@ -158,9 +168,15 @@ public static class ServiceCollectionQueueingExtensions
         IQueueEnqueuerBehavior behavior = null)
         where TBehavior : class, IQueueEnqueuerBehavior
     {
+        if (behavior is AuditingQueueEnqueuerBehavior) return context.WithBehavior<AuditingQueueEnqueuerBehavior>((IQueueEnqueuerBehavior)null);
         if (behavior is null)
         {
-            context.Services.AddSingleton<IQueueEnqueuerBehavior, TBehavior>();
+            if (typeof(TBehavior) == typeof(AuditingQueueEnqueuerBehavior))
+            {
+                context.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IQueueEnqueuerBehavior, TBehavior>());
+                context.AuditRegistrations.Select("Producer");
+            }
+            else context.Services.AddSingleton<IQueueEnqueuerBehavior, TBehavior>();
         }
         else
         {
@@ -180,6 +196,7 @@ public static class ServiceCollectionQueueingExtensions
         if (implementationFactory is not null)
         {
             context.Services.AddSingleton(typeof(IQueueEnqueuerBehavior), implementationFactory);
+            context.AuditRegistrations.MarkUnknown("Producer");
         }
 
         return context;
@@ -192,6 +209,7 @@ public static class ServiceCollectionQueueingExtensions
         this QueueingBuilderContext context,
         IQueueEnqueuerBehavior behavior)
     {
+        if (behavior is AuditingQueueEnqueuerBehavior) return context.WithBehavior<AuditingQueueEnqueuerBehavior>((IQueueEnqueuerBehavior)null);
         if (behavior is not null)
         {
             context.Services.AddSingleton(typeof(IQueueEnqueuerBehavior), behavior);
@@ -215,9 +233,15 @@ public static class ServiceCollectionQueueingExtensions
             return context;
         }
 
+        if (behavior is AuditingQueueHandlerBehavior) return context.WithBehavior<AuditingQueueHandlerBehavior>((IQueueHandlerBehavior)null);
         if (behavior is null)
         {
-            context.Services.AddSingleton<IQueueHandlerBehavior, TBehavior>();
+            if (typeof(TBehavior) == typeof(AuditingQueueHandlerBehavior))
+            {
+                context.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IQueueHandlerBehavior, TBehavior>());
+                context.AuditRegistrations.Select("Consumer");
+            }
+            else context.Services.AddSingleton<IQueueHandlerBehavior, TBehavior>();
         }
         else
         {
@@ -237,6 +261,7 @@ public static class ServiceCollectionQueueingExtensions
         if (implementationFactory is not null)
         {
             context.Services.AddSingleton(typeof(IQueueHandlerBehavior), implementationFactory);
+            context.AuditRegistrations.MarkUnknown("Consumer");
         }
 
         return context;
@@ -249,6 +274,7 @@ public static class ServiceCollectionQueueingExtensions
         this QueueingBuilderContext context,
         IQueueHandlerBehavior behavior)
     {
+        if (behavior is AuditingQueueHandlerBehavior) return context.WithBehavior<AuditingQueueHandlerBehavior>((IQueueHandlerBehavior)null);
         if (behavior is QueueHandlerProfilingBehavior)
         {
             return context.WithBehavior<QueueHandlerProfilingBehavior>(behavior);

@@ -37,6 +37,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
     private readonly ILogger<InMemoryOrchestrationExecutor> logger;
     private readonly IMetricsService metricsService;
     private readonly OrchestrationProfilingExecutionScope profiling;
+    private readonly OrchestrationAuditingExecutionScope auditing;
     private readonly ConcurrentDictionary<Guid, byte> scheduledTimerWatchers = new ConcurrentDictionary<Guid, byte>();
     private readonly AsyncLocal<ActivityCheckpointSession> currentCheckpointSession = new();
 
@@ -70,9 +71,13 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
     private enum ActivityExecutionResolutionKind
     {
         Continue,
+
         RetryImmediate,
+
         Deferred,
+
         Outcome,
+
         Fail,
     }
 
@@ -114,14 +119,17 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         /// Represents the none value.
         /// </summary>
         None,
+
         /// <summary>
         /// Represents the continued value.
         /// </summary>
         Continued,
+
         /// <summary>
         /// Represents the repaired value.
         /// </summary>
         Repaired,
+
         /// <summary>
         /// Represents the skipped lease conflict value.
         /// </summary>
@@ -149,6 +157,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         this.logger = (serviceProvider.GetService<ILoggerFactory>() ?? NullLoggerFactory.Instance).CreateLogger<InMemoryOrchestrationExecutor>();
         this.metricsService = serviceProvider.GetService<IMetricsService>();
         this.profiling = serviceProvider.GetService<OrchestrationProfilingExecutionScope>();
+        this.auditing = serviceProvider.GetService<OrchestrationAuditingExecutionScope>();
     }
 
     /// <inheritdoc />
@@ -556,6 +565,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             context.InstanceId,
             orchestration.Name);
 
+        this.auditing?.StampCause(context);
         await this.persistenceProvider.Instances.CreateAsync(context, cancellationToken: cancellationToken).ConfigureAwait(false);
         this.RecordOrchestrationStarted(context.OrchestrationName);
         await this.AppendHistoryAsync(context.InstanceId, "Created", null, null, context.OrchestrationName, cancellationToken).ConfigureAwait(false);
@@ -590,11 +600,12 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             instanceId,
             typeof(TOrchestration).Name);
 
-        _ = Task.Run(async () =>
+        _ = Task.Run(() => AuditSourceExecutor.RunIsolatedAsync(this.serviceProvider.GetRequiredService<IServiceScopeFactory>(), "Orchestrations", instanceId.ToString("D"), null, null, async () =>
         {
             using var boundary = this.profiling?.BeginIndependentExecutionBoundary();
             await this.ContinueInstanceCoreAsync<TOrchestration, TData>(instanceId, CancellationToken.None).ConfigureAwait(false);
-        });
+            return true;
+        }));
     }
 
     internal async Task ContinueInstanceAsync(Guid instanceId, CancellationToken cancellationToken = default)
@@ -805,9 +816,12 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         OrchestrationInstanceSnapshot snapshot,
         LeaseHandle lease,
         CancellationToken cancellationToken)
-        where TData : class, IOrchestrationData =>
-        this.profiling is null ? this.ProcessContextCoreAsync(definition, context, snapshot, lease, cancellationToken)
+        where TData : class, IOrchestrationData
+    {
+        Task Execute() => this.profiling is null ? this.ProcessContextCoreAsync(definition, context, snapshot, lease, cancellationToken)
             : this.profiling.RunAsync(context, () => this.ProcessContextCoreAsync(definition, context, snapshot, lease, cancellationToken), cancellationToken);
+        return this.auditing is null ? Execute() : this.auditing.RunAsync(context, Execute);
+    }
 
     private async Task ProcessContextCoreAsync<TData>(
         OrchestrationDefinition<TData> definition,
@@ -1687,44 +1701,51 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             timer.DueTimeUtc,
             timer.Continuation);
 
-        _ = Task.Run(async () =>
+        using (ExecutionContext.SuppressFlow())
         {
-            using var boundary = this.profiling?.BeginIndependentExecutionBoundary();
-            try
+            _ = Task.Run(async () =>
             {
-                var delay = timer.DueTimeUtc - this.clock.UtcNow;
-                if (delay > TimeSpan.Zero)
+                using var boundary = this.profiling?.BeginIndependentExecutionBoundary();
+                try
                 {
-                    await this.clock.DelayAsync(delay).ConfigureAwait(false);
-                }
+                    var delay = timer.DueTimeUtc - this.clock.UtcNow;
+                    if (delay > TimeSpan.Zero)
+                    {
+                        await this.clock.DelayAsync(delay).ConfigureAwait(false);
+                    }
 
-                if (this.registrations.TryGetByName(orchestrationName, out var orchestrationType))
+                    if (this.registrations.TryGetByName(orchestrationName, out var orchestrationType))
+                    {
+                        var dataType = this.registrations.GetDataType(orchestrationType);
+                        this.logger.LogDebug(
+                            "[{LogKey}] timer watcher continuing orchestration instance (instanceId={InstanceId}, timerId={TimerId}, orchestration={Orchestration})",
+                            Constants.LogKey,
+                            timer.InstanceId,
+                            timer.TimerId,
+                            orchestrationName);
+                        await AuditSourceExecutor.RunIsolatedAsync(this.serviceProvider.GetRequiredService<IServiceScopeFactory>(), "Orchestrations", timer.InstanceId.ToString("D"), null, null, async () =>
+                        {
+                            await this.InvokeVoidOperationAsync(nameof(this.ContinueInstanceCoreAsync), orchestrationType, dataType, timer.InstanceId, CancellationToken.None).ConfigureAwait(false);
+                            return true;
+                        }).ConfigureAwait(false);
+                    }
+                }
+                catch (Exception exception)
                 {
-                    var dataType = this.registrations.GetDataType(orchestrationType);
                     this.logger.LogDebug(
-                        "[{LogKey}] timer watcher continuing orchestration instance (instanceId={InstanceId}, timerId={TimerId}, orchestration={Orchestration})",
+                        exception,
+                        "[{LogKey}] orchestration timer watcher stopped unexpectedly (instanceId={InstanceId}, timerId={TimerId}, orchestration={Orchestration})",
                         Constants.LogKey,
                         timer.InstanceId,
                         timer.TimerId,
                         orchestrationName);
-                    await this.InvokeVoidOperationAsync(nameof(this.ContinueInstanceCoreAsync), orchestrationType, dataType, timer.InstanceId, CancellationToken.None).ConfigureAwait(false);
                 }
-            }
-            catch (Exception exception)
-            {
-                this.logger.LogDebug(
-                    exception,
-                    "[{LogKey}] orchestration timer watcher stopped unexpectedly (instanceId={InstanceId}, timerId={TimerId}, orchestration={Orchestration})",
-                    Constants.LogKey,
-                    timer.InstanceId,
-                    timer.TimerId,
-                    orchestrationName);
-            }
-            finally
-            {
-                this.scheduledTimerWatchers.TryRemove(timer.TimerId, out _);
-            }
-        });
+                finally
+                {
+                    this.scheduledTimerWatchers.TryRemove(timer.TimerId, out _);
+                }
+            });
+        }
     }
 
     private async Task ObsoletePendingStateArtifactsAsync(Guid instanceId, string stateName, LeaseHandle lease, CancellationToken cancellationToken)
@@ -2332,7 +2353,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             request.Context.Services,
             request.Context);
 
-        var behaviors = request.Context.Services.GetServices<IOrchestrationBehavior>().ToArray();
+        var behaviors = request.Context.Services.GetServices<IOrchestrationBehavior>().OrderBy(behavior => behavior is AuditingOrchestrationBehavior ? 1 : 0).ToArray();
         OrchestrationDelegate next = async () =>
             await request.Execute().ConfigureAwait(false) ?? OrchestrationOutcome.Continue();
 
@@ -2706,6 +2727,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
 
         try
         {
+            this.auditing?.StampCause(context);
             return await this.persistenceProvider.Instances.SaveAsync(snapshot, context, cancellationToken).ConfigureAwait(false);
         }
         catch (InvalidOperationException exception)

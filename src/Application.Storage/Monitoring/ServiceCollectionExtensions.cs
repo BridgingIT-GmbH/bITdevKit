@@ -75,6 +75,7 @@ public static class ServiceCollectionExtensions
             services.TryAddScoped<IFileEventStore, InMemoryFileEventStore>(); // Default store
         }
 
+        AuditBoundaryRegistrationCatalog.GetOrAdd(services, "FileMonitoring", "Event", "Processor", "Scan");
         var builder = new FileMonitoringBuilder(services);
         configure(builder);
 

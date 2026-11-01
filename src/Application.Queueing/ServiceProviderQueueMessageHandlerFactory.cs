@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 /// Resolves queue handlers from the dependency injection container.
 /// </summary>
-public class ServiceProviderQueueMessageHandlerFactory(IServiceProvider serviceProvider) : IQueueMessageHandlerFactory
+public class ServiceProviderQueueMessageHandlerFactory(IServiceProvider serviceProvider) : IQueueMessageHandlerFactory, IAsyncQueueMessageHandlerFactory, IAuditExecutionIsolation
 {
     private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
@@ -40,5 +40,40 @@ public class ServiceProviderQueueMessageHandlerFactory(IServiceProvider serviceP
 
                 await scope.DisposeAsync();
             });
+    }
+
+    /// <inheritdoc />
+    public Task<T> RunIsolatedAsync<T>(string feature, string operationId, string token, string correlationId, Func<Task<T>> next)
+        => AuditSourceExecutor.RunIsolatedAsync(this.serviceProvider.GetRequiredService<IServiceScopeFactory>(), feature, operationId, token, correlationId, next);
+
+    /// <inheritdoc />
+    public async ValueTask<QueueMessageHandlerFactoryResult> CreateAsync(Type messageHandlerType)
+    {
+        var scope = this.serviceProvider.CreateAsyncScope();
+        try
+        {
+            var handler = scope.ServiceProvider.GetService(messageHandlerType);
+            var createdByActivator = handler is null;
+            handler ??= ActivatorUtilities.CreateInstance(scope.ServiceProvider, messageHandlerType);
+            return new QueueMessageHandlerFactoryResult(handler, async () =>
+            {
+                try
+                {
+                    if (createdByActivator)
+                    {
+                        if (handler is IAsyncDisposable asynchronous) await asynchronous.DisposeAsync();
+                        else if (handler is IDisposable synchronous) synchronous.Dispose();
+                    }
+                }
+                finally { await scope.DisposeAsync(); }
+            });
+        }
+        catch
+        {
+            try { await scope.DisposeAsync(); }
+            catch (Exception) { /* Keep the original resolution exception. */ }
+
+            throw;
+        }
     }
 }

@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Orchestrations;
 
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -20,6 +21,7 @@ public class OrchestrationRecoveryService : BackgroundService
     private readonly IHostApplicationLifetime applicationLifetime;
     private readonly OrchestrationExecutionSettings settings;
     private readonly ILogger<OrchestrationRecoveryService> logger;
+    private readonly IDatabaseReadyService databaseReadyService;
     private IDisposable startupRegistration;
     private CancellationTokenSource linkedCts;
     private Task startupTask;
@@ -33,14 +35,17 @@ public class OrchestrationRecoveryService : BackgroundService
     /// <param name="applicationLifetime">The host application lifetime used to defer startup until the application is ready.</param>
     /// <param name="settings">The orchestration execution settings.</param>
     /// <param name="loggerFactory">The logger factory used to create the service logger.</param>
+    /// <param name="databaseReadyService">The optional database readiness service; when available the first sweep waits until the registered databases are ready.</param>
     public OrchestrationRecoveryService(
         InMemoryOrchestrationExecutor executor,
         IOrchestrationStorageProvider persistenceProvider,
         IOrchestrationClock clock,
         IHostApplicationLifetime applicationLifetime,
         OrchestrationExecutionSettings settings,
-        ILoggerFactory loggerFactory = null)
+        ILoggerFactory loggerFactory = null,
+        IDatabaseReadyService databaseReadyService = null)
     {
+        this.databaseReadyService = databaseReadyService;
         this.executor = executor ?? throw new ArgumentNullException(nameof(executor));
         this.persistenceProvider = persistenceProvider ?? throw new ArgumentNullException(nameof(persistenceProvider));
         this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
@@ -145,6 +150,8 @@ public class OrchestrationRecoveryService : BackgroundService
                 await this.clock.DelayAsync(this.settings.StartupDelay, cancellationToken).ConfigureAwait(false);
             }
 
+            await this.WaitForDatabaseReadyAsync(cancellationToken).ConfigureAwait(false);
+
             this.logger.LogInformation(
                 "[{LogKey}] orchestration recovery service starting (sweepInterval={SweepInterval}ms, batchSize={BatchSize})",
                 Constants.LogKey,
@@ -167,6 +174,28 @@ public class OrchestrationRecoveryService : BackgroundService
         {
             this.logger.LogError(exception, "[{LogKey}] orchestration recovery service failed unexpectedly: {ErrorMessage}", Constants.LogKey, exception.Message);
             throw;
+        }
+    }
+
+    // Touching a database that is still being created makes the creator's ALTER DATABASE block on pooled connections.
+    private async Task WaitForDatabaseReadyAsync(CancellationToken cancellationToken)
+    {
+        if (this.databaseReadyService is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await this.databaseReadyService.WaitForReadyAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception exception)
+        {
+            this.logger.LogWarning(exception, "[{LogKey}] orchestration recovery service database not ready, continuing: {ErrorMessage}", Constants.LogKey, exception.Message);
         }
     }
 

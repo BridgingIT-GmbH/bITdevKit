@@ -23,6 +23,25 @@ public class JobRegistrationStore : IJobRegistrationStore
 {
     private readonly List<JobDefinition> registrations = [];
     private readonly List<Type> globalBehaviorTypes = [];
+    private readonly List<Type> dispatchBehaviorTypes = [];
+
+    /// <summary>Safe source-owned boundary declarations without resolving job instances.</summary>
+    /// <example><code>var declarations = registrations.AuditRegistrations.Registrations;</code></example>
+    public AuditBoundaryRegistrationCatalog AuditRegistrations { get; } = new("Jobs", "Dispatch", "Execution");
+
+    /// <inheritdoc />
+    public void AddDispatchBehavior(Type behaviorType)
+    {
+        if (behaviorType is null || !typeof(IJobDispatchBehavior).IsAssignableFrom(behaviorType) || behaviorType.IsAbstract)
+            throw new ArgumentException("A concrete job dispatch behavior is required.", nameof(behaviorType));
+        if (!this.dispatchBehaviorTypes.Contains(behaviorType)) this.dispatchBehaviorTypes.Add(behaviorType);
+        if (behaviorType == typeof(AuditingJobDispatchBehavior)) this.AuditRegistrations.Select("Dispatch");
+    }
+
+    /// <summary>Returns the explicitly registered dispatch observer types.</summary>
+    /// <example><code>var types = registrations.GetDispatchBehaviorTypes();</code></example>
+    public IReadOnlyList<Type> GetDispatchBehaviorTypes() => this.dispatchBehaviorTypes.ToArray();
+
     private IConfiguration configuration;
     private IServiceProvider serviceProvider;
 
@@ -39,6 +58,8 @@ public class JobRegistrationStore : IJobRegistrationStore
         }
 
         this.registrations.Add(definition);
+        this.AuditRegistrations.Declare("Execution", definition.JobName.Length <= 512 ? definition.JobName : "Oversized",
+            definition.BehaviorTypes.Contains(typeof(AuditingJobBehavior)) || this.globalBehaviorTypes.Contains(typeof(AuditingJobBehavior)) ? "selected" : "omitted");
     }
 
     /// <inheritdoc />
@@ -75,6 +96,12 @@ public class JobRegistrationStore : IJobRegistrationStore
         if (!typeof(IJobBehavior).IsAssignableFrom(behaviorType) || behaviorType.IsAbstract)
         {
             throw new InvalidOperationException($"The behavior type '{behaviorType.FullName}' must implement {nameof(IJobBehavior)}.");
+        }
+
+        if (behaviorType == typeof(AuditingJobBehavior))
+        {
+            this.AuditRegistrations.Select("Execution");
+            foreach (var registration in this.registrations) this.AuditRegistrations.Declare("Execution", registration.JobName.Length <= 512 ? registration.JobName : "Oversized", "selected");
         }
 
         if (!this.globalBehaviorTypes.Contains(behaviorType))

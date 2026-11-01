@@ -133,7 +133,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
     }
 
     private static ChangeHistoryDashboardDescriptor FindDescriptor(HttpContext context, string key)
-        => context.RequestServices.GetServices<ChangeHistoryDashboardDescriptor>()
+        => ChangeHistoryDashboardDiscovery.GetRegistrations(context.RequestServices)
             .FirstOrDefault(descriptor => descriptor.Key == key);
 
     private static string GetFormValue(IFormCollection form, string key)

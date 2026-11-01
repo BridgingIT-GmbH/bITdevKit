@@ -1375,16 +1375,6 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
             query = query.Distinct();
         }
 
-        if (options?.Skip.HasValue == true && options.Skip.Value > 0)
-        {
-            query = query.Skip(options.Skip.Value);
-        }
-
-        if (options?.Take.HasValue == true && options.Take.Value > 0)
-        {
-            query = query.Take(options.Take.Value);
-        }
-
         foreach (var include in (options?.Includes ?? []).Insert(options?.Include))
         {
             query = query.Include(include.Expression);
@@ -1402,7 +1392,19 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
                     : orderedQuery.ThenByDescending(order.Expression);
         }
 
-        return orderedQuery ?? query;
+        // Apply stable ordering to the complete selection before choosing a page.
+        query = orderedQuery ?? query;
+        if (options?.Skip.HasValue == true && options.Skip.Value > 0)
+        {
+            query = query.Skip(options.Skip.Value);
+        }
+
+        if (options?.Take.HasValue == true && options.Take.Value > 0)
+        {
+            query = query.Take(options.Take.Value);
+        }
+
+        return query;
     }
 
     /// <summary>

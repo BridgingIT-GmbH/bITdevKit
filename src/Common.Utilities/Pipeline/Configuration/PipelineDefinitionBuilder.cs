@@ -295,7 +295,7 @@ public class PipelineDefinitionBuilder<TContext>(string name) : IPipelineDefinit
     {
         if (enabled)
         {
-            this.behaviorTypes.Add(typeof(TBehavior));
+            if (typeof(TBehavior) != typeof(PipelineAuditingBehavior) || !this.behaviorTypes.Contains(typeof(TBehavior))) this.behaviorTypes.Add(typeof(TBehavior));
         }
 
         return this;

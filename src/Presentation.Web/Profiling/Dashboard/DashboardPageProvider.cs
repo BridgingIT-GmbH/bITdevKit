@@ -40,6 +40,14 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions dashboardOpt
             GroupOrder = 0,
             Order = 25,
             Description = "Analyze Runtime snapshots and retained operation timings",
+            RememberedViews = new Dictionary<string, string>
+            {
+                ["runtime"] = DashboardEndpoints.BuildProfilingPath(dashboardOptions),
+                ["operations"] = DashboardEndpoints.BuildOperationsPath(dashboardOptions),
+                ["requests"] = DashboardEndpoints.BuildOperationsPath(dashboardOptions, true),
+                ["timeline"] = DashboardEndpoints.BuildTimelinePath(dashboardOptions),
+                ["insights"] = DashboardEndpoints.BuildInsightsPath(dashboardOptions)
+            },
             Card = GetCardAsync,
         };
 

@@ -35,12 +35,12 @@ public sealed class DashboardChangeHistoryViewModel
     public string RestoreActionPath { get; set; } = "/_bdk/dashboard/change-history/actions/restore";
 
     /// <summary>
-    /// Gets or sets the registered ChangeHistory endpoint descriptors.
+    /// Gets or sets the registered ChangeHistory dashboard entity descriptors.
     /// </summary>
     public IReadOnlyList<ChangeHistoryDashboardDescriptor> Registrations { get; set; } = [];
 
     /// <summary>
-    /// Gets or sets the selected ChangeHistory endpoint descriptor.
+    /// Gets or sets the selected ChangeHistory dashboard entity descriptor.
     /// </summary>
     public ChangeHistoryDashboardDescriptor SelectedRegistration { get; set; }
 
@@ -213,7 +213,7 @@ public sealed class ChangeHistoryDashboardQueryState
             Page = this.Page,
             PageSize = this.PageSize,
             OrderAscending = this.OrderAscending,
-            IncludeValues = descriptor?.Options.IncludeValues ?? true
+            IncludeValues = descriptor?.Options.IncludeValues ?? false
         };
     }
 

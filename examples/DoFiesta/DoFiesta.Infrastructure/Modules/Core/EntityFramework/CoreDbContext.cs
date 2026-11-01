@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Infrastructure;
 
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Orchestrations;
 using DevKit.Infrastructure.EntityFramework;
 using DevKit.Infrastructure.EntityFramework.Messaging;
@@ -24,7 +25,8 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     IFileStorageContext,
     IFileMonitoringContext,
     ILoggingContext,
-    IChangeHistoryContext
+    IChangeHistoryContext,
+    IAuditingDbContext
 {
     public DbSet<TodoItem> TodoItems { get; set; }
 
@@ -62,11 +64,33 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
 
     public DbSet<ChangeHistoryEntry> ChangeHistory { get; set; }
 
+    /// <inheritdoc />
+    public DbSet<AuditRecordEntity> AuditRecords { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<AuditActionEntity> AuditActions { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<AuditEntityChangeEntity> AuditEntityChanges { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<AuditStoreStateEntity> AuditStoreState { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasSequence<int>("TodoItemSequence")
             .StartsAt(1).IncrementsBy(1);
 
         base.OnModelCreating(modelBuilder);
+        if (!this.Database.IsRelational()) return;
+
+        // Host-owned initialization is part of the sample's EnsureCreated schema.
+        modelBuilder.Entity<AuditStoreStateEntity>().Property(state => state.StoreId).HasDefaultValueSql("NEWID()");
+        modelBuilder.Entity<AuditStoreStateEntity>().Property(state => state.StoreEpoch).HasDefaultValueSql("NEWID()");
+        modelBuilder.Entity<AuditStoreStateEntity>().HasData(new
+        {
+            Singleton = 1, PublishedPosition = 0L, LifecycleGeneration = 0L, RemovedThroughPosition = 0L,
+            RejectCompletedBeforeUtcTicks = 0L, ArchiveCompletedBeforeUtcTicks = 0L
+        });
     }
 }

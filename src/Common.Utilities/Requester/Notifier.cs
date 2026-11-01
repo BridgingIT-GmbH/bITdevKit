@@ -384,6 +384,7 @@ public interface INotificationBehaviorsProvider
 public class NotificationBehaviorsProvider(IReadOnlyList<Type> pipelineBehaviorTypes) : INotificationBehaviorsProvider
 {
     private readonly IReadOnlyList<Type> pipelineBehaviorTypes = pipelineBehaviorTypes ?? throw new ArgumentNullException(nameof(pipelineBehaviorTypes));
+
     //private readonly Dictionary<Type, object> behaviorCache = []; // Scoped cache per provider instance
 
     /// <summary>
@@ -525,7 +526,7 @@ public partial class Notifier(
     INotificationHandlerProvider handlerProvider,
     INotificationBehaviorsProvider behaviorsProvider,
     IHandlerCache handlerCache,
-    IReadOnlyList<Type> pipelineBehaviorTypes) : INotifier
+    IReadOnlyList<Type> pipelineBehaviorTypes, Func<Type, int> notificationHandlerCount = null) : INotifier
 {
     private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     private readonly ILogger<Notifier> logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -569,42 +570,30 @@ public partial class Notifier(
             cancellationToken.ThrowIfCancellationRequested();
             options ??= DefaultOptions;
             var startTicks = Environment.TickCount64;
-            var handlers = this.handlerProvider.GetHandlers<TNotification>(this.serviceProvider);
+            var handlers = options.ExecutionMode == ExecutionMode.FireAndForget ? [] : this.handlerProvider.GetHandlers<TNotification>(this.serviceProvider);
             var behaviors = this.behaviorsProvider.GetBehaviors<TNotification>(this.serviceProvider);
 
-            if (!handlers.SafeAny())
-            {
-                this.logger.LogWarning("[{LogKey}] no handlers found for notification type {NotificationType} (notificationId={NotificationId})", RequestLogKey, notificationTypeName, notificationIdString);
-                return Result.Success(); // no handlers found
-            }
-
-            var notificationLevelBehaviors = behaviors.Where(b => !b.IsHandlerSpecific()).ToArray();
-            var handlerSpecificBehaviors = behaviors.Where(b => b.IsHandlerSpecific()).ToArray();
+            var notificationLevelBehaviors = behaviors.Where(behavior => !behavior.IsHandlerSpecific())
+                .OrderBy(behavior => behavior is AuditingNotificationBehavior<TNotification, IResult> ? 0 : 1).ToArray();
+            var handlerSpecificBehaviors = behaviors.Where(behavior => behavior.IsHandlerSpecific())
+                .OrderBy(behavior => behavior is AuditingNotificationHandlerBehavior<TNotification, IResult> ? 1 : 0).ToArray();
 
             Func<Task<IResult>> next = async () =>
             {
                 var handlerResults = new List<IResult>();
+                if (options.ExecutionMode != ExecutionMode.FireAndForget && !handlers.SafeAny())
+                {
+                    AuditRequestInvocation.Observe(notification, "NoHandler");
+                    this.logger.LogWarning("[{LogKey}] no handlers found for notification type {NotificationType} (notificationId={NotificationId})", RequestLogKey, notificationTypeName, notificationIdString);
+                    return Result.Success();
+                }
+
                 if (options.ExecutionMode == ExecutionMode.FireAndForget)
                 {
-                    // Fire-and-forget: Dispatch handlers without awaiting
-                    foreach (var handler in handlers)
-                    {
-                        var handlerType = handler.GetType();
-                        Func<Task<IResult>> handlerNext = async () => await handler.HandleAsync(notification, options, cancellationToken);
-
-                        for (var i = handlerSpecificBehaviors.Length - 1; i >= 0; i--)
-                        {
-                            cancellationToken.ThrowIfCancellationRequested();
-                            var behavior = handlerSpecificBehaviors[i];
-                            var currentNext = handlerNext;
-                            handlerNext = async () =>
-                            {
-                                return await behavior.HandleAsync(notification, options, handlerType, currentNext, cancellationToken);
-                            };
-                        }
-
-                        _ = Task.Run(() => handlerNext(), cancellationToken);
-                    }
+                    var scopes = this.serviceProvider.GetRequiredService<IServiceScopeFactory>();
+                    var link = (this.serviceProvider.GetService<IAuditContext>()?.Current as IAuditSourceScope)?.CaptureLink();
+                    var work = NotifierDetachedExecutor.Start(scopes, notification, options, link, this.handlerProvider is NotificationHandlerProvider ? notificationHandlerCount : null);
+                    _ = work.ContinueWith(task => { _ = task.Exception; }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 
                     return Result.Success();
                 }

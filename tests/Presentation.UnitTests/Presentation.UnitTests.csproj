@@ -6,7 +6,13 @@
     <RootNamespace>BridgingIT.DevKit.Presentation.UnitTests</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
+    <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.OpenApi.Generated</InterceptorsNamespaces>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="../Common.UnitTests/Serialization/Ndjson/NdjsonTestStreams.cs" Link="Web/Ndjson/Fixtures/NdjsonTestStreams.cs" />
+    <Compile Include="../Common.UnitTests/Serialization/Ndjson/NdjsonTestTimeProvider.cs" Link="Web/Ndjson/Fixtures/NdjsonTestTimeProvider.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Using Include="BridgingIT.DevKit.Common" />
@@ -59,6 +65,7 @@
     <ProjectReference Include="..\..\src\Presentation.Web\Presentation.Web.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Configuration\Presentation.Configuration.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Cli\Presentation.Cli.csproj" />
+    <ProjectReference Include="..\..\src\Presentation.Web.Auditing\Presentation.Web.Auditing.csproj" />
   </ItemGroup>
 
 </Project>

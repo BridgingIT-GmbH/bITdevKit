@@ -1,0 +1,82 @@
+@inherits RazorSlice<AuditingViewModel>
+@using Microsoft.Extensions.DependencyInjection
+<div data-audit-detail-fragment>
+@if (Model.Details is not { IsSuccess: true })
+{
+    <div class="alert alert-warning" role="alert">This execution is unavailable. Access or source integrity could not be verified.</div>
+}
+else
+{
+    var details = Model.Details.Value;
+    var record = details.Record;
+    var byId = record.Actions.ToDictionary(item => item.Id);
+    var outcomeClass = record.Outcome.ToString() == "Succeeded" ? "text-bg-success" : record.Outcome.ToString() == "Failed" ? "text-bg-danger" : "text-bg-secondary";
+    <section class="card">
+        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2"><strong>@(record.DisplayName ?? record.Key)</strong><span class="badge @outcomeClass">@record.Outcome</span></div>
+        <div class="card-body p-2">
+            <div class="row g-2 small mb-2">
+                <div class="col-sm-6 col-xl-3"><span class="audit-secondary d-block">Executing actor</span>@record.Actor.Kind @record.Actor.UserId @record.Actor.DisplayName</div>
+                <div class="col-sm-6 col-xl-3"><span class="audit-secondary d-block">Module</span>@(record.ModuleName ?? "-")</div>
+                <div class="col-sm-6 col-xl-3"><span class="audit-secondary d-block">Started UTC</span>@record.StartedUtc.ToString("u")</div>
+                <div class="col-sm-6 col-xl-3"><span class="audit-secondary d-block">Completed UTC</span>@record.CompletedUtc.ToString("u")</div>
+            </div>
+            <div class="d-flex flex-wrap gap-2 small" role="status">
+                @if (record.HasFailedActions) { <span class="badge text-bg-warning"><i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>Failed actions</span> }
+                <span class="badge text-bg-secondary">@details.StorageState</span>
+                <span class="badge text-bg-secondary" title="Capture completeness describes admitted instrumentation."><i class="bi bi-list-check me-1" aria-hidden="true"></i>@record.Completeness</span>
+                <span class="badge text-bg-secondary" title="Integrity of the original source record."><i class="bi bi-shield me-1" aria-hidden="true"></i>@details.IntegrityStatus</span>
+                @if (details.IsTransformed) { <span class="badge text-bg-warning" title="This view was transformed for your read scope. Source integrity applies to the original record."><i class="bi bi-eye me-1" aria-hidden="true"></i>Transformed</span> }
+            </div>
+        </div>
+        <details><summary class="card-header small">Execution metadata</summary><div class="card-body p-2"><dl class="audit-properties">
+            <dt>Business key</dt><dd>@record.Key</dd><dt>Audit ID</dt><dd>@record.AuditId</dd><dt>Correlation</dt><dd>@DashboardCorrelationLink.Render(HttpContext.RequestServices.GetService<DashboardEndpointsOptions>(), record.CorrelationId)</dd><dt>Initiating actor</dt><dd>@record.InitiatingActor?.Kind @record.InitiatingActor?.UserId @record.InitiatingActor?.DisplayName</dd>
+            @foreach (var detail in record.Details) { <dt>@detail.Key</dt><dd>@(detail.Value.Marker ?? detail.Value.Data.ToString())</dd> }
+        </dl>
+        @if (!record.Resources.IsEmpty) { <ul class="small mt-2 mb-0">@foreach (var resource in record.Resources) { <li><i class="bi bi-box me-1" aria-hidden="true"></i>@resource.Type @resource.Id @resource.DisplayName</li> }</ul> }
+        </div></details>
+    </section>
+    @foreach (var note in record.Notes) { <div class="alert alert-warning py-2 small">@note</div> }
+    @foreach (var error in record.Errors) { <div class="alert alert-danger py-2 small"><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>@error.Code</div> }
+    <section class="card">
+        <div class="card-header d-flex justify-content-between align-items-center"><span>Actions</span><span class="badge text-bg-secondary">@record.Actions.Length</span></div>
+        <div class="p-2 audit-actions">
+        @if (record.Actions.IsEmpty) { <div class="audit-empty">No actions captured.</div> }
+        @foreach (var action in record.Actions.OrderBy(item => item.Sequence))
+        {
+            var depth = 0;
+            var parent = action.ParentActionId;
+            while (parent is { } parentId && depth < 32 && byId.TryGetValue(parentId, out var ancestor)) { depth++; parent = ancestor.ParentActionId; }
+            var actionClass = action.Outcome.ToString() == "Succeeded" ? "text-bg-success" : action.Outcome.ToString() == "Failed" ? "text-bg-danger" : "text-bg-secondary";
+            <details class="card audit-action mb-2" style="--audit-depth: @depth">
+                <summary class="card-header"><span title="@action.Key">@(action.DisplayName ?? action.Key)</span><span class="badge @actionClass ms-2">@action.Outcome</span>@if (action.Attempt is { } attempt) { <span class="badge text-bg-secondary ms-1" title="Attempt">#@attempt</span> }<span role="img" class="audit-secondary ms-2" title="Execution status: @action.ExecutionStatus" aria-label="Execution status: @action.ExecutionStatus"><i class="bi bi-play-circle" aria-hidden="true"></i></span></summary>
+                <div class="card-body p-2"><dl class="audit-properties"><dt>Key</dt><dd>@action.Key</dd><dt>Feature / module</dt><dd>@action.Feature / @action.ModuleName</dd><dt>Started UTC</dt><dd>@action.StartedUtc.ToString("u")</dd><dt>Occurrence</dt><dd>@action.Id</dd><dt>Parent occurrence</dt><dd>@action.ParentActionId</dd>
+                @foreach (var detail in action.Details) { <dt>@detail.Key</dt><dd>@(detail.Value.Marker ?? detail.Value.Data.ToString())</dd> }
+                </dl>
+                @foreach (var error in action.Errors) { <div class="text-danger small mt-2"><i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>@error.Code</div> }
+                @if (!action.Resources.IsEmpty) { <ul class="small mt-2 mb-0">@foreach (var resource in action.Resources) { <li>@resource.Type @resource.Id @resource.DisplayName</li> }</ul> }
+                </div>
+            </details>
+        }
+        </div>
+    </section>
+    <section class="card">
+        <div class="card-header d-flex justify-content-between align-items-center"><span>Changes <button type="button" class="audit-info" title="Source change evidence only. No captured evidence does not mean no business state changed. Unknown or reference-only evidence is not a confirmed committed delta." aria-label="About change evidence"><i class="bi bi-info-circle" aria-hidden="true"></i></button></span><span class="badge text-bg-secondary">@record.EntityChanges.Length</span></div>
+        @if (record.EntityChanges.IsEmpty) { <div class="audit-empty">No change evidence captured.</div> }
+        @foreach (var change in record.EntityChanges)
+        {
+            <details class="m-2 border"><summary class="card-header">@change.EntityType @change.EntityId <span class="badge text-bg-secondary ms-2">@change.Operation</span><span class="badge @(change.PersistenceState == "Committed" ? "text-bg-success" : "text-bg-warning") ms-1">@change.PersistenceState</span></summary>
+                <div class="card-body p-2"><dl class="audit-properties mb-2"><dt>Source</dt><dd>@change.CaptureSource</dd><dt>Change set</dt><dd>@change.ChangeSetId</dd><dt>Capture / copy</dt><dd>@change.CaptureStatus / @change.CopyMode</dd></dl>
+                <div class="table-responsive"><table class="table table-sm"><thead><tr><th>Property</th><th>Before</th><th>After</th></tr></thead><tbody>@foreach (var property in change.Properties) { <tr><td>@property.Path</td><td class="text-break">@(property.OldValue?.Marker ?? property.OldValue?.Data.ToString())</td><td class="text-break">@(property.NewValue?.Marker ?? property.NewValue?.Data.ToString())</td></tr> }</tbody></table></div></div>
+            </details>
+        }
+    </section>
+    <section class="card"><div class="card-header">Related executions</div>
+    @if (Model.Related is { IsSuccess: true })
+    {
+        @if (!Model.Related.Value.Any()) { <div class="audit-empty">No related executions.</div> }
+        else { <div class="table-responsive"><table class="table table-sm table-hover"><thead><tr><th>Execution</th><th>Kind</th><th>Outcome</th></tr></thead><tbody>@foreach (var related in Model.Related.Value) { <tr><td class="audit-execution"><a class="audit-truncate" title="@(related.DisplayName ?? related.Key)" href="@(Model.Path + "/" + related.AuditId)" aria-haspopup="dialog" data-audit-detail-url="@(Model.Path + "/" + related.AuditId + "/details")">@(related.DisplayName ?? related.Key)</a></td><td>@related.Kind</td><td>@related.Outcome</td></tr> }</tbody></table></div> }
+    }
+    else { <div class="audit-empty">Related executions unavailable under your read scope.</div> }
+    </section>
+}
+</div>

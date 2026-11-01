@@ -32,8 +32,12 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
         this.HandlerFactory = handlerFactory;
         this.Serializer = serializer ?? new SystemTextJsonSerializer();
-        this.EnqueuerBehaviors = enqueuerBehaviors ?? [];
-        this.HandlerBehaviors = handlerBehaviors ?? [];
+        var producers = (enqueuerBehaviors ?? []).ToArray();
+        var firstAuditedProducer = Array.FindIndex(producers, behavior => behavior is AuditingQueueEnqueuerBehavior);
+        this.EnqueuerBehaviors = producers.Where((behavior, index) => behavior is not AuditingQueueEnqueuerBehavior || index == firstAuditedProducer).ToArray();
+        var consumers = (handlerBehaviors ?? []).ToArray();
+        var firstAuditedConsumer = Array.FindIndex(consumers, behavior => behavior is AuditingQueueHandlerBehavior);
+        this.HandlerBehaviors = consumers.Where((behavior, index) => behavior is not AuditingQueueHandlerBehavior || index == firstAuditedConsumer).ToArray();
         this.profilingBoundary = this.HandlerBehaviors.OfType<IProfilingExecutionBoundaryBehavior>().FirstOrDefault();
     }
 
@@ -159,6 +163,7 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
     /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Enqueue(IQueueMessage message, CancellationToken cancellationToken = default)
     {
+
         ArgumentNullException.ThrowIfNull(message);
 
         var correlationId = CorrelationIdGenerator.GetOrCreate(message.Properties);
@@ -169,25 +174,32 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
 
         TypedLogger.LogEnqueue(this.Logger, Constants.LogKey, messageType, message.MessageId);
         this.Logger.LogDebug("[{LogKey}] enqueue validating (type={QueueMessageType}, id={MessageId})", Constants.LogKey, messageType, message.MessageId);
-        this.ValidateEnqueue(message);
-        CorrelationId.PropagateTo(message.Properties);
+        var auditing = this.EnqueuerBehaviors.OfType<AuditingQueueEnqueuerBehavior>().FirstOrDefault();
+        if (auditing is null) await ValidatedAsync().ConfigureAwait(false);
+        else await auditing.Enqueue(message, cancellationToken, ValidatedAsync).ConfigureAwait(false);
 
-        this.Logger.LogDebug(
-            $"{{LogKey}} enqueue behaviors: {this.EnqueuerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Enqueue",
-            Constants.LogKey);
-
-        async Task Next()
+        async Task ValidatedAsync()
         {
-            await this.OnEnqueue(message, cancellationToken).AnyContext();
-        }
+            this.ValidateEnqueue(message);
+            CorrelationId.PropagateTo(message.Properties);
 
-        await this.EnqueuerBehaviors.SafeNull()
-            .Reverse()
-            .Aggregate((QueueEnqueuerDelegate)Next,
-                (next, behavior) => async () =>
-                {
-                    await behavior.Enqueue(message, cancellationToken, next);
-                })();
+            this.Logger.LogDebug(
+                $"{{LogKey}} enqueue behaviors: {this.EnqueuerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Enqueue",
+                Constants.LogKey);
+
+            async Task Next()
+            {
+                await this.OnEnqueue(message, cancellationToken).AnyContext();
+            }
+
+            await this.EnqueuerBehaviors.SafeNull().Where(behavior => behavior is not AuditingQueueEnqueuerBehavior)
+                .Reverse()
+                .Aggregate((QueueEnqueuerDelegate)Next,
+                    (next, behavior) => async () =>
+                    {
+                        await behavior.Enqueue(message, cancellationToken, next);
+                    })();
+        }
     }
 
     /// <summary>
@@ -210,6 +222,22 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
     {
         ArgumentNullException.ThrowIfNull(messageRequest);
         ArgumentNullException.ThrowIfNull(messageRequest.Message);
+        var message = messageRequest.Message;
+        var correlationId = CorrelationIdGenerator.GetOrCreate(message.Properties, useAmbient: false);
+        var auditing = this.HandlerBehaviors.OfType<AuditingQueueHandlerBehavior>().FirstOrDefault();
+        var subscribed = this.Subscriptions.Get(message.GetType().PrettyName(false)) is not null;
+        if (auditing is not null && subscribed)
+            await auditing.ExecuteDeliveryAsync(message, () => this.ProcessCoreAsync(messageRequest), messageRequest.CancellationToken, correlationId).ConfigureAwait(false);
+        else if (this.HandlerFactory is IAuditExecutionIsolation isolation)
+            await isolation.RunIsolatedAsync("Queueing", message.MessageId, AuditHandoffMetadata.Read(message.Properties), correlationId, () => this.ProcessCoreAsync(messageRequest)).ConfigureAwait(false);
+        else await this.ProcessCoreAsync(messageRequest).ConfigureAwait(false);
+    }
+
+    private async Task<bool> ProcessCoreAsync(QueueMessageRequest messageRequest)
+    {
+
+        ArgumentNullException.ThrowIfNull(messageRequest);
+        ArgumentNullException.ThrowIfNull(messageRequest.Message);
 
         var messageType = messageRequest.Message.GetType().PrettyName(false);
         var correlationId = CorrelationIdGenerator.GetOrCreate(messageRequest.Message.Properties, useAmbient: false);
@@ -229,7 +257,7 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         {
             this.Logger.LogWarning("[{LogKey}] processing skipped, no queue handler registration (type={QueueMessageType}, id={MessageId}, broker={QueueBroker})", Constants.LogKey, messageType, messageRequest.Message.MessageId, this.GetType().Name);
             messageRequest.OnProcessComplete(QueueProcessingResult.WaitingForHandler);
-            return;
+            return true;
         }
 
         await this.OnProcess(messageRequest.Message, messageRequest.CancellationToken);
@@ -238,6 +266,7 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
 
         var result = await this.ProcessSubscription(messageRequest, subscription, messageType);
         messageRequest.OnProcessComplete(result ? QueueProcessingResult.Succeeded : QueueProcessingResult.Failed);
+        return result;
     }
 
     /// <summary>
@@ -279,7 +308,9 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
             TypedLogger.LogProcessing(this.Logger, Constants.LogKey, messageType, subscription.HandlerType.FullName, messageRequest.Message.MessageId, this.GetType().Name);
             var watch = ValueStopwatch.StartNew();
 
-            var handlerResult = this.HandlerFactory.Create(subscription.HandlerType);
+            var handlerResult = this.HandlerFactory is IAsyncQueueMessageHandlerFactory asynchronousFactory
+                ? await asynchronousFactory.CreateAsync(subscription.HandlerType).ConfigureAwait(false)
+                : this.HandlerFactory.Create(subscription.HandlerType);
             await using var _ = handlerResult;
             var handlerInstance = handlerResult?.Handler;
             var handlerType = typeof(IQueueMessageHandler<>).MakeGenericType(subscription.MessageType);
@@ -344,7 +375,7 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
             await ((Task)handlerMethod.Invoke(handlerInstance, [handledMessage, messageRequest.CancellationToken])).AnyContext();
         }
 
-        await this.HandlerBehaviors.SafeNull()
+        await this.HandlerBehaviors.SafeNull().OrderBy(behavior => behavior is AuditingQueueHandlerBehavior ? 1 : 0)
             .Reverse()
             .Aggregate((QueueHandlerDelegate)Next,
                 (next, behavior) => async () =>

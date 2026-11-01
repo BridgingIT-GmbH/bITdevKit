@@ -6,7 +6,12 @@
 namespace BridgingIT.DevKit.Presentation.UnitTests.Web.Dashboard;
 
 using System.Xml.Linq;
+using BridgingIT.DevKit.Application.Auditing;
+using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>Verifies feature selection, resource packaging, and decorative SVG markup.</summary>
 /// <example><code>dotnet test --filter FullyQualifiedName~DashboardFeatureIconTests</code></example>
@@ -39,6 +44,7 @@ public sealed class DashboardFeatureIconTests
     [InlineData("storage.blobs", "storage-blobs")]
     [InlineData("storage.permalinks", "storage-permalinks")]
     [InlineData("change-history", "change-history")]
+    [InlineData("auditing", "auditing")]
     public void GetSvg_KnownPage_ReturnsDecorativeFeatureIcon(string key, string featureId)
     {
         // Act
@@ -53,6 +59,25 @@ public sealed class DashboardFeatureIconTests
         svg.Attribute("focusable")?.Value.ShouldBe("false");
         svg.Attribute("aria-labelledby").ShouldBeNull();
         svg.Elements(svg.Name.Namespace + "title").ShouldBeEmpty();
+    }
+
+    /// <summary>Uses the canonical Auditing icon for both dashboard entry points.</summary>
+    /// <example><code>await suite.Overview_Auditing_RendersCanonicalSidebarAndCardIcons();</code></example>
+    [Fact]
+    public async Task Overview_Auditing_RendersCanonicalSidebarAndCardIcons()
+    {
+        var builder = WebApplication.CreateBuilder();
+        builder.WebHost.UseTestServer();
+        builder.Services.AddAuditing();
+        builder.Services.AddDashboard(options => options.AllowAnonymous().WithGroupPath("/ops"));
+        await using var app = builder.Build();
+        app.MapEndpoints();
+        await app.StartAsync();
+
+        var html = await app.GetTestClient().GetStringAsync("/ops");
+
+        System.Text.RegularExpressions.Regex.Matches(html, "data-dashboard-icon=\"auditing\"").Count.ShouldBe(2);
+        html.ShouldContain("data-dashboard-feature=\"auditing\"");
     }
 
     /// <summary>Leaves custom and legacy items on their configured Bootstrap icon.</summary>

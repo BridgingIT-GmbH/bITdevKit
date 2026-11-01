@@ -31,6 +31,7 @@ using Microsoft.Extensions.Logging;
 public class RequesterBuilder
 {
     private readonly IServiceCollection services;
+    private readonly AuditBoundaryRegistrationCatalog auditRegistrations = new("Requester", "Dispatch", "Handler");
     private readonly List<Type> pipelineBehaviorTypes = [];
     private readonly List<Type> validatorTypes = [];
     private readonly IHandlerCache handlerCache = HandlerCacheFactory.Create();
@@ -52,6 +53,9 @@ public class RequesterBuilder
     public RequesterBuilder(IServiceCollection services)
     {
         this.services = services ?? throw new ArgumentNullException(nameof(services));
+        foreach (var previous in this.services.Where(item => item.ServiceType == typeof(IAuditBoundaryRegistrationSource)
+            && item.ImplementationInstance is AuditBoundaryRegistrationCatalog catalog && catalog.Feature == "Requester").ToArray()) this.services.Remove(previous);
+        this.services.AddSingleton<IAuditBoundaryRegistrationSource>(this.auditRegistrations);
         // Register the core services needed for Requester to function
         this.services.TryAddSingleton(this.handlerCache);
         this.services.TryAddSingleton(this.policyCache);
@@ -156,6 +160,7 @@ public class RequesterBuilder
     {
         var handlerInterface = typeof(IRequestHandler<TRequest, TValue>);
         var handlerType = typeof(THandler);
+        this.services.TryAddScoped(handlerType);
         this.services.AddScoped(handlerInterface, handlerType);
 
         if (!handlerType.IsGenericTypeDefinition)
@@ -409,6 +414,22 @@ public class RequesterBuilder
         return this;
     }
 
+    /// <summary>Selects logical dispatch and actual-handler auditing on this source builder.</summary>
+    /// <example><code>services.AddRequester().WithAuditing();</code></example>
+    public RequesterBuilder WithAuditing(Func<RequesterAuditOptions, RequesterAuditOptions> configure = null)
+    {
+        if (this.services.Any(descriptor => descriptor.ServiceType == typeof(RequesterAuditOptions)))
+        {
+            if (configure is not null) throw new InvalidOperationException("Requester auditing is already configured.");
+            return this;
+        }
+
+        var options = configure is null ? new RequesterAuditOptions() : configure(new()) ?? throw new ArgumentException("Audit source options are required.");
+        if (options.ResolveKind is null) throw new ArgumentException("A request kind resolver is required.");
+        this.services.AddSingleton(options);
+        return this.WithBehavior(typeof(AuditingRequestBehavior<,>)).WithBehavior(typeof(AuditingRequestHandlerBehavior<,>));
+    }
+
     /// <summary>
     /// Adds a pipeline behavior to the request processing pipeline.
     /// </summary>
@@ -432,7 +453,7 @@ public class RequesterBuilder
             return this;
         }
 
-        if (behaviorType == typeof(ProfilingRequestBehavior<,>) && this.pipelineBehaviorTypes.Contains(behaviorType))
+        if ((behaviorType == typeof(ProfilingRequestBehavior<,>) || behaviorType == typeof(AuditingRequestBehavior<,>) || behaviorType == typeof(AuditingRequestHandlerBehavior<,>)) && this.pipelineBehaviorTypes.Contains(behaviorType))
         {
             return this;
         }
@@ -444,6 +465,8 @@ public class RequesterBuilder
 
         this.services.AddScoped(typeof(IPipelineBehavior<,>), behaviorType);
         this.pipelineBehaviorTypes.Add(behaviorType);
+        if (behaviorType == typeof(AuditingRequestBehavior<,>)) this.auditRegistrations.Select("Dispatch");
+        if (behaviorType == typeof(AuditingRequestHandlerBehavior<,>)) this.auditRegistrations.Select("Handler");
 
         return this;
     }

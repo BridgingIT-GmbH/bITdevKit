@@ -93,7 +93,7 @@ public class ChangeHistoryEndpointsTests
     }
 
     [Fact]
-    public void AddChangeHistoryEndpoints_RegistersDashboardDescriptor()
+    public void AddChangeHistoryEndpoints_WithoutDashboardRegistration_DoesNotRegisterDashboardDescriptor()
     {
         var services = new ServiceCollection();
         services.AddRouting();
@@ -101,14 +101,7 @@ public class ChangeHistoryEndpointsTests
             .GroupPath("/api/entities/history")
             .IncludeValues());
 
-        var descriptor = services.Single(service => service.ServiceType == typeof(ChangeHistoryDashboardDescriptor))
-            .ImplementationInstance as ChangeHistoryDashboardDescriptor;
-
-        descriptor.ShouldNotBeNull();
-        descriptor.EntityType.ShouldBe(typeof(ChangeHistoryEndpointEntity));
-        descriptor.ContextType.ShouldBe(typeof(ChangeHistoryEndpointDbContext));
-        descriptor.ManagementPath.ShouldBe("/api/entities/history");
-        descriptor.Options.IncludeValues.ShouldBeTrue();
+        services.ShouldNotContain(service => service.ServiceType == typeof(ChangeHistoryDashboardDescriptor));
     }
 
     private static WebApplication CreateApplication()

@@ -31,4 +31,13 @@ public class QueueingBuilderContext(
     /// Gets the shared registration store.
     /// </summary>
     public QueueingRegistrationStore RegistrationStore { get; } = registrationStore;
+
+    /// <summary>Safe declared source selection metadata, without resolving handlers or executing callbacks.</summary>
+    /// <example><code>var registrations = context.AuditRegistrations.Registrations;</code></example>
+    public AuditBoundaryRegistrationCatalog AuditRegistrations { get; } = DeclareAuditing(services);
+
+    private static AuditBoundaryRegistrationCatalog DeclareAuditing(IServiceCollection services)
+    {
+        return AuditBoundaryRegistrationCatalog.GetOrAdd(services, "Queueing", "Producer", "Consumer");
+    }
 }

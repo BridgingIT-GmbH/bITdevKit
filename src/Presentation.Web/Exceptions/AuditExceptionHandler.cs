@@ -48,6 +48,13 @@ public class AuditExceptionHandler(
         CancellationToken cancellationToken)
     {
         // Audit the exception
+        try
+        {
+            httpContext.Features.Get<IAuditHttpErrorFeature>()?.Observe(exception,
+                exception is RuleException or System.Security.SecurityException or FluentValidation.ValidationException);
+        }
+        catch (Exception) { this.Logger?.LogWarning("[Auditing] HTTP exception observation failed (reason={Reason})", "AuditHttpErrorFeatureFailed"); }
+
         this.AuditException(httpContext, exception);
 
         // Return false to allow other handlers to process the exception

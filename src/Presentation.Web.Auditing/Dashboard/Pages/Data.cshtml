@@ -1,0 +1,30 @@
+@inherits RazorSlice<AuditingViewModel>
+@if (Model.Records is not { IsSuccess: true })
+{
+    <div class="alert alert-warning" role="alert"><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>Audit history is unavailable. The provider or your read scope could not be verified.</div>
+}
+else
+{
+    <section class="card">
+    <div class="card-header d-flex justify-content-between align-items-center"><span>Executions <button type="button" class="audit-info" title="Times are UTC. Results stay paused until you apply filters or refresh." aria-label="About execution results"><i class="bi bi-info-circle" aria-hidden="true"></i></button></span><span class="badge text-bg-secondary">@Model.Records.TotalCount</span></div>
+    <div class="table-responsive"><table class="table table-sm table-hover" id="audit-records"><thead><tr><th>Started UTC</th><th>Execution</th><th>Actor</th><th>Module</th><th>Outcome</th><th>Evidence</th><th><span class="visually-hidden">Open</span></th></tr></thead><tbody>
+    @foreach (var record in Model.Records.Value)
+    {
+        var outcomeClass = record.Outcome.ToString() == "Succeeded" ? "text-bg-success" : record.Outcome.ToString() == "Failed" ? "text-bg-danger" : "text-bg-secondary";
+        <tr data-audit-id="@record.AuditId">
+            <td class="audit-nowrap small">@record.StartedUtc.ToString("yyyy-MM-dd")<span class="d-block audit-secondary">@record.StartedUtc.ToString("HH:mm:ss.fff")</span></td>
+            <td class="audit-execution"><a class="audit-truncate @(record.DisplayName is null ? "audit-truncate-start" : "")" title="@(record.DisplayName ?? record.Key)" href="@(Model.Path + "/" + record.AuditId)" aria-haspopup="dialog" data-audit-detail-url="@(Model.Path + "/" + record.AuditId + "/details")"><bdi dir="ltr">@(record.DisplayName ?? AuditDashboardText.ShortenKey(record.Key))</bdi></a><small class="audit-truncate audit-truncate-start audit-secondary" title="@record.Key"><bdi dir="ltr">@AuditDashboardText.ShortenKey(record.Key)</bdi></small></td>
+            <td><span class="audit-truncate" title="Executing actor">@(record.Actor?.DisplayName ?? record.Actor?.UserId ?? record.Actor?.Kind)</span>@if (record.InitiatingActor is not null) { <small class="audit-truncate audit-secondary" title="Initiating actor"><i class="bi bi-person-up" aria-hidden="true"></i> @(record.InitiatingActor.DisplayName ?? record.InitiatingActor.UserId ?? record.InitiatingActor.Kind)</small> }</td>
+            <td class="small"><span class="audit-truncate" title="@record.ModuleName">@record.ModuleName</span></td>
+            <td class="audit-nowrap"><span class="badge @outcomeClass">@record.Outcome</span>@if (record.HasFailedActions) { <span role="img" class="text-warning ms-1" title="Contains failed actions" aria-label="Contains failed actions"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></span> }</td>
+            <td class="audit-nowrap"><span role="img" title="@record.ActionCount actions" aria-label="@record.ActionCount actions"><i class="bi bi-list-nested" aria-hidden="true"></i> @record.ActionCount</span><span role="img" class="ms-2" title="@record.ChangeCount changes" aria-label="@record.ChangeCount changes"><i class="bi bi-database" aria-hidden="true"></i> @record.ChangeCount</span><button type="button" class="audit-info ms-1" title="Storage: @record.StorageState. Capture: @record.Completeness. Source integrity: @record.IntegrityStatus. Completeness describes admitted instrumentation." aria-label="Evidence status"><i class="bi bi-shield-check" aria-hidden="true"></i></button></td>
+            <td><a class="btn btn-outline-secondary btn-sm" href="@(Model.Path + "/" + record.AuditId)" aria-haspopup="dialog" data-audit-detail-url="@(Model.Path + "/" + record.AuditId + "/details")" title="Open execution" aria-label="Open execution"><i class="bi bi-info-circle" aria-hidden="true"></i></a></td>
+        </tr>
+    }
+    </tbody></table></div>
+    @if (Model.Records.TotalCount == 0) { <div class="audit-empty">No executions match these filters.</div> }
+    <div class="card-footer text-center" id="audit-load-more" data-page="@Model.Records.CurrentPage" data-url="@(Model.Path + "/data")">
+    @if (Model.Records.HasNextPage) { <button type="button" class="btn btn-outline-secondary btn-sm" data-audit-load-more data-next-page="@(Model.Records.CurrentPage + 1)">Load more</button> }
+    <span class="d-block small text-muted" role="status" aria-live="polite" tabindex="-1" data-audit-load-status></span>
+    </div></section>
+}

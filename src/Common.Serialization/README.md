@@ -34,3 +34,7 @@ Use `SystemTextJsonSerializer` for the DevKit JSON conventions, or `JsonNetSeria
 `DefaultSerializer.Create` remains a shared `MessagePackSerializer`. The current benchmarks favor MessagePack for small and nested DTO throughput. Choose `CborSerializer` explicitly when the protocol requires CBOR. CBOR and MessagePack payloads require their matching decoder.
 
 See the [serialization guide](../../docs/common-serialization.md) for supported types, mapping rules, stream behavior, and limitations. The [final benchmark comparison](../../docs/benchmarks/serialization-2026-10-20-allocations/README.md) records measured timings, allocations, pool tradeoffs, and reproduction commands.
+
+## NDJSON
+
+`NdjsonWriter`/`NdjsonReader` stream bounded UTF-8 JSON lines without owning caller streams. Owned encoded records and borrowed received records expose exact JSON, delimiter, and framed bytes. This is a streaming API beside `ISerializer`, whose whole-value contract is unchanged. See the [Presentation Streaming guide](../../docs/features-presentation-streaming.md).

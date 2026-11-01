@@ -81,6 +81,7 @@
     <ProjectReference Include="..\DoFiesta.Application\DoFiesta.Application.csproj" />
     <ProjectReference Include="..\DoFiesta.Infrastructure\DoFiesta.Infrastructure.csproj" />
     <ProjectReference Include="..\DoFiesta.Presentation.Web.Client\DoFiesta.Presentation.Web.Client.csproj" />
+    <ProjectReference Include="..\..\..\src\Presentation.Web.Auditing\Presentation.Web.Auditing.csproj" />
   </ItemGroup>
 
   <ItemGroup>

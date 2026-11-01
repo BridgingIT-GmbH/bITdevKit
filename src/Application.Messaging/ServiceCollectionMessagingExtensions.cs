@@ -18,10 +18,20 @@ public static class ServiceCollectionMessagingExtensions
 {
     private static readonly object SubscriptionsLock = new();
 
+    /// <summary>Selects producer and consumer auditing independently on this source feature.</summary>
+    /// <example><code>builder.WithAuditing(consuming: true);</code></example>
+    public static MessagingBuilderContext WithAuditing(this MessagingBuilderContext context, bool producing = true, bool consuming = true)
+    {
+        if (producing) context.WithBehavior<AuditingMessagePublisherBehavior>((IMessagePublisherBehavior)null);
+        if (consuming) context.WithBehavior<AuditingMessageHandlerBehavior>((IMessageHandlerBehavior)null);
+        return context;
+    }
+
     /// <summary>
     /// Stores the subscriptions.
     /// </summary>
     public static readonly List<(Type message, Type handler)> Subscriptions = [];
+
     private static MessagingOptions contextOptions;
 
     /// <summary>
@@ -222,9 +232,15 @@ public static class ServiceCollectionMessagingExtensions
         IMessagePublisherBehavior behavior = null)
         where TBehavior : class, IMessagePublisherBehavior
     {
+        if (behavior is AuditingMessagePublisherBehavior) return context.WithBehavior<AuditingMessagePublisherBehavior>((IMessagePublisherBehavior)null);
         if (behavior is null)
         {
-            context.Services.AddSingleton<IMessagePublisherBehavior, TBehavior>();
+            if (typeof(TBehavior) == typeof(AuditingMessagePublisherBehavior))
+            {
+                context.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IMessagePublisherBehavior, TBehavior>());
+                context.AuditRegistrations.Select("Producer");
+            }
+            else context.Services.AddSingleton<IMessagePublisherBehavior, TBehavior>();
         }
         else
         {
@@ -247,6 +263,7 @@ public static class ServiceCollectionMessagingExtensions
         if (implementationFactory is not null)
         {
             context.Services.AddSingleton(typeof(IMessagePublisherBehavior), implementationFactory);
+            context.AuditRegistrations.MarkUnknown("Producer");
         }
 
         return context;
@@ -262,6 +279,7 @@ public static class ServiceCollectionMessagingExtensions
         this MessagingBuilderContext context,
         IMessagePublisherBehavior behavior)
     {
+        if (behavior is AuditingMessagePublisherBehavior) return context.WithBehavior<AuditingMessagePublisherBehavior>((IMessagePublisherBehavior)null);
         if (behavior is not null)
         {
             context.Services.AddSingleton(typeof(IMessagePublisherBehavior), behavior);
@@ -288,9 +306,15 @@ public static class ServiceCollectionMessagingExtensions
             return context;
         }
 
+        if (behavior is AuditingMessageHandlerBehavior) return context.WithBehavior<AuditingMessageHandlerBehavior>((IMessageHandlerBehavior)null);
         if (behavior is null)
         {
-            context.Services.AddSingleton<IMessageHandlerBehavior, TBehavior>();
+            if (typeof(TBehavior) == typeof(AuditingMessageHandlerBehavior))
+            {
+                context.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IMessageHandlerBehavior, TBehavior>());
+                context.AuditRegistrations.Select("Consumer");
+            }
+            else context.Services.AddSingleton<IMessageHandlerBehavior, TBehavior>();
         }
         else
         {
@@ -313,6 +337,7 @@ public static class ServiceCollectionMessagingExtensions
         if (implementationFactory is not null)
         {
             context.Services.AddSingleton(typeof(IMessageHandlerBehavior), implementationFactory);
+            context.AuditRegistrations.MarkUnknown("Consumer");
         }
 
         return context;
@@ -328,6 +353,7 @@ public static class ServiceCollectionMessagingExtensions
         this MessagingBuilderContext context,
         IMessageHandlerBehavior behavior)
     {
+        if (behavior is AuditingMessageHandlerBehavior) return context.WithBehavior<AuditingMessageHandlerBehavior>((IMessageHandlerBehavior)null);
         if (behavior is MessageHandlerProfilingBehavior)
         {
             return context.WithBehavior<MessageHandlerProfilingBehavior>(behavior);

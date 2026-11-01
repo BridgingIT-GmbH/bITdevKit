@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Manages file change detection and event processing for a specific storage location.
@@ -27,6 +28,9 @@ public abstract class LocationHandlerBase : ILocationHandler, IDisposable
     /// </summary>
     protected readonly ILogger logger;
     private readonly TypedLogger loggerTyped;
+    private readonly IFileProcessingExecutionBehavior[] executionBehaviors;
+    private readonly AsyncLocal<FileProcessingExecutionContext> currentAuditEvent = new();
+    private readonly AsyncLocal<Guid> currentAuditScan = new();
     /// <summary>
     /// Stores the provider.
     /// </summary>
@@ -97,6 +101,7 @@ public abstract class LocationHandlerBase : ILocationHandler, IDisposable
         this.options = options ?? throw new ArgumentNullException(nameof(options));
         this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         this.behaviors = behaviors ?? [];
+        this.executionBehaviors = AuditSourceExecutor.DistinctAuditing<IFileProcessingExecutionBehavior, AuditingFileProcessingBehavior>(serviceProvider.GetService<IEnumerable<IFileProcessingExecutionBehavior>>() ?? []).ToArray();
         this.processors = this.BuildProcessorChain(options);
         this.rateLimiter = new RateLimiter(options.RateLimit.EventsPerSecond, options.RateLimit.MaxBurstSize);
         this.eventQueue = [];
@@ -131,7 +136,7 @@ public abstract class LocationHandlerBase : ILocationHandler, IDisposable
             this.cts = new CancellationTokenSource();
             var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, this.cts.Token);
 
-            this.processingTask = Task.Run(() => this.ProcessEventsAsync(linkedCts.Token), linkedCts.Token);
+            this.processingTask = AuditSourceExecutor.RunDetached(() => this.ProcessEventsAsync(linkedCts.Token), linkedCts.Token);
         }
 
         return Task.CompletedTask;
@@ -333,6 +338,7 @@ public abstract class LocationHandlerBase : ILocationHandler, IDisposable
             {
                 processor.IsEnabled = true;
                 processorConfig.Configure?.Invoke(processor);
+                if (this.executionBehaviors.Length > 0) processor = new AuditExecutionDecorator(processor, this, processorConfig);
                 foreach (var behaviorType in options.LocationProcessorBehaviors.Concat(processorConfig.BehaviorTypes))
                 {
                     if (Factory.Create(behaviorType, this.serviceProvider) is IProcessorBehavior behavior)
@@ -357,36 +363,129 @@ public abstract class LocationHandlerBase : ILocationHandler, IDisposable
     {
         while (!cancellationToken.IsCancellationRequested && !this.eventQueue.IsCompleted)
         {
-            if (this.isPaused || !this.eventQueue.TryTake(out var fileEvent, 100, cancellationToken))
-            {
-                continue;
-            }
-
+            if (this.isPaused || !this.eventQueue.TryTake(out var fileEvent, 100, cancellationToken)) continue;
             await this.rateLimiter.WaitForTokenAsync(cancellationToken);
-            var context = new FileProcessingContext(fileEvent);
-            context.SetItem("StorageProvider", this.provider);
-
-            // Store the event once, before processing
-            await this.store.StoreEventAsync(fileEvent, cancellationToken);
-
-            // Process with all enabled processors
-            foreach (var processor in this.processors.Where(p => p.IsEnabled))
-            {
-                var result = await this.ExecuteProcessorAsync(processor, context, cancellationToken);
-                await this.store.StoreProcessingResultAsync(new FileProcessingResult
-                {
-                    FileEventId = fileEvent.Id,
-                    ProcessorName = processor.ProcessorName,
-                    Success = result.IsSuccess,
-                    Message = result.IsSuccess ? "Processed successfully" : result.Errors.FirstOrDefault()?.Message
-                }, cancellationToken);
-            }
-
-            if (!this.processors.Any(p => p.IsEnabled))
-            {
-                this.logger.LogDebug($"{{LogKey}} filemonitoring: No enabled processors for event: {fileEvent.FilePath} in location: {this.options.LocationName}", Constants.LogKey);
-            }
+            await AuditSourceExecutor.RunIsolatedAsync(this.serviceProvider.GetRequiredService<IServiceScopeFactory>(), "FileMonitoring", fileEvent.Id.ToString("D"),
+                AuditHandoffMetadata.Read(fileEvent.Properties), null, () => this.ProcessEventAsync(fileEvent, cancellationToken)).ConfigureAwait(false);
         }
+    }
+
+    private async Task<Result> ProcessEventAsync(FileEvent fileEvent, CancellationToken cancellationToken)
+    {
+        var operation = new FileProcessingExecutionContext
+        {
+            Operation = "Event", LocationName = this.options.LocationName, EventId = fileEvent.Id.ToString("D"),
+            ScanId = fileEvent.ScanId == Guid.Empty ? null : fileEvent.ScanId.ToString("D"), EventKind = fileEvent.EventType.ToString(), Selection = this.options.AuditOptions
+        };
+        var previous = this.currentAuditEvent.Value;
+        this.currentAuditEvent.Value = operation;
+        try
+        {
+            return await this.RunExecutionAsync(operation, async () =>
+            {
+                var context = new FileProcessingContext(fileEvent);
+                context.SetItem("StorageProvider", this.provider);
+                await this.store.StoreEventAsync(fileEvent, cancellationToken);
+                foreach (var processor in this.processors.Where(item => item.IsEnabled))
+                {
+                    var result = await this.ExecuteProcessorAsync(processor, context, cancellationToken);
+                    operation.Failed |= result.IsFailure;
+                    await this.store.StoreProcessingResultAsync(new FileProcessingResult
+                    {
+                        FileEventId = fileEvent.Id, ProcessorName = processor.ProcessorName, Success = result.IsSuccess,
+                        Message = result.IsSuccess ? "Processed successfully" : result.Errors.FirstOrDefault()?.Message
+                    }, cancellationToken);
+                }
+
+                if (!this.processors.Any(item => item.IsEnabled)) this.logger.LogDebug("[{LogKey}] filemonitoring: no enabled processors (location={Location})", Constants.LogKey, this.options.LocationName);
+                return Result.Success();
+            }).ConfigureAwait(false);
+        }
+        finally { this.currentAuditEvent.Value = previous; }
+    }
+
+    private Task<TResult> RunExecutionAsync<TResult>(FileProcessingExecutionContext operation, Func<Task<TResult>> next)
+    {
+        var behaviors = operation.Operation == "Processor"
+            ? this.executionBehaviors.OrderBy(behavior => behavior is AuditingFileProcessingBehavior ? 1 : 0)
+            : this.executionBehaviors.OrderBy(behavior => behavior is AuditingFileProcessingBehavior ? 0 : 1);
+        foreach (var behavior in behaviors.Reverse())
+        {
+            var inner = next;
+            next = () => behavior.ExecuteAsync(operation, inner);
+        }
+
+        return next();
+    }
+
+    /// <summary>Wraps one explicitly requested scan. Routine and automatic scans invoke no audit boundary.</summary>
+    /// <example><code>return this.RunScanAsync(options, context, () => ScanCoreAsync(context, options, cancellationToken));</code></example>
+    protected Task<FileScanContext> RunScanAsync(FileScanOptions options, FileScanContext scan, Func<Task<FileScanContext>> next)
+    {
+        if (options?.CaptureAudit != true) return next();
+        var operation = new FileProcessingExecutionContext { Operation = "Scan", LocationName = this.options.LocationName, ScanId = scan.ScanId.ToString("D"), Selection = this.options.AuditOptions, ExplicitScan = true };
+        return this.RunExecutionAsync(operation, async () =>
+        {
+            var previous = this.currentAuditScan.Value;
+            this.currentAuditScan.Value = operation.CaptureAdmitted ? scan.ScanId : Guid.Empty;
+            try { return await next().ConfigureAwait(false); }
+            finally { this.currentAuditScan.Value = previous; }
+        });
+    }
+
+    /// <summary>Queues the original event and copies a protected cause only from an admitted explicit scan.</summary>
+    /// <example><code>this.EnqueueFileEvent(fileEvent, cancellationToken);</code></example>
+    protected void EnqueueFileEvent(FileEvent fileEvent, CancellationToken cancellationToken = default)
+    {
+        if (fileEvent.ScanId != Guid.Empty && this.currentAuditScan.Value == fileEvent.ScanId)
+        {
+            var token = AuditHandoffMetadata.Capture(this.serviceProvider.GetRequiredService<IServiceScopeFactory>(), "FileMonitoring", fileEvent.Id.ToString("D"));
+            if (token is not null) (fileEvent.Properties ??= new Dictionary<string, object>())[AuditHandoffMetadata.PropertyName] = token;
+        }
+
+        this.eventQueue.Add(fileEvent, cancellationToken);
+    }
+
+    private async Task ExecuteActualProcessorAsync(IFileEventProcessor processor, ProcessorConfiguration configuration, FileProcessingContext context, CancellationToken cancellationToken)
+    {
+        var parent = this.currentAuditEvent.Value;
+        var operation = new FileProcessingExecutionContext
+        {
+            Operation = "Processor", LocationName = this.options.LocationName, EventId = parent?.EventId, ScanId = parent?.ScanId, EventKind = parent?.EventKind,
+            ProcessorType = configuration.ProcessorType, SelectProcessor = configuration.CaptureAudit, Selection = this.options.AuditOptions
+        };
+        try
+        {
+            var result = await this.RunExecutionAsync(operation, async () =>
+            {
+                await processor.ProcessAsync(context, cancellationToken).ConfigureAwait(false);
+                return Result.Success();
+            }).ConfigureAwait(false);
+            if (result.IsFailure && parent is not null) parent.Failed = true;
+        }
+        catch (Exception error)
+        {
+            this.ObserveProcessorFailure(error);
+            throw;
+        }
+    }
+
+    private void ObserveProcessorFailure(Exception error)
+    {
+        if (this.currentAuditEvent.Value is not { } parent) return;
+        parent.Failed = true;
+        parent.Canceled |= error is OperationCanceledException canceled && canceled.CancellationToken.IsCancellationRequested;
+    }
+
+    private sealed class AuditExecutionDecorator(IFileEventProcessor inner, LocationHandlerBase handler, ProcessorConfiguration configuration) : IFileEventProcessor
+    {
+        public string ProcessorName => inner.ProcessorName;
+
+        public bool IsEnabled { get => inner.IsEnabled; set => inner.IsEnabled = value; }
+
+        public IEnumerable<IProcessorBehavior> Behaviors => inner.Behaviors;
+
+        public Task ProcessAsync(FileProcessingContext context, CancellationToken token) => handler.ExecuteActualProcessorAsync(inner, configuration, context, token);
     }
 
     /// <summary>
@@ -428,6 +527,7 @@ public abstract class LocationHandlerBase : ILocationHandler, IDisposable
         }
         catch (Exception ex)
         {
+            this.ObserveProcessorFailure(ex);
             this.loggerTyped.LogErrorProcessingFailed(this.options.LocationName, processor.ProcessorName, ex.Message);
             return Result.Failure().WithError(new ExceptionError(ex));
         }

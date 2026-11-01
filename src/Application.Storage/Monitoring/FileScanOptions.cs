@@ -13,6 +13,10 @@ using System.Collections.Generic;
 /// </summary>
 public class FileScanOptions
 {
+    /// <summary>Explicitly requests capture for this scan when the source builder also allows scan auditing.</summary>
+    /// <example><code>await monitoring.ScanLocationAsync("inbox", new FileScanOptions { CaptureAudit = true });</code></example>
+    public bool CaptureAudit { get; set; }
+
     /// <summary>
     /// Gets or sets a value indicating whether to wait for processing completion.
     /// </summary>

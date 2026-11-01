@@ -16,6 +16,18 @@ using System.Threading.Tasks;
 /// <param name="name">The logical name of the location. This value is exposed via <see cref="LocationName"/>.</param>
 public class LocationOptions(string name)
 {
+    /// <summary>Gets local audit selection, or null to use the explicit global selection.</summary>
+    /// <example><code>var selection = location.AuditOptions;</code></example>
+    public FileMonitoringAuditOptions AuditOptions { get; private set; }
+
+    /// <summary>Selects this location's audit boundaries without enabling capture for other locations.</summary>
+    /// <example><code>location.WithAuditing(new() { Scans = true });</code></example>
+    public LocationOptions WithAuditing(FileMonitoringAuditOptions options = null)
+    {
+        this.AuditOptions = options ?? new();
+        return this;
+    }
+
     /// <summary>
     /// The logical name of the configured location.
     /// </summary>
@@ -96,6 +108,18 @@ public class LocationOptions(string name)
 /// </summary>
 public class ProcessorConfiguration
 {
+    /// <summary>Gets an explicit processor audit override, or null to use location/global selection.</summary>
+    /// <example><code>var selected = processor.CaptureAudit;</code></example>
+    public bool? CaptureAudit { get; private set; }
+
+    /// <summary>Selects or omits this processor's actual invocation evidence.</summary>
+    /// <example><code>location.UseProcessor&lt;CustomerImportProcessor&gt;().WithAuditing(false);</code></example>
+    public ProcessorConfiguration WithAuditing(bool enabled = true)
+    {
+        this.CaptureAudit = enabled;
+        return this;
+    }
+
     /// <summary>
     /// The concrete processor type to instantiate. Must implement <c>IFileEventProcessor</c>.
     /// </summary>

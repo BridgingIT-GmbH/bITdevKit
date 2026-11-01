@@ -65,7 +65,12 @@ public static class HttpContextExtensions
     ///       return Results.Ok(filterModel);
     ///   });
     /// </summary>
-    public static async Task<FilterModel> FromBodyFilterAsync(this HttpContext context, bool enableBuffering = false)
+    public static Task<FilterModel> FromBodyFilterAsync(this HttpContext context, bool enableBuffering = false)
+        => FromBodyFilterAsync(context, enableBuffering, null);
+
+    /// <summary>Reads a direct FilterModel with caller-selected JSON converters and the standard buffering behavior.</summary>
+    /// <example><code>var filter = await http.FromBodyFilterAsync(true, approvedFilterOptions);</code></example>
+    public static async Task<FilterModel> FromBodyFilterAsync(this HttpContext context, bool enableBuffering, JsonSerializerOptions jsonOptions)
     {
         if (context == null)
         {
@@ -93,7 +98,7 @@ public static class HttpContextExtensions
                 return null;
             }
 
-            return Serializer.Deserialize<FilterModel>(body);
+            return jsonOptions is null ? Serializer.Deserialize<FilterModel>(body) : JsonSerializer.Deserialize<FilterModel>(body, jsonOptions);
         }
         catch (JsonException ex)
         {

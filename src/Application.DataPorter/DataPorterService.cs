@@ -25,14 +25,52 @@ public sealed class DataPorterService(
     IEnumerable<IDataPorterProvider> providers,
     ConfigurationMerger configurationMerger,
     IRowInterceptorsProvider rowInterceptorsProvider = null,
-    ILoggerFactory loggerFactory = null) : IDataExporter, IDataImporter
+    ILoggerFactory loggerFactory = null,
+    IEnumerable<IDataPorterOperationBehavior> operationBehaviors = null) : IDataExporter, IDataImporter
 {
     private readonly IEnumerable<IDataPorterProvider> providers = providers ?? [];
     private readonly IRowInterceptorsProvider rowInterceptorsProvider = rowInterceptorsProvider ?? NullRowInterceptorsProvider.Instance;
     private readonly ILogger<DataPorterService> logger = loggerFactory?.CreateLogger<DataPorterService>() ?? NullLogger<DataPorterService>.Instance;
 
+    private readonly IDataPorterOperationBehavior[] operationBehaviors = AuditSourceExecutor.DistinctAuditing<IDataPorterOperationBehavior, AuditingDataPorterOperationBehavior>(operationBehaviors).ToArray();
+
+    private Task<TResult> ExecuteOperationAsync<TResult>(DataPorterOperationContext operation, Func<DataPorterOperationContext, Task<TResult>> execute) where TResult : IResult
+    {
+        Func<Task<TResult>> next = () => execute(operation);
+        foreach (var behavior in this.operationBehaviors.OrderBy(behavior => behavior is AuditingDataPorterOperationBehavior ? 0 : 1).Reverse())
+        {
+            var inner = next;
+            next = () => behavior.ExecuteAsync(operation, inner);
+        }
+
+        return next();
+    }
+
+    private IAsyncEnumerable<Result<T>> ExecuteStreamOperation<T>(DataPorterOperationContext operation, Func<IAsyncEnumerable<Result<T>>> execute, CancellationToken cancellationToken) where T : class, new()
+    {
+        var next = execute;
+        foreach (var behavior in this.operationBehaviors.OrderBy(behavior => behavior is AuditingDataPorterOperationBehavior ? 0 : 1).Reverse())
+        {
+            var inner = next;
+            next = () => behavior.ExecuteStreamAsync(operation, inner, cancellationToken);
+        }
+
+        return next();
+    }
+
     /// <inheritdoc/>
-    public async Task<Result<ExportResult>> ExportAsync<TSource>(
+    public Task<Result<ExportResult>> ExportAsync<TSource>(
+        IEnumerable<TSource> data,
+        Stream outputStream,
+        ExportOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        return this.ExecuteOperationAsync(new DataPorterOperationContext { Operation = "Export", DataType = typeof(TSource), Format = options?.Format ?? Format.Excel },
+            operation => this.ExportCoreAsync<TSource>(operation, data, outputStream, options, cancellationToken));
+    }
+
+    private async Task<Result<ExportResult>> ExportCoreAsync<TSource>(DataPorterOperationContext operation,
         IEnumerable<TSource> data,
         Stream outputStream,
         ExportOptions options = null,
@@ -87,12 +125,17 @@ public sealed class DataPorterService(
             ExportResult result;
             await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configuration.Compression, provider))
             {
+                operation.ProcessingStarted = true;
                 result = await exportProvider.ExportAsync(
                     data,
                     compressedOutputStream ?? artifactStream,
                     configuration,
                     cancellationToken);
             }
+
+            operation.TotalRows = result.TotalRows;
+            operation.SkippedRows = result.SkippedRows;
+            operation.SuccessfulRows = result.TotalRows;
 
             stopwatch.Stop();
             result = result with { BytesWritten = artifactStream.BytesWritten };
@@ -104,6 +147,7 @@ public sealed class DataPorterService(
         }
         catch (OperationCanceledException)
         {
+            operation.Canceled = true;
             this.logger.LogWarning("[{LogKey}] export canceled (type={Type}, format={Format})", Constants.LogKeyExport, typeof(TSource).Name, options.Format);
             return Result<ExportResult>.Failure()
                 .WithError(new DataPorterError("Export operation was cancelled."));
@@ -134,7 +178,18 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
-    public async Task<Result<ExportResult>> ExportAsync<TSource>(
+    public Task<Result<ExportResult>> ExportAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        Stream outputStream,
+        ExportOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        return this.ExecuteOperationAsync(new DataPorterOperationContext { Operation = "Export", DataType = typeof(TSource), Format = options?.Format ?? Format.Excel },
+            operation => this.ExportCoreAsync<TSource>(operation, data, outputStream, options, cancellationToken));
+    }
+
+    private async Task<Result<ExportResult>> ExportCoreAsync<TSource>(DataPorterOperationContext operation,
         IAsyncEnumerable<TSource> data,
         Stream outputStream,
         ExportOptions options = null,
@@ -190,12 +245,17 @@ public sealed class DataPorterService(
             ExportResult result;
             await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configuration.Compression, provider))
             {
+                operation.ProcessingStarted = true;
                 result = await exportProvider.ExportAsync(
                     data,
                     compressedOutputStream ?? artifactStream,
                     configuration,
                     cancellationToken);
             }
+
+            operation.TotalRows = result.TotalRows;
+            operation.SkippedRows = result.SkippedRows;
+            operation.SuccessfulRows = result.TotalRows;
 
             stopwatch.Stop();
             result = result with { BytesWritten = artifactStream.BytesWritten };
@@ -207,6 +267,7 @@ public sealed class DataPorterService(
         }
         catch (OperationCanceledException)
         {
+            operation.Canceled = true;
             this.logger.LogWarning("[{LogKey}] export canceled (type={Type}, format={Format})", Constants.LogKeyExport, typeof(TSource).Name, options.Format);
             return Result<ExportResult>.Failure()
                 .WithError(new DataPorterError("Export operation was cancelled."));
@@ -389,12 +450,22 @@ public sealed class DataPorterService(
     // }
 
     /// <inheritdoc/>
-    public async Task<Result<ExportResult>> ExportAsync(
+    public Task<Result<ExportResult>> ExportAsync(
         IEnumerable<ExportDataSet> dataSets,
         Stream outputStream,
         ExportOptions options = null,
         CancellationToken cancellationToken = default)
     {
+        return this.ExecuteOperationAsync(new DataPorterOperationContext { Operation = "Export", DataType = null, Format = options?.Format ?? Format.Excel },
+            operation => this.ExportCoreAsync(operation, dataSets, outputStream, options, cancellationToken));
+    }
+
+    private async Task<Result<ExportResult>> ExportCoreAsync(DataPorterOperationContext operation,
+        IEnumerable<ExportDataSet> dataSets,
+        Stream outputStream,
+        ExportOptions options = null,
+        CancellationToken cancellationToken = default)
+        {
         options ??= new ExportOptions();
 
         if (dataSets is null)
@@ -449,11 +520,16 @@ public sealed class DataPorterService(
             ExportResult result;
             await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configurations[0].Configuration.Compression, provider))
             {
+                operation.ProcessingStarted = true;
                 result = await exportProvider.ExportAsync(
                     configurations,
                     compressedOutputStream ?? artifactStream,
                     cancellationToken);
             }
+
+            operation.TotalRows = result.TotalRows;
+            operation.SkippedRows = result.SkippedRows;
+            operation.SuccessfulRows = result.TotalRows;
 
             stopwatch.Stop();
             result = result with { BytesWritten = artifactStream.BytesWritten };
@@ -464,6 +540,7 @@ public sealed class DataPorterService(
         }
         catch (OperationCanceledException)
         {
+            operation.Canceled = true;
             this.logger.LogWarning("[{LogKey}] multi dataset export canceled (format={Format}, provider={Provider}, dataSetCount={DataSetCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations?.Count ?? 0, stopwatch.Elapsed.TotalMilliseconds);
             return Result<ExportResult>.Failure()
                 .WithError(new DataPorterError("Export operation was cancelled."));
@@ -494,12 +571,22 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
-    public async Task<Result<ExportResult>> ExportAsync(
+    public Task<Result<ExportResult>> ExportAsync(
         IEnumerable<AsyncExportDataSet> dataSets,
         Stream outputStream,
         ExportOptions options = null,
         CancellationToken cancellationToken = default)
     {
+        return this.ExecuteOperationAsync(new DataPorterOperationContext { Operation = "Export", DataType = null, Format = options?.Format ?? Format.Excel },
+            operation => this.ExportCoreAsync(operation, dataSets, outputStream, options, cancellationToken));
+    }
+
+    private async Task<Result<ExportResult>> ExportCoreAsync(DataPorterOperationContext operation,
+        IEnumerable<AsyncExportDataSet> dataSets,
+        Stream outputStream,
+        ExportOptions options = null,
+        CancellationToken cancellationToken = default)
+        {
         options ??= new ExportOptions();
 
         if (dataSets is null)
@@ -554,11 +641,16 @@ public sealed class DataPorterService(
             ExportResult result;
             await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configurations[0].Configuration.Compression, provider))
             {
+                operation.ProcessingStarted = true;
                 result = await exportProvider.ExportAsync(
                     configurations,
                     compressedOutputStream ?? artifactStream,
                     cancellationToken);
             }
+
+            operation.TotalRows = result.TotalRows;
+            operation.SkippedRows = result.SkippedRows;
+            operation.SuccessfulRows = result.TotalRows;
 
             stopwatch.Stop();
             result = result with { BytesWritten = artifactStream.BytesWritten };
@@ -569,6 +661,7 @@ public sealed class DataPorterService(
         }
         catch (OperationCanceledException)
         {
+            operation.Canceled = true;
             this.logger.LogWarning("[{LogKey}] multi dataset export canceled (format={Format}, provider={Provider}, dataSetCount={DataSetCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations?.Count ?? 0, stopwatch.Elapsed.TotalMilliseconds);
             return Result<ExportResult>.Failure()
                 .WithError(new DataPorterError("Export operation was cancelled."));
@@ -599,7 +692,17 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
-    public async Task<Result<ExportResult>> GenerateTemplateAsync<TTarget>(
+    public Task<Result<ExportResult>> GenerateTemplateAsync<TTarget>(
+        Stream outputStream,
+        TemplateOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        return this.ExecuteOperationAsync(new DataPorterOperationContext { Operation = "Template", DataType = typeof(TTarget), Format = options?.Format ?? Format.Excel },
+            operation => this.GenerateTemplateCoreAsync<TTarget>(operation, outputStream, options, cancellationToken));
+    }
+
+    private async Task<Result<ExportResult>> GenerateTemplateCoreAsync<TTarget>(DataPorterOperationContext operation,
         Stream outputStream,
         TemplateOptions options = null,
         CancellationToken cancellationToken = default)
@@ -645,11 +748,16 @@ public sealed class DataPorterService(
             ExportResult result;
             await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configuration.Compression, provider))
             {
+                operation.ProcessingStarted = true;
                 result = await templateProvider.GenerateTemplateAsync<TTarget>(
                     compressedOutputStream ?? artifactStream,
                     configuration,
                     cancellationToken);
             }
+
+            operation.TotalRows = result.TotalRows;
+            operation.SkippedRows = result.SkippedRows;
+            operation.SuccessfulRows = result.TotalRows;
 
             stopwatch.Stop();
             var properties = result.Properties?.Clone() ?? [];
@@ -666,6 +774,7 @@ public sealed class DataPorterService(
         }
         catch (OperationCanceledException)
         {
+            operation.Canceled = true;
             this.logger.LogWarning("[{LogKey}] template generation canceled (type={Type}, format={Format})", Constants.LogKeyExport, typeof(TTarget).Name, options.Format);
             return Result<ExportResult>.Failure()
                 .WithError(new DataPorterError("Template generation operation was cancelled."));
@@ -717,7 +826,17 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
-    public async Task<Result<ImportResult<TTarget>>> ImportAsync<TTarget>(
+    public Task<Result<ImportResult<TTarget>>> ImportAsync<TTarget>(
+        Stream inputStream,
+        ImportOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        return this.ExecuteOperationAsync(new DataPorterOperationContext { Operation = "Import", DataType = typeof(TTarget), Format = options?.Format ?? Format.Excel },
+            operation => this.ImportCoreAsync<TTarget>(operation, inputStream, options, cancellationToken));
+    }
+
+    private async Task<Result<ImportResult<TTarget>>> ImportCoreAsync<TTarget>(DataPorterOperationContext operation,
         Stream inputStream,
         ImportOptions options = null,
         CancellationToken cancellationToken = default)
@@ -764,8 +883,15 @@ public sealed class DataPorterService(
             ImportResult<TTarget> result;
             await using (var decompressedInputStream = this.OpenCompressionReadStream(inputStream, configuration.Compression, options.Format))
             {
+                operation.ProcessingStarted = true;
                 result = await importProvider.ImportAsync<TTarget>(decompressedInputStream ?? inputStream, configuration, cancellationToken);
             }
+
+            operation.TotalRows = result.TotalRows;
+            operation.SkippedRows = result.SkippedRows;
+            operation.SuccessfulRows = result.SuccessfulRows;
+            operation.FailedRows = result.FailedRows;
+            operation.HasErrors = result.HasErrors;
 
             stopwatch.Stop();
 
@@ -776,6 +902,7 @@ public sealed class DataPorterService(
         }
         catch (OperationCanceledException)
         {
+            operation.Canceled = true;
             this.logger.LogWarning("[{LogKey}] import canceled (type={Type}, format={Format})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format);
             return Result<ImportResult<TTarget>>.Failure()
                 .WithError(new DataPorterError("Import operation was cancelled."));
@@ -813,8 +940,8 @@ public sealed class DataPorterService(
     {
         if (data is null || data.Length == 0)
         {
-            return Result<ImportResult<TTarget>>.Failure()
-                .WithError(new DataPorterError("Data cannot be null or empty."));
+            return await this.ExecuteOperationAsync(new DataPorterOperationContext { Operation = "Import", DataType = typeof(TTarget), Format = options?.Format ?? Format.Excel },
+                _ => Task.FromResult(Result<ImportResult<TTarget>>.Failure().WithError(new DataPorterError("Data cannot be null or empty.")))).ConfigureAwait(false);
         }
 
         await using var stream = new MemoryStream(data);
@@ -833,6 +960,19 @@ public sealed class DataPorterService(
 
     /// <inheritdoc/>
     public async IAsyncEnumerable<Result<TTarget>> ImportAsyncEnumerable<TTarget>(
+        Stream inputStream,
+        ImportOptions options = null,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        var operation = new DataPorterOperationContext { Operation = "ImportStream", DataType = typeof(TTarget), Format = options?.Format ?? Format.Excel };
+        await foreach (var item in this.ExecuteStreamOperation(operation, () => this.ImportStreamCoreAsync<TTarget>(operation, inputStream, options, cancellationToken), cancellationToken).WithCancellation(cancellationToken).ConfigureAwait(false))
+        {
+            yield return item;
+        }
+    }
+
+    private async IAsyncEnumerable<Result<TTarget>> ImportStreamCoreAsync<TTarget>(DataPorterOperationContext operation,
         Stream inputStream,
         ImportOptions options = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -880,6 +1020,7 @@ public sealed class DataPorterService(
         this.logger.LogDebug("[{LogKey}] streaming import started (type={Type}, format={Format}, provider={Provider})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name);
         configuration.ProgressTracker?.ReportStart();
         await using var decompressedInputStream = this.OpenCompressionReadStream(inputStream, configuration.Compression, options.Format);
+        operation.ProcessingStarted = true;
         await using var enumerator = importProvider.ImportStreamAsync<TTarget>(decompressedInputStream ?? inputStream, configuration, cancellationToken).GetAsyncEnumerator(cancellationToken);
         while (true)
         {
@@ -896,6 +1037,7 @@ public sealed class DataPorterService(
             }
             catch (OperationCanceledException)
             {
+                operation.Canceled = true;
                 this.logger.LogWarning("[{LogKey}] streaming import canceled (type={Type}, format={Format}, provider={Provider}, resultCount={ResultCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name, resultCount, stopwatch.Elapsed.TotalMilliseconds);
                 throw;
             }
@@ -906,13 +1048,16 @@ public sealed class DataPorterService(
             }
 
             resultCount++;
+            operation.TotalRows = resultCount;
             if (item.IsSuccess)
             {
                 successfulRows++;
+                operation.SuccessfulRows = successfulRows;
             }
             else
             {
                 failedRows++;
+                operation.FailedRows = failedRows;
             }
 
             yield return item;

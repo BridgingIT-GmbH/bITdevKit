@@ -7,13 +7,13 @@ Our goal is to empower developers by offering modular components that can be eas
 your projects. Whether you're working with repositories, commands, queries, or other components, the
 bITDevKit provides flexible solutions that can adapt to your specific needs.
 
-This repository includes the complete source code for the bITDevKit, along with a variety of sample
-applications located in the ./examples folder within the solution. These samples serve as practical
-demonstrations of how to leverage the capabilities of the bITDevKit in real-world scenarios. All
-components are available
-as [nuget packages](https://www.nuget.org/packages?q=bitDevKit&packagetype=&prerel=true&sortby=relevance).
+Components are available as [NuGet packages](https://www.nuget.org/packages?q=bitDevKit&packagetype=&prerel=true&sortby=relevance).
 
 For the latest updates and release notes, please refer to
 the [CHANGELOG](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/CHANGELOG.md).
 
 Join us in advancing the world of software development with the bITDevKit!
+
+## NDJSON over HttpClient
+
+The reusable .NET NDJSON helpers live in `Common.Utilities`: `GetNdjsonAsync<T>` and `OpenNdjsonAsync<T>` open one owned response using `ResponseHeadersRead`. Consume it with `ReadAsync`, `ReadRecordsAsync`, `ReadEnvelopesAsync`, or `ReadDataAsync`, and `await using` the response. Keep the existing authenticated client; generated Kiota JSON clients do not parse NDJSON. For a fictional inventory dashboard, consume `/api/inventory/stream/enveloped` with the existing authenticated client and keep a bounded history of stock records. See the [Presentation Streaming guide](../../docs/features-presentation-streaming.md).

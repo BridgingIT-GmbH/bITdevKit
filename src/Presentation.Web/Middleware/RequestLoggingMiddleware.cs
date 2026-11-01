@@ -110,19 +110,7 @@ public class RequestLoggingMiddleware
         return (stop - start) * 1000 / (double)Stopwatch.Frequency;
     }
 
-    private static string GetPath(HttpContext httpContext, bool includeQuery = false)
-    {
-        var path = includeQuery
-            ? httpContext.Features.Get<IHttpRequestFeature>()?.RawTarget
-            : httpContext.Features.Get<IHttpRequestFeature>()?.Path;
-
-        if (string.IsNullOrEmpty(path))
-        {
-            path = httpContext.Request.Path.ToString();
-        }
-
-        return path;
-    }
+    private static string GetPath(HttpContext httpContext, bool includeQuery = false) => RequestPathDefaults.GetPath(httpContext, includeQuery);
 
     private void LogStarted(HttpContext httpContext, DiagnosticContextCollector collector)
     {

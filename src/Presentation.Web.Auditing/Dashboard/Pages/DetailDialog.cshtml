@@ -1,0 +1,75 @@
+@inherits RazorSlice
+<div class="modal fade" id="audit-detail-modal" tabindex="-1" aria-labelledby="audit-detail-title" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable"><div class="modal-content">
+        <div class="modal-header"><h2 id="audit-detail-title" class="modal-title h5">Execution details</h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close execution details"></button></div>
+        <div id="audit-detail-content" class="modal-body" aria-busy="false"></div>
+        <div class="modal-footer">
+            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-dismiss="modal">Close</button>
+        </div>
+    </div></div>
+</div>
+<script>
+(() => {
+    const modal = document.getElementById('audit-detail-modal');
+    const body = document.getElementById('audit-detail-content');
+    const view = modal.closest('.audit-view');
+    let controller = null;
+    let trigger = null;
+    function clear() {
+        body.replaceChildren();
+        body.setAttribute('aria-busy', 'false');
+    }
+    function focusDialog() {
+        if (!modal.contains(document.activeElement)) modal.focus({ preventScroll: true });
+    }
+    async function open(link) {
+        controller?.abort();
+        const request = new AbortController();
+        controller = request;
+        trigger ??= link;
+        clear();
+        const loading = document.createElement('p');
+        loading.className = 'small text-muted';
+        loading.setAttribute('role', 'status');
+        loading.textContent = 'Loading execution details...';
+        body.append(loading);
+        body.setAttribute('aria-busy', 'true');
+        window.bootstrap.Modal.getOrCreateInstance(modal).show(link);
+        focusDialog();
+        try {
+            const response = await fetch(link.dataset.auditDetailUrl, { signal: request.signal, cache: 'no-store' });
+            if (!response.ok || response.redirected || !(response.headers.get('content-type') || '').includes('text/html')) throw new Error('Unexpected response');
+            const html = await response.text();
+            if (request.signal.aborted || controller !== request) return;
+            const fragment = new DOMParser().parseFromString(html, 'text/html').querySelector('[data-audit-detail-fragment]');
+            if (!fragment) throw new Error('Missing execution details');
+            body.replaceChildren(fragment);
+            body.scrollTop = 0;
+            body.setAttribute('aria-busy', 'false');
+            focusDialog();
+        } catch {
+            if (request.signal.aborted || controller !== request) return;
+            clear();
+            const notice = document.createElement('div');
+            notice.className = 'alert alert-warning';
+            notice.setAttribute('role', 'alert');
+            notice.textContent = 'Execution details could not be loaded. Close this dialog and try again.';
+            body.append(notice);
+            focusDialog();
+        }
+    }
+    view.addEventListener('click', event => {
+        const link = event.target.closest('a[data-audit-detail-url]');
+        if (!link || event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || !window.bootstrap?.Modal) return;
+        event.preventDefault();
+        open(link);
+    });
+    modal.addEventListener('hide.bs.modal', () => controller?.abort());
+    modal.addEventListener('hidden.bs.modal', () => {
+        controller = null;
+        clear();
+        if (trigger?.isConnected) trigger.focus();
+        trigger = null;
+    });
+})();
+</script>

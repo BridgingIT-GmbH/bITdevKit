@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
 using Microsoft.Data.SqlClient;
 using Testcontainers.MsSql;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 /// <summary>
 /// Custom WebApplicationFactory for WeatherFiesta integration tests.
@@ -101,6 +102,7 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
         ActiveEntityConfigurator.SetGlobalServiceProvider(this.Services);
         var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         await dbContext.Database.EnsureCreatedAsync();
+        this.Services.GetService<IDatabaseReadyService>()?.SetReady(nameof(CoreDbContext));
         await TestData.SeedAsync(dbContext);
         this.seeded = true;
     }
@@ -192,12 +194,26 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
             // Register IDbContextResolver (needed by DatabaseTransactionPipelineBehavior).
             // AddSqlServerDbContext normally registers this, but we removed SqlServer.
             services.AddScoped<IDbContextResolver, DbContextResolver>();
+            // These test hosts omit background workers; use confirmed inline delivery.
+            services.Replace(ServiceDescriptor.Singleton<BridgingIT.DevKit.Application.Auditing.IAuditingStorageProvider>(provider =>
+                new BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.EntityFrameworkAuditStorageProvider<CoreDbContext>(
+                    provider.GetRequiredService<IServiceScopeFactory>(),
+                    provider.GetRequiredService<BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditEntityFrameworkOptions>() with { Buffered = false },
+                    provider.GetRequiredService<BridgingIT.DevKit.Application.Auditing.AuditingOptions>(),
+                    provider.GetRequiredService<BridgingIT.DevKit.Application.Auditing.AuditFieldCatalog>(),
+                    provider.GetRequiredService<BridgingIT.DevKit.Application.Auditing.AuditIntegrityReadPolicy>(),
+                    provider.GetRequiredService<BridgingIT.DevKit.Application.Auditing.AuditRetentionOptions>(),
+                    provider.GetRequiredService<TimeProvider>())));
 
             if (!string.IsNullOrWhiteSpace(this.sqlServerConnectionString))
             {
                 RemoveActiveEntityRegistrations(services);
                 services.AddActiveEntities();
             }
+
+            services.AddDashboard(options => options.Enabled()
+                .Authorize(authorization => authorization.UseExistingScheme("TestScheme").RequireRole(Role.Administrators))
+                .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Auditing.Dashboard.DashboardEndpoints>());
 
             // Mock external HTTP services only
             ReplaceService(services, this.WeatherAgent);

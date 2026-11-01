@@ -33,4 +33,13 @@ public class MessagingBuilderContext(
     /// Gets the options.
     /// </summary>
     public MessagingOptions Options { get; } = options;
+
+    /// <summary>Safe declared source selection metadata, without resolving handlers or executing callbacks.</summary>
+    /// <example><code>var registrations = context.AuditRegistrations.Registrations;</code></example>
+    public AuditBoundaryRegistrationCatalog AuditRegistrations { get; } = DeclareAuditing(services);
+
+    private static AuditBoundaryRegistrationCatalog DeclareAuditing(IServiceCollection services)
+    {
+        return AuditBoundaryRegistrationCatalog.GetOrAdd(services, "Messaging", "Producer", "Consumer");
+    }
 }

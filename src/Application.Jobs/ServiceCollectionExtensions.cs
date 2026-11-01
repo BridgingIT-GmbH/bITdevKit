@@ -61,6 +61,8 @@ public static class ServiceCollectionExtensions
 
         var registrations = EnsureRegistrationStore(services);
         registrations.SetConfiguration(configuration);
+        if (!services.Any(descriptor => descriptor.ServiceType == typeof(IAuditBoundaryRegistrationSource) && ReferenceEquals(descriptor.ImplementationInstance, registrations.AuditRegistrations)))
+            services.AddSingleton<IAuditBoundaryRegistrationSource>(registrations.AuditRegistrations);
         registrations.AddGlobalBehavior(typeof(JobMetricsBehavior));
 
         return new JobBuilderContext(services, registrations)
@@ -134,6 +136,23 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(context);
 
         context.Services.Replace(ServiceDescriptor.Singleton<IJobStoreProvider, InMemoryJobStoreProvider>());
+        return context;
+    }
+
+    /// <summary>Selects an explicit dispatch observer independently of worker execution behaviors.</summary>
+    /// <example><code>jobs.WithDispatchBehavior&lt;AuditingJobDispatchBehavior&gt;();</code></example>
+    public static JobBuilderContext WithDispatchBehavior<TBehavior>(this JobBuilderContext context) where TBehavior : class, IJobDispatchBehavior
+    {
+        context.Registrations.AddDispatchBehavior(typeof(TBehavior));
+        return context;
+    }
+
+    /// <summary>Selects dispatch and actual worker audit boundaries on the scheduler source.</summary>
+    /// <example><code>services.AddJobScheduler().WithAuditing();</code></example>
+    public static JobBuilderContext WithAuditing(this JobBuilderContext context, bool dispatch = true, bool execution = true)
+    {
+        if (dispatch) context.WithDispatchBehavior<AuditingJobDispatchBehavior>();
+        if (execution) context.WithBehavior<AuditingJobBehavior>();
         return context;
     }
 

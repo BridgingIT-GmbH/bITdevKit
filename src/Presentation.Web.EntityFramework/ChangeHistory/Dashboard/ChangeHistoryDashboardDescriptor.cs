@@ -5,11 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard;
 
-using BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory;
 using Microsoft.EntityFrameworkCore;
 
 /// <summary>
-/// Describes one ChangeHistory endpoint registration that can be shown by the dashboard.
+/// Describes one tracked entity/context pair that can be shown by the dashboard.
 /// </summary>
 /// <example>
 /// <code>
@@ -23,15 +22,15 @@ public sealed class ChangeHistoryDashboardDescriptor
     /// </summary>
     /// <param name="entityType">The tracked entity type.</param>
     /// <param name="contextType">The EF Core context type.</param>
-    /// <param name="options">The endpoint options used by the management endpoints.</param>
+    /// <param name="options">The dashboard query options.</param>
     public ChangeHistoryDashboardDescriptor(
         Type entityType,
         Type contextType,
-        ChangeHistoryEndpointsOptions options)
+        ChangeHistoryDashboardOptions options)
     {
         this.EntityType = entityType;
         this.ContextType = contextType;
-        this.Options = options ?? new ChangeHistoryEndpointsOptions();
+        this.Options = options ?? new ChangeHistoryDashboardOptions();
         this.Key = $"{contextType.FullName}:{entityType.FullName}";
     }
 
@@ -51,9 +50,9 @@ public sealed class ChangeHistoryDashboardDescriptor
     public Type ContextType { get; }
 
     /// <summary>
-    /// Gets the endpoint options used by the management endpoints.
+    /// Gets the dashboard query options.
     /// </summary>
-    public ChangeHistoryEndpointsOptions Options { get; }
+    public ChangeHistoryDashboardOptions Options { get; }
 
     /// <summary>
     /// Gets the display name of the tracked entity type.
@@ -64,11 +63,6 @@ public sealed class ChangeHistoryDashboardDescriptor
     /// Gets the display name of the EF Core context type.
     /// </summary>
     public string ContextTypeName => this.ContextType.Name;
-
-    /// <summary>
-    /// Gets the configured management endpoint path.
-    /// </summary>
-    public string ManagementPath => this.Options.GroupPath;
 
     /// <summary>
     /// Gets a value indicating whether the descriptor is usable.

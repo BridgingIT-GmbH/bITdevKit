@@ -30,6 +30,7 @@ public partial class CityCreateCommand
         IMapper mapper,
         IWeatherGeocodingClient geocodingClient,
         ICurrentUserAccessor currentUserAccessor,
+        IAuditContext audit,
         CancellationToken cancellationToken)
     {
         var userId = currentUserAccessor.UserId;
@@ -88,6 +89,10 @@ public partial class CityCreateCommand
 
             city = cityResult.Value;
         }
+
+        // Record the business decision; entity property changes come from ChangeHistory.
+        audit.Current?.AddResource<City>(city.Id);
+        audit.Current?.SetDetail("city.reused", AuditValue.From(existingCities.Any()));
 
         // Step 4: Check if user already has a subscription (including soft-deleted)
         var userCitySpec = new UserCityByUserAndCityIncludingDeletedSpecification(userId, city.Id);

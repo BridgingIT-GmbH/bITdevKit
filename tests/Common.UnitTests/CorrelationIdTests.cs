@@ -10,6 +10,42 @@ using System.Text.Json;
 
 public class CorrelationIdTests
 {
+    [Fact]
+    public void Dispose_OutOfOrder_KeepsInnerScopeAndSkipsRetiredParentOnRestore()
+    {
+        using var cleared = CorrelationId.BeginScope(null);
+        var outer = CorrelationId.BeginScope("outer");
+        var inner = CorrelationId.BeginScope("inner");
+        outer.Dispose();
+        CorrelationId.Current.ShouldBe("inner");
+        inner.Dispose();
+        CorrelationId.Current.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task Dispose_ParentInAnotherFlow_PreservesInheritedSnapshotAfterChildScope()
+    {
+        using var cleared = CorrelationId.BeginScope(null);
+        var outer = CorrelationId.BeginScope("inherited");
+        var ready = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var child = Task.Run(async () =>
+        {
+            using (CorrelationId.BeginScope("child"))
+            {
+                ready.SetResult();
+                await release.Task;
+            }
+
+            CorrelationId.Current.ShouldBe("inherited");
+        });
+        await ready.Task;
+        outer.Dispose();
+        CorrelationId.Current.ShouldBeNull();
+        release.SetResult();
+        await child;
+    }
+
     /// <summary>Checks CLR and serialized strings retain the publisher identifier.</summary>
     [Theory]
     [InlineData(false)]

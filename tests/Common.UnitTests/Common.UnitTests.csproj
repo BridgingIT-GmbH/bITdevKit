@@ -55,6 +55,7 @@
     <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
     <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
     <ProjectReference Include="..\..\src\Domain.CodeGen\Domain.CodeGen.csproj" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\src\Application.Auditing\Application.Auditing.csproj" />
   </ItemGroup>
 
 </Project>

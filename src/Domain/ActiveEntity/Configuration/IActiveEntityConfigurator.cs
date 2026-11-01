@@ -68,6 +68,7 @@ public class ActiveEntityConfigurator<TEntity, TId>(IServiceCollection services,
 {
     private Func<IServiceProvider, IActiveEntityEntityProvider<TEntity, TId>> providerFactory;
     private readonly List<(Type behaviorType, object options)> behaviors = [];
+    private readonly AuditBoundaryRegistrationCatalog auditRegistrations = DeclareAuditBoundaries(services);
     private readonly List<Action<IServiceCollection>> registrations = registrations ?? [];
 
     /// <summary>
@@ -118,6 +119,14 @@ public class ActiveEntityConfigurator<TEntity, TId>(IServiceCollection services,
         return this;
     }
 
+    /// <summary>Selects complete operation auditing for this configured entity without enabling property history.</summary>
+    /// <example><code>configuration.For&lt;Customer, Guid&gt;().UseInMemoryProvider().WithAuditing();</code></example>
+    public ActiveEntityConfigurator<TEntity, TId> WithAuditing(BridgingIT.DevKit.Domain.Repositories.RepositoryAuditOptions options = null)
+    {
+        this.AddBehaviorType(typeof(ActiveEntityAuditingBehavior<TEntity>), options);
+        return this;
+    }
+
     /// <summary>
     /// Adds behavior type.
     /// </summary>
@@ -133,6 +142,12 @@ public class ActiveEntityConfigurator<TEntity, TId>(IServiceCollection services,
             throw new ArgumentException($"Type {behaviorType.Name} does not implement IActiveEntityEntityBehavior<{typeof(TEntity).Name}>.");
         }
 
+        if (behaviorType == typeof(ActiveEntityAuditingBehavior<TEntity>))
+        {
+            if (this.HasBehaviorType(behaviorType)) return this;
+            this.auditRegistrations.Select("Operation", typeAlias: typeof(TEntity).Name);
+        }
+
         this.behaviors.Add((behaviorType, options));
         this.registrations.Add(services => services.AddScoped(typeof(IActiveEntityBehavior<TEntity>), sp =>
             options != null
@@ -140,6 +155,14 @@ public class ActiveEntityConfigurator<TEntity, TId>(IServiceCollection services,
                 : ActivatorUtilities.CreateInstance(sp, behaviorType)));
 
         return this;
+    }
+
+    private static AuditBoundaryRegistrationCatalog DeclareAuditBoundaries(IServiceCollection services)
+    {
+        var catalog = new AuditBoundaryRegistrationCatalog("ActiveEntity", "Operation");
+        catalog.Select("Operation", "omitted", typeof(TEntity).Name);
+        services.AddSingleton<IAuditBoundaryRegistrationSource>(catalog);
+        return catalog;
     }
 
     /// <summary>

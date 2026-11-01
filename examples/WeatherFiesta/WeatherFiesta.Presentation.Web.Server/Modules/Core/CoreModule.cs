@@ -30,6 +30,7 @@ public class CoreModule : WebModuleBase
 
         // Orchestrations
         services.AddOrchestrations()
+            .WithAuditingBehavior()
             .WithOrchestration<WeatherHelloWorldOrchestration>()
             .WithProfilingBehavior()
             .WithBehavior<MetricsOrchestrationBehavior>()
@@ -38,6 +39,7 @@ public class CoreModule : WebModuleBase
 
         // Jobs
         services.AddJobScheduler(configuration)
+            .WithAuditing()
             .StartupDelay(TimeSpan.FromSeconds(30))
             .WorkerPool(pool => pool
                 .MaxConcurrency(16)
@@ -100,13 +102,13 @@ public class CoreModule : WebModuleBase
             .WithDatabaseCreatorService(o => o
                 .Enabled(environment.IsLocalDevelopment())
                 .HaltOnFailure()
-                .DeleteOnStartup(environment.IsLocalDevelopment()))
+                .DeleteOnStartup(environment.IsLocalDevelopment())) // Warning: This will delete the database on startup in local development environment so it can be recreated with fresh schema and seed data
             .WithOutboxDomainEventService(o => o
                 .AutoArchiveAfter(TimeSpan.FromHours(1))
                 .ProcessingModeImmediate()
                 .ProcessingInterval("00:00:30")
                 .StartupDelay("00:00:15"));
-        //.PurgeOnStartup());
+                //.PurgeOnStartup());
 
         services.AddActiveEntities();
 
@@ -118,6 +120,7 @@ public class CoreModule : WebModuleBase
             .RegisterCountry("GB", CreateBusinessCalendar()));
 
         services.AddDataPorter(configuration)
+            .WithAuditing()
             .WithCsv(c =>
             {
                 c.Delimiter = ",";
@@ -130,6 +133,7 @@ public class CoreModule : WebModuleBase
         services.AddStartupTasks(o => o
                 .Enabled()
                 .HaltOnFailure())
+            .WithBehavior<BridgingIT.DevKit.Application.Utilities.AuditingStartupTaskBehavior>()
             .WithTask<CoreSeederTask>(o => o.HaltOnFailure());
 
         // Open-Meteo client

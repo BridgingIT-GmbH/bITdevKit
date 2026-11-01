@@ -61,6 +61,9 @@
     <ProjectReference Include="..\..\src\Application.Queries\Application.Queries.csproj" />
     <ProjectReference Include="..\..\src\Application.Storage.Jobs\Application.Storage.Jobs.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.RabbitMQ\Infrastructure.RabbitMQ.csproj" />
+    <ProjectReference Include="..\..\src\Application.Auditing\Application.Auditing.csproj" />
+    <ProjectReference Include="..\..\src\Application.Notifications\Application.Notifications.csproj" />
+    <ProjectReference Include="..\..\src\Application.Utilities\Application.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

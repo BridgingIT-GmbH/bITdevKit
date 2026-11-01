@@ -1,0 +1,30 @@
+@inherits RazorSlice<AuditingViewModel>
+@{ var snapshot = Model.Diagnostics; }
+<div class="row g-2 mb-2">
+    <div class="col-6 col-lg-3"><div class="card audit-stat audit-stat-accent"><span class="audit-secondary">Provider</span><strong class="fs-6">@(snapshot.Provider?.Provider ?? "Unknown")</strong></div></div>
+    <div class="col-6 col-lg-3"><div class="card audit-stat"><span class="audit-secondary">Persisted</span><strong>@(snapshot.Delivery?.Persisted.ToString() ?? "Unknown")</strong></div></div>
+    <div class="col-6 col-lg-3"><div class="card audit-stat"><span class="audit-secondary">Pending</span><strong>@(snapshot.Delivery?.Pending.ToString() ?? "Unknown")</strong></div></div>
+    <div class="col-6 col-lg-3"><div class="card audit-stat"><span class="audit-secondary">Failed</span><strong>@(snapshot.Delivery?.Failed.ToString() ?? "Unknown")</strong></div></div>
+</div>
+<section class="card">
+    <div class="card-header d-flex justify-content-between align-items-center gap-2"><span>Sources <button type="button" class="audit-info" title="Configured source selection. These declarations do not prove that activity was captured or queued writes persisted." aria-label="About source declarations"><i class="bi bi-info-circle" aria-hidden="true"></i></button></span><span class="badge text-bg-secondary">@snapshot.Registrations.Length</span></div>
+    <div class="table-responsive audit-sources"><table class="table table-sm table-hover"><thead><tr><th>Feature</th><th>Boundary</th><th>Selection</th><th>Type / client</th></tr></thead><tbody>
+    @foreach (var source in snapshot.Registrations)
+    {
+        var icon = source.Selection == "selected" ? "bi-check-circle text-success" : source.Selection == "omitted" ? "bi-dash-circle text-secondary" : "bi-question-circle text-warning";
+        <tr><td>@source.Feature</td><td>@source.Boundary</td><td><span role="img" title="@source.Selection" aria-label="@source.Selection"><i class="bi @icon" aria-hidden="true"></i></span></td><td class="audit-execution"><span class="audit-truncate audit-truncate-start" title="@source.TypeAlias"><bdi dir="ltr">@AuditDashboardText.ShortenType(source.TypeAlias)</bdi></span></td></tr>
+    }
+    </tbody></table></div>
+    @if (snapshot.Registrations.IsEmpty) { <div class="audit-empty">No source declarations available.</div> }
+    @if (snapshot.AdditionalDeclarationsOmitted) { <div class="card-footer small text-warning"><i class="bi bi-info-circle" aria-hidden="true"></i> Source limit reached. Additional declarations omitted.</div> }
+</section>
+<div class="row g-2">
+    <div class="col-lg-6"><section class="card"><div class="card-header">Admissions <button type="button" class="audit-info" title="Local admitted boundaries and append acknowledgments. Counts do not prove full coverage or durability." aria-label="About admission counts"><i class="bi bi-info-circle" aria-hidden="true"></i></button></div><div class="card-body p-2">
+    @if (snapshot.Observations is { Count: > 0 }) { <dl class="audit-properties audit-counters">@foreach (var fact in snapshot.Observations) { <dt>@fact.Key</dt><dd>@fact.Value</dd> }</dl> }
+    else { <div class="audit-empty">No observations available.</div> }
+    </div></section></div>
+    <div class="col-lg-6"><section class="card"><div class="card-header">Capture failures</div><div class="card-body p-2">
+    @if (snapshot.Failures is { Count: > 0 }) { <dl class="audit-properties audit-counters">@foreach (var fact in snapshot.Failures) { <dt>@fact.Key</dt><dd>@fact.Value</dd> }</dl> }
+    else { <div class="audit-empty">No failure counters available.</div> }
+    </div></section></div>
+</div>

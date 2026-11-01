@@ -90,7 +90,23 @@ public partial class JobSchedulerService(
     }
 
     /// <inheritdoc />
-    public async Task<Result<JobDispatchResult>> DispatchAsync<TJob>(
+    public Task<Result<JobDispatchResult>> DispatchAsync<TJob>(object data = null, JobDispatchOptions options = null, CancellationToken cancellationToken = default) where TJob : class, IJob
+        => this.DispatchWithBehaviorsAsync(typeof(TJob).Name, typeof(TJob), false, () => this.DispatchCoreAsync<TJob>(data, options, cancellationToken), cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Result<JobDispatchResult>> DispatchAsync(string jobName, object data = null, JobDispatchOptions options = null, CancellationToken cancellationToken = default)
+        => this.DispatchWithBehaviorsAsync(jobName, null, false, () => this.DispatchCoreAsync(jobName, data, options, cancellationToken), cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Result<JobExecutionResult>> DispatchAndWaitAsync<TJob>(object data = null, JobDispatchOptions options = null, TimeSpan? timeout = null, CancellationToken cancellationToken = default) where TJob : class, IJob
+        => this.DispatchWithBehaviorsAsync(typeof(TJob).Name, typeof(TJob), true, () => this.DispatchAndWaitCoreAsync<TJob>(data, options, timeout, cancellationToken), cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Result<JobExecutionResult>> DispatchAndWaitAsync(string jobName, object data = null, JobDispatchOptions options = null, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
+        => this.DispatchWithBehaviorsAsync(jobName, null, true, () => this.DispatchAndWaitCoreAsync(jobName, data, options, timeout, cancellationToken), cancellationToken);
+
+    /// <inheritdoc />
+    private async Task<Result<JobDispatchResult>> DispatchCoreAsync<TJob>(
         object data = null,
         JobDispatchOptions options = null,
         CancellationToken cancellationToken = default)
@@ -107,7 +123,7 @@ public partial class JobSchedulerService(
     }
 
     /// <inheritdoc />
-    public async Task<Result<JobDispatchResult>> DispatchAsync(
+    private async Task<Result<JobDispatchResult>> DispatchCoreAsync(
         string jobName,
         object data = null,
         JobDispatchOptions options = null,
@@ -124,7 +140,7 @@ public partial class JobSchedulerService(
     }
 
     /// <inheritdoc />
-    public async Task<Result<JobExecutionResult>> DispatchAndWaitAsync<TJob>(
+    private async Task<Result<JobExecutionResult>> DispatchAndWaitCoreAsync<TJob>(
         object data = null,
         JobDispatchOptions options = null,
         TimeSpan? timeout = null,
@@ -156,7 +172,7 @@ public partial class JobSchedulerService(
     }
 
     /// <inheritdoc />
-    public async Task<Result<JobExecutionResult>> DispatchAndWaitAsync(
+    private async Task<Result<JobExecutionResult>> DispatchAndWaitCoreAsync(
         string jobName,
         object data = null,
         JobDispatchOptions options = null,
@@ -1557,6 +1573,7 @@ public partial class JobSchedulerService(
 
         await storeProvider.TriggerRuntimeStates.UpsertAsync(definition.JobName, trigger.TriggerName, prepared.Value.RuntimeState, cancellationToken).ConfigureAwait(false);
         var occurrence = prepared.Value.Occurrence;
+        this.StampDispatchHandoff(occurrence);
         using var occurrenceLogScope = this.BeginOccurrenceLogScope(occurrence, null);
 
         var created = await storeProvider.Occurrences.TryCreateAsync(occurrence, cancellationToken).ConfigureAwait(false);
@@ -1564,6 +1581,7 @@ public partial class JobSchedulerService(
             ? occurrence
             : await storeProvider.Occurrences.GetByKeyAsync(occurrence.OccurrenceKey, cancellationToken).ConfigureAwait(false);
 
+        if (persisted is not null) this.currentAuditDispatch.Value?.ReportAccepted(new(persisted.JobName, persisted.OccurrenceId, persisted.CorrelationId, definition.JobType.FullName));
         await this.AppendHistoryAsync(persisted, null, "OccurrenceCreated", JobOccurrenceStatus.Pending, null, null, cancellationToken).ConfigureAwait(false);
         if (created)
         {
@@ -1611,13 +1629,14 @@ public partial class JobSchedulerService(
             ScheduledUtc = materialized.ScheduledUtc,
             Data = materialized.Data,
             DataType = materialized.DataType,
-            Properties = materialized.Properties,
+            Properties = materialized.Properties?.Clone() ?? new(),
             CorrelationId = correlationId,
             CausationId = correlationId,
             IdempotencyKey = materialized.IdempotencyKey,
             CreatedDate = nowUtc,
             UpdatedDate = nowUtc,
         };
+        occurrence.Properties.Remove(AuditHandoffMetadata.PropertyName);
         using var occurrenceLogScope = this.BeginOccurrenceLogScope(occurrence, null);
 
         var created = await storeProvider.Occurrences.TryCreateAsync(occurrence, cancellationToken).ConfigureAwait(false);
@@ -1695,7 +1714,7 @@ public partial class JobSchedulerService(
             acceptedEvent.CorrelationId);
     }
 
-    private async Task<Result<JobExecutionResult>> ExecuteOccurrenceAsync(
+    private async Task<Result<JobExecutionResult>> ExecuteOccurrenceCoreAsync(
         JobDefinition definition,
         JobTriggerDefinition trigger,
         JobOccurrence occurrence,
@@ -1753,6 +1772,7 @@ public partial class JobSchedulerService(
             UpdatedDate = nowUtc,
         };
 
+        this.ObserveWorkerExecution(definition, occurrenceState, executionId, attemptNumber);
         await storeProvider.Executions.CreateAsync(execution, cancellationToken).ConfigureAwait(false);
         await this.AppendHistoryAsync(occurrenceState, executionId, "ExecutionStarted", JobOccurrenceStatus.Running, JobExecutionStatus.Started, null, cancellationToken).ConfigureAwait(false);
         TypedLogger.LogJobExecutionStarted(
@@ -1781,7 +1801,7 @@ public partial class JobSchedulerService(
                 : Result<JobExecutionResult>.Failure().WithError(new ValidationError($"The occurrence '{occurrenceState.OccurrenceId}' lost lease ownership before failure finalization."));
         }
 
-        using var scope = scopeFactory.CreateScope();
+        await using var scope = scopeFactory.CreateAsyncScope();
         var job = scope.ServiceProvider.GetService(definition.JobType) as IJob;
         if (job is null)
         {
@@ -1983,6 +2003,7 @@ public partial class JobSchedulerService(
             .ToArray();
 
         var behaviors = behaviorTypes
+            .OrderBy(type => type == typeof(AuditingJobBehavior) ? 1 : 0)
             .Select(type => ActivatorUtilities.CreateInstance(context.Services, type) as IJobBehavior)
             .Where(behavior => behavior is not null)
             .ToArray();
@@ -2410,6 +2431,7 @@ public partial class JobSchedulerService(
             properties["chain:predecessorJob"] = prerequisite.JobName;
             properties["chain:predecessorTrigger"] = prerequisite.TriggerName;
             properties.Merge(chain.Properties);
+            properties.Remove(AuditHandoffMetadata.PropertyName);
 
             var dependent = new JobOccurrence
             {
@@ -2482,6 +2504,7 @@ public partial class JobSchedulerService(
             var dependent = await storeProvider.Occurrences.GetAsync(dependency.DependentOccurrenceId, cancellationToken).ConfigureAwait(false);
             if (dependent is not null)
             {
+                dependent = this.StampDependentHandoff(dependent, prerequisite.JobName);
                 await this.ReconcileDependentOccurrenceAsync(dependent, cancellationToken).ConfigureAwait(false);
             }
         }
@@ -2906,7 +2929,7 @@ public partial class JobSchedulerService(
             ScheduledUtc = dueUtcOverride ?? materialized.ScheduledUtc ?? dueUtc,
             Data = materialized.Data,
             DataType = materialized.DataType,
-            Properties = materialized.Properties,
+            Properties = materialized.Properties?.Clone() ?? new(),
             CorrelationId = correlationId,
             CausationId = string.IsNullOrWhiteSpace(causationId) ? correlationId : causationId,
             IdempotencyKey = string.IsNullOrWhiteSpace(materialized.IdempotencyKey) ? idempotencyKey : materialized.IdempotencyKey,

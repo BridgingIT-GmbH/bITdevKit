@@ -25,6 +25,7 @@ builder.Logging.SetMinimumLevel(LogLevel.Debug);
 builder.Logging.AddFilter("Microsoft.AspNetCore.Components.WebAssembly.Authentication", LogLevel.Debug);
 
 builder.Services.AddLocalization();
+builder.Services.AddScoped<BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client.Services.StreamingDemoClient>();
 //builder.Services.AddHttpClient("backend-api")
 //    .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
 //    .AddResilienceHandler("timeout", resilience => resilience.AddTimeout(TimeSpan.FromSeconds(30)));

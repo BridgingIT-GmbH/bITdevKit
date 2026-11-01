@@ -42,7 +42,7 @@ public class PipelineRuntime(
         ArgumentNullException.ThrowIfNull(definition);
         ArgumentNullException.ThrowIfNull(options);
 
-        using var scope = scopeFactory.CreateScope();
+        await using var scope = scopeFactory.CreateAsyncScope();
         var normalizedContext = this.NormalizeContext(definition, context);
         var run = await this.ExecuteCoreAsync(
             definition,
@@ -71,14 +71,16 @@ public class PipelineRuntime(
 
         tracker.MarkAccepted(executionId, definition.Name);
 
-        _ = Task.Run(async () =>
+        var auditToken = definition.BehaviorTypes.Contains(typeof(PipelineAuditingBehavior)) ? AuditHandoffMetadata.Capture(scopeFactory, "Pipelines", executionId.ToString("D")) : null;
+        var sourceCorrelation = CorrelationId.Current;
+        _ = Task.Run(async () => await AuditSourceExecutor.RunIsolatedAsync(scopeFactory, "Pipelines", executionId.ToString("D"), auditToken, sourceCorrelation, async () =>
         {
             using var boundary = BeginProfilingBoundary();
             PipelineCompletion completion = null;
 
             try
             {
-                using (var scope = scopeFactory.CreateScope())
+                await using (var scope = scopeFactory.CreateAsyncScope())
                 {
                     var run = await this.ExecuteCoreAsync(
                         definition,
@@ -119,12 +121,32 @@ public class PipelineRuntime(
                         options.CompletionCallback);
                 }
             }
-        }, cancellationToken);
+
+            return true;
+        }).ConfigureAwait(false), cancellationToken);
 
         return Task.FromResult(new PipelineExecutionHandle(executionId));
     }
 
-    private async Task<PipelineRunResult> ExecuteCoreAsync(
+    private async Task<PipelineRunResult> ExecuteCoreAsync(IPipelineDefinition definition, PipelineContextBase context, PipelineExecutionOptions options,
+        IServiceProvider serviceProvider, Guid executionId, bool backgroundExecution, CancellationToken cancellationToken)
+    {
+        if (!definition.BehaviorTypes.Contains(typeof(PipelineAuditingBehavior)))
+            return await this.ExecuteCoreUnobservedAsync(definition, context, options, serviceProvider, executionId, backgroundExecution, cancellationToken);
+        using var auditCorrelation = CorrelationId.BeginScope(CorrelationId.Current ?? CorrelationIdGenerator.Create());
+        context.Pipeline.Name = definition.Name;
+        context.Pipeline.ExecutionId = executionId;
+        var auditing = serviceProvider.GetService<PipelineAuditingBehavior>() ?? ActivatorUtilities.CreateInstance<PipelineAuditingBehavior>(serviceProvider);
+        PipelineRunResult run = default;
+        await auditing.ExecuteAsync(context, async () =>
+        {
+            run = await this.ExecuteCoreUnobservedAsync(definition, context, options, serviceProvider, executionId, backgroundExecution, cancellationToken);
+            return run.Result;
+        }, cancellationToken);
+        return run;
+    }
+
+    private async Task<PipelineRunResult> ExecuteCoreUnobservedAsync(
         IPipelineDefinition definition,
         PipelineContextBase context,
         PipelineExecutionOptions options,
@@ -146,6 +168,7 @@ public class PipelineRuntime(
         context.Pipeline.StartedUtc = DateTimeOffset.UtcNow;
         context.Pipeline.CompletedUtc = null;
         context.Pipeline.CurrentStepName = null;
+        context.Pipeline.CurrentStepAttempt = 0;
         context.Pipeline.ExecutedStepCount = 0;
         context.Pipeline.TotalStepCount = definition.Steps.Count;
 
@@ -167,7 +190,7 @@ public class PipelineRuntime(
 
             // Behaviors wrap the core step loop from outermost to innermost.
             var next = () => this.ExecuteStepsCoreAsync(definition, context, options, serviceProvider, state, hooks, behaviors, cancellationToken);
-            foreach (var behavior in behaviors.Reverse())
+            foreach (var behavior in behaviors.Where(behavior => !behavior.IsAuditing).Reverse())
             {
                 var capturedNext = next;
                 next = () => behavior.ExecuteAsync(context, capturedNext, cancellationToken);
@@ -197,6 +220,7 @@ public class PipelineRuntime(
         finally
         {
             context.Pipeline.CurrentStepName = null;
+            context.Pipeline.CurrentStepAttempt = 0;
             context.Pipeline.CompletedUtc = DateTimeOffset.UtcNow;
 
             if (pipelineStarted && state.Status == PipelineExecutionStatus.Completed)
@@ -238,6 +262,7 @@ public class PipelineRuntime(
 
                 // The engine owns the canonical current-step tracking and step-level logging.
                 context.Pipeline.CurrentStepName = stepDefinition.Name;
+                context.Pipeline.CurrentStepAttempt = attempts + 1;
                 PipelineTypedLogger.LogStepStarted(this.logger, PipelineConstants.LogKey, definition.Name, stepDefinition.Name, context.Pipeline.ExecutionId);
                 await this.InvokeHooksAsync(hooks, context, (hook, ctx, ct) => hook.OnStepStartingAsync(ctx, stepDefinition, ct), cancellationToken);
 
@@ -309,7 +334,7 @@ public class PipelineRuntime(
         {
             // Step behaviors wrap the actual step execution just like pipeline behaviors wrap the full step loop.
             var next = () => step.ExecuteAsync(context, result, options, cancellationToken);
-            foreach (var behavior in behaviors.Reverse())
+            foreach (var behavior in behaviors.OrderBy(behavior => behavior.IsAuditing ? 1 : 0).Reverse())
             {
                 var capturedNext = next;
                 next = () => behavior.ExecuteStepAsync(context, stepDefinition, result, capturedNext, cancellationToken);

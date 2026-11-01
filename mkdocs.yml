@@ -40,6 +40,7 @@ nav:
               - Results: reference/features-results.md
               - Application Commands and Queries: reference/features-application-commands-queries.md
               - Application Events: reference/features-application-events.md
+              - Application Auditing: reference/features-application-auditing.md
               - DataPorter: reference/features-application-dataporter.md
               - Event Sourcing: reference/features-event-sourcing.md
           - Execution, Messaging and Modularity:
@@ -62,6 +63,7 @@ nav:
               - Configuration: reference/features-presentation-configuration.md
               - Logging: reference/features-presentation-logging.md
               - Endpoints: reference/features-presentation-endpoints.md
+              - Presentation Streaming: reference/features-presentation-streaming.md
               - CLI: reference/features-cli.md
               - MCP: reference/features-cli-mcp.md
               - MCP Client Configuration: reference/features-cli-mcp-clients.md

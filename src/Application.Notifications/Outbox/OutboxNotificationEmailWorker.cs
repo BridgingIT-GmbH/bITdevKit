@@ -9,6 +9,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -27,11 +28,17 @@ public class OutboxNotificationEmailWorker(
     /// <summary>
     /// Processes a specific notification email or the next claimed batch.
     /// </summary>
-    public async Task ProcessAsync(string messageId = null, CancellationToken cancellationToken = default)
+    public Task ProcessAsync(string messageId = null, CancellationToken cancellationToken = default)
+        => AuditSourceExecutor.RunIsolatedAsync(this.serviceProvider.GetRequiredService<IServiceScopeFactory>(), "Email", messageId ?? "batch", null, null, async () =>
+        {
+            await this.ProcessCoreAsync(messageId, cancellationToken).ConfigureAwait(false);
+            return true;
+        });
+
+    private async Task ProcessCoreAsync(string messageId, CancellationToken cancellationToken)
     {
-        using var scope = this.serviceProvider.CreateScope();
+        await using var scope = this.serviceProvider.CreateAsyncScope();
         var storageProvider = scope.ServiceProvider.GetRequiredService<INotificationStorageProvider>();
-        var emailService = scope.ServiceProvider.GetRequiredService<INotificationService<EmailMessage>>();
         var outboxService = scope.ServiceProvider.GetService<INotificationEmailOutboxService>();
         var count = 0;
 
@@ -53,7 +60,27 @@ public class OutboxNotificationEmailWorker(
             foreach (var message in messages)
             {
                 count++;
-                await this.ProcessEmail(message, storageProvider, emailService, cancellationToken);
+                var operation = new NotificationOperationContext
+                {
+                    Operation = "OutboxExecution", MessageId = message.Id.ToString("D"), Properties = message.Properties, IsWorker = true,
+                    Attempt = message.RetryCount < this.options.RetryCount ? message.RetryCount + 1 : null,
+                    SuccessStatus = "SmtpAccepted", FailureStatus = message.RetryCount >= this.options.RetryCount ? "RetryLimit" : "Failed", CancellationToken = cancellationToken
+                };
+                async Task<Result> Execute()
+                {
+                    await using var messageScope = this.serviceProvider.CreateAsyncScope();
+                    return await this.ProcessEmail(message, storageProvider, messageScope.ServiceProvider.GetRequiredService<INotificationService<EmailMessage>>(), cancellationToken).ConfigureAwait(false);
+                }
+
+                Func<Task<Result>> next = Execute;
+                foreach (var behavior in AuditSourceExecutor.DistinctAuditing<INotificationOperationBehavior, AuditingNotificationOperationBehavior>(scope.ServiceProvider.GetServices<INotificationOperationBehavior>()).OrderBy(behavior => behavior is AuditingNotificationOperationBehavior ? 0 : 1).Reverse())
+                {
+                    var inner = next;
+                    next = () => behavior.ExecuteAsync(operation, inner);
+                }
+
+                _ = await AuditSourceExecutor.RunIsolatedAsync(this.serviceProvider.GetRequiredService<IServiceScopeFactory>(), "Email", operation.MessageId,
+                    AuditHandoffMetadata.Read(message.Properties), null, next).ConfigureAwait(false);
             }
 
             var archivedCount = await this.AutoArchiveMessagesAsync(outboxService, cancellationToken);
@@ -114,7 +141,7 @@ public class OutboxNotificationEmailWorker(
         }
     }
 
-    private async Task ProcessEmail(
+    private async Task<Result> ProcessEmail(
         EmailMessage message,
         INotificationStorageProvider storageProvider,
         INotificationService<EmailMessage> emailService,
@@ -134,25 +161,16 @@ public class OutboxNotificationEmailWorker(
                 this.logger.LogWarning("[{LogKey}] failed to update message with ID {MessageId} after max retries: {ErrorMessage}", Constants.LogKey, message.Id, updateResult.Errors?.FirstOrDefault()?.Message);
             }
 
-            return;
+            return updateResult.IsFailure ? updateResult : Result.Failure(new Error("Retry limit reached."));
         }
 
         try
         {
             message.Properties["Outbox"] = true; // prevents readding (Save) in email service (SendAsync)
             message.RetryCount++;
-            _ = await emailService.SendAsync(
+            return await emailService.SendAsync(
                 message, new NotificationSendOptions { SendImmediately = true }, cancellationToken);
 
-            //message.Status = sendResult.IsSuccess ? EmailMessageStatus.Sent : EmailMessageStatus.Failed;
-            //message.SentAt = DateTimeOffset.UtcNow;
-            //message.Properties["ProcessMessage"] = sendResult.Errors?.FirstOrDefault()?.Message;
-
-            //var updateResult = await storageProvider.UpdateAsync(message, cancellationToken);
-            //if (!updateResult.IsSuccess)
-            //{
-            //    this.logger.LogWarning("[{LogKey}] failed to update message with ID {MessageId} after processing: {ErrorMessage}", Constants.LogKey, message.Id, updateResult.Errors?.FirstOrDefault()?.Message);
-            //}
         }
         catch (Exception ex)
         {
@@ -165,6 +183,8 @@ public class OutboxNotificationEmailWorker(
             {
                 this.logger.LogWarning("[{LogKey}] failed to update message with ID {MessageId} after failure: {ErrorMessage}", Constants.LogKey, message.Id, updateResult.Errors?.FirstOrDefault()?.Message);
             }
+
+            return updateResult.IsFailure ? updateResult : Result.Failure(new Error("Notification processing failed."));
         }
     }
 

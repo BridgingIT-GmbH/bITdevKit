@@ -40,7 +40,8 @@ internal static class DashboardFeatureIcons
         ["storage.documents"] = "storage-documents",
         ["storage.blobs"] = "storage-blobs",
         ["storage.permalinks"] = "storage-permalinks",
-        ["change-history"] = "change-history"
+        ["change-history"] = "change-history",
+        ["auditing"] = "auditing"
     }.ToFrozenDictionary(pair => pair.Key, pair => LoadSvg(pair.Value), StringComparer.Ordinal);
 
     internal static HtmlString GetSvg(string pageKey) =>

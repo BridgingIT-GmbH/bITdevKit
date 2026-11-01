@@ -25,14 +25,17 @@ internal class FileStorageLocationHandler(
         }
     }
 
-    public override async Task<FileScanContext> ScanAsync(
-        FileScanOptions options = null,
-        IProgress<FileScanProgress> progress = null,
-        CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public override Task<FileScanContext> ScanAsync(FileScanOptions options = null, IProgress<FileScanProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        var context = new FileScanContext { LocationName = this.options.LocationName };
+        return this.RunScanAsync(options, context, () => this.ScanCoreAsync(context, options, progress, cancellationToken));
+    }
+
+    private async Task<FileScanContext> ScanCoreAsync(FileScanContext context, FileScanOptions options, IProgress<FileScanProgress> progress, CancellationToken cancellationToken)
     {
         options ??= FileScanOptions.Default;
         var startTime = DateTimeOffset.UtcNow;
-        var context = new FileScanContext { LocationName = this.options.LocationName };
         this.behaviors.ForEach(b => b.OnScanStarted(context), cancellationToken: cancellationToken);
 
         var presentFiles = await this.store.GetPresentFilesAsync(this.options.LocationName, cancellationToken);
@@ -72,7 +75,7 @@ internal class FileStorageLocationHandler(
                             DetectedDate = DateTimeOffset.UtcNow
                         };
 
-                        this.eventQueue.Add(fileEvent, cancellationToken);
+                        this.EnqueueFileEvent(fileEvent, cancellationToken);
                         context.Events.Add(fileEvent);
                         this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: cancellationToken);
 
@@ -133,7 +136,7 @@ internal class FileStorageLocationHandler(
 
                 if (options.EventFilter.Contains(fileEvent.EventType))
                 {
-                    this.eventQueue.Add(fileEvent, cancellationToken);
+                    this.EnqueueFileEvent(fileEvent, cancellationToken);
                     context.Events.Add(fileEvent);
                     this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: cancellationToken);
                     filesScanned++;

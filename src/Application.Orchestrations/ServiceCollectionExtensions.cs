@@ -33,6 +33,7 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         EnsureRegistrationStore(services);
+        AuditBoundaryRegistrationCatalog.GetOrAdd(services, "Orchestrations", "Execution", "Activity");
         services.TryAddSingleton<IOrchestrationClock, SystemOrchestrationClock>();
         services.TryAddSingleton<InMemoryOrchestrationExecutor>();
         services.TryAddSingleton<IOrchestrationExecutor>(serviceProvider => serviceProvider.GetRequiredService<InMemoryOrchestrationExecutor>());
@@ -82,6 +83,18 @@ public static class ServiceCollectionExtensions
         return context;
     }
 
+    /// <summary>Selects finite slice roots and actual activity attempts exactly once.</summary>
+    /// <example><code>services.AddOrchestrations().WithAuditingBehavior();</code></example>
+    public static OrchestrationBuilderContext WithAuditingBehavior(this OrchestrationBuilderContext context)
+    {
+        context.Services.TryAddSingleton<OrchestrationAuditingExecutionScope>();
+        context.Services.TryAddEnumerable(ServiceDescriptor.Scoped<IOrchestrationBehavior, AuditingOrchestrationBehavior>());
+        var catalog = AuditBoundaryRegistrationCatalog.GetOrAdd(context.Services, "Orchestrations", "Execution", "Activity");
+        catalog.Select("Execution");
+        catalog.Select("Activity");
+        return context;
+    }
+
     /// <summary>Registers optional action profiling and its paired bounded executor adapter exactly once.</summary>
     /// <example><code>services.AddOrchestrations().WithProfilingBehavior();</code></example>
     public static OrchestrationBuilderContext WithProfilingBehavior(this OrchestrationBuilderContext context)
@@ -106,6 +119,7 @@ public static class ServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(context);
 
+        if (typeof(TBehavior) == typeof(AuditingOrchestrationBehavior) || behavior is AuditingOrchestrationBehavior) return context.WithAuditingBehavior();
         if (behavior is null)
         {
             context.Services.AddScoped<IOrchestrationBehavior, TBehavior>();
@@ -133,6 +147,7 @@ public static class ServiceCollectionExtensions
         if (implementationFactory is not null)
         {
             context.Services.AddScoped(typeof(IOrchestrationBehavior), implementationFactory);
+            AuditBoundaryRegistrationCatalog.GetOrAdd(context.Services, "Orchestrations", "Execution", "Activity").MarkUnknown("Activity");
         }
 
         return context;
@@ -148,6 +163,7 @@ public static class ServiceCollectionExtensions
         this OrchestrationBuilderContext context,
         IOrchestrationBehavior behavior)
     {
+        if (behavior is AuditingOrchestrationBehavior) return context.WithAuditingBehavior();
         ArgumentNullException.ThrowIfNull(context);
 
         if (behavior is not null)

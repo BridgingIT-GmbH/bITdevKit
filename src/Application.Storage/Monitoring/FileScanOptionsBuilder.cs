@@ -21,6 +21,14 @@ public class FileScanOptionsBuilder
     /// <returns>A new ScanOptionsBuilder instance.</returns>
     public static FileScanOptionsBuilder Create() => new();
 
+    /// <summary>Explicitly requests audit capture for this scan when enabled on the source builder.</summary>
+    /// <example><code>options.WithAuditing().WithWaitForProcessing();</code></example>
+    public FileScanOptionsBuilder WithAuditing(bool enabled = true)
+    {
+        this.options.CaptureAudit = enabled;
+        return this;
+    }
+
     /// <summary>
     /// Sets whether to wait for processing completion.
     /// </summary>

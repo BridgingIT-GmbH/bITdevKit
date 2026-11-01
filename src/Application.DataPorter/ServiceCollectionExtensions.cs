@@ -29,6 +29,7 @@ public static partial class ServiceCollectionExtensions
     {
         EnsureArg.IsNotNull(services, nameof(services));
 
+        AuditBoundaryRegistrationCatalog.GetOrAdd(services, "DataPorter", "Operation");
         var context = new DataPorterBuilderContext(services, configuration);
         optionsAction?.Invoke(context);
 
@@ -45,6 +46,15 @@ public static partial class ServiceCollectionExtensions
         services.TryAddSingleton<IValueConverter, BooleanYesNoConverter>();
         services.TryAddSingleton(typeof(EnumDisplayNameConverter<>));
 
+        return context;
+    }
+
+    /// <summary>Selects complete aggregate and streaming operation auditing once, without changing row interceptors.</summary>
+    /// <example><code>services.AddDataPorter().WithAuditing();</code></example>
+    public static DataPorterBuilderContext WithAuditing(this DataPorterBuilderContext context)
+    {
+        context.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IDataPorterOperationBehavior, AuditingDataPorterOperationBehavior>());
+        AuditBoundaryRegistrationCatalog.GetOrAdd(context.Services, "DataPorter", "Operation").Select("Operation");
         return context;
     }
 

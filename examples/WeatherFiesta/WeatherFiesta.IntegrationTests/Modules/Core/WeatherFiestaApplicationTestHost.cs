@@ -40,6 +40,7 @@ public sealed class WeatherFiestaApplicationTestHost(string connectionString, IT
         });
 
         services.AddOptions();
+        services.AddNoOpAuditContext();
         services.Configure<CoreModuleConfiguration>(options =>
         {
             options.ConnectionStrings = new Dictionary<string, string> { ["Default"] = connectionString };

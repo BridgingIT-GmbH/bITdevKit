@@ -186,7 +186,7 @@ sequenceDiagram
   participant Ext as MapEndpoints()
   participant Ep as IEndpoints
 
-  Module->>DI: AddEndpoints<CoreTodoItemEndpoints>()
+  Module->>DI: AddEndpoints<InventoryEndpoints>()
   Module->>DI: AddEndpoints<CoreEnumerationEndpoints>()
   Note over DI: Endpoints registered as IEndpoints (Singleton)
   Module->>App: build/start app
@@ -204,7 +204,7 @@ Register endpoints explicitly by type, by instance, or via assembly scanning. Ty
 
 ```csharp
 // Per type
-services.AddEndpoints<CoreTodoItemEndpoints>();
+services.AddEndpoints<InventoryEndpoints>();
 services.AddEndpoints<CoreEnumerationEndpoints>();
 
 // Or register all endpoint classes from assemblies
@@ -509,3 +509,7 @@ ResultMapHttpExtensions.RegisterErrorHandler<CustomBusinessError>((logger, resul
 - `MapHttpCreated<T>` with `uriFactory` only computes the URI for successful results; failure paths ignore the URI.
 - Generic `Map` overloads return typed `Results<...>` unions suitable for Minimal API signatures and OpenAPI.
 - All helpers accept an optional `ILogger` to enrich error logging without changing the HTTP shape.
+
+## NDJSON streaming endpoints
+
+Use `AddNdjsonStreaming`, `NdjsonHttpResult.From`, and `.WithNdjson<T>()` on dedicated streaming URLs. Raw DTO output is the default; optional version 1 envelopes add heartbeat and completion. `MapHttpNdjson` maps prepared Results while preserving ordinary admission failures. See [Presentation Streaming](features-presentation-streaming.md) for server/client setup and hosting requirements.

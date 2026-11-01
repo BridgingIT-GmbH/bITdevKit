@@ -4,6 +4,8 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 using System.Text.Json;
+using BridgingIT.DevKit.Application.Auditing;
+using BridgingIT.DevKit.Presentation.Web.Auditing;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Application.Utilities;
@@ -36,8 +38,18 @@ builder.Services.AddModules(builder.Configuration, builder.Environment)
 
 // ===============================================================================================
 // Configure the services
+builder.Services.AddAuditing(options => options.Application("DoFiesta"))
+    .WithEntityFrameworkProvider<CoreDbContext>(options => options
+        .StartupDelay(TimeSpan.FromSeconds(2))
+        .Configure(settings => settings with { Buffered = builder.Configuration.GetValue("Auditing:Buffered", true) }))
+    .WithExposure(new AuditExposureOptions { ExposeChangeValues = true })
+    .WithExportFormatter(_ => new CefAuditExportFormatter(new() { Vendor = "BridgingIT", Product = "DoFiesta", Version = "1" }))
+    .WithHttpRequests(options => options.IncludeAuditIdHeader = true)
+    .AddConsoleCommands();
+
 builder.Services.AddRequester()
     .AddHandlers()
+    .WithAuditing()
     .WithBehavior(typeof(MetricsRequestBehavior<,>))
     .WithBehavior(typeof(TracingBehavior<,>))
     .WithBehavior(typeof(ModuleScopeBehavior<,>))
@@ -47,6 +59,7 @@ builder.Services.AddRequester()
     .WithBehavior(typeof(TimeoutPipelineBehavior<,>));
 builder.Services.AddNotifier()
     .AddHandlers()
+    .WithAuditing()
     .WithBehavior(typeof(MetricsNotificationBehavior<,>))
     .WithBehavior(typeof(MetricsNotificationHandlerBehavior<,>))
     .WithBehavior(typeof(TracingBehavior<,>))
@@ -58,6 +71,7 @@ builder.Services.AddNotifier()
 
 builder.Services.AddMessaging(builder.Configuration, o => o
         .StartupDelay("00:00:10"))
+    .WithAuditing(producing: true, consuming: true)
     .WithBehavior<ModuleScopeMessagePublisherBehavior>()
     .WithBehavior<ModuleScopeMessageHandlerBehavior>()
     .WithBehavior<MetricsMessagePublisherBehavior>()
@@ -69,12 +83,14 @@ builder.Services.AddMessaging(builder.Configuration, o => o
 
 builder.Services.AddQueueing(builder.Configuration, o => o
         .StartupDelay("00:00:10"))
+    .WithAuditing()
     .WithEntityFrameworkBroker<CoreDbContext>()
     .AddEndpoints();
 
 builder.Services.AddNotificationService<EmailMessage>(builder.Configuration, o =>
     {
-        o.WithEntityFrameworkStorageProvider<CoreDbContext>()
+        o.WithAuditing()
+            .WithEntityFrameworkStorageProvider<CoreDbContext>()
             .WithOutbox<CoreDbContext>(options => options
                 .StartupDelay(TimeSpan.FromSeconds(5))
                 .AutoArchiveAfter(TimeSpan.FromHours(1))
@@ -112,6 +128,7 @@ builder.Services.AddLogEntryServices<CoreDbContext>(o => o
 // Startup Tasks ==============================
 builder.Services.AddStartupTasks(o => o
         .Enabled().StartupDelay(builder.Configuration["StartupTasks:StartupDelay"]))
+    .WithBehavior<AuditingStartupTaskBehavior>()
     //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
     .WithBehavior<ModuleScopeStartupTaskBehavior>();
 
@@ -149,7 +166,8 @@ builder.Services.AddDashboard(o => o
     .Authorize(a => a
         .UseOpenIdConnect(builder.Configuration["Authentication:Authority"])
         .RequireRole(Role.Administrators))
-    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints>());
+    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints>()
+    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Auditing.Dashboard.DashboardEndpoints>());
 MetricsServiceCollectionExtensions.AddMetrics(
     builder.Services, o => o
         .Enabled()
@@ -161,6 +179,13 @@ builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 builder.Services.AddHealthChecks();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddNdjsonStreaming();
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.MimeTypes = Microsoft.AspNetCore.ResponseCompression.ResponseCompressionDefaults.MimeTypes.Concat([NdjsonDefaults.CONTENT_TYPE]);
+});
+
 builder.Services.AddControllers(); // needed for openapi gen, even with no controllers
 #pragma warning disable CS0618 // Type or member is obsolete
 builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
@@ -246,7 +271,6 @@ app.UseRuleLogger();
 app.UseResultLogger();
 
 app.UseHttpsRedirection();
-app.UseProblemDetails();
 //app.UseExceptionHandler();
 
 app.UseStaticFiles();
@@ -255,6 +279,10 @@ app.UseRequestModuleContext();
 app.UseRequestLogging();
 app.UseRequestMetrics();
 
+app.UseRouting();
+// This app previously had no response compression. Keep ordinary responses unchanged.
+app.UseWhen(context => context.GetEndpoint()?.Metadata.GetMetadata<NdjsonEndpointDescriptor>() is not null,
+    branch => branch.UseNdjsonResponseCompression());
 app.UseCors();
 app.UseAntiforgery();
 
@@ -262,6 +290,8 @@ app.UseModules();
 
 //app.UseExceptionHandler();
 app.UseAuthentication();
+app.UseAuditing();
+app.UseProblemDetails();
 app.UseAuthorization();
 
 app.UseCurrentUserLogging();

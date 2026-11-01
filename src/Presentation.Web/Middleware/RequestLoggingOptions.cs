@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using Microsoft.AspNetCore.Http;
+using BridgingIT.DevKit.Common;
 using Serilog;
 using Serilog.Events;
 
@@ -67,11 +68,7 @@ public class RequestLoggingOptions
     /// <summary>
     ///     The path patterns to ignore.
     /// </summary>
-    public string[] PathBlackListPatterns { get; set; } =
-    [
-        "/*.js", "/*.css", "/*.map", "/*.html", "/swagger*", "/favicon.ico", "/_framework*", "/_vs*", "/health*",
-        "/notificationhub*", "/_content*", "/signalrhub*", "/_bdk/*"
-    ];
+    public string[] PathBlackListPatterns { get; set; } = RequestPathDefaults.Blacklist.ToArray();
 
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
     private static LogEventLevel DefaultGetLevel(HttpContext ctx, double _, Exception ex)

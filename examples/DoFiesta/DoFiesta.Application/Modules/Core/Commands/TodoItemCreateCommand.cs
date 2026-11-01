@@ -35,6 +35,7 @@ public partial class TodoItemCreateCommand
         ISequenceNumberGenerator numberGenerator,
         ICurrentUserAccessor currentUserAccessor,
         IRepositoryTransaction<TodoItem> transaction,
+        IAuditContext audit,
         CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(this.Model.Assignee) && !string.IsNullOrWhiteSpace(currentUserAccessor.Email))
@@ -74,8 +75,12 @@ public partial class TodoItemCreateCommand
                                 .WithPermission<TodoItem>(e.Id, Permission.Write)
                                 .WithPermission<TodoItem>(e.Id, Permission.Delete)
                             .Build())
-                    // Audit logging
-                    .Tap(e => Console.WriteLine("AUDIT"))
+                    // Add business identity without retaining free-form titles or contact details.
+                    .Tap(e =>
+                    {
+                        audit.Current?.AddResource<TodoItem>(e.Id);
+                        audit.Current?.SetDetail("todo.number", AuditValue.From(e.Number));
+                    })
 
                 // End transaction (commit on success, rollback on failure)
                 .EndOperationAsync(cancellationToken: cancellationToken)

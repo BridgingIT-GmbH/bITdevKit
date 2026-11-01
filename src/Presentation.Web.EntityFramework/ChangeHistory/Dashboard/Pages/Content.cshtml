@@ -146,7 +146,7 @@
 
     @if (!vm.IsAvailable)
     {
-        <div class="alert alert-info mb-0">No ChangeHistory endpoints are registered for the dashboard.</div>
+        <div class="alert alert-info mb-0">No ChangeHistory entities are registered for the dashboard.</div>
     }
     else
     {
@@ -171,8 +171,8 @@
             </div>
             <div class="col-6 col-xl-3">
                 <div class="border rounded p-2">
-                    <div class="text-muted small">Endpoint</div>
-                    <div class="fs-6 text-truncate" title="@vm.SelectedRegistration.ManagementPath">@vm.SelectedRegistration.ManagementPath</div>
+                    <div class="text-muted small">Context</div>
+                    <div class="fs-6 text-truncate" title="@vm.SelectedRegistration.ContextTypeName">@vm.SelectedRegistration.ContextTypeName</div>
                 </div>
             </div>
         </div>
@@ -234,11 +234,7 @@
     private async Task<DashboardChangeHistoryViewModel> CreateModelAsync()
     {
         var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-        var registrations = HttpContext.RequestServices.GetServices<ChangeHistoryDashboardDescriptor>()
-            .Where(descriptor => descriptor.IsValid)
-            .OrderBy(descriptor => descriptor.EntityTypeName, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(descriptor => descriptor.ContextTypeName, StringComparer.OrdinalIgnoreCase)
-            .ToArray();
+        var registrations = ChangeHistoryDashboardDiscovery.GetRegistrations(HttpContext.RequestServices);
 
         var query = ChangeHistoryDashboardQueryState.FromRequest(HttpContext);
         var selected = registrations.FirstOrDefault(descriptor => descriptor.Key == query.RegistrationKey) ?? registrations.FirstOrDefault();

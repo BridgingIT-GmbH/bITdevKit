@@ -299,3 +299,7 @@ CBOR allocated less for the small and binary DTOs. MessagePack remained faster f
 The current optimization work stops at the buffer adapters and bounded writer reuse. The object mapper still boxes scalar values and uses intermediate collections for some target types. Typed member codecs and direct collection construction remain candidates for a future change if application profiling shows serialization is significant. The benchmarks do not measure cold startup or first-use mapping cost.
 
 The [recorded serializer comparison](../docs/benchmarks/serialization-2026-10-20/README.md) preserves the original five-serializer baseline. The [CBOR allocation follow-up](../docs/benchmarks/serialization-2026-10-20-allocations/README.md) contains the final comparison, allocation reductions, raw reports, and reproduction command.
+
+## NDJSON record streaming
+
+`NdjsonWriter` and `NdjsonReader` support bounded asynchronous record streams independently of `ISerializer`. They expose owned encoded frames and borrowed original-byte frames for exact budgets and digests. See [Presentation Streaming](features-presentation-streaming.md) for APIs, strict framing, ownership, and limits.

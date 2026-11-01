@@ -4,6 +4,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -18,6 +19,20 @@ public sealed class DocumentStorageBuilderContext(
     private readonly List<TransformRegistration> transforms = [];
     private readonly HashSet<DocumentStoreServiceKey> registrations = [];
     private readonly HashSet<Type> defaults = [];
+
+    private readonly HashSet<Type> auditing = [];
+    private readonly Dictionary<Type, Func<object, IServiceProvider, object>> auditFactories = [];
+    private readonly AuditBoundaryRegistrationCatalog auditRegistrations = AuditBoundaryRegistrationCatalog.GetOrAdd(services, "DocumentStorage", "Client");
+
+    /// <summary>Selects one outer audit occurrence for this document type, with explicit business reads.</summary>
+    /// <example><code>services.AddDocumentStorage().WithAuditing&lt;Customer&gt;();</code></example>
+    public DocumentStorageBuilderContext WithAuditing<T>(StorageAuditOptions options = null) where T : class, new()
+    {
+        if (!this.auditing.Add(typeof(T))) return this;
+        this.auditFactories[typeof(T)] = (inner, provider) => new AuditingDocumentStoreClientBehavior<T>((IDocumentStoreClient<T>)inner, provider.GetRequiredService<IServiceScopeFactory>(), options);
+        this.auditRegistrations.Declare("Client", typeof(T).Name, "selected");
+        return this;
+    }
 
     /// <summary>Gets the configured service collection.</summary>
     public IServiceCollection Services { get; } = services ?? throw new ArgumentNullException(nameof(services));
@@ -38,6 +53,14 @@ public sealed class DocumentStorageBuilderContext(
     public DocumentStorageBuilderContext WithBehavior<TBehavior>() where TBehavior : class
     {
         var documentType = GetDocumentType(typeof(TBehavior));
+        if (typeof(TBehavior).IsGenericType && typeof(TBehavior).GetGenericTypeDefinition() == typeof(AuditingDocumentStoreClientBehavior<>))
+        {
+            if (!this.auditing.Add(documentType)) return this;
+            this.auditRegistrations.Declare("Client", documentType.Name, "selected");
+            this.auditFactories[documentType] = (inner, provider) => ActivatorUtilities.CreateInstance(provider, typeof(TBehavior), inner);
+            return this;
+        }
+
         this.behaviors.Add(new(documentType, (inner, provider) =>
             ActivatorUtilities.CreateInstance(provider, typeof(TBehavior), inner)));
         return this;
@@ -48,6 +71,7 @@ public sealed class DocumentStorageBuilderContext(
         where T : class, new() where TBehavior : notnull, IDocumentStoreClient<T>
     {
         ArgumentNullException.ThrowIfNull(behavior);
+        if (!this.auditing.Contains(typeof(T))) this.auditRegistrations.Declare("Client", typeof(T).Name, "unknown");
         this.behaviors.Add(new(typeof(T), (inner, _) => behavior((IDocumentStoreClient<T>)inner)));
         return this;
     }
@@ -57,6 +81,7 @@ public sealed class DocumentStorageBuilderContext(
         where T : class, new() where TBehavior : notnull, IDocumentStoreClient<T>
     {
         ArgumentNullException.ThrowIfNull(behavior);
+        if (!this.auditing.Contains(typeof(T))) this.auditRegistrations.Declare("Client", typeof(T).Name, "unknown");
         this.behaviors.Add(new(typeof(T), (inner, provider) => behavior((IDocumentStoreClient<T>)inner, provider)));
         return this;
     }
@@ -101,6 +126,7 @@ public sealed class DocumentStorageBuilderContext(
         ArgumentNullException.ThrowIfNull(providerFactory);
         if (!this.Options.IsEnabled) return this;
 
+        if (!this.auditing.Contains(typeof(T))) this.auditRegistrations.Declare("Client", typeof(T).Name, "omitted");
         var normalizedName = NormalizeName(name);
         var key = new DocumentStoreServiceKey(typeof(T), normalizedName);
         if (!this.registrations.Add(key))
@@ -143,13 +169,14 @@ public sealed class DocumentStorageBuilderContext(
                 decorated = (IDocumentStoreClient<T>)behavior.Create(decorated, serviceProvider);
             }
 
-            return new ClientBoundary<T>(
+            IDocumentStoreClient<T> boundary = new ClientBoundary<T>(
                 normalizedName,
                 resolvedProviderName,
                 provider,
                 decorated,
                 clientOptions,
                 serviceProvider.GetService<IContinuationTokenProtector>());
+            return this.auditFactories.TryGetValue(typeof(T), out var auditFactory) ? (IDocumentStoreClient<T>)auditFactory(boundary, serviceProvider) : boundary;
         });
 
         var descriptor = new DocumentStoreClientDescriptor(
@@ -219,8 +246,11 @@ public sealed class DocumentStorageBuilderContext(
         where T : class, new()
     {
         private readonly DocumentTypeIdentity type = DocumentTypeIdentity.For<T>();
+
         public string ClientName { get; } = clientName;
+
         public IDocumentStoreClient<T> InnerClient => inner;
+
         IDocumentStoreProvider IDocumentStoreProviderAccessor.Provider => provider;
 
         public Task<Result<DocumentEntry<T>>> GetAsync(DocumentKey key, CancellationToken cancellationToken = default) =>

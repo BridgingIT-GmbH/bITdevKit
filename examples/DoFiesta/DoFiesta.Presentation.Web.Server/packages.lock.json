@@ -944,6 +944,16 @@
         "resolved": "16.3.0",
         "contentHash": "SgMOdxbz8X65z8hraIs6hOEdnkH6hESTAIUa7viEngHOYaH+6q5XJmwr1+yb9vJpNQ19hCQY69xbFsLtXpobQA=="
       },
+      "BridgingIT.DevKit.Application.Auditing": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )"
+        }
+      },
       "BridgingIT.DevKit.Application.Commands": {
         "type": "Project",
         "dependencies": {
@@ -1300,6 +1310,7 @@
       "BridgingIT.DevKit.Infrastructure.EntityFramework": {
         "type": "Project",
         "dependencies": {
+          "BridgingIT.DevKit.Application.Auditing": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Entities": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Identity": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Jobs": "[1.0.0, )",
@@ -1392,6 +1403,16 @@
           "Serilog.Extensions.Hosting": "[10.0.0, )",
           "Spectre.Console": "[0.57.2, )",
           "System.IdentityModel.Tokens.Jwt": "[8.23.0, )"
+        }
+      },
+      "BridgingIT.DevKit.Presentation.Web.Auditing": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Auditing": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
+          "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "RazorSlices": "[0.12.2, )"
         }
       },
       "BridgingIT.DevKit.Presentation.Web.Client": {
@@ -2019,9 +2040,9 @@
       },
       "System.Security.Cryptography.Pkcs": {
         "type": "CentralTransitive",
-        "requested": "[10.0.13, )",
-        "resolved": "10.0.13",
-        "contentHash": "a+EovgC1fBnwdlQ6cn3j4JFBfKqiFaFvoAhjisOoSvazLAcIznaBzPQP0oYnvccmeXfqUH1KebVZOxSeH6rMaw=="
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "Wz+IgL2xpg8KJ4i2VWj6uz1PmZNu4Q0Ljlwd73P9Vze5NcOBtctLii3itV0PB2MpOqwqDEGfB6RCdv94A4E5yQ=="
       }
     }
   }

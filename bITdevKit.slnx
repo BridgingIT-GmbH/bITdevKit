@@ -28,6 +28,7 @@
       <Build Solution="Debug|x86" Project="false" />
     </Project>
     <Project Path="benchmarks/Common.Benchmarks/Common.Benchmarks.csproj" />
+    <Project Path="benchmarks/Presentation.Benchmarks/Presentation.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/docs/">
     <File Path="docs\features-change-history.md" />
@@ -121,6 +122,7 @@
     <Project Path="examples/DoFiesta/DoFiesta.Application/DoFiesta.Application.csproj" />
     <Project Path="examples/DoFiesta/DoFiesta.Domain/DoFiesta.Domain.csproj" />
     <Project Path="examples/DoFiesta/DoFiesta.Infrastructure/DoFiesta.Infrastructure.csproj" />
+    <Project Path="examples/DoFiesta/DoFiesta.IntegrationTests/DoFiesta.IntegrationTests.csproj" />
     <Project Path="examples/DoFiesta/DoFiesta.Presentation.Web.Client/DoFiesta.Presentation.Web.Client.csproj" />
     <Project Path="examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj" />
   </Folder>
@@ -155,6 +157,7 @@
   </Folder>
   <Folder Name="/src/">
     <File Path="src/Directory.Build.props" />
+    <Project Path="src/Application.Auditing/Application.Auditing.csproj" />
     <Project Path="src/Application.Commands.EventSourcing/Application.Commands.EventSourcing.csproj" />
     <Project Path="src/Application.Commands.Outbox/Application.Commands.Outbox.csproj" />
     <Project Path="src/Application.Commands/Application.Commands.csproj" />
@@ -211,6 +214,7 @@
     <Project Path="src/Presentation.Cli/Presentation.Cli.csproj" />
     <Project Path="src/Presentation.Configuration/Presentation.Configuration.csproj" />
     <Project Path="src/Presentation.Serilog/Presentation.Serilog.csproj" />
+    <Project Path="src/Presentation.Web.Auditing/Presentation.Web.Auditing.csproj" />
     <Project Path="src/Presentation.Web.Client/Presentation.Web.Client.csproj" />
     <Project Path="src/Presentation.Web.EntityFramework/Presentation.Web.EntityFramework.csproj" />
     <Project Path="src/Presentation.Web.Jobs/Presentation.Web.Jobs.csproj" />

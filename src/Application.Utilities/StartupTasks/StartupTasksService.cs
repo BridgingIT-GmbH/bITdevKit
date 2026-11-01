@@ -77,7 +77,7 @@ public class StartupTasksService : IHostedService
 
         this.startupRegistration = this.applicationLifetime.ApplicationStarted.Register(() =>
         {
-            this.startupTask = Task.Run(() => this.StartInternalAsync(this.linkedCts.Token), this.linkedCts.Token);
+            this.startupTask = AuditSourceExecutor.RunDetached(() => this.StartInternalAsync(this.linkedCts.Token), this.linkedCts.Token);
         });
 
         cancellationToken.Register(this.OnStopping);
@@ -135,16 +135,16 @@ public class StartupTasksService : IHostedService
 
             var tasks = this.definitions.SafeNull()
                 .Where(d => d.Options.Enabled)
-                .Select(definition => Task.Run(async () =>
+                .Select(definition => Task.Run(() => AuditSourceExecutor.RunIsolatedAsync(this.serviceProvider.GetRequiredService<IServiceScopeFactory>(), "StartupTasks", definition.TaskType.FullName, null, null, async () =>
                 {
                     try
                     {
-                        using var scope = this.serviceProvider.CreateScope();
+                        await using var scope = this.serviceProvider.CreateAsyncScope();
 
                         if (scope.ServiceProvider.GetService(definition.TaskType) is not IStartupTask task)
                         {
                             this.logger.LogInformation("[{LogKey}] startup task not registered (task={StartupTaskType})", Constants.LogKey, definition.TaskType.Name);
-                            return;
+                            return false;
                         }
 
                         var behaviors = scope.ServiceProvider.GetServices<IStartupTaskBehavior>();
@@ -164,7 +164,9 @@ public class StartupTasksService : IHostedService
                             this.FailFast($"{Constants.LogKey} startup task: app terminated (task={definition.TaskType.Name}, error={ex.Message})", ex);
                         }
                     }
-                }, cancellationToken));
+
+                    return true;
+                }), cancellationToken));
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }

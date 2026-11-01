@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs;
@@ -19,7 +20,7 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 /// </summary>
 public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     ModuleDbContextBase(options),
-    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext, IMessagingContext, IQueueingContext, ILoggingContext, IFileStorageContext, IDocumentStoreContext, IBlobStoreContext, IStoragePermalinkRegistryContext, IBroadcastingContext
+    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext, IMessagingContext, IQueueingContext, ILoggingContext, IFileStorageContext, IDocumentStoreContext, IBlobStoreContext, IStoragePermalinkRegistryContext, IBroadcastingContext, IAuditingDbContext
 {
     /// <summary>Gets or sets the cities DbSet.</summary>
     public DbSet<City> Cities { get; set; }
@@ -96,6 +97,18 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     public DbSet<LogEntry> LogEntries { get; set; }
 
     /// <inheritdoc />
+    public DbSet<AuditRecordEntity> AuditRecords { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<AuditActionEntity> AuditActions { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<AuditEntityChangeEntity> AuditEntityChanges { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<AuditStoreStateEntity> AuditStoreState { get; set; }
+
+    /// <inheritdoc />
     public DbSet<BroadcastNodeRegistrationEntity> BroadcastNodeRegistrations { get; set; }
 
     /// <inheritdoc />
@@ -107,5 +120,15 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
         // Soft-delete filtering is handled by specifications (e.g. UserCitiesByUserSpecification),
         // not EF global query filters. This allows IncludingDeleted specs and admin queries to work.
         base.OnModelCreating(modelBuilder);
+        if (!this.Database.IsRelational()) return;
+
+        // Host-owned initialization is part of the sample's EnsureCreated schema.
+        modelBuilder.Entity<AuditStoreStateEntity>().Property(state => state.StoreId).HasDefaultValueSql("NEWID()");
+        modelBuilder.Entity<AuditStoreStateEntity>().Property(state => state.StoreEpoch).HasDefaultValueSql("NEWID()");
+        modelBuilder.Entity<AuditStoreStateEntity>().HasData(new
+        {
+            Singleton = 1, PublishedPosition = 0L, LifecycleGeneration = 0L, RemovedThroughPosition = 0L,
+            RejectCompletedBeforeUtcTicks = 0L, ArchiveCompletedBeforeUtcTicks = 0L
+        });
     }
 }

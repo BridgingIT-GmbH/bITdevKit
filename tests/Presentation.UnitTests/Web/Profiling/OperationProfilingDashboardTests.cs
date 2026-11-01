@@ -259,7 +259,7 @@ public sealed class OperationProfilingDashboardTests
         html.ShouldContain("id=\"operation-detail-modal\"");
         html.ShouldContain("data-timeline=\"true\"");
         html.ShouldContain("data-dashboard-date-range-from=\"timeline-from\"");
-        html.ShouldContain("['runtime', 'operations', 'requests', 'timeline', 'insights']");
+        html.ShouldContain("data-view-key=\"profiling\"");
         foreach (var view in new[] { "operations", "requests" })
         {
             var page = await client.GetStringAsync("/admin/profiling/" + view);

@@ -36,6 +36,7 @@ public sealed class DashboardOverviewIconTests
         var html = await RenderAsync(page);
 
         html.ShouldContain(DashboardFeatureIcons.GetSvg(page.Key).Value);
+        html.ShouldContain("data-dashboard-feature=\"calendar2-check\"");
         html.ShouldNotContain("bi bi-calendar2-check");
         if (cardMode == "error")
         {
@@ -54,6 +55,24 @@ public sealed class DashboardOverviewIconTests
 
         html.ShouldContain("bi bi-cloud-sun");
         html.ShouldNotContain("data-dashboard-icon");
+    }
+
+    /// <summary>Prefers the card's explicit feature icon over its owning page.</summary>
+    /// <example><code>await RenderAsync_ExplicitFeature_OverridesPageIcon();</code></example>
+    [Fact]
+    public async Task RenderAsync_ExplicitFeature_OverridesPageIcon()
+    {
+        var page = new DashboardPage("jobs", "Activity", "calendar2-check", "/activity")
+        {
+            Card = _ => ValueTask.FromResult(new DashboardPageCard("Auditing") { FeatureKey = "auditing", Icon = "journal-text" })
+        };
+
+        var html = await RenderAsync(page);
+
+        html.ShouldContain(DashboardFeatureIcons.GetSvg("auditing").Value);
+        html.ShouldNotContain(DashboardFeatureIcons.GetSvg("jobs").Value);
+        html.ShouldContain("data-dashboard-feature=\"auditing\"");
+        html.ShouldContain("dashboard-card-icon flex-shrink-0");
     }
 
     private static async Task<string> RenderAsync(DashboardPage page)

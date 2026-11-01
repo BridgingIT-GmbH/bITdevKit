@@ -26,7 +26,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 public static class ChangeHistoryServiceCollectionExtensions
 {
     /// <summary>
-    /// Registers ChangeHistory options for repository behaviors.
+    /// Registers ChangeHistory options for repository behaviors and scoped read/restore services.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configure">The options configuration callback.</param>
@@ -41,6 +41,9 @@ public static class ChangeHistoryServiceCollectionExtensions
         configure?.Invoke(options);
         options.Validate();
         services.AddSingleton(options);
+        services.TryAddScoped(typeof(ChangeHistoryQueryService<>));
+        services.TryAddScoped(typeof(ChangeHistoryRestoreCommandHandler<,>));
+        services.TryAddScoped(typeof(IChangeHistoryService<,>), typeof(ChangeHistoryService<,>));
 
         foreach (var entityOptions in options.TrackedEntities.Values)
         {

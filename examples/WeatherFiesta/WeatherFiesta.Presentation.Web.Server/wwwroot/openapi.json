@@ -6115,6 +6115,258 @@
         }
       }
     },
+    "/api/core/cities/weather/stream": {
+      "get": {
+        "tags": [
+          "Core.Weather"
+        ],
+        "summary": "Core.Weather.Stream",
+        "description": "Streams the current user's subscriptions and stored weather in stable bounded batches. No upstream refresh, snapshot, or replay guarantee.",
+        "operationId": "Core.Weather.Stream",
+        "responses": {
+          "200": {
+            "description": "Incremental LF-delimited UTF-8 JSON values. HTTP success means admission. Raw failure aborts; envelope failure uses a safe terminal error or aborts. Generated JSON-array clients do not parse this stream.",
+            "headers": {
+              "X-Ndjson-Mode": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "example": "raw"
+              }
+            },
+            "content": {
+              "application/x-ndjson": {
+                "schema": {
+                  "type": "string",
+                  "description": "NDJSON text sequence; see x-ndjson-record-schema for one record."
+                },
+                "example": "{\"example\":1}\n{\"example\":2}\n",
+                "x-ndjson-record-schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "userId": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "cityId": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "isPrimary": {
+                      "type": "boolean"
+                    },
+                    "displayOrder": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "city": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "name": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "country": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "countryCode": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "timeZone": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "latitude": {
+                          "type": "number",
+                          "format": "double"
+                        },
+                        "longitude": {
+                          "type": "number",
+                          "format": "double"
+                        },
+                        "elevation": {
+                          "type": [
+                            "null",
+                            "number"
+                          ],
+                          "format": "double"
+                        },
+                        "externalId": {
+                          "type": [
+                            "null",
+                            "integer"
+                          ],
+                          "format": "int64"
+                        },
+                        "concurrencyVersion": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        }
+                      }
+                    },
+                    "currentWeather": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "cityId": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "temperature": {
+                          "type": "number",
+                          "format": "double"
+                        },
+                        "apparentTemperature": {
+                          "type": "number",
+                          "format": "double"
+                        },
+                        "humidity": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "weatherCode": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "weatherDescription": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "weatherIcon": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "windSpeed": {
+                          "type": "number",
+                          "format": "double"
+                        },
+                        "windDirection": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "windGusts": {
+                          "type": "number",
+                          "format": "double"
+                        },
+                        "precipitation": {
+                          "type": "number",
+                          "format": "double"
+                        },
+                        "cloudCover": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "pressure": {
+                          "type": "number",
+                          "format": "double"
+                        },
+                        "retrievedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "lastUpdatedText": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "staleDataWarning": {
+                          "type": "boolean"
+                        },
+                        "staleDataWarningMessage": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        }
+                      }
+                    },
+                    "staleDataWarning": {
+                      "type": "boolean"
+                    },
+                    "lastUpdatedText": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "staleDataWarningMessage": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "concurrencyVersion": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "x-ndjson-mode": "raw"
+      }
+    },
     "/api/core/cities/alerts": {
       "get": {
         "tags": [

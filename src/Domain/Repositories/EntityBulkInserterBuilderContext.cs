@@ -6,6 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Domain.Repositories;
+using BridgingIT.DevKit.Common;
 using Configuration;
 using Scrutor;
 
@@ -30,6 +31,9 @@ public class EntityBulkInserterBuilderContext<TEntity>(
     where TEntity : class, IEntity
 {
     private readonly List<Action<IServiceCollection>> behaviors = [];
+    private readonly List<Action<IServiceCollection>> auditBehaviors = [];
+    private readonly AuditBoundaryRegistrationCatalog auditRegistrations = DeclareAuditBoundaries(services);
+    private bool auditingSelected;
 
     private ServiceDescriptor bulkInserterDescriptor;
 
@@ -76,7 +80,8 @@ public class EntityBulkInserterBuilderContext<TEntity>(
     public EntityBulkInserterBuilderContext<TEntity> WithBehavior<TBehavior>()
         where TBehavior : class, IEntityBulkInserter<TEntity>
     {
-        this.behaviors.Add(services => services.Decorate<IEntityBulkInserter<TEntity>, TBehavior>());
+        if (typeof(TBehavior) == typeof(EntityBulkInserterAuditingBehavior<TEntity>)) return this.WithAuditing();
+        this.AddBehavior<TBehavior>(services => services.Decorate<IEntityBulkInserter<TEntity>, TBehavior>());
         this.RegisterBehaviors();
 
         return this;
@@ -99,7 +104,7 @@ public class EntityBulkInserterBuilderContext<TEntity>(
     {
         EnsureArg.IsNotNull(behavior, nameof(behavior));
 
-        this.behaviors.Add(services =>
+        this.AddBehavior<TBehavior>(services =>
             services.Decorate<IEntityBulkInserter<TEntity>>((inner, _) => behavior(inner)));
         this.RegisterBehaviors();
 
@@ -124,7 +129,7 @@ public class EntityBulkInserterBuilderContext<TEntity>(
     {
         EnsureArg.IsNotNull(behavior, nameof(behavior));
 
-        this.behaviors.Add(services =>
+        this.AddBehavior<TBehavior>(services =>
             services.Decorate<IEntityBulkInserter<TEntity>>((inner, serviceProvider) =>
                 behavior(inner, serviceProvider)));
         this.RegisterBehaviors();
@@ -160,6 +165,35 @@ public class EntityBulkInserterBuilderContext<TEntity>(
         return this;
     }
 
+    /// <summary>Selects whole-operation bulk insertion auditing without adding any baseline read.</summary>
+    /// <example><code>bulk.WithAuditing();</code></example>
+    public EntityBulkInserterBuilderContext<TEntity> WithAuditing()
+    {
+        if (this.auditingSelected) return this;
+        this.auditingSelected = true;
+        return this.WithBehavior<EntityBulkInserterAuditingBehavior<TEntity>>((inner, services) => this.Lifetime == ServiceLifetime.Singleton
+            ? new(inner, scopes: services.GetService<IServiceProviderIsService>()?.IsService(typeof(IAuditContext)) == true ? services.GetRequiredService<IServiceScopeFactory>() : null)
+            : new(inner, services.GetService<IAuditContext>()));
+    }
+
+    private static AuditBoundaryRegistrationCatalog DeclareAuditBoundaries(IServiceCollection services)
+    {
+        var catalog = new AuditBoundaryRegistrationCatalog("BulkInserter", "Insert");
+        catalog.Select("Insert", "omitted", typeof(TEntity).Name);
+        services.AddSingleton<IAuditBoundaryRegistrationSource>(catalog);
+        return catalog;
+    }
+    private void AddBehavior<TBehavior>(Action<IServiceCollection> register)
+    {
+        if (typeof(TBehavior) == typeof(EntityBulkInserterAuditingBehavior<TEntity>))
+        {
+            if (this.auditBehaviors.Count > 0) return;
+            this.auditBehaviors.Add(register);
+            this.auditRegistrations.Select("Insert", typeAlias: typeof(TEntity).Name);
+        }
+        else this.behaviors.Add(register);
+    }
+
     private IServiceCollection RegisterBehaviors()
     {
         this.bulkInserterDescriptor ??= this.Services.Find<IEntityBulkInserter<TEntity>>();
@@ -186,7 +220,7 @@ public class EntityBulkInserterBuilderContext<TEntity>(
             this.Services.Remove(descriptor);
         }
 
-        foreach (var behavior in this.behaviors.AsEnumerable().Reverse())
+        foreach (var behavior in this.behaviors.AsEnumerable().Reverse().Concat(this.auditBehaviors.AsEnumerable().Reverse()))
         {
             behavior(this.Services);
         }

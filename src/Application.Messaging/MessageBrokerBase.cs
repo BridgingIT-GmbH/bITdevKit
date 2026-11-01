@@ -35,8 +35,12 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
             NullLoggerFactory.Instance.CreateLogger(this.GetType());
         this.HandlerFactory = handlerFactory;
         this.Serializer = serializer ?? new SystemTextJsonSerializer();
-        this.PublisherBehaviors = publisherBehaviors ?? [];
-        this.HandlerBehaviors = handlerBehaviors ?? [];
+        var producers = (publisherBehaviors ?? []).ToArray();
+        var firstAuditedProducer = Array.FindIndex(producers, behavior => behavior is AuditingMessagePublisherBehavior);
+        this.PublisherBehaviors = producers.Where((behavior, index) => behavior is not AuditingMessagePublisherBehavior || index == firstAuditedProducer).ToArray();
+        var consumers = (handlerBehaviors ?? []).ToArray();
+        var firstAuditedConsumer = Array.FindIndex(consumers, behavior => behavior is AuditingMessageHandlerBehavior);
+        this.HandlerBehaviors = consumers.Where((behavior, index) => behavior is not AuditingMessageHandlerBehavior || index == firstAuditedConsumer).ToArray();
         this.profilingBoundary = this.HandlerBehaviors.OfType<IProfilingExecutionBoundaryBehavior>().FirstOrDefault();
     }
 
@@ -171,6 +175,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
     /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Publish(IMessage message, CancellationToken cancellationToken = default)
     {
+
         EnsureArg.IsNotNull(message, nameof(message));
 
         var correlationId = CorrelationIdGenerator.GetOrCreate(message.Properties);
@@ -181,27 +186,34 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
 
         TypedLogger.LogPublish(this.Logger, Constants.LogKey, messageType, message.MessageId);
         this.Logger.LogDebug("[{LogKey}] publish validating (type={MessageType}, id={MessageId})", Constants.LogKey, messageType, message.MessageId);
-        this.ValidatePublish(message); // TODO: message validation can also be done with a PublisherBehavior
-        CorrelationId.PropagateTo(message.Properties);
+        var auditing = this.PublisherBehaviors.OfType<AuditingMessagePublisherBehavior>().FirstOrDefault();
+        if (auditing is null) await ValidatedAsync().ConfigureAwait(false);
+        else await auditing.Publish(message, cancellationToken, ValidatedAsync).ConfigureAwait(false);
 
-        // create a behavior pipeline and run it (publisher > next)
-        this.Logger.LogDebug(
-            $"{{LogKey}} publish behaviors: {this.PublisherBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Publish",
-            Constants.LogKey);
-
-        async Task Publisher()
+        async Task ValidatedAsync()
         {
-            await this.OnPublish(message, cancellationToken).AnyContext();
-        }
+            this.ValidatePublish(message); // TODO: message validation can also be done with a PublisherBehavior
+            CorrelationId.PropagateTo(message.Properties);
 
-        await this.PublisherBehaviors.SafeNull()
-            .Reverse()
-            .Aggregate((MessagePublisherDelegate)Publisher,
-                (next, pipeline) => async () =>
-                {
-                    // Activity.Current?.AddEvent(new($"publish behaviours: {this.PublisherBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Publish"));
-                    await pipeline.Publish(message, cancellationToken, next);
-                })();
+            // create a behavior pipeline and run it (publisher > next)
+            this.Logger.LogDebug(
+                $"{{LogKey}} publish behaviors: {this.PublisherBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Publish",
+                Constants.LogKey);
+
+            async Task Publisher()
+            {
+                await this.OnPublish(message, cancellationToken).AnyContext();
+            }
+
+            await this.PublisherBehaviors.SafeNull().Where(behavior => behavior is not AuditingMessagePublisherBehavior)
+                .Reverse()
+                .Aggregate((MessagePublisherDelegate)Publisher,
+                    (next, pipeline) => async () =>
+                    {
+                        // Activity.Current?.AddEvent(new($"publish behaviours: {this.PublisherBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Publish"));
+                        await pipeline.Publish(message, cancellationToken, next);
+                    })();
+        }
     }
 
     /// <summary>
@@ -210,6 +222,21 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
     /// <param name="messageRequest">The message request used by the operation.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Process(MessageRequest messageRequest)
+    {
+        ArgumentNullException.ThrowIfNull(messageRequest);
+        ArgumentNullException.ThrowIfNull(messageRequest.Message);
+        var message = messageRequest.Message;
+        var correlationId = CorrelationIdGenerator.GetOrCreate(message.Properties, useAmbient: false);
+        var auditing = this.HandlerBehaviors.OfType<AuditingMessageHandlerBehavior>().FirstOrDefault();
+        var subscribed = this.Subscriptions.Exists(message.GetType().PrettyName(false));
+        if (auditing is not null && subscribed)
+            await auditing.ExecuteDeliveryAsync(message, () => this.ProcessCoreAsync(messageRequest), messageRequest.CancellationToken, correlationId).ConfigureAwait(false);
+        else if (this.HandlerFactory is IAuditExecutionIsolation isolation)
+            await isolation.RunIsolatedAsync("Messaging", message.MessageId, AuditHandoffMetadata.Read(message.Properties), correlationId, () => this.ProcessCoreAsync(messageRequest)).ConfigureAwait(false);
+        else await this.ProcessCoreAsync(messageRequest).ConfigureAwait(false);
+    }
+
+    private async Task<bool> ProcessCoreAsync(MessageRequest messageRequest)
     {
         EnsureArg.IsNotNull(messageRequest, nameof(messageRequest));
         EnsureArg.IsNotNull(messageRequest.Message, nameof(messageRequest.Message));
@@ -252,6 +279,8 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
 
             messageRequest.OnPublishComplete(result);
         }
+
+        return result;
     }
 
     /// <summary>
@@ -299,7 +328,9 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
             TypedLogger.LogProcessing(this.Logger, Constants.LogKey, messageType, subscription.HandlerType.FullName, messageRequest.Message.MessageId, this.GetType().Name);
             var watch = ValueStopwatch.StartNew();
 
-            var handlerResult = this.HandlerFactory.Create(subscription.HandlerType); // should not be null, did you forget to register your generic handler (EntityMessageHandler<T>)
+            var handlerResult = this.HandlerFactory is IAsyncMessageHandlerFactory asynchronousFactory
+                ? await asynchronousFactory.CreateAsync(subscription.HandlerType).ConfigureAwait(false)
+                : this.HandlerFactory.Create(subscription.HandlerType); // should not be null, did you forget to register your generic handler (EntityMessageHandler<T>)
             await using var _ = handlerResult;
             var handlerInstance = handlerResult?.Handler;
             var handlerType = typeof(IMessageHandler<>).MakeGenericType(subscription.MessageType);
@@ -379,7 +410,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
             await ((Task)handlerMethod.Invoke(handlerInstance, [handledMessage, messageRequest.CancellationToken])).AnyContext();
         }
 
-        await this.HandlerBehaviors.SafeNull()
+        await this.HandlerBehaviors.SafeNull().OrderBy(behavior => behavior is AuditingMessageHandlerBehavior ? 1 : 0)
             .Reverse()
             .Aggregate((MessageHandlerDelegate)Handler,
                 (next, pipeline) => async () =>

@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <AssemblyName>BridgingIT.DevKit.Examples.DoFiesta.IntegrationTests</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Examples.DoFiesta.IntegrationTests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DoFiesta.Presentation.Web.Server\DoFiesta.Presentation.Web.Server.csproj" />
+    <ProjectReference Include="..\..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="../../../tests/Common.UnitTests/Serialization/Ndjson/NdjsonTestStreams.cs" Link="Fixtures/NdjsonTestStreams.cs" />
+    <Compile Include="../../../tests/Common.UnitTests/Serialization/Ndjson/NdjsonTestTimeProvider.cs" Link="Fixtures/NdjsonTestTimeProvider.cs" />
+  </ItemGroup>
+</Project>

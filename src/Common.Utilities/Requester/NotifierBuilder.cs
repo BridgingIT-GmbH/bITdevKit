@@ -32,6 +32,7 @@ using Microsoft.Extensions.Logging;
 public class NotifierBuilder
 {
     private readonly IServiceCollection services;
+    private readonly AuditBoundaryRegistrationCatalog auditRegistrations = new("Notifier", "Dispatch", "Handler");
     private readonly List<Type> pipelineBehaviorTypes = [];
     private readonly List<Type> validatorTypes = [];
     private readonly IHandlerCache handlerCache = HandlerCacheFactory.Create();
@@ -45,6 +46,9 @@ public class NotifierBuilder
     public NotifierBuilder(IServiceCollection services)
     {
         this.services = services ?? throw new ArgumentNullException(nameof(services));
+        foreach (var previous in this.services.Where(item => item.ServiceType == typeof(IAuditBoundaryRegistrationSource)
+            && item.ImplementationInstance is AuditBoundaryRegistrationCatalog catalog && catalog.Feature == "Notifier").ToArray()) this.services.Remove(previous);
+        this.services.AddSingleton<IAuditBoundaryRegistrationSource>(this.auditRegistrations);
         // Register the core services needed for Notifier to function
         this.services.TryAddSingleton(this.handlerCache);
         this.services.TryAddSingleton(this.policyCache);
@@ -56,7 +60,8 @@ public class NotifierBuilder
             sp.GetRequiredService<INotificationHandlerProvider>(),
             sp.GetRequiredService<INotificationBehaviorsProvider>(),
             sp.GetRequiredService<IHandlerCache>(),
-            this.pipelineBehaviorTypes));
+            this.pipelineBehaviorTypes, notification => this.services.Count(descriptor => descriptor.ServiceType.IsGenericType &&
+                descriptor.ServiceType.GetGenericTypeDefinition() == typeof(INotificationHandler<>) && (descriptor.ServiceType.IsGenericTypeDefinition || descriptor.ServiceType.GenericTypeArguments[0] == notification))));
     }
 
     /// <summary>
@@ -424,6 +429,22 @@ public class NotifierBuilder
         return this;
     }
 
+    /// <summary>Selects logical dispatch and actual-handler auditing on this source builder.</summary>
+    /// <example><code>services.AddNotifier().WithAuditing();</code></example>
+    public NotifierBuilder WithAuditing(Func<NotifierAuditOptions, NotifierAuditOptions> configure = null)
+    {
+        if (this.services.Any(descriptor => descriptor.ServiceType == typeof(NotifierAuditOptions)))
+        {
+            if (configure is not null) throw new InvalidOperationException("Notifier auditing is already configured.");
+            return this;
+        }
+
+        var options = configure is null ? new NotifierAuditOptions() : configure(new()) ?? throw new ArgumentException("Audit source options are required.");
+        if (options.Select is null) throw new ArgumentException("A notification selector is required.");
+        this.services.AddSingleton(options);
+        return this.WithBehavior(typeof(AuditingNotificationBehavior<,>)).WithBehavior(typeof(AuditingNotificationHandlerBehavior<,>));
+    }
+
     /// <summary>
     /// Adds a pipeline behavior to the notification processing pipeline.
     /// </summary>
@@ -447,7 +468,7 @@ public class NotifierBuilder
             return this;
         }
 
-        if ((behaviorType == typeof(ProfilingNotificationBehavior<,>) || behaviorType == typeof(ProfilingNotificationHandlerBehavior<,>))
+        if ((behaviorType == typeof(ProfilingNotificationBehavior<,>) || behaviorType == typeof(ProfilingNotificationHandlerBehavior<,>) || behaviorType == typeof(AuditingNotificationBehavior<,>) || behaviorType == typeof(AuditingNotificationHandlerBehavior<,>))
             && this.pipelineBehaviorTypes.Contains(behaviorType))
         {
             return this;
@@ -460,6 +481,8 @@ public class NotifierBuilder
 
         this.services.AddScoped(typeof(IPipelineBehavior<,>), behaviorType);
         this.pipelineBehaviorTypes.Add(behaviorType);
+        if (behaviorType == typeof(AuditingNotificationBehavior<,>)) this.auditRegistrations.Select("Dispatch");
+        if (behaviorType == typeof(AuditingNotificationHandlerBehavior<,>)) this.auditRegistrations.Select("Handler");
 
         return this;
     }

@@ -37,6 +37,7 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Domain.Mediator\Domain.Mediator.csproj" />
     <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj" />
+    <ProjectReference Include="..\Application.Auditing\Application.Auditing.csproj" />
   </ItemGroup>
 
   <ItemGroup>

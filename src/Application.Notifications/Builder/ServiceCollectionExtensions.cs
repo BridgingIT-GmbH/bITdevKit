@@ -2,6 +2,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using System;
 using BridgingIT.DevKit.Application.Notifications;
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Configuration;
 
 /// <summary>
@@ -30,6 +31,7 @@ public static class ServiceCollectionExtensions
         Action<NotificationServiceBuilder> configure = null)
         where TMessage : class, INotificationMessage
     {
+        AuditBoundaryRegistrationCatalog.GetOrAdd(services, "Email", "Operation", "Worker");
         var builder = new NotificationServiceBuilder(services);
 
         if (configuration != null)

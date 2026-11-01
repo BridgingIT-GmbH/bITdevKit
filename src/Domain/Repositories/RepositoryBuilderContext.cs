@@ -6,6 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Domain.Repositories;
+using BridgingIT.DevKit.Common;
 using Configuration;
 using Scrutor;
 
@@ -21,6 +22,9 @@ public class RepositoryBuilderContext<TEntity>(
     where TEntity : class, IEntity
 {
     private readonly List<Action<IServiceCollection>> behaviors = [];
+    private readonly List<Action<IServiceCollection>> auditBehaviors = [];
+    private readonly AuditBoundaryRegistrationCatalog auditRegistrations = DeclareAuditBoundaries(services);
+    private bool auditingSelected;
 
     private ServiceDescriptor repositoryDescriptor;
 
@@ -113,7 +117,8 @@ public class RepositoryBuilderContext<TEntity>(
     public RepositoryBuilderContext<TEntity> WithBehavior<TBehavior>()
         where TBehavior : class, IGenericRepository<TEntity>
     {
-        this.behaviors.Add(s => s.Decorate<IGenericRepository<TEntity>, TBehavior>());
+        if (typeof(TBehavior) == typeof(RepositoryAuditingBehavior<TEntity>)) return this.WithAuditing();
+        this.AddBehavior<TBehavior>(s => s.Decorate<IGenericRepository<TEntity>, TBehavior>());
         this.RegisterBehaviors();
 
         return this;
@@ -145,7 +150,7 @@ public class RepositoryBuilderContext<TEntity>(
     {
         EnsureArg.IsNotNull(behavior, nameof(behavior));
 
-        this.behaviors.Add(s => s.Decorate<IGenericRepository<TEntity>>((service, _) => behavior(service)));
+        this.AddBehavior<TBehavior>(s => s.Decorate<IGenericRepository<TEntity>>((service, _) => behavior(service)));
         this.RegisterBehaviors();
 
         return this;
@@ -163,10 +168,40 @@ public class RepositoryBuilderContext<TEntity>(
     {
         EnsureArg.IsNotNull(behavior, nameof(behavior));
 
-        this.behaviors.Add(s => s.Decorate<IGenericRepository<TEntity>>((inner, sp) => behavior(inner, sp)));
+        this.AddBehavior<TBehavior>(s => s.Decorate<IGenericRepository<TEntity>>((inner, sp) => behavior(inner, sp)));
         this.RegisterBehaviors();
 
         return this;
+    }
+
+    /// <summary>Selects repository operation auditing locally, with optional meaningful read selection.</summary>
+    /// <example><code>services.AddInMemoryRepository&lt;Customer&gt;().WithAuditing();</code></example>
+    public RepositoryBuilderContext<TEntity> WithAuditing(RepositoryAuditOptions options = null)
+    {
+        if (this.auditingSelected) return this;
+        this.auditingSelected = true;
+        return this.WithBehavior<RepositoryAuditingBehavior<TEntity>>((inner, services) => this.Lifetime == ServiceLifetime.Singleton
+            ? new(inner, options: options, scopes: services.GetService<IServiceProviderIsService>()?.IsService(typeof(IAuditContext)) == true ? services.GetRequiredService<IServiceScopeFactory>() : null)
+            : new(inner, services.GetService<IAuditContext>(), options, services));
+    }
+
+    private static AuditBoundaryRegistrationCatalog DeclareAuditBoundaries(IServiceCollection services)
+    {
+        var catalog = new AuditBoundaryRegistrationCatalog("Repository", "Operation");
+        catalog.Select("Operation", "omitted", typeof(TEntity).Name);
+        services.AddSingleton<IAuditBoundaryRegistrationSource>(catalog);
+        return catalog;
+    }
+
+    private void AddBehavior<TBehavior>(Action<IServiceCollection> register)
+    {
+        if (typeof(TBehavior) == typeof(RepositoryAuditingBehavior<TEntity>))
+        {
+            if (this.auditBehaviors.Count > 0) return;
+            this.auditBehaviors.Add(register);
+            this.auditRegistrations.Select("Operation", typeAlias: typeof(TEntity).Name);
+        }
+        else this.behaviors.Add(register);
     }
 
     /// <summary>
@@ -203,7 +238,7 @@ public class RepositoryBuilderContext<TEntity>(
         }
 
         // register all behaviors in reverse order (first...last)
-        foreach (var behavior in this.behaviors.AsEnumerable().Reverse())
+        foreach (var behavior in this.behaviors.AsEnumerable().Reverse().Concat(this.auditBehaviors.AsEnumerable().Reverse()))
         {
             behavior.Invoke(this.Services);
         }

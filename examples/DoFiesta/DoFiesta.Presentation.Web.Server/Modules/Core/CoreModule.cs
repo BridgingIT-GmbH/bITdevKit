@@ -46,6 +46,7 @@ public class CoreModule : WebModuleBase
 
         // jobs
         services.AddJobScheduler(configuration)
+            .WithAuditing()
             .StartupDelay(TimeSpan.TryParse(configuration["JobScheduler:StartupDelay"], out var startupDelay) ? startupDelay : TimeSpan.Zero)
             .WithJob<FileMonitoringLocationScanJob>("scan_inbound", job => job
                 .Description("Scans the inbound file-monitoring location.")
@@ -103,14 +104,14 @@ public class CoreModule : WebModuleBase
             .WithHealthCheck()
             .WithDatabaseCreatorService(o => o
                 .Enabled(environment.IsLocalDevelopment())
-                .HaltOnFailure().DeleteOnStartup().PurgeOnStartup())
-            //.DeleteOnStartup(environment.IsLocalDevelopment()))
+                .HaltOnFailure()
+                .DeleteOnStartup(environment.IsLocalDevelopment())) // drop and recreate the database on a local dev box
             .WithOutboxDomainEventService(o => o
                 .AutoArchiveAfter(TimeSpan.FromHours(1))
                 .ProcessingModeImmediate()
                 .ProcessingInterval("00:00:30")
                 .StartupDelay("00:00:15"));
-        //.PurgeOnStartup());
+                //.PurgeOnStartup());
 
         services.AddChangeHistory(options =>
         {
@@ -155,11 +156,13 @@ public class CoreModule : WebModuleBase
                     e.EndDate
                 });
         })
+            .WithAuditing<CoreDbContext>()
             .WithReadAuthorizer<CoreDbContext, CoreChangeHistoryReadAuthorizer>()
             .WithRestoreRequestAuthorizer<TodoItem, CoreDbContext, TodoItemChangeHistoryRestoreRequestAuthorizer>()
             .WithRestoreRequestAuthorizer<Subscription, CoreDbContext, SubscriptionChangeHistoryRestoreRequestAuthorizer>();
 
         services.AddOrchestrations()
+            .WithAuditingBehavior()
             .WithOrchestration<TodoItemLifecycleOrchestration>()
             .WithBehavior<MetricsOrchestrationBehavior>()
             .WithEntityFramework<CoreDbContext>()
@@ -177,6 +180,7 @@ public class CoreModule : WebModuleBase
                     options => options
                         .PageSize(200)
                         .MaximumBufferedContentSize(8 * 1024 * 1024))
+                .WithAuditing()
                 .WithLifetime(ServiceLifetime.Singleton))
             .RegisterProvider("attachments", storage => storage
                 .UseEntityFramework<CoreDbContext>(
@@ -185,6 +189,7 @@ public class CoreModule : WebModuleBase
                     options => options
                         .PageSize(200)
                         .MaximumBufferedContentSize(8 * 1024 * 1024))
+                .WithAuditing()
                 .WithLifetime(ServiceLifetime.Singleton)))
             .AddEndpoints(options => options.RequireAuthorization());
 
@@ -214,6 +219,7 @@ public class CoreModule : WebModuleBase
         // file monitoring
         services.AddFileMonitoring(b =>
         {
+            b.WithAuditing();
             b.UseLocal("inbound", Path.Combine(Path.GetTempPath(), "DoFiesta-inbound"), o =>
             {
                 o.UseOnDemandOnly = true; // On-demand only
@@ -243,6 +249,7 @@ public class CoreModule : WebModuleBase
         // repositories
         services.AddEntityFrameworkRepository<TodoItem, CoreDbContext>()
             .WithTransactions()
+            .WithAuditing()
             .WithBehavior<RepositoryMetricsBehavior<TodoItem>>()
             .WithBehavior<RepositoryTracingBehavior<TodoItem>>()
             .WithBehavior<RepositoryLoggingBehavior<TodoItem>>()
@@ -252,6 +259,7 @@ public class CoreModule : WebModuleBase
         //.WithBehavior<RepositoryDomainEventPublisherBehavior<TodoItem>>();
 
         services.AddEntityFrameworkBulkInserter<TodoItem, CoreDbContext>()
+            .WithAuditing()
             .WithBehavior<EntityBulkInserterCancellationBehavior<TodoItem>>()
             .WithBehavior<EntityBulkInserterTracingBehavior<TodoItem>>()
             .WithBehavior<EntityBulkInserterLoggingBehavior<TodoItem>>()
@@ -265,6 +273,7 @@ public class CoreModule : WebModuleBase
 
         services.AddEntityFrameworkRepository<Subscription, CoreDbContext>()
             .WithTransactions()
+            .WithAuditing()
             .WithBehavior<RepositoryMetricsBehavior<Subscription>>()
             .WithBehavior<RepositoryTracingBehavior<Subscription>>()
             .WithBehavior<RepositoryLoggingBehavior<Subscription>>()
@@ -275,6 +284,7 @@ public class CoreModule : WebModuleBase
 
         // dataporter - register export/import capabilities
         services.AddDataPorter(configuration)
+            .WithAuditing()
             .WithExcel(c =>
             {
                 c.UseTableFormatting = true;
@@ -319,7 +329,10 @@ public class CoreModule : WebModuleBase
             .AddImportRowInterceptor<TodoItemBulkImportPersistenceInterceptor>();
 
         // endpoints
+        services.AddChangeHistoryDashboard<TodoItem, CoreDbContext>(options => options.IncludeValues = true);
+        services.AddChangeHistoryDashboard<Subscription, CoreDbContext>(options => options.IncludeValues = true);
         services.AddEndpoints<CoreTodoItemEndpoints>();
+        services.AddEndpoints<CoreStreamingEndpoints>();
         services.AddEndpoints<CoreEnumerationEndpoints>();
         services.AddEndpoints<CoreDataPorterEndpoints>();
         services.AddChangeHistoryEndpoints<TodoItem, CoreDbContext>(options => options

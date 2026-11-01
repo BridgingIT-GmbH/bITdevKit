@@ -21,6 +21,14 @@ public class WeatherEndpoints : EndpointsBase
             .RequireAuthorization()
             .WithTags("Core.Weather");
 
+        group.MapGet("/weather/stream", async (IRequester requester, CancellationToken ct) =>
+                (await requester.SendAsync(new UserCitiesStreamQuery(), cancellationToken: ct)).MapHttpNdjson())
+            .WithName("Core.Weather.Stream")
+            .WithDescription("Streams the current user's subscriptions and stored weather in stable bounded batches. No upstream refresh, snapshot, or replay guarantee.")
+            .WithNdjson<UserCityModel>()
+            .Produces(StatusCodes.Status401Unauthorized)
+            .ProducesResultProblem(StatusCodes.Status400BadRequest);
+
         // GET /api/core/cities/alerts
         group.MapGet("/alerts",
             async ([FromServices] IRequester requester,

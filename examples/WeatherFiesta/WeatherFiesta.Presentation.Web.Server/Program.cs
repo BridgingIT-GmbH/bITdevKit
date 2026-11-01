@@ -4,6 +4,8 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 using System.Text.Json;
+using BridgingIT.DevKit.Application.Auditing;
+using BridgingIT.DevKit.Presentation.Web.Auditing;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Application.Queueing;
@@ -23,8 +25,18 @@ var builder = DevKitWebApplication.CreateBuilder(args)
 
 // ===============================================================================================
 // Configure the app services
+builder.Services.AddAuditing(options => options.Application("WeatherFiesta"))
+    .WithEntityFrameworkProvider<CoreDbContext>(options => options
+        .StartupDelay(TimeSpan.FromSeconds(2))
+        .Configure(settings => settings with { Buffered = builder.Configuration.GetValue("Auditing:Buffered", true) }))
+    .WithExposure(new AuditExposureOptions { ExposeChangeValues = true })
+    .WithExportFormatter(_ => new CefAuditExportFormatter(new() { Vendor = "BridgingIT", Product = "WeatherFiesta", Version = "1" }))
+    .WithHttpRequests(options => options.IncludeAuditIdHeader = true)
+    .AddConsoleCommands();
+
 builder.Services.AddRequester()
     .AddHandlers()
+    .WithAuditing()
     .WithBehavior(typeof(ProfilingRequestBehavior<,>))
     .WithBehavior(typeof(MetricsRequestBehavior<,>))
     .WithBehavior(typeof(TracingBehavior<,>))
@@ -36,6 +48,7 @@ builder.Services.AddRequester()
 
 builder.Services.AddNotifier()
     .AddHandlers()
+    .WithAuditing()
     .WithBehavior(typeof(ProfilingNotificationBehavior<,>))
     .WithBehavior(typeof(ProfilingNotificationHandlerBehavior<,>))
     .WithBehavior(typeof(MetricsNotificationBehavior<,>))
@@ -49,6 +62,7 @@ builder.Services.AddNotifier()
 
 builder.Services.AddMessaging(builder.Configuration, o => o
         .StartupDelay("00:00:30"))
+    .WithAuditing(producing: true, consuming: true)
     .WithBehavior<MessageHandlerProfilingBehavior>()
     .WithBehavior<ModuleScopeMessagePublisherBehavior>()
     .WithBehavior<ModuleScopeMessageHandlerBehavior>()
@@ -62,6 +76,7 @@ builder.Services.AddMessaging(builder.Configuration, o => o
 
 builder.Services.AddQueueing(builder.Configuration, o => o
         .StartupDelay("00:00:30"))
+    .WithAuditing()
     .WithBehavior<QueueHandlerProfilingBehavior>()
     .WithBehavior<ModuleScopeQueueEnqueuerBehavior>()
     .WithBehavior<ModuleScopeQueueHandlerBehavior>()
@@ -103,6 +118,7 @@ builder.Services.AddFileStorage(factory => factory
                     .PageSize(200)
                     .MaximumBufferedContentSize(8 * 1024 * 1024))
             .WithMetrics()
+            .WithAuditing()
             .WithPermalinks()
             .WithProfiling()
             .WithLifetime(ServiceLifetime.Singleton))
@@ -114,6 +130,7 @@ builder.Services.AddFileStorage(factory => factory
                     .PageSize(200)
                     .MaximumBufferedContentSize(8 * 1024 * 1024))
             .WithMetrics()
+            .WithAuditing()
             .WithPermalinks()
             .WithProfiling()
             .WithLifetime(ServiceLifetime.Singleton)))
@@ -129,10 +146,12 @@ builder.Services.AddDocumentStorage(o => o.Enabled())
         {
             AllowFullScans = true
         })
+    .WithAuditing<OpenMeteoWeatherArchiveDocument>()
     .WithPermalinks<OpenMeteoWeatherArchiveDocument>()
     .AddConsoleCommands();
 
 builder.Services.AddBlobStorage(o => o.Enabled())
+    .WithAuditing()
     .WithProfilingBehavior()
     .WithLoggingBehavior()
     .WithMetricsBehavior()
@@ -181,7 +200,8 @@ builder.Services.AddDashboard(o => o
     .Enabled(builder.Environment.IsDevelopment())
     .Authorize(o => o
         .UseOpenIdConnect(builder.Configuration["Authentication:Authority"])
-        .RequireRole(Role.Administrators)));
+        .RequireRole(Role.Administrators))
+    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Auditing.Dashboard.DashboardEndpoints>());
 // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.DashboardEndpoints>()
 // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Messaging.Dashboard.DashboardEndpoints>()
 // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.DashboardEndpoints>()
@@ -207,7 +227,14 @@ builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 builder.Services.AddHealthChecks();
 builder.Services.AddConsoleCommandsInteractive();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("X-Ndjson-Mode", "X-Ndjson-Envelope-Version")));
+builder.Services.AddNdjsonStreaming();
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.MimeTypes = Microsoft.AspNetCore.ResponseCompression.ResponseCompressionDefaults.MimeTypes.Concat([NdjsonDefaults.CONTENT_TYPE]);
+});
+
 builder.Services.AddControllers(); // needed for openapi gen, even with no controllers
 
 #pragma warning disable CS0618
@@ -252,9 +279,11 @@ app.UseRuleLogger();
 app.UseResultLogger();
 
 app.UseHttpsRedirection();
-app.UseProblemDetails();
 app.UseRequestProfilingExceptionObserver();
 app.UseRouting();
+// This app previously had no response compression. Keep ordinary responses unchanged.
+app.UseWhen(context => context.GetEndpoint()?.Metadata.GetMetadata<NdjsonEndpointDescriptor>() is not null,
+    branch => branch.UseNdjsonResponseCompression());
 //app.UseExceptionHandler();
 
 app.UseStaticFiles();
@@ -269,6 +298,8 @@ app.UseModules();
 app.UseActiveEntity(app.Services);
 
 app.UseAuthentication();
+app.UseAuditing();
+app.UseProblemDetails();
 app.UseAuthorization();
 
 app.UseCurrentUserLogging();

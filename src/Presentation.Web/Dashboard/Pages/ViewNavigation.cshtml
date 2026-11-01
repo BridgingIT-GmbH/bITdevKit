@@ -1,0 +1,48 @@
+@using System.Text.Json
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@inherits RazorSlice<DashboardPage>
+<script data-view-root="@Model.Url"
+        data-view-key="@Model.Key"
+        data-views="@JsonSerializer.Serialize(Model.RememberedViews)">
+(() => {
+    const configuration = document.currentScript.dataset;
+    const root = new URL(configuration.viewRoot, location.href);
+    const normalize = path => path.replace(/\/+$/, '').toLowerCase();
+    const views = Object.entries(JSON.parse(configuration.views))
+        .map(([key, path]) => ({ key, path: new URL(path, location.href).pathname }))
+        .sort((left, right) => right.path.length - left.path.length);
+    const storageKey = 'bdk.' + configuration.viewKey + '.view:' + root.pathname;
+
+    function updateNavigation(rememberCurrent = true) {
+        const currentPath = normalize(location.pathname);
+        let selected = rememberCurrent ? views.find(view => currentPath === normalize(view.path) || currentPath.startsWith(normalize(view.path) + '/')) : undefined;
+        try {
+            if (selected) localStorage.setItem(storageKey, selected.key);
+            else selected = views.find(view => view.key === localStorage.getItem(storageKey));
+        } catch { }
+
+        document.querySelectorAll('a[href]').forEach(link => {
+            if (link.closest('[data-dashboard-view]')) return;
+            const original = link.dataset.dashboardLandingHref || link.getAttribute('href');
+            let destination;
+            try { destination = new URL(original, location.href); } catch { return; }
+            if (destination.origin !== root.origin || normalize(destination.pathname) !== normalize(root.pathname)) return;
+            link.dataset.dashboardLandingHref = original;
+            if (selected) destination.pathname = selected.path;
+            link.href = destination.href;
+        });
+    }
+
+    updateNavigation();
+    document.addEventListener('click', event => {
+        const link = event.target.closest?.('a[href]');
+        if (!link || link.closest('[data-dashboard-view]')) return;
+        const destination = new URL(link.href, location.href);
+        if (destination.origin === root.origin && normalize(destination.pathname) === normalize(root.pathname)) updateNavigation();
+    }, true);
+    window.addEventListener('pageshow', () => updateNavigation());
+    window.addEventListener('storage', event => {
+        if (event.key === storageKey || event.key === null) updateNavigation(false);
+    });
+})();
+</script>

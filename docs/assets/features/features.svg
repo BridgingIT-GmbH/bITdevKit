@@ -598,6 +598,18 @@
     <circle cx="16" cy="18" r="6" />
   </g>
 </symbol>
+<symbol id="feature-auditing" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 5H7a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4" />
+    <rect x="11" y="3" width="10" height="4" rx="1" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 14v9h8M11 17h8" />
+    <circle cx="11" cy="12" r="2" />
+    <circle cx="21" cy="17" r="2" />
+    <circle cx="21" cy="23" r="2" />
+  </g>
+</symbol>
 <symbol id="feature-change-history" viewBox="0 0 32 32" fill="none">
 <g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
     <path d="M9 6h18v23H9V6Z M14 11h8M14 17h8M14 23h5" />

@@ -1,0 +1,24 @@
+@inherits RazorSlice<ResourceHistoryModel>
+<section class="audit-resource-history" aria-label="Resource history">
+<style>.audit-resource-history{max-width:100%;overflow-wrap:anywhere}.audit-resource-history .table-responsive{overflow-x:auto}</style>
+<h2>History for @Model.Resource?.Type @Model.Resource?.Id</h2>
+@if (Model.ShowFilters)
+{
+<form method="get" aria-label="History filters"><label>From UTC <input type="datetime-local" name="fromUtc" value="@HttpContext.Request.Query["fromUtc"]" /></label><label>To UTC <input type="datetime-local" name="toUtc" value="@HttpContext.Request.Query["toUtc"]" /></label><label>Lifecycle <select name="lifecycle">@foreach (var state in new[] { "Active", "Archived", "All" }) { <option value="@state" selected="@(HttpContext.Request.Query["lifecycle"] == state)">@state</option> }</select></label><label>Rows <select name="pageSize">@foreach (var size in new[] { 25, 50, 100, 250, 500 }) { <option value="@size" selected="@((Model.History.IsSuccess ? Model.History.PageSize : 50) == size)">@size</option> }</select></label><button type="submit">Apply history filters</button></form>
+}
+@if (Model.History is not { IsSuccess: true })
+{
+    <p role="alert">History is unavailable. Your access scope or the source provider could not be verified.</p>
+}
+else
+{
+    <p>@Model.History.TotalCount executions. Page @Model.History.CurrentPage of @Model.History.TotalPages. Times are UTC.</p>
+    <div class="table-responsive"><table class="table table-sm"><thead><tr><th>Started UTC</th><th>Business execution</th><th>Executing actor</th><th>Outcome</th><th>Matches</th></tr></thead><tbody>
+    @foreach (var item in Model.History.Value)
+    {
+        var link = Model.GetDetailLink(item.Record);
+        <tr><td>@item.Record.StartedUtc.ToString("u")</td><td>@if (link is not null) { <a href="@link">@(item.Record.DisplayName ?? item.Record.Key)</a> } else { @(item.Record.DisplayName ?? item.Record.Key) }</td><td>@item.Record.Actor?.UserId</td><td>@item.Record.Outcome</td><td><details><summary>@item.MatchingActionCount action occurrences; root match: @item.RootResourceMatched</summary><ul>@foreach (var action in item.MatchingActions) { <li>@(action.DisplayName ?? action.Key): @action.Outcome <small>@action.ActionId</small></li> }</ul></details></td></tr>
+    }
+    </tbody></table></div>
+}
+</section>

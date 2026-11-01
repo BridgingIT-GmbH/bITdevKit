@@ -599,6 +599,7 @@ Inherited endpoint group options from `EndpointsOptionsBase` also apply:
 | `AddChangeHistoryRequesterHandlers<TContext>()` | Requester handlers for flat row queries, grouped change-set queries, and single change-set queries. |
 | `AddChangeHistoryRequesterHandlers<TEntity, TContext>()` | Requester handler for restore commands for one entity/context pair. |
 | `AddChangeHistoryEndpoints<TEntity, TContext>(options, enabled)` | ChangeHistory services and HTTP endpoint registration for one entity/context pair. |
+| `AddChangeHistoryDashboard<TEntity, TContext>(configure, enabled)` | Optional dashboard settings override for one entity/context pair, without management REST endpoints. |
 | `DbSet<ChangeHistoryEntry> ChangeHistory` | Adds the annotated EF Core `ChangeHistoryEntry` mapping to the DbContext model. Defaults to `__ChangeHistory`. |
 | `AddEntityFrameworkRepository<TEntity, TContext>().WithBehavior<RepositoryChangeHistoryBehavior<TEntity, TContext>>()` | Repository capture behavior for inserts, updates, upserts, and set-based updates. |
 
@@ -766,15 +767,31 @@ Grouped change-set queries load change-set keys first and then load the rows for
 
 ## Dashboard guide
 
-Open Change History at `/_bdk/dashboard/change-history` with `Presentation.Web.EntityFramework` and the [Dashboard](features-presentation-dashboard.md) enabled. Register `AddChangeHistoryEndpoints<TEntity, TContext>(...)` for each entity/context pair you want to inspect. The Registration selector comes from those endpoint descriptors; registering capture services alone does not populate it.
+Open Change History at `/_bdk/dashboard/change-history` with `Presentation.Web.EntityFramework` and the [Dashboard](features-presentation-dashboard.md) enabled. The dashboard automatically discovers entities configured through `AddChangeHistory(options => options.Track<TEntity>())` and matches them to registered EF contexts whose models contain both the entity and `ChangeHistoryEntry`. No per-entity dashboard registration is required.
 
-Choose a registration and apply entity, property, operation, capture, change-set, user or date filters. Change Sets groups related audit rows. Rows shows individual property changes. Select a change set to inspect its details and the restore controls. Read and restore permissions follow the selected endpoint registration, and displayed values depend on its `IncludeValues` option.
+```csharp
+services.AddChangeHistory(options => options.Track<Customer>());
+services.AddDashboard(options => options
+    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints>());
+
+app.MapEndpoints();
+```
+
+Configure capture, the EF context and entity repository as described above. `AddChangeHistory` registers the generic read and restore services. Discovery uses DevKit context registrations and standard EF context options, inspecting EF model metadata without querying the database. The Razor slices query the ChangeHistory services directly on the server, and refresh returns an HTML fragment. Restore posts to the dashboard action, which invokes the restore service directly. Management REST endpoints are optional and are registered separately with `AddChangeHistoryEndpoints<TEntity, TContext>(...)` for clients that need them.
+
+Choose a registration and apply entity, property, operation, capture, change-set, user or date filters. Change Sets groups related audit rows. Rows shows individual property changes. Select a change set to inspect its details and the restore controls. Dashboard access follows the dashboard's authorization configuration; ChangeHistory read and restore authorizers run in the services. REST endpoint policies do not configure dashboard authorization. Displayed values depend on `ChangeHistoryDashboardOptions.IncludeValues`, which defaults to `false` independently of the REST endpoint setting.
+
+Optionally override the dashboard settings for an entity/context pair:
+
+```csharp
+services.AddChangeHistoryDashboard<Customer, AppDbContext>(options => options.IncludeValues = true);
+```
+
+An explicit override takes precedence over discovered defaults and does not duplicate the registration selector entry.
 
 Use the **Quick range** clock icon before the date inputs to set **From UTC** and clear **To UTC**, edit either timestamp if needed, then select **Apply**. An empty end includes newer changes on refresh. The filters retain time-of-day precision when paging.
 
-[![Change History dashboard showing the filter controls and missing endpoint registration state](assets/dashboard/22-change-history-unavailable.png)](assets/dashboard/22-change-history-unavailable.png)
-
-This image shows the unconfigured state. When the page reports no ChangeHistory endpoints, register an entity/context endpoint as shown in [HTTP endpoints](#http-endpoints), then map the endpoint pipeline. A database with audit rows cannot supply the dashboard registration selector by itself.
+When the page reports no ChangeHistory entities, check that `AddChangeHistory` tracks the entity and that a registered EF context maps both that entity and `ChangeHistoryEntry`. Persisted audit rows alone do not supply the registration selector.
 
 ## HTTP endpoints
 

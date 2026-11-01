@@ -8,7 +8,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory;
-using BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard;
 using Microsoft.EntityFrameworkCore;
 
 public static partial class ServiceCollectionExtensions
@@ -82,7 +81,6 @@ public static partial class ServiceCollectionExtensions
 
         services.AddChangeHistoryServices<TEntity, TContext>();
         services.AddEndpoints(new ChangeHistoryEndpoints<TEntity, TContext>(options), options.Enabled);
-        services.AddSingleton(new ChangeHistoryDashboardDescriptor(typeof(TEntity), typeof(TContext), options));
 
         return services;
     }

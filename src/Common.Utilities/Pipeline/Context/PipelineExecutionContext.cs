@@ -40,6 +40,10 @@ public class PipelineExecutionContext
     /// </summary>
     public string CurrentStepName { get; set; }
 
+    /// <summary>The engine-managed one-based attempt of the current step, zero outside a step.</summary>
+    /// <example><code>var attempt = context.Pipeline.CurrentStepAttempt;</code></example>
+    public int CurrentStepAttempt { get; set; }
+
     /// <summary>
     /// Gets or sets the number of executed steps.
     /// </summary>

@@ -6,6 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Common;
 using Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -27,6 +28,21 @@ public sealed class BlobStorageBuilderContext(
     IConfiguration configuration = null)
 {
     private readonly List<Func<IBlobStoreClient, IServiceProvider, string, IBlobStoreClient>> behaviors = [];
+
+    private bool auditing;
+    private StorageAuditOptions auditOptions;
+    private readonly AuditBoundaryRegistrationCatalog auditRegistrations = AuditBoundaryRegistrationCatalog.GetOrAdd(services, "BlobStorage", "Client");
+
+    /// <summary>Selects one outer audit occurrence per client call; reads require explicit local selection.</summary>
+    /// <example><code>services.AddBlobStorage().WithAuditing().WithInMemoryClient("exports");</code></example>
+    public BlobStorageBuilderContext WithAuditing(StorageAuditOptions options = null)
+    {
+        if (this.auditing) return this;
+        this.auditing = true;
+        this.auditOptions = options;
+        this.auditRegistrations.Select("Client");
+        return this;
+    }
 
     /// <summary>
     /// Gets the service collection being configured.
@@ -82,6 +98,7 @@ public sealed class BlobStorageBuilderContext(
     public BlobStorageBuilderContext WithBehavior<TBehavior>()
         where TBehavior : class, IBlobStoreClient
     {
+        if (typeof(TBehavior) == typeof(AuditingBlobStoreClientBehavior)) return this.WithAuditing();
         this.behaviors.Add((inner, serviceProvider, name) =>
             ActivatorUtilities.CreateInstance<TBehavior>(serviceProvider, inner, name));
 
@@ -105,6 +122,7 @@ public sealed class BlobStorageBuilderContext(
         ArgumentNullException.ThrowIfNull(behavior);
 
         this.behaviors.Add(behavior);
+        if (!this.auditing) this.auditRegistrations.Select("Client", "unknown");
 
         return this;
     }
@@ -206,12 +224,13 @@ public sealed class BlobStorageBuilderContext(
         this.RegisterKeyedClient(
             name,
             resolvedLifetime,
-            (serviceProvider, _) => new BlobStoreClient(
-                resolvedProviderName,
-                serviceProvider.GetRequiredKeyedService<IBlobStoreProvider>(name),
-                options,
-                inner => this.ApplyBehaviors(name, serviceProvider, inner),
-                serviceProvider.GetService<IContinuationTokenProtector>()));
+            (serviceProvider, _) =>
+            {
+                IBlobStoreClient client = new BlobStoreClient(resolvedProviderName,
+                    serviceProvider.GetRequiredKeyedService<IBlobStoreProvider>(name), options,
+                    inner => this.ApplyBehaviors(name, serviceProvider, inner), serviceProvider.GetService<IContinuationTokenProtector>());
+                return this.auditing ? new AuditingBlobStoreClientBehavior(client, serviceProvider.GetRequiredService<IServiceScopeFactory>(), name, this.auditOptions) : client;
+            });
         this.Services.AddSingleton(new BlobStoreClientRegistration
         {
             Name = name,

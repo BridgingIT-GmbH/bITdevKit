@@ -15,4 +15,14 @@ public interface IMessageHandlerFactory
     /// </summary>
     /// <param name="messageHandlerType">Type of the message handler.</param>
     MessageHandlerFactoryResult Create(Type messageHandlerType);
+
+}
+
+/// <summary>Optionally creates source handlers with awaited cleanup of scoped asynchronous dependencies on resolution failure.</summary>
+/// <example><code>await using var handler = await factory.CreateAsync(typeof(CustomerHandler));</code></example>
+public interface IAsyncMessageHandlerFactory
+{
+    /// <summary>Resolves a handler or disposes its failed resolution scope before rethrowing the original exception.</summary>
+    /// <example><code>var handler = await factory.CreateAsync(typeof(CustomerHandler));</code></example>
+    ValueTask<MessageHandlerFactoryResult> CreateAsync(Type messageHandlerType);
 }

@@ -35,15 +35,13 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
 
     private static ValueTask<DashboardPageCard> GetCardAsync(HttpContext context)
     {
-        var registrations = context.RequestServices.GetServices<ChangeHistoryDashboardDescriptor>()
-            .Where(descriptor => descriptor.IsValid)
-            .ToArray();
+        var registrations = ChangeHistoryDashboardDiscovery.GetRegistrations(context.RequestServices);
         var url = DashboardEndpoints.BuildChangeHistoryPath(context.RequestServices.GetRequiredService<DashboardEndpointsOptions>());
-        var value = registrations.Length == 0
+        var value = registrations.Count == 0
             ? "Unavailable"
-            : registrations.Length.ToString("N0", CultureInfo.InvariantCulture);
-        var detail = registrations.Length == 0
-            ? "No ChangeHistory endpoints registered"
+            : registrations.Count.ToString("N0", CultureInfo.InvariantCulture);
+        var detail = registrations.Count == 0
+            ? "No ChangeHistory dashboard entities registered"
             : string.Join(", ", registrations.Select(descriptor => descriptor.EntityTypeName).Distinct().Order());
 
         return ValueTask.FromResult(new DashboardPageCard("Change History", "Tracked entities", value)

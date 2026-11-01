@@ -80,6 +80,7 @@
     <ProjectReference Include="..\..\..\src\Presentation.Web\Presentation.Web.csproj" />
     <ProjectReference Include="..\WeatherFiesta.Application\WeatherFiesta.Application.csproj" />
     <ProjectReference Include="..\WeatherFiesta.Infrastructure\WeatherFiesta.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\src\Presentation.Web.Auditing\Presentation.Web.Auditing.csproj" />
   </ItemGroup>
 
 </Project>

@@ -185,7 +185,9 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
                     //this.logger.LogDebug("++++ WORKER: PROCESS STORED MESSAGE {@Message}", message);
 #endif
                     // triggers all publisher behaviors again (pipeline), however skips the OutboxMessagePublisherBehavior.
-                    await this.messageBroker.Publish(message, cancellationToken).AnyContext(); // publish the actual message
+                    var auditing = this.serviceProvider.GetServices<IMessagePublisherBehavior>().OfType<AuditingMessagePublisherBehavior>().FirstOrDefault();
+                    if (auditing is null) await this.messageBroker.Publish(message, cancellationToken).AnyContext();
+                    else await auditing.PublishDeferredAsync(message, () => this.messageBroker.Publish(message, cancellationToken)).AnyContext();
 
                     outboxMessage.ProcessedDate ??= DateTime.UtcNow;
                     outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessStatusKey, "Success");

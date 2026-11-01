@@ -56,6 +56,12 @@ public sealed class ProfilingOverviewCardsTests
         // Assert
         (await app.Services.GetRequiredService<IOperationProfilingQueryService>().FindAsync(oldId)).Value.ShouldNotBeNull();
         pages.Count(page => page.ShowInSidebar).ShouldBe(1);
+        var rememberedViews = pages.Single(page => page.Key == "profiling").RememberedViews;
+        rememberedViews["runtime"].ShouldBe("/admin/profiling/runtime");
+        rememberedViews["operations"].ShouldBe("/admin/profiling/operations");
+        rememberedViews["requests"].ShouldBe("/admin/profiling/requests");
+        rememberedViews["timeline"].ShouldBe("/admin/profiling/timeline");
+        rememberedViews["insights"].ShouldBe("/admin/profiling/insights");
         operations.Value.ShouldBe("5"); operations.Detail.ShouldBe("3 groups · 1 node");
         requests.Value.ShouldBe("2"); requests.Detail.ShouldBe("1 group · 1 node");
         operations.Url.ShouldBe("/admin/profiling/operations"); requests.Url.ShouldBe("/admin/profiling/requests");
@@ -65,6 +71,8 @@ public sealed class ProfilingOverviewCardsTests
             var response = await app.GetTestClient().GetAsync(path);
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
             var html = await response.Content.ReadAsStringAsync();
+            if (path == "/admin") { html.ShouldContain("data-view-root=\"/admin/profiling\""); }
+
             html.ShouldContain("href=\"/admin/profiling/operations\""); html.ShouldContain("href=\"/admin/profiling/requests\"");
             html.ShouldContain("3 groups"); html.ShouldContain("1 group");
         }

@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Common;
 
 using System.Diagnostics;
+using System.Collections.Immutable;
 using System.Text.Json;
 
 /// <summary>
@@ -27,6 +28,7 @@ using System.Text.Json;
 public static class CorrelationId
 {
     private static readonly AsyncLocal<CorrelationIdScope> currentScope = new();
+    private static readonly AsyncLocal<ImmutableHashSet<CorrelationIdScope>> retiredScopes = new();
 
     /// <summary>
     /// Gets the maximum supported correlation identifier length.
@@ -162,7 +164,8 @@ public static class CorrelationId
 
     private sealed class CorrelationIdScope(string value, CorrelationIdScope previous) : IDisposable
     {
-        private bool disposed;
+        private int disposed;
+        private readonly CorrelationIdScope previous = previous;
 
         /// <summary>Gets the explicitly scoped value, including a deliberate empty correlation context.</summary>
         /// <example><code>var identifier = scope.Value;</code></example>
@@ -171,13 +174,20 @@ public static class CorrelationId
         /// <inheritdoc />
         public void Dispose()
         {
-            if (this.disposed)
+            if (Interlocked.Exchange(ref this.disposed, 1) != 0)
             {
                 return;
             }
 
-            currentScope.Value = previous;
-            this.disposed = true;
+            // Disposal is recorded per flow. An inherited child flow keeps its
+            // captured parent even when that parent is disposed elsewhere.
+            var retired = (retiredScopes.Value ?? ImmutableHashSet<CorrelationIdScope>.Empty).Add(this);
+            var current = currentScope.Value;
+            while (current is not null && retired.Contains(current)) current = current.previous;
+            currentScope.Value = current;
+            var ancestors = ImmutableHashSet.CreateBuilder<CorrelationIdScope>();
+            for (var ancestor = current; ancestor is not null; ancestor = ancestor.previous) ancestors.Add(ancestor);
+            retiredScopes.Value = retired.Intersect(ancestors);
         }
     }
 }

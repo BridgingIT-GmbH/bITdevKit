@@ -95,14 +95,17 @@ public class LocalLocationHandler : LocationHandlerBase
     }
 
     /// <inheritdoc/>
-    public override async Task<FileScanContext> ScanAsync(
-        FileScanOptions options = null,
-        IProgress<FileScanProgress> progress = null,
-        CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public override Task<FileScanContext> ScanAsync(FileScanOptions options = null, IProgress<FileScanProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        var context = new FileScanContext { LocationName = this.options.LocationName };
+        return this.RunScanAsync(options, context, () => this.ScanCoreAsync(context, options, progress, cancellationToken));
+    }
+
+    private async Task<FileScanContext> ScanCoreAsync(FileScanContext context, FileScanOptions options, IProgress<FileScanProgress> progress, CancellationToken cancellationToken)
     {
         options ??= FileScanOptions.Default;
         var startTime = DateTimeOffset.UtcNow;
-        var context = new FileScanContext { LocationName = this.options.LocationName };
         this.behaviors.ForEach(b => b.OnScanStarted(context), cancellationToken: cancellationToken);
 
         var presentFiles = await this.store.GetPresentFilesAsync(this.options.LocationName, cancellationToken);
@@ -168,7 +171,7 @@ public class LocalLocationHandler : LocationHandlerBase
                             //Properties = ["provider" : this.provider]
                         };
 
-                        this.eventQueue.Add(fileEvent, cancellationToken);
+                        this.EnqueueFileEvent(fileEvent, cancellationToken);
                         context.Events.Add(fileEvent);
                         this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: cancellationToken);
 
@@ -234,7 +237,7 @@ public class LocalLocationHandler : LocationHandlerBase
 
                 if (options.EventFilter.Contains(fileEvent.EventType))
                 {
-                    this.eventQueue.Add(fileEvent, cancellationToken);
+                    this.EnqueueFileEvent(fileEvent, cancellationToken);
                     context.Events.Add(fileEvent);
                     this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: cancellationToken);
 
@@ -370,7 +373,7 @@ public class LocalLocationHandler : LocationHandlerBase
                     return;
                 }
                 // Otherwise, enqueue the buffered event and update with the new one
-                this.eventQueue.Add(buffered.Event);
+                this.EnqueueFileEvent(buffered.Event);
             }
 
             this.eventBuffer[relativePath] = (fileEvent, DateTimeOffset.UtcNow);
@@ -406,7 +409,7 @@ public class LocalLocationHandler : LocationHandlerBase
 
                     if (DateTimeOffset.UtcNow - timestamp >= this.debounceInterval)
                     {
-                        this.eventQueue.Add(fileEvent, token);
+                        this.EnqueueFileEvent(fileEvent, token);
                         this.eventBuffer.Remove(filePath);
                     }
                 }

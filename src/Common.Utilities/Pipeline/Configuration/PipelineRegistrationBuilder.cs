@@ -36,6 +36,7 @@ public static class PipelineServiceCollectionExtensions
         {
             state = new PipelineRegistrationState();
             services.AddSingleton(state);
+            services.AddSingleton<IAuditBoundaryRegistrationSource>(state);
         }
 
         services.TryAddSingleton(sp =>

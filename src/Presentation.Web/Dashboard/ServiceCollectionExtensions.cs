@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text.Json;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -39,6 +40,7 @@ public static partial class ServiceCollectionExtensions
         services.TryAddSingleton<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.OperationProfilingViewModelBuilder>();
         services.AddSingleton<IAuthorizationMiddlewareResultHandler, DashboardAuthorizationMiddlewareResultHandler>();
         services.AddSignalR();
+        services.AddNdjsonStreaming();
         services.AddDashboardAuthentication(options);
 
         // Register the page generator
@@ -233,7 +235,7 @@ public static partial class ServiceCollectionExtensions
             }
         }
 
-        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        foreach (var assembly in GetDashboardCandidateAssemblies())
         {
             if (assembly.SafeGetTypes<IDashboardEndpoints>().Any() ||
                 assembly.SafeGetTypes<IDashboardNavigationProvider>().Any() ||
@@ -243,4 +245,21 @@ public static partial class ServiceCollectionExtensions
             }
         }
     }
+    // Optional DevKit web plugins may be present in the host dependency graph
+    // before their first method is invoked. Load only these trusted runtime
+    // assemblies so discovery does not depend on service-registration order.
+    private static IEnumerable<Assembly> GetDashboardCandidateAssemblies()
+    {
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) yield return assembly;
+        var paths = (AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") as string)?.Split(Path.PathSeparator) ?? [];
+        foreach (var name in paths.Select(Path.GetFileNameWithoutExtension).Where(name => name.StartsWith("BridgingIT.DevKit.Presentation.Web.", StringComparison.Ordinal)).Distinct(StringComparer.Ordinal).Take(128))
+        {
+            Assembly assembly;
+            try { assembly = Assembly.Load(new AssemblyName(name)); }
+            catch (Exception error) when (error is FileNotFoundException or FileLoadException or BadImageFormatException) { continue; }
+
+            yield return assembly;
+        }
+    }
+
 }

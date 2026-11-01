@@ -104,6 +104,8 @@ public partial class OutboxMessagePublisherBehavior<TContext> : MessagePublisher
             //Properties = message.Properties,
             CreatedDate = message.Timestamp
         };
+        var auditHandoff = AuditHandoffMetadata.Read(message.Properties);
+        if (auditHandoff is not null) outboxMessage.Properties.AddOrUpdate(AuditHandoffMetadata.PropertyName, auditHandoff);
         this.PropagateContext(outboxMessage);
         context.OutboxMessages.Add(outboxMessage);
 #if DEBUG

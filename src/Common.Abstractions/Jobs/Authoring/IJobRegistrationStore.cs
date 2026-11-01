@@ -25,4 +25,8 @@ public interface IJobRegistrationStore
     /// Adds a global behavior type.
     /// </summary>
     void AddGlobalBehavior(Type behaviorType);
+
+    /// <summary>Adds a separately selected source dispatch observer.</summary>
+    /// <example><code>registrations.AddDispatchBehavior(typeof(AuditingJobDispatchBehavior));</code></example>
+    void AddDispatchBehavior(Type behaviorType) => throw new NotSupportedException("This registration store does not support dispatch behaviors.");
 }

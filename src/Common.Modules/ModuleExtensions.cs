@@ -435,6 +435,7 @@ public static class ModuleExtensions
         AddActivitySource(services, "default");
         AddActivitySource(services, ServiceName);
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, ModuleActivityListenerService>());
+        services.TryAddScoped<IAuditModuleContextAccessor, AuditModuleContextAccessor>();
 
         context.WithModuleContextAccessors()
             .WithRequestModuleContextAccessors();

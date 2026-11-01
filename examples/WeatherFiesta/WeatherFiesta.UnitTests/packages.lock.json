@@ -252,6 +252,16 @@
           "Microsoft.Extensions.Validation": "10.0.14"
         }
       },
+      "Microsoft.AspNetCore.Cryptography.Internal": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "hwsfpgYV5uYh/JLzjS9qdNBWwjL6dRbs4naGku9fJKLwrIJFTtRSincH2P060ZQUKdFFRzG+uT4hinr85sZtlQ=="
+      },
+      "Microsoft.AspNetCore.DataProtection.Abstractions": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "/4+1KX8VIKCCHZ8p/1dZ2WGxvIijm5lXmgHecxEwGnBYXiSjAqfF/Q7p9m6eojUDlpKMHkt1HHXeNdL9WH3YHw=="
+      },
       "Microsoft.AspNetCore.Metadata": {
         "type": "Transitive",
         "resolved": "10.0.14",
@@ -964,6 +974,14 @@
         "resolved": "9.0.18",
         "contentHash": "1/iz9Eex1TBMYdAk+m3igaMvL+nk+rY1EqL6u93an/j1ghxmB24vGOKXkVFy3NSPA39s1H/+SNoK257tHoXoLA=="
       },
+      "System.Security.Cryptography.Xml": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "qpDILpfJvj65+Pvpf5drWq2+mRNSrPffJsRYVQjBmEky+V34W+w2LXDZShq0miitf5qAPKuMAQ3CUaifaS2rrw==",
+        "dependencies": {
+          "System.Security.Cryptography.Pkcs": "10.0.14"
+        }
+      },
       "xunit.analyzers": {
         "type": "Transitive",
         "resolved": "1.18.0",
@@ -1003,6 +1021,23 @@
         "type": "Transitive",
         "resolved": "16.3.0",
         "contentHash": "SgMOdxbz8X65z8hraIs6hOEdnkH6hESTAIUa7viEngHOYaH+6q5XJmwr1+yb9vJpNQ19hCQY69xbFsLtXpobQA=="
+      },
+      "BridgingIT.DevKit.Application.Auditing": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.AspNetCore.DataProtection": "[10.0.14, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.14, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "[10.0.14, )",
+          "Microsoft.Extensions.Hosting.Abstractions": "[10.0.14, )",
+          "Microsoft.Extensions.Logging": "[10.0.14, )",
+          "Microsoft.Extensions.Logging.Abstractions": "[10.0.14, )",
+          "Microsoft.Extensions.Options": "[10.0.14, )"
+        }
       },
       "BridgingIT.DevKit.Application.Commands": {
         "type": "Project",
@@ -1411,6 +1446,7 @@
           "BridgingIT.DevKit.Presentation.Configuration": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Serilog": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
+          "BridgingIT.DevKit.Presentation.Web.Auditing": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web.EntityFramework": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web.Jobs": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web.Messaging": "[1.0.0, )",
@@ -1446,6 +1482,7 @@
       "BridgingIT.DevKit.Infrastructure.EntityFramework": {
         "type": "Project",
         "dependencies": {
+          "BridgingIT.DevKit.Application.Auditing": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Entities": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Identity": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Jobs": "[1.0.0, )",
@@ -1540,6 +1577,16 @@
           "Serilog.Extensions.Hosting": "[10.0.0, )",
           "Spectre.Console": "[0.57.2, )",
           "System.IdentityModel.Tokens.Jwt": "[8.23.0, )"
+        }
+      },
+      "BridgingIT.DevKit.Presentation.Web.Auditing": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Auditing": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
+          "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "RazorSlices": "[0.12.2, )"
         }
       },
       "BridgingIT.DevKit.Presentation.Web.EntityFramework": {
@@ -1834,6 +1881,21 @@
         "contentHash": "e2PlO/RdTYl1nQNOYbkZ+/a0r0RolKQZjR2X6PhqwGzW0f7OtO3GBAaX2X42DRur/Y/2Pn4A2Zhs+wwKnELC1g==",
         "dependencies": {
           "Microsoft.AspNetCore.Components.WebAssembly": "10.0.14"
+        }
+      },
+      "Microsoft.AspNetCore.DataProtection": {
+        "type": "CentralTransitive",
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "gDUH0z2bK0lPaHGy2/pIQkEtbhG3dFGSIbioy+Qu76Y+HiB0xg2TFqlSLc+DjQ2Jb/3GODGMtTh4JuufVWG7Dw==",
+        "dependencies": {
+          "Microsoft.AspNetCore.Cryptography.Internal": "10.0.14",
+          "Microsoft.AspNetCore.DataProtection.Abstractions": "10.0.14",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.14",
+          "Microsoft.Extensions.Hosting.Abstractions": "10.0.14",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.14",
+          "Microsoft.Extensions.Options": "10.0.14",
+          "System.Security.Cryptography.Xml": "10.0.14"
         }
       },
       "Microsoft.AspNetCore.OpenApi": {
@@ -2550,9 +2612,9 @@
       },
       "System.Security.Cryptography.Pkcs": {
         "type": "CentralTransitive",
-        "requested": "[10.0.13, )",
-        "resolved": "10.0.13",
-        "contentHash": "a+EovgC1fBnwdlQ6cn3j4JFBfKqiFaFvoAhjisOoSvazLAcIznaBzPQP0oYnvccmeXfqUH1KebVZOxSeH6rMaw=="
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "Wz+IgL2xpg8KJ4i2VWj6uz1PmZNu4Q0Ljlwd73P9Vze5NcOBtctLii3itV0PB2MpOqwqDEGfB6RCdv94A4E5yQ=="
       },
       "System.Threading.RateLimiting": {
         "type": "CentralTransitive",

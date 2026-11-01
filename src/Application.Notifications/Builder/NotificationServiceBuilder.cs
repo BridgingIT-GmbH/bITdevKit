@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Application.Notifications;
 
 using System;
+using BridgingIT.DevKit.Common;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -31,6 +32,19 @@ public class NotificationServiceBuilder(IServiceCollection Services)
     /// Gets the mutable notification options assembled by the builder.
     /// </summary>
     public readonly NotificationServiceOptions Options = new();
+
+    /// <summary>Selects notification admission and worker auditing without installing the audit implementation.</summary>
+    /// <example><code>builder.WithAuditing(operations: true, workers: true);</code></example>
+    public NotificationServiceBuilder WithAuditing(bool operations = true, bool workers = true)
+    {
+        if (this.Services.Any(item => item.ServiceType == typeof(NotificationAuditOptions))) return this;
+        this.Services.AddSingleton(new NotificationAuditOptions { Operations = operations, Workers = workers });
+        this.Services.AddSingleton<INotificationOperationBehavior, AuditingNotificationOperationBehavior>();
+        var catalog = AuditBoundaryRegistrationCatalog.GetOrAdd(this.Services, "Email", "Operation", "Worker");
+        catalog.Select("Operation", operations ? "selected" : "omitted");
+        catalog.Select("Worker", workers ? "selected" : "omitted");
+        return this;
+    }
 
     /// <summary>
     /// Configures the SMTP settings used by the notification service.

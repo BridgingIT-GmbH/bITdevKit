@@ -39,6 +39,7 @@ These packages support domain modeling and event-driven domain behavior:
 
 These packages shape command/query handling, messaging, queueing, notifications, and storage-facing application abstractions:
 
+- [`Application.Auditing`](reference/features-application-auditing.md)
 - `Application.Commands`
 - `Application.Queries`
 - `Application.Messaging`
@@ -74,6 +75,7 @@ These packages expose the kit through web, configuration, logging, and feature-s
 - `Presentation.Configuration`
 - `Presentation.Serilog`
 - `Presentation.Web`
+- `Presentation.Web.Auditing`
 - `Presentation.Web.EntityFramework`
 - `Presentation.Web.JobScheduling`
 - `Presentation.Web.Messaging`

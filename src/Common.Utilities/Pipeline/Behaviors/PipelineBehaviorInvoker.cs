@@ -10,6 +10,10 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public interface IPipelineBehaviorInvoker
 {
+    /// <summary>Whether this invoker is the known complete-run and actual-step auditing adapter.</summary>
+    /// <example><code>var auditing = invoker.IsAuditing;</code></example>
+    bool IsAuditing => false;
+
     /// <summary>
     /// Executes behavior logic around the full pipeline invocation.
     /// </summary>
@@ -69,6 +73,9 @@ public static class PipelineBehaviorInvoker
 public class PipelineBehaviorInvokerAdapter<TContext>(IPipelineBehavior<TContext> behavior) : IPipelineBehaviorInvoker
     where TContext : PipelineContextBase
 {
+    /// <inheritdoc />
+    public bool IsAuditing => behavior is PipelineAuditingBehavior;
+
     /// <inheritdoc />
     public ValueTask<Result> ExecuteAsync(
         PipelineContextBase context,

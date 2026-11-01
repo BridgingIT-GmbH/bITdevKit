@@ -1,0 +1,57 @@
+@inherits RazorSlice<AuditingViewModel>
+<details class="audit-export-menu" id="audit-download" data-path="@Model.Path">
+<summary class="btn btn-outline-secondary btn-sm" title="Download audit selection" aria-label="Download audit selection" aria-controls="audit-export-panel"><i class="bi bi-three-dots" aria-hidden="true"></i></summary>
+<div class="audit-export-popover" id="audit-export-panel" role="group" aria-label="Download audit selection">
+<form method="post" action="@(Model.Path + "/download")" target="_blank" id="audit-download-form">
+<input type="hidden" name="ticket" value="@Model.DownloadTicket" /><input type="hidden" name="exportId" value="@Model.ExportId" /><input type="hidden" name="filter" value="@Model.FilterJson" /><input type="hidden" name="continuationToken" value="" /><input type="hidden" name="checkpoint" value="" />
+<label for="audit-format" class="visually-hidden">Format</label><input type="hidden" name="format" value="ndjson" /><select id="audit-format" class="form-select form-select-sm">@foreach (var format in Model.Formats) { <option value="@format" selected="@(format == "ndjson")">@format</option> }</select>
+<button type="submit" class="btn btn-outline-primary btn-sm w-100 mt-2" id="audit-download-button"><i class="bi bi-download me-1" aria-hidden="true"></i><span id="audit-download-label">Download</span></button>
+</form>
+<p class="small text-muted mt-2 mb-0" id="audit-download-status" role="status" aria-live="polite">Ready.</p>
+<script>
+(() => {
+const section = document.getElementById('audit-download'), form = document.getElementById('audit-download-form');
+const status = document.getElementById('audit-download-status'), button = document.getElementById('audit-download-button'), label = document.getElementById('audit-download-label');
+const formatSelect = document.getElementById('audit-format');
+form.elements.format.value = formatSelect.value;
+let ready = false;
+document.addEventListener('click', event => { if (!section.contains(event.target)) section.open = false; });
+section.addEventListener('keydown', event => {
+ if (event.key !== 'Escape' || !section.open) return;
+ section.open = false; section.querySelector('summary').focus(); event.stopPropagation();
+});
+form.addEventListener('submit', async event => {
+ if (ready) { ready = false; return; }
+ event.preventDefault();
+ button.disabled = true; formatSelect.disabled = true;
+ const format = form.elements.format.value;
+ try {
+  const ticketResponse = await fetch(section.dataset.path + '/download/ticket', { cache: 'no-store' });
+  if (!ticketResponse.ok || ticketResponse.redirected) throw new Error('Admission unavailable');
+  const ticket = await ticketResponse.json(); form.elements.ticket.value = ticket.ticket; form.elements.exportId.value = ticket.exportId;
+  status.textContent = 'Exporting...';
+  ready = true; form.requestSubmit();
+  for (let n = 0; n < 100; n++) {
+   await new Promise(resolve => setTimeout(resolve, 500));
+   const response = await fetch(section.dataset.path + '/exports/' + ticket.exportId, { cache: 'no-store' }); if (response.status === 404) continue;
+   if (!response.ok || response.redirected) throw new Error('Metadata unavailable');
+   const completion = await response.json();
+   if (completion.status === 'Streaming') continue;
+   if (form.elements.format.value !== format) break;
+   if (completion.outputConfirmed) {
+    const continuation = completion.continuationToken || '';
+    form.elements.continuationToken.value = continuation;
+    label.textContent = continuation ? 'Download next chunk' : 'Download';
+    status.textContent = continuation ? 'More executions available.' : 'Export ready.';
+   } else { status.textContent = 'Export failed. Please retry.'; }
+   return;
+  }
+  status.textContent = 'Export status unavailable. Please retry.';
+ } catch { status.textContent = 'Download unavailable. Please retry.'; }
+ finally { button.disabled = false; formatSelect.disabled = false; }
+});
+formatSelect.addEventListener('change', () => { form.elements.format.value = formatSelect.value; form.elements.continuationToken.value = ''; form.elements.checkpoint.value = ''; label.textContent = 'Download'; status.textContent = 'Ready.'; });
+})();
+</script>
+</div>
+</details>

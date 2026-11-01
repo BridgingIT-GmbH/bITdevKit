@@ -1,6 +1,8 @@
 ---
 created: 2026-10-28
-status: draft
+last_updated: 2026-10-30
+version: '1.1'
+status: implemented
 ---
 
 # Design Specification: Auditing Feature (Application.Auditing)
@@ -23,7 +25,7 @@ The design follows bITdevKit conventions for behavior composition, public contra
 
 The feature is described as **supporting audit-control requirements**. It supplies capture, storage, protection integration points, retention, and review capabilities that applications can use as evidence for their selected controls. A control mapping identifies those capabilities and their verification; it does not certify a library or establish compliance for a deployed application. The host owns required business-event coverage, operating policies, storage privileges, time synchronization, and any stronger deployment-specific guarantees. Section 16 defines the boundaries and mapping.
 
-This is a proposed design. New types and fluent APIs below describe the intended public contract, not existing functionality. Existing symbols and source references appear in section 20.
+This specification records the implemented Auditing contract. The [feature guide](../features-application-auditing.md) provides current setup and usage; public source symbols are authoritative for exact signatures. Shared NDJSON streaming supplies the transport contracts described in section 12.4. Source references appear in section 20, and section 19.9 records implementation and verification boundaries. Documentation uses the fictional CustomerPortal domain; application-specific execution evidence stays outside the documentation tree.
 
 ### 1.1 Existing capabilities to reuse
 
@@ -33,6 +35,7 @@ This is a proposed design. New types and fluent APIs below describe the intended
 | Optional ChangeHistory feature                                                       | When installed and enabled, supplies its existing property-change abilities to enrich audit actions with actual change details. Auditing works fully without it. |
 | Requester and Notifier                                                               | Behaviors capture dispatch and handler boundaries without changing handler business logic.                                                                       |
 | Current Jobs, Pipelines, Orchestrations, Messaging, and Queueing                     | Existing behaviors contribute business actions, dispatch relationships, or linked execution records.                                                             |
+| Email notifications, DataPorter, StartupTasks, and file monitoring | Reuse their operation executors and available behaviors/interceptors for explicit audit adapters. Add lifecycle hooks where the existing contracts do not cover the full operation. |
 | `ICurrentUserAccessor`                                                               | Supplies an optional actor snapshot. Do not introduce a competing `ICurrentUser` service.                                                                        |
 | Results, serializers, filtering, module context, activity context, and typed logging | Reuse existing conventions. Preserve Result failures as observable outcomes.                                                                                     |
 | Dashboard page providers, Razor slices, and endpoint options                         | Reuse the existing dashboard and authorization model.                                                                                                            |
@@ -46,14 +49,15 @@ This is a proposed design. New types and fluent APIs below describe the intended
 - Allow every devkit feature to participate without a hard dependency on the implementation.
 - Offer a small details interface for requests and entities, plus enrichers for types that cannot implement it.
 - Attach available ChangeHistory deltas when its audit-evidence bridge is explicitly selected for configured source contexts/entities, subject to its source policies and Auditing's capture policy.
-- Supply provider-backed in-memory and EF Core storage with a compact two- or three-table relational model and JSON for owned details.
+- Supply provider-backed in-memory storage and a three-table EF Core model with JSON-owned details and conformance on SQL Server, PostgreSQL, and SQLite.
 - Deliver optional read/export endpoints and a dashboard with server-side search and downloads.
+- Provide starter setups, capture diagnostics, application test helpers, and embeddable resource history using the same capture/query contracts.
 - Define capture limits, persistence failures, transaction evidence, and data exposure explicitly.
 
 ### 1.3 Non-goals
 
 - Replacing ChangeHistory, entity audit fields, event sourcing, or domain events.
-- Performance monitoring, SQL inspection, or technical diagnostics.
+- Performance monitoring, SQL inspection, or general-purpose technical diagnostics. Diagnostics for Auditing's own capture configuration and delivery remain in scope.
 - Restoring entities from audit JSON. Restore remains a separately authorized ChangeHistory operation.
 - Automatically capturing every method, HTTP body, object graph, or external side effect.
 - Making a request-wide audit record atomic with arbitrary databases, remote calls, and brokers.
@@ -63,7 +67,11 @@ This is a proposed design. New types and fluent APIs below describe the intended
 
 ## 2. Scope and required behavior
 
-The complete feature includes its recorder, abstractions, behaviors, both storage providers with optional HMAC-SHA-256 protection, an explicitly selectable adapter for the optional ChangeHistory feature, query/export services, endpoints, dashboard downloads, documentation, tests, and working WeatherFiesta integration for user city actions. NDJSON and CSV are built in. CEF is the first optional enterprise formatter adapter. Delivery phases organize this work; they do not defer the operational UI beyond the feature.
+The complete feature includes its recorder, abstractions, behaviors, both storage providers with optional HMAC-SHA-256 protection, an explicitly selectable adapter for the optional ChangeHistory feature, query/export services, endpoints, dashboard downloads, documentation, tests, and working host-level integration for the fictional customer scenarios in section 18.1. NDJSON and CSV are built in. CEF is the first optional enterprise formatter adapter. Delivery phases organize this work; they do not defer the operational UI beyond the feature.
+
+Required first-party contributors also include email notifications, DataPorter import/export, StartupTasks, and file-monitoring processing. Sections 8.4–8.7 define their explicitly selected boundaries and evidence limits.
+
+Adoption support includes runnable starter recipes, a client-owned DbContext contract, read-only capture/delivery diagnostics, framework-neutral test helpers, and a resource-history projection with a reusable web fragment. These reuse the existing services and explicit feature opt-ins. They introduce no required compliance profile, additional dashboard policies, or alternative capture pipeline.
 
 Public endpoints are an explicit AddAuditing builder option. The dashboard is part of the delivered feature and appears automatically when the host enables AddDashboard and Auditing is registered. Both must be implemented and tested. No Auditing-specific dashboard opt-in or policy setup is required.
 
@@ -76,8 +84,8 @@ Public endpoints are an explicit AddAuditing builder option. The dashboard is pa
 | REQ-005 | Snapshot actors from optional `ICurrentUserAccessor` without requiring authentication or an identity provider.                                                                                                                                                                               |
 | REQ-006 | Supply a fluent AuditDescriptorBuilder with derived naming and typed resource defaults, explicit business details, and registered enrichers under the shared redaction and size policies. |
 | REQ-007 | Consume available ChangeHistory evidence only through an explicitly selected source-feature audit bridge. Retain source, change-set identity, property path, allowed old/new values, and commit evidence. |
-| REQ-008 | Provide a replaceable storage provider and conformance suite. Supply in-memory and EF Core implementations.                                                                                                                                                                                  |
-| REQ-009 | Use a compact EF storage model; two or three audit tables are acceptable. Keep extensible details and property deltas in JSON, with the logical audit document independent of table count.                                                                                                   |
+| REQ-008 | Provide a replaceable storage provider and conformance suite. Supply in-memory and EF Core implementations, with required real-backend parity on SQL Server, PostgreSQL, and SQLite. |
+| REQ-009 | Use three audit data tables in the built-in EF provider. Keep extensible details and property deltas in JSON, with the logical audit document independent of a custom provider's compact representation. |
 | REQ-010 | Apply every search predicate in the provider before ordering, paging, counting, and aggregation.                                                                                                                                                                                             |
 | REQ-011 | Supply authorized endpoints and a business-audit dashboard for actions, related jobs, optional change details, and evidence completeness.                                                                                                                                                    |
 | REQ-012 | Prevent audit writes, audit queries, dashboard refresh, and maintenance from recursively auditing themselves.                                                                                                                                                                                |
@@ -95,10 +103,10 @@ Public endpoints are an explicit AddAuditing builder option. The dashboard is pa
 | REQ-024 | Keep Auditing policy, storage, HTTP options, contributors, and public endpoints under AddAuditing. Select each source feature's audit behaviors/bridges explicitly on that feature's own builder, allowing local opt-outs without a second integration list on AddAuditing. |
 | REQ-025 | Automatically expose the Auditing dashboard page through AddDashboard when Auditing is registered, inheriting global dashboard access rules without feature-specific policies.                                                                                                               |
 | REQ-026 | Accept the devkit FilterModel directly on POST search, reuse its filtering/ordering/page conventions, and return the standard ResultPaged response.                                                                                                                                          |
-| REQ-027 | Deliver working WeatherFiesta integration for real user city-add/create and update actions, with EF-persisted evidence, automatic dashboard discovery, and end-to-end verification.                                                                                                          |
+| REQ-027 | Provide fictional customer integration recipes, component tests for HTTP capture and dashboard discovery, and EF provider tests for persisted evidence. Application-specific end-to-end verification belongs to consuming hosts.                                                                                                          |
 | REQ-028 | Provide configurable age-based archive-then-remove retention for both EF and in-memory providers. Keep archived data out of normal active query paths and enforce total in-memory count/byte bounds.                                                                                         |
 | REQ-029 | Support explicit Active/Archived/All search selection through the existing FilterModel API and dashboard, defaulting ordinary queries to Active without loading archive payloads.                                                                                                            |
-| REQ-030 | Support demonstrable coverage through an application-owned business-event/entry-point plan and end-to-end evidence, preserving explicit behavior selection and intentional exclusions. |
+| REQ-030 | Support an application-owned business-event/entry-point coverage plan, preserving explicit behavior selection and intentional exclusions. Library verification uses component and provider tests; consuming applications own end-to-end evidence. |
 | REQ-031 | Distinguish logical record immutability from protection of stored evidence. Declare provider/host protection boundaries and verify any advertised tamper-evidence mechanism. |
 | REQ-032 | Declare mode-specific delivery, acknowledgement, visibility, capacity, and failure-response guarantees. Preserve execution timestamps separately from delivery metadata and report evidence-loss limits honestly. |
 | REQ-033 | Keep retained active/archived evidence interpretable and retrievable across the supported retention period through versioned readers or reviewed lossless migrations, including upgrade/restore verification. |
@@ -111,6 +119,16 @@ Public endpoints are an explicit AddAuditing builder option. The dashboard is pa
 | REQ-040 | Define at-least-once extraction and stable record/output identities for deduplication across retries, overlap, archive movement, and formatter expansion. Never advance a checkpoint on an unconfirmed or failed transfer. |
 | REQ-041 | Add filtered and record-detail dashboard downloads through the same export service under global dashboard access rules, without public endpoints or extra feature policies being required. Suppress export/metadata operations recursively. |
 | REQ-042 | Verify original complete protected records before export projection under the detail-read integrity policy. Label transformed output and its source-verification result without implying that the original HMAC authenticates exported bytes or proves extraction completeness. |
+| REQ-043 | Deliver runnable manual/worker, HTTP/Requester, and durable EF/optional-ChangeHistory starter setups, with explicit behavior selection, middleware/mapping order, observable evidence, and a documented no-op context path. |
+| REQ-044 | Supply IAuditingDbContext for client-owned contexts and entity-owned mappings. Ship no concrete audit DbContext, migrations, or migration helpers; clients generate and deploy migrations from their own context. |
+| REQ-045 | Explain selected/omitted capture boundaries, exclusions, suppression, limits, and delivery visibility through bounded read-only diagnostics. Distinguish static configuration, observed decisions, and provider state without enabling capture or exposing business payloads. |
+| REQ-046 | Provide framework-neutral application test helpers for real capture composition, bounded flush, isolated observations, positive/negative evidence assertions, and delivery-failure cases. Never insert hidden scopes or behaviors that conceal missing application instrumentation. |
+| REQ-047 | Provide paged resource history through IAuditQueryService using a mandatory typed resource predicate plus existing FilterModel, host access, redaction, archive selection, and query bounds. Keep repeated action occurrences and capture/protection limitations visible. |
+| REQ-048 | Supply a reusable resource-history Razor-slice fragment and a client-UI example using the same projection. Embedding requires neither AddDashboard nor public Auditing endpoints and uses the host's existing route/access conventions. |
+| REQ-049 | Provide explicitly selectable email-notification queue/send and outbox-execution adapters. Preserve trusted causation across deferred sends and distinguish outbox acceptance, SMTP acceptance, and unavailable recipient-delivery evidence. |
+| REQ-050 | Provide explicitly selectable DataPorter import/export operation adapters, including streaming lifetimes, safe format/profile identity, counts, partial results, rejection, failure, and cancellation. Row acceptance does not imply committed business data. |
+| REQ-051 | Provide an explicitly selectable StartupTasks auditing behavior using the existing task pipeline, with per-task selection, execution ownership, observed outcomes, and retry attempts where exposed. |
+| REQ-052 | Provide explicitly selectable file-monitoring scan and event-processing adapters with finite execution ownership, safe event/location/processor identity, observed results, and independent-worker isolation. Routine polling and unchanged scans do not create automatic business audit records. |
 
 ## 3. Terminology and identity
 
@@ -147,17 +165,19 @@ Linked executions form a read projection over immutable records. They do not req
 
 | Location                                  | Responsibility                                                                                                                                                                                                        |
 | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Common.Abstractions/Auditing`            | Small contracts usable by Domain and feature behaviors: `IAuditContext`, scope handles, descriptors, safe values, resource references, and `IAuditDetails`. No EF, ASP.NET, or application implementation references. |
+| `Common.Abstractions/Auditing`            | Small contracts usable by Domain and feature behaviors: `IAuditContext`, no-op context, scope handles, descriptors, safe values, resource references, `IAuditDetails`, and safe capture-registration metadata. No EF, ASP.NET, or application implementation references. |
 | `Application.Auditing`                    | Recorder, ambient execution management, policies, contributors, enrichment, provider/extraction contracts, optional integrity/key-provider contracts and HMAC-SHA-256 protection, in-memory provider, query/export services, NDJSON/CSV formatters, formatter contracts, Result errors, fluent builder, and maintenance coordination. |
+| `Application.Auditing` adoption services | Resource-history DTOs/query projection, capture/delivery diagnostics, and opt-in framework-neutral helpers under `Testing`. No UI, EF, or test-framework dependency. |
 | Participating feature packages | Provide explicitly selectable adapters for their behavior contracts. The host chooses where to register them. Resolve Common auditing contracts optionally and pass through when Auditing is unavailable or disabled. |
-| `Infrastructure.EntityFramework/Auditing` | EF provider working directly with a DbContext exposing audit entities, model configuration, and provider queries. ChangeHistory exposes explicit selection of its optional audit-evidence bridge through its own builder. |
+| `Infrastructure.EntityFramework/Auditing` | EF provider working directly with a DbContext exposing audit entities, IAuditingDbContext, entity-owned mappings, and provider queries. ChangeHistory exposes explicit selection of its optional audit-evidence bridge through its own builder. |
 | `Presentation.Web.Auditing`               | HTTP middleware, read/export endpoints, DTOs, protected HTTP continuation tokens, bounded completion-metadata handling, dashboard page provider/downloads, Razor slices, and HTTP capture options. |
-| Optional CEF adapter package             | Implements the Application formatter contract and its versioned CEF mapping. Depends on Auditing contracts, without introducing SIEM or enterprise dependencies into core capture/storage. |
+| `Presentation.Web.Auditing` adoption UI | Read-only diagnostics handlers/view and embeddable resource-history Razor slice. Host routes can reuse the fragment/application DTOs without global dashboard registration or public endpoint mapping. |
+| `Application.Auditing/Formatters`         | Includes the explicitly registered CEF formatter and its versioned mapping, without SIEM or enterprise dependencies. |
 | Host and modules                          | Select provider, actor and redaction policies, behaviors, authorization policies, and exposed UI. Own EF migrations.                                                                                                  |
 
 Common contracts do not move the feature out of `Application.Auditing`. They avoid reverse references when Common Requester or Domain repository behaviors participate. The recorder stays in Application. Domain never references Application, Infrastructure, or Presentation.
 
-The application module has no mandatory dependency on repositories, Active Entities, Jobs, Queueing, Messaging, Orchestrations, or ChangeHistory. Integration extensions live in the package that owns the behavior/bridge and its required references; the host selects them explicitly on that feature's builder. Application query handlers use auditing abstractions rather than a concrete DbContext. The EF storage provider accesses its audit DbSets directly in Infrastructure; it requires no repository registration or domain entity base type.
+The application module has no mandatory dependency on repositories, Active Entities, Jobs, Queueing, Messaging, Orchestrations, email notifications, DataPorter, StartupTasks, file monitoring, or ChangeHistory. Protected deferred handoffs use the general-purpose .NET Data Protection NuGet libraries in Application.Auditing. These library assemblies use the Microsoft.AspNetCore name but require no HTTP services, web host, ASP.NET shared framework, or module hosting. Core remains usable in a plain worker/service collection; the architecture gate allows only those exact Data Protection assemblies and rejects a Microsoft.AspNetCore.App framework reference. Integration extensions live in the package that owns the behavior/bridge and its required references; the host selects them explicitly on that feature's builder. Application query handlers use auditing abstractions rather than a concrete DbContext. The EF storage provider accesses its audit DbSets directly in Infrastructure; it requires no repository registration or domain entity base type.
 
 ### 4.2 Lifetimes and execution flow
 
@@ -207,6 +227,10 @@ Each evidence object retains source store key, change-set ID, source row IDs, op
 
 Preserve ChangeHistory limitations. Summary-only bulk inserts must not become invented property deltas. Hash-only, redacted, excluded, oversized, and unavailable values differ from an actual JSON null.
 
+The built-in bridge observes already-produced Added ChangeHistory rows through source-context EF save interceptors. Transaction interceptors confirm source commit, and an independent source-history ID lookup confirms which staged rows survived, including arbitrary savepoint rollback. Failed or canceled saves discard their own staged values; a full observed rollback discards that transaction's observations. The bridge does not add a second diff engine or require callbacks in source capture implementations. Explicit, autocommit, and source-owned EF transactions are supported. An externally committed ADO.NET or ambient transaction whose commit is not observed remains Unknown. Root closure freezes that state permanently.
+
+Commit confirmation uses a fresh suppressed source scope. The asynchronous lookup has an independent five-second cancellation budget by default, configurable up to ten seconds. The synchronous save path uses synchronous commands with the same command timeout; connection establishment also follows the host's source-provider connection timeout. Configure a finite connection timeout when using synchronous source saves. Confirmation failure retains Unknown references with no old/new values and reports safe diagnostics. The bridge buffers only bounded weak collector handles and source row IDs; values remain under the owning audit's byte, group, and property limits.
+
 ### 5.4 Safe values and schema evolution
 
 The confirmed capture policy records request/handler identity automatically. Business values require explicit projection through `IAuditDetails`, registered enrichers, contributors, or manual scopes. Whole command/query parameters and result payloads are not serialized automatically. Optional ChangeHistory remains the source of actual deltas and applies its existing value policies before Auditing can further restrict them.
@@ -243,11 +267,12 @@ Snapshot correlation before asynchronous persistence. The provider writer never 
 
 ### 6.1 Common contracts
 
-These signatures describe the proposed contract. Supporting types follow section 5. Production public symbols require XML documentation and usage examples.
+These signatures describe the scope contract. Supporting types follow section 5. Production public symbols require XML documentation and usage examples.
 
 ```csharp
 public interface IAuditContext
 {
+	bool IsEnabled { get; }
 	IAuditScope Current { get; }
 	IAuditScope BeginScope(AuditScopeOptions options);
 	IAuditScope BeginScope(Action<AuditScopeOptionsBuilder> configure);
@@ -278,6 +303,10 @@ public interface IAuditDetails
 	AuditDescriptor DescribeAudit();
 }
 ```
+
+`IsEnabled` lets an explicitly selected adapter skip metadata callbacks when capture is disabled, suppressed, stopping, or out of admission capacity. Custom contexts retain the compatible default `true`; the built-in no-op returns `false`. It does not enable a source boundary.
+
+Optional Common capabilities keep source packages independent of the recorder. `IAuditSourceScope.SetSource(AuditSourceMetadata)` copies approved bounded scalar identities, and `CaptureLink()` copies trusted causation and permitted initiating context for an actual worker. `IAuditExecutionBoundary.DetachExecution(AuditExecutionLink)` clears inherited capture and suppression before applying that trusted handoff. A link is not proof of trust: source adapters validate incoming transport metadata and never pass arbitrary client headers or property bags as trusted links. `IAuditCaptureDiagnostics.ReportFailure` reports safe bounded reason codes without retaining payloads or exceptions.
 
 `AuditDescriptor` supplies a stable key, business display text, optional reason, resources, and explicit details. Implementing `IAuditDetails` enriches enabled capture. It does not enable capture, authorize a read, bypass redaction, or serialize the object.
 
@@ -344,6 +373,8 @@ Explicit `Key(...)`, `DisplayName(...)`, or resource-type overrides take precede
 Resolve names when an action/scope is admitted and freeze those resolved values with the document. Queued writers and detail readers never derive them again from another ambient context or newer aliases. Naming changes affect new capture, not historical records.
 
 Derived keys are deterministic type/operation identities, never timestamps, correlation IDs, user IDs, or per-entity IDs. Applications can supply stable business aliases when a key must survive type/member renames. Reason, business decisions, actor attribution, outcome, and actual change values still come from their explicit sources; naming conventions do not invent them.
+
+Constructed-generic keys retain qualified type arguments without assembly versions, cultures, or public-key tokens. Ordinary type keys remain unchanged. This avoids rejecting scheduled generic jobs merely because their CLR assembly-qualified names exceed the 512-character key budget; stored historical names are never rewritten.
 
 ### 6.2 Manual scopes
 
@@ -438,7 +469,9 @@ catch (Exception exception)
 
 Disposal records duration and restores the prior ambient frame. The confirmed manual-scope contract records `Unknown` and `Incomplete` when a handle is disposed without an explicit outcome. It never infers success or failure from disposal alone. A using statement cannot detect an exception from its body. Prefer callback helpers for automatic result/exception classification, or explicitly call `Complete(...)`/`Fail(...)`.
 
-Async root disposal awaits provider acceptance. For buffered EF persistence this is queue admission, not database persistence or flush. For inline persistence it awaits the write. Synchronous root disposal freezes and restores context, then reports that async finalization was required under inline delivery. It must not silently pretend the record was persisted. Synchronous child disposal is supported because it performs no storage I/O. Document this constraint beside `BeginScope`.
+Root ownership requires asynchronous disposal. Await `DisposeAsync` or use `RunAsync` so sanitization, optional asynchronous key resolution/sealing, and provider acceptance finish under the owning execution. For buffered EF persistence, acceptance is queue admission rather than database persistence or flush; inline persistence awaits the write. This rule also applies to in-memory storage, so changing providers or enabling HMAC does not change correct scope usage.
+
+Synchronous child disposal is supported because it performs no storage I/O. Synchronous disposal of a recording root restores ambient state, closes capture, and reports `AuditAsyncFinalizationRequired` through the safe host hook without claiming acceptance. It starts no unowned background work and does not block on an asynchronous operation. It never throws from this cleanup path, which could replace an exception from the using body; immediate failure propagation remains available through the asynchronous owner/helper paths. Later disposal does not reopen that root. No-op disposal remains harmless. Document this distinction beside `BeginScope`.
 
 ### 6.3 Nesting and independent work
 
@@ -464,9 +497,9 @@ The host explicitly registers selected auditing behaviors through each feature's
 
 ### 7.1 HTTP boundary
 
-The HTTP adapter owns the root for each eligible request. Commands and business mutations are captured by default after request blacklisting. Read-only requests, including GET endpoints and POST-based reads, require explicit selection as meaningful business reads; routine city-list refreshes and polling are not captured automatically. Use the same request-path blacklist contract, matching behavior, and defaults as `RequestLoggingMiddleware` and `RequestLoggingOptions.PathBlackListPatterns`. Capture decisions apply once at entry and flow to children.
+The HTTP adapter owns the root for each eligible request. Commands and business mutations are captured by default after request blacklisting. Read-only requests, including GET endpoints and POST-based reads, require explicit selection as meaningful business reads; routine customer-list refreshes and polling are not captured automatically. Use the same request-path blacklist contract, matching behavior, and defaults as `RequestLoggingMiddleware` and `RequestLoggingOptions.PathBlackListPatterns`. Capture decisions apply once at entry and flow to children.
 
-The proposed HTTP options expose `PathBlackListPatterns`, initialized to the following exact defaults:
+The HTTP options expose `PathBlackListPatterns`, initialized to the following exact defaults:
 
 ```csharp
 [
@@ -479,9 +512,9 @@ Obtain the path as request logging does: use `IHttpRequestFeature.Path`, falling
 
 `WithHttpRequests()` uses these defaults without requiring the host to repeat them. Its options overload can replace `PathBlackListPatterns`, including with an empty collection; custom lists replace rather than silently append to the defaults. Keep the built-in default collection shared with request logging so future changes cannot drift, while each feature receives its own configurable copy. Reusing this blacklist requires no logging middleware registration or Serilog dependency, and changing one feature's configured list does not mutate the other's list.
 
-A matched request establishes the execution-wide suppression described in section 6.4, including nested feature behaviors and manual scopes. Consequently, `/_bdk/*` excludes dashboard requests by default. Hosts that expose business mutations beneath that prefix must adjust their Auditing blacklist explicitly; WeatherFiesta's required proof does so. Internal suppression of Auditing's own reads, writes, refreshes, and maintenance remains in force even when that path pattern is removed.
+A matched request establishes the execution-wide suppression described in section 6.4, including nested feature behaviors and manual scopes. Consequently, `/_bdk/*` excludes dashboard requests by default. Hosts that expose business mutations beneath that prefix must adjust their Auditing blacklist explicitly; the fictional application recipe in section 18.1 does so. Internal suppression of Auditing's own reads, writes, refreshes, and maintenance remains in force even when that path pattern is removed.
 
-Root metadata contains method, route template when available, endpoint name, sanitized path, status, duration, and safe correlation. Route templates form stable keys; raw resource IDs stay in approved resource fields. Query strings, bodies, headers, IP addresses, and user-agent strings require explicit capture policy. Bodies are disabled in the built-in default.
+Root metadata contains method, route template when available, endpoint name, sanitized path, status, duration, and safe correlation. The default sanitized path uses the route template, or an unmatched-route marker, so parameter values do not enter HTTP metadata. Route templates form stable keys; raw resource IDs stay in approved resource fields. Query strings, bodies, headers, IP addresses, and user-agent strings require explicit capture policy. Bodies are disabled in the built-in default.
 
 Middleware ordering must observe the authenticated actor, authorization denials, handled exceptions, and final status. The documented host recipe is routing, authentication, Auditing, exception handling, authorization, then endpoint execution. The audit middleware wraps the exception handler so it observes the resulting status. The exception integration supplies a safe error feature when an exception is handled downstream. If the host uses another order, document the evidence available rather than inferring an exception from status alone.
 
@@ -541,11 +574,15 @@ Existing feature retry policies can invoke their next delegate repeatedly. Audit
 | Active Entities                         | Rough entity action and outcome across its operation lifecycle. No inferred property deltas.                                                 | Optional behavior joins or owns a root; avoid duplicate reports of the same underlying action when repository adapters also participate. |
 | Entity bulk insertion                   | Operation ID, counts, policy, summary versus detailed change capture.                                                                        | Join or own. Preserve bulk limits.                                                                                                       |
 | Storage clients                         | Provider/client, logical operation, safe resource key, counts, result.                                                                       | Optional existing client behaviors. Never capture file/blob bytes or secrets.                                                            |
+| Email notifications | Queue/send intent, notification ID, approved business/template identity, outbox acceptance, send attempt, and observed outcome. | Queue/direct send joins or owns; deferred outbox execution owns a linked root. SMTP acceptance does not prove recipient delivery. |
+| DataPorter import/export | Operation ID, format/profile/type, aggregate or streaming mode, row counts, partial results, and outcome. No row payloads by default. | One operation action/root, lasting through actual stream enumeration or output completion. Selected row evidence remains bounded. |
+| StartupTasks | Task identity, observed invocation/outcome, and exposed retry attempts. | Each selected startup task owns a finite root or joins an explicit surrounding execution. No host-lifetime scope. |
+| File monitoring and processing | Selected scan/event, approved location/resource identity, processor, attempts where exposed, counts, and outcomes. | Selected scans join or own; background file-event processing owns a root with processor children. Routine polling remains unselected. |
 | Other features and application services | Stable kind/key, safe details, resources, outcome.                                                                                           | Custom behavior, registered adapter, or manual scope.                                                                                    |
 
 Provide first-party adapters for the boundaries above that already have behavior extension points. When a feature lacks a suitable boundary, add a small hook at that feature's operation executor. Do not require dynamic proxies or interception of arbitrary services.
 
-Each supported feature provides auditing behaviors or operation hooks that the host explicitly registers through that feature's own builder. This applies to Requester, Notifier, current Jobs, repositories, Active Entities, pipelines, orchestrations, messaging, queueing, bulk operations, and supported storage clients. Feature registration alone never installs an audit behavior. ChangeHistory exposes an explicit audit-evidence bridge registration on its own builder. New features provide the same small optional-contract adapters; the Auditing builder does not maintain a central list of feature opt-ins.
+Each supported feature provides auditing behaviors or operation hooks that the host explicitly registers through that feature's own builder. This applies to Requester, Notifier, current Jobs, repositories, Active Entities, pipelines, orchestrations, messaging, queueing, bulk operations, supported storage clients, email notifications, DataPorter, StartupTasks, and file monitoring. Feature registration alone never installs an audit behavior. ChangeHistory exposes an explicit audit-evidence bridge registration on its own builder. New features provide the same small optional-contract adapters; the Auditing builder does not maintain a central list of feature opt-ins.
 
 For example, Requester uses explicit `WithBehavior(typeof(AuditingRequestBehavior<,>))` and `WithBehavior(typeof(AuditingRequestHandlerBehavior<,>))` calls. An individual repository uses `WithBehavior<RepositoryAuditingBehavior<TEntity>>()`. Register that decorator only on the repositories that need rough entity-action capture. Per-type/operation selectors further narrow an enabled behavior. Do not add these behaviors to a feature's default list.
 
@@ -599,11 +636,48 @@ A timer-triggered scheduled job is a separate execution without an incoming HTTP
 
 An independent timer occurrence uses its actual executing service/user attribution. It does not inherit the identity of whoever last configured the schedule. Capture current module/correlation when available, establishing a correlation at a new admitted root under the existing convention when needed. Trusted causation/initiating-user metadata applies only when a real originating execution supplied it.
 
+
+Built-in job and broker delivery boundaries isolate audit state even when the source's own auditing behavior is omitted. This creates no job/message record by itself; the first selected nested boundary can own a service execution. Built-in DI handler factories provide `IAuditExecutionIsolation`; custom factories that control their own delivery environment should implement that optional Common capability or establish the equivalent independent boundary.
+
+Deferred initiation metadata is an opaque Data Protection token bound to the feature and exact occurrence/message ID. Its bounded snapshot contains copied causal IDs and permitted initiating attribution, never a principal, services, request payload, or suppression state. Ordinary transport properties cannot assert that attribution. A missing, forged, or unavailable token produces an independent service execution and safe diagnostics. The worker establishes the source's validated technical correlation before any audit root, including when that correlation intentionally differs from the originating audit. Causal IDs remain the link between those executions.
+
+Hosts that retain deferred work across restarts or distribute it across nodes must persist/share an appropriately protected Data Protection key ring and matching application discriminator. The handoff purpose is separate from record HMAC and HTTP export tokens. Key-ring availability is not a business delivery or retained-record integrity guarantee. The built-in outbox copies the opaque token through its stored properties and marks later publishing as a distinct service transport attempt, preserving the original admission link.
+
+### 8.4 Email notifications and deferred sending
+
+Email notifications in `Application.Notifications` are separate from Common Notifier dispatch. Provide explicit queue/send and outbox-execution audit selections through the notification feature's own builder. Add compatible operation hooks around `INotificationService<EmailMessage>.QueueAsync`, `SendAsync`, and the outbox worker's per-message execution; no suitable behavior pipeline is assumed to exist today. Selecting only queue/send capture does not implicitly select worker capture, or conversely.
+
+Capture notification ID, approved business/template identity, related resources, send mode, and the actual queue/send outcome. Distinguish confirmed outbox acceptance, ignored/skipped queueing when no outbox exists, SMTP acceptance, failure, cancellation, and retry exhaustion. A successful Result alone cannot turn ignored queueing into acceptance. SMTP acceptance is not proof of recipient delivery. Bodies, subjects, addresses, attachments, and raw provider error text are excluded by default; explicit projections still pass through the shared policy. Never capture SMTP credentials or other secrets.
+
+Queueing or a direct send joins the caller or owns a root. Before deferred acceptance, copy approved origin/causation, correlation, initiating module, and initiating-actor metadata into trusted outbox metadata. A later worker send owns an independent root linked to that notification and initiating action, with its executing actor kept separate. Preserve links through retries without reopening the original record. Avoid duplicate queue/send evidence when the worker reuses the email service. If the originating execution was suppressed or no trusted audit origin exists, do not invent one. Absence of a later record does not establish delivery or non-delivery.
+
+### 8.5 DataPorter import and export
+
+Provide explicit import/export auditing selections on the DataPorter builder. Its existing `IImportRowInterceptor<TTarget>` and `IExportRowInterceptor<TSource>` contracts supply row-level hooks, not a complete operation boundary. Add a compatible operation hook around the DataPorter executor so empty input, configuration/provider rejection, failure before the first row, and whole-operation completion are observable. Auditing's own export service remains independent of DataPorter, and internally suppressed audit downloads never become DataPorter audit records.
+
+One import/export contributes an operation action or owns a root. Capture a stable operation ID, format, approved profile/type identity, aggregate/streaming mode, observed row counts, and actual outcome. Keep successful, failed, skipped, and unprocessed rows distinct. A successful outer Result can contain row errors; preserve that Result outcome and expose partial processing separately. Partial business processing is not itself truncated audit capture. Row acceptance proves import processing only, not that business entities were persisted. Actual changes still require separately selected entity/ChangeHistory evidence. Do not capture input/output bytes or whole row values by default; optional row actions/details obey the shared count, size, and value policies.
+
+For streaming imports or exports, scope ownership surrounds enumeration or actual output production, not just creation of an enumerable or task. Early disposal records partial/incomplete processing; observed cancellation and failure retain their own outcomes. Finalize once and restore ambient state on every exit without forcing enumeration, replaying rows, or retaining a live stream in the finalized record. Counts describe observed processing and never imply an unknown total or recipient receipt of exported bytes.
+
+### 8.6 StartupTasks
+
+Provide an explicitly selected auditing implementation of the existing `IStartupTaskBehavior`, registered through StartupTasks' `WithBehavior(...)` mechanism. Per-task selectors choose business-relevant initialization, seeding, or reconciliation work. Ordinary StartupTasks registration does not enable auditing, and adding its adapter introduces no dependency from Common contracts to `Application.Auditing`.
+
+Each selected task invocation joins a live explicit execution or owns a finite root. Capture task identity, available module/correlation, actual service/user attribution, and the observed completion, exception, or cancellation. A task's successful completion does not prove that every external effect committed. When existing policies expose retry attempts, retain distinct attempt occurrences and the final task outcome without adding retries. Work skipped before invocation cannot be labelled invoked. Close the scope when that task finishes; never keep an audit root open for the host lifetime or attribute startup work to a user who previously configured the host.
+
+### 8.7 File monitoring and processing
+
+Provide explicit selections on file monitoring's own builder for approved scans and event processing, with location/processor selectors. Existing `IMonitoringBehavior` scan callbacks and `IProcessorBehavior` before/after callbacks are reusable extension points. They do not by themselves establish safe async scope ownership and finalization on every exit. Add a compatible executor hook where needed to surround the complete operation, including cancellation and behavior failures, rather than leaving an ambient scope open between callbacks.
+
+A selected finite scan joins or owns a root. Routine watcher polling and unchanged scans are not automatically business-audited. A background accepted file event owns an independent processing root; selected processor invocations become child occurrences, and nested Requester/repository/manual work can join them. Preserve approved origin/causation only when an actual initiating execution supplied trusted metadata. A filesystem event alone does not identify the user who changed the file. Do not keep a root open for the watcher lifetime or inherit an unrelated request's actor/suppression state.
+
+Capture event ID/kind, approved location and logical resource references, processor identity, observed counts/results, and attempts where the feature exposes them. Distinguish detection, queue admission, processing, and any separately confirmed persistence. Preserve failed Results even when the executor catches an exception, and do not infer a property diff or committed business change from file detection. File contents and unrestricted physical paths are excluded by default. Never capture credentials. Selected storage-client actions may nest beneath processing without reporting the same processor invocation twice.
+
 ## 9. Optional ChangeHistory integration
 
 ### 9.1 Responsibilities and explicit participation
 
-ChangeHistory is an optional devkit feature. Source capture and audit enrichment are separate selections. The proposed `AddChangeHistory(...).WithAuditing<TSourceContext>()` explicitly registers its audit-evidence bridge on the ChangeHistory builder. The already configured source contexts/entities remain authoritative; the host does not repeat a mandatory entity list on the Auditing builder. The bridge accepts optional entity/operation selectors when only some source evidence should enter the trail.
+ChangeHistory is an optional devkit feature. Source capture and audit enrichment are separate selections. The `AddChangeHistory(...).WithAuditing<TSourceContext>()` explicitly registers its audit-evidence bridge on the ChangeHistory builder. The already configured source contexts/entities remain authoritative; the host does not repeat a mandatory entity list on the Auditing builder. The bridge accepts optional entity/operation selectors when only some source evidence should enter the trail.
 
 Only configured source capture plus an explicitly selected bridge and an enabled Auditing recorder contributes change evidence. Source ChangeHistory still captures and persists under its own policy when its audit bridge is omitted. Core auditing, its EF provider, manual scopes, and request/job capture work without ChangeHistory.
 
@@ -619,7 +693,7 @@ Do not change ChangeHistory's table layout. Optional audit/action correlation ca
 
 ### 9.2 Commit evidence and transaction boundaries
 
-A successful repository return or `SaveChanges` does not prove that an enclosing transaction committed. The adapter needs capture and transaction-lifecycle hooks in ChangeHistory and the existing transaction behavior. These hooks are proposed integration work, not capabilities assumed to exist today.
+A successful repository return or `SaveChanges` does not prove that an enclosing transaction committed. The adapter needs capture and transaction-lifecycle hooks in ChangeHistory and the existing transaction behavior. These hooks are integration work, not capabilities assumed to exist today.
 
 | Observation                                                         | Audit behavior                                                                                |
 | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
@@ -655,7 +729,7 @@ A source capture error follows ChangeHistory's own required/best-effort policy f
 
 Use one DI-selected provider for writes and reads. A host can replace it with a custom implementation. Avoid a named-provider factory until a concrete need requires multiple independent audit stores.
 
-Proposed provider operations are:
+Provider operations are:
 
 | Operation                                       | Contract                                                                                                                                           |
 | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -693,28 +767,32 @@ Default registration uses this provider for ease of local use. Selecting EF repl
 
 The EF provider works directly with a host/module or dedicated DbContext that exposes the audit entity sets. Its storage contract has no repository, Active Entity, or ChangeHistory requirement.
 
-The proposed three-table mapping exposes these sets:
+The first EF implementation supports SQL Server, PostgreSQL, and SQLite. All three must satisfy the same provider conformance, JSON/nested filtering, comparison, transaction, retention, and extraction guarantees. Backend-specific query translation and publication coordination remain in Infrastructure behind the single `WithEntityFrameworkProvider<TContext>()` registration. Detect the configured EF backend and reject unsupported providers early; do not silently fall back or reduce capabilities. Real-backend verification for each of the three is required before claiming support.
+
+The three audit data tables and singleton control table are discovered from these client DbSets:
 
 ```csharp
 public interface IAuditingDbContext
 {
 	DbSet<AuditRecordEntity> AuditRecords { get; set; }
+
 	DbSet<AuditActionEntity> AuditActions { get; set; }
+
 	DbSet<AuditEntityChangeEntity> AuditEntityChanges { get; set; }
+
+	DbSet<AuditStoreStateEntity> AuditStoreState { get; set; }
 }
 
 public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
 	: DbContext(options), IAuditingDbContext
 {
 	public DbSet<AuditRecordEntity> AuditRecords { get; set; }
+
 	public DbSet<AuditActionEntity> AuditActions { get; set; }
+
 	public DbSet<AuditEntityChangeEntity> AuditEntityChanges { get; set; }
 
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
-	{
-		base.OnModelCreating(modelBuilder);
-		modelBuilder.ConfigureAuditing();
-	}
+	public DbSet<AuditStoreStateEntity> AuditStoreState { get; set; }
 }
 ```
 
@@ -726,11 +804,19 @@ Register through `WithEntityFrameworkProvider<TContext>()`; its options callback
 
 Use a fresh context for audit appends and reads. Do not reuse the business operation's tracked context or transaction. Audit persistence remains independent so a failed or rolled-back business operation can still leave an audit record. A context used solely for audits requires no other devkit entity features.
 
+#### 10.3.1 Client-owned audit context and migrations
+
+The feature supplies `IAuditingDbContext` and its persistence entities. Clients add the interface and four DbSets to their own context. Table/key/index/length/required/foreign-key attributes live on the entities; the control entity attaches its singleton constraint configuration. EF discovers these mappings from the DbSets without an audit-specific model-building call.
+
+The feature ships no concrete DbContext, migration classes or migration-builder helpers. Clients generate, review and deploy migrations based on their complete application model. They own any optional table/schema overrides and initialize the control row in their creation/deployment transaction using database-generated store/epoch GUIDs and zeroed progress counters. Initialization runs once; ordinary application startup never reseeds missing state.
+
+Register normal client DbContext options and select `WithEntityFrameworkProvider<CustomerDbContext>()`. Fresh audit contexts and independent audit transactions remain required even when business and audit data share a database. Missing schema/control state remains a readiness failure, with no automatic database creation, migration or memory fallback. The [feature guide](../features-application-auditing.md#ef-persistence-and-deployment) documents the client-owned deployment recipe.
+
 ### 10.4 Compact relational model
 
-Storage is not constrained to one table. A compact model with two or three audit tables is acceptable. Choose the split for business searches, action identity, and ownership rather than forcing every child into JSON or normalizing every detail.
+The built-in EF provider uses three audit data tables for records, action occurrences, and entity-change evidence groups. This is the finalized default, not a configurable choice between layouts. Keep nested details in JSON rather than normalizing every property, actor, or resource.
 
-The proposed default uses three tables:
+The mapping uses three audit data tables and one technical control table:
 
 | Table                      | Row boundary                                                                                         | Main fields and owned details                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | -------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -738,13 +824,15 @@ The proposed default uses three tables:
 | `__Auditing_Actions`       | One action occurrence owned by an audit record.                                                      | Audit/action/parent IDs; business key/kind/label; current module and correlation; request/handler identity; timestamps and outcome; job-dispatch identity when present. Reasons, resource references, safe error references, and extensible details remain JSON.                                                                                                                                                                                     |
 | `__Auditing_EntityChanges` | One entity/change-set evidence group owned by an audit record, optionally associated with an action. | Entity type/ID; source store/change-set/bulk IDs; operation, capture source, timestamp, and persistence state. Property/path deltas, collection details, source row references, and allowed old/new values remain JSON.                                                                                                                                                                                                                              |
 
+`__Auditing_StoreState` is an additional technical control table with exactly one row per configured audit store. It retains stable StoreId, StoreEpoch, PublishedPosition, LifecycleGeneration, RemovedThroughPosition, RejectCompletedBeforeUtc, and ArchiveCompletedBeforeUtc, even when every execution has been removed. The archive watermark routes delayed finalized writes directly to archived storage after maintenance has advanced its cutoff. Its singleton key is constrained to 1. It contains no captured execution or key material and is outside the protected document. This four-physical-table layout was explicitly approved on 2026-10-30. Hosts include the control table in their migrations and backups.
+
 The optional integrity envelope is stored as nullable owned JSON on `__Auditing_Records`; it adds no table. Append the envelope and the entire protected graph in the same audit-store transaction. Archive/restore preserves the envelope unchanged alongside its original logical content. In-memory storage keeps the same envelope with its immutable snapshot.
 
-Keep extraction position and store/lifecycle bookkeeping in provider-owned metadata outside the captured document, content hash, and HMAC input. An index on persistence position supports bounded extraction. This design does not require another audit table or change the accepted two- or three-table mapping. The EF implementation must prove commit visibility across writers as described in section 12.6.
+Keep extraction position and store/lifecycle bookkeeping in provider-owned metadata outside the captured document, content hash, and HMAC input. An index on persistence position supports bounded extraction. Use the singleton control row for durable positions, store epochs, lifecycle generations, and removal availability. SQL Server uses a transaction-owned application lock, PostgreSQL a transaction advisory lock, and SQLite an immediate write transaction. Read control state, allocate position, append the complete graph, and update state under the same gate through commit. Archive/removal use that gate and atomically advance their metadata. A restore that changes position meaning requires explicit epoch rotation before accepting extraction. See [ADR-0031](../adr/0031-audit-store-publication-and-control-state.md). No additional audit tables or weaker extraction guarantees are introduced without another explicit decision.
 
 This keeps actions and entity-change groups directly searchable without adding a table for each property, actor, resource, exception, or metadata entry. Actual change details remain optional. The table is an audit snapshot/reference store, not a replacement for ChangeHistory's own storage.
 
-A two-table alternative can keep records and actions separate while embedding entity-change groups as JSON owned by their record. It is acceptable if it satisfies the same business filters, ownership, and provider conformance contract. The specification does not require shipping configurable table-layout variants; the final default mapping is reviewed before implementation.
+A custom provider can use a different compact representation, including two tables with embedded change groups, if it satisfies the same business filters, ownership, and provider conformance contract. Client context examples retain three audit data tables plus the singleton control table.
 
 #### 10.4.1 Ownership, append, and query rules
 
@@ -784,9 +872,11 @@ Expose `FlushAsync` through the provider abstraction so application shutdown, co
 
 A flush captures the acceptance boundary at the time of the call and waits for those accepted records, including any current batch or retry, to reach confirmed persistence. Records accepted afterward do not postpone that flush indefinitely. Completion is not defined as the queue merely becoming empty.
 
+That boundary is cumulative within the provider-instance receipt epoch, starting with its first accepted record. This process-local receipt epoch is separate from the durable store epoch and extraction positions. Earlier terminal delivery failures remain part of later covered flush results; an empty queue or later successful writes cannot erase them. Keep bounded aggregate failure history even when detailed per-record diagnostics expire. Flush does not requeue terminal failures or silently reset its lower boundary. Independent tests use isolated provider epochs, and callers needing a specific observation also inspect its actual receipt/status.
+
 Return an `AuditFlushResult` that distinguishes confirmed records, failed records, and records still pending at cancellation/timeout. A successful flush confirms all records covered by its acceptance boundary. Repeated or concurrent flushes are safe. Cancellation stops the caller's wait, not business execution or an already-started database operation that the writer can still complete.
 
-On graceful host shutdown, stop new business producers and coordinate finalization of active audit roots before closing queue admission. The writer continues draining during this stage. Complete admission, drain accepted records, and perform a final flush within the configured shutdown budget. The proposed default drain budget is ten seconds. Dispose writer resources and contexts only after draining completes or the budget expires. Report any remaining unpersisted records honestly. Abrupt termination cannot flush an in-process queue.
+On graceful host shutdown, stop new business producers and coordinate finalization of active audit roots before closing queue admission. The writer continues draining during this stage. Complete admission, drain accepted records, and perform a final flush within the configured shutdown budget. The default drain budget is ten seconds. Dispose writer resources and contexts only after draining completes or the budget expires. Report any remaining unpersisted records honestly. Abrupt termination cannot flush an in-process queue.
 
 Explicit flush can be awaited when required by the caller, but ordinary request finalization does not invoke a blocking flush. Consumers needing synchronous confirmation can select inline persistence or request and await a flush deliberately.
 
@@ -846,7 +936,7 @@ Details must be registered as searchable with a name, type, supported operators,
 
 POST search uses `FilterModel.Page`, `PageSize`, and `Orderings`, with the standard `ResultPaged<AuditRecordSummary>` response. Do not reinterpret page numbers as cursors or add an incompatible audit-only paging payload.
 
-Normalize omitted/default paging to page 1 and size 50. Enforce a maximum page size of 200 and reject invalid values after normalization. The default search range is the last 24 hours, with a configurable maximum range of 31 days. Filtering itself imposes no application-specific size/range cap, so Auditing supplies these bounds.
+Normalize omitted/default paging to page 1 and size 50. Enforce a maximum page size of 500 and reject invalid values after normalization. The default search range is the last 24 hours, with a configurable maximum range of 31 days. Filtering itself imposes no application-specific size/range cap, so Auditing supplies these bounds.
 
 Order by `StartedUtc DESC, Id DESC` when no ordering is supplied. Allowlisted caller orderings use their declared precedence and append an ID tie-breaker when needed. Execute filtering, exact count, ordering, and page selection in the provider. Return the normal total count/page metadata; a count timeout is a typed query failure, not an invented zero.
 
@@ -888,6 +978,20 @@ The dashboard labels the selected dataset and each record's state. Archived deta
 
 Normal Active queries use the provider's active query path and must not materialize archived payloads. Archived or All is an explicit broader query, not an automatic background expansion of every search. Removed records remain unavailable without changing the original business facts.
 
+### 11.5 Resource history for application screens
+
+Provide `IAuditQueryService.GetResourceHistoryAsync(AuditResourceReference resource, FilterModel filter, CancellationToken)` returning `ResultPaged<AuditResourceHistoryItem>`. A typed convenience overload derives the resource type through the same aliases and stable ID conversion as `Resource<TResource>(id)`. String-based references support external resources. Validate type/ID without loading a live entity or activating arbitrary CLR types.
+
+Resource history selects records whose retained root or action resource references match that exact type and ID. It never infers associations from free text, correlation alone, or arbitrary detail values. Add the mandatory resource predicate as an AND constraint outside caller-controlled filter groups, alongside trusted host scope. A resource reference narrows selection; knowing its ID does not authorize access. Reuse approved FilterModel predicates, same-child semantics, comparisons, Active/Archived/All selection, and query/range/page limits.
+
+Apply predicates and distinct record identity in the provider before count/order/page selection. Return one item per matching audit record. A record that references the resource in several places appears once, with bounded matching-action summaries, distinct ActionIds, and total/retained match counts. Repeated attempts/actions remain separate occurrences inside that item. A root resource association does not imply that all its actions concern that resource. Requests for same-action resource/outcome matching use the existing supported nested predicates or named specifications.
+
+Each item contains AuditId, root StartedUtc/CompletedUtc, a business label, initiating/executing actor summaries, root outcome, bounded resource-related action summaries with their own times/outcomes, lifecycle state, and capture/source-availability markers. Preserve the distinction between a successful root and a failed matching child. Default ordering is root StartedUtc descending with the existing ID tie-breaker; make the time basis explicit. Optional committed-change indicators use existing evidence rules. Property values remain in authorized detail reads, not the timeline list.
+
+The projection reuses current exposure rules and summary verification semantics. Tagged summaries remain NotChecked unless the complete source graph was actually verified; a tag alone never produces Verified. Preserve applicable NotProtected, MissingProtection, and Unavailable states rather than replacing them with an inferred result. Detail expansion uses the normal bounded detail service and its required original-graph HMAC verification. No resource-history table, additional retention lifecycle, domain entity base, repository, or ChangeHistory dependency is introduced.
+
+Return the standard ResultPaged count/page metadata and an as-of time. The default 24-hour range and Active dataset stay visible in the UI, with explicit historical-range/archive controls. An empty page means no matches within that scoped selection, not proof that the resource never had activity. Provider failures remain failures. Resource history continues to work after the live resource or actor is deleted, using retained snapshots and explicit unavailable links.
+
 ## 12. Optional endpoints
 
 ### 12.1 Registration and routes
@@ -906,6 +1010,8 @@ Provide `AddAuditing(...).WithEndpoints(...)` through the new web feature packag
 | `POST /aggregates`               | Counts and approved groupings under the same search/access scope.                                                                       |
 | `GET /facets`                    | Scoped, bounded suggestions with prefix and time filters.                                                                               |
 | `GET /capabilities`              | Supported fields/operators, limits, provider durability, and evidence modes.                                                            |
+| `GET /diagnostics`               | Bounded capture-configuration/readiness/delivery snapshot, with declared scope and instance/as-of metadata. |
+| `POST /diagnostics/explain`      | Read-only explanation for an approved capture probe; no execution, capture callback, storage write, or configuration change. |
 
 POST search binds `FilterModel` and maps through `IAuditQueryService` rather than opening a DbContext. Response items are audit summary DTOs in the existing `ResultPaged` shape. Dashboard handlers use the same application service and filtering semantics. Query execution is suppressed even if invoked through Requester.
 
@@ -917,8 +1023,13 @@ Public endpoints use the existing endpoint options and the host's general authen
 
 Dashboard pages and their internal read handlers inherit `AddDashboard` access rules. They do not require additional read/value policies, a feature-specific authorization setup, or new policy names before appearing.
 
-Host-wide data scope, when provided by the general access layer, applies consistently to searches, lookups, related work, facets, aggregates, exports, and completion metadata. Client filters can narrow a supplied scope, not widen it. Auditing does not require a new `IAuditAccessPolicy` registration.
+Host-wide data scope, when provided by the general access layer, applies consistently to searches, lookups, resource history, related work, facets, aggregates, exports, completion metadata, and diagnostics. Client filters can narrow a supplied scope, not widen it. Auditing does not require a new `IAuditAccessPolicy` registration.
 
+Global publication positions are technical store-wide activity information. Expose numeric record/window/completion positions only for an explicitly unrestricted trusted scope. Restricted exports retain actual positions inside protected progress and server-owned validation state; their public metadata omits those numeric boundaries while retaining scoped counts, selection/profile identity and opaque progress.
+
+Expose an optional `AddAuditing` builder hook, `WithReadScope(Func<IServiceProvider, CancellationToken, Task<Result<AuditReadScope>>> resolve)`, for adapting trusted host scope. `AuditReadScope` is an immutable snapshot of server-owned FilterModel-compatible constraints and a stable scope revision; copy and validate those constraints when resolving it. Resolve once per read operation from its active DI scope, under internal audit suppression. AND the constraints outside every caller-controlled group before provider selection/counting. Apply the same scope to exact lookups, metadata, and diagnostic existence/count disclosures. Tokens use its effective fingerprint/revision alongside the current principal/exposure boundary.
+
+Without the optional hook, data scope is explicitly unrestricted within the host's ordinary route/service access rules; do not advertise tenant row isolation. A tenant-isolated host must capture a validated searchable tenant key and supply a restricted scope through this hook. Once a resolver is selected, missing trusted context, invalid/null scope, or resolver failure produces a typed scope-unavailable error and performs no unscoped read. An explicitly unrestricted successful scope remains available for authorized global operators. This is filter composition, not a new permission system or a required dashboard policy; ordinary parameterless setup stays valid.
 Captured redaction and configured value-exposure settings still apply to every response. Change paths and redaction markers can be shown without old/new values. Detailed value exposure is a capture/presentation option, not a mandatory dashboard-specific policy. Links into another feature use that feature's existing access rules.
 
 Return validation failures for invalid ranges, unsupported fields, operators, or tokens. Map not-found and provider-unavailable outcomes consistently with existing endpoint conventions. Errors contain no stored payloads or storage credentials.
@@ -969,23 +1080,41 @@ The dashboard can build the same FilterModel with `FilterModelBuilder` and use t
 
 ### 12.4 Export selection and formatters
 
+**Implemented dependency:** NDJSON export reuses the delivered components described in [NDJSON Streaming](spec-presentation-ndjson-streaming.md). The bounded `NdjsonWriter`/`NdjsonReader` primitives are in `Common.Serialization`; HTTP streaming is in `Presentation.Web`, with reusable .NET client helpers in Common. Integrate those existing APIs and their consumer-contract tests rather than implementing the general streaming layer again. Auditing-specific export integration remains outstanding. Core recording and storage do not depend on the HTTP integration, and the shared streaming feature has no dependency on Auditing.
+
+Use the shared raw-record writer to encode Auditing's versioned `metadata`, `record`, and `completion` entries. These remain Auditing's export contract; do not add the shared optional `data`/`heartbeat`/`completed`/`error` envelope around them. Auditing continues to own selection, HMAC verification, exposure, persistence windows, continuation/checkpoints, digest framing, and completion metadata. Generic stream completion does not establish audit extraction completeness or recipient acknowledgement. Reuse the shared encoding, cancellation, backpressure, and HTTP mechanics without implementing a second general-purpose NDJSON stack.
+
+Apply Auditing's record/output limits and finite export deadline explicitly through the shared options rather than inheriting different generic streaming defaults. Client reader limits remain caller-controlled. Preserve the parameterless Auditing composition and optional public-endpoint contract; shared streaming integration adds no required host setup call. CSV and CEF retain their own formatters and wire representations.
+
 `POST /records/export?format=ndjson` accepts `FilterModel` directly, with the same body binder, filter schema, allowlists, comparison rules, same-child predicates, and range limits as search. The `format` option defaults to `ndjson`; `csv` is also built in. Unknown or unregistered formats return a typed validation error before output starts. An incompatible HTTP Accept header returns 406. Publish supported format IDs, media types, extensions, profile versions, and transformation limits through `/capabilities`.
 
 Use `continuationToken` to request the remaining chunk of an existing window, or `checkpoint` to open its next window. These query options are mutually exclusive. Without either, open a new extraction from the retained beginning. Repeat the same FilterModel and format on resumed requests. Resolve omitted time criteria from the token's original absolute selection, never from the resumed request's current time. Tokens bind the effective selection without creating another public filter grammar.
 
-Export selects all matching retained records across bounded chunks, rather than the currently displayed search page. `Page` must be omitted or normalize to 1. `PageSize` is an optional internal batch-size hint within the shared maximum of 200. Extraction uses ascending persistence position with an AuditId tie-breaker. Reject explicit search `Orderings` for export rather than silently ignoring them. Record execution timestamps remain available for downstream chronological views. Search keeps its existing page/order/ResultPaged contract.
+Export selects all matching retained records across bounded chunks, rather than the currently displayed search page. `Page` must be omitted or normalize to 1. `PageSize` is an optional internal batch-size hint within the export maximum of 200. Extraction uses ascending persistence position with an AuditId tie-breaker. Reject explicit search `Orderings` for export rather than silently ignoring them. Record execution timestamps remain available for downstream chronological views. Search keeps its existing page/order/ResultPaged contract.
 
 Resolve relative/default times once into an absolute selection when opening a window. Continuations preserve that selection, including explicit Active/Archived/All criteria. Active remains the default without loading archive payloads. A validated selection constrained to one exact AuditId uses the existing exact-ID time-range exception, while retaining lifecycle/access constraints. An OR branch that broadens the selection cannot bypass range limits. A filter on an action selects its owning record; the export includes that record's permitted graph, without inventing matching-only completeness. Related executions are not implicitly traversed. Current host access scope and read-time redaction/value exposure constrain every record and metadata read, including resumed requests.
 
 Proposed `IAuditExportService` validates selection, coordinates provider extraction, verifies original records when required, and applies exposure before calling `IAuditExportFormatter`. Formatters receive only the approved immutable export projection and bounded output context. They cannot resolve a DbContext, query raw records, access HMAC keys, widen selection, or restore hidden values. The formatter contract provides format/profile identity, media type/extension, streaming start/record/end operations, and transformation/omission metadata. Cancellation and asynchronous writes are required. Formatters do not own cursors, authorization, or provider lifecycle.
 
-Register custom formatters through proposed `AddAuditing().WithExportFormatter<TFormatter>()`, with a DI factory overload. NDJSON and CSV are registered by default even when public endpoints are omitted, so dashboard downloads use them. Duplicate format IDs fail startup. The export service and formatters have no ASP.NET dependency; Presentation handles HTTP and completion-metadata routes. Reuse serializer conventions and existing formatting helpers where suitable, without introducing a mandatory DataPorter dependency or materializing its entire result.
+Register custom formatters through `AddAuditing().WithExportFormatter<TFormatter>()`, with a DI factory overload. NDJSON and CSV are registered by default even when public endpoints are omitted, so dashboard downloads use them. Duplicate format IDs fail startup. The export service and formatters have no ASP.NET dependency; Presentation handles HTTP and completion-metadata routes. Reuse serializer conventions and existing formatting helpers where suitable, without introducing a mandatory DataPorter dependency or materializing its entire result.
 
 | Format | Representation and boundaries |
 | --- | --- |
 | NDJSON | UTF-8 `application/x-ndjson`, `.ndjson`. Each newline-terminated JSON object is a typed `metadata`, `record`, or terminal `completion` entry. One record entry contains one permitted audit graph and its source/projection metadata. Escape embedded line breaks. Publish a versioned export schema distinct from the stored/canonical schema. |
 | CSV | UTF-8 `text/csv`, `.csv`, fixed versioned columns and one row per audit record. Include stable source/audit identity, event times, actors, action label, outcome, capture completeness, and source-verification status. Approved nested actions/changes/details use documented JSON cells with policy markers. Apply RFC 4180 quoting and neutralize spreadsheet-formula prefixes in untrusted text. Report that transformation. Completion metadata is a companion JSON response, never an extra CSV data row. |
 | Registered formatter | Declares a versioned projection, stable output-item identities, bounded expansion, and omitted/transformed fields. It uses the same selection, verification, limits, and completion contract as built-ins. Unsupported values or excessive expansion produce an explicit error, not silently dropped records. |
+
+#### 12.4.1 Exact-byte and output-outcome integration
+
+Use NDJSON Streaming section 4.2.1's `EncodeRecordAsync` and owned `NdjsonEncodedRecord` for each projected entry. Inspect `FramedBytes.Length` before admitting it against the remaining response-byte budget, including reserved metadata/completion space. A record that does not fit remains unconsumed in the extraction cursor; release its frame and return an orderly Partial chunk when possible. Set the shared JSON-byte cap explicitly so the complete projected entry plus its LF fits Auditing's formatter limit. The stored record's 1 MiB limit does not include export-wrapper overhead and is not automatically the correct wire limit.
+
+In `Presentation.Web.Auditing`, use the shared raw `NdjsonHttpResult.FromEncodedRecords<TEntry>(...)` path and a per-response observer. It writes the budgeted bytes unchanged and releases each yielded frame under its ownership contract; Auditing owns frames it does not yield. Select per-record flushing with additional encoded batching disabled so shared server defaults cannot add a buffer outside Auditing's working-memory budget. Application formatting remains HTTP-independent. A non-HTTP coordinator can await `WriteEncodedRecordAsync` and destination flushing directly. Do not serialize a measured entry again or keep a second full-sized encoding buffer. Keep any pending entry/cursor descriptors bounded and release provider contexts before network waits.
+
+Compute the data digest from the exact framed bytes of `record` entries, including their LF. Exclude `metadata` and `completion` entries from that digest, while counting every frame against the overall response cap. Prospective counts/digests do not establish successful output; reconcile them with the terminal transport outcome. Verifying .NET consumers use the shared raw handle's `ReadRecordsAsync` original-byte views, inspect/deserialize the entry while its borrowed bytes remain valid, and hash the selected original frames before advancing. Use strict framing, not reserialization or a whole-response hash that includes control entries.
+
+The implemented `INdjsonStreamObserver.OnFinishedAsync` supplies the final `NdjsonStreamOutcome`, including `CleanupCompleted`. Keep companion metadata Streaming until that outcome is available. Publish Completed or an orderly Partial with usable progress only when output status is Succeeded, cleanup is confirmed, the expected completion entry is covered by the flushed prefix, and Auditing's own extraction/integrity checks passed. Source exhaustion alone, a successful write without its required flush, or a candidate completion entry is insufficient. A Failed/Canceled outcome or unconfirmed cleanup produces failed/canceled metadata and no newly confirmed checkpoint. Generic counts include metadata/completion frames, so reconcile them with Auditing's separate source-record counts rather than equating the two.
+
+Prepare the in-band completion after the data-phase resources and selection checks have completed, then let the observer reconcile the final write, flush, and remaining cleanup. A later output/cleanup failure cannot retract bytes already sent and must not become successful companion metadata. Server success still does not acknowledge recipient processing. Clients validate their complete download, digest, and terminal/companion metadata before committing progress under section 12.5. Observer publication failure/timeout leaves companion metadata unavailable or unconfirmed; it never fabricates successful publication or permits response retries.
 
 ### 12.5 Bounded streaming and completion metadata
 
@@ -1039,11 +1168,40 @@ NDJSON, CSV, and CEF are versioned export projections. Source verification descr
 
 ### 12.8 First enterprise adapter: CEF
 
-Supply a separate optional `CefAuditExportFormatter` registered through `WithExportFormatter<CefAuditExportFormatter>()`. It adds `format=cef`, UTF-8 `text/plain`, and `.cef` downloads to the same API/dashboard. Core auditing, NDJSON/CSV, HMAC, and ordinary downloads remain usable without this package, enterprise controls, or a compliance profile. Syslog transport, SIEM forwarding/acknowledgement, cross-system correlation, and compliance certification are outside this adapter.
+Supply `CefAuditExportFormatter` in `Application.Auditing/Formatters`, explicitly registered through `WithExportFormatter<CefAuditExportFormatter>()`. It adds `format=cef`, UTF-8 `text/plain`, and `.cef` downloads to the same API/dashboard. Core auditing, NDJSON/CSV, HMAC, and ordinary downloads remain usable without selecting CEF, enterprise controls, or a compliance profile. Syslog transport, SIEM forwarding/acknowledgement, cross-system correlation, and compliance certification are outside this adapter.
 
 The initial mapping emits one root summary and one event per retained action. Each line has a deterministic item identity, source/audit/action identity, event times, available actor/module/correlation, outcome, and completeness/projection markers. It does not fabricate property events from reference-only or Unknown evidence. The mapping explicitly lists represented fields and omitted nested details/deltas. Checkpoint advancement is atomic for the entire source record's event expansion. Replayed events use the same deduplication identities.
 
 Use the [OpenText CEF implementation standard](https://docs.microfocus.com/doc/2097/25.4/siemcefimplementationstandard) for the seven header fields, extension dictionary, UTF-8 encoding, and distinct header/extension escaping. The versioned mapping pins a supported CEF version and host-supplied vendor/product/version identity. Map stable action keys to event-class IDs and business labels to names. Default severity is 0, Unknown; host overrides are explicit and never infer security severity from business failure alone. Escape delimiters, backslashes, equals signs, and line breaks according to their CEF field context. Apply bounded field/message lengths, record every truncation/omission, and keep missing/hidden values distinct from actual empty values. Test reserved characters and the published mapping before advertising compatibility.
+
+### 12.9 Capture and delivery diagnostics
+
+Provide `AuditDiagnosticsService` in Application for a read-only snapshot and capture explanation. `WithEndpoints()` includes its bounded JSON routes; dashboard handlers call the same service without requiring public endpoints. `/capabilities` remains the stable contract/limits catalog. Diagnostics describes effective configuration and timestamped operational observations, not an additional audit trail or a live execution browser.
+
+Source-feature builders publish small safe registration descriptors for their own boundaries and explicit audit selections through Common metadata. Collect metadata without constructing a second service provider, invoking handlers, or inspecting another feature's internal implementation. Report absent, present-but-not-selected, selected, disabled, and unknown participation distinctly when the source supplied enough information. A missing descriptor is Unknown rather than proof that a boundary is absent. Omitted behaviors are intentional configuration facts; diagnostic discovery never installs them. Registration order and repeated registration must not change the result or duplicate entries.
+
+The snapshot/explanation separates these stages:
+
+| Stage | Evidence and limits |
+| --- | --- |
+| Configuration | Feature enabled state, declared boundary/selector participation, HTTP blacklist, suppression rules, selected provider/mode, limits, optional bridge/formatter/protection capabilities, and configuration revision. |
+| Eligibility | Safe reason codes such as Disabled, NotSelected, Blacklisted, Suppressed, Eligible, and Unknown. Explain a rule only when the supplied trusted context is sufficient. |
+| Finalization/admission | Capture-limit/rejection counters and queue admission outcomes. An active-root count is a capacity indicator, not a stored or inspectable in-progress audit record. |
+| Delivery/readiness | Queued versus confirmed persistence, safe terminal failure reasons, bounded writer backlog/capacity indicators, last observed persistence time, and read-only provider/schema availability. Buffered visibility and process-local crash-loss limits remain explicit. |
+
+An approved `AuditCaptureProbe` can identify a registered boundary/type alias and a sanitized HTTP path for blacklist evaluation. It carries no request object, business payload, headers, principal override, or executable predicate. Reuse the actual capture eligibility logic where it can run without side effects. Arbitrary selectors requiring live state yield Unknown with a limitation reason; never execute business work, descriptor/enricher callbacks, or storage writes to obtain an answer. A synthetic Eligible result means only that the evaluated rules permit capture, not that an event ran or evidence persisted. Preserve actual delivery receipts/status separately from this prediction.
+
+Store bounded aggregate counters and safe reason summaries, not a per-request diagnostic event stream. Do not retain actor/resource identities, audited values, raw exception text, or secrets. Bound each snapshot to 64 KiB, list pages to 100 entries, probe bodies to 8 KiB, and explanations/provider probes to the shared ten-second query budget. Report omitted diagnostic entries and unavailable observations explicitly. Stable reason/boundary names can label counters; AuditIds, user IDs, correlation IDs, and resource IDs cannot become metric labels. Source/provider implementations report diagnostics without re-entering the recorder.
+
+Use existing public-route/dashboard access and trusted host data scope. Redact configuration details that the general host access layer restricts. Operational aggregates are labelled with their instance/store scope; do not expose tenant-wide business counts or record existence beyond the caller's scope. Restricted/unknown values are not zero. Explanations, readiness checks, polls, and diagnostics rendering run under internal suppression, including custom paths. They do not flush queues, apply migrations, seal test records, alter policies, or create an alternative failure response. ReportOnly and all accepted delivery guarantees remain unchanged.
+
+### 12.10 Health check participation
+
+Enabled `AddAuditing()` automatically registers one `Auditing` health check with `ready`, `storage`, and `auditing` tags and a ten-second timeout. Disabled capture and no-op-only registration add no check. Registration is idempotent by name, following the storage features' `TryAdd...HealthCheck` pattern.
+
+`IAuditingStorageProvider.CheckReadinessAsync` supplies the read-only probe. Memory reports process-local readiness; EF validates mapped audit columns and initialized control state without schema creation or mutation. Custom providers must implement the probe; the default reports unsupported. Run the probe under capture suppression and never append, flush, migrate, or load evidence to establish health.
+
+Provider readiness failure reports the registration's failure status, `Unhealthy` by default. Ready storage with recent capture or terminal delivery failures reports `Degraded`. A configurable `AuditingOptions.HealthFailureWindow`, five minutes by default and bounded to one day, determines recovery after a quiet period using monotonic time. Historical diagnostics remain cumulative. A provider exposing only cumulative delivery counts starts the recovery window when a new count or receipt epoch is first observed; unchanged or stale same-epoch counts do not prolong it. Expose recent-failure state and the recovery window alongside historical health data. Pending admissions alone do not imply a failure. Report available provider/durability/buffering and receipt counters as operational metadata, preserving unavailable delivery status rather than inventing zero. Do not expose raw provider errors or audited values. Use existing host health/dashboard access controls; health checks perform no tenant evidence queries.
 
 ## 13. Dashboard
 
@@ -1073,7 +1231,9 @@ Auto-refresh is opt-in, pauses while viewing a historical page, and does not res
 
 ### 13.3 Execution detail
 
-The confirmed presentation leads with the named business action, such as Add city, its actor, resource, and outcome. Show its reason, initiating/executing actor context, chronology, and related work. HTTP, command, handler, and entity boundaries remain expandable supporting evidence rather than equally prominent business entries. This is a presentation projection: preserve captured occurrences and their actual parent/causation relationships. Use business display names where supplied so auditors do not need to interpret CLR type names.
+Open execution details in a scrollable Bootstrap modal from the search table and related-execution links. Reuse the complete permitted detail projection without navigating away from the list or changing its URL, filters, paging, or scroll position. Cancel stale or dismissed detail requests and restore focus to the original trigger on close. Retain direct full-page URLs without exposing a new-tab action in the dialog. Render correlation identifiers with the shared filtered-logs link and copy control. Fragment routes inherit the existing dashboard access rules, trusted scope, integrity verification, no-store caching, and capture suppression.
+
+The confirmed presentation leads with the named business action, such as Rename customer, its actor, resource, and outcome. Show its reason, initiating/executing actor context, chronology, and related work. HTTP, command, handler, and entity boundaries remain expandable supporting evidence rather than equally prominent business entries. This is a presentation projection: preserve captured occurrences and their actual parent/causation relationships. Use business display names where supplied so auditors do not need to interpret CLR type names.
 
 An expandable action tree shows every retained occurrence, parent relationship, business label, action time, execution status, outcome, and approved details. Request/handler identity can be expanded when needed. Failed attempts remain visible when the final attempt succeeded. The chronological view explains the business sequence and its related work.
 
@@ -1106,6 +1266,20 @@ Add Download actions for the current filtered selection and for one retained det
 Dashboard download handlers invoke `IAuditExportService` under the same global dashboard access rules as the page. They work without `WithEndpoints()` and add no export/value policy, permission name, or Auditing-specific setup. Reapply host data scope and current value exposure on every download, continuation, and metadata poll. Downloads, formatter work, completion reads, and retries run under internal audit suppression even when an endpoint uses a custom path outside the default blacklist.
 
 Stream the browser download without building the entire result in browser or server memory. Display selection, format, chunk limits, progress/completion, and partial/failure reasons. Offer continuation and a companion metadata download for each attempt, including CSV/CEF. Large selections can require several files. A partial chunk is visibly labelled and never presented as the full filtered selection. Explain that a completed window covers stored evidence as of its persistence boundary and that later buffered arrivals require another extraction window. A disconnected download or expired metadata remains unconfirmed. Counts/status messages cannot reveal records outside the caller's scope.
+
+### 13.7 Capture diagnostics view
+
+Add an effective-configuration and delivery view to the automatically discovered Auditing page. Show selected/omitted/unknown boundaries, the applicable capture/exclusion reasons, provider readiness, buffered admission versus persistence, limits/loss reasons, and observation time/instance. Link to the matching starter guidance for missing explicit registrations or schema setup. Intentional opt-outs remain informational. No feature behavior is enabled by viewing the page, and no business payload or live action tree is collected for diagnosis.
+
+Use the diagnostics service and existing global dashboard access rules without additional Auditing policies. Separate a capture-rule explanation from proof of an actual persisted record. A stale, restricted, or unavailable diagnostic result has that state rather than a healthy/empty substitute.
+
+### 13.8 Embeddable resource-history view
+
+Supply a reusable resource-history Razor-slice fragment in `Presentation.Web.Auditing` over section 11.5's projection. It accepts a server-validated resource reference, current FilterModel selection, and host-owned safe link builders. Host application routes can render it without `AddDashboard`, `WithEndpoints()`, or another UI framework. Also deliver a small client-UI example consuming the same Application DTOs through an application-owned authorized endpoint; the core service references neither Razor slices nor dashboard types.
+
+The fragment provides visible UTC range/lifecycle selection, bounded page navigation, actor/business-action summaries, root versus matching-child outcomes, completeness/protection markers, and loading/empty/error states. Expand matching occurrences without merging repeated actions by key. Keep optional property values behind the normal detail operation. Links into the full Auditing dashboard are optional; without it, use host-owned detail routes or a read-only summary. Missing live resources/users and unavailable historical links remain understandable.
+
+The host owns endpoint routing and general access configuration. Resolve current trusted scope on each request; resource type/ID and client filters cannot widen it. Encode display values and link arguments. Query/fragment/detail operations use internal suppression while preserving unrelated surrounding business capture. Refresh is opt-in and bounded, with no whole-history download or automatic expansion into related executions. Reuse the existing query/provider storage, exposure, and integrity boundaries throughout.
 
 ## 14. Configuration, defaults, and composition
 
@@ -1147,11 +1321,11 @@ services.AddAuditing(options => options
 		.GroupPath("/api/auditing"));
 ```
 
-The host configures Requester, Notifier, current Jobs, optional ChangeHistory, and other features through their own builders and explicitly adds the auditing behaviors/bridges it wants. Source features register no audit behaviors by default. The selected adapters resolve optional Common contracts at execution time, so explicit selection works before or after `AddAuditing`. No duplicate feature-enablement list belongs on the Auditing builder. Appendix A shows the full Requester/repository/ChangeHistory opt-ins.
+The host configures Requester, Notifier, current Jobs, email notifications, DataPorter, StartupTasks, file monitoring, optional ChangeHistory, and other features through their own builders and explicitly adds the auditing behaviors/bridges it wants. Source features register no audit behaviors by default. The selected adapters resolve optional Common contracts at execution time, so explicit selection works before or after `AddAuditing`. No duplicate feature-enablement list belongs on the Auditing builder. Appendix A shows the full Requester/repository/ChangeHistory opt-ins.
 
 The explicitly registered behaviors determine which operations are captured. Once Requester auditing is selected, its default captures commands and only explicitly selected business queries, using behavior-level type selectors/predicates or approved endpoint/request metadata. Source-feature behavior options and global Auditing capture policy retain exclusions and selectors. No separate command/query capture switches are introduced. With Auditing absent or disabled, these behaviors pass through without collecting or serializing audit details.
 
-An explicitly selected ChangeHistory bridge consumes its configured source contexts/entities, independently of which DbContext stores audits. Snapshot is the default audit-copy policy; changing it to reference-only is configuration, not adapter enablement. For example, this proposed option changes policy without registering ChangeHistory or selecting a source context:
+An explicitly selected ChangeHistory bridge consumes its configured source contexts/entities, independently of which DbContext stores audits. Snapshot is the default audit-copy policy; changing it to reference-only is configuration, not adapter enablement. For example, this option changes policy without registering ChangeHistory or selecting a source context:
 
 ```csharp
 services.AddAuditing(options => options
@@ -1164,7 +1338,7 @@ Configuring that policy while ChangeHistory or its explicit audit bridge is abse
 
 Explicit adapter registration is idempotent and preserves the ordering in section 7. Repeated registration must not duplicate the same boundary. A feature with no selected audit behavior contributes no automatic boundary action; manual scopes and other selected capture remain available. Registration does not inspect whether Auditing has already been registered or build an intermediate service provider.
 
-`WithEndpoints()` registers public read, export, and completion-metadata endpoint options/services with sane defaults and can be omitted. Its optional callback customizes them; configuring a group path or enabling export separately is not required. NDJSON/CSV formatters and the application export service remain available to the automatically discovered dashboard without public endpoints. There is no Auditing-specific dashboard registration method.
+`WithEndpoints()` registers public read, export, completion-metadata, and diagnostic endpoint options/services with sane defaults and can be omitted. Its optional callback customizes them; configuring a group path or enabling export separately is not required. NDJSON/CSV formatters, query/export/resource-history services, and diagnostics remain available to dashboard/host handlers without public endpoints. There is no Auditing-specific dashboard registration method.
 
 Enterprise formatting is an independent opt-in, using the same formatter extension point as application formats:
 
@@ -1183,7 +1357,7 @@ Simple local composition is `AddAuditing()`, which uses the default bounded in-m
 
 New participating features expose explicitly selectable auditing adapters through their own builder and the same optional Common contracts. Core Auditing remains independent of their packages; adding a feature requires no new integration-enablement method on the Auditing builder.
 
-HMAC-SHA-256 is an optional, provider-independent AddAuditing capability. The proposed minimal opt-in is:
+HMAC-SHA-256 is an optional, provider-independent AddAuditing capability. The minimal opt-in is:
 
 ```csharp
 services.AddAuditing()
@@ -1193,13 +1367,13 @@ services.AddAuditing()
 	.WithEndpoints();
 ```
 
-`HostAuditIntegrityKeyProvider` implements the proposed `IAuditIntegrityKeyProvider` contract in `Application.Auditing`. It supplies the active key identity/material for sealing and resolves historical keys for verification, using a protected host-managed secret source outside the audit database. The generic registration uses normal DI; a factory overload supports an existing provider instance or custom construction. There is no default secret, key column, or dashboard key-entry UI. The same opt-in works with `WithInMemoryProvider()` and custom storage that preserves the envelope; selecting an incompatible provider fails startup. Omitting it leaves ordinary capture unchanged. No algorithm, tag length, or verify-on-detail-read configuration is needed for the safe defaults in section 16.2.1.
+`HostAuditIntegrityKeyProvider` implements the `IAuditIntegrityKeyProvider` contract in `Application.Auditing`. It supplies the active key identity/material for sealing and resolves historical keys for verification, using a protected host-managed secret source outside the audit database. The generic registration uses normal DI; a factory overload supports an existing provider instance or custom construction. There is no default secret, key column, or dashboard key-entry UI. The same opt-in works with `WithInMemoryProvider()` and custom storage that preserves the envelope; selecting an incompatible provider fails startup. Omitting it leaves ordinary capture unchanged. No algorithm, tag length, or verify-on-detail-read configuration is needed for the safe defaults in section 16.2.1.
 
 ### 14.2 Default policies and resource limits
 
 These are the default design settings. Parameterless fluent calls use them directly; every options object starts with these values and supports partial overrides. They bound captured evidence and storage use.
 
-| Setting                                            | Proposed default                                                                                                                                                                                           |
+| Setting                                            | Default                                                                                                                                                                                           |
 | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Feature enabled / failure handling                 | `AddAuditing()` enables capture with `ReportOnly`; no explicit `Enabled()` or `OnFailure(...)` is needed. Absent registration does no work.                                                                |
 | Application name                                   | Explicit override, otherwise DevKit host name, generic-host name, entry assembly simple name, then `Application`.                                                                                          |
@@ -1207,6 +1381,7 @@ These are the default design settings. Parameterless fluent calls use them direc
 | HMAC integrity | Off until `WithHmacSha256<TKeys>()`; when enabled, full HMAC-SHA-256 tags, protected host-supplied keys, required protection on writes/detail verification, and no unsigned fallback. |
 | Provider                                           | In-memory until an explicit provider is selected.                                                                                                                                                          |
 | Manual scope options | Fluent key/type factory; readable display name, `Business` kind, `JoinOrStart` mode. Runtime details/resources are explicit; disposal alone never implies success. |
+| Root finalization | Asynchronous disposal or RunAsync for every recording root, including in-memory and HMAC-enabled capture. Synchronous root disposal reports missing async finalization without blocking, background delivery, or a false acceptance claim. |
 | Feature participation | Off at each source boundary until its audit behavior/bridge is explicitly registered on that feature's builder. Omission is local; no implicit registrations. |
 | Command/query/notification capture | Selected by explicit Requester/Notifier audit behavior registrations. Commands then default to captured; business queries require selection. No duplicate capture switches. |
 | HTTP request blacklist                             | Same `PathBlackListPatterns` defaults and path/`MatchAny` semantics as RequestLoggingMiddleware, including `/_bdk/*`; host replacement is explicit.                                                        |
@@ -1222,12 +1397,15 @@ These are the default design settings. Parameterless fluent calls use them direc
 | Automatic EF flush                                 | Buffered writer starts with provider registration; 100 records per batch or a one-second interval, with no `Buffered(...)` call required.                                                                  |
 | EF writer retries                                  | Three retries after the initial attempt; exponential backoff starting at 250 ms and capped at two seconds. The shutdown drain remains bounded; canceling a flush wait does not cancel writer work.         |
 | Public endpoints                                   | Opt in with parameterless `WithEndpoints()`; default group `/_bdk/api/auditing`, documented read/export/metadata routes and standard FilterModel/Result contracts for JSON operations, general host access rules. Download content uses its selected format. |
-| Export formats | NDJSON by default and CSV built in; custom formatters and the separate CEF adapter require explicit registration. |
+| Export formats | NDJSON by default and CSV built in; custom formatters and the included CEF adapter require explicit registration. |
 | Export selection | Shared search field/range limits and Active default; absolute selection frozen per window, persistence order, Page normalized to 1, batch hint 100 with maximum 200. Exact-ID detail downloads retain the range exception. |
 | Export response | At most 10,000 source records, 64 MiB including framing, or 30 seconds per chunk, whichever is reached first. Formatter expansion counts toward bytes; orderly limits return Partial plus continuation. Deadline interruption during a record aborts the transfer. Provider reads retain the ten-second query budget. |
 | Export working memory | One complete graph plus at most 8 MiB of formatted bytes for that graph, bounded batch descriptors, and reserved completion framing. No whole-result buffer or open database reader during network writes. |
 | Export admission/metadata | Four active streams per instance, 100 attempt descriptors with at most 32 KiB each, retained for at most 30 minutes after termination. Reject excess admission explicitly; never evict active metadata silently. Shared multi-node deployments enforce their configured equivalent bounds. |
 | Export tokens | Protected continuation/checkpoint tokens expire after 24 hours by default. Expiry is explicit; valid EF checkpoints can survive restart with persistent host token-protection keys. Metadata has an independent shorter lifetime. |
+| Capture diagnostics | Read-only, no per-request event store. Maximum 64 KiB snapshot, 100 listed entries per page, 8 KiB probe body, and ten-second query/probe budget. Unknown/restricted/omitted observations remain explicit. |
+| Resource history | Existing 24-hour/Active default, page size 50 with maximum 500, 31-day maximum range, and query budget. At most 20 matching-action summaries per item, with total/retained match counts and bounded detail expansion. |
+| Test observations | Created only by explicit harness use; isolated test state, ten-second default flush deadline, and at most 100 records or 8 MiB retained per observation. Limits fail the observation explicitly rather than imply a complete result. |
 | Maximum record                                     | 1 MiB serialized UTF-8 JSON, including all child data.                                                                                                                                                     |
 | Action limits                                      | 500 retained occurrences, depth 32, and at most 128 simultaneously active child scopes per root.                                                                                                           |
 | Change limits                                      | 100 entity change sets and 1,000 property entries per root, subject to the byte cap.                                                                                                                       |
@@ -1237,7 +1415,7 @@ These are the default design settings. Parameterless fluent calls use them direc
 | Recording lifetime                                 | 30 minutes; expiry stops capture, marks incomplete, and never cancels execution.                                                                                                                           |
 | In-memory capacity                                 | 10,000 finalized active-plus-archived records or 128 MiB total, whichever is reached first; bounds remain enforced independently of age retention.                                                         |
 | EF queue and drain                                 | 1,000 records or 64 MiB, finite retry budget, explicit flush, ten-second shutdown drain.                                                                                                                   |
-| Search                                             | Last 24 hours, maximum 31-day range, page size 50, maximum 200, ten-second query budget.                                                                                                                   |
+| Search                                             | Last 24 hours, maximum 31-day range, page size 50, maximum 500, ten-second query budget.                                                                                                                   |
 | Retention                                          | Required archive/remove capability on both providers; automatic schedules off until host-configured. Same age/interval/batch options, with short local/test profiles.                                      |
 
 Count actions when admitted and bound active capture even before completion. Limits produce reason codes and omitted counts. Preserve root identity/outcome and admitted action summaries first, then optional details and value snapshots. If the minimal safe document itself cannot fit, report append rejection rather than truncate raw JSON text.
@@ -1252,7 +1430,7 @@ Retention is a required configurable capability of both built-in providers. It s
 
 Configure the same `ArchiveAfter`, `RemoveAfter`, maintenance interval, and batch-size options for EF and in-memory storage through the AddAuditing builder. Short intervals suit local/test in-memory use. No separate in-memory retention semantics or audit-specific dashboard policy is introduced.
 
-The proposed age anchor is the record's immutable `CompletedUtc`. `ArchiveAfter` and `RemoveAfter` are total ages from that anchor, not two durations silently added together. Validate nonnegative thresholds and, when both are set, `RemoveAfter > ArchiveAfter`. A retention configuration can archive indefinitely by omitting removal. Removal operates on records that have entered the archived state. Exact threshold values belong to the host.
+The age anchor is the record's immutable `CompletedUtc`. `ArchiveAfter` and `RemoveAfter` are total ages from that anchor, not two durations silently added together. Validate nonnegative thresholds and, when both are set, `RemoveAfter > ArchiveAfter`. A retention configuration can archive indefinitely by omitting removal. Removal operates on records that have entered the archived state. Exact threshold values belong to the host.
 
 Archiving retains the complete logical audit evidence while moving it out of the provider's normal active query path. It is a provider storage transition, not just a hidden row in the dashboard. Normal active searches/counts/facets must restrict their provider dataset before materializing archived records or child graphs.
 
@@ -1274,9 +1452,37 @@ In-memory storage has mandatory record-count and byte bounds even when age reten
 
 At capacity, evict oldest archived records first, then oldest finalized active records as needed under the documented capacity policy. Report capacity loss separately from age-based archive/removal. These are completed records in an ephemeral store; this must not evict documents accepted into the EF provider's unpersisted writer queue.
 
-The existing default bounds of 10,000 records or 128 MiB remain proposed local defaults. Tests can use much smaller capacities and short archive/remove ages. For example, a local profile can archive after one minute, remove after ten minutes, and sweep every few seconds using the same options as EF.
+The existing default bounds of 10,000 records or 128 MiB remain local defaults. Tests can use much smaller capacities and short archive/remove ages. For example, a local profile can archive after one minute, remove after ten minutes, and sweep every few seconds using the same options as EF.
 
 The confirmed archive-access contract keeps archived audits searchable through the same dashboard and FilterModel POST endpoint via explicit Active / Archived / All selection. Ordinary searches default to Active. Exact-ID lookup can retrieve retained archived evidence and identifies its storage state; this bounded lookup does not broaden an ordinary active search.
+
+### 14.4 Starter setups
+
+Deliver runnable, copyable starter recipes alongside the feature documentation/examples. Each identifies required packages, service registration, explicit capture behavior selection, host construction, execution, and a bounded query/assertion showing the resulting evidence. Configuration snippets alone are insufficient. Use one small customer business action with a success and rejection/no-effective-change case so the outcomes are observable. Starter code must compile against the APIs once implemented.
+
+| Starter | Required setup and visible proof |
+| --- | --- |
+| Manual service or worker | AddAuditing with the bounded in-memory provider, resolve IAuditContext, and execute a named RunAsync business action with a typed resource. No HTTP, Requester, EF, repositories, or ChangeHistory is required. Show the finalized record through IAuditQueryService and the resource-history projection. Explain ephemeral storage and graceful shutdown when switching to buffered EF. |
+| HTTP application with Requester | Register the concrete request/handler and explicitly select dispatch/handler audit behaviors on Requester's own builder. Configure HTTP capture, document section 7.1's routing/authentication/Auditing/exception/authorization order, and map optional public endpoints. Demonstrate one root with nested actions, a rejected request, blacklist behavior, and diagnostic selection/visibility. AddDashboard remains an independent optional host choice. |
+| Durable EF with optional ChangeHistory | Enrich the client context with IAuditingDbContext and its entity sets, generate/deploy its own migrations, and select the EF audit provider. Prove buffered admission versus confirmed persistence with a bounded flush. Show a source ChangeHistory context and its explicit source-feature bridge as a separate variation, including omission and Unknown/reference-only evidence. Appendix A supplies the full host-owned Requester/repository/ChangeHistory walkthrough. |
+
+For client-context adoption, registration is:
+
+```csharp
+services.AddDbContext<CustomerDbContext>(options =>
+	options.UseSqlServer(configuration.GetConnectionString("Auditing")));
+
+services.AddAuditing()
+	.WithEntityFrameworkProvider<CustomerDbContext>();
+```
+
+The host supplies `configuration`, connection settings, migrations assembly, and deployment. This excerpt selects audit storage only. Add HTTP/Requester/source behaviors and public endpoints explicitly when the starter needs them. Reusing a business database is valid and does not join its transaction. Recipe-specific overrides must explain their effect; ordinary defaults remain those in section 14.2. No starter secretly enables all feature adapters, enterprise compliance, automatic schema deployment, or stronger delivery.
+
+#### 14.4.1 Reusable modules and the no-op context
+
+Document a standard explicit DI path using Common `NoOpAuditContext` when reusable application services inject IAuditContext but their host does not enable Auditing. A TryAdd registration can supply this fallback. Registering it creates no provider, writer, dashboard, endpoints, or captured data. Configuration/detail callbacks remain skipped, and RunAsync invokes the business delegate exactly once with its original result/exception/cancellation semantics.
+
+Prove that full AddAuditing replaces the known built-in no-op fallback in either registration order, while a later fallback does not replace the real recorder. Do not silently replace arbitrary host implementations or infer source-feature opt-ins from injection. Disabled Auditing retains the existing no-op behavior. This optional composition path does not introduce a second required startup call for ordinary AddAuditing users.
 
 ## 15. Security and privacy
 
@@ -1312,7 +1518,7 @@ The enterprise adapter and organization-specific compliance assessment are optio
 
 Each application maintains a small, versioned coverage plan for its required business events. Record the action, HTTP/manual/job entry points, expected actor/resource/outcome fields, explicitly selected behaviors or bridge, required ChangeHistory evidence if any, intentional exclusions, and verification case. The plan is application/deployment evidence; it does not introduce a required registration service or turn on omitted behaviors.
 
-Verify the complete route from business trigger to persisted, searchable evidence. Exercise success, rejection/failure, no effective change, blacklisted requests, independent jobs, and capture omissions relevant to that action. Inspecting DI registrations alone cannot prove coverage. The WeatherFiesta proof supplies a concrete plan for city add/create/update and its actual paths.
+Verify the complete route from business trigger to persisted, searchable evidence. Exercise success, rejection/failure, no effective change, blacklisted requests, independent jobs, and capture omissions relevant to that action. Inspecting DI registrations alone cannot prove coverage. The CustomerPortal proof in section 18.1 supplies a concrete fictional coverage plan for creation, membership/reuse, and rename paths.
 
 Keep three facts separate: planned coverage of an application, completeness of one captured record, and availability of retained evidence. No record for an event can mean exclusion, missing instrumentation, failed delivery, pending persistence, removal, or that the event did not occur. Searches must not turn that ambiguity into a claim that nothing happened.
 
@@ -1454,6 +1660,7 @@ As a developer, I want nested scopes so that services and handlers can describe 
 8. When scope options are built or the builder is subsequently changed, then no recording starts, the built options remain unchanged, and suppression/explicit feature selections/outcome rules still apply when a scope is eventually opened.
 9. When `BeginScope(s => s.For<T>(nameof(...)))` or equivalent standalone `AuditScopeOptionsBuilder.Create<T>(nameof(...)).Build()` is used, then type/member context supplies the key and readable label without literal naming fields. Typed resources use the same convention and normal explicit ID/value policies.
 10. When eligible callback-based BeginScope/RunAsync capture configures options, then a fresh builder is configured/built once with the same effective options as the standalone path. Disabled/suppressed capture skips the configuration callback; RunAsync still runs its business delegate once. Configuration failures follow the audit-failure policy and ReportOnly never repeats/prevents the business delegate. A configuration callback alone does not complete a manual handle.
+11. When a recording root is finalized, then asynchronous disposal awaits sealing/acceptance under either provider. Synchronous root disposal restores context and reports `AuditAsyncFinalizationRequired` without blocking, unowned background work, or replacing an existing exception. Synchronous child and no-op disposal remain safe.
 
 ### Story 3: Capture identity and object details
 
@@ -1482,7 +1689,7 @@ As a business auditor, I want optional committed change evidence so that I can d
 As an application developer, I want interchangeable providers so that local and durable deployments use the same audit model.
 
 1. When in-memory or EF storage is selected, then append, lookup, filters, grouping, and paging satisfy the same conformance tests.
-2. When EF migrations are generated, then a compact two- or three-table mapping is acceptable, with explicit ownership and JSON for nested details/deltas; the proposed default has records, actions, and entity-change groups.
+2. When built-in EF migrations are generated, then they use the three-table records/actions/entity-change mapping with explicit ownership and JSON details/deltas. A custom compact representation must meet the same logical conformance contract.
 3. When the same frozen ID/content is retried, then append is idempotent; different content under that ID fails without overwrite.
 4. When EF is unavailable, then there is no fallback to in-memory and the configured delivery-failure policy applies.
 5. When a business transaction rolls back, then an independently appended failed execution record can still be read.
@@ -1496,6 +1703,7 @@ As a business auditor or process owner, I want combined filters so that I can fi
 3. When POST search receives FilterModel criteria, ordering, and paging, then both providers return standard ResultPaged metadata with deterministic tie-breakers.
 4. When a filter is unsupported or a query exceeds limits, then the API returns a typed error rather than silently ignoring criteria.
 5. When retained evidence is truncated, then results expose that limitation and do not claim complete negative evidence.
+6. When a host read-scope resolver is selected, then every read uses its trusted immutable constraints outside client groups. Missing context, invalid scope, or resolution failure performs no unscoped query. Without a resolver, ordinary setup is explicitly store-wide under host access rules and claims no tenant row isolation.
 
 ### Story 7: Operate through the dashboard and endpoints
 
@@ -1517,6 +1725,7 @@ As a feature developer, I want optional adapters so that new and existing featur
 4. When capture limits or contributor failures occur, then business work continues under the default policy and capture notes expose loss.
 5. When an audit behavior/bridge is explicitly registered twice, then idempotent registration/invocation ownership prevents duplicate evidence.
 6. When explicitly selected source-feature adapters and Auditing are registered in either order, then their selected boundaries participate identically. Feature registration without an audit behavior adds no such action. Omitting a behavior is a local opt-out and does not suppress manual or other selected capture. An absent/disabled recorder causes pass-through without audit serialization.
+7. When email notifications, DataPorter, StartupTasks, or file monitoring is configured, then only explicitly selected audit boundaries participate. Their omitted, repeated-registration, absent/disabled, suppression, and source-declared diagnostics cases follow the same protocol as other features. Audit capture adds no business retries or mandatory source-feature dependency to core Auditing.
 
 
 ### Story 9: Follow jobs started by a business request
@@ -1548,6 +1757,7 @@ As an application developer, I want a provider-owned queue and graceful flush so
 3. When explicit flush completes successfully, then all records accepted before its boundary are confirmed persisted, including records already being written.
 4. When the queue is full, storage retries fail, or flush times out, then the caller/host receives an honest admission or delivery result and the original business outcome follows the configured policy.
 5. When graceful shutdown begins, then admission stops and accepted records drain within the shutdown budget; unpersisted remainder and abrupt-termination limits are explicit.
+6. When an earlier accepted record has terminally failed, then later cumulative flushes still report that covered failure even after the queue empties, later writes succeed, or detailed diagnostics expire. A flush does not retry terminal records or reset its receipt epoch silently.
 
 ### Story 12: Preserve module and correlation context
 
@@ -1563,7 +1773,7 @@ As a business auditor, I want module and correlation context so that related act
 
 As an application developer, I want one Auditing setup and normal dashboard discovery so that enabling the feature requires no duplicate capture or permission configuration.
 
-1. When Requester, Notifier, current Jobs, repositories, ChangeHistory, or another supported feature is enabled, then auditing participation requires explicit behavior/bridge registration on that feature's own builder. `AddAuditing` and ordinary feature setup register none of those behaviors implicitly. There are no per-feature integration calls on the Auditing builder or duplicate command/query capture switches.
+1. When Requester, Notifier, current Jobs, repositories, email notifications, DataPorter, StartupTasks, file monitoring, ChangeHistory, or another supported feature is enabled, then auditing participation requires explicit behavior/bridge registration on that feature's own builder. `AddAuditing` and ordinary feature setup register none of those behaviors implicitly. There are no per-feature integration calls on the Auditing builder or duplicate command/query capture switches.
 2. When optional public endpoints are selected, then their options are configured on that same builder.
 3. When AddDashboard and Auditing are registered in either order, then the Auditing page/card/navigation appear once without a feature-specific dashboard call or policy.
 4. When AddDashboard is omitted, then capture still works and no dashboard routes appear.
@@ -1574,16 +1784,16 @@ As an application developer, I want one Auditing setup and normal dashboard disc
 9. When one repository opts in and another omits its audit decorator, then only the selected repository emits rough actions. Omitting either Requester auditing behavior or the ChangeHistory audit bridge similarly removes only that boundary/evidence; surrounding HTTP/manual and other selected capture continue.
 10. When parameterless `WithEndpoints()` is mapped, then NDJSON/CSV export and completion-metadata routes are included. When public endpoints are omitted, the dashboard still downloads through the same application service without additional policies.
 
-### Story 14: Audit real WeatherFiesta city actions
+### Story 14: Audit customer business actions
 
-As a WeatherFiesta business user or auditor, I want city additions and updates to leave a readable trail so that I can verify who performed them and what happened.
+As a CustomerPortal business user or auditor, I want customer creation and rename actions to leave a readable trail so that I can verify who performed them and what happened.
 
-1. When a user adds/creates a city or edits its details through the application, then EF-backed auditing captures the request and actual city/subscription actions with actor, module, correlation, resource identity, and outcome.
-2. When city creation reuses an existing city or input is rejected, then the audit reflects that path without inventing a creation, handler invocation, or committed change.
+1. When a user creates a customer, adds an existing customer to a managed list, or renames a customer, then EF-backed auditing captures the actual customer/membership actions with actor, optional module, correlation, resource identity, and outcome.
+2. When creation reuses an existing customer or input is rejected, then the audit reflects that path without inventing a creation, handler invocation, or committed change.
 3. When AddDashboard is enabled, then the Auditing page appears automatically and can find these records through the same search semantics as the FilterModel POST endpoint.
 4. When audit writes are buffered, then application completion is independent of persistence and a successful bounded flush makes the full record graph available for assertions.
-5. When optional ChangeHistory enrichment is enabled for a real city update, then permitted actual deltas appear; with it disabled, the base business audit still works.
-6. When City Management mutations execute beneath the dashboard prefix, then WeatherFiesta's explicit audit-blacklist override admits them while retaining the remaining standard blacklist defaults. Auditing's own requests remain internally suppressed.
+5. When optional ChangeHistory enrichment is enabled for a rename, then permitted actual deltas appear; with it disabled, the base business audit still works.
+6. When Customer Management mutations execute beneath the dashboard prefix, then the fictional host's explicit audit-blacklist override admits them while retaining the remaining standard blacklist defaults. Auditing's own requests remain internally suppressed.
 
 ### Story 15: Archive and remove audit evidence
 
@@ -1646,13 +1856,88 @@ As an application integrator, I want a CEF adapter and a formatter extension poi
 4. When an application registers another formatter, then it receives only the exposed projection and the shared bounded/cancelable streaming contract. Duplicate format IDs fail startup; excess expansion or formatter failure produces a typed pre-stream error or failed partial transfer without a completed checkpoint.
 5. When CEF is used, then it adds no source-feature capture behavior, dashboard permission, Syslog transport, SIEM delivery guarantee, independent signature, or compliance claim. Core delivery/retention/protection decisions remain unchanged.
 
+### Story 21: Start auditing in different application hosts
+
+As an application developer, I want runnable starter setups so that I can adopt auditing with explicit, minimal configuration.
+
+1. When the manual/worker starter runs with only Common/Application auditing services and in-memory storage, then its business action produces one finalized record and resource-history item without HTTP, Requester, repositories, EF, or ChangeHistory.
+2. When the HTTP/Requester starter runs, then its explicitly selected boundaries, middleware order, and mapped routes produce the documented success/rejection evidence. Omitting a behavior remains visible in diagnostics and does not implicitly register it.
+3. When the EF starter enriches a client-owned context with IAuditingDbContext, then entity mappings are discovered from its DbSets and inline/buffered delivery preserve the same storage semantics. Host-owned migration setup enables persistence; missing schema yields a clear readiness/delivery failure without automatic database creation/migration or in-memory fallback.
+4. When a source ChangeHistory bridge is selected or omitted independently of audit storage, then the starter demonstrates the existing snapshot/reference/Unknown boundaries without adding entity-feature dependencies to base auditing.
+5. When a reusable module uses the explicit no-op context fallback, then disabled/absent capture preserves business execution without metadata callbacks or storage. Full AddAuditing replaces only that known fallback in either registration order, with no extra required setup for ordinary hosts.
+
+### Story 22: Diagnose capture selection and delivery
+
+As a developer or authorized operator, I want capture explanations and delivery status so that I can investigate missing evidence without changing business behavior.
+
+1. When source metadata identifies present, omitted, selected, or disabled boundaries, then diagnostics reports those states without duplicates or implicit adapter registration. Missing source metadata remains Unknown, and an intentional opt-out is informational.
+2. When a probe can evaluate blacklist/selection/suppression safely, then it returns the applicable reason and configuration revision without executing business work or capture callbacks. A selector requiring unavailable live context returns Unknown rather than an invented eligibility result.
+3. When the writer is pending, full, unavailable, or terminally failed, then diagnostics distinguishes admission from confirmed persistence and identifies its observation time/instance. Active-root capacity counts never become stored in-progress records or a business-event completeness claim.
+4. When snapshots/probes exceed bounds or the caller lacks scope for a value, then the service reports limit/restricted/unavailable states without payloads, secrets, unbounded lists, tenant-wide record counts, or false zero/healthy values.
+5. When public diagnostic routes or the dashboard view are used, then existing host access and internal suppression apply without extra Auditing policies. Read-only diagnostics neither enables capture nor flushes, migrates, writes test records, or changes failure handling.
+
+### Story 23: Verify business audit evidence in application tests
+
+As an application developer, I want reusable test helpers so that I can verify required business evidence without duplicating recorder or writer internals.
+
+1. When the harness observes real application work, then it invokes that work once and preserves its result/exception/cancellation. It adds no synthetic scope, behavior, bridge, or success; missing instrumentation remains detectable.
+2. When an actual root finalizes and a bounded flush succeeds, then helpers expose its confirmed evidence. Queued-only, pending, timed-out, or failed delivery cannot satisfy a persisted-evidence assertion, and future jobs remain outside that flush boundary.
+3. When tests run in parallel or observations exceed count/byte bounds, then test state stays isolated and bounded. Overflow produces an explicit failure rather than a silently incomplete observation.
+4. When asserting that a secret was never captured, then controlled test inspection checks the original stored snapshot independently of read-time redaction and honors required verification. Failure messages omit the supplied secret/raw payload, and no production read-policy bypass is introduced.
+5. When a test exercises missing capture, exclusions, queue-full, blocked/failed writing, or no-op composition, then deterministic helpers expose the correct absence/failure while preserving ReportOnly behavior. Framework-neutral helpers add no test-framework dependencies to core; real EF and host-level integration proof remain required.
+
+### Story 24: Embed resource history in application screens
+
+As an application developer or business user, I want a resource activity view so that I can review the relevant business trail inside an existing application screen.
+
+1. When a typed or external resource reference and FilterModel are supplied, then the query service applies exact resource identity plus trusted host scope before count/order/page selection. Caller OR groups cannot remove that constraint; resource identity alone grants no access.
+2. When one record references the resource in several places or repeats an action, then history returns one record item with bounded, distinct matching ActionIds and explicit match counts. Unrelated actions are not labelled as resource matches, and root/child outcomes remain separate.
+3. When the history fragment or client-UI example is embedded without AddDashboard or public Auditing endpoints, then paging, UTC range, archive selection, safe labels, and host-owned detail links work through the same Application projection without another UI framework or additional feature policies.
+4. When evidence is archived/truncated, live users/resources disappear, the provider fails, or no records match the visible range, then the view preserves those distinctions and current exposure rules. An empty Active/24-hour page is never described as a complete lifetime history.
+5. When a tagged summary has not verified its complete source graph, then it remains NotChecked; unprotected/unavailable evidence retains its applicable status. Detail expansion uses existing HMAC/value rules, and query/render/refresh creates no recursive evidence or new history table while preserving unrelated surrounding capture.
+
+### Story 25: Follow email notifications
+
+As a business auditor, I want to follow a notification request and its later send attempts so that queueing and actual sending remain distinguishable.
+
+1. When selected queue/send capture runs, then the caller's trail records safe notification identity, intent, and actual outcome. Ignored queueing without an outbox does not claim acceptance, and SMTP acceptance does not claim recipient delivery.
+2. When a selected outbox worker later sends or retries the message, then its independent record preserves trusted notification/origin/causation context and separate initiating/executing actors without changing the originating record or duplicating queue intent.
+3. When sending fails, is canceled, or exhausts retries, then observed attempts and outcomes remain visible. Missing or suppressed origin evidence does not create invented attribution.
+4. When email capture runs, then default evidence contains no bodies, subjects, addresses, attachments, credentials, or raw provider errors. Explicit details still follow the shared policies and limits.
+
+### Story 26: Audit DataPorter operations
+
+As a business auditor, I want import/export evidence so that I can identify the requested operation and its actual processing result.
+
+1. When an explicitly selected operation runs, then one operation action/root retains safe identity, format/profile/type, mode, observed counts, and the outer Result outcome with any partial processing distinguished. Empty input and rejection before the first row remain observable without a row interceptor being invoked.
+2. When streaming processing completes, fails, is canceled, or is disposed early, then capture follows the actual enumeration/output lifetime, closes once, and restores ambient state. It never forces enumeration, repeats a row, or claims unobserved totals or recipient receipt.
+3. When rows are accepted, fail, or are skipped, then their observed counts remain distinct from committed business changes. Default capture includes no input/output bytes or whole row payloads, and optional row evidence stays bounded.
+4. When Auditing performs its own download, then internal suppression prevents recursive DataPorter capture and no mandatory DataPorter dependency is introduced.
+
+### Story 27: Audit selected startup tasks
+
+As an application owner, I want selected startup work to leave evidence so that business initialization remains reviewable without auditing every host activity.
+
+1. When the auditing behavior and a task selector admit an invocation, then it joins a live explicit execution or owns one finite root with actual task identity, actor, module/correlation, and outcome. A task skipped before invocation is not labelled invoked.
+2. When existing retry/timeout policies expose attempts or terminate execution, then retained occurrences and final outcomes reflect those observations without an additional audit-induced execution.
+3. When a task finishes, fails, or is canceled, then its scope closes and ambient state is restored. Successful completion does not claim unobserved external commits, and no scope lasts for the host lifetime.
+
+### Story 28: Audit file-monitoring processing
+
+As a business auditor, I want selected file-event processing evidence so that detection and follow-up work are distinguishable.
+
+1. When background processing accepts a selected file event, then it owns an independent root with selected processor children and any nested business actions. A selected finite scan can join or own a root; routine polling and unchanged scans create no automatic business records.
+2. When a processor returns, throws, is canceled, or its behavior fails, then the executor finalizes the owned scope once with the observed result and restores context. Before/after callbacks do not leave a leaked ambient scope or imply successful processing.
+3. When trusted initiating metadata exists, then processing preserves it without inheriting unrelated worker ambient state. A filesystem event alone supplies no invented user, audit origin, committed entity change, or property diff.
+4. When processing is captured, then safe event/location/resource/processor identity, counts, and available attempts remain bounded. Default evidence contains no file contents, unrestricted physical paths, or credentials; selected storage actions do not duplicate processor occurrences.
+
 ## 18. Verification strategy
 
-The implementation must prove the acceptance criteria with focused tests.
+The library verifies capture, querying, exports and presentation components with focused tests, plus persistence against the three supported databases. Consuming applications own their authenticated workflows, routing and end-to-end acceptance.
 
 | Area                          | Required evidence                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Audit-control coverage | Versioned business-event/entry-point plan, explicit behavior/bridge choices and exclusions, required fields/change evidence, persisted end-to-end cases, and WeatherFiesta city coverage. |
+| Audit-control coverage | Application-owned business-event/entry-point plan with selected behaviors, exclusions and required evidence. The library checks components and providers; consuming applications verify their persisted end-to-end cases. |
 | Evidence protection | HMAC disabled/enabled on both built-ins; RFC 4231 vectors, complete graph/header tampering, tag stripping/copying, constant-time comparison, unknown/unavailable keys, key rotation, retry/idempotency, archive/restore, and no unsigned fallback. Honest capability claims, deployment privileges, safe alerts, and separately tested completeness for any deletion claim. |
 | Delivery guarantees | In-memory/buffered/inline acknowledgement and visibility semantics, graph-commit boundaries, queue/storage faults, safe failure notifications, finite retries, flush/crash-loss limits, and execution-time preservation. |
 | Historical readability | Older supported schemas, versioned canonicalization/hash interpretation, application upgrades and type/alias changes, restored archives with missing live users/entities/source history, and current exposure restrictions. |
@@ -1660,6 +1945,10 @@ The implementation must prove the acceptance criteria with focused tests.
 | Export streaming/completion | Slow/disconnected clients, cancellation, provider query budgets, record/byte/time/concurrency/memory bounds, formatter expansion, empty selections, exact-boundary framing, oversized records, failure after headers, data digest/counts, missing footer/metadata, partial versus exhausted windows, and client-confirmed progress. |
 | Export continuation/deduplication | Commit-visible upper boundaries under concurrent nodes/batches, pre-commit ID inversion, rollback/retry, late earlier-timestamp buffered writes, fixed default times, empty-window progress, compatible EF restart, in-memory epoch change, archive/removal/eviction races, token expiry, overlapping retries, and stable root/expanded-item identities. |
 | Export formats/protection | NDJSON schema/newline/UTF-8 framing; RFC 4180 CSV quoting/Unicode/null-policy markers and formula prefixes including whitespace/control characters; registered CEF mapping/escaping/limits/omissions; custom formatter faults; verify complete source before projection, no unverified row leakage, and explicit original-HMAC versus output-digest boundaries. |
+| Starter setups | Compile/run manual-worker, HTTP/Requester, and durable EF/optional-ChangeHistory recipes; exact package/registration/middleware/migration steps, success/rejection/absence proofs, client-owned contexts, no-op fallback ordering, and no implicit source behavior or schema deployment. |
+| Capture diagnostics | Safe registration inventory in either order, omitted versus unknown boundaries, actual rule parity, side-effect-free probes, unknown dynamic selectors, queue/admission/persistence distinctions, bounded counters/probe bodies, scope/redaction, unavailable/stale state, and non-recursive reads at custom paths. |
+| Application test helpers | Real composition without hidden capture, original business result/exception preservation, scoped/parallel observations, accepted flush boundaries, deterministic failure controls, bounded observations, capture-side versus read-side privacy proof, safe assertion messages, and no core test-framework dependency. |
+| Embedded resource history | Mandatory resource/scope constraints outside client groups, provider-side distinct count/paging, matching repeated actions and outcome/time semantics, aliases/stable IDs, archive/range controls, missing live resources, source verification/exposure, and host rendering without dashboard/public routes or new storage. |
 | Recorder unit tests           | Nested/parallel frames, repeated actions, suppression, no-op behavior, callback result preservation, manual unknown outcome, expiry, late writes, duplicate disposal, limits.                                                                                                                                                                                                                                                                                                            |
 | Descriptor builder | Minimal type-based defaults, fluent overrides, immutable/copy-on-build resources and details, stable keys/IDs, null optional text, invalid values, reserved fields, policy application, and no capture enablement from descriptor construction. |
 | Scope-options builder | Fluent BeginScope/RunAsync callbacks, eligible configuration/build once, no configuration callback under suppression/disabled capture, ReportOnly configuration failures preserve single business execution, standalone key/type/member factories, equivalent defaults, immutable snapshots, derived labels, custom kinds/modes, and no outcome inference or suppression bypass. |
@@ -1668,63 +1957,62 @@ The implementation must prove the acceptance criteria with focused tests.
 | Explicit feature composition | Source-feature setup alone installs no audit adapters. Explicit per-feature/per-repository selection, local omission, dispatch/handler choices, both registration orders, idempotent repeated registration, absent/disabled recorder pass-through, and preservation of manual/other selected capture. |
 | Default fluent setup          | Parameterless EF/HTTP/endpoints setup captures and persists with default buffered writer and default routes; omitted/empty/explicit-default callbacks are equivalent; partial overrides retain all unspecified values; source application name resolves with and without host services; no custom contributor is required.                                                                                                                                                               |
 | Provider conformance          | Identical supported FilterModel operators/logic/orderings/paging, ResultPaged counts, same-child predicates, allowlist validation, related-work continuations, aggregate/facet scope, idempotent append, immutable snapshots, configured archive/remove age semantics.                                                                                                                                                                                                                   |
+| EF backend parity | Real SQL Server, PostgreSQL, and SQLite coverage for all supported scalar/JSON/nested predicates, Unicode/comparison rules, atomic graphs, idempotency, independent transactions, retention, commit-visible positions, and lifecycle invalidation. Unsupported backends fail early. |
+| Trusted read scope | Optional callback composition, deep-copied validated constraints, per-operation resolution, AND outside client OR groups, all read surfaces and token fingerprints, failure without an unscoped query, and an explicit unrestricted default without a tenant-isolation claim. |
 | Retention lifecycle           | Complete graph archive/removal, Active default without archive-payload loading, equivalent Archived/All filters and counts, no duplicates in All, no partial archive/orphans, maintenance/append/flush races, unchanged hash, combined in-memory bounds, short local/test intervals.                                                                                                                                                                                                     |
 | EF integration                | Audit-only DbContext exposing the selected audit entity sets, compact table model with JSON details, atomic header/child append, idempotent graph retries, filtering before paging, independent context/transaction, no orphaned children after retention.                                                                                                                                                                                                                               |
 | ChangeHistory integration | Explicit source-context bridge opt-in and omission while source capture continues; source/audit-context independence; Snapshot/ReferenceOnly policies; supported direct mutations, commits, rollback/savepoint, retries, unknown external transactions, redaction and deduplication. |
-| HTTP integration              | Exact parity with request logging's default blacklist and shared MatchAny helper, case-insensitive full-path matching, wildcard traversal across separators, feature-path/fallback selection without queries, null/empty/custom replacement lists, independently configured copies, nested suppression, explicit WeatherFiesta dashboard override, authentication/authorization ordering, handled/unhandled failures, final status, cancellation, optional header, no recursive capture. |
+| HTTP integration              | Exact parity with request logging's default blacklist and shared MatchAny helper, case-insensitive full-path matching, wildcard traversal across separators, feature-path/fallback selection without queries, null/empty/custom replacement lists, independently configured copies, nested suppression, an explicit host dashboard-path override, authentication/authorization ordering, handled/unhandled failures, final status, cancellation, optional header, no recursive capture. |
 | Dashboard/endpoints           | Automatic AddDashboard discovery in either registration order, no additional feature-policy requirement, optional public endpoints including export/metadata, dashboard downloads without public routes, host-wide access rules, scoped related work, labels/reasons, module/correlation filters, initiating/executing actor searches, evidence completeness, and partial/failed download presentation. |
 | Job and worker boundaries | Explicit job/Requester/repository selection, independent timer roots, nested ownership, worker suppression isolation without implicit capture, direct versus HTTP calls to blacklisted routes, no fabricated origin/actor, dispatch/causation, initiating versus executing actors, retries/wait-timeouts, and out-of-order persistence. |
+| Email notification contributors | Independent queue/send and worker selections, actual outbox acceptance versus ignored queueing, direct/deferred sends, SMTP versus recipient-delivery evidence, trusted causation, retries/exhaustion, cancellation, worker/service deduplication, and default payload/address exclusion. |
+| DataPorter contributors | Operation-level capture beyond row interceptors, empty/pre-row rejection, aggregate and streaming paths, early disposal/failure/cancellation, partial row counts versus outer Result, no implied entity commit, bounded optional row evidence, and suppressed audit downloads without a DataPorter dependency. |
+| StartupTasks contributors | Existing behavior composition, per-task selection, finite root/join ownership, skipped versus invoked tasks, exposed attempts and timeout outcomes, actual service attribution, registration-order/no-op cases, and no audit-induced execution or host-lifetime scopes. |
+| File-monitoring contributors | Explicit scan/location/processor selection, no polling/unchanged-scan noise, independent event roots and processor children, failure-safe async finalization, caught Result failures/cancellation, trusted origin without invented filesystem actors, bounded safe metadata, and storage-action deduplication. |
 | Architecture                  | Domain/Common contain no Auditing implementation or EF/Web dependencies; Application queries use abstractions; Presentation never exposes persistence entities.                                                                                                                                                                                                                                                                                                                          |
 | Queued EF persistence         | No database wait during admission, count/time batch flush, explicit flush boundaries including in-flight batches, queue-full result, ambiguous retries, terminal failures, concurrent flush, cancellation, graceful shutdown and crash-loss limits.                                                                                                                                                                                                                                      |
 | Business audit usability      | Meaningful labels/reasons/resources, actor-role searches, request-to-job trail navigation, visible capture limits, entity-feature-free setup.                                                                                                                                                                                                                                                                                                                                            |
-| WeatherFiesta proof           | Real city-add/create/update application paths, actual created-versus-existing outcomes, optional ChangeHistory enrichment, buffered EF persistence/flush, FilterModel lookup, automatic dashboard page, and no recursive audit reads.                                                                                                                                                                                                                                                    |
+| Web component coverage | Direct middleware execution, bounded FilterModel binding, export results/observers, protected download admission, dashboard page discovery/view models, resource-history filters and safe links, without starting an application host or browser.                                                                                                                                                                                                                                                    |
 
 Use existing xUnit, NSubstitute, Shouldly, and integration-host conventions. Use the provider's supported real database to prove JSON query and transaction behavior. Run repo-wide builds/tests sequentially in one worktree.
 
-### 18.1 Required WeatherFiesta integration proof
+### 18.1 Application-owned business integration checks
 
-Integrate the implemented feature into the existing WeatherFiesta application as required acceptance work. Business users must be able to perform city actions through the application and then inspect their persisted audit trail.
+Consuming applications can use the fictional CustomerPortal flow below to plan their authenticated business coverage. Appendix A supplies a self-contained rename recipe with the public APIs. These application-specific checks are separate from the library component and provider suite. Keep application wiring and execution evidence outside the documentation tree.
 
-#### Application wiring
+#### Host wiring
 
-Configure Auditing through the host's `AddAuditing` builder. Explicitly add the selected auditing dispatch/handler behaviors to WeatherFiesta's Requester/Notifier builders; their existing registrations alone do not opt in. Reuse optional current-user/module services and correlation conventions. Use the EF provider against WeatherFiesta's `CoreDbContext`, expose the selected audit entity sets, configure their model, and include the schema changes in the example application's migration/setup workflow.
+Configure Auditing through `AddAuditing` and explicitly select Requester dispatch/handler behaviors, the Customer repository or Active Entity boundary, and any required membership boundary. Reuse optional current-user/module services and correlation conventions. Use a host-owned `AppDbContext` implementing `IAuditingDbContext` with all four audit DbSets and apply reviewed application-owned migrations. Entity-owned configuration supplies the audit mappings. An application may use a separate context for audit storage.
 
-Use provider-owned buffered writes in the example. The existing `AddDashboard` registration must discover the Auditing page automatically, without an Auditing dashboard registration or additional feature-specific policies. Enable the optional POST search endpoint in this proof so its FilterModel contract is exercised against the same persisted records.
-
-Supply business labels and explicit safe details through `IAuditDetails`, registered detail providers, or narrowly placed scopes. Include the city ID/name/country where appropriate, the actual initiating actor, current Core module, correlation ID, request/handler identity, action outcome, and capture completeness. Attach newly generated city IDs when they become available; do not require them at request entry or serialize whole request/entity graphs.
-
-Explicitly register the Active Entity auditing behavior for the City/UserCity configurations selected for this proof to demonstrate rough city/subscription actions. Other entity configurations can omit it. Ensure it does not duplicate the command's business action or another adapter's observation of the same underlying operation.
+Use buffered EF writes. The host's `AddDashboard` must discover Auditing without another dashboard registration or policy. Enable POST search in this proof to verify the same persisted records through FilterModel. Supply explicit business labels/details through `IAuditDetails`, registered providers, or narrow scopes; attach generated customer IDs when available rather than serializing whole graphs. Demonstrate rough entity actions without duplicate reports when several adapters observe the same operation.
 
 #### Required user scenarios
 
-| Scenario                              | Existing flow and integration work                                                                                                                                                 | Required audit evidence                                                                                                                                       |
-| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Add a city to a user's list           | `POST /api/core/cities` invokes `CityCreateCommand`. It can create a city, reuse one by external identity, and create/reactivate a user-city subscription.                         | One user-request trail with the actual city/subscription actions and resources. Reusing a city does not claim a new city was created.                         |
-| Create a city through City Management | The existing dashboard add action dispatches `AdminCityCreateCommand`, or returns an already known city.                                                                           | Business label, actor, module/correlation, selected/invoked handler when applicable, created resource ID, and truthful created-versus-existing outcome.       |
-| Update a city                         | Wire `AdminCityUpdateCommand` into a user-accessible City Management edit action or appropriate application endpoint. It already calls `City.ChangeDetails` and persists the city. | The user's update request, city identity, handler/manual/rough entity actions as configured, outcome, and the same captured actor/module/correlation context. |
-| Reject or fail a city action          | Submit invalid city input or update a missing city through the same application surface.                                                                                           | The actual rejection/failure, no invented invoked handler after pre-handler rejection, and no falsely committed entity change.                                |
-| Repeat or make no effective change    | Re-add an existing city or submit unchanged city details.                                                                                                                          | The actual business request and outcome remain visible without fabricated creation or property deltas.                                                        |
+| Scenario | Fictional flow | Required audit evidence |
+| --- | --- | --- |
+| Add a customer to a managed list | `POST /api/customers` creates or reuses a customer by external identity and creates/reactivates a CustomerMembership. | The actual customer/membership actions and resources; reuse does not claim customer creation. |
+| Create through Customer Management | A host-owned management action dispatches a creation command or returns an existing customer. | Business label, actor, module/correlation when available, actual handler invocation, resource ID, and created-versus-existing outcome. |
+| Rename a customer | `PUT /api/customers/{customerId}/name` dispatches `RenameCustomerCommand` and calls `Customer.Rename` as in Appendix A. | The user request, named business scope, selected entity boundary, and actual outcome with consistent context. |
+| Reject or fail an action | Invalid input or a missing customer follows the same application surface. | Rejection/failure without invented invocation, mutation, or committed change. |
+| Repeat or make no effective change | Re-add an existing membership or submit the same customer name. | The actual request/outcome without fabricated creation or property deltas. |
 
-Keep the example changes focused on these business actions. The existing admin update command is not yet exposed by the City Management page, so implementing the user-facing update path is part of this proof. A direct command unit test alone does not satisfy it.
+Application acceptance covers authenticated paths and user-facing review using that application's own test strategy. If a management mutation is beneath `/_bdk/*`, the fictional host explicitly replaces its Auditing blacklist with the shared defaults minus that entry. Retain the other patterns. Verify both the unchanged default exclusion and the deliberate host override, while Auditing's own reads/refreshes remain internally suppressed.
 
-Business mutations reached through WeatherFiesta's dashboard must remain auditable. The shared default blacklist includes `/_bdk/*`, so the example must explicitly replace its Auditing `PathBlackListPatterns` with the default collection minus that entry, retaining the other standard patterns. This is a host override; the feature's defaults remain identical to request logging. Suppress Auditing's own reads/refreshes and designated infrastructure requests internally, while allowing City Management create/update requests to pass through the HTTP and Requester auditing boundaries. Verify both the default exclusion and the example's intentional override.
+#### Optional ChangeHistory enrichment
 
-#### Optional ChangeHistory enrichment proof
-
-Prove the base city-action trail without ChangeHistory enabled. Then use an explicit example/test configuration that enables ChangeHistory for City through that feature's own setup. Explicitly select its audit-evidence bridge on the ChangeHistory builder for the source context. Without a duplicate Auditing-builder integration or repeated mandatory entity list, demonstrate enrichment of a real update with safe source change-set identity, property paths, and allowed old/new values.
-
-Use ChangeHistory's supported capture strategy for `City.ChangeDetails`, which currently changes properties directly. Do not add an independent diff engine to the WeatherFiesta handler or to Auditing. Same-value updates produce no fabricated property deltas, and failed/rolled-back work must not appear as committed changes.
+Prove base capture without ChangeHistory. In a separate test configuration, enable its supported Customer direct-mutation strategy and explicitly select the source-context audit bridge. An executed rename supplies source/change-set identities, paths, and permitted old/new values. Same-value changes, rollback, retries, and unobservable transactions retain the rules in section 9. No handler or Auditing code computes another diff.
 
 #### Reviewable evidence and verification
 
-1. Exercise real authenticated application paths to add/create and update fresh cities, using deterministic geocoding responses where needed.
-2. Confirm that responses complete with buffered audit acceptance independently of the background database write. Use bounded flush in automated verification rather than arbitrary sleeps.
-3. Query the actual persisted audit through the application query service and FilterModel POST search by actor, time, Core module, correlation ID, city resource, action, and outcome.
-4. Open the automatically discovered Auditing dashboard page and verify its business labels, request/handler hierarchy, city resources, and optional change details. Audit-page viewing/refresh must not recursively create records.
-5. Restart/reopen the example and verify that the EF-backed city audit remains available. Preserve capture-policy and source-availability distinctions.
-6. Add integration coverage alongside the existing WeatherFiesta city endpoint/application tests, plus UI coverage for the new edit action and audit-page navigation. Use a supported real relational backend to prove EF persistence/filtering; a fake audit provider alone is insufficient.
+1. Exercise authenticated create, reuse/membership, rename, rejection, and no-effective-change paths with fresh fictional data. External service responses, when used, are deterministic test inputs.
+2. Prove request completion is independent of the audit database write, then use a bounded flush and actual receipts instead of sleeps to establish persistence.
+3. Search persisted evidence by actor, time, module when available, correlation, resource, action, and outcome through both the application service and FilterModel endpoint.
+4. Verify automatic dashboard discovery, business labels, hierarchy, resources, optional change details, and non-recursive viewing/refresh.
+5. Restart the host and verify retained EF evidence remains readable. Run provider conformance against real SQL Server, PostgreSQL, and SQLite backends, including JSON predicates, graph atomicity, and the extraction/retention boundaries.
+6. Verify the host's user-facing mutation path and audit navigation, plus base/enriched and negative cases. A fake audit provider alone is insufficient.
+7. Embed resource history in the fictional customer screen and verify range/archive controls, matching actions, and safe links. Diagnostics must show the actual source selections and buffered visibility. Check the embedding configuration independently of AddDashboard and public endpoints.
 
-Document the example setup and the exact create/update review steps in WeatherFiesta's existing README or REST examples. The feature is not accepted until these application scenarios and their persisted audit evidence are reviewable.
+Published setup and REST examples use only fictional models/routes and real DevKit APIs. Engineering run evidence identifies the actual host and backend outside the documentation tree. No unexecuted case is reported as passed. The application owner decides which scenarios and persisted evidence its acceptance requires.
 
 ### 18.2 Evidence for the application's selected audit controls
 
@@ -1738,22 +2026,44 @@ Provide a small reviewable evidence set for each delivered host/application conf
 | Retention/readability proof | Active/archive/remove conformance, supported historical versions, and upgrade plus backup/restore results with retained facts/identities/value-policy markers intact. |
 | Review proof | Representative actor/action/time/resource/job searches and detail views, correct counts/access scope, and visible completeness/delivery/source-availability limitations. |
 | Export proof | Built-in download formats, optional registered adapter mappings, bounded streaming, protected continuation, late-arrival/retention cases, deduplication, completion/digest confirmation, and original-versus-transformed integrity boundaries. |
+| Adoption proof | Runnable starter results, effective capture-selection explanations, test-helper positive/negative assertions, and embedded resource-history evidence through the same application services and access boundaries. |
 
 The evidence set maps back to sections 16.5–16.6; it does not turn an unrun test plan into verified control evidence. Application tests prove capture paths and provider semantics. Host deployment checks establish external permissions, clock arrangements, keys, backup/restore, and any storage protections that the library cannot infer.
 
-WeatherFiesta includes a concise city-action coverage plan and links its create/update/negative-path/blacklist/flush/search evidence to the relevant rows. Independent-job cases belong to the feature integration evidence unless a real WeatherFiesta flow actually dispatches that work; the example must not claim a job action that did not occur. Verify the built-in protection limitations honestly. Provider conformance covers the optional built-in HMAC mechanism; WeatherFiesta claims HMAC protection only when its actual setup enables it and verifies host key custody. Other optional cryptographic or external protection needs mechanism-specific evidence when claimed. No additional dashboard policies or mandatory feature behaviors are introduced.
+The host verification includes the fictional customer coverage plan and links actual create/rename/negative-path/blacklist/flush/search results to the relevant rows outside the documentation tree. Independent-job cases belong to feature integration evidence unless the executed host flow actually dispatches that work; do not claim an action that did not occur. Verify protection limitations honestly. Provider conformance covers the optional HMAC mechanism; a host claims HMAC protection only when its actual setup enables it and verifies key custody. Other optional cryptographic or external protection needs mechanism-specific evidence when claimed. No additional dashboard policies or mandatory feature behaviors are introduced.
+
+### 18.3 Application test helpers and starter verification
+
+Provide `AuditTestHarness` and small evidence helpers under `Application.Auditing/Testing`, following the repository's Application testing-helper pattern. They are framework-neutral and allocate state only when explicitly used. Core Auditing gains no xUnit, Shouldly, NSubstitute, web-host, or EF dependency. Framework-specific examples live in tests/examples and use the existing test conventions. EF/provider and HTTP/UI test composition remains in the corresponding infrastructure/presentation test projects.
+
+The harness builds or accepts the application's actual service composition and observes business invocations without adding audit roots, behaviors, ChangeHistory bridges, or synthetic outcomes. Observation preserves delegate execution and business result/exception/cancellation. Use isolated service providers or explicit test-owned correlation/AuditIds to keep parallel observations separate; restore ambient state and dispose resources after each test. A missing selected behavior must remain a failing capture expectation rather than be repaired by the harness.
+
+Expose bounded helpers to read matching finalized evidence, inspect actual receipt/visibility status, await provider FlushAsync, and assert presence/absence of an action, actor/resource association, outcome, repeated occurrence, or capture-policy marker. The default flush deadline is ten seconds. Complete/dispose the actual owning root before awaiting persistence. A flush covers its acceptance boundary, not future roots/jobs or unregistered work; pending, failed, and timed-out delivery are explicit test failures. Avoid arbitrary sleeps and unbounded polling.
+
+Keep stored-capture assertions distinct from presentation assertions. Proving that a value was never persisted requires explicit inspection of the isolated provider's frozen stored snapshot, not a DTO that read-time exposure has already redacted. Such inspection belongs only to controlled test/provider-conformance access and honors required source verification. Do not expose a production raw-payload route or relax normal read policy. Secret-absence assertion failures identify safe field paths/reasons and never print the supplied secret or raw record. Bound each observation by count/bytes and fail on overflow instead of silently checking a partial set.
+
+Provide deterministic test-provider/writer controls for queue-full, blocked persistence, terminal failure, and cancellation cases, while retaining the real recorder/policy/behavior composition. These controls are test-owned and never shipped as runtime configuration defaults. Test both the in-memory starter and the EF starter against the supported real relational backend for persistence, JSON predicates, graph atomicity, and migration readiness. Test doubles do not replace the required provider and host-level integration proof.
+
+The starter/test-helper proof set includes:
+
+- Real success, rejection, and no-effective-change paths with the expected root/action/resource identities and unchanged business outcomes.
+- Omitted/disabled/blacklisted capture yielding no invented action or replacement root, including an observation that correctly fails when required instrumentation is missing.
+- Buffered Queued versus Persisted, bounded flush, queue-full/terminal delivery failure under ReportOnly, and isolation between parallel observations.
+- Capture-side exclusion/redaction, read-time restrictions, Unknown/reference-only change evidence, and no secret values in failed assertions or diagnostics.
+- Client-owned context migration/setup, no-op fallback registration in either order, and no hidden source-feature capture.
+- The same resource-history selection through the application service and an embedded host page without AddDashboard/public endpoints, including scope, archive/range, repeated-action, unavailable-provider, and source-verification states.
 
 ## 19. Design decisions, trade-offs, and delivery
 
-### 19.1 Proposed decisions for review
+### 19.1 Finalized design baseline
 
-The table contains initial design recommendations. Confirmed decisions in sections 19.4 and 19.5 take precedence. None of these statements claims completed implementation.
+The table records the design baseline, together with the confirmed behavior in sections 19.4–19.8 and the finalization details in section 19.9. Auditing implementation and verification remain outstanding.
 
 | Decision                                                         | Reason                                                                                                                                                             | Cost or alternative                                                                                                                                             |
 | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | One immutable record per execution, joined into a business trail | Preserves individual actions and work that continues after a request.                                                                                              | Related-execution reads must assemble the trail without modifying old records.                                                                                  |
 | Common contracts, Application implementation                     | Allows Domain/Common features to participate without reverse dependencies.                                                                                         | Requires disciplined separation of small contracts from recorder logic.                                                                                         |
-| Compact EF model with JSON details                               | Separating records, actions, and entity-change groups supports business searches while keeping nested detail storage small.                                        | Two or three tables require atomic graph append and owned-row cleanup. A two-table mapping can embed change groups where its query contract remains sufficient. |
+| Three-table EF model with JSON details | Separating records, actions, and entity-change groups supports business searches while keeping nested detail storage small. | Requires atomic graph append, owned-row cleanup, and backend-specific query/publication proof. Custom providers can use another conforming representation. |
 | Independent core with optional entity integrations               | Captures business work without repositories, Active Entities, or ChangeHistory. Optional behaviors add rough entity actions; ChangeHistory enriches actual deltas. | Detailed changes are available only where ChangeHistory itself captures them.                                                                                   |
 | Explicit audit DbSets on the EF context                          | Makes storage requirements visible on a host or dedicated DbContext without repository coupling.                                                                   | Hosts expose and map the selected audit entity sets in their context.                                                                                           |
 | Provider-owned buffered EF persistence by default                | Request finalization admits a frozen record without awaiting database I/O; batches and flush provide graceful persistence.                                         | In-process queueing has a crash-loss window. Explicit flush or inline mode is needed for confirmed storage before continuing.                                   |
@@ -1766,29 +2076,37 @@ Promote significant accepted decisions to ADRs using the repository workflow aft
 ### 19.2 Delivery sequence
 
 1. Use the confirmed grill decisions as the behavioral baseline and finalize the public API/mapping details against the implementation checks.
-2. Add Common contracts and the Application recorder, policies, Result errors, and in-memory provider.
-3. Add provider conformance tests, the audit-DbSet EF model, its queued writer/batch/flush lifecycle, shared configurable archive/remove retention with bounded in-memory storage, resumable commit-visible extraction positions, and optional HMAC-SHA-256 sealing/verification for both built-ins.
+2. Add Common contracts and the Application recorder, policies, Result errors, in-memory provider, explicit no-op fallback, and framework-neutral test helpers.
+3. Add provider conformance tests, entity-owned EF mappings, IAuditingDbContext and client-owned migration guidance, its queued writer/batch/flush lifecycle, shared configurable archive/remove retention with bounded in-memory storage, resumable commit-visible extraction positions, and optional HMAC-SHA-256 sealing/verification for both built-ins.
 4. Add HTTP and explicitly selectable current Requester/handler behaviors, with omission, ordering, and registration-order tests.
 5. Add ChangeHistory capture/commit hooks and expose its explicit audit-bridge opt-in on the ChangeHistory builder.
-6. Add current Jobs dispatch/execution causation and the other supported adapters, including rough entity-action behaviors, with explicit selection on each feature's own builder.
-7. Deliver query/export services, built-in NDJSON/CSV, the formatter extension contract and optional CEF adapter, optional public read/export/metadata endpoints, the automatically discovered dashboard with downloads, and unified registration examples.
-8. Integrate Auditing into WeatherFiesta city-add/create/update user flows and complete the application proof in section 18.1.
+6. Add current Jobs dispatch/execution causation and the other supported adapters, including rough entity-action behaviors, email notifications, DataPorter import/export, StartupTasks, and file-monitoring processing. Reuse existing behaviors and add compatible operation hooks where needed, with explicit selection on each feature's own builder.
+7. Deliver query/export/resource-history and diagnostics services, built-in NDJSON/CSV, the formatter extension contract and optional CEF adapter, optional public read/export/metadata/diagnostic endpoints, the automatically discovered dashboard with downloads/diagnostics, the embeddable history fragment, and runnable starter setups. Reuse the implemented [NDJSON Streaming](spec-presentation-ndjson-streaming.md) contracts and add Auditing-specific integration/verification under section 12.4.
+8. Integrate Auditing into the fictional customer creation/membership/rename host flows and complete the application proof in section 18.1.
 9. Verify business-trail completeness, provider behavior, optional composition, and access boundaries, then update feature/XML and example documentation.
 
-The feature is complete only when both providers, the operational surfaces, and the required WeatherFiesta application proof satisfy acceptance criteria.
+The feature is complete when both providers and the operational components satisfy library acceptance criteria. Application-specific workflows and deployment controls remain application acceptance responsibilities.
 
 ### 19.3 Implementation follow-through
 
 The grill session resolved the business-behavior decisions in section 19.4. Implementation must preserve them while making the remaining routine API and mapping choices concrete.
 
 - Compile the fluent, context, scope, and FilterModel examples, including the complete Requester/repository/ChangeHistory walkthrough in Appendix A, against the implemented public APIs.
-- Use the WeatherFiesta city-create/update proof to verify labels, resource/actor attribution, failure paths, and explicitly selected business reads.
-- Finalize the compact EF mapping within the accepted two- or three-table approach and verify active/archive query separation.
-- Verify the proposed batch/flush budgets and capture limits under the required application scenarios; keep those settings configurable.
+- Use the fictional customer creation/rename proof to verify labels, resource/actor attribution, failure paths, and explicitly selected business reads.
+- Implement the three audit-data tables and approved singleton technical control table, and verify active/archive query separation on SQL Server, PostgreSQL, and SQLite.
+- Verify the batch/flush budgets and capture limits under the required application scenarios; keep those settings configurable.
 - Complete the specified adapters and transaction-owner hooks, retaining Unknown evidence where commit cannot be observed.
-- Run provider, retention, queued-writer, dashboard-discovery, and end-to-end example checks before marking the feature implemented.
+- Run provider, retention, queued-writer, middleware, export-result, dashboard-model and resource-history component checks before marking the feature implemented. Consuming applications own their end-to-end scenarios.
 - Prove commit-visible extraction positions and lifecycle invalidation within the accepted compact storage mapping. Pin export schemas, CSV columns, CEF mapping/version, token protection/lifetimes, metadata bounds, and digest framing; verify late arrivals, slow clients, retries/deduplication, and transformed-export protection boundaries.
+- Verify reuse of the shared encoded-record writer, original-byte reader, raw pre-encoded HTTP result, and terminal output observer under section 12.4.1. Cover exact-byte digest/budget boundaries, borrowed/owned buffer lifetimes, final-flush/cleanup and metadata-publication failures, and separate transport/extraction outcomes. Test that no shared envelope or heartbeat changes exported audit entries, and keep Application formatting free of ASP.NET dependencies.
+- Compile/run all starter setups and section 18.3's helper scenarios. Verify source-declared diagnostic inventory/side-effect-free explanations and resource-history embedding under host access without public endpoints or AddDashboard; retain direct component checks and real-provider proof. Consuming applications verify their own host wiring.
 - Deliver the coverage/guarantee/protection/retention evidence set in section 18.2 and populate the control mapping and AU readiness assessment in sections 16.5–16.6 with actual results, preserving unverified host dependencies and the accepted defaults. Prove HMAC against the published vectors and graph/key/retention cases before claiming protected content.
+
+The current orchestration runtime exposes an instance ID, definition name, and native activity attempt, but no definition version. The adapter records those available identities and leaves definition version unavailable. It never substitutes an optimistic snapshot version. Initial awaited processing can join the caller; independent background work and resumed slices clear inherited audit state. Durable snapshots carry only the operation-bound protected causal token in the reserved source property, never a live scope or principal.
+
+Source registration inventory describes declared configuration. Packaged pipeline definitions and custom behavior factories remain unknown until the source knows their configuration, and diagnostics never construct them to discover it. File-storage provider configuration is deferred by the existing factory API, so its initial declaration is unknown. Explicit per-client or per-type declarations become available when that source configuration actually runs. Selected storage reads remain local opt-ins, and successful stream-returning calls record acquisition without claiming a completed transfer.
+
+The email contributor records outbox acceptance separately from actual SMTP acceptance. A successful SMTP send remains known even if disconnect cleanup fails; a custom pipeline that does not send records no SMTP acceptance. Outbox executions authenticate the message-bound causal token and inspect returned failure Results. DataPorter records provider processing counts and partial results without claiming committed business changes. Its streaming operation owns a fresh context per enumerator and ends after underlying provider/compression cleanup; early disposal remains incomplete. StartupTasks observes the configured behavior invocation, so retry placement determines which actual invocations are visible and no native attempt number is fabricated. File-monitoring event workers own independent service roots, actual processors contribute child occurrences, and caught callback failures remain failed audit evidence. Automatic scans remain omitted; scan capture requires explicit source selection and an explicit per-scan request. Only an admitted explicit scan copies its cause to queued file events.
 
 ### 19.4 Confirmed grill-me decisions
 
@@ -1799,7 +2117,7 @@ The grill session completed on 2026-10-28 with all 11 decisions below confirmed.
 | Buffered EF durability          | Buffered mode is explicitly best effort. A process crash can lose queued audits even after the business change committed. This is accepted; graceful flush does not provide crash durability or a guarantee of audit evidence for every committed change.                                      |
 | Audit delivery failures         | Ordinary business actions continue under ReportOnly when storage is unavailable or the queue is full. Report the audit failure explicitly. Reject a new audit at capacity rather than silently evicting one already accepted.                                                                  |
 | Record lifecycle                | Persist one immutable record when the owning root scope finalizes, including failed, canceled, and incomplete outcomes. No separate start/update persistence or in-progress audit view. Job dispatch remains part of its originating request.                                                  |
-| Read capture | Once Requester audit behaviors are explicitly selected, commands are captured by default. Meaningful business reads require behavior-level selection; routine city-list refreshes/polling create no automatic records. HTTP read eligibility follows the same rule, without duplicate capture switches. |
+| Read capture | Once Requester audit behaviors are explicitly selected, commands are captured by default. Meaningful business reads require behavior-level selection; routine customer-list refreshes/polling create no automatic records. HTTP read eligibility follows the same rule, without duplicate capture switches. |
 | Business-first presentation     | Lead with the named business action, actor, resource, and outcome. Retain HTTP/request/handler/entity evidence as expandable supporting detail, preserving the stored relationships and occurrences.                                                                                           |
 | Business value capture          | Capture request/handler identity automatically. Capture business values through explicit details/enrichers/scopes, with optional ChangeHistory deltas under their value policies. No automatic whole-parameter or result serialization.                                                        |
 | ChangeHistory enrichment mode   | When enabled, default to bounded, policy-filtered snapshots plus source IDs. Keep ReferenceOnly available. Embedded evidence can outlive source history without relaxing source value restrictions.                                                                                            |
@@ -1816,7 +2134,7 @@ Feature participation is explicit. The host selects auditing behaviors through e
 
 The automatically discovered dashboard remains part of global `AddDashboard` composition. Explicit source-feature behavior selection introduces no additional dashboard opt-in or policies.
 
-HTTP request blacklisting follows `RequestLoggingMiddleware`, including its exact default patterns, path extraction, and shared `MatchAny` behavior. The `/_bdk/*` pattern is excluded by default, and WeatherFiesta removes that pattern explicitly from its audit configuration to demonstrate dashboard business actions.
+HTTP request blacklisting follows `RequestLoggingMiddleware`, including its exact default patterns, path extraction, and shared `MatchAny` behavior. The `/_bdk/*` pattern is excluded by default, and the fictional host proof removes that pattern explicitly to demonstrate dashboard business actions.
 
 Fluent setup uses sane defaults throughout. Configuration callbacks are optional, parameterless EF registration enables the bounded buffered writer, and parameterless endpoint registration supplies the standard group path and contracts. Explicit configuration overrides selected values. Appendix A shows both explicit source-feature registrations and a handler adding its own business scope/details.
 
@@ -1827,25 +2145,50 @@ This design extension adds reporting/extraction to the agreed behavior in sectio
 | Decision | Reason | Cost or alternative |
 | --- | --- | --- |
 | Export included in WithEndpoints; shared service for dashboard | Reuses FilterModel, archive selection, host scope, and exposure without another enablement or policy list. | Export has a documented persistence-order/continuation contract distinct from live search paging. |
-| NDJSON/CSV built in, CEF through an optional formatter package | Gives ordinary downloads a useful default and a small extension point for enterprise formats. | Mappings are versioned projections and report omissions. No forwarding or compliance capability is inferred. |
+| NDJSON/CSV built in, included CEF formatter registered explicitly | Gives ordinary downloads a useful default and a small extension point for enterprise formats. | Mappings are versioned projections and report omissions. No forwarding or compliance capability is inferred. |
 | Fixed committed windows plus subsequent checkpoints | Handles arbitrarily late buffered persistence without an event-time overlap assumption. | Providers must prove committed-prefix publication and retention invalidation. Consumers poll for later arrivals and deduplicate retries. |
 | Finite chunks and companion completion metadata | Bounds resource use and supports CSV/CEF without relying on trailers or full-result buffering. | Large selections require multiple confirmed chunks; transient metadata has explicit capacity, routing, and expiry limits. |
 | Verify original source before transformation | Preserves existing HMAC trust and exposure boundaries. | Recipients cannot authenticate projected bytes with the source tag. Independent export signing remains optional. |
 
+### 19.7 Adoption and resource-history design extension
+
+Add the four selected adoption improvements without changing the confirmed decisions or export design. This remains design-only work; starter programs, APIs, helpers, and UI still require implementation and verification.
+
+| Decision | Reason | Cost or alternative |
+| --- | --- | --- |
+| Runnable starters and a client-owned context contract | Reduces setup duplication while preserving explicit source behavior selection and a host-owned context alternative. | Host configuration/migrations remain explicit; examples must prove actual evidence rather than only compile registrations. |
+| Bounded read-only capture/delivery diagnostics | Makes selection, suppression, and delayed/failed storage understandable without collecting another audit trail. | Source packages publish safe metadata; dynamic rules can remain Unknown, and observations are scoped/timestamped. |
+| Framework-neutral helpers over real application composition | Reuses deterministic flush/evidence checks while keeping missing instrumentation visible. | Test-only raw snapshot assertions need controlled access; they cannot weaken production exposure or replace real provider verification. |
+| Shared resource-history projection and optional web fragment | Makes the same business evidence usable inside host screens without global dashboard/public routes or another store. | Exact resource references and host access remain necessary; bounded scoped history does not imply lifetime completeness or an actual property diff. |
+
+### 19.8 Additional feature contributors
+
+Email notifications, DataPorter import/export, StartupTasks, and file-monitoring processing are required first-party participants under sections 8.4–8.7. Their adapters and any required lifecycle hooks remain implementation work. They follow the confirmed explicit source-builder composition, optional Common contracts, suppression, delivery, and value-capture decisions. Adding them creates no mandatory dependency from core Auditing to those features and no new integration list on `AddAuditing`.
+
+### 19.9 Implementation status and verification
+
+The complete implementation includes memory storage and EF storage for SQL Server, PostgreSQL and SQLite, every specified contributor, scoped queries, source protection, exports, operational UI, diagnostics, helpers and fictional adoption recipes. The EF schema contains three audit data tables and the approved singleton technical control table. Hosts own explicit migrations and control-state initialization.
+
+The completed [implementation plan](../../plan/pln-feature-application-auditing-1.md) records the design and feature work:
+
+- Committed-prefix publication uses a backend transaction gate and durable store/epoch/lifecycle/removal state. Conformance covers concurrent publication, restart, retention races, native backup/restore and explicit epoch rotation on all three databases.
+- Schema-v1 original documents and the canonical profile preserve retained identities, labels, policy markers and authentication independently of live application/source rows. Query conformance covers the shared field catalog, same-child predicates and case/Unicode semantics.
+- Source-local adapters retain actual executor/attempt boundaries and observable transaction confirmation. Missing opt-ins remain absent, and unobservable commits remain Unknown.
+- Export coordinates verified original sources, permitted projections, fixed windows, exact bytes and confirmed output/cleanup. NDJSON reuses shared transport, CSV has a fixed column profile, and CEF remains an opt-in formatter in the core auditing project.
+- Public extension/helper contracts include XML usage examples. Original-document bookkeeping stays assembly-controlled to prevent independent reassignment or disclosure through restricted projections.
+
+Verification uses the existing test projects, normal dotnet build/test commands and repository CI. Presentation auditing tests call middleware, handlers, results and view models directly with DefaultHttpContext and memory streams. Persistence tests exercise SQL Server, PostgreSQL and SQLite. Application-specific workflows and deployment controls remain the consuming application's responsibility.
+
+Implemented status records software acceptance. Production clocks, authorization/tenant policy, database permissions, key and backup custody, retention policy, crash procedures, instance routing and recipient processing remain host responsibilities. Library tests do not attest those controls or establish regulatory compliance.
+
 ## 20. References
+
+- [Application auditing guide](../features-application-auditing.md)
+- [ADR-0032: finite business execution auditing](../adr/0032-business-execution-auditing.md)
 
 ### 20.1 Repository references
 
 - [Repository architecture](../../ARCHITECTURE.md)
-- [WeatherFiesta host setup](../../examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/Program.cs)
-- [WeatherFiesta Core DbContext](../../examples/WeatherFiesta/WeatherFiesta.Infrastructure/Modules/Core/EntityFramework/CoreDbContext.cs)
-- [WeatherFiesta city endpoints](../../examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/Modules/Core/Endpoints/CityEndpoints.cs)
-- [WeatherFiesta City Management dashboard](../../examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/Modules/Core/Dashboard/CoreDashboard.cs)
-- [Add city and subscription command](../../examples/WeatherFiesta/WeatherFiesta.Application/Modules/Core/Commands/CityCreateCommand.cs)
-- [Admin city creation command](../../examples/WeatherFiesta/WeatherFiesta.Application/Modules/Core/Commands/AdminCityCreateCommand.cs)
-- [Admin city update command](../../examples/WeatherFiesta/WeatherFiesta.Application/Modules/Core/Commands/AdminCityUpdateCommand.cs)
-- [WeatherFiesta City domain behavior](../../examples/WeatherFiesta/WeatherFiesta.Domain/Modules/Core/Model/City.cs)
-- [WeatherFiesta city integration tests](../../examples/WeatherFiesta/WeatherFiesta.IntegrationTests/Modules/Core/Presentation/CityEndpointsTests.cs)
 - [Existing entity audit-state marker](../../src/Domain/Model/Markers/IAuditable.cs)
 - [Repository decorator behaviors ADR](../adr/0004-repository-decorator-behaviors.md)
 - [Requester and Notifier ADR](../adr/0005-requester-notifier-mediator-pattern.md)
@@ -1880,6 +2223,27 @@ This design extension adds reporting/extraction to the agreed behavior in sectio
 - [ChangeHistory context contract](../../src/Infrastructure.EntityFramework/ChangeHistory/IChangeHistoryContext.cs)
 - [ChangeHistory application contracts](../../src/Application.Entities/ChangeHistory/ChangeHistoryContracts.cs)
 - [ChangeHistory dashboard provider](../../src/Presentation.Web.EntityFramework/ChangeHistory/Dashboard/DashboardPageProvider.cs)
+- [Application Jobs test-harness pattern](../../src/Application.Jobs/Testing/JobTestHarness.cs)
+- [Email notification service contract](../../src/Application.Notifications/INotificationService.cs)
+- [Email notification send/queue executor](../../src/Application.Notifications/NotificationEmailService.cs)
+- [Email notification outbox worker](../../src/Application.Notifications/Outbox/OutboxNotificationEmailWorker.cs)
+- [Email notification builder](../../src/Application.Notifications/Builder/NotificationServiceBuilder.cs)
+- [DataPorter operation executor](../../src/Application.DataPorter/DataPorterService.cs)
+- [DataPorter import row interceptor](../../src/Application.DataPorter/Abstractions/IImportRowInterceptor.cs)
+- [DataPorter export row interceptor](../../src/Application.DataPorter/Abstractions/IExportRowInterceptor.cs)
+- [StartupTasks behavior contract](../../src/Common.Utilities/StartupTasks/Behaviors/IStartupTaskBehavior.cs)
+- [StartupTasks behavior registration](../../src/Application.Utilities/StartupTasks/ServiceCollectionExtensions.cs)
+- [StartupTasks executor](../../src/Application.Utilities/StartupTasks/StartupTasksService.cs)
+- [File-monitoring scan behavior contract](../../src/Application.Storage/Monitoring/Behaviors/IMonitoringBehavior.cs)
+- [File-monitoring processor behavior contract](../../src/Application.Storage/Monitoring/Behaviors/IProcessingBehavior.cs)
+- [File-monitoring processing executor](../../src/Application.Storage/Monitoring/Handlers/LocationHandlerBase.cs)
+- [File-monitoring builder](../../src/Application.Storage/Monitoring/Configuration/FileMonitoringBuilder.cs)
+- [Implemented NDJSON writer](../../src/Common.Serialization/Ndjson/NdjsonWriter.cs)
+- [Implemented original-byte reader](../../src/Common.Serialization/Ndjson/NdjsonReader.cs)
+- [Implemented NDJSON outcome and cleanup metadata](../../src/Common.Serialization/Ndjson/NdjsonStreamOutcome.cs)
+- [Implemented terminal observer](../../src/Common.Serialization/Ndjson/INdjsonStreamObserver.cs)
+- [Implemented pre-encoded HTTP result factory](../../src/Presentation.Web/Ndjson/NdjsonHttpResult.cs)
+- [NDJSON consumer-contract test fixtures](../../tests/Presentation.UnitTests/Web/Ndjson/NdjsonConsumerContractTests.cs)
 
 ### 20.2 Audit-control and integrity references
 
@@ -1893,6 +2257,7 @@ This design extension adds reporting/extraction to the agreed behavior in sectio
 
 ### 20.3 Export format references
 
+- [Shared NDJSON streaming specification](spec-presentation-ndjson-streaming.md), the implementation dependency for reusable sequence encoding, HTTP streaming, and client consumption. Auditing retains its own export and extraction semantics.
 - [NDJSON specification](https://github.com/ndjson/ndjson-spec), for UTF-8 newline-delimited JSON framing and the media type used by the default formatter.
 - [RFC 4180: Common Format and MIME Type for CSV Files](https://www.rfc-editor.org/rfc/rfc4180), for CSV quoting, record structure, and `text/csv`. Spreadsheet-formula neutralization is an additional export transformation.
 - [OpenText SIEM CEF implementation standard, version 27](https://docs.microfocus.com/doc/2097/25.4/siemcefimplementationstandard), for the optional adapter's header, extension, encoding, and escaping rules. The Auditing mapping/profile is a separate versioned contract.
@@ -1903,7 +2268,7 @@ This design extension adds reporting/extraction to the agreed behavior in sectio
 
 A CustomerPortal user renames an existing customer and supplies a business reason. A business auditor later needs to establish who requested the rename, which customer it concerned, whether the handler ran, whether the repository update succeeded, what its Name changed from/to, and which request/correlation context connects the evidence.
 
-This example combines Auditing, current Requester, an EF-backed generic repository, and the optional ChangeHistory feature configured for Customer. It uses the proposed Auditing APIs from this specification alongside the existing Requester/repository conventions. Authentication and general host access rules are already configured by the application. The customer exists before the request; creating or seeding it is separate application setup.
+This example combines Auditing, current Requester, an EF-backed generic repository, and the optional ChangeHistory feature configured for Customer. It uses the Auditing APIs from this specification alongside the existing Requester/repository conventions. Authentication and general host access rules are already configured by the application. The customer exists before the request; creating or seeding it is separate application setup.
 
 The example types are shown in the global namespace, so its derived keys are `RenameCustomerCommand` and `Customer.Rename`; namespaced application types include their namespace unless a configured business alias overrides it.
 
@@ -1960,7 +2325,7 @@ services.AddProblemDetails();
 
 Alongside the explicit participation choices, the only default value overridden here is the application name. Auditing is already enabled with ReportOnly failure handling. The EF provider already starts its buffered writer with batches of 100, a one-second interval, bounded queue, finite retries, and graceful-shutdown flush. The endpoint group already defaults to `/_bdk/api/auditing`. A custom contributor is unnecessary for this use case.
 
-The two Requester auditing behaviors, `RepositoryAuditingBehavior<Customer>`, and ChangeHistory's proposed `WithAuditing<AppDbContext>()` are explicit audit opt-ins. `RepositoryChangeHistoryBehavior` separately enables source comparison/history persistence. The validation behavior remains an ordinary business choice. These selections live on the relevant feature builders, as specified in sections 8–9; none is inferred by `AddAuditing`.
+The two Requester auditing behaviors, `RepositoryAuditingBehavior<Customer>`, and ChangeHistory's `WithAuditing<AppDbContext>()` are explicit audit opt-ins. `RepositoryChangeHistoryBehavior` separately enables source comparison/history persistence. The validation behavior remains an ordinary business choice. These selections live on the relevant feature builders, as specified in sections 8–9; none is inferred by `AddAuditing`.
 
 The example chooses Required source capture deliberately: inability to obtain the configured baseline/change evidence can fail the business update under ChangeHistory's own policy. Auditing's ReportOnly mode governs audit delivery and does not weaken that source guarantee. Existing business behaviors and the ChangeHistory decorator must preserve the explicitly selected audit boundaries without duplicating them.
 
@@ -1971,6 +2336,8 @@ public sealed class Customer : Entity<Guid>
 {
 	private Customer() { }
 
+	[System.ComponentModel.DataAnnotations.Required]
+	[System.ComponentModel.DataAnnotations.MaxLength(200)]
 	public string Name { get; private set; }
 
 	public Result Rename(string name)
@@ -1989,29 +2356,20 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
 	: DbContext(options), IAuditingDbContext, IChangeHistoryContext
 {
 	public DbSet<Customer> Customers { get; set; }
+
 	public DbSet<ChangeHistoryEntry> ChangeHistory { get; set; }
+
 	public DbSet<AuditRecordEntity> AuditRecords { get; set; }
+
 	public DbSet<AuditActionEntity> AuditActions { get; set; }
+
 	public DbSet<AuditEntityChangeEntity> AuditEntityChanges { get; set; }
 
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
-	{
-		base.OnModelCreating(modelBuilder);
-
-		modelBuilder.Entity<Customer>(entity =>
-		{
-			entity.HasKey(customer => customer.Id);
-			entity.Property(customer => customer.Name)
-				.IsRequired()
-				.HasMaxLength(200);
-		});
-
-		modelBuilder.ConfigureAuditing();
-	}
+	public DbSet<AuditStoreStateEntity> AuditStoreState { get; set; }
 }
 ```
 
-Create and apply the application's normal EF migration before running this setup. The context exposes Customers, ChangeHistory's existing `ChangeHistoryEntry` set, and the audit entity sets. ChangeHistoryEntry already carries its source table/key/index mapping; include that entity in the migration. `ConfigureAuditing()` configures only the audit entities. The compact two-/three-table requirement belongs to Auditing; ChangeHistory's own `__ChangeHistory_Entries` table remains separate.
+Create and apply the application's normal EF migration before running this setup. The context exposes Customers, ChangeHistory's existing `ChangeHistoryEntry` set, and the audit entity sets. ChangeHistoryEntry already carries its source table/key/index mapping; include that entity in the migration. Audit entities carry their own EF mappings, including the technical control entity exposed by the fourth DbSet. The three audit data tables belong to Auditing; ChangeHistory's own `__ChangeHistory_Entries` table remains separate.
 
 The repository and its ChangeHistory decorator use the business context. For this ordinary update, source change rows are prepared before the repository's normal autosave and persist with that business save. The audit provider accesses its audit DbSets directly through a fresh context, independently of the handler's tracked context and business transaction.
 
@@ -2135,7 +2493,7 @@ public sealed record RenameCustomerBody(string Name, string Reason);
 
 The HTTP boundary runs after authentication and wraps the exception handler and authorization, following section 7.1. `UseRequestCorrelation()` establishes/reuses the application's correlation context before auditing consumes it. The optional current module is captured when the host already supplies module context; module registration is not required for this example.
 
-The business route is outside the default request blacklist, including `/_bdk/*`. The audit read endpoints and default dashboard remain excluded and internally suppressed. If the application moves customer mutations beneath the dashboard prefix, it must adjust its own Auditing blacklist as in the WeatherFiesta proof; the standard defaults do not change.
+The business route is outside the default request blacklist, including `/_bdk/*`. The audit read endpoints and default dashboard remain excluded and internally suppressed. If the application moves customer mutations beneath the dashboard prefix, it must adjust its own Auditing blacklist as in the fictional application recipe in section 18.1; the standard defaults do not change.
 
 ### A.6 What happens for one rename
 
@@ -2145,7 +2503,7 @@ Assume an authenticated actor `user-42` renames customer `8b3d3124-2acd-45c4-913
 2. Requester's explicitly registered auditing behavior joins that root and records dispatch of `RenameCustomerCommand`. The descriptor derives Rename customer and supplies the approved reason/customer reference.
 3. The explicitly selected handler behavior records invocation. The handler opens its own derived Customer: Rename child scope, adds the reason/resource, and records the business decision. Its lookup runs normally without a separately selected business-read action.
 4. The repository's explicitly registered auditing behavior records the update beneath the handler's business scope. Its ChangeHistory capture decorator obtains the persisted baseline, detects the Name delta, and includes the source history rows in the normal business save. The audit behavior surrounds source capture/write, so the evidence retains the original repository action identity. Internal comparison reads do not become unrelated business-read actions.
-5. ChangeHistory's explicitly selected auditing bridge reports the source/change-set identity and policy-filtered delta. For this example's successful implicit atomic save without an enclosing transaction, the proposed commit hook confirms Committed evidence before root finalization. Handler success alone is not that confirmation.
+5. ChangeHistory's explicitly selected auditing bridge reports the source/change-set identity and policy-filtered delta. For this example's successful implicit atomic save without an enclosing transaction, the commit hook confirms Committed evidence before root finalization. Handler success alone is not that confirmation.
 6. Handler and dispatch behaviors classify their actual Results. HTTP completion supplies its observed status. The root sanitizes and freezes one immutable logical record with the allowed committed snapshot and source references.
 7. The EF provider accepts that finalized document into its bounded queue. The request need not wait for an audit database write. The background writer later commits the complete header/action/change-evidence graph and makes it searchable.
 

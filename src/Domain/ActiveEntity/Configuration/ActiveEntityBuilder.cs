@@ -70,6 +70,11 @@ public class ActiveEntityBuilder<TEntity, TId>(IServiceCollection services)
         return this;
     }
 
+    /// <summary>Selects complete Active Entity operation auditing on this entity builder.</summary>
+    /// <example><code>builder.WithAuditing();</code></example>
+    public ActiveEntityBuilder<TEntity, TId> WithAuditing(BridgingIT.DevKit.Domain.Repositories.RepositoryAuditOptions options = null)
+        => this.WithBehavior<ActiveEntityAuditingBehavior<TEntity>>(options);
+
     /// <summary>
     /// Builds the configuration and returns the service collection.
     /// </summary>

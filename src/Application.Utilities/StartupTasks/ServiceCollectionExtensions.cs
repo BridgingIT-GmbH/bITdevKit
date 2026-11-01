@@ -57,6 +57,7 @@ public static partial class ServiceCollectionExtensions
                 tags: ["background", "startup-tasks"]);
         }
 
+        AuditBoundaryRegistrationCatalog.GetOrAdd(services, "StartupTasks", "Execution");
         return new StartupTasksBuilderContext(services);
     }
 
@@ -173,6 +174,12 @@ public static partial class ServiceCollectionExtensions
         IStartupTaskBehavior behavior = null)
         where TBehavior : class, IStartupTaskBehavior
     {
+        if (typeof(TBehavior) == typeof(AuditingStartupTaskBehavior) || behavior is AuditingStartupTaskBehavior)
+        {
+            if (context.Services.Any(item => item.ServiceType == typeof(IStartupTaskBehavior) && (item.ImplementationType == typeof(AuditingStartupTaskBehavior) || item.ImplementationInstance is AuditingStartupTaskBehavior))) return context;
+            AuditBoundaryRegistrationCatalog.GetOrAdd(context.Services, "StartupTasks", "Execution").Select("Execution");
+        }
+
         if (behavior is null)
         {
             context.Services.AddSingleton<IStartupTaskBehavior, TBehavior>();
@@ -198,6 +205,7 @@ public static partial class ServiceCollectionExtensions
         if (implementationFactory is not null)
         {
             context.Services.AddSingleton(typeof(IStartupTaskBehavior), implementationFactory);
+            AuditBoundaryRegistrationCatalog.GetOrAdd(context.Services, "StartupTasks", "Execution").MarkUnknown("Execution");
         }
 
         return context;
@@ -213,6 +221,7 @@ public static partial class ServiceCollectionExtensions
         this StartupTasksBuilderContext context,
         IStartupTaskBehavior behavior)
     {
+        if (behavior is AuditingStartupTaskBehavior) return context.WithBehavior<AuditingStartupTaskBehavior>(behavior);
         if (behavior is not null)
         {
             context.Services.AddSingleton(typeof(IStartupTaskBehavior), behavior);

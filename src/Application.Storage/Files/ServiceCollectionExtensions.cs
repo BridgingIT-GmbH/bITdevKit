@@ -5,6 +5,8 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using BridgingIT.DevKit.Common;
+
 /// <summary>
 /// Extension methods for registering FileStorageFactory and related dependencies with IServiceCollection.
 /// </summary>
@@ -93,11 +95,13 @@ public static partial class ServiceCollectionExtensions
     /// </example>
     public static FileStorageBuilderContext AddFileStorage(this IServiceCollection services, Action<FileStorageProviderFactory> configure = null)
     {
+        var auditRegistrations = AuditBoundaryRegistrationCatalog.GetOrAdd(services, "FileStorage", "Client");
+        auditRegistrations.Select("Client", configure is null ? "omitted" : "unknown");
         //services.AddLogging();
         //services.AddMemoryCache();
         services.AddSingleton<IFileStorageProviderFactory>(sp =>
         {
-            var factory = new FileStorageProviderFactory(sp);
+            var factory = new FileStorageProviderFactory(sp) { AuditRegistrations = auditRegistrations };
             configure?.Invoke(factory);
 
             return factory;

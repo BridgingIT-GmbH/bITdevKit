@@ -316,9 +316,10 @@ public class AzureQueueStorageQueueBrokerTests(ITestOutputHelper output, TestEnv
         await broker.Enqueue(messageB);
 
         var processed = await QueueingBrokerTestSupport.WaitForAsync(
-            () => Task.FromResult(
+            async () =>
                 AzureQueueStorageTestMessageHandler.ProcessedIds.Contains(messageA.MessageId) &&
-                AzureQueueStorageOtherMessageHandler.ProcessedIds.Contains(messageB.MessageId)),
+                AzureQueueStorageOtherMessageHandler.ProcessedIds.Contains(messageB.MessageId) &&
+                (await brokerService.GetSummaryAsync()).Succeeded == 2,
             attempts: 240,
             delayMilliseconds: 50);
 

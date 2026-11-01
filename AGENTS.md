@@ -29,6 +29,7 @@ This document provides AI agents with concise, high-signal context about this re
 - Each skill provides a tested, standardized approach to specific tasks.
 - Using skills ensures consistency, follows best practices, and reduces errors.
 - Use the `find-skills` skill to discover available skills when you're unsure which skill applies to your task.
+- For dashboard pages, use [dashboard-pages](.agents/skills/dashboard-pages/SKILL.md) for implementation patterns, shared helpers, style conventions, and source references across the existing page families.
 
 ### When to Use Skills
 
@@ -75,6 +76,7 @@ test: add domain tests for task status transitions
 - Please follow the rules in [.editorconfig](.editorconfig).
 - **Language**: C# 10+; file-scoped namespaces.
 - **Style**: Follow C# Coding Conventions; descriptive names; expressive syntax (null-conditional, string interpolation).
+- **Member spacing**: Separate public members, including implicit public interface members, with one blank line. Place the blank line before the following member's XML documentation and attributes.
 - **Types**: Use `var` when type is obvious; prefer records, pattern matching, null-coalescing assignment.
 - **Naming**:
   - PascalCase for classes, methods, public members.
@@ -121,7 +123,7 @@ test: add domain tests for task status transitions
   - `npx playwright install chromium`
 - When using `node .agents/skills/playwright-skill/run.js <script>`, pass an **absolute** script path. The helper changes into its own directory before resolving inputs, so relative paths to `/.tmp` scripts may be treated as inline code instead of files.
 - For local HTTPS checks, configure Playwright with `ignoreHTTPSErrors: true` and use PowerShell `Invoke-WebRequest -SkipCertificateCheck` when probing readiness.
-- DoFiesta now keeps its development database across restarts. Browser tests can rely on previously created todos and broker messages still being available, but should still create fresh sample activity when they need deterministic assertions.
+- DoFiesta drops and recreates its development database on every local startup (same as WeatherFiesta). Browser tests must create the sample data they need.
 - If builds fail with `CS2012` file-lock errors, stop existing DoFiesta `dotnet`/`dotnet watch` processes before rebuilding or relaunching tests.
 
 ## Observability & Logging
@@ -134,6 +136,7 @@ test: add domain tests for task status transitions
 ## Documentation
 
 - Use Markdown for docs located under `/docs/`.
+- Use fictional, self-contained domain samples in documentation. Do not name, link to, or show repository example applications in guides, specifications, package READMEs, or documentation captures. Use the real DevKit APIs with fictional models and routes. Keep application-specific execution evidence outside the documentation tree.
 
 ## Architectural Decision Records (ADRs)
 

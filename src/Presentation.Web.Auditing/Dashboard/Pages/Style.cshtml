@@ -1,0 +1,49 @@
+@inherits RazorSlice
+<style>
+    .audit-view { min-width: 0; overflow-wrap: anywhere; }
+    .audit-view .card { margin-bottom: .75rem; }
+    .audit-view .card-header { padding: .5rem .75rem; font-size: .9rem; }
+    .audit-view .form-label { font-size: .75rem; margin-bottom: .25rem; }
+    .audit-view input, .audit-view select { min-width: 0; }
+    .audit-view .table { margin-bottom: 0; }
+    .audit-view #audit-records { table-layout: fixed; min-width: 46rem; width: 100%; }
+    .audit-view #audit-records th:nth-child(1) { width: 7.5rem; }
+    .audit-view #audit-records th:nth-child(3) { width: 6rem; }
+    .audit-view #audit-records th:nth-child(4) { width: 4.5rem; }
+    .audit-view #audit-records th:nth-child(5) { width: 7rem; }
+    .audit-view #audit-records th:nth-child(6) { width: 8rem; }
+    .audit-view #audit-records th:nth-child(7) { width: 3rem; }
+    .audit-view th { font-size: .7rem; font-weight: 400; text-transform: uppercase; color: var(--bs-secondary-color); white-space: nowrap; }
+    .audit-view td { vertical-align: middle; }
+    .audit-view .audit-nowrap { white-space: nowrap; }
+    .audit-view .audit-execution { min-width: 12rem; max-width: 28rem; }
+    .audit-view .audit-truncate { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+    .audit-view .audit-truncate-start { direction: rtl; text-align: left; }
+    .audit-view .audit-secondary { color: var(--bs-secondary-color); font-size: .75rem; }
+    .audit-view .audit-empty { padding: 1rem; color: var(--bs-secondary-color); font-size: .85rem; }
+    .audit-view .audit-stat { padding: .65rem .75rem; border-left: 3px solid var(--bs-border-color); height: 100%; }
+    .audit-view .audit-stat strong { display: block; margin-top: .25rem; font-size: 1.2rem; }
+    .audit-view .audit-stat-accent { border-left-color: var(--bs-primary); }
+    .audit-view .audit-info { display: inline-flex; padding: 0 .2rem; border: 0; background: transparent; color: var(--bs-secondary-color); font-size: .8rem; }
+    .audit-view .audit-properties { display: grid; grid-template-columns: minmax(8rem, 1fr) minmax(0, 3fr); gap: .4rem 1rem; margin: 0; font-size: .85rem; }
+    .audit-view .audit-properties dt { color: var(--bs-secondary-color); font-weight: 400; overflow-wrap: anywhere; }
+    .audit-view .audit-properties dd { margin: 0; overflow-wrap: anywhere; }
+    .audit-view .audit-counters { grid-template-columns: minmax(0, 1fr) auto; }
+    .audit-view .audit-action { margin-left: min(calc(var(--audit-depth) * .75rem), 4rem); }
+    .audit-view .audit-actions, .audit-view .audit-sources { max-height: 32rem; overflow: auto; }
+    .audit-view #audit-detail-modal .audit-actions { max-height: none; overflow: visible; }
+    .audit-view .audit-sources thead { position: sticky; top: 0; z-index: 1; }
+    .audit-view .audit-action summary { cursor: pointer; }
+    .audit-view summary { overflow-wrap: anywhere; }
+    .audit-view pre { font-size: .75rem; overflow-wrap: anywhere; white-space: pre-wrap; }
+    .audit-view .audit-export-menu { position: relative; flex-shrink: 0; }
+    .audit-view .audit-export-menu > summary { list-style: none; cursor: pointer; }
+    .audit-view .audit-export-menu > summary::-webkit-details-marker { display: none; }
+    .audit-view .audit-export-menu[open] > summary { color: var(--bs-body-color); background: var(--dashboard-active-bg); }
+    .audit-view .audit-export-popover { position: absolute; top: calc(100% + .45rem); right: 0; z-index: 15; width: min(22rem, calc(100vw - 2rem)); max-height: min(70vh, 36rem); overflow-y: auto; padding: .75rem; border: 1px solid var(--dashboard-panel-border-hover, var(--bs-border-color)); background: var(--bs-body-bg); box-shadow: 0 .8rem 2rem rgba(0, 0, 0, .32); }
+    @@media (max-width: 575.98px) {
+        .audit-view .audit-properties { grid-template-columns: 1fr; gap: .2rem; }
+        .audit-view .audit-properties dd { margin-bottom: .5rem; }
+        .audit-view .audit-action { margin-left: 0; }
+    }
+</style>

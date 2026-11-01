@@ -41,6 +41,15 @@ public class DashboardPage(string key, string title, string icon, string url)
     public string Url { get; init; } = url;
 
     /// <summary>
+    /// Gets or sets named view URLs to remember when opening this page from dashboard navigation.
+    /// Links within a <c>data-dashboard-view</c> element keep their explicit destination.
+    /// </summary>
+    /// <example>
+    /// <code>RememberedViews = new Dictionary&lt;string, string&gt; { ["recent"] = "/ops/activity/recent" };</code>
+    /// </example>
+    public IReadOnlyDictionary<string, string> RememberedViews { get; init; }
+
+    /// <summary>
     /// Gets or sets the optional dashboard index card description.
     /// </summary>
     public string Description { get; init; }
@@ -122,6 +131,12 @@ public class DashboardPageCard(string title, string subtitle = null, string valu
     /// Gets or sets the Bootstrap icon name.
     /// </summary>
     public string Icon { get; init; }
+
+    /// <summary>
+    /// Gets or sets the registered page key for a canonical feature SVG, with <see cref="Icon"/> as the fallback.
+    /// </summary>
+    /// <example><code>var card = new DashboardPageCard("Activity") { FeatureKey = "auditing", Icon = "journal-text" };</code></example>
+    public string FeatureKey { get; init; }
 
     /// <summary>
     /// Gets or sets the URL opened by the card.

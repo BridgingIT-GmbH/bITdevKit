@@ -21,6 +21,8 @@ Browse the [feature icon catalog](./site/feature-icons.md) for the complete set 
 
 ## Core Domain and Application
 
+- <img class="bdk-doc-icon" src="assets/features/auditing.svg" width="20" height="20" alt=""> [Application Auditing](./features-application-auditing.md): Record finite business executions, selected contributors, confirmed source evidence, and scoped review/export.
+
 - <img class="bdk-doc-icon" src="assets/features/domain.svg" width="20" height="20" alt=""> [Domain](./features-domain.md): Build domain models with the core tactical patterns of DDD, from aggregates to typed ids and value objects.
 - <img class="bdk-doc-icon" src="assets/features/domain-events.svg" width="20" height="20" alt=""> [Domain Events](./features-domain-events.md): Capture business-significant events in aggregates and publish side effects outside the domain model.
 - <img class="bdk-doc-icon" src="assets/features/event-sourcing.svg" width="20" height="20" alt=""> [Event Sourcing](./features-event-sourcing.md): Persist aggregates as immutable event streams and rebuild state through replay and snapshots.

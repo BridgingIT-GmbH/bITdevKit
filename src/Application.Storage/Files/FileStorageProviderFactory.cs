@@ -22,6 +22,10 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
     private readonly ConcurrentDictionary<string, (ServiceLifetime Lifetime, Func<IServiceProvider, IFileStorageProvider> ProviderFactory, List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> Behaviors)> providerConfigs = new(StringComparer.OrdinalIgnoreCase);
     private readonly ConcurrentDictionary<string, Lazy<IFileStorageProvider>> singletonProviders = new(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>Gets source configuration metadata supplied by the registration builder, without resolving other sources.</summary>
+    /// <example><code>var declarations = factory.AuditRegistrations?.Registrations;</code></example>
+    public AuditBoundaryRegistrationCatalog AuditRegistrations { get; init; }
+
     /// <summary>
     /// Gets the registered provider names known to the factory.
     /// </summary>
@@ -182,6 +186,7 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
     {
         private readonly FileStorageProviderFactory factory = factory ?? throw new ArgumentNullException(nameof(factory));
         private readonly string providerName = providerName ?? throw new ArgumentNullException(nameof(providerName));
+        private bool auditing;
         private ServiceLifetime lifetime = ServiceLifetime.Scoped;
         private readonly List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> behaviors = [];
 
@@ -265,6 +270,17 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
         public FileStorageBuilder WithProfiling()
         {
             this.behaviors.Add((provider, services) => new ProfilingFileStorageBehavior(provider, services.GetService<IOperationProfiler>()));
+            return this;
+        }
+
+        /// <summary>Selects one audit occurrence per provider call, excluding unrestricted paths and contents.</summary>
+        /// <example><code>builder.UseInMemory("exports").WithAuditing();</code></example>
+        public FileStorageBuilder WithAuditing(StorageAuditOptions options = null)
+        {
+            if (this.auditing) return this;
+            this.auditing = true;
+            this.behaviors.Insert(0, (provider, services) => new AuditingFileStorageBehavior(provider, services.GetRequiredService<IServiceScopeFactory>(), options));
+            this.factory.AuditRegistrations?.Declare("Client", this.providerName.Length <= 512 ? this.providerName : "Oversized", "selected");
             return this;
         }
 

@@ -23,17 +23,56 @@ public class NotificationEmailService(
     INotificationStorageProvider storageProvider,
     ISmtpClient smtpClient,
     NotificationServiceOptions options,
-    IOutboxNotificationEmailQueue outboxQueue = null) : INotificationService<EmailMessage>
+    IOutboxNotificationEmailQueue outboxQueue = null,
+    IEnumerable<INotificationOperationBehavior> operationBehaviors = null) : INotificationService<EmailMessage>
 {
     private readonly INotificationStorageProvider storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
     private readonly NotificationServiceOptions options = options ?? throw new ArgumentNullException(nameof(options));
     private readonly ILogger<NotificationEmailService> logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly ISmtpClient smtpClient = smtpClient ?? throw new ArgumentNullException(nameof(smtpClient));
 
+    private readonly INotificationOperationBehavior[] operationBehaviors = AuditSourceExecutor.DistinctAuditing<INotificationOperationBehavior, AuditingNotificationOperationBehavior>(operationBehaviors).ToArray();
+
+    /// <summary>Runs the existing email operation pipeline once, without serializing its message.</summary>
+    /// <example><code>await service.SendAsync(message, new NotificationSendOptions(), cancellationToken);</code></example>
+    public Task<Result> SendAsync(EmailMessage message, NotificationSendOptions options, CancellationToken cancellationToken)
+    {
+        var operation = new NotificationOperationContext
+        {
+            Operation = "Send", MessageId = message?.Id.ToString("D"), Properties = message?.Properties, CancellationToken = cancellationToken,
+            SuccessStatus = this.options.IsOutboxConfigured && options?.SendImmediately != true ? "OutboxAccepted" : "NotSent"
+        };
+        return this.InvokeOperationAsync(operation, () => this.SendCoreAsync(operation, message, options, cancellationToken));
+    }
+
+    /// <summary>Observes actual outbox admission or ignored queueing when no outbox is configured.</summary>
+    /// <example><code>await service.QueueAsync(message, cancellationToken);</code></example>
+    public Task<Result> QueueAsync(EmailMessage message, CancellationToken cancellationToken)
+        => this.InvokeOperationAsync(new()
+        {
+            Operation = "Queue", MessageId = message?.Id.ToString("D"), Properties = message?.Properties, CancellationToken = cancellationToken,
+            SuccessStatus = this.options.IsOutboxConfigured ? "OutboxAccepted" : "Ignored"
+        }, () => this.QueueCoreAsync(message, cancellationToken));
+
+    private Task<Result> InvokeOperationAsync(NotificationOperationContext context, Func<Task<Result>> next)
+    {
+        var behaviors = context.Operation == "SmtpAttempt"
+            ? this.operationBehaviors.OrderBy(behavior => behavior is AuditingNotificationOperationBehavior ? 1 : 0)
+            : this.operationBehaviors.OrderBy(behavior => behavior is AuditingNotificationOperationBehavior ? 0 : 1);
+        foreach (var behavior in behaviors.Reverse())
+        {
+            var inner = next;
+            next = () => behavior.ExecuteAsync(context, inner);
+        }
+
+        return next();
+    }
+
     /// <summary>
     /// Processes an email notification according to the configured outbox behavior and send options.
     /// </summary>
-    public async Task<Result> SendAsync(
+    private async Task<Result> SendCoreAsync(
+        NotificationOperationContext operation,
         EmailMessage message,
         NotificationSendOptions options,
         CancellationToken cancellationToken)
@@ -50,7 +89,7 @@ public class NotificationEmailService(
 
             if (!this.options.IsOutboxConfigured)
             {
-                return await this.SendAsync(message, cancellationToken);
+                return await this.SendSmtpAsync(operation, message, cancellationToken);
             }
 
             if (!message.Properties.ContainsKey("Outbox")) // store pending in outbox
@@ -65,7 +104,7 @@ public class NotificationEmailService(
 
             if (options?.SendImmediately == true)
             {
-                var result = await this.SendAsync(message, cancellationToken);
+                var result = await this.SendSmtpAsync(operation, message, cancellationToken);
                 message.Status = result.IsSuccess ? EmailMessageStatus.Sent : EmailMessageStatus.Failed;
                 message.SentAt = result.IsSuccess ? DateTimeOffset.UtcNow : null;
                 message.Properties["ProcessMessage"] = result.Errors?.FirstOrDefault()?.Message;
@@ -97,7 +136,7 @@ public class NotificationEmailService(
     /// <summary>
     /// Persists an email notification to the configured outbox.
     /// </summary>
-    public async Task<Result> QueueAsync(EmailMessage message, CancellationToken cancellationToken)
+    private async Task<Result> QueueCoreAsync(EmailMessage message, CancellationToken cancellationToken)
     {
         if (message == null)
         {
@@ -138,7 +177,7 @@ public class NotificationEmailService(
         }
     }
 
-    private async Task<Result> SendAsync(EmailMessage message, CancellationToken cancellationToken)
+    private async Task<Result> SendSmtpAsync(NotificationOperationContext admission, EmailMessage message, CancellationToken cancellationToken)
     {
         try
         {
@@ -148,33 +187,43 @@ public class NotificationEmailService(
             var retryer = new Retryer(3, TimeSpan.FromSeconds(1));
             var timeoutHandler = new TimeoutHandlerBuilder(TimeSpan.FromSeconds(30)).Build();
 
-            await retryer.ExecuteAsync(
-                async ct => await timeoutHandler.ExecuteAsync(
+            var attempt = 0;
+            var sendResult = await retryer.ExecuteAsync<Result>(
+                async ct => await timeoutHandler.ExecuteAsync<Result>(
                     async ct =>
                     {
-                        this.logger.LogInformation("[{LogKey}] mailservice - sending email (id={MessageId})", Constants.LogKey, message.Id);
-
-                        if (this.options.SmtpSettings.SkipServerCertificateValidation)
+                        var operation = new NotificationOperationContext { Operation = "SmtpAttempt", MessageId = message.Id.ToString("D"), CancellationToken = ct, SuccessStatus = "SmtpAccepted" };
+                        return await this.InvokeOperationAsync(operation, async () =>
                         {
-                            this.smtpClient.ServerCertificateValidationCallback = (s, c, h, e) => true; // not adviced to use in production
-                        }
+                            operation.Attempt = Interlocked.Increment(ref attempt);
+                            this.logger.LogInformation("[{LogKey}] mailservice - sending email (id={MessageId})", Constants.LogKey, message.Id);
 
-                        await this.smtpClient.ConnectAsync(this.options.SmtpSettings.Host, this.options.SmtpSettings.Port, this.options.SmtpSettings.UseSsl, ct);
+                            if (this.options.SmtpSettings.SkipServerCertificateValidation)
+                            {
+                                this.smtpClient.ServerCertificateValidationCallback = (s, c, h, e) => true; // not adviced to use in production
+                            }
 
-                        if (!string.IsNullOrEmpty(this.options.SmtpSettings.Username) &&
-                            !string.IsNullOrEmpty(this.options.SmtpSettings.Password))
-                        {
-                            await this.smtpClient.AuthenticateAsync(
-                                this.options.SmtpSettings.Username, this.options.SmtpSettings.Password, ct);
-                        }
+                            await this.smtpClient.ConnectAsync(this.options.SmtpSettings.Host, this.options.SmtpSettings.Port, this.options.SmtpSettings.UseSsl, ct);
 
-                        await this.smtpClient.SendAsync(mimeMessage, ct);
-                        await this.smtpClient.DisconnectAsync(true, ct);
+                            if (!string.IsNullOrEmpty(this.options.SmtpSettings.Username) &&
+                                !string.IsNullOrEmpty(this.options.SmtpSettings.Password))
+                            {
+                                await this.smtpClient.AuthenticateAsync(
+                                    this.options.SmtpSettings.Username, this.options.SmtpSettings.Password, ct);
+                            }
+
+                            await this.smtpClient.SendAsync(mimeMessage, ct);
+                            operation.SmtpAccepted = true;
+                            admission.SmtpAccepted = true;
+                            await this.smtpClient.DisconnectAsync(true, ct);
+                            return Result.Success();
+                        }).ConfigureAwait(false);
                     },
                     cancellationToken),
                 cancellationToken);
 
-            this.logger.LogInformation("[{LogKey}] mailservice - successfully sent email (id={MessageId})", Constants.LogKey, message.Id);
+            if (sendResult.IsFailure) return sendResult;
+            if (admission.SmtpAccepted) this.logger.LogInformation("[{LogKey}] mailservice - SMTP accepted email (id={MessageId})", Constants.LogKey, message.Id);
             return await Task.FromResult(Result.Success());
         }
         catch (Exception ex)

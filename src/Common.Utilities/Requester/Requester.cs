@@ -398,6 +398,7 @@ public interface IRequestBehaviorsProvider
 public class RequestBehaviorsProvider(IReadOnlyList<Type> pipelineBehaviorTypes) : IRequestBehaviorsProvider
 {
     private readonly IReadOnlyList<Type> pipelineBehaviorTypes = pipelineBehaviorTypes ?? throw new ArgumentNullException(nameof(pipelineBehaviorTypes));
+
     //private readonly Dictionary<Type, object> behaviorCache = []; // Scoped cache per provider instance
 
     /// <inheritdoc/>
@@ -627,16 +628,18 @@ public partial class Requester(
                 Func<Task<IResult<TValue>>> next = async () =>
                     await handler.HandleAsync(request, options, cancellationToken);
 
-                for (var i = behaviors.Count - 1; i >= 0; i--)
+                // Dispatch policies surround the actual-handler chain. Audit dispatch is
+                // always outside short circuits; handler audit is inside actual retries.
+                var ordered = behaviors.Where(behavior => !behavior.IsHandlerSpecific())
+                    .OrderBy(behavior => behavior is AuditingRequestBehavior<TRequest, IResult<TValue>> ? 0 : 1)
+                    .Concat(behaviors.Where(behavior => behavior.IsHandlerSpecific())
+                        .OrderBy(behavior => behavior is AuditingRequestHandlerBehavior<TRequest, IResult<TValue>> ? 1 : 0)).ToArray();
+                for (var i = ordered.Length - 1; i >= 0; i--)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    var behavior = behaviors[i];
+                    var behavior = ordered[i];
                     var currentNext = next;
-                    next = async () =>
-                    {
-                        var result = await behavior.HandleAsync(request, options, handler.GetType(), currentNext, cancellationToken);
-                        return result;
-                    };
+                    next = () => behavior.HandleAsync(request, options, handler.GetType(), currentNext, cancellationToken);
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();

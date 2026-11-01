@@ -701,6 +701,16 @@
       "tone": "analysis"
     },
     {
+      "id": "auditing",
+      "title": "Application auditing",
+      "group": "Domain and application",
+      "parent": null,
+      "sources": [
+        "docs/features-application-auditing.md"
+      ],
+      "tone": "analysis"
+    },
+    {
       "id": "change-history",
       "title": "Change history",
       "group": "Domain and application",
@@ -1670,7 +1680,8 @@
       "group": "Common utilities",
       "parent": "common-utilities",
       "sources": [
-        "docs/common-utilities.md"
+        "docs/common-utilities.md",
+        "docs/features-presentation-streaming.md"
       ],
       "tone": "primary"
     },

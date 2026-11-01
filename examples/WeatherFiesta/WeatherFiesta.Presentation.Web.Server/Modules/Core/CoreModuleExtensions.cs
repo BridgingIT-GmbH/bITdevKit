@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -70,6 +70,7 @@ public static class CoreModuleExtensions
         {
             cfg.For<City, CityId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
+                .WithAuditing()
                 .AddLoggingBehavior()
                 .AddProfilingBehavior()
                 .AddMetricsBehavior()
@@ -78,6 +79,7 @@ public static class CoreModuleExtensions
 
             cfg.For<UserCity, UserCityId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
+                .WithAuditing()
                 .AddLoggingBehavior()
                 .AddProfilingBehavior()
                 .AddMetricsBehavior()
@@ -85,6 +87,7 @@ public static class CoreModuleExtensions
 
             cfg.For<CurrentWeather, CurrentWeatherId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
+                .WithAuditing()
                 .AddLoggingBehavior()
                 .AddProfilingBehavior()
                 .AddMetricsBehavior();
@@ -93,18 +96,21 @@ public static class CoreModuleExtensions
                 .UseEntityFrameworkProvider(o => o
                     .Context<CoreDbContext>()
                     .Options<CoreDbContext>(options => options.GenericMergeStrategy()))
+                .WithAuditing()
                 .AddLoggingBehavior()
                 .AddProfilingBehavior()
                 .AddMetricsBehavior();
 
             cfg.For<WeatherReport, WeatherReportId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
+                .WithAuditing()
                 .AddLoggingBehavior()
                 .AddProfilingBehavior()
                 .AddMetricsBehavior();
 
             cfg.For<UserProfile, UserProfileId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
+                .WithAuditing()
                 .AddLoggingBehavior()
                 .AddProfilingBehavior()
                 .AddMetricsBehavior()
@@ -112,6 +118,7 @@ public static class CoreModuleExtensions
 
             cfg.For<UserSubscription, UserSubscriptionId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
+                .WithAuditing()
                 .AddLoggingBehavior()
                 .AddProfilingBehavior()
                 .AddMetricsBehavior()

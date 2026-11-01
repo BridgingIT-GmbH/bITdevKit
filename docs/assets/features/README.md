@@ -2,14 +2,14 @@
 
 [Open the interactive catalog](index.html).
 
-The collection contains 200 standalone SVGs across 11 families: 55 features and 145 subfeatures. The inventory covers all 60 published feature, common, and testing guides in `mkdocs.yml`. Each entry in [catalog.json](catalog.json) records its family, parent, theme role, and source guides.
+The collection contains 201 standalone SVGs across 11 families: 56 features and 145 subfeatures. The inventory covers all 62 published feature, common, and testing guides in `mkdocs.yml`. Each entry in [catalog.json](catalog.json) records its family, parent, theme role, and source guides.
 
 The approved Messaging, Jobs, Queueing, Requester, and Notifier icons retain their original geometry. Built-in dashboard navigation uses these canonical SVGs.
 
 ## Design
 
 - 32 × 32 view box, transparent background, 1.6-unit strokes, rounded ends and joins.
-- Two semantic colors per icon. Storage, Jobs, and Orchestrations use the dashboard analysis role. Messaging, Queueing, Broadcasting, Metrics, and Profiling use info. Shared and host capabilities use primary.
+- Two semantic colors per icon. Storage, Jobs, Orchestrations, and Auditing use the dashboard analysis role. Messaging, Queueing, Broadcasting, Metrics, and Profiling use info. Shared and host capabilities use primary.
 - Subfeatures share contours with their parent where that helps recognition. Their silhouettes or internal marks distinguish their purpose.
 - Geometry remains readable in monochrome. Provider icons represent capabilities rather than vendor trademarks.
 - The catalog supports all 15 dashboard palettes, search, family and hierarchy filters, monochrome rendering, and size previews from 16 to 64 pixels.
@@ -80,6 +80,8 @@ For decorative inline icons beside a text label, replace the root's `role` and `
 The dashboard embeds the SVGs it needs in `Presentation.Web`, then renders them inline so their colors follow the selected theme. Built-in pages resolve icons by their stable `DashboardPage.Key` through [DashboardFeatureIcons.cs](../../../src/Presentation.Web/Dashboard/DashboardFeatureIcons.cs). Custom pages and legacy navigation items retain their Bootstrap icon fallback.
 
 When adding a built-in navigation icon, add its SVG to the embedded resources in [Presentation.Web.csproj](../../../src/Presentation.Web/Presentation.Web.csproj), add the page-key mapping in `DashboardFeatureIcons`, and extend `DashboardFeatureIconTests`. Rebuild the application after changing a canonical SVG. The dashboard removes standalone titles and marks navigation icons as decorative; the link supplies the accessible name.
+
+Overview cards can set `DashboardPageCard.FeatureKey` to the registered page key to use the same SVG. `Icon` remains the Bootstrap fallback.
 
 ## Use the sprite
 

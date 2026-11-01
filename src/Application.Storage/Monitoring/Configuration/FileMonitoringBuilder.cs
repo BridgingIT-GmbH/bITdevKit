@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 using System;
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -17,7 +18,24 @@ public class FileMonitoringBuilder
 {
     private readonly IServiceCollection services;
 
-    internal FileMonitoringBuilder(IServiceCollection services) => this.services = services;
+    /// <summary>Creates the source builder for explicit monitoring configuration.</summary>
+    /// <example><code>var builder = new FileMonitoringBuilder(services);</code></example>
+    public FileMonitoringBuilder(IServiceCollection services) => this.services = services;
+
+    /// <summary>Selects monitoring audit boundaries once. Scan capture also requires a per-invocation request.</summary>
+    /// <example><code>builder.WithAuditing(new() { Scans = true });</code></example>
+    public FileMonitoringBuilder WithAuditing(FileMonitoringAuditOptions options = null)
+    {
+        if (this.services.Any(item => item.ServiceType == typeof(FileMonitoringAuditOptions))) return this;
+        var selection = options ?? new();
+        this.services.AddSingleton(selection);
+        this.services.TryAddEnumerable(ServiceDescriptor.Singleton<IFileProcessingExecutionBehavior, AuditingFileProcessingBehavior>());
+        var catalog = AuditBoundaryRegistrationCatalog.GetOrAdd(this.services, "FileMonitoring", "Event", "Processor", "Scan");
+        catalog.Select("Event", selection.Events ? "selected" : "omitted");
+        catalog.Select("Processor", selection.Processors ? "selected" : "omitted");
+        catalog.Select("Scan", selection.Scans ? "selected" : "omitted");
+        return this;
+    }
 
     /// <summary>
     /// Configures the FileMonitoring system to use an in-memory event store for testing or simple applications.
@@ -107,6 +125,22 @@ public class FileMonitoringBuilder
         EnsureArg.IsNotNullOrEmpty(name, nameof(name));
         EnsureArg.IsNotNull(options, nameof(options));
         EnsureArg.IsNotNull(providerFactory, nameof(providerFactory));
+
+        var inventory = AuditBoundaryRegistrationCatalog.GetOrAdd(this.services, "FileMonitoring", "Event", "Processor", "Scan");
+        if (options.AuditOptions is { } local)
+        {
+            this.services.TryAddEnumerable(ServiceDescriptor.Singleton<IFileProcessingExecutionBehavior, AuditingFileProcessingBehavior>());
+            var alias = name.Length <= 512 ? name : "Oversized";
+            inventory.Declare("Event", alias, local.Events ? "selected" : "omitted");
+            inventory.Declare("Processor", alias, local.Processors ? "selected" : "omitted");
+            inventory.Declare("Scan", alias, local.Scans ? "selected" : "omitted");
+        }
+
+        foreach (var processor in options.ProcessorConfigs.Where(item => item.CaptureAudit.HasValue))
+        {
+            this.services.TryAddEnumerable(ServiceDescriptor.Singleton<IFileProcessingExecutionBehavior, AuditingFileProcessingBehavior>());
+            inventory.Declare("Processor", processor.ProcessorType.Name, processor.CaptureAudit.Value ? "selected" : "omitted");
+        }
 
         foreach (var config in options.ProcessorConfigs)
         {

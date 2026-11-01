@@ -137,13 +137,6 @@ else if (snapshot?.Enabled != true)
 </div>
 
 <section>
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-            <h6 class="mb-0">Node registrations</h6>
-        </div>
-        <span class="badge text-bg-secondary">@registrations.Length.ToString("N0", CultureInfo.InvariantCulture)</span>
-    </div>
-
     @if (registrations.Length == 0)
     {
         <div class="card">

@@ -1,207 +1,140 @@
 # AGENTS.md
 
-This document provides AI agents with concise, high-signal context about this repository to produce high-quality, maintainable code and helpful developer assistance. It complements `.github/copilot-instructions.md` with a broader perspective on architecture, patterns, workflows, and conventions.
+Repository guidance for agents working on bITdevKit, a modular .NET toolkit built around Domain-Driven Design, Clean Architecture, and modular vertical slices.
 
-## Project Overview
+## Start here
 
-- **Name**: bITdevKit
-- **Architecture**: Onion / Clean Architecture + Modular vertical slices (Domain, Application, Infrastructure, Presentation, Tests). Full details in [ARCHITECTURE.md](./ARCHITECTURE.md).
-- **Runtime**: ASP.NET Core minimal APIs, EF Core (SQL Server), Serilog.
-- **Testing**: Unit tests in `tests/**.UnitTests`, integration tests in `tests/**.IntegrationTests`.
-- **Development Workflow**: Described in [README.md](./README.md) and reinforced in this document.
+- Read [docs/INDEX.md](docs/INDEX.md) for the feature map and [README.md](README.md) for repository and documentation workflows.
+- Treat [.github/copilot-instructions.md](.github/copilot-instructions.md) as authoritative for architectural boundaries, module practices, and package preferences. Use [.editorconfig](.editorconfig) for formatting and naming.
+- Resolve SDK, language, framework, and package versions from [global.json](global.json), [Directory.Build.props](Directory.Build.props), project files, and [Directory.Packages.props](Directory.Packages.props). These files take precedence over older version references in prose.
+- Consult the relevant [ADRs](docs/adr/), especially [Clean Architecture](docs/adr/0001-clean-onion-architecture.md) and [modular monoliths](docs/adr/0003-modular-monolith-architecture.md).
+- Inspect existing implementations before adding code. Reuse DevKit abstractions, requester/notifier, pipeline behaviors, results, rules, and specifications.
 
-## Goals for the Agent
+## Repository layout
 
-- Generate concise, idiomatic C# 10+ (.NET 10) code following DDD and clean architecture.
-- Respect layering boundaries and module isolation; avoid cross-layer leakage.
-- Prefer repository abstractions and specifications over direct DbContext access in Application code.
-- Use existing devkit features (requester, notifier, pipeline behaviors) instead of re-inventing infrastructure.
-- Produce testable changes with unit/integration tests where meaningful.
+Projects are grouped by package name directly under `src/`, rather than nested layer folders:
 
-## Agent Skills
+| Path or pattern | Purpose |
+| --- | --- |
+| `src/Common.*` | Shared abstractions, results, rules, extensions, mapping, and utilities |
+| `src/Domain`, `src/Domain.*` | Domain building blocks, events, mediation, and outbox support |
+| `src/Application.*` | Commands, queries, and feature service contracts and orchestration |
+| `src/Infrastructure.*` | Persistence providers, messaging transports, and external integrations |
+| `src/Presentation`, `src/Presentation.*` | Host integration, minimal APIs, dashboards, and client support |
+| `tests/*.UnitTests`, `tests/*.IntegrationTests` | Toolkit unit and integration test projects |
+| `tests/Shared` | Shared test fixtures and models |
+| `examples/` | Sample applications and their tests |
+| `benchmarks/` | Performance benchmarks |
+| `.agents/skills/` | Repository skills |
+| `.vscode/tasks.json` | Build, test, run, and documentation tasks |
+| `bITdevKit.slnx` | Main solution |
 
-**IMPORTANT**: This project uses Agent Skills in  to provide specialized, standardized workflows for common tasks.
+The main runtime projects target .NET 10. Source generators target .NET Standard 2.0. `Directory.Build.props` sets `LangVersion` to `latest` and enables implicit usings.
 
-### Skills Usage Policy
+The toolkit includes ASP.NET Core minimal APIs, RazorSlices dashboards, EF Core with multiple providers, Mapster, Serilog, Quartz, and FluentValidation. Do not assume SQL Server is the only persistence option.
 
-- **ALWAYS check for and use available skills** when the user's request matches a skill's description.
-- Skills are located in `.agents/skills/` directories.
-- Each skill provides a tested, standardized approach to specific tasks.
-- Using skills ensures consistency, follows best practices, and reduces errors.
-- Use the `find-skills` skill to discover available skills when you're unsure which skill applies to your task.
-- For dashboard pages, use [dashboard-pages](.agents/skills/dashboard-pages/SKILL.md) for implementation patterns, shared helpers, style conventions, and source references across the existing page families.
+## Skills
 
-### When to Use Skills
+- Check `.agents/skills/` before starting a task. Read and follow the `SKILL.md` for each matching skill.
+- Use matching skills before a manual workflow. Use a manual approach only when no available skill covers the task.
+- Use [find-skills](.agents/skills/find-skills/SKILL.md) when unsure which skill applies.
+- Use [dashboard-pages](.agents/skills/dashboard-pages/SKILL.md) for dashboard changes.
+- Use [git-commit](.agents/skills/git-commit/SKILL.md) when asked to commit or run `/commit`.
+- Use [technical-writing](.agents/skills/technical-writing/SKILL.md) for technical documentation and [unslop](.agents/skills/unslop/SKILL.md) for writing.
 
-- When a user request explicitly matches a skill's purpose (e.g., "commit changes" → use `git-commit` skill)
-- When performing tasks that have established workflows (e.g., adding aggregates, reviewing code)
-- Before manually implementing any workflow, check if a skill exists for it
-- **Default to using skills over ad-hoc manual approaches**
+## Architecture
 
-### Skill Priority
+- Keep dependencies pointing inward and preserve module isolation. The layer rules describe application design; toolkit projects also reference shared `Common.*` packages.
+- Domain contains aggregates, entities, value objects, enumerations, events, and business rules. Do not introduce dependencies on Application, Infrastructure, or Presentation.
+- Application contains commands, queries, handlers, DTOs, specifications, and service abstractions. Depend on Domain and shared abstractions, not Infrastructure or Presentation.
+- Infrastructure may reference Domain and Application and implements their abstractions. It contains repositories, EF Core contexts and configurations, external integrations, and technical jobs and startup tasks.
+- Presentation contains endpoints, dashboards, module registration, and boundary mapping. Reference Application and Domain types as needed for mapping. Route use cases through Application services or requester/notifier.
+- Hosts compose modules, providers, authentication, Serilog logging, request correlation, problem details, and OpenAPI middleware.
+- Prefer repositories and specifications over direct `DbContext` access in application use cases. Follow the existing feature's design rather than introducing a parallel abstraction.
 
-1. **First**: Check if a skill exists for the task
-2. **Second**: Load and follow the skill's workflow
-3. **Last Resort**: Only use manual approaches when no skill exists
+## Coding standards
 
-This ensures all agents follow the same high-quality, tested patterns that the project relies on.
+- Follow `.editorconfig` and the target project's settings. Use file-scoped namespaces, four-space C# indentation, and `var` as configured.
+- Use PascalCase for types and public members, camelCase for locals and private instance fields, and `I` prefixes for interfaces. Do not prefix private fields with underscores.
+- Use PascalCase for private constants and private static readonly fields, as configured in `.editorconfig`.
+- Use `this.` qualification for instance fields, properties, methods, and events as configured.
+- Separate public members, including implicit public interface members, with one blank line. Place the blank line before the following member's XML documentation and attributes.
+- Use descriptive names and modern C# features where they improve clarity. Prefer records for suitable data models, pattern matching for branching, and null-conditional and null-coalescing operators where appropriate.
+- Preserve the target project's nullability settings. Most projects leave nullable annotations disabled, but some enable them.
+- Prefer `Result` or `Result<T>` for recoverable failures. Use FluentValidation for inputs and exceptions for exceptional failures.
+- Use asynchronous I/O and propagate cancellation where supported. Avoid N+1 queries and unnecessary materialization.
+- Document public types, methods, and properties with XML comments. Include usage examples for public-facing symbols.
+- Prefer BCL functionality and existing dependencies. Manage NuGet versions centrally in `Directory.Packages.props`.
 
-## Commit Guidance
+## Build and test
 
-- Use conventional commit format: type(scope): description
-- Use imperative mood: 'Add feature' not 'Added feature'
-- Keep subject line under 50 characters
-- Use types: feat, fix, docs, style, refactor, perf, test, chore, ci
-- Include scope when relevant (e.g., api, ui, auth, docs, frontend, backend, database, config)
-- Reference issue numbers with # prefix
+Prefer the tasks in [.vscode/tasks.json](.vscode/tasks.json):
 
-When committing changes:
+| Task | Scope |
+| --- | --- |
+| `Solution - restore` | Restore `bITdevKit.slnx` |
+| `Solution - build` | Build `bITdevKit.slnx` |
+| `Solution - tests (unit)` | Run matching unit test projects under `tests/` sequentially |
+| `Solution - tests (integration)` | Run matching integration test projects under `tests/` sequentially |
+| `DoFiesta - watch` | Run DoFiesta with hot reload |
+| `WeatherFiesta - watch` | Run WeatherFiesta with hot reload |
 
-Commit messages should follow:
+- From the repository root, `dotnet build` resolves the solution automatically.
+- Run top-level builds and test commands sequentially in the same worktree. Parallel runs can cause misleading `obj/ref` failures or missing metadata errors.
+- The solution test tasks exclude project names matching `EventSourcing|WeatherForecast`. They do not discover tests under `examples/` or projects named `*.Tests`. Run relevant excluded projects explicitly.
+- Use xUnit, Shouldly, and NSubstitute. Follow Arrange-Act-Assert and name the instance under test `sut`.
+- Test observable behavior in handlers, domain logic, rules, and mapping. Use integration tests for endpoints and persistence, with `WebApplicationFactory` or Testcontainers where appropriate.
+- Check integration test fixtures for Docker and external service requirements before running them.
+- Run checks appropriate to the change and report the commands and results. Keep formatting changes limited to touched files.
 
-```text
-type: short description
+## Local browser testing
+
+For DoFiesta browser testing, use `DoFiesta - watch` or run this command from the repository root. Quote the URLs so PowerShell passes the semicolon as part of the argument:
+
+```powershell
+dotnet run --project examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj --nologo --urls "https://localhost:5001;http://localhost:5000"
 ```
 
-Examples
+- Start DoFiesta with `dotnet run` or `dotnet watch`, rather than its built server DLL. Direct DLL launches can miss development static web assets and cause blank pages with HTTP 500 responses for `/_framework/blazor.web.js` or `/_content/MudBlazor/MudBlazor.min.js`.
+- Both DoFiesta and WeatherFiesta configure database deletion and recreation when `IsLocalDevelopment()` is true. Create the sample data needed for each browser test.
+- For the repo-local Playwright helper, run `npm install` and `npx playwright install chromium` inside `.agents/skills/playwright-skill/` when dependencies are missing.
+- Pass an absolute script path to `node .agents/skills/playwright-skill/run.js <script>`. The helper changes its working directory before resolving inputs.
+- For local HTTPS, use Playwright's `ignoreHTTPSErrors: true` and PowerShell's `Invoke-WebRequest -SkipCertificateCheck` for readiness probes.
+- If `CS2012` reports locked files, identify and stop the relevant sample app process before rebuilding. Stop processes started for verification when finished and check that their ports are released.
 
-```text
-feat: implement task creation use case
-fix: correct repository filtering behavior
-test: add domain tests for task status transitions
+## Logging
+
+- Log through `ILogger<T>` with Serilog configured by the host.
+- Use structured message templates. Follow the feature's existing log key convention, for example:
+
+```csharp
+logger.LogInformation("[{LogKey}] customer created (customerId={CustomerId})", logKey, customer.Id);
 ```
 
-## Coding Standards
-
-- Please follow the rules in [.editorconfig](.editorconfig).
-- **Language**: C# 10+; file-scoped namespaces.
-- **Style**: Follow C# Coding Conventions; descriptive names; expressive syntax (null-conditional, string interpolation).
-- **Member spacing**: Separate public members, including implicit public interface members, with one blank line. Place the blank line before the following member's XML documentation and attributes.
-- **Types**: Use `var` when type is obvious; prefer records, pattern matching, null-coalescing assignment.
-- **Naming**:
-  - PascalCase for classes, methods, public members.
-  - camelCase for locals/private fields; prefix interfaces with `I` (e.g., `IUserService`).
-  - Constants in UPPERCASE.
-  - Use `this.` for fields.
-- **Validation & Errors**: Prefer `Result<T>` for recoverable failures; exceptions only for exceptional cases. Use FluentValidation for inputs.
-- **Async**: Use `async/await` for I/O-bound operations.
-- **LINQ**: Prefer efficient LINQ; avoid N+1 queries.
-- **Nullability**: Project uses disabled nullability annotations; maintain consistency.
-- **XML Documentation**: Document every public class, method, and property with XML comments. Public-facing symbols must include an XML documentation usage example.
-
-## Tech Stack
-
-- **Frameworks**: ASP.NET Core minimal API, EF Core (SQL Server), Mapster, Serilog, Quartz, FluentValidation.
-- **Testing**: xUnit, NSubstitute, Shouldly; WebApplicationFactory for integration.
-
-## Architecture & Layering
-
-- **Domain**: Aggregates, Value Objects, Enumerations, Domain Events, Business Rules. No references to outer layers.
-- **Application**: Commands/Queries, Handlers, DTO models, Specifications. References Domain only; do not reference Infrastructure/Presentation.
-- **Infrastructure**: EF Core DbContext/configurations, repositories, jobs, startup tasks. May reference Domain & Application; expose abstractions.
-- **Presentation**: Minimal API endpoints, module registration, mapping profiles; references Application (and Domain types as needed for mapping).
-- **Host**: Server project wiring, middleware (Serilog, correlation, problem details, swagger).
-
-## Development Workflows
-
-- Use tasks defined in the workspace to build, test, and manage EF:
-  - Build: `Solution - build`
-  - Tests: `Solution - tests (unit)`, `Solution - tests (integration)`
-- Prefer these tasks over custom scripts to maintain consistency.
-- For CLI builds from the repo root, `dotnet build` is preferred and resolves the solution automatically.
-- Prefer running repo-wide builds and repo-wide test commands sequentially in the same worktree. Running multiple top-level `dotnet build` or `dotnet test` commands in parallel can produce misleading `obj/ref` failures such as:
-  - `PE image doesn't contain managed metadata`
-  - transient missing type/namespace errors in downstream projects
-
-### DoFiesta example application Browser Testing
-
-- For local browser or Playwright testing of DoFiesta, start the app with the workspace task `DoFiesta - watch` or run:
-  - `dotnet run --project examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj --nologo --urls https://localhost:5001;http://localhost:5000`
-- Do **not** start DoFiesta for WASM/browser testing by invoking the built server DLL directly. That launch path can miss development static web assets and cause blank-page boot failures with 500s for files such as `/_framework/blazor.web.js` and `/_content/MudBlazor/MudBlazor.min.js`.
-- The repo-local Playwright helper lives in `.agents/skills/playwright-skill`. Install it in that directory with:
-  - `npm install`
-  - `npx playwright install chromium`
-- When using `node .agents/skills/playwright-skill/run.js <script>`, pass an **absolute** script path. The helper changes into its own directory before resolving inputs, so relative paths to `/.tmp` scripts may be treated as inline code instead of files.
-- For local HTTPS checks, configure Playwright with `ignoreHTTPSErrors: true` and use PowerShell `Invoke-WebRequest -SkipCertificateCheck` when probing readiness.
-- DoFiesta drops and recreates its development database on every local startup (same as WeatherFiesta). Browser tests must create the sample data they need.
-- If builds fail with `CS2012` file-lock errors, stop existing DoFiesta `dotnet`/`dotnet watch` processes before rebuilding or relaunching tests.
-
-## Observability & Logging
-
-- Use Serilog with structured logging.
-- Use appropriate log levels (Information for normal ops, Warning for recoverable issues, Error for exceptions).
-- Use the following message templates for consistency: `[LogKey] short message (prop1=abc, prop2=123)`
-- Avoid logging sensitive PII; use structured templates (e.g., `logger.LogInformation("Customer {CustomerId} created", customer.Id);`).
+- Use Information for normal operations, Warning for recoverable issues, and Error for failures.
+- Do not log secrets or sensitive personal data.
 
 ## Documentation
 
-- Use Markdown for docs located under `/docs/`.
-- Use fictional, self-contained domain samples in documentation. Do not name, link to, or show repository example applications in guides, specifications, package READMEs, or documentation captures. Use the real DevKit APIs with fictional models and routes. Keep application-specific execution evidence outside the documentation tree.
+- Write Markdown under `docs/` and consult the relevant feature guide and ADR before changing behavior.
+- Use fictional, self-contained domain samples in guides, specifications, package READMEs, and documentation captures. Do not name, link to, or show repository example applications in those documents.
+- Use real DevKit APIs with fictional models and routes. Keep application-specific execution evidence outside the documentation tree.
 
-## Architectural Decision Records (ADRs)
+## Guidance for agent prompts
 
-The project maintains comprehensive ADRs documenting key architectural decisions in `/docs/adr/`. Reference these when working on related features.
+When writing an implementation prompt, include:
 
-## Testing Strategy
+- The target feature, such as `StartupTasks` or `JobScheduling`.
+- The layers in scope: Domain, Application, Infrastructure, or Presentation.
+- The feature requirements and expected behavior.
+- Existing DevKit features to reuse, including abstractions, extensions, utilities, pipeline behaviors, results, and rules.
 
-- Unit tests: focus on handlers, domain logic, rules, mapping.
-- Integration tests: use WebApplicationFactory; exercise endpoints and persistence.
+## Git and pull requests
 
-## Git & PR Process
-
-- Branch naming: `feature/<area>-<short-description>`, `fix/<issue>`, `chore/<task>`.
-- Small, focused PRs; follow existing folder structure and naming conventions.
-- Include tests and docs updates where applicable.
-- Avoid unrelated formatting changes; use `Solution [format apply]` for targeted formatting.
-
-### Commit Guidance
-
-When a user asks to create a commit or mentions `/commit`, use the [`.agents/skills/git-commit/SKILL.md`](./.agents/skills/git-commit/SKILL.md) workflow.
-
-Excerpt:
-
-> Create standardized, semantic git commits using the Conventional Commits specification. Analyze the actual diff to determine appropriate type, scope, and message.
-
-Agent expectations:
-
-- Use the Conventional Commits format: `<type>[optional scope]: <description>`
-- Analyze `git diff --staged` first, or `git diff` when nothing is staged
-- Check `git status --porcelain` before committing
-- Keep the description imperative and under 72 characters
-- Prefer one logical change per commit
-- Never commit secrets
-- Never update git config, skip hooks, force push, or run destructive git commands unless the user explicitly asks
-
-## Guidance for Agent Prompts
-
-When asking an agent to implement something, include:
-
-- Target feature (e.g., `StartupTasks` or `JobScheduling`).
-- Layer scope (Domain, Application, Infrastructure and/or Presentation).
-- Feature requirements.
-- Existing features to reuse (abstractions, extensions, utilities, pipeline behaviors, results, rules etc.).
-
-## Repository Layout Snapshot
-
-```text
-/ (root)
-  ./agents/skills/
-  ./github/copilot-instructions.md
-  AGENTS.md
-  README.md
-  ARCHITECTURE.md
-  .editorconfig
-  src/
-    Common/
-    Application/
-    Domain/
-    Infrastructure/
-    Presentation/
-  tests/
-    UnitTests/
-    IntegrationTests/
-```
-
-## Alignment with `.github/copilot-instructions.md`
-
-This AGENTS.md reinforces and summarizes the rules found in `.github/copilot-instructions.md`. Agents should treat that file as authoritative for architectural boundaries, naming and module practices.
+- Inspect `git status --porcelain` and preserve unrelated working-tree changes.
+- Use focused branches such as `feature/<area>-<description>`, `fix/<issue>`, or `chore/<task>`. Follow existing folder structure and naming conventions. Keep each PR and commit limited to one logical change.
+- When asked to commit, follow the git-commit skill. Inspect `git diff --staged` first, or `git diff` if nothing is staged.
+- Use `<type>[optional scope]: <description>` with an imperative description and a subject under 50 characters. Include a scope when relevant and reference relevant issues with `#`.
+- Use Conventional Commit types such as `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, and `ci`. For example, `fix(api): correct repository filtering`.
+- Include meaningful tests and documentation updates where applicable.
+- Never commit secrets. Do not change Git configuration, skip hooks, force push, or run destructive Git commands without explicit authorization.

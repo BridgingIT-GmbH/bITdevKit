@@ -297,6 +297,45 @@ var resolved = store.GetDefinitions();</code></pre>
 
 
 
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobRegistrationStore_AuditRegistrations_" data-uid="BridgingIT.DevKit.Application.Jobs.JobRegistrationStore.AuditRegistrations*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobRegistrationStore_AuditRegistrations" data-uid="BridgingIT.DevKit.Application.Jobs.JobRegistrationStore.AuditRegistrations">
+  AuditRegistrations
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Safe source-owned boundary declarations without resolving job instances.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AuditBoundaryRegistrationCatalog AuditRegistrations { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.AuditBoundaryRegistrationCatalog.html">AuditBoundaryRegistrationCatalog</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_JobRegistrationStore_AuditRegistrations_examples">Examples</h4>
+  <pre><code class="lang-csharp">var declarations = registrations.AuditRegistrations.Registrations;</code></pre>
+
+
+
+
+
+
   <h2 class="section" id="methods">Methods
 </h2>
 
@@ -327,6 +366,41 @@ var resolved = store.GetDefinitions();</code></pre>
 
 
 
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobRegistrationStore_AddDispatchBehavior_" data-uid="BridgingIT.DevKit.Application.Jobs.JobRegistrationStore.AddDispatchBehavior*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobRegistrationStore_AddDispatchBehavior_System_Type_" data-uid="BridgingIT.DevKit.Application.Jobs.JobRegistrationStore.AddDispatchBehavior(System.Type)">
+  AddDispatchBehavior(Type)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a separately selected source dispatch observer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddDispatchBehavior(Type behaviorType)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>behaviorType</code> <span class="xref">Type</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_JobRegistrationStore_AddDispatchBehavior_System_Type__examples">Examples</h4>
+  <pre><code class="lang-csharp">registrations.AddDispatchBehavior(typeof(AuditingJobDispatchBehavior));</code></pre>
 
 
 
@@ -391,6 +465,41 @@ var resolved = store.GetDefinitions();</code></pre>
 
 
 
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobRegistrationStore_GetDispatchBehaviorTypes_" data-uid="BridgingIT.DevKit.Application.Jobs.JobRegistrationStore.GetDispatchBehaviorTypes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobRegistrationStore_GetDispatchBehaviorTypes" data-uid="BridgingIT.DevKit.Application.Jobs.JobRegistrationStore.GetDispatchBehaviorTypes">
+  GetDispatchBehaviorTypes()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the explicitly registered dispatch observer types.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;Type&gt; GetDispatchBehaviorTypes()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<span class="xref">Type</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_JobRegistrationStore_GetDispatchBehaviorTypes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var types = registrations.GetDispatchBehaviorTypes();</code></pre>
 
 
 

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Namespace BridgingIT.DevKit.Infrastructure.FileSystem | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Namespace BridgingIT.DevKit.Infrastructure.FileSystem | bITdevKit API Reference ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.FileSystem">
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_FileSystem" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem" class="text-break">Namespace BridgingIT.DevKit.Infrastructure.FileSystem</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemAuthority.html">FileSystemAuthority</a></dt>
+      <dd><p>Owns cooperative filesystem authority for one key, staged generation or retention cursor.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemAuthorityTimeoutException.html">FileSystemAuthorityTimeoutException</a></dt>
+      <dd><p>Reports an authority acquisition that exhausted its polling budget.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemBlobStoreProvider.html">FileSystemBlobStoreProvider</a></dt>
+      <dd><p>Stores blobs as immutable files with replaceable metadata and per-key local process coordination.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemConfigurationException.html">FileSystemConfigurationException</a></dt>
+      <dd><p>Reports incompatible store configuration or an unsupported required filesystem operation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemContinuationException.html">FileSystemContinuationException</a></dt>
+      <dd><p>Reports a malformed or mismatched document continuation cursor.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.html">FileSystemDocumentStoreProvider</a></dt>
+      <dd><p>Persists serialized documents and metadata in provider-owned generation files.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDurability.html">FileSystemDurability</a></dt>
+      <dd><p>Performs native same-directory publication and persistence operations on Windows and Linux.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemFileOperations.html">FileSystemFileOperations</a></dt>
+      <dd><p>Provides instrumented file opening shared by ordinary files, blobs and documents.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemIndeterminateException.html">FileSystemIndeterminateException</a></dt>
+      <dd><p>Reports a mutation whose namespace publication may have completed despite a failed acknowledgement.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetadataLimitException.html">FileSystemMetadataLimitException</a></dt>
+      <dd><p>Reports a metadata query exceeding its configured inspection bound.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.html">FileSystemMetrics</a></dt>
+      <dd><p>Exposes process-wide instrumentation for filesystem storage operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemNativeIOException.html">FileSystemNativeIOException</a></dt>
+      <dd><p>Reports a native filesystem failure while preserving the host-specific error code.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemPaths.html">FileSystemPaths</a></dt>
+      <dd><p>Shares filesystem path normalization and link inspection across providers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemPayloadSizeException.html">FileSystemPayloadSizeException</a></dt>
+      <dd><p>Reports streamed payload content exceeding its configured byte limit.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemPropertyBagConverter.html">FileSystemPropertyBagConverter</a></dt>
+      <dd><p>Serializes property bags using the storage scalar codec to preserve supported scalar types in manifests.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemPublicationLimitException.html">FileSystemPublicationLimitException</a></dt>
+      <dd><p>Reports serialized manifest bytes exceeding the configured publication bound.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemRecord.html">FileSystemRecord</a></dt>
+      <dd><p>Describes a versioned blob or document manifest, including deletion tombstones.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemResults.html">FileSystemResults</a></dt>
+      <dd><p>Classifies shared filesystem failures and maps blob or document operations to typed results while preserving cancellation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemRetentionCursor.html">FileSystemRetentionCursor</a></dt>
+      <dd><p>Persists a bounded virtual-radix retention walk that resumes across calls and store instances.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemRetentionPage.html">FileSystemRetentionPage</a></dt>
+      <dd><p>Describes one bounded retention-discovery result.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemScanFrame.html">FileSystemScanFrame</a></dt>
+      <dd><p>Represents one persisted frame in a bounded virtual-radix directory traversal.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemStagedPayload.html">FileSystemStagedPayload</a></dt>
+      <dd><p>Owns one staged immutable payload and its generation authority until publication or disposal.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemStorageCapacityError.html">FileSystemStorageCapacityError</a></dt>
+      <dd><p>Reports exhausted filesystem space or quota before a mutation is published.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemStorageConfigurationError.html">FileSystemStorageConfigurationError</a></dt>
+      <dd><p>Reports incompatible filesystem store configuration or unsupported required primitives.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemStorageCorruptionError.html">FileSystemStorageCorruptionError</a></dt>
+      <dd><p>Reports malformed managed metadata, identity mismatch, or missing committed content.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemStorageMetadataLimitError.html">FileSystemStorageMetadataLimitError</a></dt>
+      <dd><p>Reports an attempted metadata publication larger than the configured manifest bound.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemStorageOptions.html">FileSystemStorageOptions</a></dt>
+      <dd><p>Configures filesystem storage. Unsupported native primitives fail closed; deployment qualification remains separate.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemStoragePermissionError.html">FileSystemStoragePermissionError</a></dt>
+      <dd><p>Reports denied access to provider-owned filesystem resources.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemStorageUnavailableError.html">FileSystemStorageUnavailableError</a></dt>
+      <dd><p>Reports unavailable filesystem I/O without exposing paths or credentials.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemStore.html">FileSystemStore</a></dt>
+      <dd><p>Coordinates filesystem manifests, immutable payloads, retention and explicit recovery.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.LocalFileStorageProvider.html">LocalFileStorageProvider</a></dt>
+      <dd><p>A thread-safe local file system implementation of IFileStorageProvider for file operations on disk.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.LocalLocationHandler.html">LocalLocationHandler</a></dt>
+      <dd><p>Represents local location handler.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemStorageAccessKind.html">FileSystemStorageAccessKind</a></dt>
+      <dd><p>Defines the declared store access protocol.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemStorageDurability.html">FileSystemStorageDurability</a></dt>
+      <dd><p>Defines required acknowledgement persistence.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

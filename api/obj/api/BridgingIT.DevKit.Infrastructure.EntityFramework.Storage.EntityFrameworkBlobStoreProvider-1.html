@@ -98,7 +98,7 @@ Class EntityFrameworkBlobStoreProvider&lt;TContext&gt;
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class EntityFrameworkBlobStoreProvider&lt;TContext&gt; : IBlobStoreProvider, IBlobStoreRetentionProvider, IBlobStoreContainerCatalog where TContext : DbContext, IBlobStoreContext</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class EntityFrameworkBlobStoreProvider&lt;TContext&gt; : IBlobStoreProvider, IBlobStoreBatchDownloadProvider, IBlobStoreRetentionProvider, IBlobStoreContainerCatalog where TContext : DbContext, IBlobStoreContext</code></pre>
   </div>
 
 
@@ -122,6 +122,7 @@ Class EntityFrameworkBlobStoreProvider&lt;TContext&gt;
     <dt>Implements</dt>
     <dd>
       <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreProvider.html">IBlobStoreProvider</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreBatchDownloadProvider.html">IBlobStoreBatchDownloadProvider</a></div>
       <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreRetentionProvider.html">IBlobStoreRetentionProvider</a></div>
       <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreContainerCatalog.html">IBlobStoreContainerCatalog</a></div>
     </dd>
@@ -405,6 +406,41 @@ DI-managed usage with fresh scoped contexts per operation.</p>
 
 
 
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkBlobStoreProvider_1_MaxDownloadBatchSize_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider`1.MaxDownloadBatchSize*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkBlobStoreProvider_1_MaxDownloadBatchSize" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider`1.MaxDownloadBatchSize">
+  MaxDownloadBatchSize
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the maximum number of keys passed to one <a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreBatchDownloadProvider.html#BridgingIT_DevKit_Application_Storage_IBlobStoreBatchDownloadProvider_DownloadManyAsync_System_Collections_Generic_IReadOnlyCollection_BridgingIT_DevKit_Application_Storage_BlobKey__System_Threading_CancellationToken_">DownloadManyAsync(IReadOnlyCollection&lt;BlobKey&gt;, CancellationToken)</a> call.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MaxDownloadBatchSize { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkBlobStoreProvider_1_MaxDownloadBatchSize_examples">Examples</h4>
+  <pre><code class="lang-csharp">var batchSize = provider.MaxDownloadBatchSize;</code></pre>
+
+
+
+
+
+
   <h2 class="section" id="methods">Methods
 </h2>
 
@@ -532,6 +568,54 @@ DI-managed usage with fresh scoped contexts per operation.</p>
 
   <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkBlobStoreProvider_1_DownloadAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_Threading_CancellationToken__examples">Examples</h4>
   <pre><code class="lang-csharp">var result = await provider.DownloadAsync(key, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkBlobStoreProvider_1_DownloadManyAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider`1.DownloadManyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkBlobStoreProvider_1_DownloadManyAsync_System_Collections_Generic_IReadOnlyCollection_BridgingIT_DevKit_Application_Storage_BlobKey__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider`1.DownloadManyAsync(System.Collections.Generic.IReadOnlyCollection{BridgingIT.DevKit.Application.Storage.BlobKey},System.Threading.CancellationToken)">
+  DownloadManyAsync(IReadOnlyCollection&lt;BlobKey&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Downloads many blobs by exact key with as few round trips as the provider can manage.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyDictionary&lt;BlobKey, Result&lt;BlobDownload&gt;&gt;&gt; DownloadManyAsync(IReadOnlyCollection&lt;BlobKey&gt; keys, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>keys</code> <span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobKey.html">BlobKey</a>&gt;</dt>
+    <dd><p>The distinct exact blob keys, at most <a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreBatchDownloadProvider.html#BridgingIT_DevKit_Application_Storage_IBlobStoreBatchDownloadProvider_MaxDownloadBatchSize">MaxDownloadBatchSize</a>.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyDictionary</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobKey.html">BlobKey</a>, <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDownload.html">BlobDownload</a>&gt;&gt;&gt;</dt>
+    <dd><p>A dictionary with one result per key the provider could satisfy. Keys that are missing from the
+dictionary (for example blobs too large to buffer, or a failed batch) are read with
+<a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreProvider.html#BridgingIT_DevKit_Application_Storage_IBlobStoreProvider_DownloadAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_Threading_CancellationToken_">DownloadAsync(BlobKey, CancellationToken)</a> instead, so a batch never changes the outcome of a read.
+The caller owns and disposes every returned <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDownload.html">BlobDownload</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkBlobStoreProvider_1_DownloadManyAsync_System_Collections_Generic_IReadOnlyCollection_BridgingIT_DevKit_Application_Storage_BlobKey__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var results = await provider.DownloadManyAsync(keys, cancellationToken);</code></pre>
 
 
 

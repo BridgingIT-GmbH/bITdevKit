@@ -257,6 +257,45 @@ Provides core methods; location-specific configurations are added via extensions
 
 
 
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_FileMonitoringBuilder__ctor_" data-uid="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilder.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileMonitoringBuilder__ctor_Microsoft_Extensions_DependencyInjection_IServiceCollection_" data-uid="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilder.#ctor(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+  FileMonitoringBuilder(IServiceCollection)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates the source builder for explicit monitoring configuration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FileMonitoringBuilder(IServiceCollection services)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>services</code> <span class="xref">IServiceCollection</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_FileMonitoringBuilder__ctor_Microsoft_Extensions_DependencyInjection_IServiceCollection__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = new FileMonitoringBuilder(services);</code></pre>
+
+
+
+
+
+
   <h2 class="section" id="methods">Methods
 </h2>
 
@@ -388,49 +427,40 @@ Registers a LocationHandler with an InMemoryFileStorageProvider, useful for test
 
 
 
-  <a id="BridgingIT_DevKit_Application_Storage_FileMonitoringBuilder_UseLocal_" data-uid="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilder.UseLocal*"></a>
+  <a id="BridgingIT_DevKit_Application_Storage_FileMonitoringBuilder_WithAuditing_" data-uid="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilder.WithAuditing*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_FileMonitoringBuilder_UseLocal_System_String_System_String_System_Action_BridgingIT_DevKit_Application_Storage_LocationOptions__System_Boolean_" data-uid="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilder.UseLocal(System.String,System.String,System.Action{BridgingIT.DevKit.Application.Storage.LocationOptions},System.Boolean)">
-  UseLocal(string, string, Action&lt;LocationOptions&gt;, bool)
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileMonitoringBuilder_WithAuditing_BridgingIT_DevKit_Application_Storage_FileMonitoringAuditOptions_" data-uid="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilder.WithAuditing(BridgingIT.DevKit.Application.Storage.FileMonitoringAuditOptions)">
+  WithAuditing(FileMonitoringAuditOptions)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Configures a local file system location for monitoring.
-Registers a LocationHandler with a LocalFileStorageProvider for the specified path.</p>
+  <div class="markdown level1 summary"><p>Selects monitoring audit boundaries once. Scan capture also requires a per-invocation request.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public FileMonitoringBuilder UseLocal(string name, string path, Action&lt;LocationOptions&gt; configure = null, bool ensureRoot = true)</code></pre>
+    <pre><code class="lang-csharp hljs">public FileMonitoringBuilder WithAuditing(FileMonitoringAuditOptions options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd><p>The unique name of the location (e.g., &quot;Docs&quot;).</p>
-</dd>
-    <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The local file system path to monitor (e.g., &quot;C:\Docs&quot;).</p>
-</dd>
-    <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.LocationOptions.html">LocationOptions</a>&gt;</dt>
-    <dd><p>An action to configure the LocationOptions (e.g., file pattern, processors).</p>
-</dd>
-    <dt><code>ensureRoot</code> <span class="xref">bool</span></dt>
-    <dd><p>Whether the local provider creates the root directory when it does not exist.</p>
-</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringAuditOptions.html">FileMonitoringAuditOptions</a></dt>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilder.html">FileMonitoringBuilder</a></dt>
-    <dd><p>The current FileMonitoringBuilder instance for chaining.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_FileMonitoringBuilder_WithAuditing_BridgingIT_DevKit_Application_Storage_FileMonitoringAuditOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">builder.WithAuditing(new() { Scans = true });</code></pre>
 
 
 

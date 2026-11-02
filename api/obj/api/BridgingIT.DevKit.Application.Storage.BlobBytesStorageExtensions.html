@@ -175,6 +175,63 @@ Class BlobBytesStorageExtensions
 
 
 
+  <a id="BridgingIT_DevKit_Application_Storage_BlobBytesStorageExtensions_DownloadBytesManyAsync_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBytesStorageExtensions.DownloadBytesManyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBytesStorageExtensions_DownloadBytesManyAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Storage_BlobKey__BridgingIT_DevKit_Application_Storage_BlobBytesDownloadManyOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBytesStorageExtensions.DownloadBytesManyAsync(BridgingIT.DevKit.Application.Storage.IBlobStoreClient,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Storage.BlobKey},BridgingIT.DevKit.Application.Storage.BlobBytesDownloadManyOptions,System.Threading.CancellationToken)">
+  DownloadBytesManyAsync(IBlobStoreClient, IEnumerable&lt;BlobKey&gt;, BlobBytesDownloadManyOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Downloads many blobs into byte arrays using bounded parallelism. When the provider supports batched
+downloads (Entity Framework), the keys are read with a few multi-key queries instead of one query per key.
+Every key still passes through the complete client behavior pipeline individually.
+All downloaded content is buffered in memory, so use it for many small blobs only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IReadOnlyList&lt;BlobBytesDownloadManyItem&gt;&gt;&gt; DownloadBytesManyAsync(this IBlobStoreClient blobClient, IEnumerable&lt;BlobKey&gt; blobKeys, BlobBytesDownloadManyOptions options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>blobClient</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreClient.html">IBlobStoreClient</a></dt>
+    <dd><p>The blob client to download from.</p>
+</dd>
+    <dt><code>blobKeys</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobKey.html">BlobKey</a>&gt;</dt>
+    <dd><p>The keys to download. A duplicate key is read once per occurrence, but only its first occurrence is batched.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobBytesDownloadManyOptions.html">BlobBytesDownloadManyOptions</a></dt>
+    <dd><p>Optional bulk download options.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the downloads.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobBytesDownloadManyItem.html">BlobBytesDownloadManyItem</a>&gt;&gt;&gt;</dt>
+    <dd><p>A result containing one item per requested key in the order of <code class="paramref">blobKeys</code>.
+With <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobBytesDownloadManyOptions.html#BridgingIT_DevKit_Application_Storage_BlobBytesDownloadManyOptions_ContinueOnError">ContinueOnError</a> disabled, the first failure fails the whole result instead.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobBytesStorageExtensions_DownloadBytesManyAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Storage_BlobKey__BridgingIT_DevKit_Application_Storage_BlobBytesDownloadManyOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var keys = days.SelectMany(day =&gt; ids.Select(id =&gt; new BlobKey("telemetry", $"{id}/{day:yyyy-MM-dd}")));
+var result = await blobs.DownloadBytesManyAsync(keys, new BlobBytesDownloadManyOptions { MaxDegreeOfParallelism = 32 });
+var found = result.Value.Where(item =&gt; item.Result.IsSuccess);</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Application_Storage_BlobBytesStorageExtensions_UploadBytesAsync_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBytesStorageExtensions.UploadBytesAsync*"></a>
 
   <h3 id="BridgingIT_DevKit_Application_Storage_BlobBytesStorageExtensions_UploadBytesAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_System_Byte___BridgingIT_DevKit_Application_Storage_BlobBytesUploadOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBytesStorageExtensions.UploadBytesAsync(BridgingIT.DevKit.Application.Storage.IBlobStoreClient,BridgingIT.DevKit.Application.Storage.BlobKey,System.Byte[],BridgingIT.DevKit.Application.Storage.BlobBytesUploadOptions,System.Threading.CancellationToken)">

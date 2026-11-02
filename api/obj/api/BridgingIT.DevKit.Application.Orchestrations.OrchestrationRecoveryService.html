@@ -260,8 +260,8 @@ Class OrchestrationRecoveryService
 
   <a id="BridgingIT_DevKit_Application_Orchestrations_OrchestrationRecoveryService__ctor_" data-uid="BridgingIT.DevKit.Application.Orchestrations.OrchestrationRecoveryService.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Orchestrations_OrchestrationRecoveryService__ctor_BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationExecutor_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStorageProvider_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationClock_Microsoft_Extensions_Hosting_IHostApplicationLifetime_BridgingIT_DevKit_Application_Orchestrations_OrchestrationExecutionSettings_Microsoft_Extensions_Logging_ILoggerFactory_" data-uid="BridgingIT.DevKit.Application.Orchestrations.OrchestrationRecoveryService.#ctor(BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationExecutor,BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStorageProvider,BridgingIT.DevKit.Application.Orchestrations.IOrchestrationClock,Microsoft.Extensions.Hosting.IHostApplicationLifetime,BridgingIT.DevKit.Application.Orchestrations.OrchestrationExecutionSettings,Microsoft.Extensions.Logging.ILoggerFactory)">
-  OrchestrationRecoveryService(InMemoryOrchestrationExecutor, IOrchestrationStorageProvider, IOrchestrationClock, IHostApplicationLifetime, OrchestrationExecutionSettings, ILoggerFactory)
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_OrchestrationRecoveryService__ctor_BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationExecutor_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStorageProvider_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationClock_Microsoft_Extensions_Hosting_IHostApplicationLifetime_BridgingIT_DevKit_Application_Orchestrations_OrchestrationExecutionSettings_Microsoft_Extensions_Logging_ILoggerFactory_BridgingIT_DevKit_Common_IDatabaseReadyService_" data-uid="BridgingIT.DevKit.Application.Orchestrations.OrchestrationRecoveryService.#ctor(BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationExecutor,BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStorageProvider,BridgingIT.DevKit.Application.Orchestrations.IOrchestrationClock,Microsoft.Extensions.Hosting.IHostApplicationLifetime,BridgingIT.DevKit.Application.Orchestrations.OrchestrationExecutionSettings,Microsoft.Extensions.Logging.ILoggerFactory,BridgingIT.DevKit.Common.IDatabaseReadyService)">
+  OrchestrationRecoveryService(InMemoryOrchestrationExecutor, IOrchestrationStorageProvider, IOrchestrationClock, IHostApplicationLifetime, OrchestrationExecutionSettings, ILoggerFactory, IDatabaseReadyService)
   
   </h3>
 
@@ -270,7 +270,7 @@ Class OrchestrationRecoveryService
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public OrchestrationRecoveryService(InMemoryOrchestrationExecutor executor, IOrchestrationStorageProvider persistenceProvider, IOrchestrationClock clock, IHostApplicationLifetime applicationLifetime, OrchestrationExecutionSettings settings, ILoggerFactory loggerFactory = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public OrchestrationRecoveryService(InMemoryOrchestrationExecutor executor, IOrchestrationStorageProvider persistenceProvider, IOrchestrationClock clock, IHostApplicationLifetime applicationLifetime, OrchestrationExecutionSettings settings, ILoggerFactory loggerFactory = null, IDatabaseReadyService databaseReadyService = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -292,6 +292,9 @@ Class OrchestrationRecoveryService
 </dd>
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
     <dd><p>The logger factory used to create the service logger.</p>
+</dd>
+    <dt><code>databaseReadyService</code> <a class="xref" href="BridgingIT.DevKit.Common.IDatabaseReadyService.html">IDatabaseReadyService</a></dt>
+    <dd><p>The optional database readiness service; when available the first sweep waits until the registered databases are ready.</p>
 </dd>
   </dl>
 

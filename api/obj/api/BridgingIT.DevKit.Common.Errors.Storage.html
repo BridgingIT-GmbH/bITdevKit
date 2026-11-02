@@ -278,6 +278,48 @@ Class Errors.Storage
 
 
 
+  <a id="BridgingIT_DevKit_Common_Errors_Storage_DocumentIndeterminateOperation_" data-uid="BridgingIT.DevKit.Common.Errors.Storage.DocumentIndeterminateOperation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Errors_Storage_DocumentIndeterminateOperation_System_String_System_String_" data-uid="BridgingIT.DevKit.Common.Errors.Storage.DocumentIndeterminateOperation(System.String,System.String)">
+  DocumentIndeterminateOperation(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates an uncertain document mutation error that must not be replayed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DocumentStoreIndeterminateOperationError DocumentIndeterminateOperation(string operation, string mutationId)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>mutationId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DocumentStoreIndeterminateOperationError.html">DocumentStoreIndeterminateOperationError</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Errors_Storage_DocumentIndeterminateOperation_System_String_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var error = Errors.Storage.DocumentIndeterminateOperation("publish", mutationId);</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Common_Errors_Storage_DocumentInvalidContinuationToken_" data-uid="BridgingIT.DevKit.Common.Errors.Storage.DocumentInvalidContinuationToken*"></a>
 
   <h3 id="BridgingIT_DevKit_Common_Errors_Storage_DocumentInvalidContinuationToken_System_String_System_Exception_" data-uid="BridgingIT.DevKit.Common.Errors.Storage.DocumentInvalidContinuationToken(System.String,System.Exception)">

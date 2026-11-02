@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class AuditSearchProjection | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class AuditSearchProjection | bITdevKit API Reference ">
+      
+      <meta name="description" content="Builds and streams version-two search projections while retaining version-one verification support.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSearchProjection">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSearchProjection" class="text-break">
+Class AuditSearchProjection  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.html">Auditing</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Builds and streams version-two search projections while retaining version-one verification support.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class AuditSearchProjection</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">AuditSearchProjection</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_examples">Examples</h2>
+  <pre><code class="lang-csharp">var searchJson = AuditSearchProjection.Build(record, "Record");</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>All supported typed detail conversions are recorded independently of active query registrations. Source property values are never indexed.</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_Build_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSearchProjection.Build*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_Build_System_Object_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSearchProjection.Build(System.Object,System.String)">
+  Build(object, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates normalized storage JSON using explicit canonical property and child-array order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Build(object instance, string domain)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instance</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>domain</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_Build_System_Object_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var search = AuditSearchProjection.Build(action, "Action");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_ComputeHash_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSearchProjection.ComputeHash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_ComputeHash_System_Object_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSearchProjection.ComputeHash(System.Object,System.String)">
+  ComputeHash(object, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Computes the expected projection digest without retaining its expanded JSON text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ComputeHash(object instance, string domain)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instance</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>domain</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_ComputeHash_System_Object_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var expected = AuditSearchProjection.ComputeHash(original, "Record");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_HashStoredAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSearchProjection.HashStoredAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_HashStoredAsync_System_IO_TextReader_System_Int64_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSearchProjection.HashStoredAsync(System.IO.TextReader,System.Int64,System.Threading.CancellationToken)">
+  HashStoredAsync(TextReader, long, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Hashes actual database projection text through bounded buffers, rejecting oversized or non-ASCII text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;string&gt; HashStoredAsync(TextReader reader, long maximumBytes, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>reader</code> <span class="xref">TextReader</span></dt>
+    <dd></dd>
+    <dt><code>maximumBytes</code> <span class="xref">long</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_HashStoredAsync_System_IO_TextReader_System_Int64_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var actual = await AuditSearchProjection.HashStoredAsync(reader, maximumBytes, cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_HashStoredAsync_System_IO_TextReader_System_Int64_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The result is computed from the read stream, never taken from an editable stored plain checksum.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_IsConsistent_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSearchProjection.IsConsistent*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_IsConsistent_System_String_System_Object_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSearchProjection.IsConsistent(System.String,System.Object,System.String)">
+  IsConsistent(string, object, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks a retained in-memory projection against source facts while allowing missing additive members.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsConsistent(string json, object original, string domain)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>json</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>original</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>domain</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditSearchProjection_IsConsistent_System_String_System_Object_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var valid = AuditSearchProjection.IsConsistent(searchJson, original, "Record");</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -998,6 +998,54 @@ Class ServiceBusQueueBrokerService
 
 
 
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerService_SearchMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerService.SearchMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerService_SearchMessagesAsync_BridgingIT_DevKit_Common_FilterModel_System_Nullable_System_Boolean__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerService.SearchMessagesAsync(BridgingIT.DevKit.Common.FilterModel,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+  SearchMessagesAsync(FilterModel, bool?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Searches retained queue message summaries with filtering, ordering, and paging.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;QueueMessageInfo&gt;&gt; SearchMessagesAsync(FilterModel filter, bool? isArchived = false, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd><p>The search criteria. Paging defaults to page 1 and 50 items, with a maximum of 1000.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>The archive scope. Use null to search active and archived messages.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageInfo.html">QueueMessageInfo</a>&gt;&gt;</dt>
+    <dd><p>A page of matching message summaries and the total match count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerService_SearchMessagesAsync_BridgingIT_DevKit_Common_FilterModel_System_Nullable_System_Boolean__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await service.SearchMessagesAsync(new FilterModel { Page = 2, PageSize = 25 });</code></pre>
+
+
+
+
+
+
 
 </article>
 

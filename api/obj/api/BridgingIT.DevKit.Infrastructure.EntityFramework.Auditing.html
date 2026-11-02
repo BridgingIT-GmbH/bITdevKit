@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing | bITdevKit API Reference ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing">
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing" class="text-break">Namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.html">AuditActionEntity</a></dt>
+      <dd><p>Owns one immutable action occurrence with scalar copies and lossless JSON.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditBackgroundStartup.html">AuditBackgroundStartup</a></dt>
+      <dd><p>Coordinates audit background work with application startup, a finite delay, and optional host database readiness.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditEntityChangeEntity.html">AuditEntityChangeEntity</a></dt>
+      <dd><p>Owns one original optional source evidence group without depending on ChangeHistory tables.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditEntityFrameworkOptions.html">AuditEntityFrameworkOptions</a></dt>
+      <dd><p>Finite persistence and writer budgets for the selected EF audit provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditEntityFrameworkOptionsBuilder.html">AuditEntityFrameworkOptionsBuilder</a></dt>
+      <dd><p>Selects buffered defaults or explicit inline durability with finite writer overrides.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditEntityFrameworkReadinessService-1.html">AuditEntityFrameworkReadinessService&lt;TContext&gt;</a></dt>
+      <dd><p>Validates schema/control state after optional host database readiness, without creating tables or changing providers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditEntityFrameworkUnitOfWork-1.html">AuditEntityFrameworkUnitOfWork&lt;TContext&gt;</a></dt>
+      <dd><p>Creates independent suppressed EF scopes and preserves uncertain commit outcomes explicitly.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditEntityMapper.html">AuditEntityMapper</a></dt>
+      <dd><p>Splits and reassembles original versioned JSON without replacing retained facts with current DTO serialization.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditGraphReader.html">AuditGraphReader</a></dt>
+      <dd><p>Reads bounded original graphs while hashing expanded normalized copies through small streaming buffers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditQuerySql.html">AuditQuerySql</a></dt>
+      <dd><p>Translates only catalog-validated immutable predicates into parameterized relational and JSON expressions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditRecordEntity.html">AuditRecordEntity</a></dt>
+      <dd><p>Owns one immutable logical header and provider lifecycle/publication metadata.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSearchEncoding.html">AuditSearchEncoding</a></dt>
+      <dd><p>Produces explicit ordinal text and exact decimal search keys independent of database collation or floating point.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSearchProjection.html">AuditSearchProjection</a></dt>
+      <dd><p>Builds and streams version-two search projections while retaining version-one verification support.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSqlDialect.html">AuditSqlDialect</a></dt>
+      <dd><p>Resolves trusted EF relational names and provider parameters behind the single audit storage contract.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSqlField.html">AuditSqlField</a></dt>
+      <dd><p>Trusted SQL expressions for one catalog field; these are never sent to clients.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditStoreSession.html">AuditStoreSession</a></dt>
+      <dd><p>Holds the database-scoped publication gate through the whole owned audit transaction.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditStoreStateEntity.html">AuditStoreStateEntity</a></dt>
+      <dd><p>Single durable technical control row retained after all captured records are removed.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditStoreStateEntity.Configuration.html">AuditStoreStateEntity.Configuration</a></dt>
+      <dd><p>Owns the singleton database constraint, applied automatically when the entity is included in a client model.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditSummarySql.html">AuditSummarySql</a></dt>
+      <dd><p>Limits ordinary search projections to bounded scalar/actor copies, excluding source and search JSON payloads.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditWriteBackgroundService-1.html">AuditWriteBackgroundService&lt;TContext&gt;</a></dt>
+      <dd><p>Owns the detached writer task and drains it only after all hosted producer stop calls have completed.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditWriteQueue.html">AuditWriteQueue</a></dt>
+      <dd><p>Bounds finalized queued and in-flight documents, preserving FIFO receipts through finite delivery attempts.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.EntityFrameworkAuditStorageProvider-1.html">EntityFrameworkAuditStorageProvider&lt;TContext&gt;</a></dt>
+      <dd><p>Reads fixed committed windows in publication order with bounded graph/byte transfer and durable gap checks.</p>
+</dd>
+    </dl>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.IAuditingDbContext.html">IAuditingDbContext</a></dt>
+      <dd><p>Exposes audit-owned sets directly without repository, Active Entity or ChangeHistory requirements.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditStorageState.html">AuditStorageState</a></dt>
+      <dd><p>Provider-owned indexed lifecycle membership outside the captured logical document.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

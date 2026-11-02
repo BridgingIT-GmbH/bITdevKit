@@ -98,7 +98,7 @@ Class DocumentStoreTimeoutError
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class DocumentStoreTimeoutError : StorageError, IResultError</code></pre>
+    <pre><code class="lang-csharp hljs">public class DocumentStoreTimeoutError : StorageError, ITransientStorageError, IResultError</code></pre>
   </div>
 
 
@@ -117,6 +117,7 @@ Class DocumentStoreTimeoutError
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.ITransientStorageError.html">ITransientStorageError</a></div>
       <div><a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></div>
     </dd>
   </dl>
@@ -271,6 +272,9 @@ Class DocumentStoreTimeoutError
   </dd></dl>
 
 
+  <h2 id="BridgingIT_DevKit_Common_DocumentStoreTimeoutError_examples">Examples</h2>
+  <pre><code class="lang-csharp">var error = new DocumentStoreTimeoutError("Operation deadline exceeded.");</code></pre>
+
 
 
 
@@ -305,7 +309,52 @@ Class DocumentStoreTimeoutError
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_DocumentStoreTimeoutError__ctor_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var error = new DocumentStoreTimeoutError("Operation deadline exceeded.");</code></pre>
 
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_DocumentStoreTimeoutError_IsTransient_" data-uid="BridgingIT.DevKit.Common.DocumentStoreTimeoutError.IsTransient*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DocumentStoreTimeoutError_IsTransient" data-uid="BridgingIT.DevKit.Common.DocumentStoreTimeoutError.IsTransient">
+  IsTransient
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether this timeout is known to permit a safe retry. General operation deadlines default to false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsTransient { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DocumentStoreTimeoutError_IsTransient_examples">Examples</h4>
+  <pre><code class="lang-csharp">var error = new DocumentStoreTimeoutError("Lock acquisition timed out.") { IsTransient = true };</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DocumentStoreTimeoutError_IsTransient_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Set true only for a known transient failure, such as contention before publication. Uncertain mutations must use an indeterminate-operation error.</p>
+</div>
 
 
 

@@ -1006,6 +1006,96 @@ Interface IJobSchedulerQueryService
 
 
 
+  <a id="BridgingIT_DevKit_Application_Jobs_IJobSchedulerQueryService_SearchAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.IJobSchedulerQueryService.SearchAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_IJobSchedulerQueryService_SearchAsync_BridgingIT_DevKit_Common_FilterModel_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.IJobSchedulerQueryService.SearchAsync(BridgingIT.DevKit.Common.FilterModel,System.Threading.CancellationToken)">
+  SearchAsync(FilterModel, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Searches registered jobs and their operational state with filtering, ordering, and paging.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;ResultPaged&lt;JobSchedulerJobModel&gt;&gt; SearchAsync(FilterModel filter, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd><p>The filter model. Paging defaults to page 1 and 50 items.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerJobModel.html">JobSchedulerJobModel</a>&gt;&gt;</dt>
+    <dd><p>The matching page and total count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_IJobSchedulerQueryService_SearchAsync_BridgingIT_DevKit_Common_FilterModel_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var jobs = await queries.SearchAsync(new FilterModel { PageSize = 25 });</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_IJobSchedulerQueryService_SearchOccurrencesAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.IJobSchedulerQueryService.SearchOccurrencesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_IJobSchedulerQueryService_SearchOccurrencesAsync_BridgingIT_DevKit_Common_FilterModel_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.IJobSchedulerQueryService.SearchOccurrencesAsync(BridgingIT.DevKit.Common.FilterModel,System.Threading.CancellationToken)">
+  SearchOccurrencesAsync(FilterModel, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Searches persisted occurrences with filtering, ordering, and paging.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;ResultPaged&lt;JobSchedulerOccurrenceModel&gt;&gt; SearchOccurrencesAsync(FilterModel filter, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd><p>The filter model.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerOccurrenceModel.html">JobSchedulerOccurrenceModel</a>&gt;&gt;</dt>
+    <dd><p>The matching page and total count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_IJobSchedulerQueryService_SearchOccurrencesAsync_BridgingIT_DevKit_Common_FilterModel_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var occurrences = await queries.SearchOccurrencesAsync(new FilterModel { PageSize = 25 });</code></pre>
+
+
+
+
+
+
 
 </article>
 

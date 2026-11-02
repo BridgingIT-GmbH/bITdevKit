@@ -16,7 +16,7 @@
         <link rel="prev" href="../features-presentation-logging/">
       
       
-        <link rel="next" href="../features-cli/">
+        <link rel="next" href="../features-presentation-streaming/">
       
       
         
@@ -1891,6 +1891,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-application-auditing/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="auditing" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5H7a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4" /><rect x="11" y="3" width="10" height="4" rx="1" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14v9h8M11 17h8" /><circle cx="11" cy="12" r="2" /><circle cx="21" cy="17" r="2" /><circle cx="21" cy="23" r="2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Auditing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-application-dataporter/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="dataporter" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="3" width="12" height="26" rx="2" /><path d="M10 10h12M10 22h12" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16h9m-4-4 4 4-4 4M22 16h8m-4-4 4 4-4 4" /></g></svg></span>
         
   
@@ -2968,10 +2996,49 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#ndjson-streaming-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NDJSON streaming endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-streaming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Streaming
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -3472,6 +3539,90 @@
     
   
     FileStorage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-filesystem-providers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filesystem storage providers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-filesystem-qualification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filesystem deployment qualification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-load-testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage dashboard throughput tests
   
 
     
@@ -4921,6 +5072,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#ndjson-streaming-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NDJSON streaming endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -5068,6 +5230,7 @@
 </li>
 </ul>
 </li>
+<li><a href="#ndjson-streaming-endpoints">NDJSON streaming endpoints</a></li>
 </ul>
 </li>
 </ul>
@@ -5235,7 +5398,7 @@
   participant Ext as MapEndpoints()
   participant Ep as IEndpoints
 
-  Module-&gt;&gt;DI: AddEndpoints&lt;CoreTodoItemEndpoints&gt;()
+  Module-&gt;&gt;DI: AddEndpoints&lt;InventoryEndpoints&gt;()
   Module-&gt;&gt;DI: AddEndpoints&lt;CoreEnumerationEndpoints&gt;()
   Note over DI: Endpoints registered as IEndpoints (Singleton)
   Module-&gt;&gt;App: build/start app
@@ -5247,7 +5410,7 @@
 <h3 id="di-registration">DI registration<a class="headerlink" href="#di-registration" title="Permanent link">&para;</a></h3>
 <p>Register endpoints explicitly by type, by instance, or via assembly scanning. Type-based registrations are added as singleton <code>IEndpoints</code> services.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Per type</span>
-<span class="n">services</span><span class="p">.</span><span class="n">AddEndpoints</span><span class="o">&lt;</span><span class="n">CoreTodoItemEndpoints</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">services</span><span class="p">.</span><span class="n">AddEndpoints</span><span class="o">&lt;</span><span class="n">InventoryEndpoints</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="n">services</span><span class="p">.</span><span class="n">AddEndpoints</span><span class="o">&lt;</span><span class="n">CoreEnumerationEndpoints</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="c1">// Or register all endpoint classes from assemblies</span>
@@ -5519,6 +5682,8 @@
 <li>Generic <code>Map</code> overloads return typed <code>Results&lt;...&gt;</code> unions suitable for Minimal API signatures and OpenAPI.</li>
 <li>All helpers accept an optional <code>ILogger</code> to enrich error logging without changing the HTTP shape.</li>
 </ul>
+<h2 id="ndjson-streaming-endpoints">NDJSON streaming endpoints<a class="headerlink" href="#ndjson-streaming-endpoints" title="Permanent link">&para;</a></h2>
+<p>Use <code>AddNdjsonStreaming</code>, <code>NdjsonHttpResult.From</code>, and <code>.WithNdjson&lt;T&gt;()</code> on dedicated streaming URLs. Raw DTO output is the default; optional version 1 envelopes add heartbeat and completion. <code>MapHttpNdjson</code> maps prepared Results while preserving ordinary admission failures. See <a href="../features-presentation-streaming/">Presentation Streaming</a> for server/client setup and hosting requirements.</p>
 
 
 

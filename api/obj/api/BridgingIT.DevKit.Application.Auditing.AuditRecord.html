@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class AuditRecord | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class AuditRecord | bITdevKit API Reference ">
+      
+      <meta name="description" content="A finalized immutable logical audit document, independent of storage lifecycle and delivery state.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Auditing_AuditRecord" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord" class="text-break">
+Class AuditRecord  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Auditing.html">Auditing</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Auditing.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A finalized immutable logical audit document, independent of storage lifecycle and delivery state.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed record AuditRecord</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">AuditRecord</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureTableEntityConverter.html#BridgingIT_DevKit_Infrastructure_Azure_AzureTableEntityConverter_ToTableEntity__1___0_System_String_System_String_System_Text_Json_JsonSerializerOptions_BridgingIT_DevKit_Infrastructure_Azure_PropertyConverters___0__">AzureTableEntityConverter.ToTableEntity&lt;T&gt;(T, string, string, JsonSerializerOptions, PropertyConverters&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_examples">Examples</h2>
+  <pre><code class="lang-csharp">var value = new AuditRecord();</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord__ctor_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord__ctor" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.#ctor">
+  AuditRecord()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AuditRecord()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Actions_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Actions*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Actions" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Actions">
+  Actions
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retained immutable action occurrences.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ImmutableArray&lt;AuditAction&gt; Actions { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ImmutableArray</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditAction.html">AuditAction</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Actions_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.Actions;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Actor_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Actor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Actor" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Actor">
+  Actor
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executing actor captured before queued persistence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AuditActor Actor { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditActor.html">AuditActor</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Actor_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.Actor;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Application_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Application*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Application" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Application">
+  Application
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Source application identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Application { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Application_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.Application;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_AuditId_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.AuditId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_AuditId" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.AuditId">
+  AuditId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stable execution identity assigned before admission.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid AuditId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_AuditId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.AuditId;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_CausationActionId_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.CausationActionId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_CausationActionId" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.CausationActionId">
+  CausationActionId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Immediate initiating action identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid? CausationActionId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_CausationActionId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.CausationActionId;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_CausationAuditId_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.CausationAuditId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_CausationAuditId" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.CausationAuditId">
+  CausationAuditId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Immediate initiating execution identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid? CausationAuditId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_CausationAuditId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.CausationAuditId;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_CompletedUtc_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.CompletedUtc*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_CompletedUtc" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.CompletedUtc">
+  CompletedUtc
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>UTC execution completion.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset CompletedUtc { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_CompletedUtc_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.CompletedUtc;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Completeness_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Completeness*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Completeness" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Completeness">
+  Completeness
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Completeness of admitted instrumentation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AuditCompleteness Completeness { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.AuditCompleteness.html">AuditCompleteness</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Completeness_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.Completeness;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_ContentHash_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.ContentHash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_ContentHash" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.ContentHash">
+  ContentHash
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>SHA-256 identity of the complete canonical immutable document.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ContentHash { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_ContentHash_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.ContentHash;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_CorrelationId_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.CorrelationId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_CorrelationId" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.CorrelationId">
+  CorrelationId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Original application correlation identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string CorrelationId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_CorrelationId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.CorrelationId;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Details_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Details*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Details" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Details">
+  Details
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Frozen root details.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ImmutableDictionary&lt;string, AuditValue&gt; Details { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ImmutableDictionary</span>&lt;<span class="xref">string</span>, <a class="xref" href="BridgingIT.DevKit.Common.AuditValue.html">AuditValue</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Details_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.Details;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_DisplayName_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.DisplayName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_DisplayName" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.DisplayName">
+  DisplayName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Frozen business label.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string DisplayName { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_DisplayName_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.DisplayName;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_EntityChanges_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.EntityChanges*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_EntityChanges" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.EntityChanges">
+  EntityChanges
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retained optional source change evidence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ImmutableArray&lt;AuditChangeEvidence&gt; EntityChanges { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ImmutableArray</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditChangeEvidence.html">AuditChangeEvidence</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_EntityChanges_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.EntityChanges;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Errors_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Errors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Errors" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Errors">
+  Errors
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Safe root exception references.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ImmutableArray&lt;AuditSafeError&gt; Errors { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ImmutableArray</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditSafeError.html">AuditSafeError</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Errors_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.Errors;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_FailedActionCount_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.FailedActionCount*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_FailedActionCount" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.FailedActionCount">
+  FailedActionCount
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retained actions whose observed final outcome failed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long FailedActionCount { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_FailedActionCount_examples">Examples</h4>
+  <pre><code class="lang-csharp">var failed = snapshot.FailedActionCount;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_FlowId_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.FlowId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_FlowId" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.FlowId">
+  FlowId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Optional opaque source flow identity, distinct from correlation and causation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string FlowId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_FlowId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var flow = snapshot.FlowId;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_HasFailedActions_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.HasFailedActions*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_HasFailedActions" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.HasFailedActions">
+  HasFailedActions
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether captured action failures occurred without replacing the root outcome.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasFailedActions { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_HasFailedActions_examples">Examples</h4>
+  <pre><code class="lang-csharp">var failed = snapshot.HasFailedActions;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Http_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Http*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Http" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Http">
+  Http
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Optional HTTP boundary metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AuditHttpContext Http { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditHttpContext.html">AuditHttpContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Http_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.Http;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_InitiatingActor_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.InitiatingActor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_InitiatingActor" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.InitiatingActor">
+  InitiatingActor
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Separate trusted initiating actor.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AuditActor InitiatingActor { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditActor.html">AuditActor</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_InitiatingActor_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.InitiatingActor;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_InitiatingModuleName_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.InitiatingModuleName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_InitiatingModuleName" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.InitiatingModuleName">
+  InitiatingModuleName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Trusted initiating module across worker boundaries.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string InitiatingModuleName { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_InitiatingModuleName_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.InitiatingModuleName;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_IntegrityProtection_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.IntegrityProtection*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_IntegrityProtection" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.IntegrityProtection">
+  IntegrityProtection
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Optional source authentication envelope; verification is computed on reads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AuditIntegrityProtection IntegrityProtection { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditIntegrityProtection.html">AuditIntegrityProtection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_IntegrityProtection_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.IntegrityProtection;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_JobExecutionId_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.JobExecutionId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_JobExecutionId" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.JobExecutionId">
+  JobExecutionId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Optional job execution identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string JobExecutionId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_JobExecutionId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.JobExecutionId;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_JobName_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.JobName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_JobName" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.JobName">
+  JobName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captured source job identity when this execution is job-related.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string JobName { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_JobName_examples">Examples</h4>
+  <pre><code class="lang-csharp">var name = snapshot.JobName;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_JobOccurrenceId_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.JobOccurrenceId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_JobOccurrenceId" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.JobOccurrenceId">
+  JobOccurrenceId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Optional trusted job occurrence identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string JobOccurrenceId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_JobOccurrenceId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.JobOccurrenceId;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Key_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Key*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Key" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Key">
+  Key
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Frozen business/source execution key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Key { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Key_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.Key;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Kind_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Kind*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Kind" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Kind">
+  Kind
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Business or source-specific execution kind.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Kind { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Kind_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.Kind;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_ModuleName_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.ModuleName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_ModuleName" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.ModuleName">
+  ModuleName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Entry module, when available.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ModuleName { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_ModuleName_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.ModuleName;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Node_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Node*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Node" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Node">
+  Node
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Source process/node identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Node { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Node_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.Node;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Notes_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Notes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Notes" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Notes">
+  Notes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Safe aggregated capture/completeness notes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ImmutableArray&lt;AuditCaptureNote&gt; Notes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ImmutableArray</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditCaptureNote.html">AuditCaptureNote</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Notes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.Notes;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_OmittedActionCount_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.OmittedActionCount*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_OmittedActionCount" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.OmittedActionCount">
+  OmittedActionCount
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Action occurrences omitted by capture bounds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long OmittedActionCount { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_OmittedActionCount_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.OmittedActionCount;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_OmittedDetailCount_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.OmittedDetailCount*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_OmittedDetailCount" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.OmittedDetailCount">
+  OmittedDetailCount
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projected details omitted by capture bounds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long OmittedDetailCount { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_OmittedDetailCount_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.OmittedDetailCount;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_OriginAuditId_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.OriginAuditId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_OriginAuditId" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.OriginAuditId">
+  OriginAuditId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Identity of the execution that began the causal trail.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid OriginAuditId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_OriginAuditId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.OriginAuditId;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Outcome_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Outcome*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Outcome" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Outcome">
+  Outcome
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Observed root outcome; recovered child failures do not replace it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AuditOutcome Outcome { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.AuditOutcome.html">AuditOutcome</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Outcome_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.Outcome;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Reason_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Reason*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Reason" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Reason">
+  Reason
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Explicit approved business reason.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Reason { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Reason_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.Reason;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_RequestId_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.RequestId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_RequestId" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.RequestId">
+  RequestId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Optional source request identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string RequestId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_RequestId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.RequestId;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Resources_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Resources*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Resources" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Resources">
+  Resources
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Frozen root resources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ImmutableArray&lt;AuditResourceReference&gt; Resources { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ImmutableArray</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.AuditResourceReference.html">AuditResourceReference</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Resources_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.Resources;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_SchemaVersion_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.SchemaVersion*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_SchemaVersion" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.SchemaVersion">
+  SchemaVersion
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captured document schema version.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int SchemaVersion { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_SchemaVersion_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.SchemaVersion;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_StartedUtc_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.StartedUtc*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_StartedUtc" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.StartedUtc">
+  StartedUtc
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>UTC execution start.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset StartedUtc { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_StartedUtc_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.StartedUtc;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_TotalActionCount_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.TotalActionCount*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_TotalActionCount" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.TotalActionCount">
+  TotalActionCount
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>All observed action admission attempts.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long TotalActionCount { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditRecord_TotalActionCount_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = snapshot.TotalActionCount;</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Equals_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Equals*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Equals_BridgingIT_DevKit_Application_Auditing_AuditRecord_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Equals(BridgingIT.DevKit.Application.Auditing.AuditRecord)">
+  Equals(AuditRecord?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(AuditRecord? other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditRecord.html">AuditRecord</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Equals_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Equals*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_Equals_System_Object_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.Equals(System.Object)">
+  Equals(object?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_GetHashCode_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.GetHashCode*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_GetHashCode" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.GetHashCode">
+  GetHashCode()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_ToString_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.ToString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_ToString" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.ToString">
+  ToString()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_op_Equality_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.op_Equality*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_op_Equality_BridgingIT_DevKit_Application_Auditing_AuditRecord_BridgingIT_DevKit_Application_Auditing_AuditRecord_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.op_Equality(BridgingIT.DevKit.Application.Auditing.AuditRecord,BridgingIT.DevKit.Application.Auditing.AuditRecord)">
+  operator ==(AuditRecord?, AuditRecord?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(AuditRecord? left, AuditRecord? right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditRecord.html">AuditRecord</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditRecord.html">AuditRecord</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditRecord_op_Inequality_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.op_Inequality*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditRecord_op_Inequality_BridgingIT_DevKit_Application_Auditing_AuditRecord_BridgingIT_DevKit_Application_Auditing_AuditRecord_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditRecord.op_Inequality(BridgingIT.DevKit.Application.Auditing.AuditRecord,BridgingIT.DevKit.Application.Auditing.AuditRecord)">
+  operator !=(AuditRecord?, AuditRecord?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(AuditRecord? left, AuditRecord? right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditRecord.html">AuditRecord</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditRecord.html">AuditRecord</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

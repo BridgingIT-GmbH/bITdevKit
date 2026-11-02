@@ -91,6 +91,26 @@
 Classes
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.AuditingBlobStoreClientBehavior.html">AuditingBlobStoreClientBehavior</a></dt>
+      <dd><p>Audits selected blob-client operations without copying blob names, queries, signed URLs, properties, or stream contents.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.AuditingDocumentStoreClientBehavior-1.html">AuditingDocumentStoreClientBehavior&lt;T&gt;</a></dt>
+      <dd><p>Audits selected typed document-client calls without copying document keys, queries, properties, or values.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.AuditingFileProcessingBehavior.html">AuditingFileProcessingBehavior</a></dt>
+      <dd><p>Records finite selected scans, event roots and processor children, including caught processor failures.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.AuditingFileStorageBehavior.html">AuditingFileStorageBehavior</a></dt>
+      <dd><p>Audits selected file-provider calls using only configured location and operation identity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BaseFileStorageProvider.html">BaseFileStorageProvider</a></dt>
       <dd><p>Provides a base implementation of IFileStorageProvider with default Result-based methods,
 translating exceptions into typed IResultError instances or ExceptionError for unhandled errors.
@@ -105,6 +125,16 @@ Intended for inheritance by concrete providers, ensuring testability and consist
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobBytesContent.html">BlobBytesContent</a></dt>
       <dd><p>Represents downloaded byte content and its blob metadata.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobBytesDownloadManyItem.html">BlobBytesDownloadManyItem</a></dt>
+      <dd><p>Represents the outcome of downloading a single blob as part of a bulk byte-array download.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobBytesDownloadManyOptions.html">BlobBytesDownloadManyOptions</a></dt>
+      <dd><p>Configures a bulk byte-array blob download.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -175,6 +205,13 @@ Intended for inheritance by concrete providers, ensuring testability and consist
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDownload.html">BlobDownload</a></dt>
       <dd><p>Represents a downloaded blob stream and its provider-neutral metadata.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDownloadBatchScope.html">BlobDownloadBatchScope</a></dt>
+      <dd><p>Carries the key set of a bulk download to the innermost provider call, so a provider that implements
+<a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreBatchDownloadProvider.html">IBlobStoreBatchDownloadProvider</a> can read the keys in batches while each key still
+travels through the complete client behavior pipeline on its own.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -395,6 +432,11 @@ Intended for inheritance by concrete providers, ensuring testability and consist
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobStoreConflictError.html">BlobStoreConflictError</a></dt>
       <dd><p>Represents a blob operation conflict.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobStoreIndeterminateOperationError.html">BlobStoreIndeterminateOperationError</a></dt>
+      <dd><p>Reports an uncertain blob mutation that must be reconciled before replay.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -966,6 +1008,11 @@ Supports properties like path, size, and last modification time.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringAuditOptions.html">FileMonitoringAuditOptions</a></dt>
+      <dd><p>Configures local capture without copying paths, checksums, file contents, or arbitrary properties.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilder.html">FileMonitoringBuilder</a></dt>
       <dd><p>Fluent builder for configuring the FileMonitoring system.
 Provides core methods; location-specific configurations are added via extensions.</p>
@@ -1010,6 +1057,11 @@ Manages LocationHandler instances, coordinates global behaviors, and provides co
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProcessingContext.html">FileProcessingContext</a></dt>
       <dd><p>Represents the context for processing a FileEvent, passed through the processor chain.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProcessingExecutionContext.html">FileProcessingExecutionContext</a></dt>
+      <dd><p>Contains safe source identities and observed state, independently of the file-event payload.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -1137,16 +1189,6 @@ Maintains a dictionary of files and a hash set of directories, ensuring thread-s
 </dd>
     </dl>
     <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.html">LocalFileStorageProvider</a></dt>
-      <dd><p>A thread-safe local file system implementation of IFileStorageProvider for file operations on disk.</p>
-</dd>
-    </dl>
-    <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LocalLocationHandler.html">LocalLocationHandler</a></dt>
-      <dd><p>Represents local location handler.</p>
-</dd>
-    </dl>
-    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LocationHandlerBase.html">LocationHandlerBase</a></dt>
       <dd><p>Manages file change detection and event processing for a specific storage location.
 Integrates real-time watching, on-demand scanning, and a processor chain with rate limiting.</p>
@@ -1206,7 +1248,7 @@ Uses structured logging with TypedLogger for consistent formatting, similar to R
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior-1.html">MetricsDocumentStoreClientBehavior&lt;T&gt;</a></dt>
-      <dd><p>Emits low-cardinality operation counts and durations.</p>
+      <dd><p>Emits low-cardinality operation counts, durations, failures, bytes, and transfer rates for every document operation.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -1299,6 +1341,16 @@ Uses structured logging with TypedLogger for consistent formatting, similar to R
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.ServiceCollectionExtensions.html">ServiceCollectionExtensions</a></dt>
       <dd><p>Provides extension methods for IServiceCollection to configure the FileMonitoring system.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageAuditBehaviorExecutor.html">StorageAuditBehaviorExecutor</a></dt>
+      <dd><p>Owns one selected client call, preserving returned streams and lazy collections without reading or enumerating them.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageAuditOptions.html">StorageAuditOptions</a></dt>
+      <dd><p>Selects meaningful storage reads and optional host-owned logical resources without default path, key, query, or content capture.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -1504,6 +1556,13 @@ Interfaces
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreBatchDownloadProvider.html">IBlobStoreBatchDownloadProvider</a></dt>
+      <dd><p>Defines an optional provider capability that reads many small blobs with few round trips.
+<code>DownloadBytesManyAsync</code> uses it automatically, while every key still passes through the
+regular client behavior pipeline (compression, encryption, caching, retry and so on).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreClient.html">IBlobStoreClient</a></dt>
       <dd><p>Defines the public Result-native API used by application code to store and query blobs.</p>
 </dd>
@@ -1546,6 +1605,16 @@ Interfaces
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStorageDiagnosticsService.html">IDocumentStorageDiagnosticsService</a></dt>
       <dd><p>Captures non-sensitive registration, capability, limit, and health diagnostics for Document Storage.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreBatchGetProvider.html">IDocumentStoreBatchGetProvider</a></dt>
+      <dd><p>Optional provider capability that reads many serialized documents by exact key with a bounded number of round trips.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreBulkWriteProvider.html">IDocumentStoreBulkWriteProvider</a></dt>
+      <dd><p>Optional provider capability that applies many serialized document writes or deletes with a bounded number of round trips.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -1604,6 +1673,11 @@ Acts as a bridge between the domain layer and persistence layer, abstracting sto
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.html">IFileMonitoringService</a></dt>
       <dd><p>Defines the contract for the FileMonitoringService, which orchestrates file monitoring across multiple locations.
 Provides methods for starting, stopping, scanning, and managing the monitoring process, along with events for external integration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileProcessingExecutionBehavior.html">IFileProcessingExecutionBehavior</a></dt>
+      <dd><p>Wraps a complete explicit scan, accepted event, or actual processor invocation.</p>
 </dd>
     </dl>
     <dl class="jumplist">

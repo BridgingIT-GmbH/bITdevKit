@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class FileSystemDocumentStoreProvider | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class FileSystemDocumentStoreProvider | bITdevKit API Reference ">
+      
+      <meta name="description" content="Persists serialized documents and metadata in provider-owned generation files.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider" class="text-break">
+Class FileSystemDocumentStoreProvider  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.html">FileSystem</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.FileSystem.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Persists serialized documents and metadata in provider-owned generation files.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class FileSystemDocumentStoreProvider : IDocumentStoreProvider, IDocumentStoreRetentionProvider</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">FileSystemDocumentStoreProvider</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider.html">IDocumentStoreProvider</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreRetentionProvider.html">IDocumentStoreRetentionProvider</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_examples">Examples</h2>
+  <pre><code class="lang-csharp">var provider = new FileSystemDocumentStoreProvider(options);</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider__ctor_BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemStorageOptions_BridgingIT_DevKit_Application_Storage_DocumentStoreOptions_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.#ctor(BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemStorageOptions,BridgingIT.DevKit.Application.Storage.DocumentStoreOptions)">
+  FileSystemDocumentStoreProvider(FileSystemStorageOptions, DocumentStoreOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filesystem document provider.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FileSystemDocumentStoreProvider(FileSystemStorageOptions options, DocumentStoreOptions documentStoreOptions = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemStorageOptions.html">FileSystemStorageOptions</a></dt>
+    <dd></dd>
+    <dt><code>documentStoreOptions</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.html">DocumentStoreOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider__ctor_BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemStorageOptions_BridgingIT_DevKit_Application_Storage_DocumentStoreOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new FileSystemDocumentStoreProvider(options);</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_Capabilities_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.Capabilities*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_Capabilities" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.Capabilities">
+  Capabilities
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the immutable capabilities used for validation, query planning, diagnostics, and dashboard presentation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DocumentStoreProviderCapabilities Capabilities { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.html">DocumentStoreProviderCapabilities</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_Capabilities_examples">Examples</h4>
+  <pre><code class="lang-csharp">var supportsEtags = provider.Capabilities.SupportsConditionalWrite;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_Store_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.Store*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_Store" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.Store">
+  Store
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the low-level store for trusted diagnostics, ownership-aware tooling and explicit quiescent recovery.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FileSystemStore Store { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemStore.html">FileSystemStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_Store_examples">Examples</h4>
+  <pre><code class="lang-csharp">var configuration = provider.Store.Options;</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_Store_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Ordinary document operations should use the provider or client methods. Low-level mutations require the store's ownership and persistence protocol.</p>
+</div>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_CountAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.CountAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_CountAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentCountQuery_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.CountAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,BridgingIT.DevKit.Application.Storage.DocumentCountQuery,System.DateTimeOffset,System.Threading.CancellationToken)">
+  CountAsync(DocumentTypeIdentity, DocumentCountQuery, DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Counts matching documents that are logically visible at the supplied cutoff.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;long&gt;&gt; CountAsync(DocumentTypeIdentity type, DocumentCountQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd><p>The stable persisted namespace for the application document type.</p>
+</dd>
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentCountQuery.html">DocumentCountQuery</a></dt>
+    <dd><p>The validated count query and key-filter semantics.</p>
+</dd>
+    <dt><code>visibilityCutoff</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd><p>The UTC instant used to exclude due documents.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel provider I/O.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A result containing the number of matching visible documents.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_CountAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentCountQuery_System_DateTimeOffset_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var count = await provider.CountAsync(type, query, cutoff, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_DeleteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.DeleteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_DeleteAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_DocumentDeleteOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.DeleteAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,BridgingIT.DevKit.Application.Storage.DocumentKey,BridgingIT.DevKit.Application.Storage.DocumentDeleteOptions,System.Threading.CancellationToken)">
+  DeleteAsync(DocumentTypeIdentity, DocumentKey, DocumentDeleteOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes one physical document by exact key, optionally guarded by its current ETag.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&gt; DeleteAsync(DocumentTypeIdentity type, DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd><p>The stable persisted namespace for the application document type.</p>
+</dd>
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+    <dd><p>The exact partition and row key identifying the physical record.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDeleteOptions.html">DocumentDeleteOptions</a></dt>
+    <dd><p>Optional conditional-delete settings.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel provider I/O.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A successful result when deletion completes or the record is already absent. An ETag mismatch produces a conflict
+failure and leaves the current record unchanged.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_DeleteAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_DocumentDeleteOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.DeleteAsync(type, key, options, cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_DeleteAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_DocumentDeleteOptions_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Deletion addresses physical records and can therefore remove an expired document hidden from logical reads.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_ExistsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.ExistsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_ExistsAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentKey_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.ExistsAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,BridgingIT.DevKit.Application.Storage.DocumentKey,System.DateTimeOffset,System.Threading.CancellationToken)">
+  ExistsAsync(DocumentTypeIdentity, DocumentKey, DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether an exact-key document exists and is logically visible at the supplied cutoff.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;bool&gt;&gt; ExistsAsync(DocumentTypeIdentity type, DocumentKey key, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd><p>The stable persisted namespace for the application document type.</p>
+</dd>
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+    <dd><p>The exact partition and row key identifying the document.</p>
+</dd>
+    <dt><code>visibilityCutoff</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd><p>The UTC instant used to exclude due documents.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel provider I/O.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>A result containing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> only when a non-expired document is present; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_ExistsAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentKey_System_DateTimeOffset_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var exists = await provider.ExistsAsync(type, key, cutoff, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_FindPageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.FindPageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_FindPageAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.FindPageAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,BridgingIT.DevKit.Application.Storage.DocumentQuery,System.DateTimeOffset,System.Threading.CancellationToken)">
+  FindPageAsync(DocumentTypeIdentity, DocumentQuery, DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets one bounded, deterministically ordered page of serialized documents visible at the supplied cutoff.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;StoredDocumentPage&gt;&gt; FindPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd><p>The stable persisted namespace for the application document type.</p>
+</dd>
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQuery.html">DocumentQuery</a></dt>
+    <dd><p>The validated query containing key filters, page size, and provider-native continuation state.</p>
+</dd>
+    <dt><code>visibilityCutoff</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd><p>The fixed UTC visibility instant established for the page sequence. Providers must apply the same cutoff to all
+continuation pages.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel provider I/O.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.StoredDocumentPage.html">StoredDocumentPage</a>&gt;&gt;</dt>
+    <dd><p>A result containing copied serialized records and opaque provider-native continuation state when more results exist.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_FindPageAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_DateTimeOffset_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await provider.FindPageAsync(type, query, cutoff, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_GetAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.GetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_GetAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentKey_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.GetAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,BridgingIT.DevKit.Application.Storage.DocumentKey,System.DateTimeOffset,System.Threading.CancellationToken)">
+  GetAsync(DocumentTypeIdentity, DocumentKey, DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets one serialized document by exact key when it is logically visible at the supplied cutoff.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;StoredDocument&gt;&gt; GetAsync(DocumentTypeIdentity type, DocumentKey key, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd><p>The stable persisted namespace for the application document type.</p>
+</dd>
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+    <dd><p>The exact partition and row key identifying the document.</p>
+</dd>
+    <dt><code>visibilityCutoff</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd><p>The UTC instant used to exclude documents whose expiration is due.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel provider I/O.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.StoredDocument.html">StoredDocument</a>&gt;&gt;</dt>
+    <dd><p>A result containing copied stored bytes and metadata. Missing and logically expired documents produce a not-found
+failure even when an expired physical record remains awaiting retention.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_GetAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentKey_System_DateTimeOffset_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.GetAsync(type, key, visibilityCutoff, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_ListPageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.ListPageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_ListPageAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.ListPageAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,BridgingIT.DevKit.Application.Storage.DocumentQuery,System.DateTimeOffset,System.Threading.CancellationToken)">
+  ListPageAsync(DocumentTypeIdentity, DocumentQuery, DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets one bounded, deterministically ordered page of visible keys without returning payload bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;DocumentKeyPage&gt;&gt; ListPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd><p>The stable persisted namespace for the application document type.</p>
+</dd>
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQuery.html">DocumentQuery</a></dt>
+    <dd><p>The validated query containing key filters, page size, and provider-native continuation state.</p>
+</dd>
+    <dt><code>visibilityCutoff</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd><p>The fixed UTC visibility instant for the page sequence.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel provider I/O.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKeyPage.html">DocumentKeyPage</a>&gt;&gt;</dt>
+    <dd><p>A result containing document keys and continuation state when more matching keys exist.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_ListPageAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_DateTimeOffset_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await provider.ListPageAsync(type, query, cutoff, cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_ListPageAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_DateTimeOffset_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Providers advertising <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.html#BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsKeyOnlyProjection">SupportsKeyOnlyProjection</a> should avoid
+reading or materializing payload bytes for this operation.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_SweepExpiredAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.SweepExpiredAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_SweepExpiredAsync_BridgingIT_DevKit_Application_Storage_DocumentRetentionSweepRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.SweepExpiredAsync(BridgingIT.DevKit.Application.Storage.DocumentRetentionSweepRequest,System.Threading.CancellationToken)">
+  SweepExpiredAsync(DocumentRetentionSweepRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes due physical records in bounded, provider-native batches.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;DocumentRetentionSweepResult&gt;&gt; SweepExpiredAsync(DocumentRetentionSweepRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentRetentionSweepRequest.html">DocumentRetentionSweepRequest</a></dt>
+    <dd><p>The validated type namespace, cutoff, batch bounds, and inter-batch delay.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the sweep and any configured batch delay.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentRetentionSweepResult.html">DocumentRetentionSweepResult</a>&gt;&gt;</dt>
+    <dd><p>A result containing deletion progress and whether more due records may remain. Already-deleted records are treated
+as idempotent cleanup rather than failures.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_SweepExpiredAsync_BridgingIT_DevKit_Application_Storage_DocumentRetentionSweepRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.SweepExpiredAsync(request, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_UpdatePropertiesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.UpdatePropertiesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_UpdatePropertiesAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentPropertiesUpdate_System_Nullable_System_DateTimeOffset__System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.UpdatePropertiesAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,BridgingIT.DevKit.Application.Storage.DocumentPropertiesUpdate,System.Nullable{System.DateTimeOffset},System.Boolean,System.Threading.CancellationToken)">
+  UpdatePropertiesAsync(DocumentTypeIdentity, DocumentPropertiesUpdate, DateTimeOffset?, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Atomically updates custom properties and expiration without changing serialized content or its hashes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;DocumentInfo&gt;&gt; UpdatePropertiesAsync(DocumentTypeIdentity type, DocumentPropertiesUpdate update, DateTimeOffset? resolvedExpiresAt, bool preserveExpiration, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd><p>The stable persisted namespace for the application document type.</p>
+</dd>
+    <dt><code>update</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentPropertiesUpdate.html">DocumentPropertiesUpdate</a></dt>
+    <dd><p>The exact key, optional replacement properties, expiration mutation, and ETag condition.</p>
+</dd>
+    <dt><code>resolvedExpiresAt</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>The absolute UTC expiration resolved once by the outer client.</p>
+</dd>
+    <dt><code>preserveExpiration</code> <span class="xref">bool</span></dt>
+    <dd><p>A value indicating whether the current expiration must be retained instead of applying
+<code class="paramref">resolvedExpiresAt</code>.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel provider I/O.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentInfo.html">DocumentInfo</a>&gt;&gt;</dt>
+    <dd><p>A result containing updated metadata while preserving the logical content hash.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_UpdatePropertiesAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentPropertiesUpdate_System_Nullable_System_DateTimeOffset__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var info = await provider.UpdatePropertiesAsync(
+    type,
+    update,
+    resolvedExpiresAt,
+    preserveExpiration,
+    cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_UpdatePropertiesAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentPropertiesUpdate_System_Nullable_System_DateTimeOffset__System_Boolean_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Providers must perform this mutation atomically or compensate a partially applied backend update with a
+non-cancelable restore. Failed compensation is reported as a typed partial-update provider error.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_UpsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.UpsertAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_UpsertAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_StoredDocumentWrite_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemDocumentStoreProvider.UpsertAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,BridgingIT.DevKit.Application.Storage.StoredDocumentWrite,System.Threading.CancellationToken)">
+  UpsertAsync(DocumentTypeIdentity, StoredDocumentWrite, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates or atomically replaces one validated serialized document.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;DocumentInfo&gt;&gt; UpsertAsync(DocumentTypeIdentity type, StoredDocumentWrite write, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd><p>The stable persisted namespace for the application document type.</p>
+</dd>
+    <dt><code>write</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StoredDocumentWrite.html">StoredDocumentWrite</a></dt>
+    <dd><p>The copied stored bytes, logical and stored hashes, transform metadata, properties, resolved expiration, and
+concurrency settings supplied by the outer client.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel provider I/O.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentInfo.html">DocumentInfo</a>&gt;&gt;</dt>
+    <dd><p>A result containing committed metadata. Failed create-only or ETag conditions produce a conflict failure and must
+not expose a partially replaced record.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_UpsertAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_StoredDocumentWrite_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var info = await provider.UpsertAsync(type, write, cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemDocumentStoreProvider_UpsertAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_StoredDocumentWrite_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When <a class="xref" href="BridgingIT.DevKit.Application.Storage.StoredDocumentWrite.html#BridgingIT_DevKit_Application_Storage_StoredDocumentWrite_PreserveExpiration">PreserveExpiration</a> is set, providers preserve the existing expiration on
+replacement and store no expiration on insertion. A physical expired record still participates in create-only and
+ETag conditions until retention deletes it.</p>
+</div>
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

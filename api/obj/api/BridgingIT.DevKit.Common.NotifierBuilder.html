@@ -527,6 +527,46 @@ if they implement <span class="xref">FluentValidation.IValidator&lt;&gt;</span> 
 
 
 
+  <a id="BridgingIT_DevKit_Common_NotifierBuilder_WithAuditing_" data-uid="BridgingIT.DevKit.Common.NotifierBuilder.WithAuditing*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_NotifierBuilder_WithAuditing_System_Func_BridgingIT_DevKit_Common_NotifierAuditOptions_BridgingIT_DevKit_Common_NotifierAuditOptions__" data-uid="BridgingIT.DevKit.Common.NotifierBuilder.WithAuditing(System.Func{BridgingIT.DevKit.Common.NotifierAuditOptions,BridgingIT.DevKit.Common.NotifierAuditOptions})">
+  WithAuditing(Func&lt;NotifierAuditOptions, NotifierAuditOptions&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Selects logical dispatch and actual-handler auditing on this source builder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotifierBuilder WithAuditing(Func&lt;NotifierAuditOptions, NotifierAuditOptions&gt; configure = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>configure</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.NotifierAuditOptions.html">NotifierAuditOptions</a>, <a class="xref" href="BridgingIT.DevKit.Common.NotifierAuditOptions.html">NotifierAuditOptions</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.NotifierBuilder.html">NotifierBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_NotifierBuilder_WithAuditing_System_Func_BridgingIT_DevKit_Common_NotifierAuditOptions_BridgingIT_DevKit_Common_NotifierAuditOptions___examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddNotifier().WithAuditing();</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Common_NotifierBuilder_WithBehavior_" data-uid="BridgingIT.DevKit.Common.NotifierBuilder.WithBehavior*"></a>
 
   <h3 id="BridgingIT_DevKit_Common_NotifierBuilder_WithBehavior_System_Type_" data-uid="BridgingIT.DevKit.Common.NotifierBuilder.WithBehavior(System.Type)">

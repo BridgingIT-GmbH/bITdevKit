@@ -322,6 +322,41 @@ Class ProcessorConfiguration
 
 
 
+  <a id="BridgingIT_DevKit_Application_Storage_ProcessorConfiguration_CaptureAudit_" data-uid="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.CaptureAudit*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_ProcessorConfiguration_CaptureAudit" data-uid="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.CaptureAudit">
+  CaptureAudit
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets an explicit processor audit override, or null to use location/global selection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? CaptureAudit { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_ProcessorConfiguration_CaptureAudit_examples">Examples</h4>
+  <pre><code class="lang-csharp">var selected = processor.CaptureAudit;</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Application_Storage_ProcessorConfiguration_Configure_" data-uid="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.Configure*"></a>
 
   <h3 id="BridgingIT_DevKit_Application_Storage_ProcessorConfiguration_Configure" data-uid="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.Configure">
@@ -389,6 +424,46 @@ custom configuration. The delegate receives the instance as <span class="xref">o
 
   <h2 class="section" id="methods">Methods
 </h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_ProcessorConfiguration_WithAuditing_" data-uid="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.WithAuditing*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_ProcessorConfiguration_WithAuditing_System_Boolean_" data-uid="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.WithAuditing(System.Boolean)">
+  WithAuditing(bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Selects or omits this processor's actual invocation evidence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ProcessorConfiguration WithAuditing(bool enabled = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>enabled</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.html">ProcessorConfiguration</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_ProcessorConfiguration_WithAuditing_System_Boolean__examples">Examples</h4>
+  <pre><code class="lang-csharp">location.UseProcessor&lt;CustomerImportProcessor&gt;().WithAuditing(false);</code></pre>
+
+
+
+
 
 
   <a id="BridgingIT_DevKit_Application_Storage_ProcessorConfiguration_WithBehavior_" data-uid="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.WithBehavior*"></a>

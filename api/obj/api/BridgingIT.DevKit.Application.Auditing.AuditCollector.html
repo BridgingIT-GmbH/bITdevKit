@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class AuditCollector | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class AuditCollector | bITdevKit API Reference ">
+      
+      <meta name="description" content="Collects bounded mutable evidence for one execution before its owner freezes it.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Auditing_AuditCollector" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector" class="text-break">
+Class AuditCollector  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Auditing.html">Auditing</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Auditing.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Collects bounded mutable evidence for one execution before its owner freezes it.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class AuditCollector</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">AuditCollector</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_examples">Examples</h2>
+  <pre><code class="lang-csharp">var collector = new AuditCollector(record, options, TimeProvider.System);</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector__ctor_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector__ctor_BridgingIT_DevKit_Application_Auditing_AuditRecord_BridgingIT_DevKit_Application_Auditing_AuditingOptions_System_TimeProvider_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.#ctor(BridgingIT.DevKit.Application.Auditing.AuditRecord,BridgingIT.DevKit.Application.Auditing.AuditingOptions,System.TimeProvider)">
+  AuditCollector(AuditRecord, AuditingOptions, TimeProvider)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates the configured auditing component with explicit ownership dependencies.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AuditCollector(AuditRecord root, AuditingOptions options, TimeProvider time)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>root</code> <a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditRecord.html">AuditRecord</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditingOptions.html">AuditingOptions</a></dt>
+    <dd></dd>
+    <dt><code>time</code> <span class="xref">TimeProvider</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector__ctor_BridgingIT_DevKit_Application_Auditing_AuditRecord_BridgingIT_DevKit_Application_Auditing_AuditingOptions_System_TimeProvider__examples">Examples</h4>
+  <pre><code class="lang-csharp">var collector = new AuditCollector(record, options, TimeProvider.System);</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_CanCapture_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.CanCapture*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_CanCapture" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.CanCapture">
+  CanCapture
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether collection remains open and within its lifetime.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CanCapture { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_CanCapture_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = collector.CanCapture;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_CollectionClosed_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.CollectionClosed*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_CollectionClosed" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.CollectionClosed">
+  CollectionClosed
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the owner has closed collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CollectionClosed { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_CollectionClosed_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = collector.CollectionClosed;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Id_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Id*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Id" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Id">
+  Id
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The owning execution identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid Id { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Id_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = collector.Id;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Started_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Started*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Started" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Started">
+  Started
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The captured execution start time.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset Started { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Started_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = collector.Started;</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_AddAction_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.AddAction*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_AddAction_BridgingIT_DevKit_Common_AuditScopeOptions_System_Nullable_System_Guid__System_Int32_System_String_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.AddAction(BridgingIT.DevKit.Common.AuditScopeOptions,System.Nullable{System.Guid},System.Int32,System.String)">
+  AddAction(AuditScopeOptions, Guid?, int, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Admits one bounded action occurrence, or returns null on capture limits.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid? AddAction(AuditScopeOptions scope, Guid? parent, int depth, string module)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>scope</code> <a class="xref" href="BridgingIT.DevKit.Common.AuditScopeOptions.html">AuditScopeOptions</a></dt>
+    <dd></dd>
+    <dt><code>parent</code> <span class="xref">Guid</span>?</dt>
+    <dd></dd>
+    <dt><code>depth</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>module</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_AddAction_BridgingIT_DevKit_Common_AuditScopeOptions_System_Nullable_System_Guid__System_Int32_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var actionId = collector.AddAction(options, null, 1, "Customers");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_CaptureLink_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.CaptureLink*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_CaptureLink_System_Nullable_System_Guid__" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.CaptureLink(System.Nullable{System.Guid})">
+  CaptureLink(Guid?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies the live execution's permitted initiating identity and immediate causation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AuditExecutionLink CaptureLink(Guid? action)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <span class="xref">Guid</span>?</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.AuditExecutionLink.html">AuditExecutionLink</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_CaptureLink_System_Nullable_System_Guid___examples">Examples</h4>
+  <pre><code class="lang-csharp">var link = collector.CaptureLink(actionId);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_CaptureNote_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.CaptureNote*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_CaptureNote_System_String_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.CaptureNote(System.String)">
+  CaptureNote(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a bounded safe reason identifier and count.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void CaptureNote(string code)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>code</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_CaptureNote_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">collector.CaptureNote("AuditDetailLimit");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Close_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Close*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Close_System_Nullable_System_Guid__" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Close(System.Nullable{System.Guid})">
+  Close(Guid?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Closes one action or freezes collection for the owning execution.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Close(Guid? action)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <span class="xref">Guid</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Close_System_Nullable_System_Guid___examples">Examples</h4>
+  <pre><code class="lang-csharp">collector.Close(null);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Complete_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Complete*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Complete_System_Nullable_System_Guid__BridgingIT_DevKit_Common_AuditOutcome_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Complete(System.Nullable{System.Guid},BridgingIT.DevKit.Common.AuditOutcome)">
+  Complete(Guid?, AuditOutcome)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implements the audit scope ownership contract.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Complete(Guid? action, AuditOutcome outcome)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <span class="xref">Guid</span>?</dt>
+    <dd></dd>
+    <dt><code>outcome</code> <a class="xref" href="BridgingIT.DevKit.Common.AuditOutcome.html">AuditOutcome</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Complete_System_Nullable_System_Guid__BridgingIT_DevKit_Common_AuditOutcome__examples">Examples</h4>
+  <pre><code class="lang-csharp">scope.Complete();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_ConfirmChange_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.ConfirmChange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_ConfirmChange_System_Guid_System_Collections_Generic_IReadOnlySet_System_String__" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.ConfirmChange(System.Guid,System.Collections.Generic.IReadOnlySet{System.String})">
+  ConfirmChange(Guid, IReadOnlySet&lt;string&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Confirms only rows retained after a source commit, including savepoint membership changes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ConfirmChange(Guid id, IReadOnlySet&lt;string&gt; committedIds)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>committedIds</code> <span class="xref">IReadOnlySet</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_ConfirmChange_System_Guid_System_Collections_Generic_IReadOnlySet_System_String___examples">Examples</h4>
+  <pre><code class="lang-csharp">collector.ConfirmChange(groupId, committedIds);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Detail_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Detail*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Detail_System_Nullable_System_Guid__System_String_BridgingIT_DevKit_Common_AuditValue_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Detail(System.Nullable{System.Guid},System.String,BridgingIT.DevKit.Common.AuditValue)">
+  Detail(Guid?, string, AuditValue)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds one projected detail through the shared capture policy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Detail(Guid? action, string name, AuditValue value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <span class="xref">Guid</span>?</dt>
+    <dd></dd>
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>value</code> <a class="xref" href="BridgingIT.DevKit.Common.AuditValue.html">AuditValue</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Detail_System_Nullable_System_Guid__System_String_BridgingIT_DevKit_Common_AuditValue__examples">Examples</h4>
+  <pre><code class="lang-csharp">collector.Detail(null, "count", AuditValue.From(1L));</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_DiscardChange_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.DiscardChange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_DiscardChange_System_Guid_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.DiscardChange(System.Guid)">
+  DiscardChange(Guid)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases known rolled-back evidence without inventing a persisted change.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void DiscardChange(Guid id)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_DiscardChange_System_Guid__examples">Examples</h4>
+  <pre><code class="lang-csharp">collector.DiscardChange(groupId);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Fail_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Fail*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Fail_System_Nullable_System_Guid__System_Exception_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Fail(System.Nullable{System.Guid},System.Exception)">
+  Fail(Guid?, Exception)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implements the audit scope ownership contract.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Fail(Guid? action, Exception exception)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <span class="xref">Guid</span>?</dt>
+    <dd></dd>
+    <dt><code>exception</code> <span class="xref">Exception</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Fail_System_Nullable_System_Guid__System_Exception__examples">Examples</h4>
+  <pre><code class="lang-csharp">scope.Fail(error);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_RefreshActor_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.RefreshActor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_RefreshActor_BridgingIT_DevKit_Common_ICurrentUserAccessor_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.RefreshActor(BridgingIT.DevKit.Common.ICurrentUserAccessor)">
+  RefreshActor(ICurrentUserAccessor)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Refreshes an initially anonymous HTTP actor without replacing a captured authenticated identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RefreshActor(ICurrentUserAccessor user)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>user</code> <a class="xref" href="BridgingIT.DevKit.Common.ICurrentUserAccessor.html">ICurrentUserAccessor</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_RefreshActor_BridgingIT_DevKit_Common_ICurrentUserAccessor__examples">Examples</h4>
+  <pre><code class="lang-csharp">collector.RefreshActor(currentUser);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_RegisterCompletion_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.RegisterCompletion*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_RegisterCompletion_BridgingIT_DevKit_Application_Auditing_AuditScope_System_Action_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.RegisterCompletion(BridgingIT.DevKit.Application.Auditing.AuditScope,System.Action)">
+  RegisterCompletion(AuditScope, Action)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers bounded completion ownership only while capture is open.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RegisterCompletion(AuditScope scope, Action completing)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>scope</code> <a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditScope.html">AuditScope</a></dt>
+    <dd></dd>
+    <dt><code>completing</code> <span class="xref">Action</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_RegisterCompletion_BridgingIT_DevKit_Application_Auditing_AuditScope_System_Action__examples">Examples</h4>
+  <pre><code class="lang-csharp">collector.RegisterCompletion(scope, () =&gt; { });</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Resource_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Resource*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Resource_System_Nullable_System_Guid__BridgingIT_DevKit_Common_AuditResourceReference_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Resource(System.Nullable{System.Guid},BridgingIT.DevKit.Common.AuditResourceReference)">
+  Resource(Guid?, AuditResourceReference)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a copied business resource reference under capture limits.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Resource(Guid? action, AuditResourceReference resource)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <span class="xref">Guid</span>?</dt>
+    <dd></dd>
+    <dt><code>resource</code> <a class="xref" href="BridgingIT.DevKit.Common.AuditResourceReference.html">AuditResourceReference</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Resource_System_Nullable_System_Guid__BridgingIT_DevKit_Common_AuditResourceReference__examples">Examples</h4>
+  <pre><code class="lang-csharp">collector.Resource(null, resource);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_SetHttp_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.SetHttp*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_SetHttp_BridgingIT_DevKit_Application_Auditing_AuditHttpContext_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.SetHttp(BridgingIT.DevKit.Application.Auditing.AuditHttpContext)">
+  SetHttp(AuditHttpContext)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies bounded HTTP metadata without query strings, headers, or bodies.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetHttp(AuditHttpContext http)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>http</code> <a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditHttpContext.html">AuditHttpContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_SetHttp_BridgingIT_DevKit_Application_Auditing_AuditHttpContext__examples">Examples</h4>
+  <pre><code class="lang-csharp">collector.SetHttp(new() { Method = "POST", Status = 200 });</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Snapshot_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Snapshot*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Snapshot" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Snapshot">
+  Snapshot()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies the current logical document; only closed documents can be finalized.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AuditRecord Snapshot()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditRecord.html">AuditRecord</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Snapshot_examples">Examples</h4>
+  <pre><code class="lang-csharp">var document = collector.Snapshot();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Source_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Source*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Source_System_Nullable_System_Guid__BridgingIT_DevKit_Common_AuditSourceMetadata_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Source(System.Nullable{System.Guid},BridgingIT.DevKit.Common.AuditSourceMetadata)">
+  Source(Guid?, AuditSourceMetadata)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies bounded source scalar identities without accepting business payloads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Source(Guid? action, AuditSourceMetadata metadata)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <span class="xref">Guid</span>?</dt>
+    <dd></dd>
+    <dt><code>metadata</code> <a class="xref" href="BridgingIT.DevKit.Common.AuditSourceMetadata.html">AuditSourceMetadata</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Source_System_Nullable_System_Guid__BridgingIT_DevKit_Common_AuditSourceMetadata__examples">Examples</h4>
+  <pre><code class="lang-csharp">collector.Source(actionId, new() { Feature = "Requester" });</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_StageChange_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.StageChange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_StageChange_System_Nullable_System_Guid__BridgingIT_DevKit_Application_Auditing_AuditChangeEvidence_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.StageChange(System.Nullable{System.Guid},BridgingIT.DevKit.Application.Auditing.AuditChangeEvidence)">
+  StageChange(Guid?, AuditChangeEvidence)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reserves bounded copied source evidence while its transaction outcome is unknown.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AuditChangeHandle StageChange(Guid? action, AuditChangeEvidence evidence)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <span class="xref">Guid</span>?</dt>
+    <dd></dd>
+    <dt><code>evidence</code> <a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditChangeEvidence.html">AuditChangeEvidence</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Auditing.AuditChangeHandle.html">AuditChangeHandle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_StageChange_System_Nullable_System_Guid__BridgingIT_DevKit_Application_Auditing_AuditChangeEvidence__examples">Examples</h4>
+  <pre><code class="lang-csharp">var handle = collector.StageChange(actionId, sourceEvidence);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Stop_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Stop*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Stop_System_String_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Stop(System.String)">
+  Stop(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Atomically stops an open collector; false means it already closed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Stop(string code)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>code</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Stop_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var stopped = collector.Stop("AuditCaptureExpired");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Text_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Text*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Text_System_String_System_Int32_" data-uid="BridgingIT.DevKit.Application.Auditing.AuditCollector.Text(System.String,System.Int32)">
+  Text(string, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Truncates display text on complete UTF-8 rune boundaries.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Text(string value, int maxBytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>maxBytes</code> <span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Auditing_AuditCollector_Text_System_String_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var label = AuditCollector.Text("Customer", 20);</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -2498,6 +2498,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-application-auditing/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="auditing" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5H7a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4" /><rect x="11" y="3" width="10" height="4" rx="1" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14v9h8M11 17h8" /><circle cx="11" cy="12" r="2" /><circle cx="21" cy="17" r="2" /><circle cx="21" cy="23" r="2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Auditing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-application-dataporter/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="dataporter" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="3" width="12" height="26" rx="2" /><path d="M10 10h12M10 22h12" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16h9m-4-4 4 4-4 4M22 16h8m-4-4 4 4-4 4" /></g></svg></span>
         
   
@@ -3210,6 +3238,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-streaming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Streaming
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-cli/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="cli" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /><path d="m8 12 4 4-4 4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20h7M8 2v6" /></g></svg></span>
         
   
@@ -3698,6 +3754,90 @@
     
   
     FileStorage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-filesystem-providers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filesystem storage providers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-filesystem-qualification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filesystem deployment qualification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-load-testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage dashboard throughput tests
   
 
     
@@ -6592,6 +6732,10 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 <td>ChangeHistory services and HTTP endpoint registration for one entity/context pair.</td>
 </tr>
 <tr>
+<td><code>AddChangeHistoryDashboard&lt;TEntity, TContext&gt;(configure, enabled)</code></td>
+<td>Optional dashboard settings override for one entity/context pair, without management REST endpoints.</td>
+</tr>
+<tr>
 <td><code>DbSet&lt;ChangeHistoryEntry&gt; ChangeHistory</code></td>
 <td>Adds the annotated EF Core <code>ChangeHistoryEntry</code> mapping to the DbContext model. Defaults to <code>__ChangeHistory</code>.</td>
 </tr>
@@ -6915,11 +7059,21 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </ul>
 <p>Grouped change-set queries load change-set keys first and then load the rows for the selected page.</p>
 <h2 id="dashboard-guide">Dashboard guide<a class="headerlink" href="#dashboard-guide" title="Permanent link">&para;</a></h2>
-<p>Open Change History at <code>/_bdk/dashboard/change-history</code> with <code>Presentation.Web.EntityFramework</code> and the <a href="../features-presentation-dashboard/">Dashboard</a> enabled. Register <code>AddChangeHistoryEndpoints&lt;TEntity, TContext&gt;(...)</code> for each entity/context pair you want to inspect. The Registration selector comes from those endpoint descriptors; registering capture services alone does not populate it.</p>
-<p>Choose a registration and apply entity, property, operation, capture, change-set, user or date filters. Change Sets groups related audit rows. Rows shows individual property changes. Select a change set to inspect its details and the restore controls. Read and restore permissions follow the selected endpoint registration, and displayed values depend on its <code>IncludeValues</code> option.</p>
+<p>Open Change History at <code>/_bdk/dashboard/change-history</code> with <code>Presentation.Web.EntityFramework</code> and the <a href="../features-presentation-dashboard/">Dashboard</a> enabled. The dashboard automatically discovers entities configured through <code>AddChangeHistory(options =&gt; options.Track&lt;TEntity&gt;())</code> and matches them to registered EF contexts whose models contain both the entity and <code>ChangeHistoryEntry</code>. No per-entity dashboard registration is required.</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddChangeHistory</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">Track</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">());</span>
+<span class="n">services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithPluginAssemblyContaining</span><span class="o">&lt;</span><span class="n">BridgingIT</span><span class="p">.</span><span class="n">DevKit</span><span class="p">.</span><span class="n">Presentation</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">EntityFramework</span><span class="p">.</span><span class="n">ChangeHistory</span><span class="p">.</span><span class="n">Dashboard</span><span class="p">.</span><span class="n">DashboardEndpoints</span><span class="o">&gt;</span><span class="p">());</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">();</span>
+</code></pre></div>
+<p>Configure capture, the EF context and entity repository as described above. <code>AddChangeHistory</code> registers the generic read and restore services. Discovery uses DevKit context registrations and standard EF context options, inspecting EF model metadata without querying the database. The Razor slices query the ChangeHistory services directly on the server, and refresh returns an HTML fragment. Restore posts to the dashboard action, which invokes the restore service directly. Management REST endpoints are optional and are registered separately with <code>AddChangeHistoryEndpoints&lt;TEntity, TContext&gt;(...)</code> for clients that need them.</p>
+<p>Choose a registration and apply entity, property, operation, capture, change-set, user or date filters. Change Sets groups related audit rows. Rows shows individual property changes. Select a change set to inspect its details and the restore controls. Dashboard access follows the dashboard's authorization configuration; ChangeHistory read and restore authorizers run in the services. REST endpoint policies do not configure dashboard authorization. Displayed values depend on <code>ChangeHistoryDashboardOptions.IncludeValues</code>, which defaults to <code>false</code> independently of the REST endpoint setting.</p>
+<p>Optionally override the dashboard settings for an entity/context pair:</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddChangeHistoryDashboard</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">IncludeValues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+</code></pre></div>
+<p>An explicit override takes precedence over discovered defaults and does not duplicate the registration selector entry.</p>
 <p>Use the <strong>Quick range</strong> clock icon before the date inputs to set <strong>From UTC</strong> and clear <strong>To UTC</strong>, edit either timestamp if needed, then select <strong>Apply</strong>. An empty end includes newer changes on refresh. The filters retain time-of-day precision when paging.</p>
-<p><a href="../../assets/dashboard/22-change-history-unavailable.png"><img alt="Change History dashboard showing the filter controls and missing endpoint registration state" src="../../assets/dashboard/22-change-history-unavailable.png" /></a></p>
-<p>This image shows the unconfigured state. When the page reports no ChangeHistory endpoints, register an entity/context endpoint as shown in <a href="#http-endpoints">HTTP endpoints</a>, then map the endpoint pipeline. A database with audit rows cannot supply the dashboard registration selector by itself.</p>
+<p>When the page reports no ChangeHistory entities, check that <code>AddChangeHistory</code> tracks the entity and that a registered EF context maps both that entity and <code>ChangeHistoryEntry</code>. Persisted audit rows alone do not supply the registration selector.</p>
 <h2 id="http-endpoints">HTTP endpoints<a class="headerlink" href="#http-endpoints" title="Permanent link">&para;</a></h2>
 <p><code>Presentation.Web.EntityFramework</code> can expose minimal API endpoints for one entity/context pair:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddChangeHistoryEndpoints</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>

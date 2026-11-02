@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ChangeHistoryDashboardDescriptor | bITdevKit API Reference ">
       
-      <meta name="description" content="Describes one ChangeHistory endpoint registration that can be shown by the dashboard.">
+      <meta name="description" content="Describes one tracked entity/context pair that can be shown by the dashboard.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,7 @@ Class ChangeHistoryDashboardDescriptor
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.EntityFramework.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Describes one ChangeHistory endpoint registration that can be shown by the dashboard.</p>
+  <div class="markdown summary"><p>Describes one tracked entity/context pair that can be shown by the dashboard.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -262,8 +262,8 @@ Class ChangeHistoryDashboardDescriptor
 
   <a id="BridgingIT_DevKit_Presentation_Web_EntityFramework_ChangeHistory_Dashboard_ChangeHistoryDashboardDescriptor__ctor_" data-uid="BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardDescriptor.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Presentation_Web_EntityFramework_ChangeHistory_Dashboard_ChangeHistoryDashboardDescriptor__ctor_System_Type_System_Type_BridgingIT_DevKit_Presentation_Web_EntityFramework_ChangeHistory_ChangeHistoryEndpointsOptions_" data-uid="BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardDescriptor.#ctor(System.Type,System.Type,BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpointsOptions)">
-  ChangeHistoryDashboardDescriptor(Type, Type, ChangeHistoryEndpointsOptions)
+  <h3 id="BridgingIT_DevKit_Presentation_Web_EntityFramework_ChangeHistory_Dashboard_ChangeHistoryDashboardDescriptor__ctor_System_Type_System_Type_BridgingIT_DevKit_Presentation_Web_EntityFramework_ChangeHistory_Dashboard_ChangeHistoryDashboardOptions_" data-uid="BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardDescriptor.#ctor(System.Type,System.Type,BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardOptions)">
+  ChangeHistoryDashboardDescriptor(Type, Type, ChangeHistoryDashboardOptions)
   
   </h3>
 
@@ -272,7 +272,7 @@ Class ChangeHistoryDashboardDescriptor
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ChangeHistoryDashboardDescriptor(Type entityType, Type contextType, ChangeHistoryEndpointsOptions options)</code></pre>
+    <pre><code class="lang-csharp hljs">public ChangeHistoryDashboardDescriptor(Type entityType, Type contextType, ChangeHistoryDashboardOptions options)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -283,8 +283,8 @@ Class ChangeHistoryDashboardDescriptor
     <dt><code>contextType</code> <span class="xref">Type</span></dt>
     <dd><p>The EF Core context type.</p>
 </dd>
-    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpointsOptions.html">ChangeHistoryEndpointsOptions</a></dt>
-    <dd><p>The endpoint options used by the management endpoints.</p>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardOptions.html">ChangeHistoryDashboardOptions</a></dt>
+    <dd><p>The dashboard query options.</p>
 </dd>
   </dl>
 
@@ -495,38 +495,6 @@ Class ChangeHistoryDashboardDescriptor
 
 
 
-  <a id="BridgingIT_DevKit_Presentation_Web_EntityFramework_ChangeHistory_Dashboard_ChangeHistoryDashboardDescriptor_ManagementPath_" data-uid="BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardDescriptor.ManagementPath*"></a>
-
-  <h3 id="BridgingIT_DevKit_Presentation_Web_EntityFramework_ChangeHistory_Dashboard_ChangeHistoryDashboardDescriptor_ManagementPath" data-uid="BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardDescriptor.ManagementPath">
-  ManagementPath
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Gets the configured management endpoint path.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string ManagementPath { get; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><span class="xref">string</span></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
   <a id="BridgingIT_DevKit_Presentation_Web_EntityFramework_ChangeHistory_Dashboard_ChangeHistoryDashboardDescriptor_Options_" data-uid="BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardDescriptor.Options*"></a>
 
   <h3 id="BridgingIT_DevKit_Presentation_Web_EntityFramework_ChangeHistory_Dashboard_ChangeHistoryDashboardDescriptor_Options" data-uid="BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardDescriptor.Options">
@@ -534,12 +502,12 @@ Class ChangeHistoryDashboardDescriptor
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the endpoint options used by the management endpoints.</p>
+  <div class="markdown level1 summary"><p>Gets the dashboard query options.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ChangeHistoryEndpointsOptions Options { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ChangeHistoryDashboardOptions Options { get; }</code></pre>
   </div>
 
 
@@ -548,7 +516,7 @@ Class ChangeHistoryDashboardDescriptor
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpointsOptions.html">ChangeHistoryEndpointsOptions</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardOptions.html">ChangeHistoryDashboardOptions</a></dt>
     <dd></dd>
   </dl>
 

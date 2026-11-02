@@ -1698,6 +1698,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#ndjson-record-streaming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NDJSON record streaming
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2258,6 +2269,34 @@
     
   
     Application Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-auditing/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="auditing" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5H7a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4" /><rect x="11" y="3" width="10" height="4" rx="1" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14v9h8M11 17h8" /><circle cx="11" cy="12" r="2" /><circle cx="21" cy="17" r="2" /><circle cx="21" cy="23" r="2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Auditing
   
 
     
@@ -2990,6 +3029,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-streaming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Streaming
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-cli/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="cli" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /><path d="m8 12 4 4-4 4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20h7M8 2v6" /></g></svg></span>
         
   
@@ -3478,6 +3545,90 @@
     
   
     FileStorage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-filesystem-providers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filesystem storage providers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-filesystem-qualification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filesystem deployment qualification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-load-testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage dashboard throughput tests
   
 
     
@@ -4933,6 +5084,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#ndjson-record-streaming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NDJSON record streaming
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -5082,6 +5244,7 @@
 <li><a href="#cbor-and-messagepack-results">CBOR and MessagePack results</a></li>
 </ul>
 </li>
+<li><a href="#ndjson-record-streaming">NDJSON record streaming</a></li>
 </ul>
 </li>
 </ul>
@@ -5294,6 +5457,8 @@
 <p>CBOR allocated less for the small and binary DTOs. MessagePack remained faster for small and nested DTOs. The direct buffer path currently applies to CBOR; these results compare the DevKit wrappers as configured. They describe one workstation and these payloads, rather than a universal ranking of the formats.</p>
 <p>The current optimization work stops at the buffer adapters and bounded writer reuse. The object mapper still boxes scalar values and uses intermediate collections for some target types. Typed member codecs and direct collection construction remain candidates for a future change if application profiling shows serialization is significant. The benchmarks do not measure cold startup or first-use mapping cost.</p>
 <p>The <a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/benchmarks/serialization-2026-10-20/README.md">recorded serializer comparison</a> preserves the original five-serializer baseline. The <a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/benchmarks/serialization-2026-10-20-allocations/README.md">CBOR allocation follow-up</a> contains the final comparison, allocation reductions, raw reports, and reproduction command.</p>
+<h2 id="ndjson-record-streaming">NDJSON record streaming<a class="headerlink" href="#ndjson-record-streaming" title="Permanent link">&para;</a></h2>
+<p><code>NdjsonWriter</code> and <code>NdjsonReader</code> support bounded asynchronous record streams independently of <code>ISerializer</code>. They expose owned encoded frames and borrowed original-byte frames for exact budgets and digests. See <a href="../features-presentation-streaming/">Presentation Streaming</a> for APIs, strict framing, ownership, and limits.</p>
 
 
 

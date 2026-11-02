@@ -1,0 +1,4964 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
+      
+      
+      
+        <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-presentation-dashboard-entities/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Entities Dashboard - bITdevKit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/themes.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/theme-picker.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/feature-icons.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+  <template id="bdk-favicon-source"><svg xmlns="http://www.w3.org/2000/svg" class="dashboard-brand-logo" width="32" height="32" viewBox="0 0 128 128" aria-hidden="true" focusable="false">
+    <polygon points="41.379 68.675 25.76 60.179 25.707 88.887 41.326 97.383 41.379 68.675" />
+    <path d="M27.182,59.441l14.986,8.152,17.034-2.394.008-4.121-17.127,2.407c-.031.005-.062.006-.093.006-.099,0-.193-.029-.281-.071-.011-.005-.025-.003-.036-.009l-8.777-4.774-5.714.803Z" />
+    <path d="M59.244,78.093c0-.024.015-.043.018-.067.002-.018-.01-.033-.007-.051.006-.03.032-.048.041-.076.026-.081.062-.151.116-.216.03-.037.058-.067.095-.097.024-.019.036-.048.063-.064.051-.03.109-.031.164-.046.03-.009.05-.036.082-.04l5.923-.832-6.203-3.375c-.214-.115-.347-.34-.347-.584l.011-6.105-16.494,2.318-.053,28.877,16.56-2.327.032-17.316Z" />
+    <polygon points="41.328 61.712 41.379 34.347 40.254 32.396 25.762 24.513 25.71 53.217 41.328 61.712" />
+    <path d="M38.985,30.195l-.521-.904c-.011-.018-.003-.04-.012-.059-.033-.071-.068-.141-.075-.221-.002-.028.013-.052.014-.08.002-.042.011-.078.021-.119.022-.091.061-.17.118-.245.016-.021.015-.051.034-.07.01-.01.026-.009.037-.019.014-.013.02-.033.036-.045l10.07-7.682-21.523,3.024,11.801,6.42Z" />
+    <path d="M59.217,57.303l-6.547-3.562c-.108-.058-.197-.145-.258-.251l-9.709-16.846-.047,25.42,16.557-2.327.004-2.434Z" />
+    <polygon class="dashboard-brand-logo-accent" points="53.469 52.664 59.22 55.793 59.24 45.154 55.503 38.671 46.291 33.661 40.79 30.668 53.469 52.664" />
+    <polygon class="dashboard-brand-logo-accent" points="40.257 28.867 55.924 37.389 79.039 19.757 63.372 11.234 40.257 28.867" />
+    <path class="dashboard-brand-logo-accent" d="M56.851,38.351l2.393,4.152v-.076c0-.024.015-.043.018-.067.002-.018-.01-.033-.007-.051.006-.03.032-.048.041-.076.026-.081.062-.151.116-.216.03-.037.058-.067.095-.097.024-.019.036-.048.063-.064.051-.03.11-.031.165-.047.029-.009.049-.035.081-.039l27.992-3.934c.14-.023.285.006.41.074l2.613,1.421-10.773-18.682-23.207,17.701Z" />
+    <polygon points="76.189 87.706 60.57 79.21 60.517 107.918 76.136 116.414 76.189 87.706" />
+    <path d="M76.89,82.522c-.031.005-.062.006-.093.006-.099,0-.193-.029-.281-.071-.011-.005-.025-.003-.036-.009l-8.783-4.779-5.706.802,14.986,8.152,25.784-3.624-6.009-3.269-19.863,2.792Z" />
+    <polygon points="77.517 87.889 77.463 116.766 104.127 113.018 104.181 84.141 77.517 87.889" />
+    <polygon points="76.136 80.749 76.189 52.041 60.57 43.545 60.517 72.253 76.136 80.749" />
+    <polygon points="87.776 39.183 61.992 42.807 76.978 50.958 102.762 47.334 87.776 39.183" />
+    <polygon points="77.517 52.224 77.463 81.101 104.127 77.353 104.181 48.476 77.517 52.224" />
+</svg></template>
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="tokyo-night" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#entities-dashboard" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
+      
+  <img src="../../assets/images/bITDevKit_Icon.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">bITdevKit</span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Entities Dashboard
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
+    
+      
+        
+
+<script>
+  (() => {
+    const schemes = ["tokyo-night", "catppuccin", "lumon", "ethereal", "everforest", "hackerman", "osaka-jade", "kanagawa", "vantablack", "matte-black", "ristretto", "retro-82", "flexoki-light", "catppuccin-latte", "white"];
+    const legacy = {
+      dark: "matte-black", light: "white", tokionights: "tokyo-night",
+      darkforest: "osaka-jade", carbon: "catppuccin", matrix: "hackerman"
+    };
+    try {
+      const saved = __md_get("__palette");
+      if (!saved) return;
+      const color = saved.color || {};
+      const previous = color.media === "(prefers-color-scheme)" ? "system" : color.scheme;
+      const scheme = schemes.includes(previous) ? previous
+        : Object.prototype.hasOwnProperty.call(legacy, previous) ? legacy[previous] : schemes[0];
+      __md_set("__palette", {
+        index: schemes.indexOf(scheme),
+        color: { scheme, primary: "custom", accent: "custom" }
+      });
+    } catch {
+      // Replace malformed saved data before Material reads it again.
+      __md_set("__palette", {
+        index: 0,
+        color: { scheme: schemes[0], primary: "custom", accent: "custom" }
+      });
+    }
+  })();
+</script>
+<form class="md-header__option bdk-theme-picker" data-md-component="palette">
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="tokyo-night"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Tokyo Night theme"
+      type="radio"
+      name="__palette"
+      id="__palette_0"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_1"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="catppuccin"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Catppuccin theme"
+      type="radio"
+      name="__palette"
+      id="__palette_1"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_2"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="lumon"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Lumon theme"
+      type="radio"
+      name="__palette"
+      id="__palette_2"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_3"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="ethereal"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Ethereal theme"
+      type="radio"
+      name="__palette"
+      id="__palette_3"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_4"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="everforest"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Everforest theme"
+      type="radio"
+      name="__palette"
+      id="__palette_4"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_5"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="hackerman"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Hackerman theme"
+      type="radio"
+      name="__palette"
+      id="__palette_5"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_6"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="osaka-jade"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Osaka Jade theme"
+      type="radio"
+      name="__palette"
+      id="__palette_6"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_7"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="kanagawa"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Kanagawa theme"
+      type="radio"
+      name="__palette"
+      id="__palette_7"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_8"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="vantablack"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Vantablack theme"
+      type="radio"
+      name="__palette"
+      id="__palette_8"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_9"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="matte-black"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Matte Black theme"
+      type="radio"
+      name="__palette"
+      id="__palette_9"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_10"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="ristretto"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Ristretto theme"
+      type="radio"
+      name="__palette"
+      id="__palette_10"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_11"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="retro-82"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Retro 82 theme"
+      type="radio"
+      name="__palette"
+      id="__palette_11"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_12"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="flexoki-light"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Flexoki Light theme"
+      type="radio"
+      name="__palette"
+      id="__palette_12"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_13"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="catppuccin-latte"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Catppuccin Latte theme"
+      type="radio"
+      name="__palette"
+      id="__palette_13"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_14"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="white"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use White theme"
+      type="radio"
+      name="__palette"
+      id="__palette_14"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_0"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+
+  <details class="bdk-theme-picker__details" data-bdk-theme-picker>
+    <summary class="md-header__button bdk-theme-picker__toggle" aria-label="Select documentation theme" aria-haspopup="true">
+      <span class="bdk-theme-picker__terminal" aria-hidden="true">&gt;_</span>
+      <span data-bdk-theme-label>Tokyo Night</span>
+      <span class="bdk-theme-picker__chevron" aria-hidden="true">⌄</span>
+    </summary>
+    <div class="bdk-theme-picker__menu" role="radiogroup" aria-label="Documentation theme">
+      
+        <label class="bdk-theme-picker__option" for="__palette_0" data-bdk-theme-option="tokyo-night" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-tokyo-night-bg);--theme-primary:var(--bdk-swatch-tokyo-night-primary);--theme-accent:var(--bdk-swatch-tokyo-night-accent)"></span>
+          <span data-bdk-theme-name>Tokyo Night</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_1" data-bdk-theme-option="catppuccin" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-catppuccin-bg);--theme-primary:var(--bdk-swatch-catppuccin-primary);--theme-accent:var(--bdk-swatch-catppuccin-accent)"></span>
+          <span data-bdk-theme-name>Catppuccin</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_2" data-bdk-theme-option="lumon" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-lumon-bg);--theme-primary:var(--bdk-swatch-lumon-primary);--theme-accent:var(--bdk-swatch-lumon-accent)"></span>
+          <span data-bdk-theme-name>Lumon</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_3" data-bdk-theme-option="ethereal" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-ethereal-bg);--theme-primary:var(--bdk-swatch-ethereal-primary);--theme-accent:var(--bdk-swatch-ethereal-accent)"></span>
+          <span data-bdk-theme-name>Ethereal</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_4" data-bdk-theme-option="everforest" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-everforest-bg);--theme-primary:var(--bdk-swatch-everforest-primary);--theme-accent:var(--bdk-swatch-everforest-accent)"></span>
+          <span data-bdk-theme-name>Everforest</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_5" data-bdk-theme-option="hackerman" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-hackerman-bg);--theme-primary:var(--bdk-swatch-hackerman-primary);--theme-accent:var(--bdk-swatch-hackerman-accent)"></span>
+          <span data-bdk-theme-name>Hackerman</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_6" data-bdk-theme-option="osaka-jade" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-osaka-jade-bg);--theme-primary:var(--bdk-swatch-osaka-jade-primary);--theme-accent:var(--bdk-swatch-osaka-jade-accent)"></span>
+          <span data-bdk-theme-name>Osaka Jade</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_7" data-bdk-theme-option="kanagawa" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-kanagawa-bg);--theme-primary:var(--bdk-swatch-kanagawa-primary);--theme-accent:var(--bdk-swatch-kanagawa-accent)"></span>
+          <span data-bdk-theme-name>Kanagawa</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_8" data-bdk-theme-option="vantablack" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-vantablack-bg);--theme-primary:var(--bdk-swatch-vantablack-primary);--theme-accent:var(--bdk-swatch-vantablack-accent)"></span>
+          <span data-bdk-theme-name>Vantablack</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_9" data-bdk-theme-option="matte-black" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-matte-black-bg);--theme-primary:var(--bdk-swatch-matte-black-primary);--theme-accent:var(--bdk-swatch-matte-black-accent)"></span>
+          <span data-bdk-theme-name>Matte Black</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_10" data-bdk-theme-option="ristretto" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-ristretto-bg);--theme-primary:var(--bdk-swatch-ristretto-primary);--theme-accent:var(--bdk-swatch-ristretto-accent)"></span>
+          <span data-bdk-theme-name>Ristretto</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_11" data-bdk-theme-option="retro-82" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-retro-82-bg);--theme-primary:var(--bdk-swatch-retro-82-primary);--theme-accent:var(--bdk-swatch-retro-82-accent)"></span>
+          <span data-bdk-theme-name>Retro 82</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_12" data-bdk-theme-option="flexoki-light" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-flexoki-light-bg);--theme-primary:var(--bdk-swatch-flexoki-light-primary);--theme-accent:var(--bdk-swatch-flexoki-light-accent)"></span>
+          <span data-bdk-theme-name>Flexoki Light</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_13" data-bdk-theme-option="catppuccin-latte" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-catppuccin-latte-bg);--theme-primary:var(--bdk-swatch-catppuccin-latte-primary);--theme-accent:var(--bdk-swatch-catppuccin-latte-accent)"></span>
+          <span data-bdk-theme-name>Catppuccin Latte</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_14" data-bdk-theme-option="white" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-white-bg);--theme-primary:var(--bdk-swatch-white-primary);--theme-accent:var(--bdk-swatch-white-accent)"></span>
+          <span data-bdk-theme-name>White</span>
+        </label>
+      
+    </div>
+  </details>
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/bridgingIT/bITdevKit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bridgingIT/bITdevKit
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Quickstart
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../guides/" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
+      
+  <img src="../../assets/images/bITDevKit_Icon.svg" alt="logo">
+
+    </a>
+    bITdevKit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/bridgingIT/bITdevKit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bridgingIT/bITdevKit
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Quickstart
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="dashboard" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="26" height="26" rx="2" /><path d="M3 10h26M11 10v19" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 23v-5M21 23v-9M26 23v-3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../feature-icons/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="dashboard" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="26" height="26" rx="2" /><path d="M3 10h26M11 10v19" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 23v-5M21 23v-9M26 23v-3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Icons
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="dashboard" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="26" height="26" rx="2" /><path d="M3 10h26M11 10v19" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 23v-5M21 23v-9M26 23v-3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Complete Feature Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_2" id="__nav_3_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Infrastructure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Common Infrastructure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-extensions/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="common-extensions" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11v7h4V8h11v16H18v-5h-4v5H3V8Z" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-utilities/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="common-utilities" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4 4 11l5 5-5 11 3 3 11-11 5 5 7-7-8-2-3-7-3 5-5-1Z" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 17 5-5" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-serialization/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="serialization" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5H8v8l-4 3 4 3v8h3M21 5h3v8l4 3-4 3v8h-3" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 9h2M15 16h2M15 23h2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Serialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-options-builders/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="options-builders" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 26h26M7 26V16h6v10M19 26V6h6v20" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M10 4v12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Options Builders
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-mapping/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mapping" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="2" /><rect x="21" y="21" width="8" height="8" rx="2" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 7h8a6 6 0 0 1 6 6v8m-4-4 4 4 4-4" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-caching/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="caching" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M26 12a11 11 0 1 0 0 10M27 4v9h-9" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m17 10-6 9h6l-2 8 8-12h-7l1-5" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-observability-tracing/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="tracing" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9v14M10 6h12M10 26h12" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="6" r="3" /><circle cx="25" cy="6" r="3" /><circle cx="7" cy="26" r="3" /><circle cx="25" cy="26" r="3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Observability Tracing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="metrics" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4v24h26" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 23v-8M16 23V7M23 23V12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-profiling/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="profiling" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 25a14 14 0 1 1 22 0H5Z M6 16h3M16 3v4M26 16h3" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 20 7-10" /><circle cx="16" cy="20" r="2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-utilities/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="utilities" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="26" height="17" rx="2" /><path d="M11 11V5h10v6" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h26M13 15v6h6v-6" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_3" id="__nav_3_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Domain and Application
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core Domain and Application
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="domain" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 12 7v13l-12 7-12-7V10l12-7Z M4 10l12 7 12-7M16 17v13" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="10" r="2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-events/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="domain-events" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 10 8-5 8 5v11l-8 5-8-5V10Z M5 10l8 5v11M13 15l8-5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 16h7m-3-3 3 3-3 3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-change-history/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="change-history" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h18v23H9V6Z M14 11h8M14 17h8M14 23h5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v23M2 6h6M2 16h6" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Change History
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-repositories/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="repositories" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h26v20H3V8Z M3 8l4-5h18l4 5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14h10v7H11Z M14 24h4" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Repositories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-specifications/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="specifications" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3H7a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V11L19 3Z M19 3v8h8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m10 17 2 2 3-4M18 17h4M10 24h12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Specifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-activeentity/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="active-entity" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="21" height="21" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m21 3-7 12h7l-4 13L29 11h-8l3-8" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Active Entity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-policies/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="policies" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 11 4v8c0 7-6 11-11 14C11 26 5 22 5 15V7l11-4Z" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12h12M10 17h7M10 22h10" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-rules/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="rules" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M4 16h10M4 25h10" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6 3 3 6-6m-9 12 3 3 6-6m-9 12 3 3 6-6" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-results/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="results" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 16 4 4 7-8" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-commands-queries/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="commands-queries" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11v16H3V8Z M19 8h10v16H19" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m7 13 4 3-4 3M21 15h5M21 20h3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Commands and Queries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-events/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="application-events" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="22" height="22" rx="2" /><path d="M3 11h22" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 15-3 6h5l-2 8 9-11h-6l3-3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-auditing/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="auditing" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5H7a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4" /><rect x="11" y="3" width="10" height="4" rx="1" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14v9h8M11 17h8" /><circle cx="11" cy="12" r="2" /><circle cx="21" cy="17" r="2" /><circle cx="21" cy="23" r="2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Auditing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-dataporter/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="dataporter" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="3" width="12" height="26" rx="2" /><path d="M10 10h12M10 22h12" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16h9m-4-4 4 4-4 4M22 16h8m-4-4 4 4-4 4" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataPorter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="event-sourcing" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h26M3 16h26M3 25h26" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3" /><circle cx="16" cy="16" r="3" /><circle cx="23" cy="25" r="3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_4" id="__nav_3_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution, Messaging and Modularity
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Execution, Messaging and Modularity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-requester-notifier/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="requester" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 5h6a2 2 0 0 1 2 2v18a2 2 0 0 1-2 2h-6" /><path d="M3 11h17m-4-4 4 4-4 4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21H3m4-4-4 4 4 4" /></g></svg></span><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="notifier" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 16h19m-4-4 4 4-4 4" /><path d="M8.2 13.8 24 6m-4-1 4 1-1 4M8.2 18.2 24 26m-4 1 4-1-1-4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="16" r="3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requester and Notifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-messaging/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="messaging" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 16h3V8a2 2 0 0 1 2-2h2M22 16v8a2 2 0 0 0 2 2h2" /><circle cx="28" cy="6" r="1.8" /><circle cx="28" cy="26" r="1.8" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="16" height="14" rx="2" /><path d="m3.5 10 6.3 5a2 2 0 0 0 2.4 0l6.3-5" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-queueing/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="queueing" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="16" height="6" rx="2" /><rect x="3" y="13" width="16" height="6" rx="2" /><rect x="3" y="21" width="16" height="6" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 8h10m-4-4 4 4-4 4" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="broadcasting" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 15v14M12 29h8" /><circle cx="16" cy="11" r="3" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a9 9 0 0 0 0 12M22 5a9 9 0 0 1 0 12M6 2a14 14 0 0 0 0 18M26 2a14 14 0 0 1 0 18" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-notifications/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="notifications" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 23h20l-3-5v-6a7 7 0 0 0-14 0v6l-3 5Z M13 27a3 3 0 0 0 6 0" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="25" cy="7" r="4" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-modules/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="modules" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 12 7-12 7-12-7 12-7Z M4 10v13l12 7 12-7V10M16 17v13" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m10 6 12 7" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-pipelines/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="pipelines" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="11" width="7" height="10" rx="2" /><rect x="23" y="11" width="7" height="10" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 16h14" /><circle cx="16" cy="16" r="3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipelines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-orchestrations/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="orchestrations" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="12" width="7" height="8" rx="2" /><rect x="23" y="3" width="7" height="8" rx="2" /><rect x="23" y="21" width="7" height="8" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 16h7V7h7M16 16v9h7" /><circle cx="16" cy="16" r="2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Orchestrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-filtering/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="filtering" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h26L20 16v9l-8 4V16L3 5Z" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10h14" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filtering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-extensions/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="extensions" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h8v20H4V6Z M20 6h8v20h-8" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 16h16m-4-4 4 4-4 4" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_5" id="__nav_3_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security and Access
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Security and Access
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="authentication" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 11 4v8c0 7-6 11-11 14C11 26 5 22 5 15V7l11-4Z" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 12a3 3 0 1 0 0 6M16 18v5M16 12a3 3 0 1 1 0 6" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-entitypermissions/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="entity-permissions" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="19" height="23" rx="2" /><path d="M8 8h9M8 13h5" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="17" width="13" height="12" rx="2" /><path d="M19 17v-3a3.5 3.5 0 0 1 7 0v3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entity Permissions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-identityprovider/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="identity-provider" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12V5h22v7M5 22v5h22v-5" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="12" r="4" /><path d="M8 25a8 8 0 0 1 16 0M2 16h6M24 16h6" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Identity Provider
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_6" id="__nav_3_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation and Hosts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Presentation and Hosts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="host" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="26" height="26" rx="2" /><path d="M3 11h26" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20h12M16 14v12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="configuration" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v26M16 3v26M25 3v26" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="6" height="5" rx="2" /><rect x="13" y="20" width="6" height="5" rx="2" /><rect x="22" y="5" width="6" height="5" rx="2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="logging" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6h19M10 16h19M10 26h19" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h2M3 16h2M3 26h2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-endpoints/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="endpoints" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16h12M15 16V6h8M15 16v10h8" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="23" y="3" width="6" height="6" rx="2" /><rect x="23" y="23" width="6" height="6" rx="2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Endpoints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-streaming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Streaming
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-cli/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="cli" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /><path d="m8 12 4 4-4 4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20h7M8 2v6" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-cli-mcp/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-cli-mcp-clients/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp-clients" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="17" height="14" rx="2" /><path d="M11 17v5M6 22h10" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="21" y="18" width="8" height="11" rx="2" /><path d="M20 10h5v8" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Client Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-dashboard/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="dashboard" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="26" height="26" rx="2" /><path d="M3 10h26M11 10v19" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 23v-5M21 23v-9M26 23v-3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-console-commands/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="console-commands" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /><path d="m8 12 4 4-4 4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 12h6M18 16h4M18 20h6" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Console Commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-cors/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="cors" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h9v22H4V5Z M19 5h9v22h-9" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11h14m-3-3 3 3-3 3M23 21H9m3-3-3 3 3 3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CORS Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="correlation-ids" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="16" r="3" /><circle cx="26" cy="16" r="3" /><path d="M9 16h14" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6 11 26M21 6l-3 20M10 11h13M9 21h13" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-exception-handling/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="exception-handling" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v14a10 10 0 0 0 20 0V4M1 4h6M21 4h6" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m17 4-6 11h6l-3 9 9-14h-6l2-6" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exception Handling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-appstate/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="app-state" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="24" height="24" rx="2" /><path d="M4 12h24" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19h5M9 24h10" /><circle cx="23" cy="20" r="2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AppState
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_7" id="__nav_3_3_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage, Scheduling and Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage, Scheduling and Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-startuptasks/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="startup-tasks" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 23V9h7M20 9h7v14H5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V3m-5 5 5-5 5 5M10 28h12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Startup Tasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-jobs/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="jobs" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 27H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6M3 12h20M8 4v5M18 4v5M8 17h5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="23" cy="23" r="6" /><path d="m22 20.5 3.5 2.5-3.5 2.5z" fill="var(--dashboard-primary-text, #7da4f7)" stroke="none" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jobs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-jobscheduling/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="job-scheduling" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="24" height="22" rx="2" /><path d="M4 12h24M10 3v6M22 3v6" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m13 18 3-3 3 3-3 5-3-5Z" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Job Scheduling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-blobs/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="storage-blobs" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3s-10 11-10 17a10 10 0 0 0 20 0C26 14 16 3 16 3Z" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a5 5 0 0 0 5 3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blob Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-documents/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="storage-documents" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3H7a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V11L19 3Z M19 3v8h8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 16-3 3 3 3M20 16l3 3-3 3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Document Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-permalinks/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="storage-permalinks" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m13 11 5-5a6 6 0 0 1 8 8l-5 5M19 21l-5 5a6 6 0 0 1-8-8l5-5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 21 10-10" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Permalinks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-files/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="storage-files" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11V8a2 2 0 0 1 2-2h7l3 4h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V11Z" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 16h12M10 21h7" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FileStorage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-filesystem-providers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filesystem storage providers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-filesystem-qualification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filesystem deployment qualification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-load-testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage dashboard throughput tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-monitoring/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="storage-monitoring" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11V8a2 2 0 0 1 2-2h7l3 4h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V11Z" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 19h4l3-5 4 10 3-5h5" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Monitoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-log-entries/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="log-entries" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3H7a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V11L19 3Z M19 3v8h8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15h12M10 20h12M10 25h7" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Log Entries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_8" id="__nav_3_3_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing and Test Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Testing and Test Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing-fake-authentication/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="fake-authentication" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 11 4v8c0 7-6 11-11 14C11 26 5 22 5 15V7l11-4Z" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m10 12 5 5-5 5M19 12v10" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Authentication for Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing-common-xunit/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="testing" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3h10M13 3v10L4 27a2 2 0 0 0 2 3h20a2 2 0 0 0 2-3l-9-14V3" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 22h14M13 26h6" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Common XUnit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="dashboard" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="26" height="26" rx="2" /><path d="M3 10h26M11 10v19" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 23v-5M21 23v-9M26 23v-3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="modules" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 12 7-12 7-12-7 12-7Z M4 10v13l12 7 12-7V10M16 17v13" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m10 6 12 7" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="diagrams" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="9" height="7" rx="2" /><rect x="20" y="22" width="9" height="7" rx="2" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6h12v16M7 10v15h13" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="messaging" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 16h3V8a2 2 0 0 1 2-2h2M22 16v8a2 2 0 0 0 2 2h2" /><circle cx="28" cy="6" r="1.8" /><circle cx="28" cy="26" r="1.8" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="16" height="14" rx="2" /><path d="m3.5 10 6.3 5a2 2 0 0 0 2.4 0l6.3-5" /></g></svg></span><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="queueing" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="16" height="6" rx="2" /><rect x="3" y="13" width="16" height="6" rx="2" /><rect x="3" y="21" width="16" height="6" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 8h10m-4-4 4 4-4 4" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="repositories" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h26v20H3V8Z M3 8l4-5h18l4 5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14h10v7H11Z M14 24h4" /></g></svg></span><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="active-entity" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="21" height="21" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m21 3-7 12h7l-4 13L29 11h-8l3-8" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-pipeline-vs-orchestration/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="pipelines" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="11" width="7" height="10" rx="2" /><rect x="23" y="11" width="7" height="10" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 16h14" /><circle cx="16" cy="16" r="3" /></g></svg></span><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="orchestrations" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="12" width="7" height="8" rx="2" /><rect x="23" y="3" width="7" height="8" rx="2" /><rect x="23" y="21" width="7" height="8" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 16h7V7h7M16 16v9h7" /><circle cx="16" cy="16" r="2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline or Orchestration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-blob-vs-document-storage/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="storage-blobs" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3s-10 11-10 17a10 10 0 0 0 20 0C26 14 16 3 16 3Z" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a5 5 0 0 0 5 3" /></g></svg></span><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="storage-documents" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3H7a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V11L19 3Z M19 3v8h8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 16-3 3 3 3M20 16l3 3-3 3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blob Storage or Document Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-jobs-vs-startup-tasks/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="jobs" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 27H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6M3 12h20M8 4v5M18 4v5M8 17h5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="23" cy="23" r="6" /><path d="m22 20.5 3.5 2.5-3.5 2.5z" fill="var(--dashboard-primary-text, #7da4f7)" stroke="none" /></g></svg></span><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="startup-tasks" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 23V9h7M20 9h7v14H5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V3m-5 5 5-5 5 5M10 28h12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jobs or Startup Tasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-business-logic/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="domain" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 12 7v13l-12 7-12-7V10l12-7Z M4 10l12 7 12-7M16 17v13" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="10" r="2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Where to Put Business Logic
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-domain-events/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="domain-events" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 10 8-5 8 5v11l-8 5-8-5V10Z M5 10l8 5v11M13 15l8-5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 16h7m-3-3 3 3-3 3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    When to Use Domain Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-requester-vs-notifier/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="requester" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 5h6a2 2 0 0 1 2 2v18a2 2 0 0 1-2 2h-6" /><path d="M3 11h17m-4-4 4 4-4 4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21H3m4-4-4 4 4 4" /></g></svg></span><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="notifier" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 16h19m-4-4 4 4-4 4" /><path d="M8.2 13.8 24 6m-4-1 4 1-1 4M8.2 18.2 24 26m-4 1 4-1-1-4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="16" r="3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requester or Notifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-queueing-vs-jobs/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="queueing" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="16" height="6" rx="2" /><rect x="3" y="13" width="16" height="6" rx="2" /><rect x="3" y="21" width="16" height="6" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 8h10m-4-4 4 4-4 4" /></g></svg></span><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="jobs" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 27H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6M3 12h20M8 4v5M18 4v5M8 17h5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="23" cy="23" r="6" /><path d="m22 20.5 3.5 2.5-3.5 2.5z" fill="var(--dashboard-primary-text, #7da4f7)" stroke="none" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queueing or Jobs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-domain-vs-application-events/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="domain-events" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 10 8-5 8 5v11l-8 5-8-5V10Z M5 10l8 5v11M13 15l8-5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 16h7m-3-3 3 3-3 3" /></g></svg></span><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="application-events" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="22" height="22" rx="2" /><path d="M3 11h22" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 15-3 6h5l-2 8 9-11h-6l3-3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Events or Application Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-change-history-vs-event-sourcing/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="change-history" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h18v23H9V6Z M14 11h8M14 17h8M14 23h5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v23M2 6h6M2 16h6" /></g></svg></span><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="event-sourcing" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h26M3 16h26M3 25h26" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3" /><circle cx="16" cy="16" r="3" /><circle cx="23" cy="25" r="3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Change History or Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-document-storage/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="repositories" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h26v20H3V8Z M3 8l4-5h18l4 5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14h10v7H11Z M14 24h4" /></g></svg></span><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="storage-documents" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3H7a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V11L19 3Z M19 3v8h8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 16-3 3 3 3M20 16l3 3-3 3" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or Document Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-direct-call-vs-requester/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="requester" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 5h6a2 2 0 0 1 2 2v18a2 2 0 0 1-2 2h-6" /><path d="M3 11h17m-4-4 4 4-4 4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21H3m4-4-4 4 4 4" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Direct Call or Requester
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-retry-vs-compensation/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="retry" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M27 13a12 12 0 1 0 0 8M28 4v10h-10" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 11 8 5-8 5Z" /></g></svg></span><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="orchestration-compensation" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M27 23V12a6 6 0 0 0-6-6H6m5-5L6 6l5 5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 25h13m-4-4 4 4-4 4" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Retry or Compensation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-results/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="results" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 16 4 4 7-8" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Result&lt;T&gt; or plain return type
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="source-generation" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m10 9-7 7 7 7M22 9l7 7-7 7" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m18 3-5 26M21 4h8M25 1v7" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enablement-and-disabling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enablement and disabling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#access-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Access model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#searching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Searching
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#editing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Editing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Editing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-update-and-delete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create, update and delete
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concurrency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concurrency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-editors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property editors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#non-public-setters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Non-public setters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#property-masking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property masking
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related entities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#copy-and-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Copy and export
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#saved-filters-and-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Saved filters and columns
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#change-history-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Change History link
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security recommendations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="entities-dashboard"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:32px" data-feature-icon="entities" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="22" height="24" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /><path d="M10 21h12" /></g></svg></span> Entities Dashboard<a class="headerlink" href="#entities-dashboard" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Browse, search and maintain persisted entities from the dashboard, like a rough table editor for repositories and ActiveEntity types.</p>
+</blockquote>
+<div class="toc">
+<ul>
+<li><a href="#entities-dashboard">Entities Dashboard</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#enablement-and-disabling">Enablement and disabling</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#access-model">Access model</a></li>
+<li><a href="#searching">Searching</a></li>
+<li><a href="#editing">Editing</a><ul>
+<li><a href="#create-update-and-delete">Create, update and delete</a></li>
+<li><a href="#concurrency">Concurrency</a></li>
+<li><a href="#property-editors">Property editors</a></li>
+<li><a href="#non-public-setters">Non-public setters</a></li>
+</ul>
+</li>
+<li><a href="#property-masking">Property masking</a></li>
+<li><a href="#related-entities">Related entities</a></li>
+<li><a href="#copy-and-export">Copy and export</a></li>
+<li><a href="#saved-filters-and-columns">Saved filters and columns</a></li>
+<li><a href="#change-history-link">Change History link</a></li>
+<li><a href="#security-recommendations">Security recommendations</a></li>
+<li><a href="#limitations">Limitations</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The Entities page lists every <code>IEntity</code> type reachable through a registered <code>IGenericRepository&lt;T&gt;</code> or an ActiveEntity configuration. Pick an entity type, narrow the list with filters and inspect or edit single rows. Searching uses <code>FilterModel</code>; reads and writes run through the normal repository or ActiveEntity pipeline, so behaviors such as validation, auditing and domain events apply as for any other write.</p>
+<p>The page is read-only by default. Write operations need an explicitly configured authorization policy or role.</p>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>Checking or fixing a single record during development or operations usually means an ad-hoc SQL query or a throw-away tool. Both bypass the domain model, skip validation and auditing and cannot be shared with the team. Sensitive columns then end up in screenshots, chat messages and query history.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p>The Entities page reuses the registrations the application already has. It discovers the entity types automatically, builds filters from the entity's properties and saves changes through the same pipeline that production code uses. Property masking keeps sensitive values on the server. Edit access is deny-by-default and enforced on every write request.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Automatic discovery.</strong> Repository and ActiveEntity types appear without extra registration; types registered through both sources show once.</li>
+<li><strong>Search.</strong> A filter toolbar builds a <code>FilterModel</code> (property, operator, value, AND/OR) plus a quick search over string properties. Filters, sort and the selected row live in the URL.</li>
+<li><strong>Load more.</strong> Rows load in batches (default 50). The footer shows a "Load more" button, which is disabled once the list is complete. The "Rows per load" selector changes the batch size (10 to <code>MaxBatchSize</code>) and is remembered per browser. Narrow the list instead of paging through whole tables.</li>
+<li><strong>View and edit modes.</strong> Everyone with dashboard access can view. Editors toggle edit mode (the pencil icon button at the top right, highlighted while active) to reveal the New and Delete selected icon buttons next to it and to create, clone, update, delete and bulk delete rows in a modal dialog. The view dialog has "Copy JSON" at the bottom left, next to "Close".</li>
+<li><strong>Safe updates.</strong> Only changed properties are applied and <code>IConcurrency</code> entities are protected against stale updates. The edit dialog has a plain OK and Cancel.</li>
+<li><strong>Property masking.</strong> Mask or hide sensitive properties per entity. Masked values never leave the server.</li>
+<li><strong>Related entities.</strong> Properties that reference another discovered entity render as links. Ids and reference links open the record in a modal dialog (edit dialog in edit mode, view dialog otherwise), so the list stays as it is. Following references inside the view dialog adds a "Back" button.</li>
+<li><strong>Productivity.</strong> Saved and recent filters, a column picker, copy as JSON, JSON and CSV export and deep links.</li>
+<li><strong>Change History link.</strong> The detail panel links to the Change History page for tracked entities.</li>
+</ul>
+<h2 id="enablement-and-disabling">Enablement and disabling<a class="headerlink" href="#enablement-and-disabling" title="Permanent link">&para;</a></h2>
+<p>The page is part of the dashboard (see <a href="../features-presentation-dashboard/">Presentation Dashboard</a>) and needs no extra registration. It is listed when at least one entity source exists: an <code>IGenericRepository&lt;T&gt;</code> for an <code>IEntity</code> type or an ActiveEntity configuration. Without a source the page and its overview card are not shown.</p>
+<p>Disable it like any other dashboard page by its key <code>entities</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
+<span class="w">    </span><span class="p">.</span><span class="n">DisablePages</span><span class="p">(</span><span class="s">"entities"</span><span class="p">));</span>
+</code></pre></div>
+<p>A disabled page is not mapped and its endpoints return 404.</p>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
+<p>Call <code>AddEntitiesDashboard</code> only when you need to change the defaults.</p>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddEntitiesDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EditPolicy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"EntitiesEditors"</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">BatchSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">MaxBatchSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">MaxExportRows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5000</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">MaxBulkSelection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Exclude</span><span class="o">&lt;</span><span class="n">Region</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Entity</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Mask</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Email</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Hide</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">TaxNumber</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Reference</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">PreferredRegionId</span><span class="p">).</span><span class="n">To</span><span class="o">&lt;</span><span class="n">Region</span><span class="o">&gt;</span><span class="p">());</span>
+<span class="p">});</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EditPolicy</code></td>
+<td>null</td>
+<td>Authorization policy required for write operations</td>
+</tr>
+<tr>
+<td><code>EditRoles</code></td>
+<td>empty</td>
+<td>Alternative role gate for write operations</td>
+</tr>
+<tr>
+<td><code>BatchSize</code></td>
+<td>50</td>
+<td>Default rows per "Load more" batch (also selectable in the footer)</td>
+</tr>
+<tr>
+<td><code>MaxBatchSize</code></td>
+<td>200</td>
+<td>Upper bound for a batch and the largest selectable size</td>
+</tr>
+<tr>
+<td><code>MaxExportRows</code></td>
+<td>5000</td>
+<td>Row cap for JSON and CSV export</td>
+</tr>
+<tr>
+<td><code>MaxBulkSelection</code></td>
+<td>100</td>
+<td>Maximum rows in one bulk delete</td>
+</tr>
+<tr>
+<td><code>Exclude&lt;T&gt;()</code></td>
+<td>–</td>
+<td>Opt one entity type out of the page</td>
+</tr>
+<tr>
+<td><code>Include&lt;T&gt;()</code></td>
+<td>–</td>
+<td>Re-include a type that DevKit excludes by default</td>
+</tr>
+<tr>
+<td><code>Entity&lt;T&gt;(...)</code></td>
+<td>–</td>
+<td>Per entity settings: masking, hiding, references, non-public setters</td>
+</tr>
+</tbody>
+</table>
+<p>DevKit infrastructure entities (for example change history entries or outbox messages) are excluded by default through a deny list. Use <code>Include&lt;T&gt;()</code> to bring one back. The configuration is validated at startup, so a mistyped property name fails fast.</p>
+<h2 id="access-model">Access model<a class="headerlink" href="#access-model" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Requirement</th>
+<th>Capabilities</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>View</td>
+<td>Normal dashboard access</td>
+<td>List, search, details, copy, export, deep links, related entities, Change History link</td>
+</tr>
+<tr>
+<td>Edit</td>
+<td><code>EditPolicy</code> (or <code>EditRoles</code>) is satisfied</td>
+<td>View plus create, clone, update, delete and bulk delete</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>If neither <code>EditPolicy</code> nor <code>EditRoles</code> is set, the page stays read-only.</li>
+<li>Edit mode is a toggle that starts in View, even for editors.</li>
+<li>The server checks the edit permission on every write request and answers 403 when it is missing. Hiding the controls is never the only protection.</li>
+<li>The write endpoints follow the other dashboard POST endpoints: JSON bodies and no antiforgery token. This is a backend admin surface, so protect it with the dashboard authorization of the host. See <a href="../features-presentation-dashboard/#authentication-and-authorization">Authentication and authorization</a>.</li>
+</ul>
+<h2 id="searching">Searching<a class="headerlink" href="#searching" title="Permanent link">&para;</a></h2>
+<p>The filter toolbar offers the top-level scalar properties of the selected entity plus one level of value-object properties as dotted paths (for example <code>Address.City</code>). The operators depend on the property type. Several conditions combine with AND, or with OR through the match toggle. Quick search applies <code>contains</code> across the top-level string properties (not value-object members, which stores with value converters cannot translate).</p>
+<p>Rows are ordered by the latest audit action first when the entity implements <code>IAuditable</code>, otherwise by <code>Id</code>. The list always ends the ordering with <code>Id</code>, so "Load more" stays stable. Click a column header to sort by a top-level scalar column.</p>
+<p>Unknown properties, unsupported operators and invalid values show an inline error. Masked and hidden properties cannot be filtered or sorted.</p>
+<h2 id="editing">Editing<a class="headerlink" href="#editing" title="Permanent link">&para;</a></h2>
+<h3 id="create-update-and-delete">Create, update and delete<a class="headerlink" href="#create-update-and-delete" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Create</strong> opens a modal with an input per editable property. An empty <code>Guid</code> id is generated.</li>
+<li><strong>Update</strong> is pre-filled from the current entity and applies only the changed properties. OK saves right away and Cancel discards the edits. Nothing is written when nothing changed.</li>
+<li><strong>Delete</strong> asks for a confirmation and uses the repository or ActiveEntity delete, so soft-delete behaves as configured. The page never performs a hard delete of its own.</li>
+<li><strong>Clone</strong> opens the create modal prefilled from a row, without id, concurrency version and audit state.</li>
+<li><strong>Bulk delete</strong> removes the selected rows one by one (up to <code>MaxBulkSelection</code>) and reports the deleted count and the failed rows. There is no wrapping transaction.</li>
+</ul>
+<h3 id="concurrency">Concurrency<a class="headerlink" href="#concurrency" title="Permanent link">&para;</a></h3>
+<p>For entities that implement <code>IConcurrency</code>, the version shown in the editor is submitted with the update. A stale version is reported as a conflict with a reload action and nothing is written. Entities without <code>IConcurrency</code> use last-write-wins, and the editor says so.</p>
+<h3 id="property-editors">Property editors<a class="headerlink" href="#property-editors" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Property kind</th>
+<th>Editor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>string, number</td>
+<td>Text or number input with parse validation</td>
+</tr>
+<tr>
+<td>Guid</td>
+<td>Text input; "New Guid" on create</td>
+</tr>
+<tr>
+<td>bool</td>
+<td>Checkbox</td>
+</tr>
+<tr>
+<td>DateTime, DateTimeOffset</td>
+<td>UTC date-time input</td>
+</tr>
+<tr>
+<td>enum, enumeration value object</td>
+<td>Select</td>
+</tr>
+<tr>
+<td>Nullable</td>
+<td>Input plus a null toggle</td>
+</tr>
+<tr>
+<td>Value object, complex, scalar collections</td>
+<td>JSON textarea, validated before save</td>
+</tr>
+<tr>
+<td>Navigation graphs, byte arrays</td>
+<td>Read-only</td>
+</tr>
+</tbody>
+</table>
+<p>Malformed JSON is rejected with an error before it reaches the repository. Domain rule violations and validation failures appear as inline messages in the modal. A database rejection (for example a value that is too long for its column) shows the first line of the database message, attached to the offending property when the column is named. Unexpected errors show a generic message. Failures with a correlation id show it as a link to the matching log entries; stack traces are never shown.</p>
+<h3 id="non-public-setters">Non-public setters<a class="headerlink" href="#non-public-setters" title="Permanent link">&para;</a></h3>
+<p>By default the page sets properties with public setters and builds new entities through a public parameterless constructor. Properties without a public setter are not shown in the editor (they stay visible in the list and view dialog), and entities without a public constructor are view and delete only. You can opt in per entity:</p>
+<div class="highlight"><pre><span></span><code><span class="n">options</span><span class="p">.</span><span class="n">Entity</span><span class="o">&lt;</span><span class="n">LockedProduct</span><span class="o">&gt;</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">AllowNonPublicSetters</span><span class="p">());</span>
+</code></pre></div>
+<blockquote>
+<p>Reflection writes bypass domain invariants in setters and factory methods. Use the opt-in only for types where that is acceptable.</p>
+</blockquote>
+<p>Repository or ActiveEntity behaviors still run on the save call.</p>
+<h2 id="property-masking">Property masking<a class="headerlink" href="#property-masking" title="Permanent link">&para;</a></h2>
+<p>Without configuration nothing is masked. Mark sensitive properties explicitly:</p>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddEntitiesDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Entity</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Mask</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Email</span><span class="p">)</span><span class="w">                  </span><span class="c1">// shown as ••••••</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Mask</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Address</span><span class="p">.</span><span class="n">Phone</span><span class="p">,</span><span class="w"> </span><span class="s">"***"</span><span class="p">)</span><span class="w">   </span><span class="c1">// custom mask text</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Hide</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">TaxNumber</span><span class="p">)</span><span class="w">              </span><span class="c1">// column omitted</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Hide</span><span class="p">(</span><span class="s">"InternalNotes"</span><span class="p">)));</span><span class="w">            </span><span class="c1">// by name or dotted path</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mask</td>
+<td>The value is replaced by the mask text in the list, details and editor</td>
+</tr>
+<tr>
+<td>Hide</td>
+<td>The property is omitted entirely</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Masking happens on the server before data is sent to the browser. It also applies to JSON and CSV export and to "Copy as JSON".</li>
+<li>Masked properties are excluded from filters, sorting and quick search.</li>
+<li>On update a masked property only changes when you choose "replace value" and enter a new one. For masked members of a value object the server merges the submitted JSON with the stored member, so the mask text never overwrites real data.</li>
+<li><code>Id</code> cannot be masked or hidden.</li>
+<li>Hidden properties keep their default value on create. If validation requires them, creating fails; do not hide required properties of entities that must be creatable.</li>
+</ul>
+<h2 id="related-entities">Related entities<a class="headerlink" href="#related-entities" title="Permanent link">&para;</a></h2>
+<p>A top-level property is shown as a link when it references another discovered entity: either its type is the target's typed id (for example <code>CustomerId</code>), or it is named <code>&lt;Entity&gt;Id</code> and matches the target's id type. Following a link opens the referenced record in a modal dialog (an edit dialog in edit mode, a view dialog otherwise) and leaves the list untouched. Links inside the view dialog stack, and "Back" returns to the previous record. Override or suppress the detection per entity:</p>
+<div class="highlight"><pre><span></span><code><span class="n">options</span><span class="p">.</span><span class="n">Entity</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Reference</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">BillingCustomerId</span><span class="p">).</span><span class="n">To</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Reference</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">ExternalNumber</span><span class="p">).</span><span class="n">None</span><span class="p">());</span>
+</code></pre></div>
+<h2 id="copy-and-export">Copy and export<a class="headerlink" href="#copy-and-export" title="Permanent link">&para;</a></h2>
+<p>"Copy as JSON" copies the row as shown on the page. "Export JSON" and "Export CSV" download the rows matching the current filter and sort, up to <code>MaxExportRows</code>. The UI says so when the file is truncated. CSV uses UTF-8 with the invariant culture, writes value objects as JSON in one cell and prefixes cells that start with <code>=</code>, <code>+</code>, <code>-</code> or <code>@</code> to prevent spreadsheet formula injection. Export is a read operation and needs no edit permission. Each export is logged with the entity and row count, never the values.</p>
+<h2 id="saved-filters-and-columns">Saved filters and columns<a class="headerlink" href="#saved-filters-and-columns" title="Permanent link">&para;</a></h2>
+<p>The page keeps the last 10 applied filters per entity and lets you save named filters. Column visibility and order are also stored per entity. The page also remembers the last selected entity, source, filter and sort, and restores them when you open the dashboard without query parameters. All of this is stored in the browser's local storage and never sent to the server. Saved filters that reference a property that is no longer available are shown disabled.</p>
+<h2 id="change-history-link">Change History link<a class="headerlink" href="#change-history-link" title="Permanent link">&para;</a></h2>
+<p>When <a href="../features-domain-change-history/">Change History</a> tracks the entity type and the <code>change-history</code> dashboard page is enabled, the detail panel shows a "Change history" link that opens that page for the entity and id. The link is not shown when the type is not tracked or the page is disabled.</p>
+<h2 id="security-recommendations">Security recommendations<a class="headerlink" href="#security-recommendations" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Protect the dashboard with the standard dashboard authorization. The page can expose sensitive data in View mode.</li>
+<li>Mask or hide sensitive properties such as personal data, secrets and tokens.</li>
+<li>Grant <code>EditPolicy</code> or <code>EditRoles</code> only to trusted operators.</li>
+<li>Keep <code>MaxExportRows</code> and <code>MaxBulkSelection</code> as low as your workflow allows.</li>
+<li>Every write is logged with <code>[EntitiesDashboard]</code> (entity type, id, operation, user). Property values are never logged, and the writes also appear in the Auditing dashboard when it is enabled.</li>
+</ul>
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Entities with several repositories for the same type use the registration that the container resolves; tenant or DbContext switching is not part of the page.</li>
+<li>There is no total row count. The list shows the loaded count, and "Load more" stays enabled while batches come back full.</li>
+<li>Child collections and navigation graphs can only be edited as the JSON of a property, if at all.</li>
+<li>Import and schema changes are out of scope.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/bridgingIT/bITdevKit" target="_blank" rel="noopener" title="GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://www.nuget.org/packages?q=bitdevkit" target="_blank" rel="noopener" title="NuGet" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M224.3-2.5c19.8-11.4 44.2-11.4 64 0L464.2 99c19.8 11.4 32 32.6 32 55.4v203c0 22.9-12.2 44-32 55.4L288.3 514.5a64.16 64.16 0 0 1-64 0L48.5 413c-19.8-11.4-32-32.6-32-55.4v-203c0-22.9 12.2-44 32-55.4zm207.8 360V191.4l-143.8 83v166.1z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
+      
+        <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
+      
+        <script src="../../assets/javascripts/theme-favicon.js"></script>
+      
+    
+  </body>
+</html>

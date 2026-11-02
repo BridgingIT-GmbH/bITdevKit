@@ -354,6 +354,73 @@ Class DocumentStoreOptions
 
 
 
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreOptions_GetManyBatchSize_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.GetManyBatchSize*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreOptions_GetManyBatchSize" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.GetManyBatchSize">
+  GetManyBatchSize
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the maximum number of keys a provider reads per round trip for
+<a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html#BridgingIT_DevKit_Application_Storage_IDocumentStoreClient_1_GetManyAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Storage_DocumentKey__System_Threading_CancellationToken_">GetManyAsync(IReadOnlyList&lt;DocumentKey&gt;, CancellationToken)</a>. Valid values are 1 to 1000.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int GetManyBatchSize { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreOptions_GetManyMaxParallelism_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.GetManyMaxParallelism*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreOptions_GetManyMaxParallelism" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.GetManyMaxParallelism">
+  GetManyMaxParallelism
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the maximum number of batches a provider reads concurrently for
+<a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html#BridgingIT_DevKit_Application_Storage_IDocumentStoreClient_1_GetManyAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Storage_DocumentKey__System_Threading_CancellationToken_">GetManyAsync(IReadOnlyList&lt;DocumentKey&gt;, CancellationToken)</a>. Each concurrent batch uses its own scope and connection.
+Valid values are 1 to 32, 1 reads the batches one after the other.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int GetManyMaxParallelism { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreOptions_MaxDocumentSize_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.MaxDocumentSize*"></a>
 
   <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreOptions_MaxDocumentSize" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.MaxDocumentSize">

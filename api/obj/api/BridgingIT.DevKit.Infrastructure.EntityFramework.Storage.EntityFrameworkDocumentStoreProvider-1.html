@@ -98,7 +98,7 @@ Class EntityFrameworkDocumentStoreProvider&lt;TContext&gt;
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class EntityFrameworkDocumentStoreProvider&lt;TContext&gt; : IDocumentStoreProvider, IDocumentStoreRetentionProvider where TContext : DbContext, IDocumentStoreContext</code></pre>
+    <pre><code class="lang-csharp hljs">public class EntityFrameworkDocumentStoreProvider&lt;TContext&gt; : IDocumentStoreProvider, IDocumentStoreRetentionProvider, IDocumentStoreBatchGetProvider, IDocumentStoreBulkWriteProvider where TContext : DbContext, IDocumentStoreContext</code></pre>
   </div>
 
 
@@ -123,6 +123,8 @@ Class EntityFrameworkDocumentStoreProvider&lt;TContext&gt;
     <dd>
       <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider.html">IDocumentStoreProvider</a></div>
       <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreRetentionProvider.html">IDocumentStoreRetentionProvider</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreBatchGetProvider.html">IDocumentStoreBatchGetProvider</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreBulkWriteProvider.html">IDocumentStoreBulkWriteProvider</a></div>
     </dd>
   </dl>
 
@@ -471,6 +473,54 @@ failure and leaves the current record unchanged.</p>
 
 
 
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_DeleteManyAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.DeleteManyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_DeleteManyAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Storage_DocumentDelete__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.DeleteManyAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Storage.DocumentDelete},System.Threading.CancellationToken)">
+  DeleteManyAsync(DocumentTypeIdentity, IReadOnlyList&lt;DocumentDelete&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes the supplied documents in order and stops at the first failing delete.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;DocumentBatchResult&lt;DocumentKey&gt;&gt;&gt; DeleteManyAsync(DocumentTypeIdentity type, IReadOnlyList&lt;DocumentDelete&gt; deletes, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd><p>The stable persisted namespace for the application document type.</p>
+</dd>
+    <dt><code>deletes</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDelete.html">DocumentDelete</a>&gt;</dt>
+    <dd><p>The validated deletes to apply in order.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel provider I/O.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentBatchResult-1.html">DocumentBatchResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a>&gt;&gt;&gt;</dt>
+    <dd><p>The keys of the completed deletes and, when a delete failed, its key.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_DeleteManyAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Storage_DocumentDelete__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.DeleteManyAsync(type, deletes, cancellationToken);</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_ExistsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.ExistsAsync*"></a>
 
   <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_ExistsAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentKey_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.ExistsAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,BridgingIT.DevKit.Application.Storage.DocumentKey,System.DateTimeOffset,System.Threading.CancellationToken)">
@@ -621,6 +671,58 @@ failure even when an expired physical record remains awaiting retention.</p>
 
   <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_GetAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentKey_System_DateTimeOffset_System_Threading_CancellationToken__examples">Examples</h4>
   <pre><code class="lang-csharp">var result = await provider.GetAsync(type, key, visibilityCutoff, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_GetManyAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.GetManyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_GetManyAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Storage_DocumentKey__System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.GetManyAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Storage.DocumentKey},System.DateTimeOffset,System.Threading.CancellationToken)">
+  GetManyAsync(DocumentTypeIdentity, IReadOnlyList&lt;DocumentKey&gt;, DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the stored documents for the supplied distinct keys that are logically visible at the cutoff.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;IReadOnlyList&lt;StoredDocument&gt;&gt;&gt; GetManyAsync(DocumentTypeIdentity type, IReadOnlyList&lt;DocumentKey&gt; keys, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd><p>The stable persisted namespace for the application document type.</p>
+</dd>
+    <dt><code>keys</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a>&gt;</dt>
+    <dd><p>The distinct, valid exact keys to read.</p>
+</dd>
+    <dt><code>visibilityCutoff</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd><p>The UTC instant used to exclude documents whose expiration is due.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel provider I/O.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.StoredDocument.html">StoredDocument</a>&gt;&gt;&gt;</dt>
+    <dd><p>The found documents in any order. Missing and expired documents are absent, the client maps them to not-found
+results. A failure means the whole batch could not be read.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_GetManyAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Storage_DocumentKey__System_DateTimeOffset_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.GetManyAsync(type, keys, timeProvider.GetUtcNow(), cancellationToken);</code></pre>
 
 
 
@@ -843,6 +945,55 @@ not expose a partially replaced record.</p>
 replacement and store no expiration on insertion. A physical expired record still participates in create-only and
 ETag conditions until retention deletes it.</p>
 </div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_UpsertManyAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.UpsertManyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_UpsertManyAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Storage_StoredDocumentWrite__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.UpsertManyAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Storage.StoredDocumentWrite},System.Threading.CancellationToken)">
+  UpsertManyAsync(DocumentTypeIdentity, IReadOnlyList&lt;StoredDocumentWrite&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the supplied documents in order and stops at the first failing write.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;DocumentBatchResult&lt;DocumentInfo&gt;&gt;&gt; UpsertManyAsync(DocumentTypeIdentity type, IReadOnlyList&lt;StoredDocumentWrite&gt; writes, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd><p>The stable persisted namespace for the application document type.</p>
+</dd>
+    <dt><code>writes</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.StoredDocumentWrite.html">StoredDocumentWrite</a>&gt;</dt>
+    <dd><p>The validated serialized writes to apply in order.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel provider I/O.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentBatchResult-1.html">DocumentBatchResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentInfo.html">DocumentInfo</a>&gt;&gt;&gt;</dt>
+    <dd><p>The metadata of the committed writes and, when a write failed, its key.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_UpsertManyAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Storage_StoredDocumentWrite__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.UpsertManyAsync(type, writes, cancellationToken);
+var failed = result.Value.FailedKey;</code></pre>
+
+
 
 
 

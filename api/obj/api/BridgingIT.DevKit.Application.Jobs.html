@@ -101,6 +101,16 @@ Classes
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.AuditingJobBehavior.html">AuditingJobBehavior</a></dt>
+      <dd><p>Observes an actual job execution attempt without confusing scheduler status with outer Result success.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.AuditingJobDispatchBehavior.html">AuditingJobDispatchBehavior</a></dt>
+      <dd><p>Records dispatch intent and actual acceptance separately from caller waiting and worker results.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.ChaosExceptionJobBehavior.html">ChaosExceptionJobBehavior</a></dt>
       <dd><p>Injects chaos exceptions into job execution for failure-path testing.</p>
 </dd>
@@ -283,6 +293,16 @@ Classes
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobDetectOrphanedRuntimeStateJobData.html">JobDetectOrphanedRuntimeStateJobData</a></dt>
       <dd><p>Configures orphaned runtime-state detection behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobDispatchAcceptance.html">JobDispatchAcceptance</a></dt>
+      <dd><p>The source-confirmed occurrence identity; no job payload or mutable definition is retained.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobDispatchBehaviorContext.html">JobDispatchBehaviorContext</a></dt>
+      <dd><p>Contains safe source dispatch identity and separately reported durable acceptance.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -854,6 +874,11 @@ Interfaces
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobCustomTriggerProvider.html">IJobCustomTriggerProvider</a></dt>
       <dd><p>Provides custom trigger evaluation behavior without leaking provider-specific types into the scheduler core.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobDispatchBehavior.html">IJobDispatchBehavior</a></dt>
+      <dd><p>Observes one explicit scheduler dispatch, independently from actual worker attempts and without a job payload.</p>
 </dd>
     </dl>
     <dl class="jumplist">

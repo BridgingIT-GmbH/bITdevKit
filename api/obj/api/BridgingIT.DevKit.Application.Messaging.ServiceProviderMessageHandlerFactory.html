@@ -98,7 +98,7 @@ Class ServiceProviderMessageHandlerFactory
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class ServiceProviderMessageHandlerFactory : IMessageHandlerFactory</code></pre>
+    <pre><code class="lang-csharp hljs">public class ServiceProviderMessageHandlerFactory : IMessageHandlerFactory, IAsyncMessageHandlerFactory, IAuditExecutionIsolation</code></pre>
   </div>
 
 
@@ -116,6 +116,8 @@ Class ServiceProviderMessageHandlerFactory
     <dt>Implements</dt>
     <dd>
       <div><a class="xref" href="BridgingIT.DevKit.Application.Messaging.IMessageHandlerFactory.html">IMessageHandlerFactory</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Messaging.IAsyncMessageHandlerFactory.html">IAsyncMessageHandlerFactory</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IAuditExecutionIsolation.html">IAuditExecutionIsolation</a></div>
     </dd>
   </dl>
 
@@ -332,6 +334,99 @@ Class ServiceProviderMessageHandlerFactory
 
 
 
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Messaging_ServiceProviderMessageHandlerFactory_CreateAsync_" data-uid="BridgingIT.DevKit.Application.Messaging.ServiceProviderMessageHandlerFactory.CreateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Messaging_ServiceProviderMessageHandlerFactory_CreateAsync_System_Type_" data-uid="BridgingIT.DevKit.Application.Messaging.ServiceProviderMessageHandlerFactory.CreateAsync(System.Type)">
+  CreateAsync(Type)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resolves a handler or disposes its failed resolution scope before rethrowing the original exception.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;MessageHandlerFactoryResult&gt; CreateAsync(Type messageHandlerType)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>messageHandlerType</code> <span class="xref">Type</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Messaging.MessageHandlerFactoryResult.html">MessageHandlerFactoryResult</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Messaging_ServiceProviderMessageHandlerFactory_CreateAsync_System_Type__examples">Examples</h4>
+  <pre><code class="lang-csharp">var handler = await factory.CreateAsync(typeof(CustomerHandler));</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Messaging_ServiceProviderMessageHandlerFactory_RunIsolatedAsync_" data-uid="BridgingIT.DevKit.Application.Messaging.ServiceProviderMessageHandlerFactory.RunIsolatedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Messaging_ServiceProviderMessageHandlerFactory_RunIsolatedAsync__1_System_String_System_String_System_String_System_String_System_Func_System_Threading_Tasks_Task___0___" data-uid="BridgingIT.DevKit.Application.Messaging.ServiceProviderMessageHandlerFactory.RunIsolatedAsync``1(System.String,System.String,System.String,System.String,System.Func{System.Threading.Tasks.Task{``0}})">
+  RunIsolatedAsync&lt;T&gt;(string, string, string, string, Func&lt;Task&lt;T&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Clears inherited capture state, preserving only authenticated causation and validated technical correlation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;T&gt; RunIsolatedAsync&lt;T&gt;(string feature, string operationId, string token, string correlationId, Func&lt;Task&lt;T&gt;&gt; next)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>feature</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>operationId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>token</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>correlationId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>next</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Messaging_ServiceProviderMessageHandlerFactory_RunIsolatedAsync__1_System_String_System_String_System_String_System_String_System_Func_System_Threading_Tasks_Task___0____examples">Examples</h4>
+  <pre><code class="lang-csharp">return await isolation.RunIsolatedAsync("Queueing", messageId, null, correlationId, ProcessAsync);</code></pre>
 
 
 

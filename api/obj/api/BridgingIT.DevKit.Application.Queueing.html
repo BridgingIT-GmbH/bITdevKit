@@ -101,6 +101,16 @@ Classes
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Queueing.AuditingQueueEnqueuerBehavior.html">AuditingQueueEnqueuerBehavior</a></dt>
+      <dd><p>Records selected queueing admission intent without copying message contents or accepting payload attribution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Queueing.AuditingQueueHandlerBehavior.html">AuditingQueueHandlerBehavior</a></dt>
+      <dd><p>Observes actual handler attempts within a finite independent consumer execution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Queueing.InProcessQueueBroker.html">InProcessQueueBroker</a></dt>
       <dd><p>Provides an in-memory queue broker using <span class="xref">System.Threading.Channels.Channel&lt;T&gt;</span>.</p>
 </dd>
@@ -306,6 +316,11 @@ Structs
     <h3 id="interfaces">
 Interfaces
 </h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Queueing.IAsyncQueueMessageHandlerFactory.html">IAsyncQueueMessageHandlerFactory</a></dt>
+      <dd><p>Optionally creates source handlers with awaited cleanup of scoped asynchronous dependencies on resolution failure.</p>
+</dd>
+    </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Queueing.IQueueBrokerBackgroundProcessor.html">IQueueBrokerBackgroundProcessor</a></dt>
       <dd><p>Defines optional broker-specific background processing that is executed by <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueingService.html">QueueingService</a>.</p>

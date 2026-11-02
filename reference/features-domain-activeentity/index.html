@@ -2515,6 +2515,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-application-auditing/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="auditing" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5H7a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4" /><rect x="11" y="3" width="10" height="4" rx="1" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14v9h8M11 17h8" /><circle cx="11" cy="12" r="2" /><circle cx="21" cy="17" r="2" /><circle cx="21" cy="23" r="2" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Auditing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-application-dataporter/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="dataporter" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="3" width="12" height="26" rx="2" /><path d="M10 10h12M10 22h12" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16h9m-4-4 4 4-4 4M22 16h8m-4-4 4 4-4 4" /></g></svg></span>
         
   
@@ -3227,6 +3255,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-streaming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Streaming
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-cli/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="cli" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /><path d="m8 12 4 4-4 4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20h7M8 2v6" /></g></svg></span>
         
   
@@ -3715,6 +3771,90 @@
     
   
     FileStorage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-filesystem-providers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filesystem storage providers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-filesystem-qualification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filesystem deployment qualification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-load-testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage dashboard throughput tests
   
 
     
@@ -5604,7 +5744,8 @@
 <p>The <a href="https://www.martinfowler.com/eaaCatalog/activeRecord.html">Active Record pattern is described by Martin Fowler</a> in the book Patterns of Enterprise Architecture as "an object that wraps a row in a database table, encapsulates the database access, and adds domain logic to that data." ActiveEntity objects carry both data and behavior.</p>
 <h3 id="components">Components<a class="headerlink" href="#components" title="Permanent link">&para;</a></h3>
 <p><code>ActiveEntity&lt;TEntity, TId&gt;</code> delegates persistence to <code>IActiveEntityEntityProvider&lt;TEntity, TId&gt;</code>. The pipeline runs registered <code>IActiveEntityBehavior&lt;TEntity&gt;</code> instances in registration order. <code>ActiveEntityConfigurator</code> stores the application's service provider so an operation can create a dependency injection scope when the caller does not supply a context.</p>
-<p><code>ActiveEntityContext&lt;TEntity, TId&gt;</code> contains the provider and behaviors resolved from one scope. Reusing a context keeps those services in the same scope. A context shares a transaction only when the provider has started one, such as inside <code>WithTransactionAsync</code>.</p>
+<p>Each configured entity type is also recorded, with its id type and soft-delete flag, in an <code>ActiveEntityRegistry</code> that is shared by all <code>AddActiveEntity(...)</code> calls. Tools can use the registry to discover the configured types without extra registration. The <a href="../features-presentation-dashboard-entities/">Entities dashboard</a> uses it to list ActiveEntity types.
+<code>ActiveEntityContext&lt;TEntity, TId&gt;</code> contains the provider and behaviors resolved from one scope. Reusing a context keeps those services in the same scope. A context shares a transaction only when the provider has started one, such as inside <code>WithTransactionAsync</code>.</p>
 <pre class="mermaid"><code>classDiagram
     class Entity~TId~ {
         +TId Id

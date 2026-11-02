@@ -98,7 +98,7 @@ Class PipelineRegistrationState
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class PipelineRegistrationState</code></pre>
+    <pre><code class="lang-csharp hljs">public class PipelineRegistrationState : IAuditBoundaryRegistrationSource</code></pre>
   </div>
 
 
@@ -112,6 +112,12 @@ Class PipelineRegistrationState
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IAuditBoundaryRegistrationSource.html">IAuditBoundaryRegistrationSource</a></div>
+    </dd>
+  </dl>
 
 
 
@@ -348,6 +354,41 @@ Class PipelineRegistrationState
   </dl>
 
 
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_PipelineRegistrationState_Registrations_" data-uid="BridgingIT.DevKit.Common.PipelineRegistrationState.Registrations*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_PipelineRegistrationState_Registrations" data-uid="BridgingIT.DevKit.Common.PipelineRegistrationState.Registrations">
+  Registrations
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns bounded inline configuration and unknown packaged-source declarations without constructing definitions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;AuditBoundaryRegistration&gt; Registrations { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.AuditBoundaryRegistration.html">AuditBoundaryRegistration</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_PipelineRegistrationState_Registrations_examples">Examples</h4>
+  <pre><code class="lang-csharp">var inventory = state.Registrations;</code></pre>
 
 
 

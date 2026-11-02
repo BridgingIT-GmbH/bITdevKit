@@ -568,6 +568,46 @@ if they implement <span class="xref">FluentValidation.IValidator&lt;&gt;</span> 
 
 
 
+  <a id="BridgingIT_DevKit_Common_RequesterBuilder_WithAuditing_" data-uid="BridgingIT.DevKit.Common.RequesterBuilder.WithAuditing*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RequesterBuilder_WithAuditing_System_Func_BridgingIT_DevKit_Common_RequesterAuditOptions_BridgingIT_DevKit_Common_RequesterAuditOptions__" data-uid="BridgingIT.DevKit.Common.RequesterBuilder.WithAuditing(System.Func{BridgingIT.DevKit.Common.RequesterAuditOptions,BridgingIT.DevKit.Common.RequesterAuditOptions})">
+  WithAuditing(Func&lt;RequesterAuditOptions, RequesterAuditOptions&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Selects logical dispatch and actual-handler auditing on this source builder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RequesterBuilder WithAuditing(Func&lt;RequesterAuditOptions, RequesterAuditOptions&gt; configure = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>configure</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RequesterAuditOptions.html">RequesterAuditOptions</a>, <a class="xref" href="BridgingIT.DevKit.Common.RequesterAuditOptions.html">RequesterAuditOptions</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RequesterBuilder.html">RequesterBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_RequesterBuilder_WithAuditing_System_Func_BridgingIT_DevKit_Common_RequesterAuditOptions_BridgingIT_DevKit_Common_RequesterAuditOptions___examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddRequester().WithAuditing();</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Common_RequesterBuilder_WithBehavior_" data-uid="BridgingIT.DevKit.Common.RequesterBuilder.WithBehavior*"></a>
 
   <h3 id="BridgingIT_DevKit_Common_RequesterBuilder_WithBehavior_System_Type_" data-uid="BridgingIT.DevKit.Common.RequesterBuilder.WithBehavior(System.Type)">

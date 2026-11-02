@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class FileSystemMetrics | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class FileSystemMetrics | bITdevKit API Reference ">
+      
+      <meta name="description" content="Exposes process-wide instrumentation for filesystem storage operations.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics" class="text-break">
+Class FileSystemMetrics  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.html">FileSystem</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.FileSystem.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Exposes process-wide instrumentation for filesystem storage operations.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class FileSystemMetrics</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">FileSystemMetrics</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_examples">Examples</h2>
+  <pre><code class="lang-csharp">var before = FileSystemMetrics.Snapshot();</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Counters describe application observations, not proven syscalls or remote RPCs. Fields are writable for isolated diagnostic resets; use Interlocked for concurrent access. Resetting during a measurement invalidates its deltas. Counters never determine storage ownership or correctness.</p>
+</div>
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_AuthorityAcquisitions" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.AuthorityAcquisitions">
+  AuthorityAcquisitions
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores successfully acquired key, generation and cursor owners.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long AuthorityAcquisitions</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_AuthorityAcquisitions_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.AuthorityAcquisitions);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_AuthorityHoldTicks" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.AuthorityHoldTicks">
+  AuthorityHoldTicks
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores cumulative disposed authority lifetime in Stopwatch ticks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long AuthorityHoldTicks</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_AuthorityHoldTicks_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.AuthorityHoldTicks);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_AuthorityWaitTicks" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.AuthorityWaitTicks">
+  AuthorityWaitTicks
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores cumulative authority acquisition time in Stopwatch ticks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long AuthorityWaitTicks</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_AuthorityWaitTicks_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.AuthorityWaitTicks);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_CleanupFailures" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.CleanupFailures">
+  CleanupFailures
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores instrumented recoverable staging or reclamation failures.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long CleanupFailures</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_CleanupFailures_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.CleanupFailures);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_CursorAuthorityHoldTicks" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.CursorAuthorityHoldTicks">
+  CursorAuthorityHoldTicks
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores cumulative disposed cursor-authority lifetime in Stopwatch ticks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long CursorAuthorityHoldTicks</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_CursorAuthorityHoldTicks_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.CursorAuthorityHoldTicks);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_DirectorySyncs" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.DirectorySyncs">
+  DirectorySyncs
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores attempted Linux directory fsync operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long DirectorySyncs</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_DirectorySyncs_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.DirectorySyncs);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_DiscoveryInspections" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.DiscoveryInspections">
+  DiscoveryInspections
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores managed discovery steps and reserved manifest inspections in checkpointed cursor pages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long DiscoveryInspections</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_DiscoveryInspections_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.DiscoveryInspections);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_FileFlushes" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.FileFlushes">
+  FileFlushes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores completed file flushes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long FileFlushes</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_FileFlushes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.FileFlushes);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_FileReadOpens" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.FileReadOpens">
+  FileReadOpens
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores successful file opens with read access across ordinary files, blob payloads and document payloads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long FileReadOpens</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_FileReadOpens_examples">Examples</h4>
+  <pre><code class="lang-csharp">var reads = Interlocked.Read(ref FileSystemMetrics.FileReadOpens);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_FileWriteOpens" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.FileWriteOpens">
+  FileWriteOpens
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores successful file opens with write access across ordinary files, blob payloads and document payloads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long FileWriteOpens</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_FileWriteOpens_examples">Examples</h4>
+  <pre><code class="lang-csharp">var writes = Interlocked.Read(ref FileSystemMetrics.FileWriteOpens);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_GenerationAuthorityHoldTicks" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.GenerationAuthorityHoldTicks">
+  GenerationAuthorityHoldTicks
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores cumulative disposed generation-authority lifetime in Stopwatch ticks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long GenerationAuthorityHoldTicks</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_GenerationAuthorityHoldTicks_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.GenerationAuthorityHoldTicks);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_IndeterminateNativeCode" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.IndeterminateNativeCode">
+  IndeterminateNativeCode
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores the last native error code observed at an uncertain publication boundary, or zero before any such failure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long IndeterminateNativeCode</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_IndeterminateNativeCode_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.IndeterminateNativeCode);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_KeyAuthorityHoldTicks" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.KeyAuthorityHoldTicks">
+  KeyAuthorityHoldTicks
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores cumulative disposed key-authority lifetime in Stopwatch ticks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long KeyAuthorityHoldTicks</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_KeyAuthorityHoldTicks_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.KeyAuthorityHoldTicks);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_ManagedFileOpenAttempts" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.ManagedFileOpenAttempts">
+  ManagedFileOpenAttempts
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores instrumented managed file-open attempts, rather than operating-system syscall counts.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long ManagedFileOpenAttempts</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_ManagedFileOpenAttempts_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.ManagedFileOpenAttempts);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_MetadataReads" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.MetadataReads">
+  MetadataReads
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores attempted manifest reads, including absent records.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long MetadataReads</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_MetadataReads_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.MetadataReads);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_NamespaceMoves" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.NamespaceMoves">
+  NamespaceMoves
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores attempted native namespace publications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long NamespaceMoves</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_NamespaceMoves_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.NamespaceMoves);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_PayloadOpens" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.PayloadOpens">
+  PayloadOpens
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores attempted payload read opens.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long PayloadOpens</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_PayloadOpens_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.PayloadOpens);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_PayloadStages" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.PayloadStages">
+  PayloadStages
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores attempted payload staging operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long PayloadStages</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_PayloadStages_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.PayloadStages);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_Publications" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.Publications">
+  Publications
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores completed native manifest publications before subsequent diagnostic callbacks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long Publications</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_Publications_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.Publications);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_ReclaimedBytes" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.ReclaimedBytes">
+  ReclaimedBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores logical bytes in successfully unlinked generation files; open readers may retain allocated storage.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long ReclaimedBytes</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_ReclaimedBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.ReclaimedBytes);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_ReclaimedFiles" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.ReclaimedFiles">
+  ReclaimedFiles
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores successfully unlinked unreferenced generation files.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long ReclaimedFiles</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_ReclaimedFiles_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.ReclaimedFiles);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_RetainedOwnershipEvents" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.RetainedOwnershipEvents">
+  RetainedOwnershipEvents
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores shared owners deliberately retained at disposal after uncertainty.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long RetainedOwnershipEvents</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_RetainedOwnershipEvents_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.RetainedOwnershipEvents);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_StagedBytes" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.StagedBytes">
+  StagedBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores bytes in successfully staged payloads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long StagedBytes</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_StagedBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.StagedBytes);</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_WriteThroughMoves" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.WriteThroughMoves">
+  WriteThroughMoves
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores instrumented Windows write-through publication requests.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long WriteThroughMoves</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_WriteThroughMoves_examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = Interlocked.Read(ref FileSystemMetrics.WriteThroughMoves);</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_Snapshot_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.Snapshot*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_Snapshot" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.FileSystemMetrics.Snapshot">
+  Snapshot()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies named process counters using atomic reads of each value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Dictionary&lt;string, long&gt; Snapshot()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Dictionary</span>&lt;<span class="xref">string</span>, <span class="xref">long</span>&gt;</dt>
+    <dd><p>A new dictionary of instrumentation values suitable for before/after measurement deltas.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_Snapshot_examples">Examples</h4>
+  <pre><code class="lang-csharp">var after = FileSystemMetrics.Snapshot(); var bytes = after["stagedBytes"];</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_FileSystemMetrics_Snapshot_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The snapshot is independent and not an atomic transaction across counters. Stopwatch tick durations use the runtime's Stopwatch.Frequency. The last native diagnostic error is available separately through IndeterminateNativeCode.</p>
+</div>
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

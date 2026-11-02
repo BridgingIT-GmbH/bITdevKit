@@ -572,6 +572,52 @@ var configurator = new ActiveEntityEntityConfigurator&lt;Customer, CustomerId&gt
 
 
 
+  <a id="BridgingIT_DevKit_Domain_ActiveEntityConfigurator_2_WithAuditing_" data-uid="BridgingIT.DevKit.Domain.ActiveEntityConfigurator`2.WithAuditing*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_ActiveEntityConfigurator_2_WithAuditing_BridgingIT_DevKit_Domain_Repositories_RepositoryAuditOptions_" data-uid="BridgingIT.DevKit.Domain.ActiveEntityConfigurator`2.WithAuditing(BridgingIT.DevKit.Domain.Repositories.RepositoryAuditOptions)">
+  WithAuditing(RepositoryAuditOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Selects complete operation auditing for this configured entity without enabling property history.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActiveEntityConfigurator&lt;TEntity, TId&gt; WithAuditing(RepositoryAuditOptions options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.RepositoryAuditOptions.html">RepositoryAuditOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityConfigurator-2.html">ActiveEntityConfigurator</a>&lt;TEntity, TId&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityConfigurator_2_WithAuditing_BridgingIT_DevKit_Domain_Repositories_RepositoryAuditOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">configuration.For&lt;Customer, Guid&gt;().UseInMemoryProvider().WithAuditing();</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when services is null.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
 

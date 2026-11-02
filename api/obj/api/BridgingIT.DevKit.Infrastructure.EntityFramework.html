@@ -116,6 +116,41 @@ Classes
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.AuditChangeHistoryOptions.html">AuditChangeHistoryOptions</a></dt>
+      <dd><p>Controls copied source evidence without enabling or changing source ChangeHistory capture.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.AuditChangeHistoryRegistration-1.html">AuditChangeHistoryRegistration&lt;TContext&gt;</a></dt>
+      <dd><p>Separates explicitly configured bridge options for each source context type.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.AuditTransactionObserver-1.html">AuditTransactionObserver&lt;TContext&gt;</a></dt>
+      <dd><p>Uses actual source transaction outcomes and post-commit row membership rather than save success or savepoint names.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryAuditBridge-1.html">ChangeHistoryAuditBridge&lt;TContext&gt;</a></dt>
+      <dd><p>Copies only source-produced history rows and confirms their retained membership after actual source commit.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryAuditEvidenceBuffer.html">ChangeHistoryAuditEvidenceBuffer</a></dt>
+      <dd><p>Bounds weak ownership and source row identifiers without retaining source rows or values.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryAuditEvidenceBuffer.PendingChange.html">ChangeHistoryAuditEvidenceBuffer.PendingChange</a></dt>
+      <dd><p>One bounded observation, containing no source values or service provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryAuditSaveInterceptor-1.html">ChangeHistoryAuditSaveInterceptor&lt;TContext&gt;</a></dt>
+      <dd><p>Observes existing source rows at real save boundaries without generating history or inferring an ambient commit.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryBuilderContext.html">ChangeHistoryBuilderContext</a></dt>
       <dd><p>Provides the shared builder context for ChangeHistory registration.</p>
 </dd>
@@ -290,6 +325,11 @@ do not natively support <code>DateOnly</code>.</p>
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.DbContextResolver.html">DbContextResolver</a></dt>
       <dd><p>Default implementation of <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.IDbContextResolver.html">IDbContextResolver</a> that resolves
 DbContexts by context name or by concrete type using the DI container.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.html">DocumentStoreModelBuilderExtensions</a></dt>
+      <dd><p>Provides model configuration for the <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.html">StorageDocument</a> entity that cannot be expressed with annotations.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -874,6 +914,14 @@ Existing application DbContexts can implement this to include the FileEvents DbS
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.IOutboxMessageQueue.html">IOutboxMessageQueue</a></dt>
       <dd><p>Defines operations for i outbox message queue.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.AuditChangeHistoryMode.html">AuditChangeHistoryMode</a></dt>
+      <dd><p>Chooses copied value snapshots or source references only.</p>
 </dd>
     </dl>
 

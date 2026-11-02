@@ -269,8 +269,8 @@ Class DataPorterService
 
   <a id="BridgingIT_DevKit_Application_DataPorter_DataPorterService__ctor_" data-uid="BridgingIT.DevKit.Application.DataPorter.DataPorterService.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_DataPorter_DataPorterService__ctor_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_DataPorter_IDataPorterProvider__BridgingIT_DevKit_Application_DataPorter_ConfigurationMerger_BridgingIT_DevKit_Application_DataPorter_IRowInterceptorsProvider_Microsoft_Extensions_Logging_ILoggerFactory_" data-uid="BridgingIT.DevKit.Application.DataPorter.DataPorterService.#ctor(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.DataPorter.IDataPorterProvider},BridgingIT.DevKit.Application.DataPorter.ConfigurationMerger,BridgingIT.DevKit.Application.DataPorter.IRowInterceptorsProvider,Microsoft.Extensions.Logging.ILoggerFactory)">
-  DataPorterService(IEnumerable&lt;IDataPorterProvider&gt;, ConfigurationMerger, IRowInterceptorsProvider, ILoggerFactory)
+  <h3 id="BridgingIT_DevKit_Application_DataPorter_DataPorterService__ctor_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_DataPorter_IDataPorterProvider__BridgingIT_DevKit_Application_DataPorter_ConfigurationMerger_BridgingIT_DevKit_Application_DataPorter_IRowInterceptorsProvider_Microsoft_Extensions_Logging_ILoggerFactory_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_DataPorter_IDataPorterOperationBehavior__" data-uid="BridgingIT.DevKit.Application.DataPorter.DataPorterService.#ctor(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.DataPorter.IDataPorterProvider},BridgingIT.DevKit.Application.DataPorter.ConfigurationMerger,BridgingIT.DevKit.Application.DataPorter.IRowInterceptorsProvider,Microsoft.Extensions.Logging.ILoggerFactory,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.DataPorter.IDataPorterOperationBehavior})">
+  DataPorterService(IEnumerable&lt;IDataPorterProvider&gt;, ConfigurationMerger, IRowInterceptorsProvider, ILoggerFactory, IEnumerable&lt;IDataPorterOperationBehavior&gt;)
   
   </h3>
 
@@ -279,7 +279,7 @@ Class DataPorterService
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DataPorterService(IEnumerable&lt;IDataPorterProvider&gt; providers, ConfigurationMerger configurationMerger, IRowInterceptorsProvider rowInterceptorsProvider = null, ILoggerFactory loggerFactory = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public DataPorterService(IEnumerable&lt;IDataPorterProvider&gt; providers, ConfigurationMerger configurationMerger, IRowInterceptorsProvider rowInterceptorsProvider = null, ILoggerFactory loggerFactory = null, IEnumerable&lt;IDataPorterOperationBehavior&gt; operationBehaviors = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -295,6 +295,8 @@ Class DataPorterService
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
     <dd><p>The logger factory.</p>
 </dd>
+    <dt><code>operationBehaviors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.DataPorter.IDataPorterOperationBehavior.html">IDataPorterOperationBehavior</a>&gt;</dt>
+    <dd></dd>
   </dl>
 
 
@@ -304,7 +306,7 @@ Class DataPorterService
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_DataPorter_DataPorterService__ctor_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_DataPorter_IDataPorterProvider__BridgingIT_DevKit_Application_DataPorter_ConfigurationMerger_BridgingIT_DevKit_Application_DataPorter_IRowInterceptorsProvider_Microsoft_Extensions_Logging_ILoggerFactory__remarks">Remarks</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Application_DataPorter_DataPorterService__ctor_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_DataPorter_IDataPorterProvider__BridgingIT_DevKit_Application_DataPorter_ConfigurationMerger_BridgingIT_DevKit_Application_DataPorter_IRowInterceptorsProvider_Microsoft_Extensions_Logging_ILoggerFactory_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_DataPorter_IDataPorterOperationBehavior___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Application.DataPorter.DataPorterService.html">DataPorterService</a> class.</p>
 </div>
 

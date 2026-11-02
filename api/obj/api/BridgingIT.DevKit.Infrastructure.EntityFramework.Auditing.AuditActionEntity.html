@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class AuditActionEntity | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class AuditActionEntity | bITdevKit API Reference ">
+      
+      <meta name="description" content="Owns one immutable action occurrence with scalar copies and lossless JSON.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity" class="text-break">
+Class AuditActionEntity  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.html">Auditing</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Owns one immutable action occurrence with scalar copies and lossless JSON.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Table(&quot;__Auditing_Actions&quot;)]
+public sealed class AuditActionEntity</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">AuditActionEntity</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureTableEntityConverter.html#BridgingIT_DevKit_Infrastructure_Azure_AzureTableEntityConverter_ToTableEntity__1___0_System_String_System_String_System_Text_Json_JsonSerializerOptions_BridgingIT_DevKit_Infrastructure_Azure_PropertyConverters___0__">AzureTableEntityConverter.ToTableEntity&lt;T&gt;(T, string, string, JsonSerializerOptions, PropertyConverters&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_examples">Examples</h2>
+  <pre><code class="lang-csharp">var entity = new AuditActionEntity();</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity__ctor" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.#ctor">
+  AuditActionEntity()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AuditActionEntity()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_AuditId_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.AuditId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_AuditId" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.AuditId">
+  AuditId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Owning execution identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid AuditId { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_AuditId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.AuditId;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_CompletedUtcTicks_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.CompletedUtcTicks*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_CompletedUtcTicks" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.CompletedUtcTicks">
+  CompletedUtcTicks
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captured completion UTC ticks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long CompletedUtcTicks { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_CompletedUtcTicks_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.CompletedUtcTicks;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_DocumentJson_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.DocumentJson*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_DocumentJson" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.DocumentJson">
+  DocumentJson
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Complete original versioned action fragment.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Required]
+public string DocumentJson { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_DocumentJson_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.DocumentJson;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Id_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.Id*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Id" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.Id">
+  Id
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stable action occurrence identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Key]
+public Guid Id { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Id_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.Id;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Key_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.Key*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Key" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.Key">
+  Key
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captured business/source action key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[MaxLength(512)]
+public string Key { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Key_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.Key;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Ordinal_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.Ordinal*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Ordinal" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.Ordinal">
+  Ordinal
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Original retained-array ordinal for lossless reconstruction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Ordinal { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Ordinal_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.Ordinal;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Outcome_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.Outcome*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Outcome" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.Outcome">
+  Outcome
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captured action outcome.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[MaxLength(32)]
+public string Outcome { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Outcome_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.Outcome;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_ParentActionId_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.ParentActionId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_ParentActionId" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.ParentActionId">
+  ParentActionId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Non-owning parent occurrence identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid? ParentActionId { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_ParentActionId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.ParentActionId;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_SearchJson_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.SearchJson*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_SearchJson" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.SearchJson">
+  SearchJson
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Normalized scalar/detail/resource/error projection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Required]
+public string SearchJson { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_SearchJson_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.SearchJson;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_SearchProjectionHash_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.SearchProjectionHash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_SearchProjectionHash" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.SearchProjectionHash">
+  SearchProjectionHash
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Digest computed from the actual database projection stream during a bounded read, never a stored trust anchor.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NotMapped]
+public string SearchProjectionHash { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_SearchProjectionHash_examples">Examples</h4>
+  <pre><code class="lang-csharp">var actual = entity.SearchProjectionHash;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Sequence_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.Sequence*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Sequence" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.Sequence">
+  Sequence
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Observed action admission sequence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long Sequence { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_Sequence_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.Sequence;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_StartedUtcTicks_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.StartedUtcTicks*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_StartedUtcTicks" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.AuditActionEntity.StartedUtcTicks">
+  StartedUtcTicks
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captured start UTC ticks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long StartedUtcTicks { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Auditing_AuditActionEntity_StartedUtcTicks_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.StartedUtcTicks;</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

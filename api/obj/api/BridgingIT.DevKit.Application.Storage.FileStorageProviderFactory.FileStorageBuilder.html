@@ -499,30 +499,24 @@ Class FileStorageProviderFactory.FileStorageBuilder
 
 
 
-  <a id="BridgingIT_DevKit_Application_Storage_FileStorageProviderFactory_FileStorageBuilder_UseLocal_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderFactory.FileStorageBuilder.UseLocal*"></a>
+  <a id="BridgingIT_DevKit_Application_Storage_FileStorageProviderFactory_FileStorageBuilder_WithAuditing_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderFactory.FileStorageBuilder.WithAuditing*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_FileStorageProviderFactory_FileStorageBuilder_UseLocal_System_String_System_String_System_Boolean_System_Nullable_System_TimeSpan__" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderFactory.FileStorageBuilder.UseLocal(System.String,System.String,System.Boolean,System.Nullable{System.TimeSpan})">
-  UseLocal(string, string, bool, TimeSpan?)
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileStorageProviderFactory_FileStorageBuilder_WithAuditing_BridgingIT_DevKit_Application_Storage_StorageAuditOptions_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderFactory.FileStorageBuilder.WithAuditing(BridgingIT.DevKit.Application.Storage.StorageAuditOptions)">
+  WithAuditing(StorageAuditOptions)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Configures a local file system storage provider.</p>
+  <div class="markdown level1 summary"><p>Selects one audit occurrence per provider call, excluding unrestricted paths and contents.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public FileStorageProviderFactory.FileStorageBuilder UseLocal(string locationName, string rootPath, bool ensureRoot = true, TimeSpan? lockTimeout = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public FileStorageProviderFactory.FileStorageBuilder WithAuditing(StorageAuditOptions options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>locationName</code> <span class="xref">string</span></dt>
-    <dd></dd>
-    <dt><code>rootPath</code> <span class="xref">string</span></dt>
-    <dd></dd>
-    <dt><code>ensureRoot</code> <span class="xref">bool</span></dt>
-    <dd></dd>
-    <dt><code>lockTimeout</code> <span class="xref">TimeSpan</span>?</dt>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageAuditOptions.html">StorageAuditOptions</a></dt>
     <dd></dd>
   </dl>
 
@@ -536,6 +530,9 @@ Class FileStorageProviderFactory.FileStorageBuilder
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_FileStorageProviderFactory_FileStorageBuilder_WithAuditing_BridgingIT_DevKit_Application_Storage_StorageAuditOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">builder.UseInMemory("exports").WithAuditing();</code></pre>
 
 
 

@@ -124,7 +124,7 @@ Integrates real-time watching, on-demand scanning, and a processor chain with ra
     <dt>Derived</dt>
     <dd>
       <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.InMemoryLocationHandler.html">InMemoryLocationHandler</a></div>
-      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.LocalLocationHandler.html">LocalLocationHandler</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.LocalLocationHandler.html">LocalLocationHandler</a></div>
     </dd>
   </dl>
 
@@ -912,6 +912,43 @@ IFileStorageProvider interface.</p>
 
 
 
+  <a id="BridgingIT_DevKit_Application_Storage_LocationHandlerBase_EnqueueFileEvent_" data-uid="BridgingIT.DevKit.Application.Storage.LocationHandlerBase.EnqueueFileEvent*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocationHandlerBase_EnqueueFileEvent_BridgingIT_DevKit_Application_Storage_FileEvent_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocationHandlerBase.EnqueueFileEvent(BridgingIT.DevKit.Application.Storage.FileEvent,System.Threading.CancellationToken)">
+  EnqueueFileEvent(FileEvent, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Queues the original event and copies a protected cause only from an admitted explicit scan.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void EnqueueFileEvent(FileEvent fileEvent, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fileEvent</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileEvent.html">FileEvent</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_LocationHandlerBase_EnqueueFileEvent_BridgingIT_DevKit_Application_Storage_FileEvent_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">this.EnqueueFileEvent(fileEvent, cancellationToken);</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Application_Storage_LocationHandlerBase_GetActiveProcessorsAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocationHandlerBase.GetActiveProcessorsAsync*"></a>
 
   <h3 id="BridgingIT_DevKit_Application_Storage_LocationHandlerBase_GetActiveProcessorsAsync" data-uid="BridgingIT.DevKit.Application.Storage.LocationHandlerBase.GetActiveProcessorsAsync">
@@ -1189,6 +1226,50 @@ Restarts the processing pipeline if previously paused.</p>
 
 
 
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocationHandlerBase_RunScanAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocationHandlerBase.RunScanAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocationHandlerBase_RunScanAsync_BridgingIT_DevKit_Application_Storage_FileScanOptions_BridgingIT_DevKit_Application_Storage_FileScanContext_System_Func_System_Threading_Tasks_Task_BridgingIT_DevKit_Application_Storage_FileScanContext___" data-uid="BridgingIT.DevKit.Application.Storage.LocationHandlerBase.RunScanAsync(BridgingIT.DevKit.Application.Storage.FileScanOptions,BridgingIT.DevKit.Application.Storage.FileScanContext,System.Func{System.Threading.Tasks.Task{BridgingIT.DevKit.Application.Storage.FileScanContext}})">
+  RunScanAsync(FileScanOptions, FileScanContext, Func&lt;Task&lt;FileScanContext&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Wraps one explicitly requested scan. Routine and automatic scans invoke no audit boundary.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;FileScanContext&gt; RunScanAsync(FileScanOptions options, FileScanContext scan, Func&lt;Task&lt;FileScanContext&gt;&gt; next)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileScanOptions.html">FileScanOptions</a></dt>
+    <dd></dd>
+    <dt><code>scan</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileScanContext.html">FileScanContext</a></dt>
+    <dd></dd>
+    <dt><code>next</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileScanContext.html">FileScanContext</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileScanContext.html">FileScanContext</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_LocationHandlerBase_RunScanAsync_BridgingIT_DevKit_Application_Storage_FileScanOptions_BridgingIT_DevKit_Application_Storage_FileScanContext_System_Func_System_Threading_Tasks_Task_BridgingIT_DevKit_Application_Storage_FileScanContext____examples">Examples</h4>
+  <pre><code class="lang-csharp">return this.RunScanAsync(options, context, () =&gt; ScanCoreAsync(context, options, cancellationToken));</code></pre>
 
 
 

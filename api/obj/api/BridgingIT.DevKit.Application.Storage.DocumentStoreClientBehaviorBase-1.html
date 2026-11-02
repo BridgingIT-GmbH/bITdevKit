@@ -131,6 +131,7 @@ Class DocumentStoreClientBehaviorBase&lt;T&gt;
   <dl class="typelist derived">
     <dt>Derived</dt>
     <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.AuditingDocumentStoreClientBehavior-1.html">AuditingDocumentStoreClientBehavior&lt;T&gt;</a></div>
       <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.CacheDocumentStoreClientBehavior-1.html">CacheDocumentStoreClientBehavior&lt;T&gt;</a></div>
       <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.ChaosDocumentStoreClientBehavior-1.html">ChaosDocumentStoreClientBehavior&lt;T&gt;</a></div>
       <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStorePermalinkBehavior-1.html">DocumentStorePermalinkBehavior&lt;T&gt;</a></div>
@@ -710,6 +711,60 @@ produces a not-found failure.</p>
   <pre><code class="lang-csharp">var result = await documents.GetAsync(
     new DocumentKey("customers", "42"),
     cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientBehaviorBase_1_GetManyAsync_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientBehaviorBase`1.GetManyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientBehaviorBase_1_GetManyAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Storage_DocumentKey__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientBehaviorBase`1.GetManyAsync(System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Storage.DocumentKey},System.Threading.CancellationToken)">
+  GetManyAsync(IReadOnlyList&lt;DocumentKey&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets many documents by exact key with a bounded number of provider round trips.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;Result&lt;IReadOnlyList&lt;Result&lt;DocumentEntry&lt;T&gt;&gt;&gt;&gt;&gt; GetManyAsync(IReadOnlyList&lt;DocumentKey&gt; keys, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>keys</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a>&gt;</dt>
+    <dd><p>The exact keys to read. Duplicates are allowed and are read once.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentEntry-1.html">DocumentEntry</a>&lt;T&gt;&gt;&gt;&gt;&gt;</dt>
+    <dd><p>An outer failure for request-level errors (null keys, an invalid key, or more keys than
+<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.html#BridgingIT_DevKit_Application_Storage_DocumentStoreOptions_MaxTake">MaxTake</a>) or a provider-wide failure. Otherwise a list with exactly one entry per
+input key in input order. Each entry is the result <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html#BridgingIT_DevKit_Application_Storage_IDocumentStoreClient_1_GetAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_">GetAsync(DocumentKey, CancellationToken)</a> returns for that key, so missing and
+expired documents are not-found failures and corrupt content is an integrity failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientBehaviorBase_1_GetManyAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Storage_DocumentKey__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await documents.GetManyAsync(
+    [new DocumentKey("customers", "42"), new DocumentKey("customers", "43")],
+    cancellationToken);
+foreach (var entry in result.Value)
+{
+    if (entry.IsSuccess) { var customer = entry.Value.Value; }
+}</code></pre>
 
 
 

@@ -329,6 +329,51 @@ Interface IBroadcastingDiagnostics
 
 
 
+  <a id="BridgingIT_DevKit_Common_IBroadcastingDiagnostics_SearchNodesAsync_" data-uid="BridgingIT.DevKit.Common.IBroadcastingDiagnostics.SearchNodesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IBroadcastingDiagnostics_SearchNodesAsync_BridgingIT_DevKit_Common_FilterModel_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IBroadcastingDiagnostics.SearchNodesAsync(BridgingIT.DevKit.Common.FilterModel,System.Threading.CancellationToken)">
+  SearchNodesAsync(FilterModel, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Searches safe node registrations with scalar filters, ordering, and paging.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;ResultPaged&lt;BroadcastNodeRegistration&gt;&gt; SearchNodesAsync(FilterModel filter, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd><p>The filter criteria and one-based page. The default page size is 50, with a maximum of 1000.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.BroadcastNodeRegistration.html">BroadcastNodeRegistration</a>&gt;&gt;</dt>
+    <dd><p>The matching registration page and the total number of matches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_IBroadcastingDiagnostics_SearchNodesAsync_BridgingIT_DevKit_Common_FilterModel_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var nodes = await diagnostics.SearchNodesAsync(new FilterModel { PageSize = 25 });</code></pre>
+
+
+
+
+
+
 
 </article>
 

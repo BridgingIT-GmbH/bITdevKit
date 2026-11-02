@@ -296,6 +296,41 @@ Provides filters, processor registrations and rate limiting for that location.</
 </h2>
 
 
+  <a id="BridgingIT_DevKit_Application_Storage_LocationOptions_AuditOptions_" data-uid="BridgingIT.DevKit.Application.Storage.LocationOptions.AuditOptions*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocationOptions_AuditOptions" data-uid="BridgingIT.DevKit.Application.Storage.LocationOptions.AuditOptions">
+  AuditOptions
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets local audit selection, or null to use the explicit global selection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FileMonitoringAuditOptions AuditOptions { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringAuditOptions.html">FileMonitoringAuditOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_LocationOptions_AuditOptions_examples">Examples</h4>
+  <pre><code class="lang-csharp">var selection = location.AuditOptions;</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Application_Storage_LocationOptions_FileBlackListFilter_" data-uid="BridgingIT.DevKit.Application.Storage.LocationOptions.FileBlackListFilter*"></a>
 
   <h3 id="BridgingIT_DevKit_Application_Storage_LocationOptions_FileBlackListFilter" data-uid="BridgingIT.DevKit.Application.Storage.LocationOptions.FileBlackListFilter">
@@ -598,6 +633,46 @@ Each entry describes a processor type, its behaviors and optional configuration 
 
 
 
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocationOptions_WithAuditing_" data-uid="BridgingIT.DevKit.Application.Storage.LocationOptions.WithAuditing*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocationOptions_WithAuditing_BridgingIT_DevKit_Application_Storage_FileMonitoringAuditOptions_" data-uid="BridgingIT.DevKit.Application.Storage.LocationOptions.WithAuditing(BridgingIT.DevKit.Application.Storage.FileMonitoringAuditOptions)">
+  WithAuditing(FileMonitoringAuditOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Selects this location's audit boundaries without enabling capture for other locations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LocationOptions WithAuditing(FileMonitoringAuditOptions options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringAuditOptions.html">FileMonitoringAuditOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LocationOptions.html">LocationOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_LocationOptions_WithAuditing_BridgingIT_DevKit_Application_Storage_FileMonitoringAuditOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">location.WithAuditing(new() { Scans = true });</code></pre>
 
 
 

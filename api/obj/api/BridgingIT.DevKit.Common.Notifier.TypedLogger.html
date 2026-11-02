@@ -177,7 +177,7 @@ public static void LogError(ILogger logger, string logKey, Exception ex, string 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[LoggerMessage(1, LogLevel.Error, &quot;[{LogKey}] notification failed (type={NotificationType}, id={NotificationId}) -&gt; took {TimeElapsed} ms&quot;)]
+    <pre><code class="lang-csharp hljs">[LoggerMessage(2, LogLevel.Error, &quot;[{LogKey}] notification failed (type={NotificationType}, id={NotificationId}) -&gt; took {TimeElapsed} ms&quot;)]
 public static void LogFailed(ILogger logger, string logKey, string notificationType, string notificationId, long timeElapsed)</code></pre>
   </div>
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class MetricsDocumentStoreClientBehavior&lt;T&gt; | bITdevKit API Reference ">
       
-      <meta name="description" content="Emits low-cardinality operation counts and durations.">
+      <meta name="description" content="Emits low-cardinality operation counts, durations, failures, bytes, and transfer rates for every document operation.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,7 @@ Class MetricsDocumentStoreClientBehavior&lt;T&gt;
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Emits low-cardinality operation counts and durations.</p>
+  <div class="markdown summary"><p>Emits low-cardinality operation counts, durations, failures, bytes, and transfer rates for every document operation.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -133,24 +133,6 @@ Class MetricsDocumentStoreClientBehavior&lt;T&gt;
   <dl class="typelist inheritedMembers">
     <dt>Inherited Members</dt>
     <dd>
-    <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClientBehaviorBase-1.html#BridgingIT_DevKit_Application_Storage_DocumentStoreClientBehaviorBase_1_ListPageAsync_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_Threading_CancellationToken_">DocumentStoreClientBehaviorBase&lt;T&gt;.ListPageAsync(DocumentQuery, CancellationToken)</a>
-    </div>
-    <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClientBehaviorBase-1.html#BridgingIT_DevKit_Application_Storage_DocumentStoreClientBehaviorBase_1_CountAsync_BridgingIT_DevKit_Application_Storage_DocumentCountQuery_System_Threading_CancellationToken_">DocumentStoreClientBehaviorBase&lt;T&gt;.CountAsync(DocumentCountQuery, CancellationToken)</a>
-    </div>
-    <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClientBehaviorBase-1.html#BridgingIT_DevKit_Application_Storage_DocumentStoreClientBehaviorBase_1_ExistsAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_">DocumentStoreClientBehaviorBase&lt;T&gt;.ExistsAsync(DocumentKey, CancellationToken)</a>
-    </div>
-    <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClientBehaviorBase-1.html#BridgingIT_DevKit_Application_Storage_DocumentStoreClientBehaviorBase_1_UpsertManyAsync_System_Collections_Generic_IReadOnlyCollection_BridgingIT_DevKit_Application_Storage_DocumentWrite__0___System_Threading_CancellationToken_">DocumentStoreClientBehaviorBase&lt;T&gt;.UpsertManyAsync(IReadOnlyCollection&lt;DocumentWrite&lt;T&gt;&gt;, CancellationToken)</a>
-    </div>
-    <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClientBehaviorBase-1.html#BridgingIT_DevKit_Application_Storage_DocumentStoreClientBehaviorBase_1_UpdatePropertiesAsync_BridgingIT_DevKit_Application_Storage_DocumentPropertiesUpdate_System_Threading_CancellationToken_">DocumentStoreClientBehaviorBase&lt;T&gt;.UpdatePropertiesAsync(DocumentPropertiesUpdate, CancellationToken)</a>
-    </div>
-    <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClientBehaviorBase-1.html#BridgingIT_DevKit_Application_Storage_DocumentStoreClientBehaviorBase_1_DeleteManyAsync_System_Collections_Generic_IReadOnlyCollection_BridgingIT_DevKit_Application_Storage_DocumentDelete__System_Threading_CancellationToken_">DocumentStoreClientBehaviorBase&lt;T&gt;.DeleteManyAsync(IReadOnlyCollection&lt;DocumentDelete&gt;, CancellationToken)</a>
-    </div>
     <div>
       <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClientBehaviorBase-1.html#BridgingIT_DevKit_Application_Storage_DocumentStoreClientBehaviorBase_1_InnerClient">DocumentStoreClientBehaviorBase&lt;T&gt;.InnerClient</a>
     </div>
@@ -313,6 +295,13 @@ Class MetricsDocumentStoreClientBehavior&lt;T&gt;
   <pre><code class="lang-csharp">var behavior = new MetricsDocumentStoreClientBehavior&lt;Person&gt;(inner, metricsService);</code></pre>
 
 
+  <h2 id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Instruments (tags <code>operation</code> and <code>document.type</code>):
+<code>document.operations</code>, <code>document.operation.duration</code> (ms), <code>document.operation.failures</code>,
+<code>document.items</code> (successfully read or written items),
+<code>document.bytes</code> (logical serialized bytes read or written), and <code>document.bytes_per_second</code> (<code>By/s</code>,
+recorded for successful non-empty reads and writes only). A batch that stops at a failed key counts as a failure.</p>
+</div>
 
 
   <h2 class="section" id="constructors">Constructors
@@ -337,9 +326,11 @@ Class MetricsDocumentStoreClientBehavior&lt;T&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>inner</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient</a>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The decorated document client.</p>
+</dd>
     <dt><code>metricsService</code> <a class="xref" href="BridgingIT.DevKit.Common.IMetricsService.html">IMetricsService</a></dt>
-    <dd></dd>
+    <dd><p>The optional shared metrics service.</p>
+</dd>
   </dl>
 
 
@@ -348,6 +339,9 @@ Class MetricsDocumentStoreClientBehavior&lt;T&gt;
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1__ctor_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient__0__BridgingIT_DevKit_Common_IMetricsService__examples">Examples</h4>
+  <pre><code class="lang-csharp">var behavior = new MetricsDocumentStoreClientBehavior&lt;Person&gt;(inner, metricsService);</code></pre>
+
 
 
 
@@ -355,6 +349,55 @@ Class MetricsDocumentStoreClientBehavior&lt;T&gt;
 
   <h2 class="section" id="methods">Methods
 </h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_CountAsync_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.CountAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_CountAsync_BridgingIT_DevKit_Application_Storage_DocumentCountQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.CountAsync(BridgingIT.DevKit.Application.Storage.DocumentCountQuery,System.Threading.CancellationToken)">
+  CountAsync(DocumentCountQuery, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Counts documents matching a query that are visible at the operation cutoff.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;long&gt;&gt; CountAsync(DocumentCountQuery query, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentCountQuery.html">DocumentCountQuery</a></dt>
+    <dd><p>The count query containing key filters and explicit full-scan approval when no key constraint is supplied.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A result containing the number of matching, non-expired documents.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_CountAsync_BridgingIT_DevKit_Application_Storage_DocumentCountQuery_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var query = DocumentQueries.Count()
+    .ForKey("customers", "DE-")
+    .WithRowKeyPrefix()
+    .Build();
+var count = await documents.CountAsync(query, cancellationToken);</code></pre>
+
+
+
+
 
 
   <a id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_DeleteAsync_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.DeleteAsync*"></a>
@@ -402,6 +445,109 @@ failure. Expired physical records can still be deleted explicitly.</p>
   <pre><code class="lang-csharp">var result = await documents.DeleteAsync(
     current.Key,
     new DocumentDeleteOptions { IfMatchETag = current.ETag },
+    cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_DeleteManyAsync_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.DeleteManyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_DeleteManyAsync_System_Collections_Generic_IReadOnlyCollection_BridgingIT_DevKit_Application_Storage_DocumentDelete__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.DeleteManyAsync(System.Collections.Generic.IReadOnlyCollection{BridgingIT.DevKit.Application.Storage.DocumentDelete},System.Threading.CancellationToken)">
+  DeleteManyAsync(IReadOnlyCollection&lt;DocumentDelete&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes an ordered collection of physical documents and reports explicit partial completion.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;DocumentBatchResult&lt;DocumentKey&gt;&gt;&gt; DeleteManyAsync(IReadOnlyCollection&lt;DocumentDelete&gt; deletes, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>deletes</code> <span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDelete.html">DocumentDelete</a>&gt;</dt>
+    <dd><p>The exact keys and optional per-item ETag conditions to validate completely and process in input order.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentBatchResult-1.html">DocumentBatchResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a>&gt;&gt;&gt;</dt>
+    <dd><p>A result containing successfully processed keys in input order and the first failed key when processing stops.
+The complete collection is not guaranteed to be atomic across provider transaction boundaries.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_DeleteManyAsync_System_Collections_Generic_IReadOnlyCollection_BridgingIT_DevKit_Application_Storage_DocumentDelete__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var deletes = entries
+    .Select(entry =&gt; new DocumentDelete(
+        entry.Key,
+        new DocumentDeleteOptions { IfMatchETag = entry.ETag }))
+    .ToArray();
+var result = await documents.DeleteManyAsync(deletes, cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_DeleteManyAsync_System_Collections_Generic_IReadOnlyCollection_BridgingIT_DevKit_Application_Storage_DocumentDelete__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>All input is materialized and validated before the first provider delete. Deleting an already absent item is
+idempotent, while an ETag mismatch is reported as a conflict and can leave earlier deletes committed.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_ExistsAsync_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.ExistsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_ExistsAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.ExistsAsync(BridgingIT.DevKit.Application.Storage.DocumentKey,System.Threading.CancellationToken)">
+  ExistsAsync(DocumentKey, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a document exists and is visible by exact key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;bool&gt;&gt; ExistsAsync(DocumentKey key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+    <dd><p>The exact partition and row key identifying the document.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>A result containing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the document exists and has not expired at the operation cutoff;
+otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_ExistsAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var exists = await documents.ExistsAsync(
+    new DocumentKey("customers", "42"),
     cancellationToken);</code></pre>
 
 
@@ -508,6 +654,170 @@ produces a not-found failure.</p>
 
 
 
+  <a id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_GetManyAsync_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.GetManyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_GetManyAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Storage_DocumentKey__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.GetManyAsync(System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Storage.DocumentKey},System.Threading.CancellationToken)">
+  GetManyAsync(IReadOnlyList&lt;DocumentKey&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets many documents by exact key with a bounded number of provider round trips.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;IReadOnlyList&lt;Result&lt;DocumentEntry&lt;T&gt;&gt;&gt;&gt;&gt; GetManyAsync(IReadOnlyList&lt;DocumentKey&gt; keys, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>keys</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a>&gt;</dt>
+    <dd><p>The exact keys to read. Duplicates are allowed and are read once.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentEntry-1.html">DocumentEntry</a>&lt;T&gt;&gt;&gt;&gt;&gt;</dt>
+    <dd><p>An outer failure for request-level errors (null keys, an invalid key, or more keys than
+<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.html#BridgingIT_DevKit_Application_Storage_DocumentStoreOptions_MaxTake">MaxTake</a>) or a provider-wide failure. Otherwise a list with exactly one entry per
+input key in input order. Each entry is the result <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html#BridgingIT_DevKit_Application_Storage_IDocumentStoreClient_1_GetAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_">GetAsync(DocumentKey, CancellationToken)</a> returns for that key, so missing and
+expired documents are not-found failures and corrupt content is an integrity failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_GetManyAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Storage_DocumentKey__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await documents.GetManyAsync(
+    [new DocumentKey("customers", "42"), new DocumentKey("customers", "43")],
+    cancellationToken);
+foreach (var entry in result.Value)
+{
+    if (entry.IsSuccess) { var customer = entry.Value.Value; }
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_ListPageAsync_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.ListPageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_ListPageAsync_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.ListPageAsync(BridgingIT.DevKit.Application.Storage.DocumentQuery,System.Threading.CancellationToken)">
+  ListPageAsync(DocumentQuery, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists one bounded, deterministically ordered page of visible document keys without returning document payloads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;DocumentKeyPage&gt;&gt; ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQuery.html">DocumentQuery</a></dt>
+    <dd><p>The bounded query, including key filters, page size, optional continuation token, and explicit full-scan approval.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKeyPage.html">DocumentKeyPage</a>&gt;&gt;</dt>
+    <dd><p>A result containing one key-only page and an opaque continuation token when more matching keys are available.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_ListPageAsync_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var query = DocumentQueries.Query()
+    .ForKey("customers", string.Empty)
+    .WithRowKeyPrefix()
+    .Take(250)
+    .Build();
+var page = await documents.ListPageAsync(query, cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_ListPageAsync_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Providers that support key-only projection can execute this operation without materializing serialized payloads.
+Use this operation for bounded maintenance workflows that do not need document values.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_UpdatePropertiesAsync_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.UpdatePropertiesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_UpdatePropertiesAsync_BridgingIT_DevKit_Application_Storage_DocumentPropertiesUpdate_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.UpdatePropertiesAsync(BridgingIT.DevKit.Application.Storage.DocumentPropertiesUpdate,System.Threading.CancellationToken)">
+  UpdatePropertiesAsync(DocumentPropertiesUpdate, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Atomically updates custom properties and expiration without replacing or reserializing the document payload.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;DocumentInfo&gt;&gt; UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>update</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentPropertiesUpdate.html">DocumentPropertiesUpdate</a></dt>
+    <dd><p>The metadata mutation. A null property bag preserves current properties; a non-null bag replaces them.
+Expiration defaults to preserve and an optional ETag can guard the update.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentInfo.html">DocumentInfo</a>&gt;&gt;</dt>
+    <dd><p>A result containing updated metadata. The logical content hash remains unchanged. A failed ETag condition produces
+a conflict failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_UpdatePropertiesAsync_BridgingIT_DevKit_Application_Storage_DocumentPropertiesUpdate_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var properties = new PropertyBag();
+properties.Set("reviewed", true);
+var result = await documents.UpdatePropertiesAsync(
+    new DocumentPropertiesUpdate(new DocumentKey("customers", "42"))
+    {
+        IfMatchETag = current.ETag,
+        Properties = properties,
+        Expiration = ExpirationChange.Clear
+    },
+    cancellationToken);</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_UpsertAsync_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.UpsertAsync*"></a>
 
   <h3 id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_UpsertAsync_BridgingIT_DevKit_Application_Storage_DocumentKey__0_BridgingIT_DevKit_Application_Storage_DocumentWriteOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.UpsertAsync(BridgingIT.DevKit.Application.Storage.DocumentKey,`0,BridgingIT.DevKit.Application.Storage.DocumentWriteOptions,System.Threading.CancellationToken)">
@@ -565,6 +875,62 @@ expected-hash mismatches produce an integrity failure.</p>
     cancellationToken);</code></pre>
 
 
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_UpsertManyAsync_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.UpsertManyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_UpsertManyAsync_System_Collections_Generic_IReadOnlyCollection_BridgingIT_DevKit_Application_Storage_DocumentWrite__0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.UpsertManyAsync(System.Collections.Generic.IReadOnlyCollection{BridgingIT.DevKit.Application.Storage.DocumentWrite{`0}},System.Threading.CancellationToken)">
+  UpsertManyAsync(IReadOnlyCollection&lt;DocumentWrite&lt;T&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates or replaces an ordered collection of documents and reports explicit partial completion.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;DocumentBatchResult&lt;DocumentInfo&gt;&gt;&gt; UpsertManyAsync(IReadOnlyCollection&lt;DocumentWrite&lt;T&gt;&gt; writes, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>writes</code> <span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentWrite-1.html">DocumentWrite</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The writes to validate completely and process in input order. Each item can carry independent concurrency,
+integrity, property, and expiration options.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentBatchResult-1.html">DocumentBatchResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentInfo.html">DocumentInfo</a>&gt;&gt;&gt;</dt>
+    <dd><p>A result containing metadata for successful writes in input order and the first failed key when processing stops.
+The complete collection is not guaranteed to be atomic across provider transaction boundaries.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_UpsertManyAsync_System_Collections_Generic_IReadOnlyCollection_BridgingIT_DevKit_Application_Storage_DocumentWrite__0___System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var writes = customers
+    .Select(customer =&gt; new DocumentWrite&lt;Customer&gt;(
+        new DocumentKey("customers", customer.Id),
+        customer))
+    .ToArray();
+var result = await documents.UpsertManyAsync(writes, cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_UpsertManyAsync_System_Collections_Generic_IReadOnlyCollection_BridgingIT_DevKit_Application_Storage_DocumentWrite__0___System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>All input is materialized and validated before the first provider write. Once processing begins, a provider failure
+can leave earlier items committed; callers must inspect the returned <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentBatchResult-1.html">DocumentBatchResult&lt;T&gt;</a>.</p>
+</div>
 
 
 

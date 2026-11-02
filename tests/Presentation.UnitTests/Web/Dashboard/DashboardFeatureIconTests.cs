@@ -45,6 +45,7 @@ public sealed class DashboardFeatureIconTests
     [InlineData("storage.permalinks", "storage-permalinks")]
     [InlineData("change-history", "change-history")]
     [InlineData("auditing", "auditing")]
+    [InlineData("entities", "entities")]
     public void GetSvg_KnownPage_ReturnsDecorativeFeatureIcon(string key, string featureId)
     {
         // Act

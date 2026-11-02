@@ -128,6 +128,34 @@ public static class CoreModuleExtensions
     }
 
     /// <summary>
+    /// Configures the Entities dashboard page for the Core ActiveEntity types. The roles may edit entities;
+    /// every other dashboard user gets a read-only view. Non-public setters are enabled because the
+    /// Core entities use private setters and constructors.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="editRoles">The roles that may create, update and delete entities.</param>
+    /// <returns>The service collection for continued configuration.</returns>
+    /// <example><code>services.AddCoreEntitiesDashboard(Role.Administrators);</code></example>
+    public static IServiceCollection AddCoreEntitiesDashboard(this IServiceCollection services, params string[] editRoles)
+    {
+        return services.AddEntitiesDashboard(options =>
+        {
+            foreach (var role in editRoles)
+            {
+                options.EditRoles.Add(role);
+            }
+
+            options.Entity<City>(e => e.AllowNonPublicSetters());
+            options.Entity<UserCity>(e => e.AllowNonPublicSetters());
+            options.Entity<CurrentWeather>(e => e.AllowNonPublicSetters());
+            options.Entity<WeatherForecast>(e => e.AllowNonPublicSetters());
+            options.Entity<WeatherReport>(e => e.AllowNonPublicSetters());
+            options.Entity<UserProfile>(e => e.AllowNonPublicSetters());
+            options.Entity<UserSubscription>(e => e.AllowNonPublicSetters());
+        });
+    }
+
+    /// <summary>
     /// Adds the local OpenAI-compatible weather report text generator.
     /// </summary>
     public static IServiceCollection AddWeatherReportTextGeneration(

@@ -38,7 +38,8 @@
                                ../../docs/assets/features/storage-blobs.svg;
                                ../../docs/assets/features/storage-permalinks.svg;
                                ../../docs/assets/features/change-history.svg;
-                               ../../docs/assets/features/auditing.svg"
+                               ../../docs/assets/features/auditing.svg;
+                               ../../docs/assets/features/entities.svg"
                       LogicalName="BridgingIT.DevKit.Presentation.Web.Dashboard.Icons.%(Filename)%(Extension)" />
   </ItemGroup>
 

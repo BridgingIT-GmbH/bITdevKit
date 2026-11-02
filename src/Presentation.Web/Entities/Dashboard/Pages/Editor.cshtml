@@ -1,0 +1,159 @@
+@inherits RazorSlice<EntitiesDashboardEditorViewModel>
+@{
+    var isCreate = Model.Mode == "create";
+    var title = isCreate ? $"New {Model.Entity.Name}" : $"Edit {Model.Entity.Name} {Model.Id}";
+    var blocked = !Model.CanEdit || Model.Error is not null;
+}
+<dialog id="entities-editor" class="entities-dialog" aria-labelledby="entities-editor-title" data-entities-editor data-mode="@Model.Mode" data-entity="@Model.Entity.Key" data-source="@Model.Source" data-entity-id="@Model.Id" data-blocked="@(blocked ? "true" : "false")" data-concurrency-version="@Model.ConcurrencyVersion">
+    <form id="entities-editor-form" class="entities-dialog-form" novalidate>
+        <div class="entities-dialog-head">
+            <h2 id="entities-editor-title" class="entities-dialog-title">@title</h2>
+            <button type="button" class="btn-close" data-entities-editor-cancel aria-label="Close"></button>
+        </div>
+        <div class="entities-dialog-body">
+            <div id="entities-editor-error" class="entities-error" role="alert" hidden>@Model.Error</div>
+            @if (blocked)
+            {
+                <div class="entities-error" role="alert">@(Model.Error ?? Model.CapabilityNote ?? "Editing is not available for this entity.")@if (Model.CorrelationId is not null) { <span> (Correlation ID: @Model.CorrelationId)</span> }</div>
+            }
+            else
+            {
+                @if (!isCreate && !Model.Entity.IsConcurrency)
+                {
+                    <p class="entities-notice" id="entities-lww-note">This entity has no concurrency token: the last write wins, concurrent changes may be overwritten.</p>
+                }
+                @if (!isCreate && Model.ConcurrencyVersion is not null)
+                {
+                    <input type="hidden" name="concurrencyVersion" value="@Model.ConcurrencyVersion" />
+                }
+                foreach (var field in Model.Fields)
+                {
+                    var property = field.Property;
+                    if (property.EditorKind == EntitiesDashboardEditorKind.Unsupported)
+                    {
+                        continue;
+                    }
+
+                    var path = property.Path;
+                    var inputId = "entities-field-" + path.Replace('.', '-');
+                    var editable = field.Editable && !property.IsReadOnly;
+                    var isNull = field.Value is null;
+                    var text = Text(field.Value);
+                    var canNull = editable && property.IsNullable && !property.IsMasked;
+                    <div class="entities-field" data-entities-field="@path" data-kind="@property.EditorKind" data-nullable="@(property.IsNullable ? "true" : "false")">
+                        <div class="entities-field-meta">
+                            <label for="@inputId">@path</label>
+                            <span>@property.UnderlyingType.Name@(property.IsNullable ? "?" : null)</span>
+                            @if (property.IsId) { <span class="badge text-bg-secondary">id</span> }
+                        </div>
+                        @if (!editable)
+                        {
+                            <input type="text" id="@inputId" class="form-control form-control-sm" value="@(property.IsMasked ? property.MaskText : text)" disabled aria-describedby="@(inputId)-note" />
+                            <div id="@(inputId)-note" class="entities-notice">Read-only@(property.ReadOnlyReason is not null ? ": " + property.ReadOnlyReason : null)</div>
+                        }
+                        else if (property.IsMasked)
+                        {
+                            <div class="entities-field-row">
+                                <input type="checkbox" class="form-check-input" id="@(inputId)-replace" data-entities-replace="@path" />
+                                <label for="@(inputId)-replace">Replace value</label>
+                                <input type="text" id="@inputId" name="@path" class="form-control form-control-sm" data-entities-input autocomplete="off" placeholder="@property.MaskText" disabled aria-label="New value for @path" />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="entities-field-row">
+                                @switch (property.EditorKind)
+                                {
+                                    case EntitiesDashboardEditorKind.Boolean:
+                                        <select id="@inputId" name="@path" class="form-select form-select-sm" data-entities-input disabled="@isNull">
+                                            <option value="true" selected="@(text == "true")">true</option>
+                                            <option value="false" selected="@(text != "true")">false</option>
+                                        </select>
+                                        break;
+                                    case EntitiesDashboardEditorKind.Enum:
+                                    case EntitiesDashboardEditorKind.Enumeration:
+                                        <select id="@inputId" name="@path" class="form-select form-select-sm" data-entities-input disabled="@isNull">
+                                            @foreach (var option in field.Options)
+                                            {
+                                                <option value="@option.Value" selected="@(option.Value == text)">@option.Label</option>
+                                            }
+                                        </select>
+                                        break;
+                                    case EntitiesDashboardEditorKind.Json:
+                                        <textarea id="@inputId" name="@path" class="form-control form-control-sm" rows="6" spellcheck="false" data-entities-input disabled="@isNull">@Pretty(text)</textarea>
+                                        break;
+                                    case EntitiesDashboardEditorKind.Guid:
+                                        <input type="text" id="@inputId" name="@path" class="form-control form-control-sm" value="@text" spellcheck="false" autocomplete="off" data-entities-input disabled="@isNull" />
+                                        if (isCreate)
+                                        {
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" data-entities-new-guid="@path">New Guid</button>
+                                        }
+                                        break;
+                                    case EntitiesDashboardEditorKind.DateTime:
+                                        <input type="text" id="@inputId" name="@path" class="form-control form-control-sm" value="@text" placeholder="ISO 8601, e.g. 2025-01-31T12:00:00Z" autocomplete="off" data-entities-input disabled="@isNull" />
+                                        break;
+                                    case EntitiesDashboardEditorKind.Number:
+                                        <input type="text" inputmode="decimal" id="@inputId" name="@path" class="form-control form-control-sm" value="@text" autocomplete="off" data-entities-input disabled="@isNull" />
+                                        break;
+                                    default:
+                                        <input type="text" id="@inputId" name="@path" class="form-control form-control-sm" value="@text" autocomplete="off" data-entities-input disabled="@isNull" />
+                                        break;
+                                }
+                                @if (canNull)
+                                {
+                                    <input type="checkbox" class="form-check-input" id="@(inputId)-null" data-entities-null="@path" checked="@(isNull && !isCreate)" />
+                                    <label for="@(inputId)-null">null</label>
+                                }
+                            </div>
+                            @foreach (var member in property.Members.Where(m => m.IsMasked && !m.IsReadOnly))
+                            {
+                                var memberPath = path + "." + member.Name;
+                                var memberId = "entities-field-" + memberPath.Replace('.', '-');
+                                <div class="entities-member-replace">
+                                    <input type="checkbox" class="form-check-input" id="@(memberId)-replace" data-entities-replace-member="@memberPath" />
+                                    <label for="@(memberId)-replace">Replace @member.Name</label>
+                                    <input type="text" id="@memberId" name="@memberPath" class="form-control form-control-sm" data-entities-member-replace autocomplete="off" placeholder="@member.MaskText" disabled aria-label="New value for @memberPath" />
+                                </div>
+                            }
+                        }
+                        <div class="entities-field-error" data-field-error="@path" role="alert" hidden></div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="entities-dialog-foot">
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-entities-editor-cancel>@(blocked ? "Close" : "Cancel")</button>
+            @if (!blocked)
+            {
+                <button type="submit" class="btn btn-primary btn-sm" id="entities-editor-submit" data-entities-editor-submit>OK</button>
+            }
+        </div>
+    </form>
+</dialog>
+@functions {
+    private static string Text(object value) => value switch
+    {
+        null => string.Empty,
+        bool flag => flag ? "true" : "false",
+        IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
+        _ => value.ToString()
+    };
+
+    private static string Pretty(string json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return json;
+        }
+
+        try
+        {
+            using var document = System.Text.Json.JsonDocument.Parse(json);
+            return System.Text.Json.JsonSerializer.Serialize(document.RootElement, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return json;
+        }
+    }
+}

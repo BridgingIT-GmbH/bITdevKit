@@ -1,0 +1,63 @@
+@inherits RazorSlice<EntitiesDashboardViewModel>
+@{
+    var query = Model.Filter?.Query;
+    var visibleColumns = query?.Columns ?? [];
+    var showDetail = Model.Mode == "detail" && Model.Detail is not null;
+}
+<div id="entities-content" class="entities-content">
+    @(await RenderPartialAsync<Toolbar, EntitiesDashboardViewModel>(Model))
+    <div id="entities-status" class="entities-status" role="status" aria-live="polite"></div>
+    @if (Model.CanEdit && Model.Entity.CapabilityNote is not null)
+    {
+        <p id="entities-capability-note" class="entities-notice entities-edit-only">@Model.Entity.CapabilityNote</p>
+    }
+    <div id="entities-table-region" class="entities-table-region card">
+      <div class="card-body p-2">
+        <div id="entities-scroll" class="entities-scroll table-responsive">
+            <table id="entities-table" class="table table-sm align-middle entities-table" aria-label="@Model.Entity.Name records">
+                <thead>
+                    <tr>
+                        @if (Model.CanEdit)
+                        {
+                            <th scope="col" class="entities-select-col entities-edit-only"><input type="checkbox" class="form-check-input" id="entities-select-all" data-entities-select-all aria-label="Select all loaded records" /></th>
+                        }
+                        @foreach (var column in Model.Columns)
+                        {
+                            var sorted = string.Equals(query?.Sort, column.Path, StringComparison.OrdinalIgnoreCase);
+                            <th scope="col" data-column="@column.Path" hidden="@(!column.IsId && visibleColumns.Count > 0 && !visibleColumns.Contains(column.Path, StringComparer.OrdinalIgnoreCase))" aria-sort="@(sorted ? (query.Descending ? "descending" : "ascending") : (column.IsSortable ? "none" : null))">
+                                @if (column.IsSortable)
+                                {
+                                    <button type="button" class="entities-sort" data-entities-sort="@column.Path" aria-pressed="@(sorted ? "true" : "false")" title="Sort by @column.Path">@column.Path @if (sorted) { <i class="bi @(query.Descending ? "bi-caret-down-fill" : "bi-caret-up-fill")" aria-hidden="true"></i> }</button>
+                                }
+                                else
+                                {
+                                    <span>@column.Path</span>
+                                }
+                            </th>
+                        }
+                        <th scope="col" class="entities-actions-col"><span class="visually-hidden">Actions</span></th>
+                    </tr>
+                </thead>
+                <tbody id="entities-rows">
+                    @if (Model.Rows is not null)
+                    {
+                        @(await RenderPartialAsync<Rows, EntitiesDashboardRowsViewModel>(Model.Rows))
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (Model.Rows is not null)
+        {
+            @(await RenderPartialAsync<LoadMore, EntitiesDashboardRowsViewModel>(Model.Rows))
+        }
+      </div>
+    </div>
+    <dialog id="entities-detail-dialog" class="entities-dialog entities-detail-dialog" aria-label="@Model.Entity.Name record">
+        <div id="entities-detail-region" class="entities-detail-region" data-entities-initial-id="@(showDetail ? Model.Detail.Id : null)">
+            @if (showDetail)
+            {
+                @(await RenderPartialAsync<Detail, EntitiesDashboardDetailViewModel>(Model.Detail))
+            }
+        </div>
+    </dialog>
+</div>

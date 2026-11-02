@@ -1,0 +1,87 @@
+@inherits RazorSlice<EntitiesDashboardRowsViewModel>
+@{
+    var columnCount = Model.Columns.Count + (Model.CanEdit ? 1 : 0) + 1;
+    var canClone = Model.CanEdit && Model.Entity?.CanCreate == true;
+}
+@if (Model.Error is not null)
+{
+    <tr data-entities-error><td colspan="@columnCount" class="entities-table-error" role="alert">@Model.Error @if (Model.CorrelationId is not null) { <span>(Correlation ID: @Model.CorrelationId)</span> }</td></tr>
+}
+else if (Model.Rows.Count == 0 && Model.Batch == 1)
+{
+    <tr data-entities-empty><td colspan="@columnCount" class="entities-empty">No records match the current filter.</td></tr>
+}
+else
+{
+    foreach (var (row, index) in Model.Rows.Select((r, i) => (r, i)))
+    {
+        var id = Model.GetId(row);
+        var deleted = Model.DeletedFlags is { } flags && index < flags.Count ? flags[index] : IsDeleted(row);
+        <tr data-entity-id="@id" data-deleted="@(deleted ? "true" : "false")" data-row="@System.Text.Json.JsonSerializer.Serialize(row)">
+            @if (Model.CanEdit)
+            {
+                <td class="entities-select-col entities-edit-only"><input type="checkbox" class="form-check-input" data-entities-select value="@id" disabled="@deleted" aria-label="Select record @id" /></td>
+            }
+            @foreach (var column in Model.Columns)
+            {
+                row.TryGetValue(column.Name, out var value);
+                <td data-column="@column.Path" class="@(column.IsAudit ? "entities-audit" : null)">
+                    @if (column.IsId)
+                    {
+                        <a href="@DetailUrl(Model.Entity.Key, id)" data-entities-open data-entity-id="@id" title="Open @id">@id</a>
+                        if (deleted) { <span class="badge text-bg-secondary ms-1 entities-deleted-badge">deleted</span> }
+                    }
+                    else if (value is null)
+                    {
+                        <span class="entities-null">null</span>
+                    }
+                    else if (column.Reference is not null)
+                    {
+                        <a href="@DetailUrl(column.Reference.TargetKey, Text(value))" data-entities-reference data-entities-target="@column.Reference.TargetKey" data-entity-id="@Text(value)" title="Open @Text(value)">@Text(value)</a>
+                    }
+                    else if (column.IsMasked)
+                    {
+                        <span class="entities-masked">@Text(value)</span>
+                    }
+                    else if (column.EditorKind == EntitiesDashboardEditorKind.Json)
+                    {
+                        <span class="entities-json" title="@Text(value)">@Truncate(Text(value))</span>
+                    }
+                    else
+                    {
+                        <span title="@Text(value)">@Text(value)</span>
+                    }
+                </td>
+            }
+            <td class="entities-actions-col">
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-entities-copy title="Copy row as JSON" aria-label="Copy row @id as JSON"><i class="bi bi-clipboard" aria-hidden="true"></i></button>
+                @if (canClone && !deleted)
+                {
+                    <button type="button" class="btn btn-outline-secondary btn-sm entities-edit-only" data-entities-clone title="Clone as new record" aria-label="Clone record @id"><i class="bi bi-copy" aria-hidden="true"></i></button>
+                }
+            </td>
+        </tr>
+    }
+}
+<template data-entities-meta data-status="@Model.StatusCode" data-count="@Model.Rows.Count" data-batch="@Model.Batch" data-next-batch="@Model.NextBatch" data-batch-size="@Model.BatchSize" data-has-more="@(Model.HasMore ? "true" : "false")"></template>
+@functions {
+    private const int MaxPreview = 120;
+
+    private string DetailUrl(string entity, string id) =>
+        $"{Model.Path}?entity={Uri.EscapeDataString(entity ?? string.Empty)}&id={Uri.EscapeDataString(id ?? string.Empty)}";
+
+    private static string Text(object value) => value switch
+    {
+        null => string.Empty,
+        bool flag => flag ? "true" : "false",
+        IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
+        _ => value.ToString()
+    };
+
+    private static string Truncate(string text) =>
+        text.Length <= MaxPreview ? text : string.Concat(text.AsSpan(0, MaxPreview), "…");
+
+    private static bool IsDeleted(IDictionary<string, object> row) =>
+        (row.TryGetValue("Deleted", out var flag) && flag is true)
+        || row.Values.Any(v => v is string text && text.Contains("\"Deleted\":true", StringComparison.OrdinalIgnoreCase));
+}

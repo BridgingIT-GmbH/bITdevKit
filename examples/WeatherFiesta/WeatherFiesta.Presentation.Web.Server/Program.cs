@@ -207,6 +207,7 @@ builder.Services.AddDashboard(o => o
 // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.DashboardEndpoints>()
 // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints>()
 // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Storage.Files.Dashboard.DashboardEndpoints>());
+builder.Services.AddCoreEntitiesDashboard(Role.Administrators);
 
 // ===============================================================================================
 // Register log services and endpoints

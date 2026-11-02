@@ -1,0 +1,2085 @@
+@inherits RazorSlice
+<script>
+(function () {
+    'use strict';
+
+    const root = document.querySelector('.entities-view');
+    if (!root) {
+        return;
+    }
+
+    const basePath = root.dataset.entitiesPath || '';
+    const entityKey = root.dataset.entitiesEntity || '';
+    const sourceName = root.dataset.entitiesSource || '';
+    const maxBulk = parseInt(root.dataset.entitiesMaxBulk, 10) || 100;
+    const logsPath = root.dataset.entitiesLogsPath || '';
+
+    const one = (selector, scope) => (scope || root).querySelector(selector);
+    const all = (selector, scope) => Array.prototype.slice.call((scope || root).querySelectorAll(selector));
+    const byId = id => document.getElementById(id);
+
+    const OPERATOR_LABELS = {
+        eq: 'equals', neq: 'not equals', gt: 'greater than', gte: 'greater or equal', lt: 'less than', lte: 'less or equal',
+        contains: 'contains', doesnotcontain: 'does not contain', startswith: 'starts with', doesnotstartwith: 'does not start with',
+        endswith: 'ends with', doesnotendwith: 'does not end with', isnull: 'is null', isnotnull: 'is not null',
+        isempty: 'is empty', isnotempty: 'is not empty'
+    };
+    const NO_VALUE_OPERATORS = ['isnull', 'isnotnull', 'isempty', 'isnotempty'];
+
+    function request(url, options) {
+        const settings = Object.assign({ cache: 'no-store', redirect: 'error', credentials: 'same-origin' }, options || {});
+        settings.headers = Object.assign({ 'X-Requested-With': 'fetch' }, (options && options.headers) || {});
+        return fetch(url, settings);
+    }
+
+    function postJson(url, body) {
+        return request(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    }
+
+    function toTemplate(html) {
+        const template = document.createElement('template');
+        template.innerHTML = html;
+        return template.content;
+    }
+
+    function readJson(response) {
+        return response.text().then(text => {
+            try {
+                return text ? JSON.parse(text) : null;
+            } catch (error) {
+                return null;
+            }
+        });
+    }
+
+    function readStorage(key, fallback) {
+        try {
+            const raw = window.localStorage.getItem(key);
+            return raw ? JSON.parse(raw) : fallback;
+        } catch (error) {
+            return fallback;
+        }
+    }
+
+    function writeStorage(key, value) {
+        try {
+            window.localStorage.setItem(key, JSON.stringify(value));
+        } catch (error) {
+            // storage unavailable or full: the feature degrades to session-only
+        }
+    }
+
+    function removeStorage(key) {
+        try {
+            window.localStorage.removeItem(key);
+        } catch (error) {
+            // ignore
+        }
+    }
+
+    const storageKey = suffix => 'bdk.dashboard.entities.' + entityKey + '.' + suffix;
+
+    function parseCondition(raw) {
+        const first = raw.indexOf('~');
+        if (first < 0) {
+            return null;
+        }
+
+        const second = raw.indexOf('~', first + 1);
+        const path = raw.substring(0, first);
+        const operator = (second < 0 ? raw.substring(first + 1) : raw.substring(first + 1, second)).toLowerCase();
+        const value = second < 0 ? '' : raw.substring(second + 1);
+
+        return path ? { path: path, operator: operator, value: value } : null;
+    }
+
+    function serializeCondition(condition) {
+        return NO_VALUE_OPERATORS.indexOf(condition.operator) >= 0
+            ? condition.path + '~' + condition.operator
+            : condition.path + '~' + condition.operator + '~' + condition.value;
+    }
+
+    function parseUrlState(search) {
+        const params = new URLSearchParams(search);
+        const conditions = params.getAll('f').map(parseCondition).filter(Boolean);
+
+        return {
+            entity: params.get('entity') || '',
+            source: params.get('source') || '',
+            conditions: conditions,
+            match: (params.get('match') || '').toLowerCase() === 'or' ? 'or' : 'and',
+            q: params.get('q') || '',
+            sort: params.get('sort') || '',
+            dir: (params.get('dir') || '').toLowerCase() === 'desc' ? 'desc' : 'asc',
+            id: params.get('id') || ''
+        };
+    }
+
+    function appendState(params, state) {
+        params.set('entity', entityKey);
+        if (sourceName) {
+            params.set('source', sourceName);
+        }
+
+        state.conditions.forEach(condition => params.append('f', serializeCondition(condition)));
+        if (state.match === 'or') {
+            params.set('match', 'or');
+        }
+
+        if (state.q) {
+            params.set('q', state.q);
+        }
+
+        if (state.sort) {
+            params.set('sort', state.sort);
+            params.set('dir', state.dir === 'desc' ? 'desc' : 'asc');
+        }
+    }
+
+    function pageUrl(state, id) {
+        const params = new URLSearchParams();
+        appendState(params, state);
+        if (id) {
+            params.set('id', id);
+        }
+
+        return basePath + '?' + params.toString();
+    }
+
+    function filterSignature(state) {
+        const params = new URLSearchParams();
+        appendState(params, state);
+
+        return params.toString();
+    }
+
+    function filenameFrom(disposition, fallback) {
+        if (!disposition) {
+            return fallback;
+        }
+
+        const star = /filename\*=(?:UTF-8'')?([^;]+)/i.exec(disposition);
+        if (star) {
+            try {
+                return decodeURIComponent(star[1].trim().replace(/^"|"$/g, ''));
+            } catch (error) {
+                // fall through to the plain filename
+            }
+        }
+
+        const plain = /filename="?([^";]+)"?/i.exec(disposition);
+
+        return plain ? plain[1].trim() : fallback;
+    }
+
+    function timestamp() {
+        const now = new Date();
+        const pad = value => String(value).padStart(2, '0');
+
+        return now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds());
+    }
+
+    const statusEl = byId('entities-status');
+
+    function setStatus(message, kind) {
+        if (!statusEl) {
+            return;
+        }
+
+        statusEl.className = 'entities-status' + (kind === 'error' ? ' entities-error' : '');
+        statusEl.textContent = message || '';
+    }
+
+    function appendStatusList(title, items) {
+        if (!statusEl) {
+            return;
+        }
+
+        const list = document.createElement('ul');
+        list.className = 'mb-0';
+        items.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            list.appendChild(li);
+        });
+        statusEl.appendChild(list);
+    }
+
+    function describeFailure(outcome, response, withCorrelation) {
+        const message = (outcome && outcome.message) || ('The request failed (' + response.status + ').');
+
+        return withCorrelation !== false && outcome && outcome.correlationId ? message + ' (Correlation ID: ' + outcome.correlationId + ')' : message;
+    }
+
+    function appendCorrelation(container, correlationId) {
+        if (!correlationId) {
+            return;
+        }
+
+        container.appendChild(document.createTextNode(' (Correlation ID: '));
+        if (logsPath && window.bdkDashboard && typeof window.bdkDashboard.appendCorrelationLink === 'function') {
+            window.bdkDashboard.appendCorrelationLink(container, correlationId, logsPath);
+        } else {
+            container.appendChild(document.createTextNode(correlationId));
+        }
+
+        container.appendChild(document.createTextNode(')'));
+    }
+
+    function reportMessage(message, kind) {
+        if (window.bdkDashboard && typeof window.bdkDashboard.showMessage === 'function') {
+            window.bdkDashboard.showMessage({ title: 'Entities', message: message, kind: kind === 'error' ? 'danger' : undefined });
+        } else {
+            setStatus(message, kind);
+        }
+    }
+
+    function confirmDialog(options) {
+        if (window.bdkDashboard && typeof window.bdkDashboard.confirmAction === 'function') {
+            return window.bdkDashboard.confirmAction(options);
+        }
+
+        return Promise.resolve(window.confirm([options.title, options.selection, options.message].filter(Boolean).join('\n')));
+    }
+
+    const content = byId('entities-content');
+    const filterForm = byId('entities-filter-form');
+    const conditionHost = byId('entities-conditions');
+    const conditionTemplate = byId('entities-condition-template');
+    const matchSelect = byId('entities-match');
+    const quickSearch = byId('entities-quick-search');
+    const filterError = byId('entities-filter-error');
+    const tableRegion = byId('entities-table-region');
+    const table = byId('entities-table');
+    const tbody = byId('entities-rows');
+    const loadMoreBox = byId('entities-load-more');
+    const loadMoreButton = byId('entities-load-more-button');
+    const detailRegion = byId('entities-detail-region');
+    const maxConditions = conditionHost ? (parseInt(conditionHost.dataset.entitiesMaxConditions, 10) || 20) : 20;
+
+    function readInitialConditions() {
+        if (!conditionHost) {
+            return [];
+        }
+
+        try {
+            const parsed = JSON.parse(conditionHost.dataset.entitiesConditions || '[]');
+
+            return (Array.isArray(parsed) ? parsed : []).map(item => ({
+                path: String(item.path || ''),
+                operator: String(item.operator || 'eq').toLowerCase(),
+                value: item.value == null ? '' : String(item.value)
+            })).filter(item => item.path);
+        } catch (error) {
+            return [];
+        }
+    }
+
+    const LAST_VIEW_KEY = 'bdk.dashboard.entities.last';
+
+    if (!window.location.search && !entityKey) {
+        const last = readStorage(LAST_VIEW_KEY, '');
+        if (typeof last === 'string' && last.indexOf('entity=') >= 0) {
+            window.location.replace(basePath + '?' + last);
+
+            return;
+        }
+    }
+
+    const initialUrl = parseUrlState(window.location.search);
+    let applied = {
+        conditions: readInitialConditions(),
+        match: matchSelect && matchSelect.value === 'or' ? 'or' : 'and',
+        q: quickSearch ? quickSearch.value : '',
+        sort: initialUrl.sort,
+        dir: initialUrl.dir
+    };
+
+    let rowsController = null;
+    let rowsSeq = 0;
+    let nextBatch = loadMoreButton ? (parseInt(loadMoreButton.dataset.nextBatch, 10) || 2) : 2;
+    let moreAvailable = !!loadMoreButton && !loadMoreButton.disabled;
+    const pageSizeSelect = byId('entities-page-size');
+    const PAGE_SIZE_KEY = 'bdk.dashboard.entities.pagesize';
+
+    function showFilterError(message) {
+        if (!filterError) {
+            return;
+        }
+
+        filterError.textContent = message;
+        filterError.hidden = false;
+    }
+
+    function clearFilterError() {
+        if (filterError) {
+            filterError.textContent = '';
+            filterError.hidden = true;
+        }
+    }
+
+    // ---- filter condition editor ----
+
+    function pathOptions() {
+        const select = conditionTemplate ? one('select[data-entities-cond="path"]', conditionTemplate.content) : null;
+
+        return select ? Array.prototype.slice.call(select.options) : [];
+    }
+
+    function optionFor(path) {
+        return pathOptions().find(option => option.value === path) || null;
+    }
+
+    function operatorsFor(option) {
+        return option && option.dataset.operators ? option.dataset.operators.split(',').filter(Boolean) : ['eq'];
+    }
+
+    function choicesFor(option) {
+        try {
+            return option && option.dataset.choices ? JSON.parse(option.dataset.choices) : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function conditionRows() {
+        return conditionHost ? all('[data-entities-condition]', conditionHost) : [];
+    }
+
+    function conditionValueControl(row) {
+        return one('[data-entities-cond="value"]', row);
+    }
+
+    function configureValueControl(row, value) {
+        const pathSelect = one('select[data-entities-cond="path"]', row);
+        const operatorSelect = one('select[data-entities-cond="operator"]', row);
+        const option = pathSelect.options[pathSelect.selectedIndex];
+        const kind = option ? option.dataset.kind : 'String';
+        const current = conditionValueControl(row);
+        const choices = kind === 'Boolean'
+            ? [{ value: 'true', label: 'true' }, { value: 'false', label: 'false' }]
+            : (kind === 'Enum' || kind === 'Enumeration' ? choicesFor(option) : []);
+        let control;
+
+        if (choices.length) {
+            control = document.createElement('select');
+            control.className = 'form-select form-select-sm';
+            choices.slice().sort((a, b) => String(a.label == null ? a.value : a.label)
+                .localeCompare(String(b.label == null ? b.value : b.label), undefined, { sensitivity: 'base' })).forEach(choice => {
+                const item = document.createElement('option');
+                item.value = String(choice.value);
+                item.textContent = String(choice.label == null ? choice.value : choice.label);
+                control.appendChild(item);
+            });
+            if (value && choices.some(choice => String(choice.value) === value)) {
+                control.value = value;
+            }
+        } else {
+            control = document.createElement('input');
+            control.type = 'text';
+            control.className = 'form-control form-control-sm';
+            control.maxLength = 1024;
+            control.value = value || '';
+            if (kind === 'Number') {
+                control.setAttribute('inputmode', 'decimal');
+            } else if (kind === 'DateTime') {
+                control.placeholder = 'yyyy-MM-dd or ISO 8601';
+            } else if (kind === 'Guid') {
+                control.placeholder = '00000000-0000-0000-0000-000000000000';
+            }
+        }
+
+        control.setAttribute('data-entities-cond', 'value');
+        control.setAttribute('aria-label', 'Value');
+        control.hidden = NO_VALUE_OPERATORS.indexOf(operatorSelect.value) >= 0;
+        current.replaceWith(control);
+    }
+
+    function fillOperators(row, selected) {
+        const pathSelect = one('select[data-entities-cond="path"]', row);
+        const operatorSelect = one('select[data-entities-cond="operator"]', row);
+        const operators = operatorsFor(pathSelect.options[pathSelect.selectedIndex]);
+
+        operatorSelect.textContent = '';
+        operators.forEach(token => {
+            const item = document.createElement('option');
+            item.value = token;
+            item.textContent = OPERATOR_LABELS[token] || token;
+            operatorSelect.appendChild(item);
+        });
+
+        operatorSelect.value = operators.indexOf(selected) >= 0 ? selected : operators[0];
+    }
+
+    function addCondition(condition) {
+        if (!conditionHost || !conditionTemplate) {
+            return null;
+        }
+
+        if (conditionRows().length >= maxConditions) {
+            showFilterError('At most ' + maxConditions + ' conditions are allowed.');
+
+            return null;
+        }
+
+        const row = conditionTemplate.content.cloneNode(true).querySelector('[data-entities-condition]');
+        const pathSelect = one('select[data-entities-cond="path"]', row);
+
+        if (condition && optionFor(condition.path)) {
+            pathSelect.value = condition.path;
+        }
+
+        conditionHost.appendChild(row);
+        fillOperators(row, condition ? condition.operator : '');
+        configureValueControl(row, condition ? condition.value : '');
+
+        return row;
+    }
+
+    function setFilterUi(state) {
+        if (!conditionHost) {
+            return;
+        }
+
+        conditionHost.textContent = '';
+        clearFilterError();
+        state.conditions.forEach(condition => {
+            if (optionFor(condition.path)) {
+                addCondition(condition);
+            }
+        });
+
+        if (matchSelect) {
+            matchSelect.value = state.match === 'or' ? 'or' : 'and';
+        }
+
+        if (quickSearch) {
+            quickSearch.value = state.q || '';
+        }
+    }
+
+    function readConditions() {
+        const result = [];
+        const rows = conditionRows();
+
+        for (let index = 0; index < rows.length; index++) {
+            const row = rows[index];
+            const path = one('select[data-entities-cond="path"]', row).value;
+            const operator = one('select[data-entities-cond="operator"]', row).value;
+            const value = conditionValueControl(row).value;
+
+            if (NO_VALUE_OPERATORS.indexOf(operator) < 0 && value.trim() === '') {
+                showFilterError('Condition ' + (index + 1) + ' (' + path + ') needs a value.');
+                one('[data-entities-cond="value"]', row).focus();
+
+                return null;
+            }
+
+            result.push({ path: path, operator: operator, value: NO_VALUE_OPERATORS.indexOf(operator) >= 0 ? '' : value });
+        }
+
+        return result;
+    }
+
+    // ---- recent and saved filters ----
+
+    function filterEntry(state) {
+        return { conditions: state.conditions.map(c => ({ path: c.path, operator: c.operator, value: c.value })), match: state.match, q: state.q || '' };
+    }
+
+    function entryKey(entry) {
+        return JSON.stringify([entry.conditions.map(c => [c.path, c.operator, c.value]), entry.match, entry.q]);
+    }
+
+    function entryIsEmpty(entry) {
+        return entry.conditions.length === 0 && !entry.q;
+    }
+
+    function entryProblem(entry) {
+        for (let index = 0; index < entry.conditions.length; index++) {
+            const condition = entry.conditions[index];
+            const option = optionFor(condition.path);
+
+            if (!option) {
+                return 'Property "' + condition.path + '" is no longer available';
+            }
+
+            if (operatorsFor(option).indexOf(condition.operator) < 0) {
+                return 'Operator "' + condition.operator + '" is not supported for ' + condition.path;
+            }
+        }
+
+        return null;
+    }
+
+    function describeEntry(entry) {
+        const parts = entry.conditions.map(c => c.path + ' ' + (OPERATOR_LABELS[c.operator] || c.operator) + (NO_VALUE_OPERATORS.indexOf(c.operator) >= 0 ? '' : ' ' + c.value));
+        if (entry.q) {
+            parts.push('search "' + entry.q + '"');
+        }
+
+        return parts.join(entry.match === 'or' ? ' OR ' : ' AND ') || '(no filter)';
+    }
+
+    function loadEntries(kind) {
+        const stored = readStorage(storageKey(kind), []);
+
+        return Array.isArray(stored) ? stored.filter(entry => entry && Array.isArray(entry.conditions)) : [];
+    }
+
+    function recordRecent(state) {
+        const entry = filterEntry(state);
+        if (entryIsEmpty(entry)) {
+            return;
+        }
+
+        const key = entryKey(entry);
+        const list = loadEntries('recent').filter(item => entryKey(item) !== key);
+        list.unshift(entry);
+        writeStorage(storageKey('recent'), list.slice(0, 10));
+        renderFilterLists();
+    }
+
+    function useEntry(entry) {
+        setFilterUi(entry);
+        applyFromForm();
+        const menu = byId('entities-filters-menu');
+        if (menu) {
+            menu.open = false;
+        }
+    }
+
+    function entryItem(entry, label, extras) {
+        const li = document.createElement('li');
+        const problem = entryProblem(entry);
+        const useButton = document.createElement('button');
+
+        li.className = 'd-flex align-items-center gap-1';
+        useButton.type = 'button';
+        useButton.className = 'btn btn-link btn-sm p-0 text-start flex-grow-1';
+        useButton.textContent = label;
+        useButton.title = problem || describeEntry(entry);
+        if (problem) {
+            useButton.disabled = true;
+            useButton.setAttribute('aria-disabled', 'true');
+        } else {
+            useButton.addEventListener('click', () => useEntry(entry));
+        }
+
+        li.appendChild(useButton);
+        if (problem) {
+            const reason = document.createElement('span');
+            reason.className = 'small text-muted';
+            reason.textContent = problem;
+            li.appendChild(reason);
+        }
+
+        (extras || []).forEach(extra => li.appendChild(extra));
+
+        return li;
+    }
+
+    function smallButton(icon, label, handler) {
+        const button = document.createElement('button');
+        const glyph = document.createElement('i');
+
+        button.type = 'button';
+        button.className = 'btn btn-outline-secondary btn-sm py-0 px-1';
+        button.title = label;
+        button.setAttribute('aria-label', label);
+        glyph.className = 'bi ' + icon;
+        glyph.setAttribute('aria-hidden', 'true');
+        button.appendChild(glyph);
+        button.addEventListener('click', handler);
+
+        return button;
+    }
+
+    function renderFilterLists() {
+        const recentList = byId('entities-recent-filters');
+        const savedList = byId('entities-saved-filters');
+
+        if (recentList) {
+            recentList.textContent = '';
+            const recent = loadEntries('recent');
+            recent.forEach(entry => recentList.appendChild(entryItem(entry, describeEntry(entry))));
+            if (!recent.length) {
+                const empty = document.createElement('li');
+                empty.className = 'small text-muted';
+                empty.textContent = 'No recent filters.';
+                recentList.appendChild(empty);
+            }
+        }
+
+        if (savedList) {
+            savedList.textContent = '';
+            const saved = loadEntries('saved');
+            saved.forEach((entry, index) => {
+                const rename = smallButton('bi-pencil', 'Rename ' + entry.name, () => {
+                    const name = window.prompt('Rename saved filter', entry.name || '');
+                    if (name && name.trim()) {
+                        const list = loadEntries('saved');
+                        list[index].name = name.trim().substring(0, 64);
+                        writeStorage(storageKey('saved'), list);
+                        renderFilterLists();
+                    }
+                });
+                const remove = smallButton('bi-trash', 'Delete ' + entry.name, () => {
+                    const list = loadEntries('saved');
+                    list.splice(index, 1);
+                    writeStorage(storageKey('saved'), list);
+                    renderFilterLists();
+                });
+
+                savedList.appendChild(entryItem(entry, entry.name || describeEntry(entry), [rename, remove]));
+            });
+            if (!saved.length) {
+                const empty = document.createElement('li');
+                empty.className = 'small text-muted';
+                empty.textContent = 'No saved filters.';
+                savedList.appendChild(empty);
+            }
+        }
+    }
+
+    function saveCurrentFilter() {
+        const nameInput = byId('entities-save-name');
+        const name = nameInput ? nameInput.value.trim() : '';
+        if (!name) {
+            if (nameInput) {
+                nameInput.focus();
+            }
+
+            return;
+        }
+
+        const conditions = readConditions();
+        if (!conditions) {
+            return;
+        }
+
+        const entry = filterEntry({ conditions: conditions, match: matchSelect ? matchSelect.value : 'and', q: quickSearch ? quickSearch.value.trim() : '' });
+        entry.name = name.substring(0, 64);
+        const list = loadEntries('saved').filter(item => item.name !== entry.name);
+        list.push(entry);
+        writeStorage(storageKey('saved'), list);
+        nameInput.value = '';
+        renderFilterLists();
+    }
+
+    // ---- columns ----
+
+    const columnsMenu = byId('entities-columns-menu');
+    const columnChecks = columnsMenu ? all('input[data-entities-column]', columnsMenu) : [];
+    const defaultColumnOrder = columnChecks.map(check => check.dataset.entitiesColumn);
+    let columnOrder = defaultColumnOrder.slice();
+    const hiddenColumns = new Set();
+
+    function idColumn() {
+        const check = columnChecks.find(item => item.disabled);
+
+        return check ? check.dataset.entitiesColumn : (defaultColumnOrder[0] || 'Id');
+    }
+
+    function visibleColumnPaths() {
+        return columnOrder.filter(path => !hiddenColumns.has(path));
+    }
+
+    function loadColumnConfig() {
+        const stored = readStorage(storageKey('columns'), null);
+        if (!stored || typeof stored !== 'object') {
+            columnChecks.forEach(check => {
+                if (!check.checked) {
+                    hiddenColumns.add(check.dataset.entitiesColumn);
+                }
+            });
+
+            return;
+        }
+
+        const known = new Set(defaultColumnOrder);
+        const order = (Array.isArray(stored.order) ? stored.order : []).filter(path => known.has(path));
+        defaultColumnOrder.forEach(path => {
+            if (order.indexOf(path) < 0) {
+                order.push(path);
+            }
+        });
+        columnOrder = order;
+        (Array.isArray(stored.hidden) ? stored.hidden : []).forEach(path => {
+            if (known.has(path) && path !== idColumn()) {
+                hiddenColumns.add(path);
+            }
+        });
+    }
+
+    function saveColumnConfig() {
+        writeStorage(storageKey('columns'), { order: columnOrder, hidden: Array.from(hiddenColumns) });
+    }
+
+    function syncColumnPicker() {
+        if (!columnsMenu) {
+            return;
+        }
+
+        const anchor = one('[data-entities-columns-reset]', columnsMenu);
+        columnOrder.forEach(path => {
+            const check = columnChecks.find(item => item.dataset.entitiesColumn === path);
+            if (check) {
+                const wrapper = check.closest('.form-check');
+                columnsMenu.querySelector('.entities-popover').insertBefore(wrapper, anchor);
+                check.checked = !hiddenColumns.has(path);
+            }
+        });
+    }
+
+    function applyColumns() {
+        if (!table) {
+            return;
+        }
+
+        const rows = all('tr', table).filter(tr => tr.querySelector('[data-column]'));
+        rows.forEach(tr => {
+            const actions = tr.querySelector('.entities-actions-col');
+            const cells = {};
+
+            Array.prototype.forEach.call(tr.children, cell => {
+                if (cell.dataset.column) {
+                    cells[cell.dataset.column] = cell;
+                }
+            });
+
+            columnOrder.forEach(path => {
+                const cell = cells[path];
+                if (cell) {
+                    tr.insertBefore(cell, actions || null);
+                    cell.hidden = hiddenColumns.has(path);
+                }
+            });
+        });
+    }
+
+    function initColumnPicker() {
+        if (!columnsMenu) {
+            return;
+        }
+
+        loadColumnConfig();
+        columnChecks.forEach(check => {
+            const path = check.dataset.entitiesColumn;
+            const wrapper = check.closest('.form-check');
+            const up = smallButton('bi-arrow-up', 'Move ' + path + ' up', () => moveColumn(path, -1));
+            const down = smallButton('bi-arrow-down', 'Move ' + path + ' down', () => moveColumn(path, 1));
+
+            wrapper.classList.add('d-flex', 'align-items-center', 'gap-1');
+            if (path === idColumn()) {
+                return;
+            }
+
+            up.classList.add('ms-auto');
+            wrapper.appendChild(up);
+            wrapper.appendChild(down);
+        });
+        columnsMenu.addEventListener('change', event => {
+            const check = event.target.closest('input[data-entities-column]');
+            if (!check) {
+                return;
+            }
+
+            if (check.checked) {
+                hiddenColumns.delete(check.dataset.entitiesColumn);
+            } else {
+                hiddenColumns.add(check.dataset.entitiesColumn);
+            }
+
+            saveColumnConfig();
+            applyColumns();
+        });
+        const reset = one('[data-entities-columns-reset]', columnsMenu);
+        if (reset) {
+            reset.addEventListener('click', () => {
+                removeStorage(storageKey('columns'));
+                columnOrder = defaultColumnOrder.slice();
+                hiddenColumns.clear();
+                syncColumnPicker();
+                applyColumns();
+            });
+        }
+
+        syncColumnPicker();
+        applyColumns();
+    }
+
+    function moveColumn(path, delta) {
+        const index = columnOrder.indexOf(path);
+        const target = index + delta;
+        const lockedFirst = columnOrder[0] === idColumn() ? 1 : 0;
+
+        if (index < 0 || target < lockedFirst || target >= columnOrder.length) {
+            return;
+        }
+
+        columnOrder.splice(index, 1);
+        columnOrder.splice(target, 0, path);
+        saveColumnConfig();
+        syncColumnPicker();
+        applyColumns();
+    }
+
+    // ---- rows ----
+
+    function dataRows() {
+        return tbody ? all('tr[data-entity-id]', tbody) : [];
+    }
+
+    function updateLoadMore(hasMore) {
+        if (loadMoreButton) {
+            moreAvailable = !!hasMore;
+            loadMoreButton.hidden = false;
+            loadMoreButton.disabled = !moreAvailable;
+            loadMoreButton.dataset.nextBatch = String(nextBatch);
+        }
+    }
+
+    function updateSortUi() {
+        if (!table) {
+            return;
+        }
+
+        all('th', table).forEach(th => {
+            const button = th.querySelector('[data-entities-sort]');
+            if (!button) {
+                return;
+            }
+
+            const active = button.dataset.entitiesSort === applied.sort;
+            const icon = th.querySelector('i.bi');
+
+            button.setAttribute('aria-pressed', active ? 'true' : 'false');
+            if (active) {
+                th.setAttribute('aria-sort', applied.dir === 'desc' ? 'descending' : 'ascending');
+            } else {
+                th.removeAttribute('aria-sort');
+            }
+
+            if (icon) {
+                icon.className = 'bi ' + (active ? (applied.dir === 'desc' ? 'bi-caret-down-fill' : 'bi-caret-up-fill') : 'bi-caret-up');
+            }
+        });
+    }
+
+    function parseRowsResponse(html) {
+        const fragment = toTemplate(html);
+        const meta = fragment.querySelector('template[data-entities-meta]');
+        const rows = Array.prototype.slice.call(fragment.querySelectorAll('tr'));
+
+        return {
+            meta: meta,
+            rows: rows,
+            data: rows.filter(tr => tr.hasAttribute('data-entity-id')),
+            error: rows.find(tr => tr.hasAttribute('data-entities-error')) || null
+        };
+    }
+
+    function loadRows(append) {
+        if (!tbody) {
+            return Promise.resolve();
+        }
+
+        if (rowsController) {
+            rowsController.abort();
+        }
+
+        const controller = new AbortController();
+        const seq = ++rowsSeq;
+        const params = new URLSearchParams();
+        rowsController = controller;
+        appendState(params, applied);
+        params.set('batch', String(append ? nextBatch : 1));
+        if (pageSizeSelect && pageSizeSelect.value) {
+            params.set('size', pageSizeSelect.value);
+        }
+        if (tableRegion) {
+            tableRegion.setAttribute('aria-busy', 'true');
+        }
+
+        if (loadMoreButton) {
+            loadMoreButton.disabled = true;
+        }
+
+        clearFilterError();
+
+        return request(basePath + '/rows?' + params.toString(), { signal: controller.signal })
+            .then(response => response.text().then(html => ({ status: response.status, parsed: parseRowsResponse(html) })))
+            .then(result => {
+                if (seq !== rowsSeq) {
+                    return;
+                }
+
+                const parsed = result.parsed;
+                const failed = result.status !== 200 || parsed.error;
+                const message = parsed.error ? parsed.error.textContent.trim() : 'The rows could not be loaded.';
+
+                if (failed) {
+                    if (result.status === 400) {
+                        showFilterError(message);
+                    } else {
+                        setStatus(message, 'error');
+                    }
+                }
+
+                if (append) {
+                    if (!failed) {
+                        const known = new Set(dataRows().map(tr => tr.dataset.entityId));
+                        parsed.data.forEach(tr => {
+                            if (!known.has(tr.dataset.entityId)) {
+                                tbody.appendChild(tr);
+                            }
+                        });
+                    }
+                } else {
+                    tbody.textContent = '';
+                    parsed.rows.forEach(tr => tbody.appendChild(tr));
+                    clearSelection();
+                    if (!failed) {
+                        setStatus('');
+                    }
+                }
+
+                if (parsed.meta && !failed) {
+                    nextBatch = parseInt(parsed.meta.dataset.nextBatch, 10) || (nextBatch + 1);
+                }
+
+                applyColumns();
+                syncSelectionUi();
+                updateLoadMore(!failed && parsed.meta && parsed.meta.dataset.hasMore === 'true');
+            })
+            .catch(error => {
+                if (error && error.name === 'AbortError') {
+                    return;
+                }
+
+                setStatus('The rows could not be loaded.', 'error');
+                updateLoadMore(false);
+            })
+            .then(() => {
+                if (seq === rowsSeq && tableRegion) {
+                    tableRegion.removeAttribute('aria-busy');
+                }
+            });
+    }
+
+    function rememberView() {
+        if (entityKey) {
+            writeStorage(LAST_VIEW_KEY, filterSignature(applied));
+        }
+    }
+
+    function pushState(state, id) {
+        window.history.pushState({ entities: true, entitiesDetail: !!id }, '', pageUrl(state, id));
+        rememberView();
+    }
+
+    function applyFromForm() {
+        const conditions = readConditions();
+        if (!conditions) {
+            return;
+        }
+
+        applied = {
+            conditions: conditions,
+            match: matchSelect && matchSelect.value === 'or' ? 'or' : 'and',
+            q: quickSearch ? quickSearch.value.trim() : '',
+            sort: applied.sort,
+            dir: applied.dir
+        };
+        recordRecent(applied);
+        pushState(applied, '');
+        updateSortUi();
+        loadRows(false);
+    }
+
+    function resetFilters() {
+        applied = { conditions: [], match: 'and', q: '', sort: '', dir: 'asc' };
+        setFilterUi(applied);
+        pushState(applied, '');
+        updateSortUi();
+        loadRows(false);
+    }
+
+    function sortBy(path) {
+        const direction = applied.sort === path && applied.dir === 'asc' ? 'desc' : 'asc';
+        applied = Object.assign({}, applied, { sort: path, dir: direction });
+        pushState(applied, '');
+        updateSortUi();
+        loadRows(false);
+    }
+
+    // ---- selection and bulk delete ----
+
+    const selected = new Set();
+
+    function entityLabel() {
+        const select = byId('entities-entity');
+        const option = select && select.options[select.selectedIndex];
+        const text = option ? option.textContent.trim() : '';
+
+        return text || entityKey.split('.').pop();
+    }
+
+    function clearSelection() {
+        selected.clear();
+        syncSelectionUi();
+    }
+
+    function syncSelectionUi() {
+        const rows = dataRows();
+        const selectable = rows.filter(tr => tr.dataset.deleted !== 'true');
+        const header = one('[data-entities-select-all]');
+        const counter = byId('entities-selected-count');
+        const bulk = byId('entities-bulk-delete');
+
+        rows.forEach(tr => {
+            const box = tr.querySelector('input[data-entities-select]');
+            if (box) {
+                box.checked = selected.has(tr.dataset.entityId);
+            }
+        });
+
+        if (header) {
+            const count = selectable.filter(tr => selected.has(tr.dataset.entityId)).length;
+            header.checked = selectable.length > 0 && count === selectable.length;
+            header.indeterminate = count > 0 && count < selectable.length;
+            header.disabled = selectable.length === 0;
+        }
+
+        if (counter) {
+            counter.textContent = selected.size + ' selected';
+        }
+
+        if (bulk) {
+            bulk.disabled = selected.size === 0;
+            const label = selected.size > 0 ? 'Delete ' + selected.size + ' selected records' : 'Delete selected records';
+            bulk.title = label;
+            bulk.setAttribute('aria-label', label);
+        }
+    }
+
+    function onSelectChange(box) {
+        const id = box.value;
+
+        if (box.checked) {
+            if (selected.size >= maxBulk && !selected.has(id)) {
+                box.checked = false;
+                setStatus('At most ' + maxBulk + ' rows can be selected for a bulk delete.');
+
+                return;
+            }
+
+            selected.add(id);
+        } else {
+            selected.delete(id);
+        }
+
+        syncSelectionUi();
+    }
+
+    function onSelectAll(header) {
+        const rows = dataRows().filter(tr => tr.dataset.deleted !== 'true');
+        let capped = false;
+
+        rows.forEach(tr => {
+            const id = tr.dataset.entityId;
+            if (!header.checked) {
+                selected.delete(id);
+            } else if (!selected.has(id)) {
+                if (selected.size < maxBulk) {
+                    selected.add(id);
+                } else {
+                    capped = true;
+                }
+            }
+        });
+
+        syncSelectionUi();
+        if (capped) {
+            setStatus('Selection limited to ' + maxBulk + ' rows.');
+        }
+    }
+
+    function bulkDelete(button) {
+        const ids = Array.from(selected);
+        if (!ids.length) {
+            return;
+        }
+
+        confirmDialog({
+            title: 'Delete ' + ids.length + ' ' + entityLabel() + ' record' + (ids.length === 1 ? '' : 's') + '?',
+            message: 'This action cannot be undone.',
+            selection: entityLabel() + ' x ' + ids.length,
+            confirmText: 'Delete ' + ids.length,
+            kind: 'danger'
+        }).then(confirmed => {
+            if (!confirmed) {
+                return null;
+            }
+
+            button.disabled = true;
+
+            return postJson(basePath + '/bulk-delete', { entity: entityKey, source: sourceName, ids: ids })
+                .then(response => readJson(response).then(outcome => ({ response: response, outcome: outcome })));
+        }).then(result => {
+            if (!result) {
+                return;
+            }
+
+            const outcome = result.outcome;
+            const payload = outcome && outcome.payload;
+
+            if (!payload || !Array.isArray(payload.deleted)) {
+                setStatus(describeFailure(outcome, result.response), 'error');
+
+                return;
+            }
+
+            const failed = Array.isArray(payload.failed) ? payload.failed : [];
+            const removed = new Set(payload.deleted.map(String));
+
+            dataRows().forEach(tr => {
+                if (removed.has(tr.dataset.entityId)) {
+                    tr.remove();
+                }
+            });
+            removed.forEach(id => selected.delete(id));
+            updateLoadMore(moreAvailable);
+            setStatus('Deleted ' + removed.size + ', failed ' + failed.length + '.', failed.length ? 'error' : undefined);
+            appendStatusList('Failed', failed.map(item => item.id + ': ' + item.message));
+        }).catch(() => setStatus('The bulk delete request failed.', 'error'))
+            .then(() => syncSelectionUi());
+    }
+
+    // ---- single row refresh ----
+
+    function refreshRow(id) {
+        if (!tbody) {
+            return Promise.resolve();
+        }
+
+        const params = new URLSearchParams();
+        params.set('entity', entityKey);
+        if (sourceName) {
+            params.set('source', sourceName);
+        }
+
+        params.append('f', idColumn() + '~eq~' + id);
+
+        return request(basePath + '/rows?' + params.toString())
+            .then(response => response.text())
+            .then(html => {
+                const parsed = parseRowsResponse(html);
+                const existing = dataRows().find(tr => tr.dataset.entityId === id);
+                if (!existing) {
+                    return;
+                }
+
+                if (parsed.data.length) {
+                    existing.replaceWith(parsed.data[0]);
+                } else if (!parsed.error) {
+                    existing.remove();
+                    selected.delete(id);
+                }
+
+                applyColumns();
+                syncSelectionUi();
+                updateLoadMore(moreAvailable);
+            })
+            .catch(() => setStatus('The row could not be refreshed.', 'error'));
+    }
+
+    // ---- detail ----
+
+    let detailId = '';
+    let detailTarget = null;
+    let detailOpener = null;
+    let detailStack = [];
+    const detailDialog = byId('entities-detail-dialog');
+
+    function pageTarget() {
+        return { entity: entityKey, source: sourceName };
+    }
+
+    function sameTarget(a, b) {
+        return !!a && !!b && a.entity === b.entity && (a.source || '') === (b.source || '');
+    }
+
+    function referenceTarget(link) {
+        return { entity: link.dataset.entitiesTarget || entityKey, source: sourceName };
+    }
+
+    function syncDetailBack() {
+        detailRegion.querySelectorAll('[data-entities-back]').forEach(button => {
+            button.hidden = !detailStack.length;
+        });
+    }
+
+    function openDetail(id, opener, target, nested) {
+        if (!detailRegion || !detailDialog) {
+            return Promise.resolve();
+        }
+
+        const next = target || pageTarget();
+        const params = new URLSearchParams();
+        params.set('entity', next.entity);
+        if (next.source) {
+            params.set('source', next.source);
+        }
+
+        params.set('id', id);
+        if (opener) {
+            detailOpener = opener;
+        }
+
+        return request(basePath + '/detail?' + params.toString())
+            .then(response => response.text())
+            .then(html => {
+                if (nested && detailId) {
+                    detailStack.push({ id: detailId, target: detailTarget });
+                }
+
+                detailRegion.textContent = '';
+                detailRegion.appendChild(toTemplate(html));
+                detailId = id;
+                detailTarget = next;
+                syncDetailBack();
+                if (!detailDialog.open) {
+                    detailDialog.showModal();
+                }
+
+                const focusTarget = one('[data-entities-close]', detailRegion) || detailDialog;
+                focusTarget.focus();
+            })
+            .catch(() => reportMessage('The record could not be loaded.', 'error'));
+    }
+
+    function closeDetail() {
+        const opener = detailOpener;
+
+        if (detailDialog && detailDialog.open) {
+            detailDialog.close();
+        }
+
+        if (detailRegion) {
+            detailRegion.textContent = '';
+        }
+
+        detailId = '';
+        detailTarget = null;
+        detailStack = [];
+        detailOpener = null;
+        if (opener && document.contains(opener)) {
+            opener.focus();
+        }
+    }
+
+    function goBackFromDetail() {
+        const previous = detailStack.pop();
+        if (previous) {
+            openDetail(previous.id, null, previous.target, false);
+
+            return;
+        }
+
+        closeDetail();
+    }
+
+    function openRecord(id, opener, target) {
+        if (root.dataset.entitiesEdit === 'true') {
+            openEditor(id, opener, null, target, true);
+        } else {
+            openDetail(id, opener, target, !!detailId);
+        }
+    }
+
+    if (detailDialog) {
+        detailDialog.addEventListener('close', () => {
+            if (detailId) {
+                closeDetail();
+            }
+        });
+    }
+
+    function stripInitialId() {
+        const params = new URLSearchParams(window.location.search);
+        if (!params.has('id')) {
+            return;
+        }
+
+        params.delete('id');
+        window.history.replaceState(window.history.state, '', basePath + '?' + params.toString());
+    }
+
+    function clipboardWrite(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            return navigator.clipboard.writeText(text);
+        }
+
+        return new Promise((resolve, reject) => {
+            const area = document.createElement('textarea');
+            area.value = text;
+            area.setAttribute('readonly', '');
+            area.style.position = 'fixed';
+            area.style.opacity = '0';
+            document.body.appendChild(area);
+            area.select();
+            const ok = document.execCommand && document.execCommand('copy');
+            area.remove();
+            return ok ? resolve() : reject(new Error('copy failed'));
+        });
+    }
+
+    function detailJson(article) {
+        const result = {};
+
+        all('dt[data-property]', article).forEach(term => {
+            const value = term.nextElementSibling;
+            if (!value || value.tagName !== 'DD') {
+                return;
+            }
+
+            const name = term.dataset.property;
+            const json = value.querySelector('pre.entities-json');
+            if (value.querySelector('.entities-null')) {
+                result[name] = null;
+            } else if (json) {
+                try {
+                    result[name] = JSON.parse(json.textContent);
+                } catch (error) {
+                    result[name] = json.textContent;
+                }
+            } else {
+                result[name] = value.textContent.trim();
+            }
+        });
+
+        return result;
+    }
+
+    function copyJson(button) {
+        const row = button.closest('tr[data-row]');
+        const article = button.closest('article');
+        let value = null;
+
+        if (row) {
+            try {
+                value = JSON.parse(row.dataset.row);
+            } catch (error) {
+                value = row.dataset.row;
+            }
+        } else if (article) {
+            value = detailJson(article);
+        }
+
+        clipboardWrite(JSON.stringify(value, null, 2))
+            .then(() => setStatus('Copied JSON to the clipboard.'))
+            .catch(() => setStatus('The clipboard is not available.', 'error'));
+    }
+
+    // ---- export ----
+
+    function exportRows(format, button) {
+        const params = new URLSearchParams();
+        appendState(params, applied);
+        params.set('format', format);
+        params.set('columns', visibleColumnPaths().join(','));
+        button.disabled = true;
+        setStatus('Preparing export...');
+
+        request(basePath + '/export?' + params.toString())
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(text || ('The export failed (' + response.status + ').'));
+                    });
+                }
+
+                const fallback = entityKey.split('.').pop() + '-' + timestamp() + '.' + format;
+
+                return response.blob().then(blob => ({
+                    blob: blob,
+                    name: filenameFrom(response.headers.get('Content-Disposition'), fallback),
+                    truncated: response.headers.get('X-Entities-Export-Truncated') === 'true'
+                }));
+            })
+            .then(result => {
+                const url = URL.createObjectURL(result.blob);
+                const anchor = document.createElement('a');
+
+                anchor.href = url;
+                anchor.download = result.name;
+                anchor.hidden = true;
+                document.body.appendChild(anchor);
+                anchor.click();
+                anchor.remove();
+                window.setTimeout(() => URL.revokeObjectURL(url), 10000);
+                setStatus(result.truncated
+                    ? 'Export truncated to the maximum number of rows. Downloaded ' + result.name + '.'
+                    : 'Downloaded ' + result.name + '.');
+            })
+            .catch(error => setStatus(error && error.message ? error.message : 'The export failed.', 'error'))
+            .then(() => {
+                button.disabled = false;
+            });
+    }
+
+    // ---- edit mode ----
+
+    function setEditMode(enabled) {
+        const toggle = one('[data-entities-edit-toggle]', document);
+
+        root.dataset.entitiesEdit = enabled ? 'true' : 'false';
+        if (toggle) {
+            toggle.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+        }
+
+        if (!enabled) {
+            clearSelection();
+        }
+    }
+
+    // ---- editor dialog ----
+
+    let editorDialog = null;
+    let editorOpener = null;
+    let editorBusy = false;
+
+    function editorParams(id, target) {
+        const next = target || pageTarget();
+        const params = new URLSearchParams();
+        params.set('entity', next.entity);
+        if (next.source) {
+            params.set('source', next.source);
+        }
+
+        if (id) {
+            params.set('id', id);
+        }
+
+        return params;
+    }
+
+    function fetchEditor(id, target) {
+        return request(basePath + '/editor?' + editorParams(id, target).toString())
+            .then(response => response.text())
+            .then(html => toTemplate(html).querySelector('dialog'));
+    }
+
+    function syncNull(box) {
+        const field = box.closest('[data-entities-field]');
+        const input = field && one('[data-entities-input]', field);
+        if (input) {
+            input.disabled = box.checked;
+        }
+    }
+
+    function newGuid() {
+        if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+            return window.crypto.randomUUID();
+        }
+
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, char => {
+            const random = Math.floor(Math.random() * 16);
+
+            return (char === 'x' ? random : (random & 3) | 8).toString(16);
+        });
+    }
+
+    function memberInput(field, name) {
+        return all('input[data-entities-member-replace]', field).find(input => input.getAttribute('name') === name) || null;
+    }
+
+    function editorEl(selector) {
+        return editorDialog ? one(selector, editorDialog) : null;
+    }
+
+    function setEditorBusy(busy) {
+        editorBusy = busy;
+        if (editorDialog) {
+            editorDialog.setAttribute('aria-busy', busy ? 'true' : 'false');
+            all('button', editorDialog).forEach(button => {
+                if (busy) {
+                    button.dataset.wasDisabled = button.disabled ? 'true' : 'false';
+                    button.disabled = true;
+                } else if (button.dataset.wasDisabled) {
+                    button.disabled = button.dataset.wasDisabled === 'true';
+                    delete button.dataset.wasDisabled;
+                }
+            });
+        }
+    }
+
+    function clearEditorErrors() {
+        const general = editorEl('#entities-editor-error');
+        if (general) {
+            general.textContent = '';
+            general.hidden = true;
+        }
+
+        all('[data-field-error]', editorDialog).forEach(item => {
+            item.textContent = '';
+            item.hidden = true;
+        });
+    }
+
+    function showEditorGeneral(message, reload, correlationId) {
+        const general = editorEl('#entities-editor-error');
+        if (!general) {
+            return;
+        }
+
+        general.textContent = message;
+        general.hidden = false;
+        appendCorrelation(general, correlationId);
+        if (reload) {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'btn btn-outline-secondary btn-sm ms-2';
+            button.textContent = 'Reload latest';
+            button.addEventListener('click', reload);
+            general.appendChild(button);
+        }
+    }
+
+    function showEditorOutcome(outcome, response) {
+        const errors = outcome && Array.isArray(outcome.fieldErrors) ? outcome.fieldErrors : [];
+        const unmatched = [];
+        let firstInvalid = null;
+
+        clearEditorErrors();
+        errors.forEach(error => {
+            const name = String(error.field || '');
+            const targets = all('[data-field-error]', editorDialog);
+            const target = targets.find(item => item.dataset.fieldError === name)
+                || targets.find(item => item.dataset.fieldError.toLowerCase() === name.toLowerCase());
+
+            if (target) {
+                target.textContent = error.message;
+                target.hidden = false;
+                if (!firstInvalid) {
+                    const field = target.closest('[data-entities-field]');
+                    firstInvalid = field && (one('[data-entities-input]', field) || null);
+                }
+            } else {
+                unmatched.push(error.message);
+            }
+        });
+
+        if (response.status === 409 && editorDialog.dataset.mode === 'edit') {
+            const id = editorDialog.dataset.entityId;
+            const failed = { entity: editorDialog.dataset.entity || entityKey, source: editorDialog.dataset.source || sourceName };
+            showEditorGeneral(describeFailure(outcome, response, false) + ' The record changed since it was loaded.', () => {
+                closeEditor();
+                openEditor(id, editorOpener, null, failed);
+            });
+        } else if (!errors.length || unmatched.length || (outcome && outcome.correlationId)) {
+            showEditorGeneral([describeFailure(outcome, response, false)].concat(unmatched).join(' '), null, outcome && outcome.correlationId);
+        }
+
+        if (firstInvalid && !firstInvalid.disabled) {
+            firstInvalid.focus();
+        }
+    }
+
+    function collectBody() {
+        const dialog = editorDialog;
+        const body = {
+            entity: dialog.dataset.entity || entityKey,
+            source: dialog.dataset.source || sourceName,
+            values: {},
+            replace: [],
+            memberReplacements: {}
+        };
+        const hidden = one('input[type="hidden"][name="concurrencyVersion"]', dialog);
+        const version = (hidden && hidden.value) || dialog.dataset.concurrencyVersion;
+
+        if (dialog.dataset.mode === 'edit') {
+            body.id = dialog.dataset.entityId;
+        }
+
+        if (version) {
+            body.concurrencyVersion = version;
+        }
+
+        all('[data-entities-field]', dialog).forEach(field => {
+            const path = field.dataset.entitiesField;
+            const input = one('[data-entities-input]', field);
+            if (!input) {
+                return;
+            }
+
+            const replace = one('input[data-entities-replace]', field);
+            const nullBox = one('input[data-entities-null]', field);
+
+            if (replace) {
+                if (replace.checked) {
+                    body.values[path] = input.value;
+                    body.replace.push(path);
+                }
+            } else if (nullBox && nullBox.checked) {
+                body.values[path] = null;
+            } else {
+                body.values[path] = input.value;
+            }
+
+            all('input[data-entities-replace-member]', field).forEach(check => {
+                const name = check.dataset.entitiesReplaceMember;
+                const member = memberInput(field, name);
+                if (check.checked && member) {
+                    body.memberReplacements[name] = member.value;
+                }
+            });
+        });
+
+        return body;
+    }
+
+    function sendEditor(url, body) {
+        return postJson(url, body).then(response => {
+            const type = response.headers.get('Content-Type') || '';
+
+            return response.text().then(text => {
+                let outcome = null;
+                if (type.indexOf('json') >= 0) {
+                    try {
+                        outcome = JSON.parse(text);
+                    } catch (error) {
+                        outcome = null;
+                    }
+                }
+
+                return { response: response, text: text, outcome: outcome };
+            });
+        });
+    }
+
+    function onSaved(mode, id) {
+        const saved = editorDialog
+            ? { entity: editorDialog.dataset.entity || entityKey, source: editorDialog.dataset.source || sourceName }
+            : pageTarget();
+        const onPage = sameTarget(saved, pageTarget());
+
+        closeEditor();
+        setStatus(mode === 'create' ? 'Record created.' : 'Record saved.');
+        if (mode === 'create') {
+            if (onPage) {
+                loadRows(false);
+            }
+
+            return;
+        }
+
+        if (onPage) {
+            refreshRow(id);
+        }
+
+        if (detailId === id && sameTarget(detailTarget, saved)) {
+            openDetail(id, null, saved, false);
+        }
+    }
+
+    function submitEditor() {
+        if (editorBusy || !editorDialog) {
+            return;
+        }
+
+        const mode = editorDialog.dataset.mode;
+        const body = collectBody();
+        const url = basePath + (mode === 'create' ? '/create' : '/update');
+
+        clearEditorErrors();
+        setEditorBusy(true);
+        sendEditor(url, body).then(result => {
+            setEditorBusy(false);
+            if (result.outcome && result.outcome.success) {
+                onSaved(mode, mode === 'create' ? (result.outcome.payload && result.outcome.payload.id) : body.id);
+            } else if (result.outcome) {
+                showEditorOutcome(result.outcome, result.response);
+            } else {
+                showEditorGeneral('The request failed (' + result.response.status + ').');
+            }
+        }).catch(() => {
+            setEditorBusy(false);
+            showEditorGeneral('The request failed. Check your connection and try again.');
+        });
+    }
+
+    function wireEditor(dialog) {
+        all('input[data-entities-null]', dialog).forEach(syncNull);
+        dialog.addEventListener('change', event => {
+            const target = event.target;
+            const field = target.closest('[data-entities-field]');
+            if (!field) {
+                return;
+            }
+
+            if (target.matches('input[data-entities-null]')) {
+                syncNull(target);
+            } else if (target.matches('input[data-entities-replace]')) {
+                const input = one('[data-entities-input]', field);
+                if (input) {
+                    input.disabled = !target.checked;
+                    if (target.checked) {
+                        input.focus();
+                    }
+                }
+            } else if (target.matches('input[data-entities-replace-member]')) {
+                const member = memberInput(field, target.dataset.entitiesReplaceMember);
+                if (member) {
+                    member.disabled = !target.checked;
+                    if (target.checked) {
+                        member.focus();
+                    }
+                }
+            }
+        });
+        dialog.addEventListener('click', event => {
+            const guid = event.target.closest('[data-entities-new-guid]');
+            const cancel = event.target.closest('[data-entities-editor-cancel]');
+
+            if (guid) {
+                const field = guid.closest('[data-entities-field]');
+                const input = field && one('[data-entities-input]', field);
+                if (input && !input.disabled) {
+                    input.value = newGuid();
+                    input.focus();
+                }
+            } else if (cancel && !editorBusy) {
+                closeEditor();
+            }
+        });
+        dialog.addEventListener('submit', event => {
+            event.preventDefault();
+            submitEditor();
+        });
+        dialog.addEventListener('cancel', event => {
+            if (editorBusy) {
+                event.preventDefault();
+            }
+        });
+        dialog.addEventListener('close', () => cleanupEditor(dialog));
+    }
+
+    function cleanupEditor(dialog) {
+        if (editorDialog !== dialog) {
+            return;
+        }
+
+        const opener = editorOpener;
+        dialog.remove();
+        editorDialog = null;
+        editorBusy = false;
+        editorOpener = null;
+        if (opener && document.contains(opener)) {
+            opener.focus();
+        }
+    }
+
+    function closeEditor() {
+        const dialog = editorDialog;
+        if (!dialog) {
+            return;
+        }
+
+        const opener = editorOpener;
+        if (dialog.open) {
+            dialog.close();
+        }
+
+        cleanupEditor(dialog);
+        editorOpener = opener;
+    }
+
+    function applyCloneValues(target, source) {
+        all('[data-entities-field]', target).forEach(field => {
+            const path = field.dataset.entitiesField;
+            const input = one('[data-entities-input]', field);
+            const origin = all('[data-entities-field]', source).find(item => item.dataset.entitiesField === path);
+
+            if (!input || !origin || one('input[data-entities-replace]', field) || one('input[data-entities-replace]', origin)) {
+                return;
+            }
+
+            const originInput = one('[data-entities-input]', origin);
+            if (!originInput) {
+                return;
+            }
+
+            const nullBox = one('input[data-entities-null]', field);
+            const originNull = one('input[data-entities-null]', origin);
+
+            input.value = originInput.value;
+            if (nullBox) {
+                nullBox.checked = !!(originNull && originNull.checked);
+                syncNull(nullBox);
+            }
+        });
+    }
+
+    function openEditor(id, opener, cloneFromId, target, fallbackToView) {
+        if (editorDialog || editorBusy) {
+            return;
+        }
+
+        editorOpener = opener || document.activeElement;
+        editorBusy = true;
+        const cloneSource = cloneFromId
+            ? fetchEditor(cloneFromId, target).catch(() => null)
+            : Promise.resolve(null);
+
+        Promise.all([fetchEditor(id, target), cloneSource]).then(results => {
+            const dialog = results[0];
+            editorBusy = false;
+            if (!dialog) {
+                reportMessage('The editor could not be opened.', 'error');
+
+                return;
+            }
+
+            if (fallbackToView && dialog.dataset.blocked === 'true') {
+                editorOpener = null;
+                openDetail(id, opener, target, !!detailId);
+
+                return;
+            }
+
+            if (results[1] && dialog.dataset.mode === 'create') {
+                applyCloneValues(dialog, results[1]);
+            }
+
+            root.appendChild(dialog);
+            editorDialog = dialog;
+            wireEditor(dialog);
+            dialog.showModal();
+            const first = all('[data-entities-input]', dialog).find(input => !input.disabled)
+                || one('[data-entities-editor-cancel]', dialog);
+            if (first) {
+                first.focus();
+            }
+        }).catch(() => {
+            editorBusy = false;
+            reportMessage('The editor could not be opened.', 'error');
+        });
+    }
+
+    function deleteRecord(id, button, recordTarget) {
+        const deleting = recordTarget || pageTarget();
+
+        confirmDialog({
+            title: 'Delete ' + entityLabel() + '?',
+            message: 'This action cannot be undone.',
+            selection: entityLabel() + ' ' + id,
+            confirmText: 'Delete',
+            kind: 'danger'
+        }).then(confirmed => {
+            if (!confirmed) {
+                return;
+            }
+
+            button.disabled = true;
+
+            return postJson(basePath + '/delete', { entity: deleting.entity, source: deleting.source, id: id })
+                .then(response => readJson(response).then(outcome => {
+                    if (outcome && outcome.success) {
+                        setStatus('Record deleted.');
+                        goBackFromDetail();
+                        if (sameTarget(deleting, pageTarget())) {
+                            refreshRow(id);
+                        }
+                    } else {
+                        button.disabled = false;
+                        setStatus(describeFailure(outcome, response), 'error');
+                    }
+                }));
+        }).catch(() => {
+            button.disabled = false;
+            setStatus('The delete request failed.', 'error');
+        });
+    }
+
+    // ---- events ----
+
+    function modified(event) {
+        return event.ctrlKey || event.metaKey || event.shiftKey || event.button > 0;
+    }
+
+    document.addEventListener('click', event => {
+        const target = event.target instanceof Element ? event.target : null;
+        if (!target) {
+            return;
+        }
+
+        const pick = selector => target.closest(selector);
+        let match;
+
+        if ((match = pick('a[data-entities-open]')) && root.contains(match)) {
+            if (!modified(event)) {
+                event.preventDefault();
+                openRecord(match.dataset.entityId, match, pageTarget());
+            }
+        } else if ((match = pick('a[data-entities-reference]')) && root.contains(match)) {
+            if (!modified(event)) {
+                event.preventDefault();
+                openRecord(match.dataset.entityId, match, referenceTarget(match));
+            }
+        } else if ((match = pick('[data-entities-sort]')) && root.contains(match)) {
+            sortBy(match.dataset.entitiesSort);
+        } else if ((match = pick('[data-entities-load-more]'))) {
+            loadRows(true);
+        } else if (pick('[data-entities-add-condition]')) {
+            clearFilterError();
+            const row = addCondition(null);
+            if (row) {
+                one('select[data-entities-cond="path"]', row).focus();
+            }
+        } else if ((match = pick('[data-entities-cond-remove]'))) {
+            match.closest('[data-entities-condition]').remove();
+            const add = byId('entities-add-condition');
+            if (add) {
+                add.focus();
+            }
+        } else if (pick('[data-entities-reset]')) {
+            resetFilters();
+        } else if (pick('[data-entities-refresh]')) {
+            if (!editorDialog) {
+                loadRows(false);
+            }
+        } else if (pick('[data-entities-save-filter]')) {
+            saveCurrentFilter();
+        } else if ((match = pick('[data-entities-export]'))) {
+            exportRows(match.dataset.entitiesExport, match);
+        } else if ((match = pick('[data-entities-back]')) && root.contains(match)) {
+            goBackFromDetail();
+        } else if ((match = pick('[data-entities-close]')) && root.contains(match)) {
+            closeDetail();
+        } else if ((match = pick('[data-entities-copy]')) && root.contains(match)) {
+            copyJson(match);
+        } else if ((match = pick('[data-entities-clone]')) && root.contains(match)) {
+            const row = match.closest('tr[data-entity-id]');
+            const article = match.closest('article[data-entity-id]');
+            const id = row ? row.dataset.entityId : (article ? article.dataset.entityId : '');
+            if (id) {
+                openEditor(null, match, id, row ? pageTarget() : detailTarget);
+            }
+        } else if ((match = pick('[data-entities-edit-record]')) && root.contains(match)) {
+            const article = match.closest('article[data-entity-id]');
+            if (article) {
+                openEditor(article.dataset.entityId, match, null, detailTarget);
+            }
+        } else if ((match = pick('[data-entities-delete-record]')) && root.contains(match)) {
+            const article = match.closest('article[data-entity-id]');
+            if (article) {
+                deleteRecord(article.dataset.entityId, match, detailTarget);
+            }
+        } else if ((match = pick('[data-entities-new]'))) {
+            openEditor(null, match);
+        } else if ((match = pick('[data-entities-bulk-delete]'))) {
+            bulkDelete(match);
+        } else if ((match = pick('[data-entities-edit-toggle]'))) {
+            setEditMode(root.dataset.entitiesEdit !== 'true');
+        }
+    });
+
+    document.addEventListener('change', event => {
+        const target = event.target instanceof Element ? event.target : null;
+        if (!target) {
+            return;
+        }
+
+        if (target.matches('[data-entities-entity-select], [data-entities-source-select]')) {
+            const form = target.form;
+            if (form) {
+                if (typeof form.requestSubmit === 'function') {
+                    form.requestSubmit();
+                } else {
+                    form.submit();
+                }
+            }
+        } else if (target.matches('input[data-entities-select]')) {
+            onSelectChange(target);
+        } else if (target.matches('[data-entities-page-size]')) {
+            writeStorage(PAGE_SIZE_KEY, target.value);
+            loadRows(false);
+        } else if (target.matches('[data-entities-select-all]')) {
+            onSelectAll(target);
+        } else if (target.matches('select[data-entities-cond="path"]')) {
+            const row = target.closest('[data-entities-condition]');
+            fillOperators(row, '');
+            configureValueControl(row, '');
+        } else if (target.matches('select[data-entities-cond="operator"]')) {
+            const row = target.closest('[data-entities-condition]');
+            conditionValueControl(row).hidden = NO_VALUE_OPERATORS.indexOf(target.value) >= 0;
+        }
+    });
+
+    if (filterForm) {
+        filterForm.addEventListener('submit', event => {
+            event.preventDefault();
+            applyFromForm();
+        });
+    }
+
+    window.addEventListener('popstate', () => {
+        const state = parseUrlState(window.location.search);
+        if (editorDialog) {
+            closeEditor();
+        }
+
+        if (detailId) {
+            closeDetail();
+        }
+
+        if (state.entity !== entityKey || (state.source || '') !== (sourceName || '')) {
+            window.location.reload();
+
+            return;
+        }
+
+        const next = { conditions: state.conditions, match: state.match, q: state.q, sort: state.sort, dir: state.dir };
+        if (filterSignature(next) !== filterSignature(applied)) {
+            applied = next;
+            rememberView();
+            setFilterUi(applied);
+            updateSortUi();
+            loadRows(false);
+        }
+    });
+
+    // ---- init ----
+
+    if (entityKey) {
+        rememberView();
+    } else if (window.location.search) {
+        removeStorage(LAST_VIEW_KEY);
+    }
+
+    if (content) {
+        setFilterUi(applied);
+        renderFilterLists();
+        initColumnPicker();
+        syncSelectionUi();
+        updateLoadMore(moreAvailable);
+        if (pageSizeSelect) {
+            const storedSize = String(readStorage(PAGE_SIZE_KEY, ''));
+            if (storedSize && storedSize !== pageSizeSelect.value && Array.from(pageSizeSelect.options).some(o => o.value === storedSize)) {
+                pageSizeSelect.value = storedSize;
+                loadRows(false);
+            }
+        }
+        if (detailRegion && detailDialog && detailRegion.dataset.entitiesInitialId) {
+            detailId = detailRegion.dataset.entitiesInitialId;
+            detailTarget = pageTarget();
+            syncDetailBack();
+            detailDialog.showModal();
+            stripInitialId();
+        }
+    }
+})();
+</script>

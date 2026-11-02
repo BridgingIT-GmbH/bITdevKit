@@ -239,6 +239,7 @@ Built-in page keys:
 | Blobs | `storage.blobs` | [Blob Storage](features-storage-blobs.md#dashboard) | [Blobs](assets/dashboard/19-storage-blobs-blobs.png) |
 | Permalinks | `storage.permalinks` | [Storage Permalinks](features-storage-permalinks.md#dashboard-guide) | [Permalinks](assets/dashboard/20-storage-permalinks-permalinks.png) |
 | Change History | `change-history` | [Change History](features-domain-change-history.md#dashboard-guide) | [Unconfigured state](assets/dashboard/22-change-history-unavailable.png) |
+| Entities | `entities` | [Entities dashboard](features-presentation-dashboard-entities.md) | – |
 
 Project-specific pages declared with `DashboardPageSet` use the key passed to `.Page(...)`. For example, a page declared as `.Page("customer-management", "/app/core/customers")` can be hidden with:
 
@@ -507,6 +508,10 @@ The page lets operators switch between registered document clients on the fly, p
 The blob storage page is contributed by `Presentation.Web.Storage` and is shown only when `AddBlobStorage(...)` is active and at least one named blob client is registered. The page is server-rendered and uses `IBlobStoreClientFactory`, so the dashboard stays provider-neutral across in-memory, Entity Framework Core, Azure Blob Storage, and decorated clients.
 
 The page lets operators switch between registered blob clients, choose a container and optional prefix, list `BlobInfo` metadata with deterministic paging, explicitly approve full scans when the selected client allows them, upload a local file to the selected container and prefix, download an exact blob, and delete an exact blob. Listing renders metadata only and does not download content streams. The download action streams the selected blob and disposes the returned `BlobDownload` after the response is complete.
+
+### <img class="bdk-doc-icon" src="assets/features/entities.svg" width="24" height="24" alt=""> Entities
+
+The entities page is contributed by `Presentation.Web` and is shown when at least one `IGenericRepository<T>` or ActiveEntity configuration for an `IEntity` type exists. It works like a rough table editor: search with `FilterModel`, load more rows, inspect details and, for principals that satisfy the configured edit policy or roles, create, update and delete entities in a modal dialog. Properties can be masked or hidden per entity. Hide it with `DisablePages("entities")`. See the [Entities dashboard guide](features-presentation-dashboard-entities.md).
 
 ## Adding project-specific dashboard pages
 

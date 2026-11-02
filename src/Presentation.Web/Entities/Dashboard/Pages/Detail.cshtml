@@ -1,0 +1,112 @@
+@inherits RazorSlice<EntitiesDashboardDetailViewModel>
+@if (Model.Error is not null)
+{
+    <article id="entities-detail" class="entities-detail entities-dialog-form" data-entity-id="@Model.Id" aria-labelledby="entities-detail-title">
+        <div class="entities-dialog-head">
+            <h2 id="entities-detail-title" class="entities-dialog-title">@Model.Entity.Name <code>@Model.Id</code></h2>
+            <button type="button" class="btn-close" data-entities-close aria-label="Close"></button>
+        </div>
+        <div class="entities-dialog-body">
+            <div class="entities-error" role="alert">@Model.Error@if (Model.CorrelationId is not null) { <span> (Correlation ID: @Model.CorrelationId)</span> }</div>
+        </div>
+        <div class="entities-dialog-foot">
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-entities-back hidden><i class="bi bi-arrow-left" aria-hidden="true"></i> Back</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-entities-close>Close</button>
+        </div>
+    </article>
+}
+else
+{
+    <article id="entities-detail" class="entities-detail entities-dialog-form" aria-labelledby="entities-detail-title" data-entity-id="@Model.Id" data-deleted="@(Model.IsDeleted ? "true" : "false")" data-concurrency-version="@Model.ConcurrencyVersion" data-can-update="@(Model.CanUpdate ? "true" : "false")" data-can-delete="@(Model.CanDelete ? "true" : "false")">
+        <div class="entities-dialog-head">
+            <h2 id="entities-detail-title" class="entities-dialog-title">@Model.Entity.Name <code>@Model.Id</code></h2>
+            @if (Model.IsDeleted)
+            {
+                <span class="badge text-bg-secondary entities-deleted-badge">deleted</span>
+            }
+            <button type="button" class="btn-close" data-entities-close aria-label="Close"></button>
+        </div>
+        <div class="entities-dialog-body">
+        @if (Model.ChangeHistoryUrl is not null || Model.CanEdit)
+        {
+        <div class="entities-detail-actions">
+            @if (Model.ChangeHistoryUrl is not null)
+            {
+                <a class="btn btn-outline-secondary btn-sm" href="@Model.ChangeHistoryUrl" data-entities-change-history><i class="bi bi-clock-history" aria-hidden="true"></i> Change history</a>
+            }
+            @if (Model.CanEdit)
+            {
+                if (Model.Entity.CanCreate && !Model.IsDeleted)
+                {
+                    <button type="button" class="btn btn-outline-secondary btn-sm entities-edit-only" data-entities-clone><i class="bi bi-copy" aria-hidden="true"></i> Clone</button>
+                }
+                if (Model.CanUpdate)
+                {
+                    <button type="button" class="btn btn-outline-secondary btn-sm entities-edit-only" data-entities-edit-record><i class="bi bi-pencil" aria-hidden="true"></i> Edit</button>
+                }
+                if (Model.CanDelete)
+                {
+                    <button type="button" class="btn btn-outline-danger btn-sm entities-edit-only" data-entities-delete-record><i class="bi bi-trash" aria-hidden="true"></i> Delete</button>
+                }
+            }
+        </div>
+        }
+        <dl class="entities-properties">
+            @foreach (var property in Model.Properties)
+            {
+                Model.Row.TryGetValue(property.Name, out var value);
+                <dt data-property="@property.Path">@property.Path</dt>
+                <dd data-property-value="@property.Path" class="@(property.IsAudit ? "entities-audit" : null)">
+                    @if (value is null)
+                    {
+                        <span class="entities-null">null</span>
+                    }
+                    else if (property.IsMasked)
+                    {
+                        <span class="entities-masked">@Text(value)</span>
+                    }
+                    else if (property.EditorKind == EntitiesDashboardEditorKind.Json)
+                    {
+                        <pre class="entities-json">@Pretty(Text(value))</pre>
+                    }
+                    else if (property.Reference is not null)
+                    {
+                        <a href="@Model.Path?entity=@Uri.EscapeDataString(property.Reference.TargetKey)&id=@Uri.EscapeDataString(Text(value))" data-entities-reference data-entities-target="@property.Reference.TargetKey" data-entity-id="@Text(value)">@Text(value)</a>
+                    }
+                    else
+                    {
+                        @Text(value)
+                    }
+                </dd>
+            }
+        </dl>
+        </div>
+        <div class="entities-dialog-foot">
+            <button type="button" class="btn btn-outline-secondary btn-sm entities-foot-start" data-entities-copy><i class="bi bi-clipboard" aria-hidden="true"></i> Copy JSON</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-entities-back hidden><i class="bi bi-arrow-left" aria-hidden="true"></i> Back</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-entities-close>Close</button>
+        </div>
+    </article>
+}
+@functions {
+    private static string Text(object value) => value switch
+    {
+        null => string.Empty,
+        bool flag => flag ? "true" : "false",
+        IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
+        _ => value.ToString()
+    };
+
+    private static string Pretty(string json)
+    {
+        try
+        {
+            using var document = System.Text.Json.JsonDocument.Parse(json);
+            return System.Text.Json.JsonSerializer.Serialize(document.RootElement, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return json;
+        }
+    }
+}

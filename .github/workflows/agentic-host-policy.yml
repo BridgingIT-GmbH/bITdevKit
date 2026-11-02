@@ -1,0 +1,29 @@
+name: Agentic Host Policy
+
+on:
+  push:
+    paths:
+      - '.github/workflows/**'
+      - '.github/aw/**'
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - '.github/aw/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check generated host guards
+        shell: pwsh
+        run: .github/aw/Set-AgenticWorkflowHostGuards.ps1 -Check
+      - name: Test host policy generation
+        shell: pwsh
+        run: .github/aw/tests/HostGuards.Tests.ps1

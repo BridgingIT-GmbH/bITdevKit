@@ -5,6 +5,9 @@ on:
     name: ai-review
     events: [pull_request]
 
+# Agentic automation runs only on non-github.com hosts.
+if: github.server_url != 'https://github.com'
+
 permissions:
   contents: read
   issues: read

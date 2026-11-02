@@ -205,6 +205,9 @@ CI/CD and not a replacement for it. The workflows are written in Markdown, compi
 [GitHub Agentic Workflows](https://github.github.com/gh-aw/) CLI (`gh aw compile`) into regular Actions
 workflows, and run Copilot in a sandbox.
 
+Agentic workflows and their maintenance jobs run only on non-github.com hosts. On github.com,
+their jobs are skipped. CI and documentation publishing keep their existing behavior.
+
 | Workflow | Runs | Result |
 | --- | --- | --- |
 | [Weekly Repo Status](./.github/workflows/weekly-repo-status.md) | Mondays | status report issue for maintainers |
@@ -227,7 +230,7 @@ Guardrails:
 
 - Agents run read-only. Issues and pull requests are created through [safe outputs](https://github.github.com/gh-aw/reference/safe-outputs/), and pull requests are drafts that a human reviews and merges.
 - Each run is capped in AI credits and time. Usage is billed to the organization Copilot plan, see [cost management](https://github.github.com/gh-aw/reference/cost-management/) and check spend with `gh aw logs`.
-- The Markdown file is the source. Edit it, run `gh aw compile`, and commit the generated `.lock.yml` with it.
+- The Markdown file is the source. Edit it, run `gh aw compile`, then run `pwsh -File .github/aw/Set-AgenticWorkflowHostGuards.ps1`. Commit the generated workflows with the sources. See the [regeneration instructions](./.github/workflows/README.md#agentic-workflows).
 
 Further reading: [Automate repository tasks with GitHub Agentic Workflows](https://github.blog/ai-and-ml/automate-repository-tasks-with-github-agentic-workflows/).
 

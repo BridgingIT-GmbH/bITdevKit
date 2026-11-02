@@ -24,8 +24,18 @@ CI and Pages are intentionally separate. CI validates and packages code. Pages o
 
 `weekly-repo-status.md`, `weekly-package-update.md`, `ci-fault-analysis.md`, `continuous-docs.md`, `continuous-test-improvement.md` and the `issue-*.md` files are the source of truth. Never edit the `.lock.yml` files by hand.
 
+Agentic automation runs only on non-github.com hosts. On github.com, every job in the compiled workflows and `agentics-maintenance.yml` is skipped, including activation, reporting and safe outputs. Triggers remain registered. CI, Pages and the host-policy check continue to run under their existing conditions.
+
 - Install the CLI once: `gh extension install github/gh-aw`
-- After changing the `.md` file run `gh aw compile` and commit both files.
+- After changing a source, regenerate with the repository's compiler version, currently `gh aw version v0.93.4`, then apply the repository host policy:
+
+  ```powershell
+  gh aw compile
+  pwsh -File .github/aw/Set-AgenticWorkflowHostGuards.ps1
+  pwsh -File .github/aw/Set-AgenticWorkflowHostGuards.ps1 -Check
+  ```
+
+  Commit the sources and generated files together. The compiler's top-level `if` guards activation; the script also guards pre-activation, reporting, cleanup and maintenance jobs. The compiler does not provide a maintenance host condition. Always run the script after compilation, including after upgrades. The Agentic Host Policy workflow rejects generated files with missing guards.
 - The agent runs read-only; the issue is created through the `create-issue` safe output.
 - Copilot inference uses the workflow token (`permissions: copilot-requests: write`, centralized Copilot billing). No PAT secret is needed. Without centralized billing, remove that permission and add a `COPILOT_GITHUB_TOKEN` secret (fine-grained PAT with "Copilot Requests"), see [engine setup](https://github.github.com/gh-aw/reference/engines/).
 - To preview without writing anything, temporarily add `staged: true` under `safe-outputs`.

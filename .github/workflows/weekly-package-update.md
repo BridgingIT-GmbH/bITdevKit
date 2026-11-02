@@ -5,6 +5,9 @@ on:
     - cron: "0 5 * * 1"
   workflow_dispatch:
 
+# Agentic automation runs only on non-github.com hosts.
+if: github.server_url != 'https://github.com'
+
 permissions:
   contents: read
   issues: read

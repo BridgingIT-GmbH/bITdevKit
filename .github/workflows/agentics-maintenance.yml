@@ -96,14 +96,14 @@ concurrency:
 jobs:
   close-expired-discussions:
     name: Close expired discussions
-    if: ${{ (!(github.event.repository.fork)) && github.event_name != 'push' && (github.event_name != 'workflow_dispatch' && github.event_name != 'workflow_call' || inputs.operation == '' || inputs.operation == 'none') }}
+    if: github.server_url != 'https://github.com' && ((!(github.event.repository.fork)) && github.event_name != 'push' && (github.event_name != 'workflow_dispatch' && github.event_name != 'workflow_call' || inputs.operation == '' || inputs.operation == 'none'))
     runs-on: ubuntu-slim
     # Closing expired resources requires write access to this resource type only.
     permissions:
       discussions: write
     steps:
       - name: Setup Scripts
-        uses: github/gh-aw-actions/setup@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
 
@@ -119,14 +119,14 @@ jobs:
             await main();
   close-expired-issues:
     name: Close expired issues
-    if: ${{ (!(github.event.repository.fork)) && github.event_name != 'push' && (github.event_name != 'workflow_dispatch' && github.event_name != 'workflow_call' || inputs.operation == '' || inputs.operation == 'none') }}
+    if: github.server_url != 'https://github.com' && ((!(github.event.repository.fork)) && github.event_name != 'push' && (github.event_name != 'workflow_dispatch' && github.event_name != 'workflow_call' || inputs.operation == '' || inputs.operation == 'none'))
     runs-on: ubuntu-slim
     # Closing expired resources requires write access to this resource type only.
     permissions:
       issues: write
     steps:
       - name: Setup Scripts
-        uses: github/gh-aw-actions/setup@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
 
@@ -142,14 +142,14 @@ jobs:
             await main();
   close-expired-pull-requests:
     name: Close expired pull requests
-    if: ${{ (!(github.event.repository.fork)) && github.event_name != 'push' && (github.event_name != 'workflow_dispatch' && github.event_name != 'workflow_call' || inputs.operation == '' || inputs.operation == 'none') }}
+    if: github.server_url != 'https://github.com' && ((!(github.event.repository.fork)) && github.event_name != 'push' && (github.event_name != 'workflow_dispatch' && github.event_name != 'workflow_call' || inputs.operation == '' || inputs.operation == 'none'))
     runs-on: ubuntu-slim
     # Closing expired resources requires write access to this resource type only.
     permissions:
       pull-requests: write
     steps:
       - name: Setup Scripts
-        uses: github/gh-aw-actions/setup@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
 
@@ -166,7 +166,7 @@ jobs:
 
   run_operation:
     name: Run maintenance operation
-    if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation != '' && inputs.operation != 'none' && inputs.operation != 'safe_outputs' && inputs.operation != 'create_labels' && inputs.operation != 'activity_report' && inputs.operation != 'close_agentic_workflows_issues' && inputs.operation != 'clean_cache_memories' && inputs.operation != 'update_pull_request_branches' && inputs.operation != 'validate' && inputs.operation != 'forecast' && (!(github.event.repository.fork)) }}
+    if: github.server_url != 'https://github.com' && ((github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation != '' && inputs.operation != 'none' && inputs.operation != 'safe_outputs' && inputs.operation != 'create_labels' && inputs.operation != 'activity_report' && inputs.operation != 'close_agentic_workflows_issues' && inputs.operation != 'clean_cache_memories' && inputs.operation != 'update_pull_request_branches' && inputs.operation != 'validate' && inputs.operation != 'forecast' && (!(github.event.repository.fork)))
     runs-on: ubuntu-slim
     # Updates, upgrades, and workflow enable/disable operations need repository write access.
     permissions:
@@ -182,7 +182,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Scripts
-        uses: github/gh-aw-actions/setup@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
 
@@ -199,7 +199,7 @@ jobs:
             await main();
 
       - name: Install gh-aw
-        uses: github/gh-aw-actions/setup-cli@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup-cli@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           version: v0.93.4
 
@@ -227,7 +227,7 @@ jobs:
 
   update_pull_request_branches:
     name: Update pull request branches
-    if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation == 'update_pull_request_branches' && (!(github.event.repository.fork)) }}
+    if: github.server_url != 'https://github.com' && ((github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation == 'update_pull_request_branches' && (!(github.event.repository.fork)))
     runs-on: ubuntu-slim
     # Branch updates may write commits and update pull requests.
     permissions:
@@ -235,7 +235,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Setup Scripts
-        uses: github/gh-aw-actions/setup@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
 
@@ -267,7 +267,7 @@ jobs:
 
   apply_safe_outputs:
     name: Apply safe outputs
-    if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation == 'safe_outputs' && (!(github.event.repository.fork)) }}
+    if: github.server_url != 'https://github.com' && ((github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation == 'safe_outputs' && (!(github.event.repository.fork)))
     runs-on: ubuntu-slim
     # Replay can create or update any supported safe-output resource.
     permissions:
@@ -288,7 +288,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Scripts
-        uses: github/gh-aw-actions/setup@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
 
@@ -329,7 +329,7 @@ jobs:
 
   create_labels:
     name: Create labels
-    if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation == 'create_labels' && (!(github.event.repository.fork)) }}
+    if: github.server_url != 'https://github.com' && ((github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation == 'create_labels' && (!(github.event.repository.fork)))
     runs-on: ubuntu-slim
     # Creating repository labels uses the issues API.
     permissions:
@@ -342,7 +342,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Scripts
-        uses: github/gh-aw-actions/setup@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
 
@@ -359,7 +359,7 @@ jobs:
             await main();
 
       - name: Install gh-aw
-        uses: github/gh-aw-actions/setup-cli@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup-cli@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           version: v0.93.4
 
@@ -379,7 +379,7 @@ jobs:
 
   activity_report:
     name: activity report
-    if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation == 'activity_report' && (!(github.event.repository.fork)) }}
+    if: github.server_url != 'https://github.com' && ((github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation == 'activity_report' && (!(github.event.repository.fork)))
     runs-on: ubuntu-slim
     timeout-minutes: 120
     # Read workflow logs and create the resulting report issue.
@@ -394,7 +394,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Scripts
-        uses: github/gh-aw-actions/setup@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
 
@@ -411,7 +411,7 @@ jobs:
             await main();
 
       - name: Install gh-aw
-        uses: github/gh-aw-actions/setup-cli@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup-cli@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           version: v0.93.4
 
@@ -488,7 +488,7 @@ jobs:
 
   forecast_report:
     name: forecast report
-    if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation == 'forecast' && (!(github.event.repository.fork)) }}
+    if: github.server_url != 'https://github.com' && ((github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation == 'forecast' && (!(github.event.repository.fork)))
     runs-on: ubuntu-slim
     timeout-minutes: 60
     # Read workflow logs and create the resulting report issue.
@@ -503,7 +503,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Scripts
-        uses: github/gh-aw-actions/setup@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
 
@@ -520,7 +520,7 @@ jobs:
             await main();
 
       - name: Install gh-aw
-        uses: github/gh-aw-actions/setup-cli@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup-cli@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           version: v0.93.4
 
@@ -593,14 +593,14 @@ jobs:
 
   close_agentic_workflows_issues:
     name: Close agentic workflows issues
-    if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation == 'close_agentic_workflows_issues' && (!(github.event.repository.fork)) }}
+    if: github.server_url != 'https://github.com' && ((github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation == 'close_agentic_workflows_issues' && (!(github.event.repository.fork)))
     runs-on: ubuntu-slim
     # Closing no-repro issues requires issues: write.
     permissions:
       issues: write
     steps:
       - name: Setup Scripts
-        uses: github/gh-aw-actions/setup@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
 
@@ -630,7 +630,7 @@ jobs:
 
   validate_workflows:
     name: Validate workflows
-    if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation == 'validate' && (!(github.event.repository.fork)) }}
+    if: github.server_url != 'https://github.com' && ((github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation == 'validate' && (!(github.event.repository.fork)))
     runs-on: ubuntu-latest
     # Read workflow sources and file issues for validation findings.
     permissions:
@@ -643,7 +643,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Scripts
-        uses: github/gh-aw-actions/setup@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
 
@@ -660,7 +660,7 @@ jobs:
             await main();
 
       - name: Install gh-aw
-        uses: github/gh-aw-actions/setup-cli@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
+        uses: github/gh-aw-actions/setup-cli@40fb427c047bb9f77324054adeb574e04c9481aa # v0.93.4
         with:
           version: v0.93.4
 

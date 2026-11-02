@@ -134,13 +134,13 @@ services.AddEntityFrameworkRepository<Customer, CoreModuleDbContext>()
 
 - [ADR-0001](0001-clean-onion-architecture.md): Repository keeps infrastructure isolated
 - [ADR-0006](0006-outbox-pattern-domain-events.md): Outbox behavior enables reliable event delivery
-- [ADR-0007](0007-ef-core-code-first-migrations.md): Repository abstracts EF Core details
+- [ADR-0007](0007-entity-framework-core-code-first-migrations.md): Repository abstracts EF Core details
 
 ## References
 
 - [bITdevKit Repositories Documentation](https://github.com/BridgingIT-GmbH/bITdevKit/blob/main/docs/features-domain-repositories.md)
-- [README - Repository with Behaviors Pattern](../../README.md#repository-with-behaviors-pattern-decorator)
-- [CoreModule README - Repository Behaviors](../../src/Modules/CoreModule/CoreModule-README.md#repository-behaviors-configuration)
+- [Repository architecture](../features-domain-repositories.md#architecture)
+- [Repository profiling behavior](../features-domain-repositories.md#profiling-behavior)
 
 ## Notes
 

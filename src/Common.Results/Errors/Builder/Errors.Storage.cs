@@ -15,6 +15,10 @@ public static partial class Errors
     /// </summary>
     public static partial class Storage
     {
+        /// <summary>Creates an uncertain document mutation error that must not be replayed.</summary>
+        /// <example><code>var error = Errors.Storage.DocumentIndeterminateOperation("publish", mutationId);</code></example>
+        public static DocumentStoreIndeterminateOperationError DocumentIndeterminateOperation(string operation, string mutationId) => new(operation, mutationId);
+
         /// <summary>Creates a <see cref="FileSystemError"/> for file system operation failures.</summary>
         public static FileSystemError FileSystem(string message = null)
             => new(message);
@@ -71,6 +75,19 @@ public static partial class Errors
         public static DocumentStoreSerializationError DocumentSerialization(string message = null, Exception innerException = null)
             => new(message, innerException);
     }
+}
+
+/// <summary>Reports an uncertain document mutation that requires reconciliation before replay.</summary>
+/// <example><code>var error = new DocumentStoreIndeterminateOperationError("publish", mutationId);</code></example>
+public sealed class DocumentStoreIndeterminateOperationError(string operation, string mutationId) : StorageError("Document mutation outcome is indeterminate; reconcile before replay.")
+{
+    /// <summary>Gets the attempted operation.</summary>
+    /// <example><code>var operation = error.Operation;</code></example>
+    public string Operation { get; } = operation;
+
+    /// <summary>Gets the identity needed to reconcile the mutation.</summary>
+    /// <example><code>var mutationId = error.MutationId;</code></example>
+    public string MutationId { get; } = mutationId;
 }
 
 /// <summary>
@@ -193,4 +210,11 @@ public class DocumentStorePartialUpdateError(string message = null, Exception in
 public class DocumentStoreTransferError(string message = null) : StorageError(message ?? "Document transfer did not complete");
 
 /// <summary>Represents an elapsed document operation deadline.</summary>
-public class DocumentStoreTimeoutError(string message = null) : StorageError(message ?? "Document store operation timed out");
+/// <example><code>var error = new DocumentStoreTimeoutError("Operation deadline exceeded.");</code></example>
+public class DocumentStoreTimeoutError(string message = null) : StorageError(message ?? "Document store operation timed out"), ITransientStorageError
+{
+    /// <summary>Gets whether this timeout is known to permit a safe retry. General operation deadlines default to false.</summary>
+    /// <remarks>Set true only for a known transient failure, such as contention before publication. Uncertain mutations must use an indeterminate-operation error.</remarks>
+    /// <example><code>var error = new DocumentStoreTimeoutError("Lock acquisition timed out.") { IsTransient = true };</code></example>
+    public bool IsTransient { get; init; }
+}

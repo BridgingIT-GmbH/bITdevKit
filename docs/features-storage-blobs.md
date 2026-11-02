@@ -16,6 +16,7 @@ The public API is provider-neutral and Result-native. Consumers resolve named cl
 Implemented providers:
 
 - In-memory
+- Filesystem through the optional `Infrastructure.FileSystem` package
 - Entity Framework Core
 - Azure Blob Storage
 
@@ -25,14 +26,14 @@ Binary content must remain stream-first while still supporting provider-neutral 
 
 ## Solution
 
-Named `IBlobStoreClient` instances expose Result-native upload, download, property, existence, listing, and delete operations. The validating client enforces common rules before delegating to an in-memory, Entity Framework, or Azure provider. Optional behaviors add logging, metrics, retry, timeout, caching, transforms, checksum verification, chaos, and upload admission.
+Named `IBlobStoreClient` instances expose Result-native upload, download, property, existence, listing, and delete operations. The validating client enforces common rules before delegating to an in-memory, filesystem, Entity Framework, or Azure provider. Optional behaviors add logging, metrics, retry, timeout, caching, transforms, checksum verification, chaos, and upload admission.
 
 ## Key Features
 
 - stream-first uploads and caller-disposed downloads
 - provider-neutral keys, metadata, ETags, expiration, and SHA-256 hashes
 - query-bound continuation tokens and guarded full scans
-- named clients with in-memory, Entity Framework, and Azure Blob providers
+- named clients with in-memory, filesystem, Entity Framework, and Azure Blob providers
 - compression, encryption, content-type detection, caching, and verification behaviors
 - bounded upload concurrency and provider-native retention
 - optional HTTP, dashboard, diagnostics, MCP, and maintenance-job integration
@@ -48,6 +49,7 @@ Named `IBlobStoreClient` instances expose Result-native upload, download, proper
 - serve public reads separately from protected maintenance endpoints
 - transfer content between blob and file-storage providers
 - retain temporary blobs and delete guarded prefixes
+- persist blobs on application-owned local disks or configured file shares
 
 ## Basic Usage
 
@@ -192,6 +194,89 @@ services.AddBlobStorage(options => options
 `WithAzureBlobClient` maps `BlobKey.Container` to the native Azure container and `BlobKey.Name` to the native blob name. There is no registration-level container override.
 
 `AddBlobStorage` also registers the provider-neutral `IBlobStorageDiagnosticsService` and the blob-retention background service, so diagnostics snapshots and expiration sweeping are available without additional registration calls.
+
+## Filesystem provider
+
+The optional `BridgingIT.DevKit.Infrastructure.FileSystem` package provides `FileSystemBlobStoreProvider`. It uses direct file I/O and the existing blob client pipeline. Registration does not require File Storage, a database, or a cloud SDK.
+
+```csharp
+using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Infrastructure.FileSystem;
+using Microsoft.Extensions.DependencyInjection;
+
+var storageRoot = Path.GetFullPath(
+	Path.Combine(builder.Environment.ContentRootPath, "app-data", "storage"));
+
+builder.Services.AddBlobStorage()
+	.WithFileSystemClient("reports", storageRoot,
+		configureFileSystem: options =>
+		{
+			options.AccessKind = FileSystemStorageAccessKind.Local;
+			options.Durability = FileSystemStorageDurability.Durable;
+		},
+		configure: options =>
+		{
+			options.DefaultTake = 100;
+			options.MaxTake = 500;
+		});
+```
+
+Resolve `"reports"` through `IBlobStoreClientFactory` as in [Basic Usage](#basic-usage). The example stores files beneath the application's content root. Use an absolute persistent data path when deployment replaces the application directory. Retention, transforms, behaviors, diagnostics, and transfers use the same APIs as other blob providers.
+
+### Platforms and access protocols
+
+Set `AccessKind` to the actual protocol used to reach the root. A share mounted as a directory still requires `Smb` or `Nfs`.
+
+| Host | Declared access kinds | Root |
+|---|---|---|
+| Windows | `Local`, `Smb` | Absolute local path or SMB share path |
+| Linux | `Local`, `Smb`, `Nfs` | Absolute local path or mounted share path |
+
+Windows NFS and other operating systems are unsupported. Each store records one access kind. All processes and hosts opening that store must use the same kind. Blob and document providers can share a root because they use separate namespaces.
+
+The implementation includes the shared-access protocol, but SMB, NFS, independent-host recovery, and power-loss qualification remain pending. Required native filesystem operations fail clearly when unsupported. Linux publication requires atomic hard-link installation and directory flush support. Windows publication requires write-through moves and POSIX replacement support from the filesystem or server. Local test results do not qualify a remote deployment.
+
+### Configuration
+
+`configureFileSystem` sets physical storage options. The separate `configure` delegate sets the existing `BlobStoreOptions`, including size limits and scan approval.
+
+| `FileSystemStorageOptions` member | Default | Meaning |
+|---|---|---|
+| `RootPath` | Required registration argument | Absolute provider-owned directory |
+| `AccessKind` | `Local` | Actual access protocol |
+| `CreateRoot` | `true` | Permit store creation. When false, an initialized compatible store must exist. |
+| `Durability` | `Durable` | Required persistence before acknowledging mutations |
+| `LockAcquireTimeout` | 5 seconds | Interruptible authority acquisition budget. Zero means no wait. An outstanding native I/O call can exceed this budget. |
+| `TransferBufferSize` | 65,536 bytes | Pooled blob transfer buffer |
+| `MaxManifestBytes` | 1,048,576 bytes | Maximum serialized record metadata |
+| `MaxQueryMetadataEntries` | 100,000 | Maximum metadata entries examined by one query |
+| `MaxRetentionMetadataEntries` | 10,000 | Discovery and metadata work budget per retention sweep |
+
+### Layout, concurrency, and queries
+
+The provider owns the directory layout. Ordinal logical keys map to hashed paths, with original identities checked in metadata. Key casing, Unicode, and logical path separators remain independent of OS filename rules. Do not edit, rename, or import files directly into this layout. Experimental format-1 roots are rejected without automatic migration. Back up the complete root with every participant quiesced. Live backups are unqualified.
+
+Uploads stream into immutable payload generations. A per-key authority protects conditional publication of the current metadata file. Property updates reuse the payload generation. Deletes publish tombstones. Existing download handles remain readable through replacement or deletion, and callers still dispose `BlobDownload`.
+
+Local access coordinates cooperating processes through exclusive file handles. Shared access uses persistent ownership markers that never expire by age. Different keys have separate authority. All participants need compatible OS permissions to create, read, flush, and delete files and directories.
+
+Exact-key operations resolve their paths directly. Listing examines metadata, prunes by container, and returns ordinal key pages without opening payloads. Page tokens track a live key position. Concurrent inserts, updates, and deletes can affect subsequent pages. Queries that exceed `MaxQueryMetadataEntries` fail instead of returning an incomplete successful page. Existing full-scan approval rules still apply.
+
+### Durability and recovery
+
+`Durable` is the default. Before success, publication performs the platform's file and namespace persistence operations. A Durable property update also flushes its referenced payload, including payloads written previously in Buffered mode.
+
+`Buffered` permits loss of recent acknowledged metadata changes after host failure while retaining atomic publication. Staging, initialization, and safe reclamation still perform persistence operations. Buffered mode does not promise zero flushes or higher throughput.
+
+An uncertain mutation returns `BlobStoreIndeterminateOperationError` with a mutation identity. The standard retry behavior does not replay it. Shared uncertain operations retain ownership and can block later operations. Recovery requires quiescing every participant on every host, reconciling fresh server-confirmed metadata, and draining or cancelling old server operations before clearing ownership. A timeout or an old marker alone does not authorize takeover.
+
+See the [filesystem provider guide](storage-filesystem-providers.md) for native persistence details, recovery tooling, benchmarks, and opt-in share tests. Share tests are inactive by default and skip host-inapplicable cases. Enable them later with actual disposable shares and external qualification configuration. Full performance qualification remains open.
+
+### Public storage helpers
+
+`FileSystemBlobStoreProvider.Store` exposes `FileSystemStore` for trusted diagnostics, maintenance, and explicit recovery. The store, authority, durability, staged-payload, retention, and diagnostic helpers are public and have XML documentation with examples. `Store.Options` returns a configuration copy, and `FileSystemStore.Json` is read-only. Authority handles and active configuration stay private.
+
+Normal blob operations use `IBlobStoreClient`. Direct helper calls require the documented ownership and persistence rules. In particular, acquire key authority before selecting a payload or deciding a mutation, and keep authority through publication. See [public storage helpers](storage-filesystem-providers.md#public-storage-helpers) for the low-level API and recovery preconditions.
 
 ## Metrics
 
@@ -623,6 +708,7 @@ The hosted retention service is registered by `AddBlobStorage`. It starts after 
 Provider behavior:
 
 - In-memory keeps expiration with the in-memory entry and deletes due entries under the context lock.
+- Filesystem stores `ExpiresAt` in metadata and uses the existing background service. A persisted, bounded discovery cursor resumes across sweeps and restarts. Cleanup acquires key authority without waiting, rechecks expiration before deletion, and reclaims obsolete payload files. Open download handles can retain disk blocks until disposed. Tombstones and coordination directories remain on disk; offline compaction is not implemented.
 - Entity Framework stores expiration in `StorageBlob.ExpiresAt` with an index. Sweeps query due rows by that index, acquire the existing internal blob lease, then delete chunks and metadata in batches.
 - Azure Blob Storage stores expiration as metadata for property round-trips and as a fixed-width blob index tag for efficient native tag queries. The DevKit sweeper deletes blobs found through the tag index. Azure account-level lifecycle management can also be used for coarse retention classes, but exact per-blob `ExpiresAt` deletion is handled by the DevKit sweeper.
 
@@ -1220,6 +1306,7 @@ Expected failures are Result failures, not exceptions. Common typed errors inclu
 - `BlobStoreUploadOverloadedError`
 - `BlobStoreUploadAdmissionTimeoutError`
 - `BlobStoreTimeoutError`
+- `BlobStoreIndeterminateOperationError`, an uncertain mutation that must be reconciled before replay
 
 ## Appendix: Entity Framework read performance
 
@@ -1291,3 +1378,8 @@ Use `blobstorage_bytes_per_second` and `blobstorage_operation_duration` from the
 - Blob sizes above `ChunkSize` stream chunk by chunk and are not part of these figures.
 
 See [ADR-0031](adr/0031-single-query-ef-blob-read-for-small-blobs.md), [ADR-0032](adr/0032-batched-ef-blob-reads-for-many-keys.md) and [ADR-0033](adr/0033-time-ordered-ef-blob-row-ids.md) for the design decisions behind these results.
+
+
+## Dashboard throughput tests
+
+The Diagnostics tab provides read/write throughput tests and live metric charts for the configured providers. See [Storage dashboard throughput tests](storage-load-testing.md) for controls, measurement semantics, and temporary-item cleanup.

@@ -134,6 +134,7 @@ public class CoreModule : WebModuleBase
                 .Enabled()
                 .HaltOnFailure())
             .WithBehavior<BridgingIT.DevKit.Application.Utilities.AuditingStartupTaskBehavior>()
+            .WithTask<BlobStorageSeederTask>(o => o.HaltOnFailure())
             .WithTask<CoreSeederTask>(o => o.HaltOnFailure());
 
         // Open-Meteo client

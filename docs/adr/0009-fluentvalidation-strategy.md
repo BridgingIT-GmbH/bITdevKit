@@ -388,8 +388,8 @@ public class CustomerCreateCommand : RequestBase<CustomerModel>
 
 - [FluentValidation Documentation](https://docs.fluentvalidation.net/)
 - [bITdevKit Requester/Notifier Behaviors](https://github.com/BridgingIT-GmbH/bITdevKit/blob/main/docs/features-requester-notifier.md#part-3-pipeline-behaviors)
-- Project Documentation: `README.md` (Application Layer section)
-- Module Documentation: `src/Modules/CoreModule/CoreModule-README.md` (Commands/Queries)
+- [Application layer](../site/architecture.md#application)
+- [Command validation](../features-application-commands-queries.md#validating-a-command)
 
 ## Notes
 

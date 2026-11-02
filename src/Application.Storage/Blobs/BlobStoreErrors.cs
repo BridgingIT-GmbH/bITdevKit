@@ -5,6 +5,19 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
+/// <summary>Reports an uncertain blob mutation that must be reconciled before replay.</summary>
+/// <example><code>var error = new BlobStoreIndeterminateOperationError("publish", mutationId);</code></example>
+public sealed class BlobStoreIndeterminateOperationError(string operation, string mutationId) : ResultErrorBase("Blob mutation outcome is indeterminate; reconcile before replay.")
+{
+    /// <summary>Gets the attempted operation.</summary>
+    /// <example><code>var operation = error.Operation;</code></example>
+    public string Operation { get; } = operation;
+
+    /// <summary>Gets the mutation identity used for reconciliation.</summary>
+    /// <example><code>var mutationId = error.MutationId;</code></example>
+    public string MutationId { get; } = mutationId;
+}
+
 /// <summary>
 /// Represents a blob-store validation failure.
 /// </summary>

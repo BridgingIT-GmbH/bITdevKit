@@ -27,6 +27,8 @@ Storage providers can expose current files without explaining what changed since
 
 Storage Monitoring associates a named `IFileStorageProvider` with location options, an event store, and a processor pipeline. `IFileMonitoringService` coordinates real-time watchers where available and performs explicit scans for every supported provider.
 
+Local monitoring requires the optional `BridgingIT.DevKit.Infrastructure.FileSystem` package. It supplies `LocalLocationHandler` and the `UseLocal(...)` registration extension. The monitoring contracts, processors, event store and orchestration remain in `Application.Storage`, which has no Infrastructure reference. See the [filesystem package migration](features-storage-files.md#filesystem-package-and-migration).
+
 ## Key Features
 
 - local, in-memory, and named provider-backed locations

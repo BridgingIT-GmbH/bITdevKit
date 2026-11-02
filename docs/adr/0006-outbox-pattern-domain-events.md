@@ -158,8 +158,8 @@ CREATE TABLE OutboxDomainEvents (
 ## References
 
 - [bITdevKit Domain Events Documentation](https://github.com/BridgingIT-GmbH/bITdevKit/blob/main/docs/features-domain-events.md)
-- [README - Request Processing Flow](../../README.md#request-processing-flow)
-- [CoreModule README - Domain Events](../../src/Modules/CoreModule/CoreModule-README.md#domain-events-in-coremodule)
+- [Request flow](../site/architecture.md#request-flow-in-practice)
+- [Outbox publication](../features-domain-events.md#outbox-publication)
 - [Outbox Pattern - Martin Fowler](https://microservices.io/patterns/data/transactional-outbox.html)
 
 ## Notes

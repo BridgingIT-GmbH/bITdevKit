@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Infrastructure.FileSystem</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Infrastructure.FileSystem</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Application.Storage/Application.Storage.csproj" />
+    <Using Include="BridgingIT.DevKit.Common" />
+    <Using Include="BridgingIT.DevKit.Application.Storage" />
+  </ItemGroup>
+</Project>

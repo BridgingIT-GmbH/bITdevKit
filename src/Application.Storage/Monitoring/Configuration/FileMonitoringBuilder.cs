@@ -63,28 +63,6 @@ public class FileMonitoringBuilder
     }
 
     /// <summary>
-    /// Configures a local file system location for monitoring.
-    /// Registers a LocationHandler with a LocalFileStorageProvider for the specified path.
-    /// </summary>
-    /// <param name="name">The unique name of the location (e.g., "Docs").</param>
-    /// <param name="path">The local file system path to monitor (e.g., "C:\\Docs").</param>
-    /// <param name="configure">An action to configure the LocationOptions (e.g., file pattern, processors).</param>
-    /// <param name="ensureRoot">Whether the local provider creates the root directory when it does not exist.</param>
-    /// <returns>The current FileMonitoringBuilder instance for chaining.</returns>
-    public FileMonitoringBuilder UseLocal(string name, string path, Action<LocationOptions> configure = null, bool ensureRoot = true)
-    {
-        EnsureArg.IsNotNullOrEmpty(name, nameof(name));
-        EnsureArg.IsNotNullOrEmpty(path, nameof(path));
-        EnsureArg.IsNotNull(configure, nameof(configure));
-
-        var options = new LocationOptions(name);
-        configure.Invoke(options);
-        this.RegisterLocation(name, options, () => new LocalFileStorageProvider(name, path, ensureRoot), typeof(LocalLocationHandler));
-
-        return this;
-    }
-
-    /// <summary>
     /// Configures an in-memory location for monitoring.
     /// Registers a LocationHandler with an InMemoryFileStorageProvider, useful for testing.
     /// </summary>

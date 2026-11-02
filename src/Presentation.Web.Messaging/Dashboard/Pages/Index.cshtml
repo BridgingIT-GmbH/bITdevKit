@@ -13,7 +13,7 @@
 }
 
 <div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
-    <div class="d-flex align-items-center gap-2">
+    <div class="d-flex flex-wrap justify-content-end align-items-center gap-2">
         @if (aliveEnabled)
         {
             <button type="button" class="btn btn-outline-primary btn-sm" title="Publish alive message" onclick="window.bdkMessagingAction('@($"{actionBase}/alive")')">

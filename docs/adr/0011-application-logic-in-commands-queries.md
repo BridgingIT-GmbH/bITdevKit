@@ -120,8 +120,8 @@ The application needs clear separation between:
 ## References
 
 - [bITdevKit Application Commands & Queries](https://github.com/BridgingIT-GmbH/bITdevKit/blob/main/docs/features-application-commands-queries.md)
-- [README - Request Processing Flow](../../README.md#request-processing-flow)
-- [CoreModule README - Handler Implementation](../../src/Modules/CoreModule/CoreModule-README.md#handler-implementation-example)
+- [Request flow](../site/architecture.md#request-flow-in-practice)
+- [Command and query handlers](../features-application-commands-queries.md#basic-usage)
 - [Martin Fowler - Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html)
 
 ## Notes

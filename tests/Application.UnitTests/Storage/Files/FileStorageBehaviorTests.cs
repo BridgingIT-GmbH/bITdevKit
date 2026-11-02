@@ -42,7 +42,8 @@ public sealed class FileStorageBehaviorTests
         recorder.HistogramCount("filestorage_operation_duration").ShouldBe(3);
         recorder.CounterSum("filestorage_operation_failures").ShouldBe(1);
         recorder.CounterSum("filestorage_bytes").ShouldBe(4);
-        recorder.CounterSum("filestorage_items").ShouldBe(2);
+        recorder.CounterSum("filestorage_items").ShouldBe(3);
+        recorder.HistogramCount("filestorage_bytes_per_second").ShouldBe(1);
         recorder.AllTagKeys.ShouldBeSubsetOf(["operation", "location", "provider"]);
         recorder.AllTagValues.ShouldContain("secret_location");
         recorder.AllTagValues.ShouldNotContain("secret/path/file.txt");

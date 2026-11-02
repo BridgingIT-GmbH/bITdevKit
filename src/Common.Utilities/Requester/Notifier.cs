@@ -777,7 +777,7 @@ public partial class Notifier(
         public static partial void LogSuccess(ILogger logger, string logKey, string notificationType, string notificationId, long timeElapsed);
 
         /// <summary>Logs failed notification processing and elapsed time.</summary>
-        [LoggerMessage(1, LogLevel.Error, "[{LogKey}] notification failed (type={NotificationType}, id={NotificationId}) -> took {TimeElapsed} ms")]
+        [LoggerMessage(2, LogLevel.Error, "[{LogKey}] notification failed (type={NotificationType}, id={NotificationId}) -> took {TimeElapsed} ms")]
         public static partial void LogFailed(ILogger logger, string logKey, string notificationType, string notificationId, long timeElapsed);
 
         /// <summary>Logs an exception raised while processing a notification.</summary>

@@ -4,7 +4,7 @@ created: 2026-03-19
 
 # Jobs Feature - Agent Execution Prompts
 
-This document contains bounded execution prompts for implementing the Jobs feature described in [spec-application-jobs.md](./docs/specs/spec-application-jobs.md).
+This document contains bounded execution prompts for implementing the Jobs feature described in [spec-application-jobs.md](./spec-application-jobs.md).
 
 The prompts are designed for AI coding agents such as VS Code Copilot Agent Mode, Copilot CLI `/fleet`, Cursor Agents, Claude Code, or similar tools.
 
@@ -1004,7 +1004,7 @@ Implementation focus:
   - chaining
   - outbound integration helper
 - XML documentation examples for public APIs
-- README/docs feature page if required by repository conventions
+- Feature documentation under `docs` if required by repository conventions
 
 Implementation exclusions:
 

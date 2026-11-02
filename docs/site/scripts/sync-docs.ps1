@@ -17,6 +17,7 @@ $includedPatterns = @(
     'common-*.md',
     'features-*.md',
     'features-cli-mcp-clients.md',
+    'storage-*.md',
     'testing-*.md'
 )
 

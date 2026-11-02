@@ -133,9 +133,9 @@ src/Modules/<ModuleName>/
 ## References
 
 - [bITdevKit Modules Documentation](https://github.com/BridgingIT-GmbH/bITdevKit/blob/main/docs/features-modules.md)
-- [README - Modular Monolith Structure](../../README.md#modular-monolith-structure)
-- [README - Module System](../../README.md#module-system-vertical-slices)
-- [CoreModule README - Overview](../../src/Modules/CoreModule/CoreModule-README.md#overview)
+- [Modular vertical slices](../site/architecture.md#modular-vertical-slices)
+- [Modules](../features-modules.md)
+- [Module registration and setup](../features-modules.md#basic-usage)
 
 ## Notes
 

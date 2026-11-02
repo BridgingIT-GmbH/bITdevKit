@@ -18,7 +18,7 @@ Typed JSON data needs more than provider-specific CRUD. Callers need stable keys
 
 ## Solution
 
-`IDocumentStoreClient<T>` owns the provider-neutral document contract and returns `Result` values for expected failures. It validates and serializes logical documents before a provider stores bytes and metadata. Registration binds one document type and normalized client name to an in-memory, database, or cloud provider.
+`IDocumentStoreClient<T>` owns the provider-neutral document contract and returns `Result` values for expected failures. It validates and serializes logical documents before a provider stores bytes and metadata. Registration binds one document type and normalized client name to an in-memory, filesystem, database, or cloud provider.
 
 ## Key Features
 
@@ -28,7 +28,7 @@ Typed JSON data needs more than provider-specific CRUD. Callers need stable keys
 - size limits and logical/stored SHA-256 integrity checks
 - scalar properties, expiration, retention, compression, and encryption
 - named clients, behaviors, diagnostics, dashboard, and MCP integration
-- in-memory, Entity Framework, Azure Blob, Azure Table, and Cosmos providers
+- in-memory, filesystem, Entity Framework, Azure Blob, Azure Table, and Cosmos providers
 
 ## Architecture
 
@@ -41,6 +41,7 @@ The outer client validates keys, queries, sizes, and continuation tokens. Regist
 - page through partition or row-key prefixes without exposing provider queries
 - move documents between named stores of the same type
 - protect writes with ETags and content hashes
+- persist typed documents on application-owned local disks or configured file shares
 
 ## Basic Usage
 
@@ -113,7 +114,7 @@ Use Document Storage when data is:
 - shared across application instances;
 - protected by optimistic concurrency;
 - temporary or retention-managed;
-- portable across in-memory, relational, Azure Storage, and Cosmos providers.
+- portable across in-memory, filesystem, relational, Azure Storage, and Cosmos providers.
 
 Use Blob Storage for stream-first binary objects and Key/Value Storage for low-latency scalar/shared-state workloads.
 
@@ -241,7 +242,9 @@ services.AddDocumentStorage(options => options.WithRetention(retention =>
 }));
 ```
 
-`DocumentRetentionBackgroundService` resolves each named client in a fresh DI scope and invokes only `IDocumentStoreRetentionProvider`. It never emulates cleanup through public scans. In-memory, Entity Framework, Azure Blob, and Azure Table use bounded provider-native cleanup; Cosmos uses native item TTL.
+`DocumentRetentionBackgroundService` resolves each named client in a fresh DI scope and invokes only `IDocumentStoreRetentionProvider`. It never emulates cleanup through public scans. In-memory, filesystem, Entity Framework, Azure Blob, and Azure Table use bounded provider-native cleanup; Cosmos uses native item TTL.
+
+Filesystem retention uses a persisted discovery cursor that resumes across sweeps and restarts. Each candidate is rechecked under key authority without waiting for busy keys. Clearing or extending expiration prevents stale discovery from deleting the document. Cleanup reclaims superseded payload files, while open readers can retain their disk blocks. Tombstones and coordination directories remain on disk; offline compaction is not implemented. No additional retention scheduler or public scan approval is needed.
 
 The defaults are enabled retention, a 15-second startup delay, one-hour interval, batch size 1000, at most 10 batches per client, no batch delay, and a 10-second stop timeout.
 
@@ -309,6 +312,70 @@ Every typed client method is measured, including count, key-only paging, propert
 ### <img class="bdk-doc-icon" src="assets/features/provider-inmemory.svg" width="24" height="24" alt=""> In-memory
 
 Process-local provider for tests and ephemeral use. It stores copied bytes in private synchronized state and returns cloned records.
+
+### Filesystem
+
+The optional `BridgingIT.DevKit.Infrastructure.FileSystem` package provides `FileSystemDocumentStoreProvider`. It stores the existing serialized document bytes and metadata through direct file I/O. The typed client still owns serialization, transforms, hash verification, expiration resolution, and continuation-token protection. File Storage registration is not required.
+
+```csharp
+using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Infrastructure.FileSystem;
+using Microsoft.Extensions.DependencyInjection;
+
+var storageRoot = Path.GetFullPath(
+	Path.Combine(builder.Environment.ContentRootPath, "app-data", "storage"));
+
+builder.Services.AddDocumentStorage()
+	.WithFileSystemClient<CustomerDocument>(storageRoot,
+		configureFileSystem: options =>
+		{
+			options.AccessKind = FileSystemStorageAccessKind.Local;
+			options.Durability = FileSystemStorageDurability.Durable;
+		},
+		documentStoreOptions: new DocumentStoreOptions
+		{
+			DefaultTake = 100,
+			MaxTake = 500
+		},
+		name: "customers",
+		isDefault: true);
+```
+
+`CustomerDocument` is the model from [Basic Usage](#basic-usage). Resolve the default through `IDocumentStoreClient<CustomerDocument>` or resolve `"customers"` through the factory. Use an absolute persistent data path when deployment replaces the application directory.
+
+#### Platforms and configuration
+
+Windows supports `Local` and `Smb`. Linux supports `Local`, `Smb`, and `Nfs`. Windows NFS and other operating systems are unsupported. Set `AccessKind` to the actual protocol, including shares mounted as directories. Every participant opening a store must use its recorded access kind. Blob and document providers can share one root through separate namespaces.
+
+`configureFileSystem` accepts the shared `FileSystemStorageOptions`. Defaults are Durable acknowledgement, root creation enabled, a five-second authority acquisition budget, a 64 KiB transfer buffer, a 1 MiB metadata limit, 100,000 examined metadata entries per query, and 10,000 discovery or metadata steps per retention sweep. `CreateRoot = false` requires an initialized compatible store. See the [filesystem configuration table](features-storage-blobs.md#configuration) for option names and limits. `documentStoreOptions` configures the existing typed-client rules separately.
+
+The directory layout belongs to the provider. Ordinal type, partition, and row identities map to hashed paths, with original identities checked in metadata. Files are not named for application browsing or direct edits. Experimental format-1 roots are rejected without automatic migration. All participating OS identities need compatible create, read, flush, and delete permissions. Back up the complete root with every participant quiesced. Live backups are unqualified.
+
+#### Queries and paging
+
+Exact-key reads resolve their paths directly. Prefix, suffix, full-scan, and key-listing capabilities are advertised as `SupportedClientSide`, because they scan metadata rather than use a secondary index. These queries require `DocumentStoreOptions.RejectClientSideFilteredQueries = false`. Type-wide scans additionally require global `AllowFullScans = true` and query-level `AllowFullScan = true`. Exact lookups remain available with the defaults shown above.
+
+Metadata traversal prunes by document type and exact partition where available. `ListPageAsync` reads no payloads. `FindPageAsync` opens the selected payloads after metadata selection. Counts use bounded metadata traversal rather than a native index. Exceeding `MaxQueryMetadataEntries` returns a query-too-broad failure rather than a partial successful page or count.
+
+Pages use live ordinal key positions. Unchanged data can be traversed once in order; concurrent changes can affect subsequent pages. The first-page expiration cutoff remains bound to the token, which does not create a snapshot. Omitted `Take` uses the registered `DocumentStoreOptions.DefaultTake` on every page.
+
+#### Publication, retention, and recovery
+
+Writes stage immutable payload generations and publish the current metadata atomically under per-key authority. Property updates reuse the payload generation. Deletes publish tombstones. Local authority uses exclusive handles across cooperating processes. Shared authority uses persistent ownership markers without age-based takeover. Existing read handles remain valid through replacement and deletion.
+
+`Durable` performs native file and namespace persistence operations before success. A Durable property update also flushes the referenced payload. `Buffered` permits loss of recent acknowledged metadata changes after host failure. Initialization, staging, and safe reclamation still perform persistence operations, so Buffered mode does not promise zero flushes or higher throughput.
+
+The existing [expiration and retention](#expiration-and-retention) contract applies, including immediate logical expiration and conditional cleanup. Documents without an expiration remain until explicitly deleted.
+
+An uncertain mutation returns `DocumentStoreIndeterminateOperationError` with a mutation identity. The standard retry behavior does not replay it. Shared uncertainty retains ownership and can block later operations. Recovery requires quiescing every participant on every host, reconciling fresh server-confirmed metadata, and draining or cancelling old server operations before clearing ownership.
+
+Required native operations fail clearly when unsupported. Actual SMB, NFS, independent-host recovery, power-loss, and full performance qualification remain pending. See the [filesystem provider guide](storage-filesystem-providers.md) for native persistence requirements, recovery tooling, benchmarks, and opt-in share tests. Share tests remain inactive until disposable shares are configured and skip cases inapplicable to the host OS.
+
+#### Public storage helpers
+
+`FileSystemDocumentStoreProvider.Store` exposes the public `FileSystemStore` for trusted diagnostics, maintenance, and recovery. Authority, durability, staging, retention, and diagnostic helpers also have public APIs with XML documentation and examples. `Store.Options` returns a configuration copy, and `FileSystemStore.Json` is read-only. Active configuration and authority handles stay private.
+
+Normal typed operations use `IDocumentStoreClient<T>`. Direct helper calls must preserve ownership, persistence, and global-quiescence preconditions. See [public storage helpers](storage-filesystem-providers.md#public-storage-helpers) before using the low-level API.
 
 ### <img class="bdk-doc-icon" src="assets/features/provider-entityframework.svg" width="24" height="24" alt=""> Entity Framework
 
@@ -520,3 +587,8 @@ Use `document.bytes_per_second` and `document.operation.duration` from the metri
 - Documents from 1 KB to 100 KB were measured. Larger documents are not part of these figures.
 
 See [ADR-0034](adr/0034-sequential-ef-document-row-ids.md), [ADR-0035](adr/0035-batched-ef-document-reads-and-bulk-writes.md) and [ADR-0036](adr/0036-keyset-and-filtered-indexes-for-ef-documents.md) for the design decisions behind these results.
+
+
+## Dashboard throughput tests
+
+The Diagnostics tab provides read/write throughput tests and live metric charts for the configured providers. See [Storage dashboard throughput tests](storage-load-testing.md) for controls, measurement semantics, and temporary-item cleanup.

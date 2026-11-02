@@ -142,7 +142,7 @@ else
                         <div class="border-bottom py-2">
                             <div class="fw-medium" title="@subscription.MessageType">@TrimValue(subscription.MessageType, 54)</div>
                             <div class="text-muted small" title="@subscription.HandlerType">@TrimValue(subscription.HandlerType, 54)</div>
-                            <div class="d-flex gap-2 align-items-center mt-2">
+                            <div class="d-flex flex-wrap gap-2 align-items-center mt-2">
                                 @if (subscription.IsMessageTypePaused)
                                 {
                                     <span class="badge text-bg-warning">Paused</span>
@@ -389,6 +389,12 @@ else
         if (string.IsNullOrWhiteSpace(value))
         {
             return "-";
+        }
+
+        var assemblySeparator = value.IndexOf(',', value.LastIndexOf(']') + 1);
+        if (assemblySeparator >= 0)
+        {
+            value = value[..assemblySeparator].Trim();
         }
 
         return Shortener.Apply(value, new ShorteningOptions

@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application.Storage\Application.Storage.csproj" />
+    <ProjectReference Include="..\Infrastructure.FileSystem\Infrastructure.FileSystem.csproj" />
   </ItemGroup>
 
 </Project>

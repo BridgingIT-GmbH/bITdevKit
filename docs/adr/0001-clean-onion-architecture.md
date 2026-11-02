@@ -123,9 +123,9 @@ Adopt **Clean/Onion Architecture** with strictly enforced layer boundaries and i
 
 - [Robert C. Martin - Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Jeffrey Palermo - Onion Architecture](https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/)
-- [README - Clean Architecture Overview](../../README.md#clean-architecture-overview)
-- [README - Layer Responsibilities](../../README.md#layer-responsibilities)
-- [CoreModule README - Architecture](../../src/Modules/CoreModule/CoreModule-README.md#architecture)
+- [Architecture overview](../site/architecture.md#high-level-architecture-map)
+- [Layer responsibilities](../site/architecture.md#layer-responsibilities)
+- [Module architecture](../features-modules.md#architecture)
 
 ## Notes
 

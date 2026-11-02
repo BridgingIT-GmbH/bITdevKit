@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System.Data.Common;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -246,6 +247,10 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
                 .WithError(new OperationCancelledError("Operation cancelled during file read"))
                 .WithMessage($"Cancelled reading file at '{path}'");
         }
+        catch (Exception ex) when (cancellationToken.IsCancellationRequested && (ex is DbException or DbUpdateException))
+        {
+            return Result<Stream>.Failure(new OperationCancelledError("Operation cancelled during file read"));
+        }
         catch (Exception ex)
         {
             this.logger.LogError(ex, "Entity Framework file read failed for {LocationName} and {Path}", this.LocationName, path);
@@ -294,6 +299,10 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
             return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled during file write"))
                 .WithMessage($"Cancelled writing file at '{path}'");
+        }
+        catch (Exception ex) when (cancellationToken.IsCancellationRequested && (ex is DbException or DbUpdateException))
+        {
+            return Result.Failure(new OperationCancelledError("Operation cancelled during file write"));
         }
         catch (BufferedContentLimitExceededException ex)
         {

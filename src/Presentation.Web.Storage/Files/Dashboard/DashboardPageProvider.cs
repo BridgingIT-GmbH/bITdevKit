@@ -31,6 +31,11 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Order = 48,
             Description = "Browse and manage registered file storage locations",
             Tooltip = "File storage locations",
+            RememberedViews = new Dictionary<string, string>
+            {
+                ["explorer"] = DashboardEndpoints.BuildFilesPath(options),
+                ["diagnostics"] = DashboardEndpoints.BuildFilesPath(options) + "/diagnostics"
+            },
             Card = GetCardAsync
         };
     }

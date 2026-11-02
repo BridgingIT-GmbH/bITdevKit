@@ -679,7 +679,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         /// <param name="locationName">The location name used by the operation.</param>
         /// <param name="oldPath">The old path used by the operation.</param>
         /// <param name="newPath">The new path used by the operation.</param>
-        [LoggerMessage(10, LogLevel.Information, "[{LogKey}] file storage: rename (type={LocationName}, oldPath={OldPath}, newPath={NewPath})")]
+        [LoggerMessage(20, LogLevel.Information, "[{LogKey}] file storage: rename (type={LocationName}, oldPath={OldPath}, newPath={NewPath})")]
         public static partial void LogRenameDirectory(ILogger logger, string logKey, string locationName, string oldPath, string newPath);
 
         /// <summary>

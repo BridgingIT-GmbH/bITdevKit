@@ -325,8 +325,8 @@ Customer : Entity<Id<Customer>>
 - [bITdevKit Domain CodeGen](https://github.com/BridgingIT-GmbH/bITdevKit/tree/main/src/Domain.CodeGen)
 - [C# Source Generators Documentation](https://learn.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/source-generators-overview)
 - [EF Core Value Conversions](https://learn.microsoft.com/en-us/ef/core/modeling/value-conversions)
-- Project Documentation: `README.md` (Domain Modeling section)
-- Module Documentation: `src/Modules/CoreModule/CoreModule-README.md` (Domain Layer)
+- [Domain modeling](../features-domain.md)
+- [Strongly typed entity IDs](../features-domain.md#appendix-b-strongly-typed-entity-ids)
 
 ## Notes
 

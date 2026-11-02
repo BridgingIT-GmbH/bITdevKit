@@ -60,7 +60,8 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             "_bdk.Dashboard.Storage.Documents.Diagnostics",
             "Dashboard Documents Diagnostics",
             "Shows recent storage transfer throughput and item counts.");
-        group.MapGet(DocumentsPath + "/diagnostics/data", () => Results.Json(metrics.Snapshot()))
+        var load = StorageLoadEndpoints.Map(group, DocumentsPath, "documents", app.ServiceProvider);
+        group.MapGet(DocumentsPath + "/diagnostics/data", () => Results.Json(metrics.Snapshot(load.Snapshot())))
             .ExcludeFromDescription();
 
         group.MapDashboardPage<Pages.Content>(

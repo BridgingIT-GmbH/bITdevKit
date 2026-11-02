@@ -122,8 +122,8 @@ public class Result<T>
 ## References
 
 - [bITdevKit Results Documentation](https://github.com/BridgingIT-GmbH/bITdevKit/blob/main/docs/features-results.md)
-- [README - Result Pattern](../../README.md#result-pattern-railway-oriented-programming)
-- [CoreModule README - Handler Deep Dive](../../src/Modules/CoreModule/CoreModule-README.md#handler-implementation-example)
+- [Results](../features-results.md)
+- [Command and query handlers](../features-application-commands-queries.md#basic-usage)
 - [Railway Oriented Programming - Scott Wlaschin](https://fsharpforfunandprofit.com/rop/)
 
 ## Notes

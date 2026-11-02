@@ -9,6 +9,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="../../src/Infrastructure.FileSystem/Infrastructure.FileSystem.csproj" />
+        <Compile Include="../Infrastructure.UnitTests/FileSystem/FileSystemShareTests.cs" Link="FileSystem/FileSystemShareTests.cs" />
+        <Compile Include="../Infrastructure.FileSystem.Probes/QualificationConfiguration.cs" Link="FileSystem/QualificationConfiguration.cs" />
+        <Compile Include="../Infrastructure.FileSystem.Probes/ProbeWorkspace.cs" Link="FileSystem/ProbeWorkspace.cs" />
+        <Compile Include="../Infrastructure.FileSystem.Probes/RemoteFileSystemProbe.cs" Link="FileSystem/RemoteFileSystemProbe.cs" />
+        <Compile Include="../Infrastructure.FileSystem.Probes/ProbeResult.cs" Link="FileSystem/ProbeResult.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Using Include="BridgingIT.DevKit.Common" />
         <Using Include="Bogus" />
         <Using Include="Bogus.DataSets" />

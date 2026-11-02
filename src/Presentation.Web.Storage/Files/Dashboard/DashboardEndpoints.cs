@@ -57,6 +57,18 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             "Dashboard Files Content",
             "Shows the refreshable file storage dashboard content fragment.");
 
+        var metrics = new StorageDashboardMetrics("files");
+        app.ServiceProvider.GetRequiredService<Microsoft.Extensions.Hosting.IHostApplicationLifetime>()
+            .ApplicationStopping.Register(metrics.Dispose);
+        var load = StorageLoadEndpoints.Map(group, FilesPath, "files", app.ServiceProvider);
+        group.MapDashboardPage<Pages.Diagnostics>(
+            FilesPath + "/diagnostics",
+            "_bdk.Dashboard.Storage.Files.Diagnostics",
+            "Dashboard Files Diagnostics",
+            "Shows storage metrics and temporary provider load tests.");
+        group.MapGet(FilesPath + "/diagnostics/data", () => Results.Json(metrics.Snapshot(load.Snapshot())))
+            .ExcludeFromDescription();
+
         group.MapGet(FilesDownloadPath, async (
             HttpContext context,
             [FromQuery] string provider,

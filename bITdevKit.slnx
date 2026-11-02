@@ -208,6 +208,7 @@
     <Project Path="src/Infrastructure.EntityFramework.SqlServer/Infrastructure.EntityFramework.SqlServer.csproj" />
     <Project Path="src/Infrastructure.EntityFramework/Infrastructure.EntityFramework.csproj" />
     <Project Path="src/Infrastructure.EventSourcing/Infrastructure.EventSourcing.csproj" />
+    <Project Path="src/Infrastructure.FileSystem/Infrastructure.FileSystem.csproj" />
     <Project Path="src/Infrastructure.LiteDB/Infrastructure.LiteDB.csproj" />
     <Project Path="src/Infrastructure.RabbitMQ/Infrastructure.RabbitMQ.csproj" />
     <Project Path="src/Infrastructure.Windows/Infrastructure.Windows.csproj" />
@@ -233,6 +234,7 @@
     <Project Path="tests/Common.UnitTests/Common.UnitTests.csproj" />
     <Project Path="tests/Domain.IntegrationTests/Domain.IntegrationTests.csproj" />
     <Project Path="tests/Domain.UnitTests/Domain.UnitTests.csproj" />
+    <Project Path="tests/Infrastructure.FileSystem.Probes/Infrastructure.FileSystem.Probes.csproj" />
     <Project Path="tests/Infrastructure.IntegrationTests/Infrastructure.IntegrationTests.csproj" />
     <Project Path="tests/Infrastructure.UnitTests/Infrastructure.UnitTests.csproj" />
     <Project Path="tests/Presentation.UnitTests/Presentation.UnitTests.csproj" />

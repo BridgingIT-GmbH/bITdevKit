@@ -39,7 +39,7 @@ Run it from the repository root:
 dotnet run --project examples/DoFiesta/DoFiesta.Presentation.Web.Server
 ```
 
-For its layer structure and development notes, read the [`DoFiesta-README.md`](https://github.com/bridgingIT/bITdevKit/blob/main/examples/DoFiesta/DoFiesta-README.md).
+For layer responsibilities and request handling, see [Architecture](architecture.md) and [Application Commands and Queries](reference/features-application-commands-queries.md).
 
 ### EventSourcingDemo
 
@@ -56,7 +56,7 @@ Run it from the repository root:
 dotnet run --project examples/EventSourcingDemo/EventSourcingDemo.Presentation.Web
 ```
 
-For its short overview and REST request guidance, read the [`EventSourcingDemo-README.md`](https://github.com/bridgingIT/bITdevKit/blob/main/examples/EventSourcingDemo/EventSourcingDemo-README.md).
+For persistence and API contracts, see [Event Sourcing](reference/features-event-sourcing.md) and [Endpoints](reference/features-presentation-endpoints.md).
 
 ### WeatherFiesta
 
@@ -75,4 +75,4 @@ Run it from the repository root:
 dotnet run --project examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server
 ```
 
-For its architecture, API, configuration, and testing guide, read the [`WeatherFiesta-README.md`](https://github.com/bridgingIT/bITdevKit/blob/main/examples/WeatherFiesta/WeatherFiesta-README.md).
+For architecture, host configuration, and test support, see [Architecture](architecture.md), [Configuration](reference/features-presentation-configuration.md), and [Testing Common XUnit](reference/testing-common-xunit.md).

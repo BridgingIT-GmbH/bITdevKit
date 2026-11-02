@@ -47,6 +47,9 @@ public static partial class ServiceCollectionExtensions
     /// <typeparam name="TId">The type of the entity's identifier.</typeparam>
     /// <param name="services">The service collection to configure.</param>
     /// <returns>An ActiveEntityBuilder for fluent configuration.</returns>
+    /// <remarks>
+    /// The entity type is recorded in the <see cref="ActiveEntityRegistry"/> so tooling such as the Entities dashboard can discover it.
+    /// </remarks>
     /// <example>
     /// <code>
     /// services.AddActiveEntity&lt;Customer, CustomerId&gt;()

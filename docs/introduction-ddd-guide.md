@@ -675,7 +675,7 @@ This introduction provides a foundation for understanding DDD in bITDevKit. To d
    - [Common serialization](common-serialization.md) - Shared JSON and serializer conventions
    - [Common utilities](common-utilities.md) - Shared helper types such as smart enumerations and ambient time access
 
-3. **Read module-specific documentation**: Each module's README contains implementation details for patterns in that module's context.
+3. **Read feature documentation**: Start with the [module guide](features-modules.md) and use the [documentation index](INDEX.md) to find the patterns used by each module.
 
 4. **Review architecture tests**: These tests enforce dependency rules and provide examples of correct layer boundaries.
 

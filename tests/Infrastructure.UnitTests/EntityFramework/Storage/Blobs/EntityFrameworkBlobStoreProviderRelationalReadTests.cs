@@ -44,6 +44,35 @@ public sealed class EntityFrameworkBlobStoreProviderRelationalReadTests : IDispo
     }
 
     [Fact]
+    public async Task GetPropertiesAsync_AfterDatabaseRoundTrip_PreservesStringOwnershipProperty()
+    {
+        var sut = this.CreateProvider(new BlobStoreOptions());
+        var owner = Guid.NewGuid().ToString("N");
+        var uploaded = await sut.UploadAsync(new()
+        {
+            Key = Key,
+            Content = new MemoryStream([1, 2, 3]),
+            Properties = new() { ["bdk_diagnostic_owner"] = owner }
+        });
+        uploaded.IsSuccess.ShouldBeTrue();
+        uploaded.Value.Properties.Get<string>("bdk_diagnostic_owner").ShouldBe(owner);
+
+        var result = await sut.GetPropertiesAsync(Key);
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.Properties.Get<string>("bdk_diagnostic_owner").ShouldBe(owner);
+
+        var page = await sut.ListPageAsync(new() { Container = Key.Container, Prefix = Key.Name });
+        page.IsSuccess.ShouldBeTrue();
+        page.Value.Items.Single().Properties.Get<string>("bdk_diagnostic_owner").ShouldBe(owner);
+
+        var download = await sut.DownloadAsync(Key);
+        download.IsSuccess.ShouldBeTrue();
+        await using var content = download.Value.Content;
+        download.Value.Info.Properties.Get<string>("bdk_diagnostic_owner").ShouldBe(owner);
+    }
+
+    [Fact]
     public async Task DownloadAsync_WithSmallBlob_ReadsContentWithoutExtraQueries()
     {
         // Arrange

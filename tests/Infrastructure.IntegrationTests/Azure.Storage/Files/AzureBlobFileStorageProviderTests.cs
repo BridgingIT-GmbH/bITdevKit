@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure.Storage;
 
 using BridgingIT.DevKit.Application.IntegrationTests.Storage;
 using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Infrastructure.FileSystem;
 using BridgingIT.DevKit.Infrastructure.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

@@ -38,6 +38,7 @@ The [Active Record pattern is described by Martin Fowler](https://www.martinfowl
 
 `ActiveEntity<TEntity, TId>` delegates persistence to `IActiveEntityEntityProvider<TEntity, TId>`. The pipeline runs registered `IActiveEntityBehavior<TEntity>` instances in registration order. `ActiveEntityConfigurator` stores the application's service provider so an operation can create a dependency injection scope when the caller does not supply a context.
 
+Each configured entity type is also recorded, with its id type and soft-delete flag, in an `ActiveEntityRegistry` that is shared by all `AddActiveEntity(...)` calls. Tools can use the registry to discover the configured types without extra registration. The [Entities dashboard](features-presentation-dashboard-entities.md) uses it to list ActiveEntity types.
 `ActiveEntityContext<TEntity, TId>` contains the provider and behaviors resolved from one scope. Reusing a context keeps those services in the same scope. A context shares a transaction only when the provider has started one, such as inside `WithTransactionAsync`.
 
 ```mermaid

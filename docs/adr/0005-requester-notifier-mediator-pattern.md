@@ -149,14 +149,14 @@ builder.Services.AddNotifier()
 ## Related Decisions
 
 - [ADR-0002](0002-result-pattern-error-handling.md): Handlers return Results through requester
-- [ADR-0009](0009-fluent-validation-strategy.md): ValidationPipelineBehavior uses FluentValidation
+- [ADR-0009](0009-fluentvalidation-strategy.md): ValidationPipelineBehavior uses FluentValidation
 - [ADR-0011](0011-application-logic-in-commands-queries.md): Handlers contain application logic
 
 ## References
 
 - [bITdevKit Requester/Notifier Documentation](https://github.com/BridgingIT-GmbH/bITdevKit/blob/main/docs/features-requester-notifier.md)
-- [README - Requester/Notifier Pattern](../../README.md#requesternotifier-pattern-mediator)
-- [README - Pipeline Behaviors](../../README.md#pipeline-behaviors)
+- [Requester](../features-requester-notifier.md#part-1-requester)
+- [Pipeline behaviors](../features-requester-notifier.md#part-3-pipeline-behaviors)
 
 ## Notes
 

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -69,4 +69,7 @@
     <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.Postgres\Infrastructure.EntityFramework.Postgres.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../../src/Infrastructure.FileSystem/Infrastructure.FileSystem.csproj" />
+  </ItemGroup>
 </Project>

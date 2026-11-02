@@ -220,6 +220,34 @@ Providers decorated with `WithPermalinks()` also expose permalink download and c
 
 ## Detailed usage
 
+### Filesystem package and migration
+
+`LocalFileStorageProvider` and `LocalLocationHandler` are provided by the optional `BridgingIT.DevKit.Infrastructure.FileSystem` package, in the `BridgingIT.DevKit.Infrastructure.FileSystem` namespace. The local provider is in `Infrastructure.FileSystem/Files`; the watcher is in `Infrastructure.FileSystem/Monitoring`.
+
+`Application.Storage` owns the file contracts, factory, behaviors and monitoring pipeline. It has no Infrastructure reference. `UseLocal(...)` is an extension from the filesystem package in `Microsoft.Extensions.DependencyInjection`, so existing registration calls keep their shape after recompilation and adding the package reference.
+
+```csharp
+using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Infrastructure.FileSystem;
+using Microsoft.Extensions.DependencyInjection;
+
+var root = Path.GetFullPath(Path.Combine(dataDirectory, "reports"));
+services.AddFileStorage(factory => factory.RegisterProvider("reports", builder =>
+	builder.UseLocal("reports", root).WithLogging().WithMetrics()));
+
+services.AddFileMonitoring(builder => builder.UseLocal("inbound", root));
+```
+
+`dataDirectory` is an absolute application-owned persistent directory. Direct construction uses `new LocalFileStorageProvider("reports", root)` from the new namespace. The provider retains ordinary paths and directories. It shares instrumented file opening, path helpers, native staged publication and operating-system error classification with blob and document storage. It does not create blob/document manifests or store markers in the file directory.
+
+`FileSystemMetrics.Snapshot()` includes process-wide `fileReadOpens`, `fileWriteOpens`, `managedFileOpenAttempts` and native publication counters. Existing `.WithMetrics()` records the File Storage operation metrics separately. Caught filesystem failures retain the existing File Storage errors and additionally expose shared errors such as `FileSystemStoragePermissionError`, `FileSystemStorageCapacityError` and `FileSystemStorageUnavailableError`.
+
+Direct writes keep their direct-write semantics. `OpenWriteFileAsync(..., useTemporaryWrite: true)` uses the common native replacement helper after successful stream disposal, with Buffered acknowledgement. Existing read handles survive replacement. This reuse does not add blob/document TTL, Durable acknowledgement or shared-host ownership guarantees to File Storage. Actual share and power-loss qualification remains pending.
+
+`NetworkFileStorageProvider` remains in `Infrastructure.Windows` because it owns Windows impersonation. That package references `Infrastructure.FileSystem` and inherits the moved local provider. Linux-mounted shares use the local provider with OS-managed mounting and credentials.
+
+See [ADR-0038](adr/0038-shared-filesystem-infrastructure-for-file-storage.md) for the dependency and migration decisions.
+
 ### Setting up a provider with dependency injection
 
 Configure `FileStorage` using `Microsoft.Extensions.DependencyInjection` with the `AddFileStorage` method, which supports a fluent API for registering named providers, applying behaviors, and setting lifetimes. Providers are resolved via `IFileStorageProviderFactory`.
@@ -981,3 +1009,8 @@ STR job: scan completed (location=inbound, eventCount=5)
 - **Monitor Logs**: Use the structured logs to track scan progress and events.
 - **Handle Retries**: Leverage the built-in retry mechanism for transient failures, monitoring retry logs for issues.
 - **Test Scheduling**: Verify the cron schedule and job data in a test environment to ensure expected behavior.
+
+
+## Dashboard throughput tests
+
+The Diagnostics tab provides read/write throughput tests and live metric charts for the configured providers. See [Storage dashboard throughput tests](storage-load-testing.md) for controls, measurement semantics, and temporary-item cleanup.

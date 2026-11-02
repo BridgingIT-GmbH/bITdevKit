@@ -9,11 +9,13 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 public static partial class ServiceCollectionExtensions
 {
     /// <summary>
     /// Overrides dashboard settings for an entity/context pair. Tracked entities are otherwise discovered automatically.
+    /// Calling this method also enables the Change History link on the Entities dashboard detail panel.
     /// </summary>
     /// <typeparam name="TEntity">The tracked entity type.</typeparam>
     /// <typeparam name="TContext">The EF Core context that stores ChangeHistory rows.</typeparam>
@@ -57,6 +59,10 @@ public static partial class ServiceCollectionExtensions
         }
 
         services.AddSingleton(new ChangeHistoryDashboardDescriptor(typeof(TEntity), typeof(TContext), options));
+        // Scoped: discovery resolves scoped DbContext services from the injected provider.
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<
+            BridgingIT.DevKit.Presentation.Web.Entities.Dashboard.IEntitiesDashboardChangeHistoryLinkProvider,
+            ChangeHistoryEntitiesDashboardLinkProvider>());
 
         return services;
     }

@@ -351,8 +351,8 @@ protected override void Up(MigrationBuilder migrationBuilder)
 - [Entity Framework Core Documentation](https://learn.microsoft.com/en-us/ef/core/)
 - [EF Core Migrations Overview](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/)
 - [bITdevKit DbContext Extensions](https://github.com/BridgingIT-GmbH/bITdevKit/tree/main/docs)
-- Project Documentation: `README.md` (sections: Database Setup, EF Core Migrations)
-- Module Documentation: `src/Modules/CoreModule/CoreModule-README.md` (Infrastructure section)
+- [Infrastructure layer](../site/architecture.md#infrastructure)
+- [Repository persistence implementation](../features-domain-repositories.md#implementation)
 
 ## Notes
 

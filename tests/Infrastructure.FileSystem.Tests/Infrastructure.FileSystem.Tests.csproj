@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Infrastructure.UnitTests</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Infrastructure.UnitTests</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="All" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Xunit.SkippableFact" />
+    <ProjectReference Include="../../src/Infrastructure.FileSystem/Infrastructure.FileSystem.csproj" />
+    <ProjectReference Include="../../src/Common.Utilities.Xunit/Common.Utilities.Xunit.csproj" />
+    <Compile Include="../Application.IntegrationTests/Storage/Files/FileStorageTestsBase.cs" Link="FileStorageTestsBase.cs" />
+    <Compile Include="../Application.IntegrationTests/Storage/Files/RecordingProgress.cs" Link="RecordingProgress.cs" />
+    <Using Include="BridgingIT.DevKit.Common" />
+    <Using Include="Shouldly" />
+    <Using Include="NSubstitute" />
+    <Using Include="Xunit" />
+    <Compile Include="../Infrastructure.UnitTests/FileSystem/*.cs" Link="%(Filename)%(Extension)" />
+    <Compile Include="../Application.UnitTests/Storage/Blobs/BlobStoreProviderContractTests.cs" Link="BlobStoreProviderContractTests.cs" />
+    <Compile Include="../Infrastructure.FileSystem.Probes/QualificationConfiguration.cs" Link="QualificationConfiguration.cs" />
+    <Compile Include="../Infrastructure.FileSystem.Probes/ProbeWorkspace.cs" Link="ProbeWorkspace.cs" />
+    <Compile Include="../Infrastructure.FileSystem.Probes/ProbeResult.cs" Link="ProbeResult.cs" />
+    <Compile Include="../Infrastructure.FileSystem.Probes/RemoteFileSystemProbe.cs" Link="RemoteFileSystemProbe.cs" />
+  </ItemGroup>
+</Project>

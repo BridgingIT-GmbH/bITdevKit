@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
 
 using System.Diagnostics;
+using System.Text;
 using System.Security.Cryptography;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
@@ -980,7 +981,7 @@ public abstract class FileStorageTestsBase
         // Arrange
         var provider = this.CreateProvider();
         const string path = "test_object.json";
-        var person = new PersonStub { Id = Guid.NewGuid(), FirstName = "John", LastName = "Doe" };
+        var person = new FileStorageTestPerson { Id = Guid.NewGuid(), FirstName = "John", LastName = "Doe" };
         var progress = new Progress<FileProgress>();
 
         // Act
@@ -995,7 +996,7 @@ public abstract class FileStorageTestsBase
         existsResult.IsSuccess.ShouldBeTrue($"File should exist: {string.Join(", ", existsResult.Messages)}");
 
         // Read and verify the content
-        var readResult = await provider.ReadFileAsync<PersonStub>(path, null, progress, CancellationToken.None);
+        var readResult = await provider.ReadFileAsync<FileStorageTestPerson>(path, null, progress, CancellationToken.None);
         readResult.IsSuccess.ShouldBeTrue($"ReadObjectAsync failed: {string.Join(", ", readResult.Messages)}");
         var personRead = readResult.Value;
         personRead.Id.ShouldBe(person.Id);
@@ -1377,5 +1378,20 @@ public abstract class FileStorageTestsBase
     {
         var hash = SHA256.HashData(data);
         return Convert.ToBase64String(hash);
+    }
+
+    private sealed class FileStorageTestPerson
+    {
+        public FileStorageTestPerson()
+        {
+        }
+
+        public Guid Id { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public int Age { get; set; }
     }
 }

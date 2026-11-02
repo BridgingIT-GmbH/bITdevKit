@@ -14,24 +14,34 @@ public class RetryDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
 
     /// <inheritdoc />
     public override Task<Result<DocumentEntry<T>>> GetAsync(DocumentKey key, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.GetAsync(key, ct), cancellationToken);
+
     /// <inheritdoc />
     public override Task<Result<IReadOnlyList<Result<DocumentEntry<T>>>>> GetManyAsync(IReadOnlyList<DocumentKey> keys, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.GetManyAsync(keys, ct), cancellationToken);
+
     /// <inheritdoc />
     public override Task<Result<DocumentPage<T>>> FindPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.FindPageAsync(query, ct), cancellationToken);
+
     /// <inheritdoc />
     public override Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.ListPageAsync(query, ct), cancellationToken);
+
     /// <inheritdoc />
     public override Task<Result<long>> CountAsync(DocumentCountQuery query, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.CountAsync(query, ct), cancellationToken);
+
     /// <inheritdoc />
     public override Task<Result<bool>> ExistsAsync(DocumentKey key, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.ExistsAsync(key, ct), cancellationToken);
+
     /// <inheritdoc />
     public override Task<Result<DocumentInfo>> UpsertAsync(DocumentKey key, T value, DocumentWriteOptions options = null, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.UpsertAsync(key, value, options, ct), cancellationToken);
+
     /// <inheritdoc />
     public override Task<Result<DocumentBatchResult<DocumentInfo>>> UpsertManyAsync(IReadOnlyCollection<DocumentWrite<T>> writes, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.UpsertManyAsync(writes, ct), cancellationToken);
+
     /// <inheritdoc />
     public override Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.UpdatePropertiesAsync(update, ct), cancellationToken);
+
     /// <inheritdoc />
     public override Task<Result> DeleteAsync(DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.DeleteAsync(key, options, ct), cancellationToken);
+
     /// <inheritdoc />
     public override Task<Result<DocumentBatchResult<DocumentKey>>> DeleteManyAsync(IReadOnlyCollection<DocumentDelete> deletes, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.DeleteManyAsync(deletes, ct), cancellationToken);
 
@@ -43,7 +53,12 @@ public class RetryDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
         {
             cancellationToken.ThrowIfCancellationRequested();
             result = await operation(cancellationToken);
-            if (result.IsSuccess || !IsRetryable(result) || attempt == attempts) return result;
+
+            if (result.IsSuccess || !IsRetryable(result) || attempt == attempts)
+            {
+                return result;
+            }
+
             this.logger.LogWarning("{LogKey} document operation retry (type={DocumentType}, attempt={Attempt})", Constants.LogKey, typeof(T).Name, attempt);
             var factor = this.options.BackoffExponential ? Math.Pow(2, attempt - 1) : 1;
             await Task.Delay(TimeSpan.FromMilliseconds(this.options.Backoff.TotalMilliseconds * factor), cancellationToken);
@@ -52,7 +67,11 @@ public class RetryDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
         return result;
     }
 
-    private static bool IsRetryable<TResult>(Result<TResult> result) => result.Errors.All(error => error is DocumentStoreProviderError);
+    private static bool IsRetryable(IResult result)
+    {
+        return !result.Errors.Any(error => error is DocumentStoreIndeterminateOperationError)
+            && result.Errors.All(error => error is DocumentStoreProviderError or ITransientStorageError { IsTransient: true });
+    }
 
     private async Task<Result> ExecuteAsync(Func<CancellationToken, Task<Result>> operation, CancellationToken cancellationToken)
     {
@@ -62,7 +81,12 @@ public class RetryDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
         {
             cancellationToken.ThrowIfCancellationRequested();
             result = await operation(cancellationToken);
-            if (result.IsSuccess || result.Errors.Any(error => error is not DocumentStoreProviderError) || attempt == attempts) return result;
+
+            if (result.IsSuccess || !IsRetryable(result) || attempt == attempts)
+            {
+                return result;
+            }
+
             this.logger.LogWarning("{LogKey} document operation retry (type={DocumentType}, attempt={Attempt})", Constants.LogKey, typeof(T).Name, attempt);
             var factor = this.options.BackoffExponential ? Math.Pow(2, attempt - 1) : 1;
             await Task.Delay(TimeSpan.FromMilliseconds(this.options.Backoff.TotalMilliseconds * factor), cancellationToken);

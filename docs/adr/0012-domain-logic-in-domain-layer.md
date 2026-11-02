@@ -115,8 +115,8 @@ In Domain-Driven Design, the domain layer is the heart of the application. Howev
 
 - [bITdevKit Domain Documentation](https://github.com/BridgingIT-GmbH/bITdevKit/blob/main/docs/features-domain.md)
 - [bITdevKit Domain Events](https://github.com/BridgingIT-GmbH/bITdevKit/blob/main/docs/features-domain-events.md)
-- [README - Domain Layer](../../README.md#domain-layer-core)
-- [CoreModule README - Key Building Blocks](../../src/Modules/CoreModule/CoreModule-README.md#key-building-blocks)
+- [Domain layer](../site/architecture.md#domain)
+- [Domain building blocks](../features-domain.md#basic-usage)
 - [Eric Evans - Domain-Driven Design](https://www.domainlanguage.com/ddd/)
 - [Martin Fowler - Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html)
 

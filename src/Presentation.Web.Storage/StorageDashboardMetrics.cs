@@ -1,6 +1,5 @@
 // MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
-
 namespace BridgingIT.DevKit.Presentation.Web.Storage;
 
 using System.Diagnostics.Metrics;
@@ -24,13 +23,22 @@ internal sealed class StorageDashboardMetrics : IDisposable
         this.feature = feature;
         this.timeProvider = timeProvider ?? TimeProvider.System;
         this.started = this.timeProvider.GetUtcNow();
-        var prefix = feature == "blobs" ? "blobstorage_" : "document.";
+        var prefix = feature switch
+        {
+            "blobs" => "blobstorage_",
+            "files" => "filestorage_",
+            _ => "document."
+        };
         this.listener.InstrumentPublished = (instrument, owner) =>
         {
-            if (instrument.Meter.Name == Metrics.MeterName &&
-                (instrument.Name == prefix + "bytes" || instrument.Name == prefix + "items" ||
-                    instrument.Name == prefix + "bytes_per_second" ||
-                    instrument.Name == prefix + (feature == "blobs" ? "operation_duration" : "operation.duration")))
+            var storageMetric = instrument.Name == prefix + "bytes"
+                || instrument.Name == prefix + "items"
+                || instrument.Name == prefix + "bytes_per_second"
+                || instrument.Name == prefix + (feature == "documents" ? "operation.duration" : "operation_duration");
+            var loadMetric = instrument.Name is "storage_load_bytes" or "storage_load_items"
+                or "storage_load_duration" or "storage_load_bytes_per_second";
+
+            if (instrument.Meter.Name == Metrics.MeterName && (storageMetric || loadMetric))
             {
                 owner.EnableMeasurementEvents(instrument);
             }
@@ -40,7 +48,7 @@ internal sealed class StorageDashboardMetrics : IDisposable
         this.listener.Start();
     }
 
-    internal object Snapshot()
+    internal object Snapshot(object load = null)
     {
         lock (this.gate)
         {
@@ -53,6 +61,7 @@ internal sealed class StorageDashboardMetrics : IDisposable
                 var bucket = first + offset;
                 var values = this.buckets.GetValueOrDefault(bucket) ?? [new TransferBucket(), new TransferBucket()];
                 var seconds = Math.Min(BucketSeconds, ((bucket + 1) * BucketSeconds * 1000 - this.started.ToUnixTimeMilliseconds()) / 1000d);
+
                 return new
                 {
                     at = DateTimeOffset.FromUnixTimeSeconds((bucket + 1) * BucketSeconds),
@@ -66,30 +75,77 @@ internal sealed class StorageDashboardMetrics : IDisposable
                     writeLatencyMs = values[1].DurationCount > 0 ? (double?)(values[1].DurationSum / values[1].DurationCount) : null
                 };
             }).ToArray();
-            return new { observed = this.observed, bucketSeconds = BucketSeconds, samples };
+
+            return new
+            {
+                observed = this.observed,
+                bucketSeconds = BucketSeconds,
+                samples,
+                load
+            };
         }
     }
 
     private void Record(string name, double value, ReadOnlySpan<KeyValuePair<string, object>> tags)
     {
         string operation = null;
+        string featureTag = null;
+
         foreach (var tag in tags)
         {
-            if (tag.Key == "operation") operation = tag.Value?.ToString();
+            if (tag.Key == "operation")
+            {
+                operation = tag.Value?.ToString();
+            }
+
+            if (tag.Key == "feature")
+            {
+                featureTag = tag.Value?.ToString();
+            }
         }
 
-        var direction = this.feature == "blobs"
-            ? operation switch { "download" => 0, "upload" => 1, _ => -1 }
-            : operation switch { "get" or "get-many" or "find" => 0, "upsert" or "upsert-many" => 1, _ => -1 };
-        if (direction < 0 || !double.IsFinite(value) || value < 0) return;
+        var load = name.StartsWith("storage_load_", StringComparison.Ordinal);
+
+        if (load && featureTag != this.feature)
+        {
+            return;
+        }
+
+        var direction = load || this.feature == "files" ? operation switch
+        {
+            "read" => 0,
+            "write" => 1,
+            _ => -1
+        } : this.feature == "blobs" ? operation switch
+        {
+            "download" => 0,
+            "upload" => 1,
+            _ => -1
+        } : operation switch
+        {
+            "get" or "get-many" or "find" => 0,
+            "upsert" or "upsert-many" => 1,
+            _ => -1
+        };
+
+        if (direction < 0 || !double.IsFinite(value) || value < 0)
+        {
+            return;
+        }
 
         lock (this.gate)
         {
             this.observed = true;
             var bucket = this.timeProvider.GetUtcNow().ToUnixTimeSeconds() / BucketSeconds;
             this.Trim(bucket);
-            if (!this.buckets.TryGetValue(bucket, out var values)) this.buckets[bucket] = values = [new TransferBucket(), new TransferBucket()];
+
+            if (!this.buckets.TryGetValue(bucket, out var values))
+            {
+                this.buckets[bucket] = values = [new TransferBucket(), new TransferBucket()];
+            }
+
             var transfer = values[direction];
+
             if (name.EndsWith("bytes_per_second", StringComparison.Ordinal))
             {
                 transfer.SpeedSum += value;
@@ -129,5 +185,8 @@ internal sealed class StorageDashboardMetrics : IDisposable
         internal long DurationCount;
     }
 
-    public void Dispose() => this.listener.Dispose();
+    public void Dispose()
+    {
+        this.listener.Dispose();
+    }
 }

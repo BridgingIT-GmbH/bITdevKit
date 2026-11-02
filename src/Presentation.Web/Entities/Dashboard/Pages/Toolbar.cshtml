@@ -1,0 +1,88 @@
+@inherits RazorSlice<EntitiesDashboardViewModel>
+@{
+    var query = Model.Filter?.Query;
+    var visibleColumns = query?.Columns ?? [];
+}
+<form id="entities-filter-form" class="entities-toolbar" action="@Model.Path" method="get" novalidate aria-label="Filter @Model.Entity.Name">
+    <input type="hidden" name="entity" value="@Model.Entity.Key" />
+    <input type="hidden" name="source" value="@Model.Source" />
+    <div class="entities-toolbar-row entities-selection-row">
+        @(await RenderPartialAsync<EntitySelector, EntitiesDashboardViewModel>(Model))
+        <div class="entities-toolbar-end">
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="entities-refresh" data-entities-refresh title="Refresh rows" aria-label="Refresh rows"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+            <details class="entities-menu" id="entities-filters-menu">
+                <summary class="btn btn-outline-secondary btn-sm" title="Recent and saved filters" aria-label="Recent and saved filters"><i class="bi bi-funnel" aria-hidden="true"></i></summary>
+                <div class="entities-popover">
+                    <h3>Recent</h3>
+                    <ul id="entities-recent-filters"></ul>
+                    <h3>Saved</h3>
+                    <ul id="entities-saved-filters"></ul>
+                    <label for="entities-save-name" class="form-label">Save current filter as</label>
+                    <div class="d-flex gap-2">
+                        <input id="entities-save-name" type="text" maxlength="64" class="form-control form-control-sm" />
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-entities-save-filter>Save</button>
+                    </div>
+                </div>
+            </details>
+            <details class="entities-menu" id="entities-columns-menu">
+                <summary class="btn btn-outline-secondary btn-sm" title="Choose columns" aria-label="Choose columns"><i class="bi bi-layout-three-columns" aria-hidden="true"></i></summary>
+                <div class="entities-popover">
+                    @foreach (var column in Model.Columns)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="entities-col-@column.Path" data-entities-column="@column.Path" checked="@(column.IsId || visibleColumns.Count == 0 || visibleColumns.Contains(column.Path, StringComparer.OrdinalIgnoreCase))" disabled="@column.IsId" />
+                            <label class="form-check-label" for="entities-col-@column.Path">@column.Path</label>
+                        </div>
+                    }
+                    <button type="button" class="btn btn-outline-secondary btn-sm mt-2" data-entities-columns-reset>Reset columns</button>
+                </div>
+            </details>
+            <details class="entities-menu" id="entities-export-menu">
+                <summary class="btn btn-outline-secondary btn-sm" title="Export" aria-label="Export"><i class="bi bi-download" aria-hidden="true"></i></summary>
+                <div class="entities-popover">
+                    <p class="small text-muted mb-2">Exports the current filter and visible columns (up to @Model.MaxExportRows rows).</p>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-entities-export="json">JSON</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-entities-export="csv">CSV</button>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+    <div id="entities-conditions" class="entities-conditions" data-entities-conditions="@System.Text.Json.JsonSerializer.Serialize((Model.Filter?.Conditions ?? []).Select(c => new { path = c.Path, @operator = c.Operator, value = c.Value }))" data-entities-max-conditions="@EntitiesDashboardQuery.MaxConditions"></div>
+    <template id="entities-condition-template">
+        <div class="entities-condition" data-entities-condition role="group" aria-label="Filter condition">
+            <select class="form-select form-select-sm" data-entities-cond="path" aria-label="Property">
+                @foreach (var property in Model.FilterableProperties.OrderBy(p => p.Path, StringComparer.OrdinalIgnoreCase))
+                {
+                    <option value="@property.Path"
+                            data-kind="@property.EditorKind"
+                            data-operators="@string.Join(",", EntitiesDashboardFilterBuilder.GetOperatorTokens(property))"
+                            data-choices="@(property.EditorKind is EntitiesDashboardEditorKind.Enum or EntitiesDashboardEditorKind.Enumeration ? System.Text.Json.JsonSerializer.Serialize(EntitiesDashboardValueConverter.GetOptions(property.UnderlyingType).Select(o => new { value = o.Value, label = o.Label })) : null)">@property.Path</option>
+                }
+            </select>
+            <select class="form-select form-select-sm" data-entities-cond="operator" aria-label="Operator"></select>
+            <input type="text" class="form-control form-control-sm" data-entities-cond="value" aria-label="Value" maxlength="1024" />
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-entities-cond-remove title="Remove condition" aria-label="Remove condition"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+        </div>
+    </template>
+    <div class="entities-toolbar-row">
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="entities-add-condition" data-entities-add-condition><i class="bi bi-plus-lg" aria-hidden="true"></i> Add condition</button>
+        <div>
+            <label for="entities-match" class="form-label">Match</label>
+            <select id="entities-match" name="match" class="form-select form-select-sm">
+                <option value="and" selected="@(Model.Filter?.Match != "or")">All conditions</option>
+                <option value="or" selected="@(Model.Filter?.Match == "or")">Any condition</option>
+            </select>
+        </div>
+        <div class="entities-toolbar-grow">
+            <label for="entities-quick-search" class="form-label">Quick search</label>
+            <input id="entities-quick-search" name="q" type="search" maxlength="256" value="@query?.QuickSearch" placeholder="Search text columns" class="form-control form-control-sm" />
+        </div>
+        <div class="entities-toolbar-end">
+            <button type="submit" class="btn btn-primary btn-sm" id="entities-apply">Apply</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="entities-reset" data-entities-reset title="Reset filter" aria-label="Reset filter"><i class="bi bi-x-circle" aria-hidden="true"></i></button>
+        </div>
+    </div>
+    <div id="entities-filter-error" class="entities-error" role="alert" hidden></div>
+</form>

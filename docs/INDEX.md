@@ -80,11 +80,16 @@ Browse the [feature icon catalog](./site/feature-icons.md) for the complete set 
 - <img class="bdk-doc-icon" src="assets/features/storage-blobs.svg" width="20" height="20" alt=""> [BlobStorage](./features-storage-blobs.md): Store binary content through Result-native, stream-first, named blob clients.
 - <img class="bdk-doc-icon" src="assets/features/storage-documents.svg" width="20" height="20" alt=""> [DocumentStorage](./features-storage-documents.md): Store typed documents with metadata, ETags, integrity, transforms, expiration/retention, named clients, and managed provider resources.
 - <img class="bdk-doc-icon" src="assets/features/storage-permalinks.svg" width="20" height="20" alt=""> [StoragePermalinks](./features-storage-permalinks.md): Give Blob, Document, and File Storage resources stable opaque download links with optional expiration.
-- <img class="bdk-doc-icon" src="assets/features/storage-files.svg" width="20" height="20" alt=""> [FileStorage](./features-storage-files.md): Read, write, move and monitor files through extensible storage providers and behaviors.
+- <img class="bdk-doc-icon" src="assets/features/storage-files.svg" width="20" height="20" alt=""> [FileStorage](./features-storage-files.md): Read, write, move and monitor files through extensible providers, with local files and watchers in the optional Infrastructure.FileSystem package.
+- [Filesystem storage providers](./storage-filesystem-providers.md): Implementation status, native persistence, operator recovery, local tests and disabled-by-default share qualification.
+- [Filesystem deployment qualification](./storage-filesystem-qualification.md): Follow-up checks for shares, recovery, power-loss durability and reference performance after implementation completion.
+- [Storage dashboard throughput tests](./storage-load-testing.md): Provider-independent read/write load, metric charts, and temporary-item cleanup.
 - <img class="bdk-doc-icon" src="assets/features/storage-monitoring.svg" width="20" height="20" alt=""> [Storage Monitoring](./features-storage-monitoring.md): Detect file changes and process storage events through configurable monitoring pipelines.
 - <img class="bdk-doc-icon" src="assets/features/log-entries.svg" width="20" height="20" alt=""> [Log Entries](./features-log-entries.md): Query, stream, export and manage persisted application logs through a stable application API.
 
 ## Testing and Test Utilities
+
+- [Worktree Development Isolation specification](./specs/spec-worktree-development-isolation.md): Planned automatic worktree-aware startup with predictable ports and isolated resources, preserving ordinary-checkout configuration.
 
 - <img class="bdk-doc-icon" src="assets/features/fake-authentication.svg" width="20" height="20" alt=""> [Fake Authentication for Integration Tests](./testing-fake-authentication.md): Simulate authenticated ASP.NET Core requests in integration tests with a lightweight fake-auth scheme.
 - <img class="bdk-doc-icon" src="assets/features/testing.svg" width="20" height="20" alt=""> [Testing Common XUnit](./testing-common-xunit.md): Reuse shared xUnit test helpers for setup, web hosts, fake time, traits and `Result` assertions.

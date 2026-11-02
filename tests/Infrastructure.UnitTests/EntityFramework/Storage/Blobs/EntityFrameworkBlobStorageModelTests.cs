@@ -169,8 +169,8 @@ public sealed class EntityFrameworkBlobStorageModelTests
         typeof(StorageBlob).GetProperty(nameof(StorageBlob.PropertiesJson))
             ?.GetCustomAttribute<ColumnAttribute>()?.Name.ShouldBe("Properties");
         serialized.ShouldContain("monthly-export");
-        restored.Properties["source"].ToString().ShouldBe("monthly-export");
-        restored.Properties["reviewed"].ToString().ShouldBe("True");
+        restored.Properties["source"].ShouldBeOfType<string>().ShouldBe("monthly-export");
+        restored.Properties["reviewed"].ShouldBeOfType<bool>().ShouldBeTrue();
     }
 
     [Fact]

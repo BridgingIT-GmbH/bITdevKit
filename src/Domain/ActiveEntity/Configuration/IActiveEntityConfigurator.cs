@@ -69,6 +69,7 @@ public class ActiveEntityConfigurator<TEntity, TId>(IServiceCollection services,
     private Func<IServiceProvider, IActiveEntityEntityProvider<TEntity, TId>> providerFactory;
     private readonly List<(Type behaviorType, object options)> behaviors = [];
     private readonly AuditBoundaryRegistrationCatalog auditRegistrations = DeclareAuditBoundaries(services);
+    private readonly ActiveEntityRegistry activeEntityRegistry = RegisterActiveEntity(services);
     private readonly List<Action<IServiceCollection>> registrations = registrations ?? [];
 
     /// <summary>
@@ -163,6 +164,13 @@ public class ActiveEntityConfigurator<TEntity, TId>(IServiceCollection services,
         catalog.Select("Operation", "omitted", typeof(TEntity).Name);
         services.AddSingleton<IAuditBoundaryRegistrationSource>(catalog);
         return catalog;
+    }
+
+    private static ActiveEntityRegistry RegisterActiveEntity(IServiceCollection services)
+    {
+        var registry = ActiveEntityRegistry.GetOrAdd(services);
+        registry.Register(new ActiveEntityDescriptor(typeof(TEntity), typeof(TId), typeof(ISoftDeletable).IsAssignableFrom(typeof(TEntity))));
+        return registry;
     }
 
     /// <summary>

@@ -81,6 +81,9 @@ nav:
               - Document Storage: reference/features-storage-documents.md
               - Storage Permalinks: reference/features-storage-permalinks.md
               - FileStorage: reference/features-storage-files.md
+              - Filesystem storage providers: reference/storage-filesystem-providers.md
+              - Filesystem deployment qualification: reference/storage-filesystem-qualification.md
+              - Storage dashboard throughput tests: reference/storage-load-testing.md
               - Storage Monitoring: reference/features-storage-monitoring.md
               - Log Entries: reference/features-log-entries.md
           - Testing and Test Utilities:

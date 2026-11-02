@@ -1675,6 +1675,7 @@
           "BridgingIT.DevKit.Examples.DoFiesta.Application": "[1.0.0, )",
           "BridgingIT.DevKit.Examples.DoFiesta.Infrastructure": "[1.0.0, )",
           "BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client": "[1.0.0, )",
+          "BridgingIT.DevKit.Infrastructure.FileSystem": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Configuration": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Serilog": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
@@ -1748,6 +1749,13 @@
           "Microsoft.Data.SqlClient": "[7.1.1, )",
           "Microsoft.EntityFrameworkCore.SqlServer": "[10.0.14, )",
           "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "[10.0.14, )"
+        }
+      },
+      "BridgingIT.DevKit.Infrastructure.FileSystem": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )"
         }
       },
       "BridgingIT.DevKit.Presentation": {

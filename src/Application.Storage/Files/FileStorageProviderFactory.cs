@@ -220,15 +220,6 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
         }
 
         /// <summary>
-        /// Configures a local file system storage provider.
-        /// </summary>
-        public FileStorageBuilder UseLocal(string locationName, string rootPath, bool ensureRoot = true, TimeSpan? lockTimeout = null)
-        {
-            this.ProviderFactory = (sp) => new LocalFileStorageProvider(locationName, rootPath, ensureRoot, lockTimeout);
-            return this;
-        }
-
-        /// <summary>
         /// Adds logging behavior to the provider.
         /// </summary>
         public FileStorageBuilder WithLogging(LoggingOptions options = null)

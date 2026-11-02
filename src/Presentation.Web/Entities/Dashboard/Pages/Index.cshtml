@@ -1,0 +1,67 @@
+@using Microsoft.Extensions.DependencyInjection
+@inherits RazorSlice<EntitiesDashboardViewModel>
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Entities" };
+}
+@{
+    var entity = Model.Entity;
+    var editMode = false;
+    var logEntriesPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesPath(HttpContext.RequestServices.GetService<DashboardEndpointsOptions>());
+}
+<section class="entities-view" data-dashboard-view
+         data-entities-path="@Model.Path"
+         data-entities-logs-path="@logEntriesPath"
+         data-entities-entity="@entity?.Key"
+         data-entities-source="@Model.Source"
+         data-entities-mode="@Model.Mode"
+         data-entities-selected-id="@Model.Filter?.Query.Id"
+         data-entities-batch-size="@Model.BatchSize"
+         data-entities-max-bulk="@Model.MaxBulkSelection"
+         data-entities-max-export="@Model.MaxExportRows"
+         data-entities-can-edit="@(Model.CanEdit ? "true" : "false")"
+         data-entities-can-create="@(Model.CanEdit && entity?.CanCreate == true ? "true" : "false")"
+         data-entities-edit="@(editMode ? "true" : "false")">
+    <form id="entities-selector" method="get" action="@Model.Path"></form>
+    @if (Model.CanEdit)
+    {
+        <div class="entities-header">
+            <span class="entities-header-spacer"></span>
+            @if (entity?.CanCreate == true)
+            {
+                <button type="button" class="btn btn-outline-secondary btn-sm entities-edit-only" id="entities-new" data-entities-new title="New record" aria-label="New record"><i class="bi bi-plus-circle" aria-hidden="true"></i></button>
+            }
+            @if (entity is not null)
+            {
+                <button type="button" class="btn btn-outline-danger btn-sm entities-edit-only" id="entities-bulk-delete" data-entities-bulk-delete title="Delete selected records" aria-label="Delete selected records" disabled><i class="bi bi-trash" aria-hidden="true"></i></button>
+            }
+            <button type="button" id="entities-edit-toggle" class="btn btn-outline-secondary btn-sm" data-entities-edit-toggle aria-pressed="false" title="Edit mode" aria-label="Edit mode"><i class="bi bi-pencil-square" aria-hidden="true"></i></button>
+        </div>
+    }
+    @if (!Model.IsEditConfigured)
+    {
+        <p id="entities-readonly-note" class="entities-notice">Editing is not enabled for this dashboard; entities are shown read-only.</p>
+    }
+    @if (Model.Error is not null)
+    {
+        <div class="entities-error" role="alert">@Model.Error</div>
+    }
+    @if (entity is not null)
+    {
+        @(await RenderPartialAsync<Content, EntitiesDashboardViewModel>(Model))
+    }
+    else
+    {
+        <div class="entities-toolbar">
+            <div class="entities-toolbar-row entities-selection-row">
+                @(await RenderPartialAsync<EntitySelector, EntitiesDashboardViewModel>(Model))
+            </div>
+        </div>
+        if (Model.Error is null)
+        {
+            <p class="entities-empty">Select an entity to browse its records.</p>
+        }
+    }
+</section>
+@(await RenderPartialAsync<Style>())
+@(await RenderPartialAsync<Script>())

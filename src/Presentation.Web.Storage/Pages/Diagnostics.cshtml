@@ -1,9 +1,59 @@
 @using RazorSlices
 @inherits RazorSlice<string>
 
-<div id="storage-diagnostics" data-url="@(Model + "/diagnostics/data")">
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 mb-2 border-bottom">
-        <span class="text-muted small">All clients on this node &middot; last 15 minutes &middot; 1-second intervals</span>
+@{
+    var targetLabel = Model.Split('/').Last() switch
+    {
+        "blobs" => "Store",
+        "documents" => "Type",
+        _ => "Provider"
+    };
+    var targetName = targetLabel.ToLowerInvariant();
+}
+
+<div id="storage-diagnostics" data-url="@(Model + "/diagnostics/data")" data-load-url="@(Model + "/diagnostics/load")" data-feature="@Model.Split('/').Last()">
+    <details id="storage-load-panel" class="card mb-2">
+        <summary class="card-header">
+            <span>Throughput test</span>
+            <span id="storage-load-state" class="badge text-bg-secondary float-end" role="status">Idle</span>
+        </summary>
+        <div class="card-body">
+            <form id="storage-load-form" class="row g-2 align-items-end">
+                <div class="col-12 col-md-6 col-xl-3">
+                    <label for="storage-load-target" class="form-label small mb-1">@targetLabel</label>
+                    <select id="storage-load-target" class="form-select form-select-sm" required aria-label="@("Load-test " + targetName)"><option value="">@($"Loading {targetName}s…")</option></select>
+                </div>
+                <div id="storage-load-container-field" class="col-12 col-md-6 col-xl-3" hidden>
+                    <label for="storage-load-container" class="form-label small mb-1">Existing container</label>
+                    <select id="storage-load-container" class="form-select form-select-sm"></select>
+                </div>
+                <div class="col-6 col-md-3 col-xl-1">
+                    <label for="storage-load-size" class="form-label small mb-1">KiB / item</label>
+                    <input id="storage-load-size" class="form-control form-control-sm" type="number" min="4" max="4096" value="64" required>
+                </div>
+                <div class="col-6 col-md-3 col-xl-1">
+                    <label for="storage-load-seconds" class="form-label small mb-1">Seconds</label>
+                    <input id="storage-load-seconds" class="form-control form-control-sm" type="number" min="1" max="60" value="10" required>
+                </div>
+                <div class="col-6 col-md-3 col-xl-1">
+                    <label for="storage-load-workers" class="form-label small mb-1">Workers</label>
+                    <input id="storage-load-workers" class="form-control form-control-sm" type="number" min="1" max="16" value="1" required>
+                </div>
+                <div class="col-6 col-md-3 col-xl-1">
+                    <label for="storage-load-reads" class="form-label small mb-1">Read %</label>
+                    <input id="storage-load-reads" class="form-control form-control-sm" type="number" min="0" max="100" value="50" required>
+                </div>
+                <div class="col-12 col-xl-auto d-flex flex-wrap gap-2">
+                    <button id="storage-load-start" class="btn btn-primary btn-sm" type="submit" disabled>Start test</button>
+                    <button id="storage-load-stop" class="btn btn-outline-secondary btn-sm" type="button" disabled>Stop</button>
+                    <button id="storage-load-cleanup" class="btn btn-outline-warning btn-sm" type="button" hidden>Retry cleanup</button>
+                </div>
+            </form>
+            <div id="storage-load-summary" class="small mt-3" aria-live="polite" hidden></div>
+            <div id="storage-load-error" class="small text-danger mt-1" role="alert" hidden></div>
+        </div>
+    </details>
+    <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 py-2 mb-2 border-bottom">
         <div class="d-flex align-items-center gap-2">
             <span id="storage-metrics-status" class="small text-muted" role="status">Loading metrics</span>
             <select id="storage-metrics-interval" class="form-select form-select-sm" style="width:9rem" aria-label="Diagnostics refresh interval">
@@ -42,19 +92,145 @@
             </div>
         </div>
     </div>
-    <p class="text-muted small mt-2">Speed and latency use recorded operation timings; gaps mean no measurements. Throughput and item rates show completed payload reads and writes. Logical bytes before storage transforms; blob downloads count the declared payload when opened. Collection starts with this dashboard host and resets on restart.</p>
 </div>
 <script>
 (() => {
     const root = document.getElementById('storage-diagnostics');
+    const loadPanel = document.getElementById('storage-load-panel');
+    const loadPanelStorageKey = 'bdk:storage:throughput-test:' + root.dataset.url;
+    try { loadPanel.open = localStorage.getItem(loadPanelStorageKey) === 'true'; } catch { }
+    loadPanel.addEventListener('toggle', () => {
+        try { localStorage.setItem(loadPanelStorageKey, String(loadPanel.open)); } catch { }
+    });
     let latest;
     let disposed = false;
+    let ownsRun = false;
+    let pendingAction = false;
+    const form = document.getElementById('storage-load-form');
+    form.querySelectorAll('input[type="number"]').forEach(input => {
+        const storageKey = 'bdk.storage.diagnostics.load-input:' + root.dataset.url + ':' + input.id;
+        try {
+            const savedValue = localStorage.getItem(storageKey);
+            if (savedValue !== null) {
+                input.value = savedValue;
+                if (!input.validity.valid) input.value = input.defaultValue;
+            }
+        } catch { }
+        input.addEventListener('input', () => {
+            if (!input.validity.valid) return;
+            try { localStorage.setItem(storageKey, input.value); } catch { }
+        });
+    });
+    const target = document.getElementById('storage-load-target');
+    const container = document.getElementById('storage-load-container');
+    const start = document.getElementById('storage-load-start');
+    const stop = document.getElementById('storage-load-stop');
+    const cleanup = document.getElementById('storage-load-cleanup');
+    const errorBox = document.getElementById('storage-load-error');
+    let targetVersion = 0;
+
+    function showError(message) {
+        errorBox.textContent = message || '';
+        errorBox.hidden = !message;
+    }
+
+    function updateRun(run) {
+        if (!run || disposed) return;
+        const active = ['Preparing', 'Running', 'Cleaning'].includes(run.phase);
+        document.getElementById('storage-load-state').textContent = run.phase;
+        form.querySelectorAll('input, select').forEach(input => input.disabled = active || pendingAction);
+        start.disabled = active || pendingAction || !target.value || (root.dataset.feature === 'blobs' && !container.value) || run.cleanupPending > 0;
+        stop.disabled = !['Preparing', 'Running'].includes(run.phase);
+        cleanup.hidden = !(run.cleanupPending > 0);
+        cleanup.disabled = active || pendingAction;
+        if (run.id) {
+            const rate = value => Number(value || 0).toFixed(2);
+            document.getElementById('storage-load-summary').hidden = false;
+            document.getElementById('storage-load-summary').textContent =
+                `Read ${rate(run.readMiBPerSecond)} MiB/s · Write ${rate(run.writeMiBPerSecond)} MiB/s · ${run.readItems || 0} reads / ${run.writeItems || 0} writes · ${Number(run.elapsedSeconds || 0).toFixed(1)} s · ${run.errors || 0} errors` +
+                (run.cleanupPending ? ` · ${run.cleanupPending} items await cleanup` : active ? '' : ' · Temporary items removed');
+            showError([run.error, ...(run.cleanupPending ? run.remainingKeys || [] : [])].filter(Boolean).join(' · '));
+        }
+    }
+
+    async function request(path, body) {
+        const response = await fetch(root.dataset.loadUrl + path, {
+            method: 'POST', headers: { 'Content-Type': 'application/json', 'X-BDK-Storage-Load': '1' },
+            body: body ? JSON.stringify(body) : undefined, cache: 'no-store'
+        });
+        if (!response.ok) {
+            const problem = await response.json().catch(() => ({}));
+            throw new Error(problem.detail || 'Storage test request failed.');
+        }
+        return response.status === 202 ? null : response.json();
+    }
+
+    async function containers() {
+        const version = ++targetVersion;
+        container.replaceChildren();
+        if (root.dataset.feature === 'blobs' && target.value) {
+            const response = await fetch(root.dataset.loadUrl + '/containers?target=' + encodeURIComponent(target.value), { cache: 'no-store' });
+            if (version !== targetVersion || disposed) return;
+            if (!response.ok) throw new Error('Existing containers could not be listed.');
+            const names = await response.json();
+            if (version !== targetVersion || disposed) return;
+            for (const name of names) container.add(new Option(name, name));
+            if (!container.value) showError('Create a container in Explorer before running a load test.');
+        }
+        updateRun(latest?.load || { phase: 'Idle' });
+    }
+
+    target.addEventListener('change', () => { showError(''); containers().catch(error => showError(error.message)); });
+    container.addEventListener('change', () => updateRun(latest?.load || { phase: 'Idle' }));
+    document.getElementById('storage-load-container-field').hidden = root.dataset.feature !== 'blobs';
+    container.required = root.dataset.feature === 'blobs';
+    form.addEventListener('submit', async event => {
+        event.preventDefault();
+        pendingAction = true;
+        ownsRun = crypto.randomUUID().replaceAll('-', '');
+        showError('');
+        updateRun({ phase: 'Preparing' });
+        try {
+            const result = await request('/run', {
+                id: ownsRun, target: target.value, container: container.value,
+                payloadKiB: Number(document.getElementById('storage-load-size').value),
+                seconds: Number(document.getElementById('storage-load-seconds').value),
+                workers: Number(document.getElementById('storage-load-workers').value),
+                readPercent: Number(document.getElementById('storage-load-reads').value)
+            });
+            pendingAction = false;
+            updateRun(result);
+        } catch (error) {
+            pendingAction = false;
+            updateRun(latest?.load || { phase: 'Idle' });
+            showError(error.message);
+        } finally {
+            ownsRun = false;
+            refresher.refresh();
+        }
+    });
+    stop.addEventListener('click', () => request('/stop', { id: ownsRun || latest?.load?.id }).then(() => refresher.refresh()).catch(error => showError(error.message)));
+    cleanup.addEventListener('click', async () => {
+        pendingAction = true;
+        updateRun({ phase: 'Cleaning' });
+        try { updateRun(await request('/cleanup')); }
+        catch (error) { showError(error.message); }
+        finally { pendingAction = false; refresher.refresh(); }
+    });
+
+    fetch(root.dataset.loadUrl + '/targets', { cache: 'no-store' }).then(async response => {
+        if (!response.ok) throw new Error(({ blobs: 'Stores', documents: 'Types', files: 'Providers' }[root.dataset.feature] || 'Providers') + ' could not be loaded.');
+        target.replaceChildren();
+        for (const item of await response.json()) target.add(new Option(item.label, item.value));
+        await containers();
+    }).catch(error => showError(error.message));
     async function draw() {
         if (!latest || disposed) return;
         const plotly = await window.bdkDashboard.loadPlotly();
         if (disposed) return;
         const theme = window.bdkDashboard.getChartTheme();
-        const x = latest.samples.map(sample => sample.at);
+        const samples = latest.samples;
+        const x = samples.map(sample => sample.at);
         for (const [id, fields, unit] of [
             ['storage-speed-chart', ['readSpeedMiBPerSecond', 'writeSpeedMiBPerSecond'], 'MiB/s'],
             ['storage-latency-chart', ['readLatencyMs', 'writeLatencyMs'], 'ms'],
@@ -62,6 +238,7 @@
             ['storage-items-chart', ['readItems', 'writeItems'], 'items/s']
         ]) {
             const layout = window.bdkDashboard.createPlotlyLayout({ showlegend: true, margin: { l: 56, r: 16, t: 16, b: 60 } });
+            layout.width = document.getElementById(id).clientWidth;
             layout.xaxis.type = 'date';
             if (x.length === 0) layout.xaxis.range = [new Date(Date.now() - 15 * 60 * 1000), new Date()];
             layout.xaxis.nticks = window.innerWidth < 576 ? 3 : 6;
@@ -70,7 +247,7 @@
             layout.yaxis.title = unit;
             if (id === 'storage-items-chart') layout.yaxis.tickformat = ',d';
             await plotly.react(document.getElementById(id), fields.map((field, index) => ({
-                x, y: latest.samples.map(sample => sample[field]), type: 'scatter', mode: id === 'storage-speed-chart' || id === 'storage-latency-chart' ? 'lines+markers' : 'lines',
+                x, y: samples.map(sample => sample[field]), type: 'scatter', mode: id === 'storage-speed-chart' || id === 'storage-latency-chart' ? 'lines+markers' : 'lines',
                 marker: { size: 4 },
                 name: index === 0 ? 'Read' : 'Write',
                 line: { color: index === 0 ? theme.primary : theme.secondary, dash: index === 0 ? 'solid' : 'dash' }
@@ -86,6 +263,7 @@
         buildUrl: () => root.dataset.url,
         applyResponse: async (_, response) => {
             latest = JSON.parse(response);
+            updateRun(latest.load);
             await draw();
         }
     });
@@ -93,13 +271,22 @@
         document.getElementById('storage-metrics-status').textContent = 'Chart unavailable';
     });
     document.addEventListener('bdk-dashboard-theme-changed', redraw);
+    let resizeFrame;
+    const resizeObserver = new ResizeObserver(() => {
+        cancelAnimationFrame(resizeFrame);
+        resizeFrame = requestAnimationFrame(redraw);
+    });
+    resizeObserver.observe(root);
     window.addEventListener('pageshow', event => {
         if (event.persisted) refresher.refresh();
     });
     window.addEventListener('pagehide', event => {
+        if (ownsRun) fetch(root.dataset.loadUrl + '/stop', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-BDK-Storage-Load': '1' }, body: JSON.stringify({ id: ownsRun }), keepalive: true }).catch(() => {});
         refresher.cancel();
         if (event.persisted) return;
         disposed = true;
+        resizeObserver.disconnect();
+        cancelAnimationFrame(resizeFrame);
         document.removeEventListener('bdk-dashboard-theme-changed', redraw);
         if (window.Plotly) ['storage-speed-chart', 'storage-latency-chart', 'storage-throughput-chart', 'storage-items-chart'].forEach(id => window.Plotly.purge(id));
     });

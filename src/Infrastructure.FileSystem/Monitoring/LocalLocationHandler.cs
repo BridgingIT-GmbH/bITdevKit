@@ -1,9 +1,9 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Application.Storage;
+namespace BridgingIT.DevKit.Infrastructure.FileSystem;
 
 using System;
 using System.IO;
@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 /// <summary>
 /// Represents local location handler.
 /// </summary>
+/// <example><code>services.AddFileMonitoring(builder => builder.UseLocal("inbound", root));</code></example>
 public class LocalLocationHandler : LocationHandlerBase
 {
     private FileSystemWatcher fileSystemWatcher;
@@ -419,9 +420,20 @@ public class LocalLocationHandler : LocationHandlerBase
 
     private FileEventType? DetermineEventType(FileEvent lastEvent, FileMetadata current, string checksum)
     {
-        if (lastEvent == null) return FileEventType.Added;
-        if (lastEvent.EventType == FileEventType.Deleted) return FileEventType.Added;
-        if (lastEvent.Checksum != checksum || lastEvent.LastModifiedDate != current.LastModified) return FileEventType.Changed;
+        if (lastEvent == null)
+        {
+            return FileEventType.Added;
+        }
+
+        if (lastEvent.EventType == FileEventType.Deleted)
+        {
+            return FileEventType.Added;
+        }
+
+        if (lastEvent.Checksum != checksum || lastEvent.LastModifiedDate != current.LastModified)
+        {
+            return FileEventType.Changed;
+        }
 
         return FileEventType.Unchanged;
     }

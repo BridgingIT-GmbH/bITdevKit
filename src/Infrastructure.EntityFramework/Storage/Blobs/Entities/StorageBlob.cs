@@ -241,7 +241,8 @@ public sealed class StorageBlob
             : JsonSerializer.Serialize(this.Properties, DefaultJsonSerializerOptions.Create());
         set => this.Properties = value.IsNullOrEmpty()
             ? []
-            : JsonSerializer.Deserialize<Dictionary<string, object>>(value, DefaultJsonSerializerOptions.Create());
+            : (JsonSerializer.Deserialize<PropertyBag>(value, DefaultJsonSerializerOptions.Create()) ?? new())
+                .ToDictionary(item => item.Key, item => item.Value, StringComparer.OrdinalIgnoreCase);
     }
 
     /// <summary>

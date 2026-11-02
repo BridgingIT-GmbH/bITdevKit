@@ -3,9 +3,10 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Application.UnitTests.Storage;
+namespace BridgingIT.DevKit.Infrastructure.UnitTests.FileSystem;
 
 using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Infrastructure.FileSystem;
 
 /// <summary>Checks portable local storage paths against physical nested directories.</summary>
 /// <example>dotnet test --filter FullyQualifiedName~LocalFileStoragePathTests</example>
@@ -15,7 +16,7 @@ public class LocalFileStoragePathTests
     /// <param name="filePath">The caller's relative file path.</param>
     /// <param name="trailingSeparator">Whether the configured root ends in a native separator.</param>
     /// <example>await test.NestedPaths_UseNativeDirectoriesAndCanonicalRelativeListings("nested/file.txt", false);</example>
-    [Theory]
+    [LocalFileSystemTheory]
     [InlineData("nested/file.txt", false)]
     [InlineData("nested\\file.txt", false)]
     [InlineData("nested/file.txt", true)]

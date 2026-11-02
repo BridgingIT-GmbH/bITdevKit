@@ -383,8 +383,8 @@ public static CustomerModel ToModel(this Customer customer)
 - [Mapster Documentation](https://github.com/MapsterMapper/Mapster)
 - [Mapster vs AutoMapper Performance](https://github.com/MapsterMapper/Mapster/wiki/Benchmark)
 - [bITdevKit Mapping Extensions](https://github.com/BridgingIT-GmbH/bITdevKit/tree/main/docs)
-- Project Documentation: `README.md` (Presentation Layer section)
-- Module Documentation: `src/Modules/CoreModule/CoreModule-README.md` (Mapping)
+- [Presentation layer](../site/architecture.md#presentation)
+- [Common Mapping](../common-mapping.md)
 
 ## Notes
 

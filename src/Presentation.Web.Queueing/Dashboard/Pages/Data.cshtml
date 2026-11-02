@@ -388,6 +388,12 @@ else
             return "-";
         }
 
+        var assemblySeparator = value.IndexOf(',', value.LastIndexOf(']') + 1);
+        if (assemblySeparator >= 0)
+        {
+            value = value[..assemblySeparator].Trim();
+        }
+
         return Shortener.Apply(value, new ShorteningOptions
         {
             MaximumLength = maxLength,

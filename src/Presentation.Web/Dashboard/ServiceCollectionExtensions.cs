@@ -62,6 +62,7 @@ public static partial class ServiceCollectionExtensions
         //     });
         // });
 
+        services.AddEntitiesDashboardServices();
         services.AddDashboardPlugins(options);
 
         return services;

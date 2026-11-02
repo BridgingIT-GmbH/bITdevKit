@@ -17,6 +17,7 @@ on:
       - 'docs/introduction-ddd-guide.md'
       - 'docs/common-*.md'
       - 'docs/features-*.md'
+      - 'docs/storage-*.md'
       - 'docs/testing-*.md'
       - 'src/**'
       - '.github/workflows/pages.yml'

@@ -10,6 +10,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Infrastructure.FileSystem;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

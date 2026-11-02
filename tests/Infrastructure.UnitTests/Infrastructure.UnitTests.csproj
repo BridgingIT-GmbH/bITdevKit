@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <Using Include="BridgingIT.DevKit.Common" />
+    <Compile Include="../Application.IntegrationTests/Storage/Files/FileStorageTestsBase.cs" Link="FileSystem/FileStorageTestsBase.cs" />
+    <Compile Include="../Application.IntegrationTests/Storage/Files/RecordingProgress.cs" Link="FileSystem/RecordingProgress.cs" />
     <Using Include="Bogus" />
     <Using Include="Bogus.DataSets" />
     <Using Include="NSubstitute" />
@@ -57,6 +59,11 @@
 
   <ItemGroup>
     <Compile Include="..\Application.UnitTests\Storage\Blobs\BlobStoreProviderContractTests.cs" Link="EntityFramework\Storage\Blobs\Shared\BlobStoreProviderContractTests.cs" />
+    <Compile Include="../Infrastructure.FileSystem.Probes/QualificationConfiguration.cs" Link="FileSystem/Probes/QualificationConfiguration.cs" />
+    <Compile Include="../Infrastructure.FileSystem.Probes/ProbeResult.cs" Link="FileSystem/Probes/ProbeResult.cs" />
+    <Compile Include="../Infrastructure.FileSystem.Probes/ProbeWorkspace.cs" Link="FileSystem/Probes/ProbeWorkspace.cs" />
+    <Compile Include="../Infrastructure.FileSystem.Probes/RemoteFileSystemProbe.cs" Link="FileSystem/Probes/RemoteFileSystemProbe.cs" />
+    <ProjectReference Include="../../src/Infrastructure.FileSystem/Infrastructure.FileSystem.csproj" />
   </ItemGroup>
 
 </Project>

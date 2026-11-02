@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "profiles": [
+    {
+      "id": "windows-smb",
+      "hostOs": "Windows",
+      "accessKind": "Smb",
+      "scratchRoot": "\\\\qualification-server\\disposable\\bdk-probes",
+      "clientVersion": "REPLACE with Windows SMB client build",
+      "serverVersion": "REPLACE with actual share server build",
+      "protocolVersion": "SMB 3.x REPLACE with negotiated dialect",
+      "mountSettings": "REPLACE with non-secret cache and durable-handle settings",
+      "referenceHostId": "windows-client-a",
+      "peerHostId": "linux-client-b",
+      "environment": {
+        "hardware": "REPLACE",
+        "runtime": "REPLACE",
+        "storage": "REPLACE",
+        "network": "REPLACE",
+        "sharedProfileId": "smb-qualification"
+      }
+    },
+    {
+      "id": "linux-smb",
+      "hostOs": "Linux",
+      "accessKind": "Smb",
+      "scratchRoot": "/mnt/qualification-smb/disposable/bdk-probes",
+      "clientVersion": "REPLACE with kernel and cifs-utils versions",
+      "serverVersion": "REPLACE with actual share server build",
+      "protocolVersion": "SMB 3.x REPLACE with negotiated dialect",
+      "mountSettings": "REPLACE with non-secret mount/cache options",
+      "referenceHostId": "windows-client-a",
+      "peerHostId": "linux-client-b",
+      "environment": {
+        "hardware": "REPLACE",
+        "runtime": "REPLACE",
+        "storage": "REPLACE",
+        "network": "REPLACE",
+        "sharedProfileId": "smb-qualification"
+      }
+    },
+    {
+      "id": "linux-nfs",
+      "hostOs": "Linux",
+      "accessKind": "Nfs",
+      "scratchRoot": "/mnt/qualification-nfs/disposable/bdk-probes",
+      "clientVersion": "REPLACE with kernel and nfs-utils versions",
+      "serverVersion": "REPLACE with actual NFS server build",
+      "protocolVersion": "NFSv4.1+ REPLACE with actual negotiated version",
+      "mountSettings": "REPLACE with non-secret mount/cache/lease options",
+      "referenceHostId": "linux-client-a",
+      "peerHostId": "linux-client-b",
+      "environment": {
+        "hardware": "REPLACE",
+        "runtime": "REPLACE",
+        "storage": "REPLACE",
+        "network": "REPLACE",
+        "sharedProfileId": "nfs-qualification"
+      }
+    }
+  ]
+}

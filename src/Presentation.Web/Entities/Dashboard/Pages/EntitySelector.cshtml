@@ -1,0 +1,30 @@
+@inherits RazorSlice<EntitiesDashboardViewModel>
+@{
+    var entity = Model.Entity;
+}
+<div class="entities-selection-entity">
+    <label for="entities-entity" class="form-label">Entity</label>
+    <select id="entities-entity" name="entity" form="entities-selector" class="form-select form-select-sm" data-entities-entity-select title="@entity?.Key">
+        @if (entity is null)
+        {
+            <option value="" selected>Select an entity…</option>
+        }
+        @foreach (var item in Model.Entities)
+        {
+            <option value="@item.Key" title="@item.Key" selected="@(item.Key == entity?.Key)">@item.Name (@string.Join(", ", item.Sources.Select(s => s.SourceName)))</option>
+        }
+    </select>
+</div>
+@if (entity is not null && entity.Sources.Count > 1)
+{
+    <div>
+        <label for="entities-source" class="form-label">Source</label>
+        <select id="entities-source" name="source" form="entities-selector" class="form-select form-select-sm" data-entities-source-select>
+            @foreach (var source in entity.Sources)
+            {
+                <option value="@source.SourceName" selected="@(string.Equals(source.SourceName, Model.Source, StringComparison.OrdinalIgnoreCase))">@source.SourceName</option>
+            }
+        </select>
+    </div>
+}
+<noscript><button type="submit" form="entities-selector" class="btn btn-outline-secondary btn-sm">Go</button></noscript>

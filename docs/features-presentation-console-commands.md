@@ -375,7 +375,7 @@ Refactor repeated metrics/data gathering into internal static helper classes (si
 | Use tables over plain text | Structured output improves readability and scripting parse potential. |
 | Avoid blocking long tasks | For lengthy operations, print progress or consider asynchronous job dispatch. |
 | Reuse DI services | Resolve repositories, evaluators, or runtime stats through scoped provider inside `ExecuteAsync`. |
-| Document examples | Provide inline comments or README excerpts for complex commands. |
+| Document examples | Provide inline comments or examples from `docs` for complex commands. |
 | Keep history manageable | Offer truncation defaults (`--max`) to avoid flooding output. |
 | Fail fast | Stop on binding errors before executing heavy logic. |
 

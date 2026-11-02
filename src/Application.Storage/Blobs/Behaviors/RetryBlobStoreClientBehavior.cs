@@ -161,7 +161,8 @@ public sealed class RetryBlobStoreClientBehavior(
 
     private static bool IsTransient(IResult result)
     {
-        if (result.HasError<BlobStoreValidationError>() ||
+        if (result.HasError<BlobStoreIndeterminateOperationError>() ||
+            result.HasError<BlobStoreValidationError>() ||
             result.HasError<BlobStoreNotFoundError>() ||
             result.HasError<BlobStoreConflictError>() ||
             result.HasError<BlobStoreLeaseError>() ||
@@ -178,7 +179,9 @@ public sealed class RetryBlobStoreClientBehavior(
             return false;
         }
 
-        return result.HasError<BlobStoreProviderError>() || result.HasError<BlobStoreTimeoutError>();
+        return result.HasError<BlobStoreProviderError>()
+            || result.HasError<BlobStoreTimeoutError>()
+            || (result.Errors.Any() && result.Errors.All(error => error is ITransientStorageError { IsTransient: true }));
     }
 
     private static long? GetUploadStartPosition(BlobStoreOperationContext context)

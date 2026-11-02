@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Infrastructure.FileSystem;
 using BridgingIT.DevKit.Common;
 
 /// <summary>

@@ -45,6 +45,8 @@ Choose an integration by the data shape and delivery behavior your application n
 - [Messaging](reference/features-messaging.md) delivers messages to subscribers. [Queueing](reference/features-queueing.md) assigns work to one consumer.
 - [Blob Storage](reference/features-storage-blobs.md) stores named binary content. [Document Storage](reference/features-storage-documents.md) stores documents and metadata.
 - [FileStorage](reference/features-storage-files.md) provides file-oriented providers and operations.
+- [Filesystem storage providers](reference/storage-filesystem-providers.md) covers local storage, durability, recovery, and share qualification.
+- [Filesystem deployment qualification](reference/storage-filesystem-qualification.md) tracks the remaining environment and performance checks separately from implementation completion.
 - [Jobs](reference/features-jobs.md) and [Job Scheduling](reference/features-jobscheduling.md) run background work now or on a schedule.
 - [Modules](reference/features-modules.md) composes feature registrations and keeps module boundaries explicit.
 

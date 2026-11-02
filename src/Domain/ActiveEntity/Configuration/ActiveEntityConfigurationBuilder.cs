@@ -38,6 +38,9 @@ public class ActiveEntityConfigurationBuilder(IServiceCollection services)
     /// <typeparam name="TId">The type of the entity's identifier.</typeparam>
     /// <param name="configure">Optional configuration action for the entity.</param>
     /// <returns>The entity configurator for fluent chaining.</returns>
+    /// <remarks>
+    /// The entity type is recorded in the <see cref="ActiveEntityRegistry"/> so tooling such as the Entities dashboard can discover it.
+    /// </remarks>
     /// <example>
     /// <code>
     /// builder.For&lt;Customer, CustomerId&gt;(cfg => cfg

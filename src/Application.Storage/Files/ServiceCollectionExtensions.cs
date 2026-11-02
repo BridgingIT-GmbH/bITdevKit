@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -14,7 +14,7 @@ public static partial class ServiceCollectionExtensions
 {
     /// <summary>
     /// Registers the FileStorageFactory and its dependencies with the IServiceCollection, supporting multiple providers with configurable lifetimes and behaviors.
-    /// This method enables the creation and management of multiple IFileStorageProvider instances, such as InMemoryFileStorageProvider or LocalFileStorageProvider,
+    /// This method enables the creation and management of multiple IFileStorageProvider instances, such as InMemoryFileStorageProvider and optional infrastructure providers,
     /// with optional behaviors like logging, caching, retry, or custom behaviors. Providers can be registered with specific names, lifetimes (Scoped, Singleton, Transient),
     /// and behaviors to suit different use cases, such as in-memory testing, local filesystem storage, or cloud storage integrations.
     ///

@@ -76,6 +76,59 @@ public sealed class DashboardPageFilteringTests
         pages.Select(page => page.Key).ShouldBe(["core-overview"]);
     }
 
+    [Fact]
+    public void GetDashboardPages_WithEntitiesInDisabledPageKeys_HidesEntitiesPage()
+    {
+        // Arrange
+        var options = new DashboardEndpointsOptionsBuilder()
+            .DisablePages("entities")
+            .Build();
+        var services = new ServiceCollection();
+        services.AddSingleton(options);
+        services.AddSingleton<IDashboardPageProvider>(new TestEntitiesPageProvider());
+
+        var context = new DefaultHttpContext
+        {
+            RequestServices = services.BuildServiceProvider()
+        };
+
+        // Act
+        var pages = context.GetDashboardPages();
+
+        // Assert
+        pages.Select(page => page.Key).ShouldBe(["health"]);
+    }
+
+    [Fact]
+    public void GetDashboardPages_WithoutDisabledEntitiesKey_ShowsEntitiesPage()
+    {
+        // Arrange
+        var options = new DashboardEndpointsOptionsBuilder().Build();
+        var services = new ServiceCollection();
+        services.AddSingleton(options);
+        services.AddSingleton<IDashboardPageProvider>(new TestEntitiesPageProvider());
+
+        var context = new DefaultHttpContext
+        {
+            RequestServices = services.BuildServiceProvider()
+        };
+
+        // Act
+        var pages = context.GetDashboardPages();
+
+        // Assert
+        pages.Select(page => page.Key).ShouldBe(["health", "entities"]);
+    }
+
+    private sealed class TestEntitiesPageProvider : IDashboardPageProvider
+    {
+        public IEnumerable<DashboardPage> GetPages(HttpContext httpContext)
+        {
+            yield return new DashboardPage("health", "Health", "heart-pulse", "/_bdk/dashboard/health");
+            yield return new DashboardPage("entities", "Entities", "table", "/_bdk/dashboard/entities");
+        }
+    }
+
     private sealed class TestDashboardPageProvider : IDashboardPageProvider
     {
         public IEnumerable<DashboardPage> GetPages(HttpContext httpContext)

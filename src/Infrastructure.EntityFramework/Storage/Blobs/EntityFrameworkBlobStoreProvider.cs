@@ -1265,11 +1265,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
             return new PropertyBag();
         }
 
-        var properties = JsonSerializer.Deserialize<Dictionary<string, object>>(
-            propertiesJson,
-            DefaultJsonSerializerOptions.Create());
-
-        return ToPropertyBag(properties);
+        return JsonSerializer.Deserialize<PropertyBag>(propertiesJson, DefaultJsonSerializerOptions.Create()) ?? new();
     }
 
     private static BlobInfo ToInfo(StorageBlob blob) => new()

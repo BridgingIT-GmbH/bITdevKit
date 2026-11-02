@@ -202,7 +202,8 @@ public sealed class MetricsFileStorageBehavior(
 
     private void Record(string operation, long started, IResult result, long bytes, long itemCount)
     {
-        this.AddHistogram("filestorage_operation_duration", Stopwatch.GetElapsedTime(started).TotalMilliseconds, operation);
+        var elapsed = Stopwatch.GetElapsedTime(started);
+        this.AddHistogram("filestorage_operation_duration", elapsed.TotalMilliseconds, operation);
 
         if (result.IsFailure)
         {
@@ -212,6 +213,16 @@ public sealed class MetricsFileStorageBehavior(
         if (bytes > 0)
         {
             this.AddCounter("filestorage_bytes", bytes, operation);
+
+            if (result.IsSuccess && (operation is "read" or "write") && elapsed.TotalSeconds > 0)
+            {
+                metricsService.RecordHistogram("filestorage_bytes_per_second", bytes / elapsed.TotalSeconds, "bytes/s", this.Tags(operation));
+            }
+        }
+
+        if (result.IsSuccess && (operation is "read" or "write"))
+        {
+            itemCount = 1;
         }
 
         if (itemCount > 0)

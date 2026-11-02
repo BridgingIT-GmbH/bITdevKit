@@ -1,12 +1,11 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Application.Storage;
+namespace BridgingIT.DevKit.Infrastructure.FileSystem;
 
 using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -18,10 +17,15 @@ using BridgingIT.DevKit.Common;
 /// <summary>
 /// A thread-safe local file system implementation of IFileStorageProvider for file operations on disk.
 /// </summary>
-public class LocalFileStorageProvider(string locationName, string rootPath, bool ensureRoot = true, TimeSpan? lockTimeout = null) : BaseFileStorageProvider(locationName), IDisposable
+/// <example><code>using var provider = new LocalFileStorageProvider("reports", root);</code></example>
+public class LocalFileStorageProvider(
+    string locationName,
+    string rootPath,
+    bool ensureRoot = true,
+    TimeSpan? lockTimeout = null) : BaseFileStorageProvider(locationName), IDisposable
 {
     private readonly TimeSpan lockTimeout = lockTimeout ?? TimeSpan.FromSeconds(30);
-    private readonly ConcurrentDictionary<string, SemaphoreSlim> fileLocks = [];
+    private readonly FileStorageLockPool fileLocks = new();
     private readonly Lock initializateLock = new();
     private bool disposed;
     private bool initialized;
@@ -29,7 +33,8 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
     /// <summary>
     /// Stores the root path.
     /// </summary>
-    public string RootPath { get { return Path.GetFullPath(rootPath); } }
+    /// <example><code>var root = provider.RootPath;</code></example>
+    public string RootPath => Path.GetFullPath(rootPath);
 
     /// <inheritdoc/>
     public override string Description => this.RootPath;
@@ -80,11 +85,11 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
 
         var fullPath = this.GetFullPath(path);
-        var semaphore = this.GetSemaphore(fullPath);
+        var fileLock = this.fileLocks.Rent(fullPath);
 
         try
         {
-            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await fileLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for file access"))
@@ -107,7 +112,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
         finally
         {
-            this.ReleaseSemaphore(fullPath, semaphore);
+            fileLock.Dispose();
         }
     }
 
@@ -129,11 +134,11 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
 
         var fullPath = this.GetFullPath(path);
-        var semaphore = this.GetSemaphore(fullPath);
+        var fileLock = this.fileLocks.Rent(fullPath);
 
         try
         {
-            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await fileLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result<Stream>.Failure()
                     .WithError(new TimeoutError("Timeout waiting for file access"))
@@ -154,7 +159,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
                 var fileSize = fileInfo.Length;
                 var (bufferSize, _, _) = this.CalculateBufferSize(fileSize);
 
-                var fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, useAsync: true);
+                var fileStream = FileSystemFileOperations.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete, bufferSize, options: FileOptions.Asynchronous);
                 this.ReportProgress(progress, path, fileSize, 1);
 
                 return Result<Stream>.Success(fileStream)
@@ -163,6 +168,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result<Stream>.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
@@ -175,7 +181,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
         finally
         {
-            this.ReleaseSemaphore(fullPath, semaphore);
+            fileLock.Dispose();
         }
     }
 
@@ -197,11 +203,11 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
 
         var fullPath = this.GetFullPath(path);
-        var semaphore = this.GetSemaphore(fullPath);
+        var fileLock = this.fileLocks.Rent(fullPath);
 
         try
         {
-            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await fileLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for file access"))
@@ -221,7 +227,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
                 var estimatedSize = content.CanSeek ? content.Length : ByteSize.Megabytes(1); // Default to 1 MB if unknown
                 var (bufferSize, minBufferSize, maxBufferSize) = this.CalculateBufferSize(estimatedSize);
 
-                await using var fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, useAsync: true);
+                await using var fs = FileSystemFileOperations.Open(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, options: FileOptions.Asynchronous);
                 var buffer = new byte[bufferSize];
                 long bytesProcessed = 0;
                 int read;
@@ -262,12 +268,14 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
             catch (IOException ex)
             {
                 return Result.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemError("Disk or file system error", path, ex))
                     .WithMessage($"Failed to write file at '{path}'");
             }
@@ -280,7 +288,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
         finally
         {
-            this.ReleaseSemaphore(fullPath, semaphore);
+            fileLock.Dispose();
         }
     }
 
@@ -302,11 +310,11 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
 
         var fullPath = this.GetFullPath(path);
-        var semaphore = this.GetSemaphore(fullPath);
+        var fileLock = this.fileLocks.Rent(fullPath);
 
         try
         {
-            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await fileLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result<Stream>.Failure()
                     .WithError(new TimeoutError("Timeout waiting for file access"))
@@ -321,13 +329,13 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             }
 
             var filePath = useTemporaryWrite ? this.GetTemporaryFilePath(fullPath) : fullPath;
-            var stream = new FileStream(
+            var stream = FileSystemFileOperations.Open(
                 filePath,
                 FileMode.Create,
                 FileAccess.Write,
                 useTemporaryWrite ? FileShare.None : FileShare.Read,
                 bufferSize: 81920,
-                useAsync: true);
+                options: FileOptions.Asynchronous);
 
             return Result<Stream>.Success(new OpenWriteFileStream(
                 stream,
@@ -336,7 +344,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
                 onSuccessAsync: useTemporaryWrite
                     ? () =>
                     {
-                        File.Move(filePath, fullPath, overwrite: true);
+                        FileSystemDurability.Move(filePath, fullPath, overwrite: true, durable: false);
                         return Task.CompletedTask;
                     }
             : null,
@@ -347,35 +355,37 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
                         File.Delete(filePath);
                     }
 
-                    this.ReleaseSemaphore(fullPath, semaphore);
+                    fileLock.Dispose();
                     return Task.CompletedTask;
                 }))
                 .WithMessage($"Opened file for writing at '{path}'");
         }
         catch (OperationCanceledException)
         {
-            this.ReleaseSemaphore(fullPath, semaphore);
+            fileLock.Dispose();
             return Result<Stream>.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled during open for write"))
                 .WithMessage($"Cancelled opening file for writing at '{path}'");
         }
         catch (UnauthorizedAccessException ex)
         {
-            this.ReleaseSemaphore(fullPath, semaphore);
+            fileLock.Dispose();
             return Result<Stream>.Failure()
+                .WithError(FileSystemResults.FromException(ex))
                 .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (IOException ex)
         {
-            this.ReleaseSemaphore(fullPath, semaphore);
+            fileLock.Dispose();
             return Result<Stream>.Failure()
+                .WithError(FileSystemResults.FromException(ex))
                 .WithError(new FileSystemError("Disk or file system error", path, ex))
                 .WithMessage($"Failed to open file for writing at '{path}'");
         }
         catch (Exception ex)
         {
-            this.ReleaseSemaphore(fullPath, semaphore);
+            fileLock.Dispose();
             return Result<Stream>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage($"Unexpected error opening file for writing at '{path}'");
@@ -400,11 +410,11 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
 
         var fullPath = this.GetFullPath(path);
-        var semaphore = this.GetSemaphore(fullPath);
+        var fileLock = this.fileLocks.Rent(fullPath);
 
         try
         {
-            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await fileLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for file access"))
@@ -429,6 +439,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
@@ -441,7 +452,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
         finally
         {
-            this.ReleaseSemaphore(fullPath, semaphore);
+            fileLock.Dispose();
         }
     }
 
@@ -463,11 +474,11 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
 
         var fullPath = this.GetFullPath(path);
-        var semaphore = this.GetSemaphore(fullPath);
+        var fileLock = this.fileLocks.Rent(fullPath);
 
         try
         {
-            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await fileLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result<string>.Failure()
                     .WithError(new TimeoutError("Timeout waiting for file access"))
@@ -485,7 +496,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             try
             {
                 using var sha256 = SHA256.Create();
-                await using var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
+                await using var stream = FileSystemFileOperations.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous);
                 var hash = Convert.ToBase64String(await sha256.ComputeHashAsync(stream, cancellationToken));
                 return Result<string>.Success(hash)
                     .WithMessage($"Computed checksum for file at '{path}'");
@@ -493,6 +504,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result<string>.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
@@ -505,7 +517,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
         finally
         {
-            this.ReleaseSemaphore(fullPath, semaphore);
+            fileLock.Dispose();
         }
     }
 
@@ -527,11 +539,11 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
 
         var fullPath = this.GetFullPath(path);
-        var semaphore = this.GetSemaphore(fullPath);
+        var fileLock = this.fileLocks.Rent(fullPath);
 
         try
         {
-            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await fileLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result<FileMetadata>.Failure()
                     .WithError(new TimeoutError("Timeout waiting for file access"))
@@ -561,6 +573,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result<FileMetadata>.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
@@ -573,7 +586,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
         finally
         {
-            this.ReleaseSemaphore(fullPath, semaphore);
+            fileLock.Dispose();
         }
     }
 
@@ -602,11 +615,11 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
 
         var fullPath = this.GetFullPath(path);
-        var semaphore = this.GetSemaphore(fullPath);
+        var fileLock = this.fileLocks.Rent(fullPath);
 
         try
         {
-            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await fileLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for file access"))
@@ -634,6 +647,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
@@ -646,7 +660,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
         finally
         {
-            this.ReleaseSemaphore(fullPath, semaphore);
+            fileLock.Dispose();
         }
     }
 
@@ -709,6 +723,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         catch (UnauthorizedAccessException ex)
         {
             return Result<FileMetadata>.Failure()
+                .WithError(FileSystemResults.FromException(ex))
                 .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'");
         }
@@ -739,7 +754,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
 
         var fullPath = this.GetFullPath(path);
-        // Note: Directory listing doesn't lock individual files, so no semaphore is used here
+        // Note: Directory listing doesn't lock individual files, so no fileLock is used here
         try
         {
             this.Initialize();
@@ -766,6 +781,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result<(IEnumerable<string> Files, string NextContinuationToken)>.Failure()
+                .WithError(FileSystemResults.FromException(ex))
                 .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Failed to list files in '{path}' due to permissions"));
         }
@@ -796,19 +812,19 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
 
         var fullSource = this.GetFullPath(path);
         var fullDest = this.GetFullPath(destinationPath);
-        var sourceSemaphore = this.GetSemaphore(fullSource);
-        var destSemaphore = this.GetSemaphore(fullDest);
+        var sourceLock = this.fileLocks.Rent(fullSource);
+        var destinationLock = this.fileLocks.Rent(fullDest);
 
         try
         {
-            if (!await sourceSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await sourceLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for source file access"))
                     .WithMessage($"Failed to acquire lock for copying file from '{path}'");
             }
 
-            if (!await destSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await destinationLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for destination file access"))
@@ -840,12 +856,14 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
             }
             catch (IOException ex)
             {
                 return Result.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemError("Disk or file system error", path, ex))
                     .WithMessage($"Failed to copy file from '{path}' to '{destinationPath}'");
             }
@@ -858,8 +876,8 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
         finally
         {
-            this.ReleaseSemaphore(fullSource, sourceSemaphore);
-            this.ReleaseSemaphore(fullDest, destSemaphore);
+            sourceLock.Dispose();
+            destinationLock.Dispose();
         }
     }
 
@@ -882,19 +900,19 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
 
         var fullOld = this.GetFullPath(path);
         var fullNew = this.GetFullPath(destinationPath);
-        var oldSemaphore = this.GetSemaphore(fullOld);
-        var newSemaphore = this.GetSemaphore(fullNew);
+        var oldLock = this.fileLocks.Rent(fullOld);
+        var newLock = this.fileLocks.Rent(fullNew);
 
         try
         {
-            if (!await oldSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await oldLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for old file access"))
                     .WithMessage($"Failed to acquire lock for renaming file from '{path}'");
             }
 
-            if (!await newSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await newLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for new file access"))
@@ -926,12 +944,14 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
             }
             catch (IOException ex)
             {
                 return Result.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemError("Disk or file system error", path, ex))
                     .WithMessage($"Failed to rename file from '{path}' to '{destinationPath}'");
             }
@@ -944,8 +964,8 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
         finally
         {
-            this.ReleaseSemaphore(fullOld, oldSemaphore);
-            this.ReleaseSemaphore(fullNew, newSemaphore);
+            oldLock.Dispose();
+            newLock.Dispose();
         }
     }
 
@@ -968,19 +988,19 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
 
         var fullOld = this.GetFullPath(path);
         var fullNew = this.GetFullPath(destinationPath);
-        var oldSemaphore = this.GetSemaphore(fullOld);
-        var newSemaphore = this.GetSemaphore(fullNew);
+        var oldLock = this.fileLocks.Rent(fullOld);
+        var newLock = this.fileLocks.Rent(fullNew);
 
         try
         {
-            if (!await oldSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await oldLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for old directory access"))
                     .WithMessage($"Failed to acquire lock for renaming directory from '{path}'");
             }
 
-            if (!await newSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await newLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for new directory access"))
@@ -1010,12 +1030,14 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for directory at '{path}' or '{destinationPath}'");
             }
             catch (IOException ex)
             {
                 return Result.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemError("Disk or file system error", path, ex))
                     .WithMessage($"Failed to rename directory from '{path}' to '{destinationPath}'");
             }
@@ -1028,8 +1050,8 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
         finally
         {
-            this.ReleaseSemaphore(fullOld, oldSemaphore);
-            this.ReleaseSemaphore(fullNew, newSemaphore);
+            oldLock.Dispose();
+            newLock.Dispose();
         }
     }
 
@@ -1052,19 +1074,19 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
 
         var fullSource = this.GetFullPath(path);
         var fullDest = this.GetFullPath(destinationPath);
-        var sourceSemaphore = this.GetSemaphore(fullSource);
-        var destSemaphore = this.GetSemaphore(fullDest);
+        var sourceLock = this.fileLocks.Rent(fullSource);
+        var destinationLock = this.fileLocks.Rent(fullDest);
 
         try
         {
-            if (!await sourceSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await sourceLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for source file access"))
                     .WithMessage($"Failed to acquire lock for moving file from '{path}'");
             }
 
-            if (!await destSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            if (!await destinationLock.TryAcquireAsync(this.lockTimeout, cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for destination file access"))
@@ -1096,12 +1118,14 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
             }
             catch (IOException ex)
             {
                 return Result.Failure()
+                    .WithError(FileSystemResults.FromException(ex))
                     .WithError(new FileSystemError("Disk or file system error", path, ex))
                     .WithMessage($"Failed to move file from '{path}' to '{destinationPath}'");
             }
@@ -1114,8 +1138,8 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
         finally
         {
-            this.ReleaseSemaphore(fullSource, sourceSemaphore);
-            this.ReleaseSemaphore(fullDest, destSemaphore);
+            sourceLock.Dispose();
+            destinationLock.Dispose();
         }
     }
 
@@ -1194,12 +1218,14 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
+                .WithError(FileSystemResults.FromException(ex))
                 .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for path '{path}'"));
         }
         catch (IOException ex)
         {
             return Task.FromResult(Result.Failure()
+                .WithError(FileSystemResults.FromException(ex))
                 .WithError(new FileSystemError("Disk or file system error", path, ex))
                 .WithMessage($"Failed to create directory at '{path}'"));
         }
@@ -1247,12 +1273,14 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
+                .WithError(FileSystemResults.FromException(ex))
                 .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for path '{path}'"));
         }
         catch (IOException ex)
         {
             return Task.FromResult(Result.Failure()
+                .WithError(FileSystemResults.FromException(ex))
                 .WithError(new FileSystemError("Directory not empty or disk error", path, ex))
                 .WithMessage($"Failed to delete directory at '{path}'"));
         }
@@ -1303,6 +1331,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result<IEnumerable<string>>.Failure()
+                .WithError(FileSystemResults.FromException(ex))
                 .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Failed to list directories in '{path}' due to permissions"));
         }
@@ -1359,6 +1388,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         catch (UnauthorizedAccessException ex)
         {
             return Result.Failure()
+                .WithError(FileSystemResults.FromException(ex))
                 .WithError(new FileSystemPermissionError("Access denied", this.RootPath, ex))
                 .WithMessage($"Permission denied for local storage at '{this.LocationName}'");
         }
@@ -1370,25 +1400,11 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
     }
 
-    // Helper methods for semaphore management
-    private SemaphoreSlim GetSemaphore(string path)
-    {
-        return this.fileLocks.GetOrAdd(path, _ => new SemaphoreSlim(1, 1));
-    }
-
-    private void ReleaseSemaphore(string path, SemaphoreSlim semaphore)
-    {
-        semaphore.Release();
-        if (semaphore.CurrentCount == 1)
-        {
-            this.fileLocks.TryRemove(path, out _);
-        }
-    }
-
     // Dispose pattern to clean up resources
     /// <summary>
     /// Executes the dispose operation.
     /// </summary>
+    /// <example><code>provider.Dispose();</code></example>
     public void Dispose()
     {
         this.Dispose(true);
@@ -1408,12 +1424,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
 
         if (disposing)
         {
-            foreach (var semaphore in this.fileLocks.Values)
-            {
-                semaphore.Dispose();
-            }
-
-            this.fileLocks.Clear();
+            this.fileLocks.Dispose();
         }
 
         this.disposed = true;
@@ -1469,10 +1480,15 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         return (currentBufferSize, false);
     }
 
-    private string GetFullPath(string path) => Path.Combine(this.RootPath,
-        path.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar).TrimStart(Path.DirectorySeparatorChar));
+    private string GetFullPath(string path)
+    {
+        return FileSystemPaths.Combine(this.RootPath, path);
+    }
 
-    private string GetRelativePath(string fullPath) => Path.GetRelativePath(this.RootPath, fullPath).Replace('\\', '/');
+    private string GetRelativePath(string fullPath)
+    {
+        return FileSystemPaths.Relative(this.RootPath, fullPath);
+    }
 
     private string GetTemporaryFilePath(string fullPath)
     {

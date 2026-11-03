@@ -47,6 +47,95 @@ There is no AI-agent detection and no extra permission. A linked worktree is the
 - Design-time EF Core support in the DevKit SQL Server, PostgreSQL and SQLite factories.
 - `bdk dev` commands for status, verified stop, reset, release and prune.
 
+## Architecture
+
+### Separate checkouts and runtime resources
+
+Git gives each worktree its own source files and checked-out branch. The worktrees share Git history and repository metadata. DevKit adds runtime isolation when you start a supported host in an eligible linked worktree.
+
+This example runs the fictional ForecastHub host in an ordinary checkout and two linked worktrees. It uses the default port policy, explicit HTTP and HTTPS offsets `10/11`, and slots `1` and `2`.
+
+```mermaid
+flowchart TB
+    git["Shared Git common directory<br/>History and repository metadata"]
+    registry["Shared DevKit registry<br/>bdk-dev/instances.json<br/>Slot assignments and application offsets"]
+    git --- registry
+
+    subgraph ordinary["Ordinary checkout: /src/forecasthub"]
+        main["Source files<br/>Branch: main"]
+        baseline["ForecastHub process<br/>Configured ports: 5000 / 5001<br/>Configured cookies and file paths"]
+        main --> baseline
+    end
+
+    subgraph first["Linked worktree: /src/forecasthub-wt/payments"]
+        payments["Source files<br/>Branch: feature/payments"]
+        w01["ForecastHub process: slot 1<br/>HTTP / HTTPS: 5110 / 5111<br/>Cookie suffix: .forecasthub.w01<br/>Local state: .dev/state/forecasthub/"]
+        payments --> w01
+    end
+
+    subgraph second["Linked worktree: /src/forecasthub-wt/reports"]
+        reports["Source files<br/>Branch: feature/reports"]
+        w02["ForecastHub process: slot 2<br/>HTTP / HTTPS: 5210 / 5211<br/>Cookie suffix: .forecasthub.w02<br/>Local state: .dev/state/forecasthub/"]
+        reports --> w02
+    end
+
+    git --- main
+    git --- payments
+    git --- reports
+    registry -.->|assigns or reuses slot| w01
+    registry -.->|assigns or reuses slot| w02
+
+    subgraph sql["Same SQL Server instance: separate databases"]
+        db["forecasthub_core"]
+        db01["forecasthub_core_w01"]
+        db02["forecasthub_core_w02"]
+    end
+
+    baseline --> db
+    w01 --> db01
+    w02 --> db02
+```
+
+The solid lines show Git relationships and resource use. The dashed arrows show slot coordination through the shared registry.
+
+The two `.dev/state/forecasthub/` paths are relative to different worktree roots, so they contain separate files and key rings. Each worktree also keeps its assignment in `.dev/instance.json`. The ordinary checkout receives no slot or managed configuration.
+
+A slot belongs to a worktree, rather than a branch or process. Restarts and branch switches reuse it. Several applications in one worktree share that slot and use different port offsets and application IDs. Database names use the configured base name and slot suffix, so applications that need separate databases must configure different base names.
+
+The SQL Server process and credentials stay shared. DevKit changes the database name and does not copy the ordinary database's data. Startup tasks create or migrate the worktree database according to their existing configuration.
+
+Isolation covers the resources described in [Isolated resources](#isolated-resources). Redis, message brokers, external APIs, and absolute file paths stay shared unless you configure their isolation. Cookies written directly through `Response.Cookies` keep their names. All processes still run on the same machine with the launching user's permissions.
+
+### From host startup to an isolated instance
+
+The host resolves isolation during bootstrap, before application services consume the managed settings:
+
+```mermaid
+flowchart TD
+    start["Start a DevKit web host<br/>dotnet run, dotnet watch, IDE, or bdk dev run"]
+    eligible{"Isolation enabled and eligible?<br/>Development, outside containers and cloud,<br/>not a build-time tool"}
+    linked{"Content root in a<br/>Git linked worktree?"}
+    unchanged["Use configured ports,<br/>databases, cookies, and paths"]
+    prepare["Prepare isolation<br/>Assign or recover the worktree slot<br/>Resolve resource targets and acquire the application lease"]
+    managed["Apply managed configuration<br/>URLs, database names, cookies,<br/>key ring, and identity settings"]
+    ready["Start the isolated application<br/>Verify listener addresses and report the instance"]
+    fallback["Report isolation failure<br/>Continue with fallback configuration<br/>Isolation is inactive"]
+
+    start --> eligible
+    eligible -->|No| unchanged
+    eligible -->|Yes| linked
+    linked -->|No: ordinary checkout or outside Git| unchanged
+    linked -->|Yes| prepare
+    prepare --> managed
+    managed --> ready
+    prepare -.->|Isolation error| fallback
+    managed -.->|Isolation error| fallback
+```
+
+The application lease permits one running process per application ID in a worktree. The shared registry coordinates assignments across worktrees without sharing their application state.
+
+An isolation failure makes the host fall back and log the reason. A late failure can leave already resolved database connections pointing at instance databases. Check the startup log or the dashboard Worktree card before relying on isolation, then fix the cause and restart. See [Isolation fell back to defaults](#isolation-fell-back-to-defaults).
+
 ## Packages and support
 
 | Package | Required | Purpose |

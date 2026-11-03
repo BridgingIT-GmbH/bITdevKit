@@ -10,7 +10,7 @@
         <Copyright>Copyright 2025 (c) BridgingIT GmbH. All rights reserved.</Copyright>
         <PackageTags>bridgingit;devkit;bitdevkit;dotnet;clean-architecture;solution;cqrs;ddd</PackageTags>
         <RepositoryUrl>https://github.com/BridgingIT-GmbH/bITdevKit</RepositoryUrl>
-        <PackageProjectUrl>https://github.com/BridgingIT-GmbH/bITdevKit</PackageProjectUrl>
+        <PackageProjectUrl>https://bridgingit-gmbh.github.io/bITdevKit/</PackageProjectUrl>
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>

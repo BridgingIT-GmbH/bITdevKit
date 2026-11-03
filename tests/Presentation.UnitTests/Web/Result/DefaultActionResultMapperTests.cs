@@ -22,7 +22,6 @@ public class DefaultActionResultMapperTests
         this.failureResult = Substitute.For<IResult>();
         this.failureResult.IsSuccess.Returns(false);
     }
-
     [Fact]
     public void Ok_WhenGivenSuccessResult_ReturnsOkObjectResult()
     {
@@ -422,5 +421,170 @@ public class DefaultActionResultMapperTests
         // Assert
         response.Result.ShouldBeOfType<ObjectResult>();
         ((ObjectResult)response.Result).StatusCode.ShouldBe(201);
+    }
+
+    [Fact]
+    public void CreatedWithActionAndController_WhenGivenSuccessResult_ReturnsCreatedAtActionResult()
+    {
+        // Arrange
+        var sut = new DefaultActionResultMapper();
+
+        // Act
+        var response = sut.Created<PersonStub>(
+            this.successResult,
+            PersonStub.Create(DateTime.UtcNow.Ticks),
+            "GetPerson",
+            "People");
+
+        // Assert
+        response.Result.ShouldBeOfType<CreatedAtActionResult>();
+        ((CreatedAtActionResult)response.Result).ActionName.ShouldBe("GetPerson");
+        ((CreatedAtActionResult)response.Result).ControllerName.ShouldBe("People");
+    }
+
+    [Fact]
+    public void UpdatedWithAction_WhenGivenNullAction_ReturnsObjectResultWithStatus200()
+    {
+        // Arrange
+        var sut = new DefaultActionResultMapper();
+
+        // Act
+        var response = sut.Updated<PersonStub>(this.successResult, action: null);
+
+        // Assert
+        response.Result.ShouldBeOfType<ObjectResult>();
+        ((ObjectResult)response.Result).StatusCode.ShouldBe(200);
+    }
+
+    [Fact]
+    public void UpdatedWithActionAndController_WhenGivenSuccessResult_ReturnsUpdatedAtActionResult()
+    {
+        // Arrange
+        var sut = new DefaultActionResultMapper();
+
+        // Act
+        var response = sut.Updated<PersonStub>(
+            this.successResult,
+            m => m = PersonStub.Create(DateTime.UtcNow.Ticks),
+            "GetPerson",
+            "People");
+
+        // Assert
+        response.Result.ShouldBeOfType<UpdatedAtActionResult>();
+        ((UpdatedAtActionResult)response.Result).ActionName.ShouldBe("GetPerson");
+        ((UpdatedAtActionResult)response.Result).ControllerName.ShouldBe("People");
+        ((UpdatedAtActionResult)response.Result).StatusCode.ShouldBe(200);
+    }
+
+    [Fact]
+    public void AcceptedWithActionAndController_WhenGivenSuccessResult_ReturnsAcceptedAtActionResult()
+    {
+        // Arrange
+        var sut = new DefaultActionResultMapper();
+
+        // Act
+        var response = sut.Accepted<PersonStub>(
+            this.successResult,
+            PersonStub.Create(DateTime.UtcNow.Ticks),
+            "GetPerson",
+            "People");
+
+        // Assert
+        response.Result.ShouldBeOfType<AcceptedAtActionResult>();
+        ((AcceptedAtActionResult)response.Result).ActionName.ShouldBe("GetPerson");
+        ((AcceptedAtActionResult)response.Result).ControllerName.ShouldBe("People");
+    }
+
+    [Fact]
+    public void Deleted_WhenGivenSuccessResult_ReturnsNoContentResult()
+    {
+        // Arrange
+        var sut = new DefaultActionResultMapper();
+
+        // Act
+        var response = sut.Deleted(this.successResult);
+
+        // Assert
+        response.ShouldBeOfType<NoContentResult>();
+    }
+
+    [Fact]
+    public void Ok_WhenGivenNotFoundError_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var sut = new DefaultActionResultMapper();
+        var result = Result.Failure().WithError(new NotFoundError("missing"));
+
+        // Act
+        var response = sut.Ok(result);
+
+        // Assert
+        response.ShouldBeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public void Ok_WhenGivenEntityNotFoundError_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var sut = new DefaultActionResultMapper();
+        var result = Result.Failure().WithError(new EntityNotFoundError("Person", "42"));
+
+        // Act
+        var response = sut.Ok(result);
+
+        // Assert
+        response.ShouldBeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public void Ok_WhenGivenValidationError_ReturnsBadRequestProblemDetails()
+    {
+        // Arrange
+        var sut = new DefaultActionResultMapper();
+        var result = Result.Failure().WithError(new ValidationError("Invalid person data"));
+
+        // Act
+        var response = sut.Ok(result);
+
+        // Assert
+        var objectResult = response.ShouldBeOfType<ObjectResult>();
+        objectResult.StatusCode.ShouldBe(400);
+        var problemDetails = objectResult.Value.ShouldBeOfType<ProblemDetails>();
+        problemDetails.Title.ShouldBe("Bad Request");
+        problemDetails.Detail.ShouldContain("[ValidationError] Invalid person data");
+    }
+
+    [Fact]
+    public void Ok_WhenGivenUnhandledError_ReturnsInternalServerErrorProblemDetails()
+    {
+        // Arrange
+        var sut = new DefaultActionResultMapper();
+        var result = Result.Failure().WithError(new Error("boom"));
+
+        // Act
+        var response = sut.Ok(result);
+
+        // Assert
+        var objectResult = response.ShouldBeOfType<ObjectResult>();
+        objectResult.StatusCode.ShouldBe(500);
+        var problemDetails = objectResult.Value.ShouldBeOfType<ProblemDetails>();
+        problemDetails.Title.ShouldBe("Unhandled Result Error");
+        problemDetails.Detail.ShouldContain("[Error] boom");
+    }
+
+    [Fact]
+    public void ObjectWithEnumerable_WhenGivenSuccessResult_ReturnsObjectResultWithStatusCode()
+    {
+        // Arrange
+        var sut = new DefaultActionResultMapper();
+        var models = new[] { PersonStub.Create(DateTime.UtcNow.Ticks) };
+
+        // Act
+        var response = sut.Object(this.successResult, models, 207);
+
+        // Assert
+        response.Result.ShouldBeOfType<ObjectResult>();
+        ((ObjectResult)response.Result).StatusCode.ShouldBe(207);
+        ((ObjectResult)response.Result).Value.ShouldBe(models);
     }
 }

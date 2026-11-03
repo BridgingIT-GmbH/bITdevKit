@@ -2,6 +2,17 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.121] - 2026-11-03
+
+- Added automatic development-instance isolation for DevKit web hosts in linked Git worktrees in `Development`, with separate HTTP/HTTPS ports, SQL Server/PostgreSQL/SQLite databases, cookie names, data-protection keys, and authentication origins. Customize it with `AddDevAppInstance(...)` or disable it with `DevAppInstance:Mode=Disabled`. Isolation failures log a warning and fall back to the configured ports and databases.
+- Added `bdk dev run`, `status`, `configure`, `stop`, `reset`, `release`, and `prune` to manage development instances, with instance confirmation required for database resets and ownership checks before cleanup.
+- Improved CLI host discovery with application URLs, worktree slots, matching from the worktree root, and process-start checks to reject stale instances whose process IDs were reused.
+- Changed the System dashboard to separate Overview, Process, and Environment views, including development-instance details. Metrics now has addressable App, .NET, ASP.NET, and Routes views, and both dashboards remember the selected view.
+- Added issuer-relative redirect URIs and `WithCookie(...)` configuration to the fake identity provider so local instances can use their own callbacks and session cookies.
+- Fixed `CosmosSqlProviderOptionsBuilder.TimeToLive(...)` to map zero and negative values to `-1`, enabling per-item expiration without an invalid container TTL.
+- Fixed Cosmos document conditional writes to preserve the server's ETag exactly, including unquoted ETags returned by the emulator.
+- Updated NuGet package project links to the documentation website and added the `Application.Auditing` package icon.
+
 ## [10.0.120] - 2026-11-02
 
 - Added `Application.Auditing` for finite business executions with explicit context, nested actions, resource history, retention, diagnostics, and optional HMAC-SHA-256 integrity. `AddAuditing()` uses bounded in-memory storage by default; Entity Framework persistence requires client-owned audit/control tables and migrations.

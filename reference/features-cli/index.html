@@ -2577,6 +2577,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../development-worktrees-support/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="host" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="26" height="26" rx="2" /><path d="M3 11h26" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20h12M16 14v12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Worktree Development Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-logging/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="logging" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6h19M10 16h19M10 26h19" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h2M3 16h2M3 26h2" /></g></svg></span>
         
   
@@ -3001,6 +3029,17 @@
     <span class="md-ellipsis">
       
         bdk mcp
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bdk-dev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bdk dev
       
     </span>
   </a>
@@ -5103,6 +5142,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#bdk-dev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bdk dev
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5372,6 +5422,7 @@
 <li><a href="#bdk-hosts-kill">bdk hosts kill</a></li>
 <li><a href="#bdk-host-run">bdk host run</a></li>
 <li><a href="#bdk-mcp">bdk mcp</a></li>
+<li><a href="#bdk-dev">bdk dev</a></li>
 </ul>
 </li>
 <li><a href="#exit-codes">Exit codes</a></li>
@@ -5581,7 +5632,7 @@ dotnet<span class="w"> </span>tool<span class="w"> </span>install<span class="w"
 </tbody>
 </table>
 <p>Selected hosts are stored in the sibling <code>bdk/hosts/selections</code> directory, scoped by the workspace hash.</p>
-<p>The CLI reads descriptors. It does not write host descriptors. Descriptor writing belongs to the Presentation Host feature.</p>
+<p>The CLI reads descriptors. It does not write host descriptors. Descriptor writing belongs to the Presentation Host feature. Each host deletes stale descriptors of exited hosts when it starts, so <code>bdk hosts clean</code> is rarely needed.</p>
 <pre class="mermaid"><code>flowchart LR
     WebHost["DevKit web host"]
     Descriptor["Host descriptor JSON"]
@@ -5649,9 +5700,19 @@ dotnet<span class="w"> </span>tool<span class="w"> </span>install<span class="w"
 <td><code>features</code></td>
 <td>Host-advertised local endpoint capabilities.</td>
 </tr>
+<tr>
+<td><code>urls</code></td>
+<td>Addresses the host listens on, HTTPS first. The host writes the descriptor again after the server starts, so this list holds the bound addresses.</td>
+</tr>
+<tr>
+<td><code>devAppInstance</code></td>
+<td>Optional. Present only when the host runs as a development app instance in a linked worktree: <code>appId</code>, <code>worktreeId</code>, <code>slot</code>, <code>worktreeRoot</code>, <code>httpUrl</code>, <code>httpsUrl</code>, <code>processStartedAt</code>, <code>leasePath</code>.</td>
+</tr>
 </tbody>
 </table>
 <p><code>features.consoleCommands</code> is required for <code>bdk host run</code>. <code>features.mcp</code> is required for runtime-bound tools exposed by <code>bdk mcp</code>.</p>
+<p><code>bdk hosts list</code> shows the primary URL and the worktree slot of each host. The JSON output of <code>bdk hosts list/current</code> and the MCP tools <code>bdk_runtimes_list</code>, <code>bdk_runtimes_current</code> and <code>bdk_runtimes_select</code> include <code>url</code>, <code>urls</code> and <code>devAppInstance</code>. An agent in a worktree reads the URL of its own host from there instead of guessing a port.</p>
+<p>Workspace matching also accepts a host whose <code>devAppInstance.worktreeRoot</code> equals the workspace, so a host whose project sits below a nested solution file is found from the worktree root. When <code>devAppInstance.processStartedAt</code> is present, discovery compares it with the running process and reports a reused process ID as <code>Stale</code>.</p>
 <h2 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h2>
 <h3 id="bdk-version"><code>bdk version</code><a class="headerlink" href="#bdk-version" title="Permanent link">&para;</a></h3>
 <p>Shows the CLI version and registered command modules. This command does not require a running host.</p>
@@ -5787,6 +5848,17 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--runtime-id<span class="w
 </tr>
 </tbody>
 </table>
+<h3 id="bdk-dev"><code>bdk dev</code><a class="headerlink" href="#bdk-dev" title="Permanent link">&para;</a></h3>
+<p>Manages development instances of Git linked worktrees. DevKit web hosts isolate themselves by default, and normal startup assigns slots without the CLI. See <a href="../development-worktrees-support/">Worktree Development Isolation</a> for the full behavior.</p>
+<div class="highlight"><pre><span></span><code>bdk<span class="w"> </span>dev<span class="w"> </span>status
+bdk<span class="w"> </span>dev<span class="w"> </span>run<span class="w"> </span>--app<span class="w"> </span>forecasthub,forecastadmin
+bdk<span class="w"> </span>dev<span class="w"> </span>stop<span class="w"> </span>--app<span class="w"> </span>forecasthub
+bdk<span class="w"> </span>dev<span class="w"> </span>reset<span class="w"> </span>--app<span class="w"> </span>forecasthub<span class="w"> </span>--confirm-instance<span class="w"> </span>forecasthub:w02
+bdk<span class="w"> </span>dev<span class="w"> </span>release<span class="w"> </span>--confirm-slot<span class="w"> </span><span class="m">2</span>
+bdk<span class="w"> </span>dev<span class="w"> </span>prune<span class="w"> </span>--confirm
+bdk<span class="w"> </span>dev<span class="w"> </span>configure<span class="w"> </span>--slot<span class="w"> </span><span class="m">2</span>
+</code></pre></div>
+<p><code>status</code> shows the slot, URLs, databases and verified process state. <code>run</code> builds and starts DevKit web hosts of the current checkout, all of them when <code>--app</code> is omitted, and stops them on Ctrl+C. <code>stop</code> requests a graceful shutdown and only kills with <code>--force</code> after verifying the process. <code>reset</code> and <code>prune --confirm</code> start the application project to drop instance resources, and pass through its exit codes <code>2</code> (refused) and <code>3</code> (incomplete).</p>
 <h2 id="exit-codes">Exit codes<a class="headerlink" href="#exit-codes" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -6184,6 +6256,7 @@ bdk_project_call
 <li><a href="../features-cli-mcp-clients/">MCP Client Configuration</a></li>
 <li><a href="../features-presentation-console-commands/">Console Commands</a></li>
 <li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/specs/spec-presentation-cli.md">DevKit CLI Specification</a></li>
+<li><a href="../development-worktrees-support/">Worktree Development Isolation</a></li>
 <li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/specs/spec-presentation-web-mcp-diagnostics.md">DevKit STDIO MCP Specification</a></li>
 </ul>
 

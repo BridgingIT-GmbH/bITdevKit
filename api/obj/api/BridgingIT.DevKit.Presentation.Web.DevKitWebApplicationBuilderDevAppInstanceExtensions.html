@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class DevKitWebApplicationBuilderDevAppInstanceExtensions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class DevKitWebApplicationBuilderDevAppInstanceExtensions | bITdevKit API Reference ">
+      
+      <meta name="description" content="Configures linked-worktree development isolation on a . Isolation is on by default, so these extensions only change the defaults, turn isolation off or read the resolved context.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilderDevAppInstanceExtensions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilderDevAppInstanceExtensions" data-uid="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilderDevAppInstanceExtensions" class="text-break">
+Class DevKitWebApplicationBuilderDevAppInstanceExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.html">Web</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Configures linked-worktree development isolation on a <a class="xref" href="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder.html">DevKitWebApplicationBuilder</a>. Isolation is on by
+default, so these extensions only change the defaults, turn isolation off or read the resolved context.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class DevKitWebApplicationBuilderDevAppInstanceExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">DevKitWebApplicationBuilderDevAppInstanceExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilderDevAppInstanceExtensions_examples">Examples</h2>
+  <pre><code class="lang-csharp">var builder = DevKitWebApplication.CreateBuilder(args)
+    .AddConfiguration()
+    .AddDevAppInstance(o =&gt; o.WithAppId("forecasthub"))
+    .AddLogging();</code></pre>
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilderDevAppInstanceExtensions_ContextPropertyKey" data-uid="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilderDevAppInstanceExtensions.ContextPropertyKey">
+  ContextPropertyKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The builder property key that holds the <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceSession.html">DevAppInstanceSession</a> with the resolved context.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ContextPropertyKey = &quot;BridgingIT.DevKit.DevAppInstance.Context&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilderDevAppInstanceExtensions_AddDevAppInstance_" data-uid="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilderDevAppInstanceExtensions.AddDevAppInstance*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilderDevAppInstanceExtensions_AddDevAppInstance_BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilder_" data-uid="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilderDevAppInstanceExtensions.AddDevAppInstance(BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder)">
+  AddDevAppInstance(DevKitWebApplicationBuilder)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Configures linked-worktree development isolation with defaults only, and activates it now instead of at the
+first configuration consumer. Isolation is on by default, so this call is only needed to activate early.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DevKitWebApplicationBuilder AddDevAppInstance(this DevKitWebApplicationBuilder builder)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>builder</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder.html">DevKitWebApplicationBuilder</a></dt>
+    <dd><p>The DevKit web application builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder.html">DevKitWebApplicationBuilder</a></dt>
+    <dd><p>The same builder for fluent chaining.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilderDevAppInstanceExtensions_AddDevAppInstance_BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilder__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = DevKitWebApplication.CreateBuilder(args);
+builder.Configuration.AddConfiguration();
+builder.AddDevAppInstance();</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilderDevAppInstanceExtensions_AddDevAppInstance_BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilder__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When isolation fails in a linked worktree, the host falls back to its configured ports and databases and writes
+the failure as a <code>[BDK]</code> warning. The context then reports <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceInactiveReasons.html#BridgingIT_DevKit_Common_DevAppInstanceInactiveReasons_Fallback">Fallback</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when isolation was already activated.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilderDevAppInstanceExtensions_AddDevAppInstance_" data-uid="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilderDevAppInstanceExtensions.AddDevAppInstance*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilderDevAppInstanceExtensions_AddDevAppInstance_BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilder_System_Action_BridgingIT_DevKit_Common_DevAppInstanceBuilder__" data-uid="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilderDevAppInstanceExtensions.AddDevAppInstance(BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder,System.Action{BridgingIT.DevKit.Common.DevAppInstanceBuilder})">
+  AddDevAppInstance(DevKitWebApplicationBuilder, Action&lt;DevAppInstanceBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Configures linked-worktree development isolation and activates it now. Isolation is on by default for every
+DevKit web host, so call this only to change the defaults or to turn it off with
+<a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceBuilder.html#BridgingIT_DevKit_Common_DevAppInstanceBuilder_Enabled_System_Boolean_">Enabled(bool)</a>. Call after configuration composition and before logging, modules,
+DbContext registrations or the build, because the first of those activates the defaults. In the Development
+environment the database adapters of referenced EF Core provider packages are found automatically. Without
+<a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceBuilder.html#BridgingIT_DevKit_Common_DevAppInstanceBuilder_WithAppId_System_String_">WithAppId(string)</a>, the application ID derives from the host application name.
+Without <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceBuilder.html#BridgingIT_DevKit_Common_DevAppInstanceBuilder_WithHttpOffset_System_Int32_System_Nullable_System_Int32__">WithHttpOffset(int, int?)</a>, the registry assigns the port offsets.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DevKitWebApplicationBuilder AddDevAppInstance(this DevKitWebApplicationBuilder builder, Action&lt;DevAppInstanceBuilder&gt; configure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>builder</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder.html">DevKitWebApplicationBuilder</a></dt>
+    <dd><p>The DevKit web application builder.</p>
+</dd>
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceBuilder.html">DevAppInstanceBuilder</a>&gt;</dt>
+    <dd><p>The declaration callback.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder.html">DevKitWebApplicationBuilder</a></dt>
+    <dd><p>The same builder for fluent chaining.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilderDevAppInstanceExtensions_AddDevAppInstance_BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilder_System_Action_BridgingIT_DevKit_Common_DevAppInstanceBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">builder.AddDevAppInstance(o =&gt; o
+    .WithAppId("forecasthub")
+    .WithHttpOffset(http: 10, https: 11));</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilderDevAppInstanceExtensions_AddDevAppInstance_BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilder_System_Action_BridgingIT_DevKit_Common_DevAppInstanceBuilder___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When isolation fails in a linked worktree, the host falls back to its configured ports and databases and writes
+the failure as a <code>[BDK]</code> warning. The context then reports <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceInactiveReasons.html#BridgingIT_DevKit_Common_DevAppInstanceInactiveReasons_Fallback">Fallback</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when isolation was already activated.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilderDevAppInstanceExtensions_GetDevAppInstance_" data-uid="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilderDevAppInstanceExtensions.GetDevAppInstance*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilderDevAppInstanceExtensions_GetDevAppInstance_BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilder_" data-uid="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilderDevAppInstanceExtensions.GetDevAppInstance(BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder)">
+  GetDevAppInstance(DevKitWebApplicationBuilder)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the resolved development instance context. Activates the defaults first when nothing activated isolation
+yet.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DevAppInstanceContext GetDevAppInstance(this DevKitWebApplicationBuilder builder)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>builder</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder.html">DevKitWebApplicationBuilder</a></dt>
+    <dd><p>The DevKit web application builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a></dt>
+    <dd><p>The context.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilderDevAppInstanceExtensions_GetDevAppInstance_BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilder__examples">Examples</h4>
+  <pre><code class="lang-csharp">var instance = builder.GetDevAppInstance();
+if (instance.IsActive) { Console.WriteLine(instance.PublicOrigin); }</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -455,6 +455,42 @@ Class FakeIdentityProviderEndpointsOptions
 
 
 
+  <a id="BridgingIT_DevKit_Presentation_Web_FakeIdentityProviderEndpointsOptions_ConfigureCookie_" data-uid="BridgingIT.DevKit.Presentation.Web.FakeIdentityProviderEndpointsOptions.ConfigureCookie*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_FakeIdentityProviderEndpointsOptions_ConfigureCookie" data-uid="BridgingIT.DevKit.Presentation.Web.FakeIdentityProviderEndpointsOptions.ConfigureCookie">
+  ConfigureCookie
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets an optional action that configures the provider session cookie after the defaults are applied,
+for example to change the cookie name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Action&lt;CookieAuthenticationOptions&gt; ConfigureCookie { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Action</span>&lt;<span class="xref">CookieAuthenticationOptions</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_FakeIdentityProviderEndpointsOptions_ConfigureCookie_examples">Examples</h4>
+  <pre><code class="lang-csharp">options.ConfigureCookie = cookie =&gt; cookie.Cookie.Name = ".Bdk.FakeIdentityProvider.forecasthub";</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Presentation_Web_FakeIdentityProviderEndpointsOptions_CookieAuthenticationScheme_" data-uid="BridgingIT.DevKit.Presentation.Web.FakeIdentityProviderEndpointsOptions.CookieAuthenticationScheme*"></a>
 
   <h3 id="BridgingIT_DevKit_Presentation_Web_FakeIdentityProviderEndpointsOptions_CookieAuthenticationScheme" data-uid="BridgingIT.DevKit.Presentation.Web.FakeIdentityProviderEndpointsOptions.CookieAuthenticationScheme">

@@ -2577,6 +2577,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../development-worktrees-support/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="host" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="26" height="26" rx="2" /><path d="M3 11h26" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20h12M16 14v12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Worktree Development Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-logging/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="logging" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6h19M10 16h19M10 26h19" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h2M3 16h2M3 26h2" /></g></svg></span>
         
   
@@ -6032,8 +6060,10 @@
 <p>Logs, Errors, Change History, Operations and Requests offer a <strong>Quick range</strong> clock icon immediately before the From UTC input. Open its menu to choose a preset. Choose Last minute, Last 5 or 15 minutes, Last hour, Last 6 hours, Last day, Last week or Last 30 days. The control fills <strong>From UTC</strong> with the selected interval before now and clears <strong>To UTC</strong>. An empty end includes new records on refresh. From UTC remains fixed until you edit it or choose a preset again. The pickers show only hours and minutes, with seconds defaulting to <code>00</code>; recorded timestamps and timings retain their precision. Select <strong>Apply</strong> to use the range. Day and week mean the previous 24 hours and 7 days, including across daylight-saving changes.</p>
 <p>Comparison dialogs have a separate picker for each side; select <strong>Compare</strong> after choosing their ranges. An empty comparison end resolves to one shared current UTC instant when you select Compare. Saved profiling filters retain the fixed start and empty end when you return. To move the start forward, select the preset again.</p>
 <h3 id="system"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="system" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="26" height="19" rx="2" /><path d="M16 23v6M10 29h12" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17h4l3-6 4 8 3-5h4" /></g></svg></span> System<a class="headerlink" href="#system" title="Permanent link">&para;</a></h3>
-<p>System at <code>/_bdk/dashboard/system</code> shows process CPU, memory, traffic, thread-pool and GC observations. Its trend charts collect recent samples, while route and database sections provide the current operational context. Refresh manually or choose an interval to watch changes. These process snapshots complement <a href="../features-profiling/">Profiling</a>; they do not attribute resource usage to one operation.</p>
+<p>System at <code>/_bdk/dashboard/system</code> shows process CPU, memory, traffic, thread-pool and GC observations. Its trend charts collect recent samples, while route and database sections provide the current operational context. Refresh manually or choose an interval to watch changes. These process snapshots complement <a href="../features-profiling/">Profiling</a>; they do not attribute resource usage to one operation. The <strong>Process</strong> tab lists application, runtime, server and process details such as versions, OS, architecture and memory. The <strong>Environment</strong> tab shows environment checks, environment variables and the worktree instance when one applies.</p>
 <p><a href="../../assets/dashboard/03-system-system.png"><img alt="System dashboard with process pressure, traffic and runtime trend charts" src="../../assets/dashboard/03-system-system.png" /></a></p>
+<p><a href="../../assets/dashboard/system/process.png"><img alt="System Process tab with application, runtime, server and process details" src="../../assets/dashboard/system/process.png" /></a></p>
+<p><a href="../../assets/dashboard/system/environment.png"><img alt="System Environment tab with environment checks, the Worktree card and filtered environment variables" src="../../assets/dashboard/system/environment.png" /></a></p>
 <h3 id="metrics"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="metrics" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4v24h26" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 23v-8M16 23V7M23 23V12" /></g></svg></span> Metrics<a class="headerlink" href="#metrics" title="Permanent link">&para;</a></h3>
 <p>The metrics page is server-rendered and reads in-process snapshot services directly. It does not call the metrics JSON endpoints. The page has its own content fragment endpoint and refresh controls for updating only the metrics body.</p>
 <p>Metrics remain optional. Registering the dashboard does not automatically register metrics; applications opt into metrics separately.</p>

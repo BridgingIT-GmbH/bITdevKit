@@ -18677,6 +18677,230 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome.yml\" sourcestartlinenumber=\"1\">The outcome of one <code>bdk dev</code> operation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevAppInstanceCliService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevAppInstanceCliService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevAppInstanceCliService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevAppInstanceCliService.yml\" sourcestartlinenumber=\"1\">Implements the <code>bdk dev</code> management operations over the shared registry, the local assignment, the inventories\nand the host runtime descriptors.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevAppInstanceHostProject.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevAppInstanceHostProject.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevAppInstanceHostProject",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevAppInstanceHostProject.yml\" sourcestartlinenumber=\"1\">A DevKit web host project that <code>bdk dev run</code> can start.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevAppInstanceHostProjects.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevAppInstanceHostProjects.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevAppInstanceHostProjects",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevAppInstanceHostProjects.yml\" sourcestartlinenumber=\"1\">Finds the DevKit web host projects of a checkout.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevAppInstanceProcessResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevAppInstanceProcessResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevAppInstanceProcessResult",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevAppInstanceProcessResult.yml\" sourcestartlinenumber=\"1\">The captured result of a process started by <xref href=\"BridgingIT.DevKit.Cli.IDevAppInstanceProcessRunner\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevAppInstanceProcessRunner.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevAppInstanceProcessRunner.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevAppInstanceProcessRunner",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevAppInstanceProcessRunner.yml\" sourcestartlinenumber=\"1\">Runs processes through <xref href=\"System.Diagnostics.Process\" data-throw-if-not-resolved=\"false\"></xref> with structured arguments.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevAppInstanceProcessStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevAppInstanceProcessStatus.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevAppInstanceProcessStatus",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevAppInstanceProcessStatus.yml\" sourcestartlinenumber=\"1\">The verified process state of one application instance.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevCliCommandBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevCliCommandBase.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevCliCommandBase",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevCliCommandBase.yml\" sourcestartlinenumber=\"1\">Base class of the <code>bdk dev</code> commands that writes a <xref href=\"BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome\" data-throw-if-not-resolved=\"false\"></xref> as text or JSON.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevCliCommandModule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevCliCommandModule.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevCliCommandModule",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevCliCommandModule.yml\" sourcestartlinenumber=\"1\">Registers the worktree development instance commands.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevConfigureCliCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevConfigureCliCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevConfigureCliCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevConfigureCliCommand.yml\" sourcestartlinenumber=\"1\">Reserves a slot for the current linked worktree, or removes an application from the catalog.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevPruneCliCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevPruneCliCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevPruneCliCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevPruneCliCommand.yml\" sourcestartlinenumber=\"1\">Lists, and with <code>--confirm</code> drops, the databases of deleted worktrees and frees their slots.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevReleaseCliCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevReleaseCliCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevReleaseCliCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevReleaseCliCommand.yml\" sourcestartlinenumber=\"1\">Releases the slot of the current worktree after its instances are stopped and reset.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevResetCliCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevResetCliCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevResetCliCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevResetCliCommand.yml\" sourcestartlinenumber=\"1\">Drops the instance databases and storage of one application of the current worktree.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevRunCliCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevRunCliCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevRunCliCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevRunCliCommand.yml\" sourcestartlinenumber=\"1\">Builds and starts DevKit web hosts of the current checkout and streams their prefixed output until Ctrl+C.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevStatusCliCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevStatusCliCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevStatusCliCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevStatusCliCommand.yml\" sourcestartlinenumber=\"1\">Shows the development instance of the current worktree: slot, URLs, databases and verified process state.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DevStopCliCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.DevStopCliCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.DevStopCliCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DevStopCliCommand.yml\" sourcestartlinenumber=\"1\">Requests a graceful shutdown of a running application instance of the current worktree.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.DocsCliCommandModule.yml",
       "output": {
         ".html": {
@@ -19066,6 +19290,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Cli.ICliCommandRegistry",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.ICliCommandRegistry.yml\" sourcestartlinenumber=\"1\">Records commands and groups registered by CLI command modules.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.IDevAppInstanceProcessRunner.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.IDevAppInstanceProcessRunner.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.IDevAppInstanceProcessRunner",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.IDevAppInstanceProcessRunner.yml\" sourcestartlinenumber=\"1\">Starts the one-shot reset processes of <code>bdk dev reset</code> and <code>bdk dev prune --confirm</code>, and the hosts of <code>bdk dev run</code>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -22261,6 +22499,496 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceActivation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceActivation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceActivation",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceActivation.yml\" sourcestartlinenumber=\"1\">Holds the pending default activation of a DevKit host's development instance. The first configuration consumer\nruns it, for example logging, module registration, a DbContext registration or the build.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceApplication.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceApplication.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceApplication",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceApplication.yml\" sourcestartlinenumber=\"1\">Describes one application entry of the development instance catalog.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceArguments.ExitCodes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceArguments.ExitCodes.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceArguments.ExitCodes",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceArguments.ExitCodes.yml\" sourcestartlinenumber=\"1\">The process exit codes of the one-shot modes.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceArguments.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceArguments.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceArguments",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceArguments.yml\" sourcestartlinenumber=\"1\">Reserved command-line arguments that start a host in a one-shot development instance mode.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceAssignment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceAssignment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceAssignment",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceAssignment.yml\" sourcestartlinenumber=\"1\">One worktree assignment of the shared registry.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceBuilder",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceBuilder.yml\" sourcestartlinenumber=\"1\">Collects the declarations of a host that opts in to linked-worktree development isolation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceContext.yml\" sourcestartlinenumber=\"1\">The immutable development instance context resolved once per host startup.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceDatabaseAdapterAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceDatabaseAdapterAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceDatabaseAdapterAttribute",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceDatabaseAdapterAttribute.yml\" sourcestartlinenumber=\"1\">Marks an assembly that provides a development instance database adapter. <code>AddDevAppInstance</code> adds the adapter\nautomatically when the assembly ships with the application, so hosts don't have to call\n<code>WithSqlServerDatabases()</code> or a similar method.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceDatabaseAdapterLocator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceDatabaseAdapterLocator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceDatabaseAdapterLocator",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceDatabaseAdapterLocator.yml\" sourcestartlinenumber=\"1\">Finds the database adapters of the provider assemblies that ship with the application. Each provider assembly\ndeclares its adapter with <xref href=\"BridgingIT.DevKit.Common.DevAppInstanceDatabaseAdapterAttribute\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceEligibility.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceEligibility.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceEligibility",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceEligibility.yml\" sourcestartlinenumber=\"1\">Evaluates the execution-context eligibility conditions of development instance isolation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceErrorCodes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceErrorCodes.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceErrorCodes",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceErrorCodes.yml\" sourcestartlinenumber=\"1\">Defines the stable error codes reported by development instance isolation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceException",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceException.yml\" sourcestartlinenumber=\"1\">Represents a development instance failure with a stable error code and recovery action.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceFiles.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceFiles.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceFiles",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceFiles.yml\" sourcestartlinenumber=\"1\">Provides the registry lock, atomic replacement and JSON helpers shared by hosts and the <code>bdk dev</code> commands.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceInactiveReasons.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceInactiveReasons.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceInactiveReasons",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceInactiveReasons.yml\" sourcestartlinenumber=\"1\">Defines the inactive reasons reported by an inactive development instance context.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceInventory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceInventory.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceInventory",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceInventory.yml\" sourcestartlinenumber=\"1\">The sanitized resource inventory of one application instance.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceInventoryResource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceInventoryResource.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceInventoryResource",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceInventoryResource.yml\" sourcestartlinenumber=\"1\">One sanitized resource entry of an application inventory. It never contains credentials.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceLease.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceLease.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceLease",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceLease.yml\" sourcestartlinenumber=\"1\">Holds the per-application lifetime lease of a running development instance.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceLeaseHolder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceLeaseHolder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceLeaseHolder",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceLeaseHolder.yml\" sourcestartlinenumber=\"1\">The process that holds a development instance lease, as recorded next to the lease file.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceLocalAssignment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceLocalAssignment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceLocalAssignment",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceLocalAssignment.yml\" sourcestartlinenumber=\"1\">The worktree-local assignment document <code>.dev/instance.json</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceLogStep.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceLogStep.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceLogStep",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceLogStep.yml\" sourcestartlinenumber=\"1\">Describes one startup log step recorded by the resolver and written later through the host logger.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceMode",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceMode.yml\" sourcestartlinenumber=\"1\">Defines the configured development instance mode.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceOrphan.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceOrphan.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceOrphan",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceOrphan.yml\" sourcestartlinenumber=\"1\">The resolved target of an orphan reset: an inactive context that carries the orphaned slot, and the registry copy of\nthe application inventory.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstancePaths.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstancePaths.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstancePaths",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstancePaths.yml\" sourcestartlinenumber=\"1\">Computes the well-known development instance file locations.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstancePortPolicy.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstancePortPolicy.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstancePortPolicy",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstancePortPolicy.yml\" sourcestartlinenumber=\"1\">Describes the repository-wide port allocation policy.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceRegistry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceRegistry.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceRegistry",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceRegistry.yml\" sourcestartlinenumber=\"1\">The versioned shared registry stored at <code>&lt;commonDir&gt;/bdk-dev/instances.json</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceResetOutcome.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceResetOutcome.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceResetOutcome",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceResetOutcome.yml\" sourcestartlinenumber=\"1\">Describes the outcome of a resource reset or drop operation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceResolveRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceResolveRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceResolveRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceResolveRequest.yml\" sourcestartlinenumber=\"1\">The input of <xref href=\"BridgingIT.DevKit.Common.DevAppInstanceResolver.Resolve(BridgingIT.DevKit.Common.DevAppInstanceResolveRequest)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceResolver.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceResolver.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceResolver",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceResolver.yml\" sourcestartlinenumber=\"1\">Resolves the immutable <xref href=\"BridgingIT.DevKit.Common.DevAppInstanceContext\" data-throw-if-not-resolved=\"false\"></xref> of a host.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceResourceDeclaration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceResourceDeclaration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceResourceDeclaration",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceResourceDeclaration.yml\" sourcestartlinenumber=\"1\">Describes one resource declaration. Declarations are pure data and never open connections.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceResourcePlan.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceResourcePlan.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceResourcePlan",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceResourcePlan.yml\" sourcestartlinenumber=\"1\">Describes the resolved target of one declared resource.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceSelectionReason.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceSelectionReason.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceSelectionReason",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceSelectionReason.yml\" sourcestartlinenumber=\"1\">Describes how an active instance obtained its slot.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceSession.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceSession.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceSession",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceSession.yml\" sourcestartlinenumber=\"1\">Holds the registration-time state of a development instance, so provider registrations such as\n<code>AddSqlServerDbContext</code> can add their database adapter after <code>AddDevAppInstance</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceStatus.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceStatus",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceStatus.yml\" sourcestartlinenumber=\"1\">The sanitized machine-readable status projection of a development instance.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceStatusResource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevAppInstanceStatusResource.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevAppInstanceStatusResource",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevAppInstanceStatusResource.yml\" sourcestartlinenumber=\"1\">One sanitized resource of the status projection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevKitApplicationBuilderConfigurationExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DevKitApplicationBuilderConfigurationExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DevKitApplicationBuilderConfigurationExtensions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DevKitApplicationBuilderConfigurationExtensions.yml\" sourcestartlinenumber=\"1\">Marks the end of configuration composition on a DevKit application builder.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DevKitBuilderProperties.yml",
       "output": {
         ".html": {
@@ -24305,6 +25033,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.GitCheckoutDetector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.GitCheckoutDetector.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.GitCheckoutDetector",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.GitCheckoutDetector.yml\" sourcestartlinenumber=\"1\">Detects ordinary checkouts and linked worktrees from Git's documented on-disk layout.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.GitCheckoutInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.GitCheckoutInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.GitCheckoutInfo",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.GitCheckoutInfo.yml\" sourcestartlinenumber=\"1\">Describes the Git checkout that contains a directory.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.GitCheckoutKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.GitCheckoutKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.GitCheckoutKind",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.GitCheckoutKind.yml\" sourcestartlinenumber=\"1\">Identifies the kind of Git checkout that contains a directory.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.GreaterThanOrEqualRule-1.yml",
       "output": {
         ".html": {
@@ -24666,6 +25436,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.HostRuntimeDescriptorSchema",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.HostRuntimeDescriptorSchema.yml\" sourcestartlinenumber=\"1\">Defines the host runtime descriptor schema versions.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.HostRuntimeDevAppInstanceDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.HostRuntimeDevAppInstanceDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.HostRuntimeDevAppInstanceDescriptor",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.HostRuntimeDevAppInstanceDescriptor.yml\" sourcestartlinenumber=\"1\">Describes the active linked-worktree development instance of a running host.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -25187,6 +25971,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IDevAppInstanceDatabaseAdapter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IDevAppInstanceDatabaseAdapter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IDevAppInstanceDatabaseAdapter",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IDevAppInstanceDatabaseAdapter.yml\" sourcestartlinenumber=\"1\">A resource adapter that finds its own connection strings in configuration, so hosts do not list configuration keys.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IDevAppInstancePortProbe.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IDevAppInstancePortProbe.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IDevAppInstancePortProbe",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IDevAppInstancePortProbe.yml\" sourcestartlinenumber=\"1\">Probes local TCP ports for development instance allocation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IDevAppInstanceResourceAdapter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IDevAppInstanceResourceAdapter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IDevAppInstanceResourceAdapter",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IDevAppInstanceResourceAdapter.yml\" sourcestartlinenumber=\"1\">Plans, guards and resets one kind of isolated development resource.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IDevKitApplicationBuilder.yml",
       "output": {
         ".html": {
@@ -25338,6 +26164,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.IEnumeration",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IEnumeration.yml\" sourcestartlinenumber=\"1\">Represents an enumeration value identified by an integer and described by a string.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IGitCommandRunner.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IGitCommandRunner.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IGitCommandRunner",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IGitCommandRunner.yml\" sourcestartlinenumber=\"1\">Executes read-only Git commands for inconclusive checkout detection.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -27536,6 +28376,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.LocalOnlyBroadcastTransport",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.LocalOnlyBroadcastTransport.yml\" sourcestartlinenumber=\"1\">Provides the process-local fallback transport used when no remote transport is configured.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.LoopbackPortProbe.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.LoopbackPortProbe.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.LoopbackPortProbe",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.LoopbackPortProbe.yml\" sourcestartlinenumber=\"1\">Probes ports by binding loopback listeners and, on Windows, by reading the excluded TCP port ranges.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -30602,6 +31456,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.PrivateSetterContractResolver",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.PrivateSetterContractResolver.yml\" sourcestartlinenumber=\"1\">Extends Newtonsoft.Json contract resolution so properties with private setters can be deserialized.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProcessGitCommandRunner.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProcessGitCommandRunner.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProcessGitCommandRunner",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProcessGitCommandRunner.yml\" sourcestartlinenumber=\"1\">Runs Git through <xref href=\"System.Diagnostics.Process\" data-throw-if-not-resolved=\"false\"></xref> with structured arguments, a five-second timeout and a cleared Git environment.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -34703,7 +35571,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ServiceCollectionExtensions",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ServiceCollectionExtensions.yml\" sourcestartlinenumber=\"1\">Provides helpers for inspecting service registrations.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ServiceCollectionExtensions.yml\" sourcestartlinenumber=\"1\">Provides dependency-injection registration for Requester and Notifier services and behaviors.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -43667,6 +44535,62 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderPostgresExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderPostgresExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderPostgresExtensions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderPostgresExtensions.yml\" sourcestartlinenumber=\"1\">Registers the PostgreSQL database adapter of a development instance explicitly. The call is optional:\n<code>AddDevAppInstance</code> finds the adapter automatically when the PostgreSQL provider package is referenced.\nAn explicit call makes the adapter run before the automatically found ones.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderSqlServerExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderSqlServerExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderSqlServerExtensions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderSqlServerExtensions.yml\" sourcestartlinenumber=\"1\">Registers the SQL Server database adapter of a development instance explicitly. The call is optional:\n<code>AddDevAppInstance</code> finds the adapter automatically when the SQL Server provider package is referenced.\nAn explicit call makes the adapter run before the automatically found ones.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderSqliteExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderSqliteExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderSqliteExtensions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderSqliteExtensions.yml\" sourcestartlinenumber=\"1\">Registers the SQLite database adapter of a development instance explicitly. The call is optional:\n<code>AddDevAppInstance</code> finds the adapter automatically when the SQLite provider package is referenced.\nAn explicit call makes the adapter run before the automatically found ones.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceDatabaseAdapterBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceDatabaseAdapterBase.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceDatabaseAdapterBase",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceDatabaseAdapterBase.yml\" sourcestartlinenumber=\"1\">Base class of the database adapters that give each linked worktree its own database <code>&lt;database&gt;_wNN</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.yml",
       "output": {
         ".html": {
@@ -45599,6 +46523,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.PostgresDevAppInstanceAdapter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.PostgresDevAppInstanceAdapter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.PostgresDevAppInstanceAdapter",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.PostgresDevAppInstanceAdapter.yml\" sourcestartlinenumber=\"1\">Gives each linked worktree its own PostgreSQL database <code>&lt;database&gt;_wNN</code> and drops recorded instance\ndatabases on reset.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.PostgresHierarchyQueryProvider.yml",
       "output": {
         ".html": {
@@ -46817,6 +47755,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServerDevAppInstanceAdapter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServerDevAppInstanceAdapter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServerDevAppInstanceAdapter",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServerDevAppInstanceAdapter.yml\" sourcestartlinenumber=\"1\">Gives each linked worktree its own SQL Server database <code>&lt;database&gt;_wNN</code> and drops recorded instance\ndatabases on reset.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServerHierarchyQueryProvider.yml",
       "output": {
         ".html": {
@@ -46954,6 +47906,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.SqlStatements",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.SqlStatements.yml\" sourcestartlinenumber=\"1\">Represents sql statements.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.SqliteDevAppInstanceAdapter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.SqliteDevAppInstanceAdapter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.SqliteDevAppInstanceAdapter",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.SqliteDevAppInstanceAdapter.yml\" sourcestartlinenumber=\"1\">Gives each linked worktree its own SQLite database file <code>&lt;name&gt;_wNN&lt;extension&gt;</code> and deletes recorded\ninstance files on reset.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -53159,6 +54125,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemEnvironment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemEnvironment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemEnvironment",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemEnvironment.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Dashboard/Pages/SystemEnvironment.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemOverview.yml",
       "output": {
         ".html": {
@@ -53184,6 +54164,48 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemOverviewContent",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemOverviewContent.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Dashboard/Pages/SystemOverviewContent.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemProcess.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemProcess.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemProcess",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemProcess.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Dashboard/Pages/SystemProcess.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemStyles.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemStyles.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemStyles",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemStyles.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Dashboard/Pages/SystemStyles.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemViewNavigation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemViewNavigation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemViewNavigation",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemViewNavigation.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Dashboard/Pages/SystemViewNavigation.cshtml</code>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -53369,6 +54391,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.DevAppInstanceConfigurationSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.DevAppInstanceConfigurationSource.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.DevAppInstanceConfigurationSource",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.DevAppInstanceConfigurationSource.yml\" sourcestartlinenumber=\"1\">The in-memory configuration source that carries the managed values of an active development instance.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.DevClientDebugInfo.yml",
       "output": {
         ".html": {
@@ -53520,6 +54556,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder.yml\" sourcestartlinenumber=\"1\">Wraps an ASP.NET Core <xref href=\"BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder.WebApplicationBuilder\" data-throw-if-not-resolved=\"false\"></xref> with DevKit builder abstractions.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilderDevAppInstanceExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilderDevAppInstanceExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilderDevAppInstanceExtensions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilderDevAppInstanceExtensions.yml\" sourcestartlinenumber=\"1\">Configures linked-worktree development isolation on a <xref href=\"BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder\" data-throw-if-not-resolved=\"false\"></xref>. Isolation is on by\ndefault, so these extensions only change the defaults, turn isolation off or read the resolved context.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -54891,7 +55941,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.HostDescriptorLifecycleService",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.HostDescriptorLifecycleService.yml\" sourcestartlinenumber=\"1\">Writes and cleans the current host descriptor with the host lifecycle.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.HostDescriptorLifecycleService.yml\" sourcestartlinenumber=\"1\">Writes and cleans the current host descriptor with the host lifecycle. The descriptor is written again\nonce the server has started, so it carries the actual listening addresses. Startup also prunes descriptors\nof hosts that no longer run.</p>\n"
     },
     {
       "type": "ManagedReference",

@@ -340,6 +340,11 @@ and exception properties.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.DevAppInstanceConfigurationSource.html">DevAppInstanceConfigurationSource</a></dt>
+      <dd><p>The in-memory configuration source that carries the managed values of an active development instance.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.DevClientDebugInfo.html">DevClientDebugInfo</a></dt>
       <dd><p>Represents dev client debug info.</p>
 </dd>
@@ -392,6 +397,12 @@ and exception properties.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder.html">DevKitWebApplicationBuilder</a></dt>
       <dd><p>Wraps an ASP.NET Core <a class="xref" href="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder.html#BridgingIT_DevKit_Presentation_Web_DevKitWebApplicationBuilder_WebApplicationBuilder">WebApplicationBuilder</a> with DevKit builder abstractions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilderDevAppInstanceExtensions.html">DevKitWebApplicationBuilderDevAppInstanceExtensions</a></dt>
+      <dd><p>Configures linked-worktree development isolation on a <a class="xref" href="BridgingIT.DevKit.Presentation.Web.DevKitWebApplicationBuilder.html">DevKitWebApplicationBuilder</a>. Isolation is on by
+default, so these extensions only change the defaults, turn isolation off or read the resolved context.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -632,7 +643,9 @@ caught by more specific handlers.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.HostDescriptorLifecycleService.html">HostDescriptorLifecycleService</a></dt>
-      <dd><p>Writes and cleans the current host descriptor with the host lifecycle.</p>
+      <dd><p>Writes and cleans the current host descriptor with the host lifecycle. The descriptor is written again
+once the server has started, so it carries the actual listening addresses. Startup also prunes descriptors
+of hosts that no longer run.</p>
 </dd>
     </dl>
     <dl class="jumplist">

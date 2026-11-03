@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class DevAppInstanceSession | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class DevAppInstanceSession | bITdevKit API Reference ">
+      
+      <meta name="description" content="Holds the registration-time state of a development instance, so provider registrations such as AddSqlServerDbContext can add their database adapter after AddDevAppInstance.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_DevAppInstanceSession" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession" class="text-break">
+Class DevAppInstanceSession  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Holds the registration-time state of a development instance, so provider registrations such as
+<code>AddSqlServerDbContext</code> can add their database adapter after <code>AddDevAppInstance</code>.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class DevAppInstanceSession</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">DevAppInstanceSession</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Common_DevAppInstanceSession_examples">Examples</h2>
+  <pre><code class="lang-csharp">options.ConnectionString = DevAppInstanceSession.ResolveConnectionString(
+    services, SqlServerDevAppInstanceAdapter.Instance, options.ConnectionString, typeof(TContext).Name);</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Common_DevAppInstanceSession_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p><code>AddDevAppInstance</code> registers the session as a singleton instance. A registration calls
+<a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceSession.html#BridgingIT_DevKit_Common_DevAppInstanceSession_ResolveConnectionString_Microsoft_Extensions_DependencyInjection_IServiceCollection_BridgingIT_DevKit_Common_IDevAppInstanceDatabaseAdapter_System_String_System_String_">ResolveConnectionString(IServiceCollection, IDevAppInstanceDatabaseAdapter, string, string)</a> with its adapter and connection string. When the adapter kind is new, the
+session discovers and plans its databases, records them in the inventories and applies the managed values to
+configuration. Without a session, or when the instance is inactive, connection strings stay unchanged.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceSession__ctor_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceSession__ctor_BridgingIT_DevKit_Common_DevAppInstanceResolveRequest_BridgingIT_DevKit_Common_DevAppInstanceContext_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IDevAppInstanceResourceAdapter__System_Collections_Generic_IReadOnlyDictionary_System_String_System_String__System_Action_System_Collections_Generic_IReadOnlyDictionary_System_String_System_String___System_Action_BridgingIT_DevKit_Common_DevAppInstanceException__" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.#ctor(BridgingIT.DevKit.Common.DevAppInstanceResolveRequest,BridgingIT.DevKit.Common.DevAppInstanceContext,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Common.IDevAppInstanceResourceAdapter},System.Collections.Generic.IReadOnlyDictionary{System.String,System.String},System.Action{System.Collections.Generic.IReadOnlyDictionary{System.String,System.String}},System.Action{BridgingIT.DevKit.Common.DevAppInstanceException})">
+  DevAppInstanceSession(DevAppInstanceResolveRequest, DevAppInstanceContext, IEnumerable&lt;IDevAppInstanceResourceAdapter&gt;, IReadOnlyDictionary&lt;string, string&gt;, Action&lt;IReadOnlyDictionary&lt;string, string&gt;&gt;, Action&lt;DevAppInstanceException&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceSession.html">DevAppInstanceSession</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DevAppInstanceSession(DevAppInstanceResolveRequest request, DevAppInstanceContext context, IEnumerable&lt;IDevAppInstanceResourceAdapter&gt; adapters, IReadOnlyDictionary&lt;string, string&gt; baseline = null, Action&lt;IReadOnlyDictionary&lt;string, string&gt;&gt; applyManagedValues = null, Action&lt;DevAppInstanceException&gt; undoActivation = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceResolveRequest.html">DevAppInstanceResolveRequest</a></dt>
+    <dd><p>The request that produced <code class="paramref">context</code>.</p>
+</dd>
+    <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a></dt>
+    <dd><p>The resolved context.</p>
+</dd>
+    <dt><code>adapters</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IDevAppInstanceResourceAdapter.html">IDevAppInstanceResourceAdapter</a>&gt;</dt>
+    <dd><p>The adapters of the declarations.</p>
+</dd>
+    <dt><code>baseline</code> <span class="xref">IReadOnlyDictionary</span>&lt;<span class="xref">string</span>, <span class="xref">string</span>&gt;</dt>
+    <dd><p>The baseline values of the declared keys.</p>
+</dd>
+    <dt><code>applyManagedValues</code> <span class="xref">Action</span>&lt;<span class="xref">IReadOnlyDictionary</span>&lt;<span class="xref">string</span>, <span class="xref">string</span>&gt;&gt;</dt>
+    <dd><p>Applies new managed values to configuration. <code>null</code> disables late planning.</p>
+</dd>
+    <dt><code>undoActivation</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceException.html">DevAppInstanceException</a>&gt;</dt>
+    <dd><p>Removes what the active instance added to the host when <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceSession.html#BridgingIT_DevKit_Common_DevAppInstanceSession_FallBack_BridgingIT_DevKit_Common_DevAppInstanceException_">FallBack(DevAppInstanceException)</a> runs. Optional.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DevAppInstanceSession__ctor_BridgingIT_DevKit_Common_DevAppInstanceResolveRequest_BridgingIT_DevKit_Common_DevAppInstanceContext_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IDevAppInstanceResourceAdapter__System_Collections_Generic_IReadOnlyDictionary_System_String_System_String__System_Action_System_Collections_Generic_IReadOnlyDictionary_System_String_System_String___System_Action_BridgingIT_DevKit_Common_DevAppInstanceException___examples">Examples</h4>
+  <pre><code class="lang-csharp">var session = new DevAppInstanceSession(request, context, declaration.Adapters, baseline, source.Set);
+services.AddSingleton(session);</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceSession_Adapters_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.Adapters*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceSession_Adapters" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.Adapters">
+  Adapters
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a snapshot of the declared and late adapters, one per kind.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;IDevAppInstanceResourceAdapter&gt; Adapters { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IDevAppInstanceResourceAdapter.html">IDevAppInstanceResourceAdapter</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceSession_Baseline_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.Baseline*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceSession_Baseline" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.Baseline">
+  Baseline
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a snapshot of the baseline values of the managed resource keys. Values may contain secrets.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyDictionary&lt;string, string&gt; Baseline { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyDictionary</span>&lt;<span class="xref">string</span>, <span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceSession_Context_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.Context*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceSession_Context" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.Context">
+  Context
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the current context, including resources of adapters added after resolution.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DevAppInstanceContext Context { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceSession_DeclaredKeys_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.DeclaredKeys*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceSession_DeclaredKeys" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.DeclaredKeys">
+  DeclaredKeys
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a snapshot of the configuration keys of all resources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ISet&lt;string&gt; DeclaredKeys { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ISet</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceSession_FallBack_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.FallBack*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceSession_FallBack_BridgingIT_DevKit_Common_DevAppInstanceException_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.FallBack(BridgingIT.DevKit.Common.DevAppInstanceException)">
+  FallBack(DevAppInstanceException)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Switches the session to the configured defaults after isolation failed. The context becomes inactive with the
+reason <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceInactiveReasons.html#BridgingIT_DevKit_Common_DevAppInstanceInactiveReasons_Fallback">Fallback</a>, the managed values and the lease are released and the
+failure is written to the startup output. Later connection strings stay unchanged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void FallBack(DevAppInstanceException exception)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>exception</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceException.html">DevAppInstanceException</a></dt>
+    <dd><p>The failure that stopped isolation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DevAppInstanceSession_FallBack_BridgingIT_DevKit_Common_DevAppInstanceException__examples">Examples</h4>
+  <pre><code class="lang-csharp">session.FallBack(new DevAppInstanceException(DevAppInstanceErrorCodes.ConfigurationConflict, "Port in use."));
+// session.Context.InactiveReason == DevAppInstanceInactiveReasons.Fallback</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceSession_ResolveConnectionString_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.ResolveConnectionString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceSession_ResolveConnectionString_BridgingIT_DevKit_Common_IDevAppInstanceDatabaseAdapter_System_String_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.ResolveConnectionString(BridgingIT.DevKit.Common.IDevAppInstanceDatabaseAdapter,System.String,System.String)">
+  ResolveConnectionString(IDevAppInstanceDatabaseAdapter, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the connection string a provider registration must use in this session.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ResolveConnectionString(IDevAppInstanceDatabaseAdapter adapter, string connectionString, string consumer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>adapter</code> <a class="xref" href="BridgingIT.DevKit.Common.IDevAppInstanceDatabaseAdapter.html">IDevAppInstanceDatabaseAdapter</a></dt>
+    <dd><p>The database adapter of the provider.</p>
+</dd>
+    <dt><code>connectionString</code> <span class="xref">string</span></dt>
+    <dd><p>The connection string passed to the registration.</p>
+</dd>
+    <dt><code>consumer</code> <span class="xref">string</span></dt>
+    <dd><p>The registration name used in errors.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The instance connection string, or the unchanged value when the instance is inactive or the connection string
+targets a database that no configuration key declares. In that case the session falls back to the defaults.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DevAppInstanceSession_ResolveConnectionString_BridgingIT_DevKit_Common_IDevAppInstanceDatabaseAdapter_System_String_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = session.ResolveConnectionString(SqliteDevAppInstanceAdapter.Instance, "Data Source=data/taskharbor.db", "TaskHarborDbContext");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceSession_ResolveConnectionString_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.ResolveConnectionString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceSession_ResolveConnectionString_Microsoft_Extensions_DependencyInjection_IServiceCollection_BridgingIT_DevKit_Common_IDevAppInstanceDatabaseAdapter_System_String_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceSession.ResolveConnectionString(Microsoft.Extensions.DependencyInjection.IServiceCollection,BridgingIT.DevKit.Common.IDevAppInstanceDatabaseAdapter,System.String,System.String)">
+  ResolveConnectionString(IServiceCollection, IDevAppInstanceDatabaseAdapter, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the connection string a provider registration must use. Finds the session in
+<code class="paramref">services</code>, adds the adapter when its kind is new and maps an ordinary database to the
+instance database.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ResolveConnectionString(IServiceCollection services, IDevAppInstanceDatabaseAdapter adapter, string connectionString, string consumer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>services</code> <span class="xref">IServiceCollection</span></dt>
+    <dd><p>The service collection that may hold a session.</p>
+</dd>
+    <dt><code>adapter</code> <a class="xref" href="BridgingIT.DevKit.Common.IDevAppInstanceDatabaseAdapter.html">IDevAppInstanceDatabaseAdapter</a></dt>
+    <dd><p>The database adapter of the provider.</p>
+</dd>
+    <dt><code>connectionString</code> <span class="xref">string</span></dt>
+    <dd><p>The connection string passed to the registration.</p>
+</dd>
+    <dt><code>consumer</code> <span class="xref">string</span></dt>
+    <dd><p>The registration name used in errors, for example the DbContext type name.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The instance connection string, or the unchanged value when no active session exists or the connection string
+targets a database that no configuration key declares. In that case the session falls back to the defaults.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DevAppInstanceSession_ResolveConnectionString_Microsoft_Extensions_DependencyInjection_IServiceCollection_BridgingIT_DevKit_Common_IDevAppInstanceDatabaseAdapter_System_String_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">connectionString = DevAppInstanceSession.ResolveConnectionString(
+    services, PostgresDevAppInstanceAdapter.Instance, connectionString, nameof(TaskHarborDbContext));</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

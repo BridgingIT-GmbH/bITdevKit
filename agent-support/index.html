@@ -2573,6 +2573,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../reference/development-worktrees-support/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="host" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="26" height="26" rx="2" /><path d="M3 11h26" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20h12M16 14v12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Worktree Development Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../reference/features-presentation-logging/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="logging" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6h19M10 16h19M10 26h19" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h2M3 16h2M3 26h2" /></g></svg></span>
         
   
@@ -3723,6 +3751,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#run-agents-in-parallel-worktrees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run agents in parallel worktrees
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#inspect-operations-and-requests" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4534,6 +4573,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#run-agents-in-parallel-worktrees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run agents in parallel worktrees
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#inspect-operations-and-requests" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4726,11 +4776,21 @@
 <li>inspect messaging, queueing, jobs, and orchestrations when the host exposes them</li>
 <li>call project-owned diagnostics registered by the application</li>
 <li>run explicitly enabled operations after you approve them</li>
+<li>work in its own Git worktree next to other agents, each with its own running application</li>
 </ul>
 <p>The available runtime tools depend on the features registered by the selected application.</p>
 <h2 id="how-the-connection-works">How the connection works<a class="headerlink" href="#how-the-connection-works" title="Permanent link">&para;</a></h2>
 <p>Your MCP client starts <code>bdk mcp</code> as a local process. The CLI finds a ready DevKit host in the current workspace and forwards runtime calls over local IPC.</p>
 <p>Documentation and API search do not require a running host. Runtime diagnostics do.</p>
+<h2 id="run-agents-in-parallel-worktrees">Run agents in parallel worktrees<a class="headerlink" href="#run-agents-in-parallel-worktrees" title="Permanent link">&para;</a></h2>
+<p>Coding agents often work on several tasks at once, each in its own Git worktree. DevKit supports this out of the box. Each linked worktree runs its own isolated instance of the application, so agents can build, run, and test side by side without getting in each other's way. It is on by default in Development, and nothing changes in an ordinary checkout.</p>
+<p><code>bdk mcp</code> connects each agent to the application of its own worktree, and <code>bdk_runtimes_current</code> tells it where that application runs. Start the application of a worktree with:</p>
+<div class="highlight"><pre><span></span><code><span class="n">dotnet</span> <span class="n">tool</span> <span class="n">run</span> <span class="n">bdk</span> <span class="n">dev</span> <span class="n">run</span>
+</code></pre></div>
+<p>For example, ask the agent in a new worktree:</p>
+<div class="highlight"><pre><span></span><code>Start the application with bdk dev run. Use the bdk MCP runtime tools to find its URL, then reproduce the bug in the browser and check the logs for errors.
+</code></pre></div>
+<p>See <a href="../reference/development-worktrees-support/">Worktree Development Support</a> for details and adoption in an existing application.</p>
 <h2 id="inspect-operations-and-requests">Inspect operations and requests<a class="headerlink" href="#inspect-operations-and-requests" title="Permanent link">&para;</a></h2>
 <p>When operation profiling is enabled, the agent reads retained recordings through the same runtime services used by the profiling dashboard. It can filter by time range, operation kind, key, node, dimensions, and correlation ID.</p>
 <table>

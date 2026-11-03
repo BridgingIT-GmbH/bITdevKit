@@ -341,6 +341,46 @@ Class HostRuntimeDescriptorWriter
 </h2>
 
 
+  <a id="BridgingIT_DevKit_Presentation_Web_HostRuntimeDescriptorWriter_PruneStale_" data-uid="BridgingIT.DevKit.Presentation.Web.HostRuntimeDescriptorWriter.PruneStale*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_HostRuntimeDescriptorWriter_PruneStale" data-uid="BridgingIT.DevKit.Presentation.Web.HostRuntimeDescriptorWriter.PruneStale">
+  PruneStale()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes descriptors of hosts that no longer run, and temporary files left by interrupted writes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int PruneStale()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd><p>The number of deleted files.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_HostRuntimeDescriptorWriter_PruneStale_examples">Examples</h4>
+  <pre><code class="lang-csharp">var deleted = writer.PruneStale();</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_HostRuntimeDescriptorWriter_PruneStale_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A descriptor is stale when its process has exited or its process ID now belongs to a process that started
+after the descriptor. Descriptors that cannot be read or checked are kept. The current descriptor is never touched.</p>
+</div>
+
+
+
+
   <a id="BridgingIT_DevKit_Presentation_Web_HostRuntimeDescriptorWriter_Remove_" data-uid="BridgingIT.DevKit.Presentation.Web.HostRuntimeDescriptorWriter.Remove*"></a>
 
   <h3 id="BridgingIT_DevKit_Presentation_Web_HostRuntimeDescriptorWriter_Remove" data-uid="BridgingIT.DevKit.Presentation.Web.HostRuntimeDescriptorWriter.Remove">

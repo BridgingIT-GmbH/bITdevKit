@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class DevAppInstanceFiles | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class DevAppInstanceFiles | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides the registry lock, atomic replacement and JSON helpers shared by hosts and the bdk dev commands.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.DevAppInstanceFiles">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_DevAppInstanceFiles" data-uid="BridgingIT.DevKit.Common.DevAppInstanceFiles" class="text-break">
+Class DevAppInstanceFiles  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides the registry lock, atomic replacement and JSON helpers shared by hosts and the <code>bdk dev</code> commands.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class DevAppInstanceFiles</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">DevAppInstanceFiles</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Common_DevAppInstanceFiles_examples">Examples</h2>
+  <pre><code class="lang-csharp">using (DevAppInstanceFiles.AcquireLock(lockPath, TimeSpan.FromSeconds(10)))
+{
+    DevAppInstanceFiles.WriteJsonAtomic(path, node);
+}</code></pre>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceFiles_AcquireLock_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceFiles.AcquireLock*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceFiles_AcquireLock_System_String_System_TimeSpan_System_String_System_Action_System_Int32__" data-uid="BridgingIT.DevKit.Common.DevAppInstanceFiles.AcquireLock(System.String,System.TimeSpan,System.String,System.Action{System.Int32})">
+  AcquireLock(string, TimeSpan, string, Action&lt;int&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Acquires an exclusive cross-process lock file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FileStream AcquireLock(string lockPath, TimeSpan timeout, string errorCode = &quot;registry_locked&quot;, Action&lt;int&gt; onRetry = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>lockPath</code> <span class="xref">string</span></dt>
+    <dd><p>The lock file path.</p>
+</dd>
+    <dt><code>timeout</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The maximum wait.</p>
+</dd>
+    <dt><code>errorCode</code> <span class="xref">string</span></dt>
+    <dd><p>The error code used on timeout.</p>
+</dd>
+    <dt><code>onRetry</code> <span class="xref">Action</span>&lt;<span class="xref">int</span>&gt;</dt>
+    <dd><p>An optional callback invoked for each failed attempt.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">FileStream</span></dt>
+    <dd><p>The held lock. Dispose it to release.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceException.html">DevAppInstanceException</a></dt>
+    <dd><p>Thrown when the lock is not acquired within <code class="paramref">timeout</code>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceFiles_EnsureVersion_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceFiles.EnsureVersion*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceFiles_EnsureVersion_System_Text_Json_Nodes_JsonObject_System_String_System_Int32_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceFiles.EnsureVersion(System.Text.Json.Nodes.JsonObject,System.String,System.Int32)">
+  EnsureVersion(JsonObject, string, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Ensures a document version is supported.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void EnsureVersion(JsonObject node, string path, int supportedVersion = 1)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>node</code> <span class="xref">JsonObject</span></dt>
+    <dd><p>The document.</p>
+</dd>
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The document path used in errors.</p>
+</dd>
+    <dt><code>supportedVersion</code> <span class="xref">int</span></dt>
+    <dd><p>The highest supported version.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceException.html">DevAppInstanceException</a></dt>
+    <dd><p>Thrown with <code>assignment_invalid</code> for a missing or higher version.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceFiles_ReadJsonObject_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceFiles.ReadJsonObject*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceFiles_ReadJsonObject_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceFiles.ReadJsonObject(System.String)">
+  ReadJsonObject(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a JSON object file, or returns <code>null</code> when the file does not exist.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static JsonObject ReadJsonObject(string path)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The file path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">JsonObject</span></dt>
+    <dd><p>The JSON object or <code>null</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceException.html">DevAppInstanceException</a></dt>
+    <dd><p>Thrown with <code>assignment_invalid</code> on invalid JSON.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceFiles_WriteJsonAtomic_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceFiles.WriteJsonAtomic*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceFiles_WriteJsonAtomic_System_String_System_Text_Json_Nodes_JsonNode_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceFiles.WriteJsonAtomic(System.String,System.Text.Json.Nodes.JsonNode)">
+  WriteJsonAtomic(string, JsonNode)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a JSON node through a temporary file and an atomic replace.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void WriteJsonAtomic(string path, JsonNode node)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The target path.</p>
+</dd>
+    <dt><code>node</code> <span class="xref">JsonNode</span></dt>
+    <dd><p>The node to write.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

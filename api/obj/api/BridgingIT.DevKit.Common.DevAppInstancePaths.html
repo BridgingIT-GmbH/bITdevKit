@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class DevAppInstancePaths | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class DevAppInstancePaths | bITdevKit API Reference ">
+      
+      <meta name="description" content="Computes the well-known development instance file locations.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_DevAppInstancePaths" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths" class="text-break">
+Class DevAppInstancePaths  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Computes the well-known development instance file locations.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class DevAppInstancePaths</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">DevAppInstancePaths</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Common_DevAppInstancePaths_examples">Examples</h2>
+  <pre><code class="lang-csharp">var registry = DevAppInstancePaths.GetRegistryFile(checkout.CommonDirectory);</code></pre>
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstancePaths_LocalDirectoryName" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.LocalDirectoryName">
+  LocalDirectoryName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the worktree-local directory name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string LocalDirectoryName = &quot;.dev&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstancePaths_RegistryDirectoryName" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.RegistryDirectoryName">
+  RegistryDirectoryName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the registry directory name below the common Git directory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string RegistryDirectoryName = &quot;bdk-dev&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetAssignmentFile_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetAssignmentFile*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetAssignmentFile_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetAssignmentFile(System.String)">
+  GetAssignmentFile(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns <code>&lt;worktree&gt;/.dev/instance.json</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string GetAssignmentFile(string worktreeRoot)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>worktreeRoot</code> <span class="xref">string</span></dt>
+    <dd><p>The worktree root.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The path.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetInventoryFile_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetInventoryFile*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetInventoryFile_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetInventoryFile(System.String)">
+  GetInventoryFile(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the inventory file of an application state root.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string GetInventoryFile(string stateRoot)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stateRoot</code> <span class="xref">string</span></dt>
+    <dd><p>The state root.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The path.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetLeaseFile_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetLeaseFile*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetLeaseFile_System_String_System_Guid_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetLeaseFile(System.String,System.Guid,System.String)">
+  GetLeaseFile(string, Guid, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns <code>&lt;commonDir&gt;/bdk-dev/leases/&lt;worktreeId&gt;.&lt;appId&gt;.lock</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string GetLeaseFile(string commonDirectory, Guid worktreeId, string appId)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>commonDirectory</code> <span class="xref">string</span></dt>
+    <dd><p>The common Git directory.</p>
+</dd>
+    <dt><code>worktreeId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The worktree ID.</p>
+</dd>
+    <dt><code>appId</code> <span class="xref">string</span></dt>
+    <dd><p>The application ID.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The path.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetOwnerFile_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetOwnerFile*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetOwnerFile_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetOwnerFile(System.String)">
+  GetOwnerFile(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the ownership file of an application state root.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string GetOwnerFile(string stateRoot)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stateRoot</code> <span class="xref">string</span></dt>
+    <dd><p>The state root.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The path.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetRegistryDirectory_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetRegistryDirectory*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetRegistryDirectory_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetRegistryDirectory(System.String)">
+  GetRegistryDirectory(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns <code>&lt;commonDir&gt;/bdk-dev</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string GetRegistryDirectory(string commonDirectory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>commonDirectory</code> <span class="xref">string</span></dt>
+    <dd><p>The common Git directory.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The path.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetRegistryFile_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetRegistryFile*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetRegistryFile_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetRegistryFile(System.String)">
+  GetRegistryFile(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns <code>&lt;commonDir&gt;/bdk-dev/instances.json</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string GetRegistryFile(string commonDirectory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>commonDirectory</code> <span class="xref">string</span></dt>
+    <dd><p>The common Git directory.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The path.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetRegistryLockFile_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetRegistryLockFile*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetRegistryLockFile_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetRegistryLockFile(System.String)">
+  GetRegistryLockFile(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns <code>&lt;commonDir&gt;/bdk-dev/instances.lock</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string GetRegistryLockFile(string commonDirectory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>commonDirectory</code> <span class="xref">string</span></dt>
+    <dd><p>The common Git directory.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The path.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetStateRoot_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetStateRoot*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstancePaths_GetStateRoot_System_String_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstancePaths.GetStateRoot(System.String,System.String)">
+  GetStateRoot(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns <code>&lt;worktree&gt;/.dev/state/&lt;appId&gt;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string GetStateRoot(string worktreeRoot, string appId)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>worktreeRoot</code> <span class="xref">string</span></dt>
+    <dd><p>The worktree root.</p>
+</dd>
+    <dt><code>appId</code> <span class="xref">string</span></dt>
+    <dd><p>The application ID.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The path.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class DevAppInstanceResolver | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class DevAppInstanceResolver | bITdevKit API Reference ">
+      
+      <meta name="description" content="Resolves the immutable  of a host.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_DevAppInstanceResolver" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver" class="text-break">
+Class DevAppInstanceResolver  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Resolves the immutable <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a> of a host.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class DevAppInstanceResolver</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">DevAppInstanceResolver</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Common_DevAppInstanceResolver_examples">Examples</h2>
+  <pre><code class="lang-csharp">var context = DevAppInstanceResolver.Resolve(request);
+if (context.IsActive) { builder.Configuration.AddInMemoryCollection(context.ManagedValues); }</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Common_DevAppInstanceResolver_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Eligibility is evaluated first. Ineligible and ordinary-checkout hosts get an inactive context without any file access
+beyond Git detection. Linked worktrees create or recover their persistent assignment under the registry lock.</p>
+</div>
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceResolver_ModeKey" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.ModeKey">
+  ModeKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the configuration key of the mode.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ModeKey = &quot;DevAppInstance:Mode&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceResolver_SharedConnectionStringKind" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.SharedConnectionStringKind">
+  SharedConnectionStringKind
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the resource kind of shared connection strings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string SharedConnectionStringKind = &quot;connectionstring&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceResolver_SlotKey" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.SlotKey">
+  SlotKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the configuration key of the requested slot.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string SlotKey = &quot;DevAppInstance:Slot&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceResolver_UrlKeys" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.UrlKeys">
+  UrlKeys
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The configuration keys of the URL settings replaced in managed mode.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly IReadOnlyList&lt;string&gt; UrlKeys</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceResolver_AddDatabaseResources_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.AddDatabaseResources*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceResolver_AddDatabaseResources_BridgingIT_DevKit_Common_DevAppInstanceResolveRequest_BridgingIT_DevKit_Common_DevAppInstanceContext_BridgingIT_DevKit_Common_IDevAppInstanceDatabaseAdapter_System_Collections_Generic_ISet_System_String__" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.AddDatabaseResources(BridgingIT.DevKit.Common.DevAppInstanceResolveRequest,BridgingIT.DevKit.Common.DevAppInstanceContext,BridgingIT.DevKit.Common.IDevAppInstanceDatabaseAdapter,System.Collections.Generic.ISet{System.String})">
+  AddDatabaseResources(DevAppInstanceResolveRequest, DevAppInstanceContext, IDevAppInstanceDatabaseAdapter, ISet&lt;string&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Discovers and plans the databases of an adapter that registers after <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceResolver.html#BridgingIT_DevKit_Common_DevAppInstanceResolver_Resolve_BridgingIT_DevKit_Common_DevAppInstanceResolveRequest_">Resolve(DevAppInstanceResolveRequest)</a>, for example from a
+DbContext registration, and records the new resources in the registry and local inventories.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DevAppInstanceContext AddDatabaseResources(DevAppInstanceResolveRequest request, DevAppInstanceContext context, IDevAppInstanceDatabaseAdapter adapter, ISet&lt;string&gt; excludedKeys)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceResolveRequest.html">DevAppInstanceResolveRequest</a></dt>
+    <dd><p>The request that produced <code class="paramref">context</code>.</p>
+</dd>
+    <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a></dt>
+    <dd><p>The active context.</p>
+</dd>
+    <dt><code>adapter</code> <a class="xref" href="BridgingIT.DevKit.Common.IDevAppInstanceDatabaseAdapter.html">IDevAppInstanceDatabaseAdapter</a></dt>
+    <dd><p>The database adapter.</p>
+</dd>
+    <dt><code>excludedKeys</code> <span class="xref">ISet</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>The keys that are already declared, claimed or shared.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a></dt>
+    <dd><p>The context with the new resources, managed values and log steps, or the unchanged context when the adapter finds nothing.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DevAppInstanceResolver_AddDatabaseResources_BridgingIT_DevKit_Common_DevAppInstanceResolveRequest_BridgingIT_DevKit_Common_DevAppInstanceContext_BridgingIT_DevKit_Common_IDevAppInstanceDatabaseAdapter_System_Collections_Generic_ISet_System_String___examples">Examples</h4>
+  <pre><code class="lang-csharp">context = DevAppInstanceResolver.AddDatabaseResources(request, context, adapter, excludedKeys);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceException.html">DevAppInstanceException</a></dt>
+    <dd><p>Thrown when a discovered database cannot be planned safely.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceResolver_DiscoverResources_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.DiscoverResources*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceResolver_DiscoverResources_BridgingIT_DevKit_Common_DevAppInstanceResolveRequest_Microsoft_Extensions_Configuration_IConfiguration_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.DiscoverResources(BridgingIT.DevKit.Common.DevAppInstanceResolveRequest,Microsoft.Extensions.Configuration.IConfiguration)">
+  DiscoverResources(DevAppInstanceResolveRequest, IConfiguration)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the explicit resource declarations followed by the declarations the database adapters discover.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;DevAppInstanceResourceDeclaration&gt; DiscoverResources(DevAppInstanceResolveRequest request, IConfiguration configuration)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceResolveRequest.html">DevAppInstanceResolveRequest</a></dt>
+    <dd><p>The request with declarations, database adapters and shared keys.</p>
+</dd>
+    <dt><code>configuration</code> <span class="xref">IConfiguration</span></dt>
+    <dd><p>The baseline configuration.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceResourceDeclaration.html">DevAppInstanceResourceDeclaration</a>&gt;</dt>
+    <dd><p>The declarations in planning order.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DevAppInstanceResolver_DiscoverResources_BridgingIT_DevKit_Common_DevAppInstanceResolveRequest_Microsoft_Extensions_Configuration_IConfiguration__examples">Examples</h4>
+  <pre><code class="lang-csharp">var declarations = DevAppInstanceResolver.DiscoverResources(request, builder.Configuration);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceResolver_IsDatabaseKind_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.IsDatabaseKind*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceResolver_IsDatabaseKind_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.IsDatabaseKind(System.String)">
+  IsDatabaseKind(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns whether a resource kind names a database adapter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsDatabaseKind(string kind)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>kind</code> <span class="xref">string</span></dt>
+    <dd><p>The resource kind.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p><code>true</code> for database kinds such as <code>sqlserver</code>, <code>postgres</code> or <code>sqlite</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DevAppInstanceResolver_IsDatabaseKind_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var databases = inventory.Resources.Where(r =&gt; !r.Shared &amp;&amp; DevAppInstanceResolver.IsDatabaseKind(r.Kind));</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceResolver_IsLoopbackUrl_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.IsLoopbackUrl*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceResolver_IsLoopbackUrl_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.IsLoopbackUrl(System.String)">
+  IsLoopbackUrl(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value is an absolute loopback HTTP or HTTPS URL.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsLoopbackUrl(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd><p>The value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p><code>true</code> for loopback URLs.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceResolver_Resolve_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.Resolve*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceResolver_Resolve_BridgingIT_DevKit_Common_DevAppInstanceResolveRequest_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.Resolve(BridgingIT.DevKit.Common.DevAppInstanceResolveRequest)">
+  Resolve(DevAppInstanceResolveRequest)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resolves the context.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DevAppInstanceContext Resolve(DevAppInstanceResolveRequest request)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceResolveRequest.html">DevAppInstanceResolveRequest</a></dt>
+    <dd><p>The request.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a></dt>
+    <dd><p>The context.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceException.html">DevAppInstanceException</a></dt>
+    <dd><p>Thrown when isolation is required but cannot be resolved safely.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceResolver_ResolveOrphan_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.ResolveOrphan*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceResolver_ResolveOrphan_BridgingIT_DevKit_Common_DevAppInstanceResolveRequest_System_Guid_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.ResolveOrphan(BridgingIT.DevKit.Common.DevAppInstanceResolveRequest,System.Guid)">
+  ResolveOrphan(DevAppInstanceResolveRequest, Guid)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resolves the registry inventory of an orphaned worktree assignment for the orphan-reset mode, without activating
+managed mode or writing any state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DevAppInstanceOrphan ResolveOrphan(DevAppInstanceResolveRequest request, Guid worktreeId)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceResolveRequest.html">DevAppInstanceResolveRequest</a></dt>
+    <dd><p>The resolve request of the host that runs the orphan reset.</p>
+</dd>
+    <dt><code>worktreeId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orphaned worktree ID.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceOrphan.html">DevAppInstanceOrphan</a></dt>
+    <dd><p>The orphan context and the registry copy of the application inventory.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DevAppInstanceResolver_ResolveOrphan_BridgingIT_DevKit_Common_DevAppInstanceResolveRequest_System_Guid__examples">Examples</h4>
+  <pre><code class="lang-csharp">var orphan = DevAppInstanceResolver.ResolveOrphan(request, worktreeId);
+Console.WriteLine(orphan.Context.GetInstanceDatabaseName("ForecastHub"));</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceException.html">DevAppInstanceException</a></dt>
+    <dd><p>Thrown when the host is not eligible or the registry has no matching entry.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceResolver_VerifyPortsAvailable_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.VerifyPortsAvailable*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceResolver_VerifyPortsAvailable_BridgingIT_DevKit_Common_DevAppInstanceContext_BridgingIT_DevKit_Common_IDevAppInstancePortProbe_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceResolver.VerifyPortsAvailable(BridgingIT.DevKit.Common.DevAppInstanceContext,BridgingIT.DevKit.Common.IDevAppInstancePortProbe)">
+  VerifyPortsAvailable(DevAppInstanceContext, IDevAppInstancePortProbe)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Verifies that the assigned ports of an active context are free. Call after acquiring the lease.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void VerifyPortsAvailable(DevAppInstanceContext context, IDevAppInstancePortProbe probe)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a></dt>
+    <dd><p>The active context.</p>
+</dd>
+    <dt><code>probe</code> <a class="xref" href="BridgingIT.DevKit.Common.IDevAppInstancePortProbe.html">IDevAppInstancePortProbe</a></dt>
+    <dd><p>The port probe.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceException.html">DevAppInstanceException</a></dt>
+    <dd><p>Thrown with <code>port_in_use</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -181,6 +181,87 @@ Classes
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome.html">DevAppInstanceCliOutcome</a></dt>
+      <dd><p>The outcome of one <code>bdk dev</code> operation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceCliService.html">DevAppInstanceCliService</a></dt>
+      <dd><p>Implements the <code>bdk dev</code> management operations over the shared registry, the local assignment, the inventories
+and the host runtime descriptors.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceHostProject.html">DevAppInstanceHostProject</a></dt>
+      <dd><p>A DevKit web host project that <code>bdk dev run</code> can start.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceHostProjects.html">DevAppInstanceHostProjects</a></dt>
+      <dd><p>Finds the DevKit web host projects of a checkout.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceProcessResult.html">DevAppInstanceProcessResult</a></dt>
+      <dd><p>The captured result of a process started by <a class="xref" href="BridgingIT.DevKit.Cli.IDevAppInstanceProcessRunner.html">IDevAppInstanceProcessRunner</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceProcessRunner.html">DevAppInstanceProcessRunner</a></dt>
+      <dd><p>Runs processes through <span class="xref">System.Diagnostics.Process</span> with structured arguments.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceProcessStatus.html">DevAppInstanceProcessStatus</a></dt>
+      <dd><p>The verified process state of one application instance.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevCliCommandBase.html">DevCliCommandBase</a></dt>
+      <dd><p>Base class of the <code>bdk dev</code> commands that writes a <a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome.html">DevAppInstanceCliOutcome</a> as text or JSON.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevCliCommandModule.html">DevCliCommandModule</a></dt>
+      <dd><p>Registers the worktree development instance commands.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevConfigureCliCommand.html">DevConfigureCliCommand</a></dt>
+      <dd><p>Reserves a slot for the current linked worktree, or removes an application from the catalog.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevPruneCliCommand.html">DevPruneCliCommand</a></dt>
+      <dd><p>Lists, and with <code>--confirm</code> drops, the databases of deleted worktrees and frees their slots.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevReleaseCliCommand.html">DevReleaseCliCommand</a></dt>
+      <dd><p>Releases the slot of the current worktree after its instances are stopped and reset.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevResetCliCommand.html">DevResetCliCommand</a></dt>
+      <dd><p>Drops the instance databases and storage of one application of the current worktree.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevRunCliCommand.html">DevRunCliCommand</a></dt>
+      <dd><p>Builds and starts DevKit web hosts of the current checkout and streams their prefixed output until Ctrl+C.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevStatusCliCommand.html">DevStatusCliCommand</a></dt>
+      <dd><p>Shows the development instance of the current worktree: slot, URLs, databases and verified process state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevStopCliCommand.html">DevStopCliCommand</a></dt>
+      <dd><p>Requests a graceful shutdown of a running application instance of the current worktree.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Cli.DocsCliCommandModule.html">DocsCliCommandModule</a></dt>
       <dd><p>Registers documentation commands.</p>
 </dd>
@@ -436,6 +517,11 @@ Interfaces
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Cli.ICliCommandRegistry.html">ICliCommandRegistry</a></dt>
       <dd><p>Records commands and groups registered by CLI command modules.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Cli.IDevAppInstanceProcessRunner.html">IDevAppInstanceProcessRunner</a></dt>
+      <dd><p>Starts the one-shot reset processes of <code>bdk dev reset</code> and <code>bdk dev prune --confirm</code>, and the hosts of <code>bdk dev run</code>.</p>
 </dd>
     </dl>
     <dl class="jumplist">

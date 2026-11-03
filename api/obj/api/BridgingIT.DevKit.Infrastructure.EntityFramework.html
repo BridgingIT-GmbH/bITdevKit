@@ -328,6 +328,32 @@ DbContexts by context name or by concrete type using the DI container.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderPostgresExtensions.html">DevAppInstanceBuilderPostgresExtensions</a></dt>
+      <dd><p>Registers the PostgreSQL database adapter of a development instance explicitly. The call is optional:
+<code>AddDevAppInstance</code> finds the adapter automatically when the PostgreSQL provider package is referenced.
+An explicit call makes the adapter run before the automatically found ones.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderSqlServerExtensions.html">DevAppInstanceBuilderSqlServerExtensions</a></dt>
+      <dd><p>Registers the SQL Server database adapter of a development instance explicitly. The call is optional:
+<code>AddDevAppInstance</code> finds the adapter automatically when the SQL Server provider package is referenced.
+An explicit call makes the adapter run before the automatically found ones.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceBuilderSqliteExtensions.html">DevAppInstanceBuilderSqliteExtensions</a></dt>
+      <dd><p>Registers the SQLite database adapter of a development instance explicitly. The call is optional:
+<code>AddDevAppInstance</code> finds the adapter automatically when the SQLite provider package is referenced.
+An explicit call makes the adapter run before the automatically found ones.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceDatabaseAdapterBase.html">DevAppInstanceDatabaseAdapterBase</a></dt>
+      <dd><p>Base class of the database adapters that give each linked worktree its own database <code>&lt;database&gt;_wNN</code>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.html">DocumentStoreModelBuilderExtensions</a></dt>
       <dd><p>Provides model configuration for the <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.html">StorageDocument</a> entity that cannot be expressed with annotations.</p>
 </dd>
@@ -595,6 +621,12 @@ Supports paged queries, streaming, background purging, statistics, and exporting
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.PostgresDevAppInstanceAdapter.html">PostgresDevAppInstanceAdapter</a></dt>
+      <dd><p>Gives each linked worktree its own PostgreSQL database <code>&lt;database&gt;_wNN</code> and drops recorded instance
+databases on reset.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.PostgresHierarchyQueryProvider.html">PostgresHierarchyQueryProvider</a></dt>
       <dd><p>Represents postgres hierarchy query provider.</p>
 </dd>
@@ -670,6 +702,12 @@ This implementation uses native PostgreSQL sequences.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServerDevAppInstanceAdapter.html">SqlServerDevAppInstanceAdapter</a></dt>
+      <dd><p>Gives each linked worktree its own SQL Server database <code>&lt;database&gt;_wNN</code> and drops recorded instance
+databases on reset.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServerHierarchyQueryProvider.html">SqlServerHierarchyQueryProvider</a></dt>
       <dd><p>Represents sql server hierarchy query provider.</p>
 </dd>
@@ -724,6 +762,12 @@ string and provider, making it reusable across different projects and database p
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.SqlStatements.html">SqlStatements</a></dt>
       <dd><p>Represents sql statements.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.SqliteDevAppInstanceAdapter.html">SqliteDevAppInstanceAdapter</a></dt>
+      <dd><p>Gives each linked worktree its own SQLite database file <code>&lt;name&gt;_wNN&lt;extension&gt;</code> and deletes recorded
+instance files on reset.</p>
 </dd>
     </dl>
     <dl class="jumplist">

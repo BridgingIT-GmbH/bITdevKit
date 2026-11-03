@@ -389,6 +389,38 @@ Class HostRuntimeDescriptor
 
 
 
+  <a id="BridgingIT_DevKit_Common_HostRuntimeDescriptor_DevAppInstance_" data-uid="BridgingIT.DevKit.Common.HostRuntimeDescriptor.DevAppInstance*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_HostRuntimeDescriptor_DevAppInstance" data-uid="BridgingIT.DevKit.Common.HostRuntimeDescriptor.DevAppInstance">
+  DevAppInstance
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the linked-worktree development instance, when isolation is active. Omitted otherwise.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HostRuntimeDevAppInstanceDescriptor DevAppInstance { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.HostRuntimeDevAppInstanceDescriptor.html">HostRuntimeDevAppInstanceDescriptor</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Common_HostRuntimeDescriptor_EnvironmentName_" data-uid="BridgingIT.DevKit.Common.HostRuntimeDescriptor.EnvironmentName*"></a>
 
   <h3 id="BridgingIT_DevKit_Common_HostRuntimeDescriptor_EnvironmentName" data-uid="BridgingIT.DevKit.Common.HostRuntimeDescriptor.EnvironmentName">
@@ -603,6 +635,39 @@ Class HostRuntimeDescriptor
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_HostRuntimeDescriptor_Urls_" data-uid="BridgingIT.DevKit.Common.HostRuntimeDescriptor.Urls*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_HostRuntimeDescriptor_Urls" data-uid="BridgingIT.DevKit.Common.HostRuntimeDescriptor.Urls">
+  Urls
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the addresses the host listens on, HTTPS first. Wildcard hosts are reported as <code>localhost</code>.
+Empty until the server has started.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt; Urls { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<span class="xref">string</span>&gt;</dt>
     <dd></dd>
   </dl>
 

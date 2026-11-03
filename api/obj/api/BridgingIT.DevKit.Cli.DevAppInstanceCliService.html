@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class DevAppInstanceCliService | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class DevAppInstanceCliService | bITdevKit API Reference ">
+      
+      <meta name="description" content="Implements the bdk dev management operations over the shared registry, the local assignment, the inventories and the host runtime descriptors.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService">
+
+
+
+  <h1 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService" class="text-break">
+Class DevAppInstanceCliService  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Cli.html">Cli</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Cli.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Implements the <code>bdk dev</code> management operations over the shared registry, the local assignment, the inventories
+and the host runtime descriptors.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class DevAppInstanceCliService</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">DevAppInstanceCliService</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_examples">Examples</h2>
+  <pre><code class="lang-csharp">var outcome = service.GetStatus(workspace);
+Console.WriteLine(outcome.Summary);</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Every registry change happens under the registry lock. The service never deletes databases itself: reset and prune
+start the application project with the reserved reset arguments so the host's own adapters do the work.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Cli_DevAppInstanceCliService__ctor_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService__ctor_BridgingIT_DevKit_Cli_HostRuntimeDiscovery_BridgingIT_DevKit_Cli_IHostProcessManager_BridgingIT_DevKit_Cli_IDevAppInstanceProcessRunner_BridgingIT_DevKit_Common_IGitCommandRunner_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.#ctor(BridgingIT.DevKit.Cli.HostRuntimeDiscovery,BridgingIT.DevKit.Cli.IHostProcessManager,BridgingIT.DevKit.Cli.IDevAppInstanceProcessRunner,BridgingIT.DevKit.Common.IGitCommandRunner)">
+  DevAppInstanceCliService(HostRuntimeDiscovery, IHostProcessManager, IDevAppInstanceProcessRunner, IGitCommandRunner)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implements the <code>bdk dev</code> management operations over the shared registry, the local assignment, the inventories
+and the host runtime descriptors.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DevAppInstanceCliService(HostRuntimeDiscovery discovery, IHostProcessManager processManager, IDevAppInstanceProcessRunner processRunner, IGitCommandRunner gitRunner)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>discovery</code> <a class="xref" href="BridgingIT.DevKit.Cli.HostRuntimeDiscovery.html">HostRuntimeDiscovery</a></dt>
+    <dd></dd>
+    <dt><code>processManager</code> <a class="xref" href="BridgingIT.DevKit.Cli.IHostProcessManager.html">IHostProcessManager</a></dt>
+    <dd></dd>
+    <dt><code>processRunner</code> <a class="xref" href="BridgingIT.DevKit.Cli.IDevAppInstanceProcessRunner.html">IDevAppInstanceProcessRunner</a></dt>
+    <dd></dd>
+    <dt><code>gitRunner</code> <a class="xref" href="BridgingIT.DevKit.Common.IGitCommandRunner.html">IGitCommandRunner</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Cli_DevAppInstanceCliService__ctor_BridgingIT_DevKit_Cli_HostRuntimeDiscovery_BridgingIT_DevKit_Cli_IHostProcessManager_BridgingIT_DevKit_Cli_IDevAppInstanceProcessRunner_BridgingIT_DevKit_Common_IGitCommandRunner__examples">Examples</h4>
+  <pre><code class="lang-csharp">var outcome = service.GetStatus(workspace);
+Console.WriteLine(outcome.Summary);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Cli_DevAppInstanceCliService__ctor_BridgingIT_DevKit_Cli_HostRuntimeDiscovery_BridgingIT_DevKit_Cli_IHostProcessManager_BridgingIT_DevKit_Cli_IDevAppInstanceProcessRunner_BridgingIT_DevKit_Common_IGitCommandRunner__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Every registry change happens under the registry lock. The service never deletes databases itself: reset and prune
+start the application project with the reserved reset arguments so the host's own adapters do the work.</p>
+</div>
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_StatusSchemaVersion" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.StatusSchemaVersion">
+  StatusSchemaVersion
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The status schema version.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int StatusSchemaVersion = 1</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_LockTimeout_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.LockTimeout*"></a>
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_LockTimeout" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.LockTimeout">
+  LockTimeout
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the registry lock timeout.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeSpan LockTimeout { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TimeSpan</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_RunShutdownTimeout_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.RunShutdownTimeout*"></a>
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_RunShutdownTimeout" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.RunShutdownTimeout">
+  RunShutdownTimeout
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the time <code>bdk dev run</code> waits for its hosts to stop before it terminates them.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeSpan RunShutdownTimeout { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TimeSpan</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_StopTimeout_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.StopTimeout*"></a>
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_StopTimeout" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.StopTimeout">
+  StopTimeout
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the graceful stop timeout.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeSpan StopTimeout { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TimeSpan</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_TimeProvider_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.TimeProvider*"></a>
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_TimeProvider" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.TimeProvider">
+  TimeProvider
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the clock.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeProvider TimeProvider { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TimeProvider</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_ConfigureSlot_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.ConfigureSlot*"></a>
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_ConfigureSlot_BridgingIT_DevKit_Cli_CliWorkspaceContext_System_Int32_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.ConfigureSlot(BridgingIT.DevKit.Cli.CliWorkspaceContext,System.Int32)">
+  ConfigureSlot(CliWorkspaceContext, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reserves a slot for the current linked worktree, or moves an idle assignment without resources to another slot.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DevAppInstanceCliOutcome ConfigureSlot(CliWorkspaceContext workspace, int slot)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>workspace</code> <a class="xref" href="BridgingIT.DevKit.Cli.CliWorkspaceContext.html">CliWorkspaceContext</a></dt>
+    <dd><p>The CLI workspace.</p>
+</dd>
+    <dt><code>slot</code> <span class="xref">int</span></dt>
+    <dd><p>The requested slot.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome.html">DevAppInstanceCliOutcome</a></dt>
+    <dd><p>The outcome.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_ForgetApplication_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.ForgetApplication*"></a>
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_ForgetApplication_BridgingIT_DevKit_Cli_CliWorkspaceContext_System_String_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.ForgetApplication(BridgingIT.DevKit.Cli.CliWorkspaceContext,System.String)">
+  ForgetApplication(CliWorkspaceContext, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes an application's recorded catalog entry so its next start records a changed declaration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DevAppInstanceCliOutcome ForgetApplication(CliWorkspaceContext workspace, string appId)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>workspace</code> <a class="xref" href="BridgingIT.DevKit.Cli.CliWorkspaceContext.html">CliWorkspaceContext</a></dt>
+    <dd><p>The CLI workspace.</p>
+</dd>
+    <dt><code>appId</code> <span class="xref">string</span></dt>
+    <dd><p>The application ID.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome.html">DevAppInstanceCliOutcome</a></dt>
+    <dd><p>The outcome.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_GetProcessStatus_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.GetProcessStatus*"></a>
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_GetProcessStatus_System_String_System_Guid_System_String_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Cli_HostRuntimeInfo__" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.GetProcessStatus(System.String,System.Guid,System.String,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Cli.HostRuntimeInfo})">
+  GetProcessStatus(string, Guid, string, IReadOnlyList&lt;HostRuntimeInfo&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines the verified process state of one application instance from its runtime descriptor and lease.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DevAppInstanceProcessStatus GetProcessStatus(string commonDirectory, Guid worktreeId, string appId, IReadOnlyList&lt;HostRuntimeInfo&gt; hosts)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>commonDirectory</code> <span class="xref">string</span></dt>
+    <dd><p>The common Git directory.</p>
+</dd>
+    <dt><code>worktreeId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The worktree ID.</p>
+</dd>
+    <dt><code>appId</code> <span class="xref">string</span></dt>
+    <dd><p>The application ID.</p>
+</dd>
+    <dt><code>hosts</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Cli.HostRuntimeInfo.html">HostRuntimeInfo</a>&gt;</dt>
+    <dd><p>The discovered hosts.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceProcessStatus.html">DevAppInstanceProcessStatus</a></dt>
+    <dd><p>The process status.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_GetStatus_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.GetStatus*"></a>
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_GetStatus_BridgingIT_DevKit_Cli_CliWorkspaceContext_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.GetStatus(BridgingIT.DevKit.Cli.CliWorkspaceContext)">
+  GetStatus(CliWorkspaceContext)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reports the assignment of the current worktree, the catalog applications and their verified process state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DevAppInstanceCliOutcome GetStatus(CliWorkspaceContext workspace)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>workspace</code> <a class="xref" href="BridgingIT.DevKit.Cli.CliWorkspaceContext.html">CliWorkspaceContext</a></dt>
+    <dd><p>The CLI workspace.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome.html">DevAppInstanceCliOutcome</a></dt>
+    <dd><p>The outcome.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_PruneAsync_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.PruneAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_PruneAsync_BridgingIT_DevKit_Cli_CliWorkspaceContext_System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.PruneAsync(BridgingIT.DevKit.Cli.CliWorkspaceContext,System.Boolean,System.Threading.CancellationToken)">
+  PruneAsync(CliWorkspaceContext, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists orphaned assignments of deleted worktrees and, when confirmed, drops their databases and frees their slots.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DevAppInstanceCliOutcome&gt; PruneAsync(CliWorkspaceContext workspace, bool confirm, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>workspace</code> <a class="xref" href="BridgingIT.DevKit.Cli.CliWorkspaceContext.html">CliWorkspaceContext</a></dt>
+    <dd><p>The CLI workspace.</p>
+</dd>
+    <dt><code>confirm</code> <span class="xref">bool</span></dt>
+    <dd><p>A value indicating whether orphaned resources are dropped.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome.html">DevAppInstanceCliOutcome</a>&gt;</dt>
+    <dd><p>The outcome.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_Release_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.Release*"></a>
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_Release_BridgingIT_DevKit_Cli_CliWorkspaceContext_System_Int32_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.Release(BridgingIT.DevKit.Cli.CliWorkspaceContext,System.Int32)">
+  Release(CliWorkspaceContext, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases the slot of the current worktree when no instance runs and no instance resources remain.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DevAppInstanceCliOutcome Release(CliWorkspaceContext workspace, int confirmSlot)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>workspace</code> <a class="xref" href="BridgingIT.DevKit.Cli.CliWorkspaceContext.html">CliWorkspaceContext</a></dt>
+    <dd><p>The CLI workspace.</p>
+</dd>
+    <dt><code>confirmSlot</code> <span class="xref">int</span></dt>
+    <dd><p>The confirmation slot.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome.html">DevAppInstanceCliOutcome</a></dt>
+    <dd><p>The outcome.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_ResetAsync_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.ResetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_ResetAsync_BridgingIT_DevKit_Cli_CliWorkspaceContext_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.ResetAsync(BridgingIT.DevKit.Cli.CliWorkspaceContext,System.String,System.String,System.Threading.CancellationToken)">
+  ResetAsync(CliWorkspaceContext, string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Drops the instance resources of one application by starting its project with the reserved reset argument.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DevAppInstanceCliOutcome&gt; ResetAsync(CliWorkspaceContext workspace, string appId, string confirmInstance, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>workspace</code> <a class="xref" href="BridgingIT.DevKit.Cli.CliWorkspaceContext.html">CliWorkspaceContext</a></dt>
+    <dd><p>The CLI workspace.</p>
+</dd>
+    <dt><code>appId</code> <span class="xref">string</span></dt>
+    <dd><p>The application ID.</p>
+</dd>
+    <dt><code>confirmInstance</code> <span class="xref">string</span></dt>
+    <dd><p>The confirmation token, for example <code>forecasthub:w02</code>.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome.html">DevAppInstanceCliOutcome</a>&gt;</dt>
+    <dd><p>The outcome. The exit code is the reset host's exit code: 0 success, 2 refused, 3 incomplete.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_RunAsync_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.RunAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_RunAsync_BridgingIT_DevKit_Cli_CliWorkspaceContext_System_Collections_Generic_IReadOnlyList_System_String__System_Boolean_System_Action_System_String__System_Threading_CancellationToken_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.RunAsync(BridgingIT.DevKit.Cli.CliWorkspaceContext,System.Collections.Generic.IReadOnlyList{System.String},System.Boolean,System.Action{System.String},System.Threading.CancellationToken,System.Threading.CancellationToken)">
+  RunAsync(CliWorkspaceContext, IReadOnlyList&lt;string&gt;, bool, Action&lt;string&gt;, CancellationToken, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds and starts DevKit web hosts of the current checkout and streams their output until they exit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DevAppInstanceCliOutcome&gt; RunAsync(CliWorkspaceContext workspace, IReadOnlyList&lt;string&gt; appIds, bool noBuild, Action&lt;string&gt; output, CancellationToken stopToken, CancellationToken killToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>workspace</code> <a class="xref" href="BridgingIT.DevKit.Cli.CliWorkspaceContext.html">CliWorkspaceContext</a></dt>
+    <dd><p>The CLI workspace.</p>
+</dd>
+    <dt><code>appIds</code> <span class="xref">IReadOnlyList</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>The application IDs to start, or an empty list for all hosts.</p>
+</dd>
+    <dt><code>noBuild</code> <span class="xref">bool</span></dt>
+    <dd><p>A value indicating whether the build step is skipped.</p>
+</dd>
+    <dt><code>output</code> <span class="xref">Action</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>Receives progress lines and the prefixed host output lines.</p>
+</dd>
+    <dt><code>stopToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Signals that the hosts should stop, usually Ctrl+C.</p>
+</dd>
+    <dt><code>killToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Signals that the hosts must be terminated immediately.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome.html">DevAppInstanceCliOutcome</a>&gt;</dt>
+    <dd><p>The outcome after all hosts exited.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_RunAsync_BridgingIT_DevKit_Cli_CliWorkspaceContext_System_Collections_Generic_IReadOnlyList_System_String__System_Boolean_System_Action_System_String__System_Threading_CancellationToken_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The hosts build one after another, because parallel builds of shared projects collide on <code>obj</code> files. They then
+run concurrently with <code>dotnet run --no-build</code> and their launch profile. In a linked worktree each host isolates
+itself, so the launch profile ports are replaced by the slot ports. Hosts whose instance is already running are
+skipped. When <code class="paramref">stopToken</code> fires, the service asks managed instances to stop through their stop
+file, waits <a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceCliService.html#BridgingIT_DevKit_Cli_DevAppInstanceCliService_RunShutdownTimeout">RunShutdownTimeout</a>, then terminates the remaining process trees.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_StopAsync_" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.StopAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Cli_DevAppInstanceCliService_StopAsync_BridgingIT_DevKit_Cli_CliWorkspaceContext_System_String_System_Boolean_System_Threading_CancellationToken_System_Nullable_System_TimeSpan__" data-uid="BridgingIT.DevKit.Cli.DevAppInstanceCliService.StopAsync(BridgingIT.DevKit.Cli.CliWorkspaceContext,System.String,System.Boolean,System.Threading.CancellationToken,System.Nullable{System.TimeSpan})">
+  StopAsync(CliWorkspaceContext, string, bool, CancellationToken, TimeSpan?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Requests a graceful shutdown of a verified running instance and waits for its lease to be released.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DevAppInstanceCliOutcome&gt; StopAsync(CliWorkspaceContext workspace, string appId, bool force, CancellationToken cancellationToken, TimeSpan? timeout = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>workspace</code> <a class="xref" href="BridgingIT.DevKit.Cli.CliWorkspaceContext.html">CliWorkspaceContext</a></dt>
+    <dd><p>The CLI workspace.</p>
+</dd>
+    <dt><code>appId</code> <span class="xref">string</span></dt>
+    <dd><p>The application ID.</p>
+</dd>
+    <dt><code>force</code> <span class="xref">bool</span></dt>
+    <dd><p>A value indicating whether the process is killed after the graceful timeout.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+    <dt><code>timeout</code> <span class="xref">TimeSpan</span>?</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Cli.DevAppInstanceCliOutcome.html">DevAppInstanceCliOutcome</a>&gt;</dt>
+    <dd><p>The outcome.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

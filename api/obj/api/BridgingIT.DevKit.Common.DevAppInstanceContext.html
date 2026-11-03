@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class DevAppInstanceContext | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class DevAppInstanceContext | bITdevKit API Reference ">
+      
+      <meta name="description" content="The immutable development instance context resolved once per host startup.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_DevAppInstanceContext" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext" class="text-break">
+Class DevAppInstanceContext  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>The immutable development instance context resolved once per host startup.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed record DevAppInstanceContext</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">DevAppInstanceContext</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureTableEntityConverter.html#BridgingIT_DevKit_Infrastructure_Azure_AzureTableEntityConverter_ToTableEntity__1___0_System_String_System_String_System_Text_Json_JsonSerializerOptions_BridgingIT_DevKit_Infrastructure_Azure_PropertyConverters___0__">AzureTableEntityConverter.ToTableEntity&lt;T&gt;(T, string, string, JsonSerializerOptions, PropertyConverters&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Common_DevAppInstanceContext_examples">Examples</h2>
+  <pre><code class="lang-csharp">var context = app.Services.GetRequiredService&lt;DevAppInstanceContext&gt;();
+if (context.IsActive)
+{
+    Console.WriteLine($"{context.AppId} slot {context.Slot}: {context.HttpsUrl}");
+}</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Common_DevAppInstanceContext_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>An inactive context has <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html#BridgingIT_DevKit_Common_DevAppInstanceContext_IsActive">IsActive</a> set to <code>false</code>, reports <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html#BridgingIT_DevKit_Common_DevAppInstanceContext_InactiveReason">InactiveReason</a> and never carries
+a worktree ID, slot, URL or path. Use <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html#BridgingIT_DevKit_Common_DevAppInstanceContext_ToStatus">ToStatus()</a> for the sanitized
+projection. The full context contains local paths and managed values and is never sent to a browser.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext__ctor_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext__ctor" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.#ctor">
+  DevAppInstanceContext()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DevAppInstanceContext()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_AppId_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.AppId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_AppId" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.AppId">
+  AppId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the application ID.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string AppId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_CommonDirectory_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.CommonDirectory*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_CommonDirectory" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.CommonDirectory">
+  CommonDirectory
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the canonical common Git directory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string CommonDirectory { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_DashboardCookieName_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.DashboardCookieName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_DashboardCookieName" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.DashboardCookieName">
+  DashboardCookieName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the dashboard cookie name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string DashboardCookieName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_DataProtectionApplicationName_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.DataProtectionApplicationName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_DataProtectionApplicationName" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.DataProtectionApplicationName">
+  DataProtectionApplicationName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the data protection application name <code>appId.wNN</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string DataProtectionApplicationName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_FailureCode_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.FailureCode*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_FailureCode" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.FailureCode">
+  FailureCode
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the error code of the failure that caused the fallback, otherwise <code>null</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string FailureCode { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_FailureMessage_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.FailureMessage*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_FailureMessage" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.FailureMessage">
+  FailureMessage
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the sanitized failure message when isolation fell back to the configured defaults, otherwise <code>null</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string FailureMessage { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_HttpPort_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.HttpPort*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_HttpPort" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.HttpPort">
+  HttpPort
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the resolved HTTP port.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? HttpPort { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_HttpUrl_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.HttpUrl*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_HttpUrl" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.HttpUrl">
+  HttpUrl
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the resolved HTTP URL.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string HttpUrl { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_HttpsPort_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.HttpsPort*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_HttpsPort" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.HttpsPort">
+  HttpsPort
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the resolved HTTPS port.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? HttpsPort { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_HttpsUrl_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.HttpsUrl*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_HttpsUrl" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.HttpsUrl">
+  HttpsUrl
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the resolved HTTPS URL, which is also the canonical public origin.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string HttpsUrl { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_IdentityProviderCookieName_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.IdentityProviderCookieName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_IdentityProviderCookieName" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.IdentityProviderCookieName">
+  IdentityProviderCookieName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the fake identity provider cookie name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string IdentityProviderCookieName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_InactiveReason_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.InactiveReason*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_InactiveReason" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.InactiveReason">
+  InactiveReason
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the inactive reason, or <code>null</code> when active.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string InactiveReason { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_InstanceName_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.InstanceName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_InstanceName" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.InstanceName">
+  InstanceName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the instance name formatted as <code>appId:wNN</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string InstanceName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_IsActive_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.IsActive*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_IsActive" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.IsActive">
+  IsActive
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether linked-worktree isolation is active.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsActive { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_KeysRoot_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.KeysRoot*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_KeysRoot" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.KeysRoot">
+  KeysRoot
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the data protection key ring directory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string KeysRoot { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_LeasePath_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.LeasePath*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_LeasePath" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.LeasePath">
+  LeasePath
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the lease file path, when a lease is held.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string LeasePath { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_LogSteps_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.LogSteps*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_LogSteps" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.LogSteps">
+  LogSteps
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the recorded startup log steps.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;DevAppInstanceLogStep&gt; LogSteps { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceLogStep.html">DevAppInstanceLogStep</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_LogsRoot_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.LogsRoot*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_LogsRoot" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.LogsRoot">
+  LogsRoot
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the log root.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string LogsRoot { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_ManagedValues_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.ManagedValues*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_ManagedValues" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.ManagedValues">
+  ManagedValues
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the managed configuration values. May contain secrets and is never logged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyDictionary&lt;string, string&gt; ManagedValues { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyDictionary</span>&lt;<span class="xref">string</span>, <span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_PayloadRoot_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.PayloadRoot*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_PayloadRoot" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.PayloadRoot">
+  PayloadRoot
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the payload storage root.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string PayloadRoot { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_PublicOrigin_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.PublicOrigin*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_PublicOrigin" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.PublicOrigin">
+  PublicOrigin
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the canonical public origin.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string PublicOrigin { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_Resources_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.Resources*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_Resources" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.Resources">
+  Resources
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the resolved resource plans.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;DevAppInstanceResourcePlan&gt; Resources { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceResourcePlan.html">DevAppInstanceResourcePlan</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_SelectionReason_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.SelectionReason*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_SelectionReason" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.SelectionReason">
+  SelectionReason
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets how the slot was obtained.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DevAppInstanceSelectionReason SelectionReason { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceSelectionReason.html">DevAppInstanceSelectionReason</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_Slot_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.Slot*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_Slot" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.Slot">
+  Slot
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the slot from 1 to the policy slot count.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? Slot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_SlotName_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.SlotName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_SlotName" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.SlotName">
+  SlotName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the slot formatted as <code>wNN</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string SlotName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_StateRoot_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.StateRoot*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_StateRoot" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.StateRoot">
+  StateRoot
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the application state root <code>.dev/state/&lt;appId&gt;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string StateRoot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_WorktreeId_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.WorktreeId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_WorktreeId" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.WorktreeId">
+  WorktreeId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the stable worktree ID.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid? WorktreeId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_WorktreeRoot_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.WorktreeRoot*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_WorktreeRoot" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.WorktreeRoot">
+  WorktreeRoot
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the canonical worktree root.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string WorktreeRoot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_Equals_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.Equals*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_Equals_BridgingIT_DevKit_Common_DevAppInstanceContext_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.Equals(BridgingIT.DevKit.Common.DevAppInstanceContext)">
+  Equals(DevAppInstanceContext?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(DevAppInstanceContext? other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_Equals_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.Equals*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_Equals_System_Object_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.Equals(System.Object)">
+  Equals(object?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_Fallback_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.Fallback*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_Fallback_BridgingIT_DevKit_Common_DevAppInstanceException_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.Fallback(BridgingIT.DevKit.Common.DevAppInstanceException,System.String)">
+  Fallback(DevAppInstanceException, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates the inactive context of a host that fell back to its configured defaults after isolation failed. The
+context carries one warning log step that names the failure and the recovery action.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DevAppInstanceContext Fallback(DevAppInstanceException exception, string appId = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>exception</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceException.html">DevAppInstanceException</a></dt>
+    <dd><p>The failure that stopped isolation.</p>
+</dd>
+    <dt><code>appId</code> <span class="xref">string</span></dt>
+    <dd><p>The optional application ID.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a></dt>
+    <dd><p>The inactive context with the reason <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceInactiveReasons.html#BridgingIT_DevKit_Common_DevAppInstanceInactiveReasons_Fallback">Fallback</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DevAppInstanceContext_Fallback_BridgingIT_DevKit_Common_DevAppInstanceException_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var context = DevAppInstanceContext.Fallback(new DevAppInstanceException(DevAppInstanceErrorCodes.ConfigurationConflict, "Port in use."), "forecasthub");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_GetHashCode_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.GetHashCode*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_GetHashCode" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.GetHashCode">
+  GetHashCode()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_GetInstanceDatabaseName_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.GetInstanceDatabaseName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_GetInstanceDatabaseName_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.GetInstanceDatabaseName(System.String)">
+  GetInstanceDatabaseName(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the instance database name <code>&lt;baseline&gt;_wNN</code> from the database name of the baseline configuration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string GetInstanceDatabaseName(string baselineName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>baselineName</code> <span class="xref">string</span></dt>
+    <dd><p>The database name in the baseline connection string, for example <code>ForecastHub</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The instance database name, for example <code>ForecastHub_w01</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DevAppInstanceContext_GetInstanceDatabaseName_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var name = context.GetInstanceDatabaseName("ForecastHub"); // ForecastHub_w01 in slot 1</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_Inactive_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.Inactive*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_Inactive_System_String_System_String_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.Inactive(System.String,System.String)">
+  Inactive(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates an inactive context.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DevAppInstanceContext Inactive(string reason, string appId = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>reason</code> <span class="xref">string</span></dt>
+    <dd><p>The inactive reason from <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceInactiveReasons.html">DevAppInstanceInactiveReasons</a>.</p>
+</dd>
+    <dt><code>appId</code> <span class="xref">string</span></dt>
+    <dd><p>The optional application ID.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a></dt>
+    <dd><p>The inactive context.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_ToStatus_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.ToStatus*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_ToStatus" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.ToStatus">
+  ToStatus()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the sanitized status projection. It contains no credentials or connection strings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DevAppInstanceStatus ToStatus()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceStatus.html">DevAppInstanceStatus</a></dt>
+    <dd><p>The status projection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_ToString_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.ToString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_ToString" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.ToString">
+  ToString()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_op_Equality_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.op_Equality*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_op_Equality_BridgingIT_DevKit_Common_DevAppInstanceContext_BridgingIT_DevKit_Common_DevAppInstanceContext_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.op_Equality(BridgingIT.DevKit.Common.DevAppInstanceContext,BridgingIT.DevKit.Common.DevAppInstanceContext)">
+  operator ==(DevAppInstanceContext?, DevAppInstanceContext?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(DevAppInstanceContext? left, DevAppInstanceContext? right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DevAppInstanceContext_op_Inequality_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.op_Inequality*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DevAppInstanceContext_op_Inequality_BridgingIT_DevKit_Common_DevAppInstanceContext_BridgingIT_DevKit_Common_DevAppInstanceContext_" data-uid="BridgingIT.DevKit.Common.DevAppInstanceContext.op_Inequality(BridgingIT.DevKit.Common.DevAppInstanceContext,BridgingIT.DevKit.Common.DevAppInstanceContext)">
+  operator !=(DevAppInstanceContext?, DevAppInstanceContext?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(DevAppInstanceContext? left, DevAppInstanceContext? right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="BridgingIT.DevKit.Common.DevAppInstanceContext.html">DevAppInstanceContext</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

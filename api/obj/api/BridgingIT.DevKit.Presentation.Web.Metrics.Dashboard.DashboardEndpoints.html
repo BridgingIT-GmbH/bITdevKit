@@ -319,8 +319,92 @@ Class DashboardEndpoints
 
 
 
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Metrics_Dashboard_DashboardEndpoints_Views_" data-uid="BridgingIT.DevKit.Presentation.Web.Metrics.Dashboard.DashboardEndpoints.Views*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Metrics_Dashboard_DashboardEndpoints_Views" data-uid="BridgingIT.DevKit.Presentation.Web.Metrics.Dashboard.DashboardEndpoints.Views">
+  Views
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the metrics view keys in tab order. The first view is served at the metrics root path.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;string&gt; Views { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Metrics_Dashboard_DashboardEndpoints_Views_examples">Examples</h4>
+  <pre><code class="lang-csharp">var isView = DashboardEndpoints.Views.Contains("dotnet");</code></pre>
+
+
+
+
+
+
   <h2 class="section" id="methods">Methods
 </h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Metrics_Dashboard_DashboardEndpoints_BuildMetricsPath_" data-uid="BridgingIT.DevKit.Presentation.Web.Metrics.Dashboard.DashboardEndpoints.BuildMetricsPath*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Metrics_Dashboard_DashboardEndpoints_BuildMetricsPath_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions_System_String_" data-uid="BridgingIT.DevKit.Presentation.Web.Metrics.Dashboard.DashboardEndpoints.BuildMetricsPath(BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions,System.String)">
+  BuildMetricsPath(DashboardEndpointsOptions, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the full metrics page path for a view.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string BuildMetricsPath(DashboardEndpointsOptions options, string view = &quot;app&quot;)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions.html">DashboardEndpointsOptions</a></dt>
+    <dd><p>The dashboard options.</p>
+</dd>
+    <dt><code>view</code> <span class="xref">string</span></dt>
+    <dd><p>The view key, for example <code>dotnet</code>. Unknown keys and <code>app</code> return the metrics root path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The metrics page path.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Metrics_Dashboard_DashboardEndpoints_BuildMetricsPath_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var path = DashboardEndpoints.BuildMetricsPath(options, "routes"); // /_bdk/dashboard/metrics/routes</code></pre>
+
+
+
+
 
 
   <a id="BridgingIT_DevKit_Presentation_Web_Metrics_Dashboard_DashboardEndpoints_Map_" data-uid="BridgingIT.DevKit.Presentation.Web.Metrics.Dashboard.DashboardEndpoints.Map*"></a>

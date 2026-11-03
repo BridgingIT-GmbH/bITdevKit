@@ -7,7 +7,7 @@
       "request": "launch",
       "preLaunchTask": "DoFiesta - build",
       "program": "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/bin/Debug/net10.0/BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.dll",
-      "args": ["--urls", "https://localhost:5001;http://localhost:5000"],
+      "args": ["--urls", "https://localhost:5011;http://localhost:5010"],
       "cwd": "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server",
       "stopAtEntry": false,
       "justMyCode": true,
@@ -17,7 +17,7 @@
       },
       "serverReadyAction": {
         "action": "openExternally",
-        "pattern": "\\bNow listening on:\\s+(https://localhost:5001\\S*)",
+        "pattern": "\\bNow listening on:\\s+(https://localhost:\\d+\\S*)",
         "uriFormat": "%s"
       },
       "presentation": {
@@ -33,7 +33,7 @@
       "noDebug": true,
       "preLaunchTask": "DoFiesta - build",
       "program": "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/bin/Debug/net10.0/BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.dll",
-      "args": ["--urls", "https://localhost:5001;http://localhost:5000"],
+      "args": ["--urls", "https://localhost:5011;http://localhost:5010"],
       "cwd": "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server",
       "justMyCode": true,
       "console": "internalConsole",
@@ -42,7 +42,7 @@
       },
       "serverReadyAction": {
         "action": "openExternally",
-        "pattern": "\\bNow listening on:\\s+(https://localhost:5001\\S*)",
+        "pattern": "\\bNow listening on:\\s+(https://localhost:\\d+\\S*)",
         "uriFormat": "%s"
       },
       "presentation": {
@@ -68,7 +68,7 @@
       "name": "DoFiesta.Presentation.Web.Server Watch (hot reload only)",
       "type": "node-terminal",
       "request": "launch",
-      "command": "dotnet watch --project \"${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj\" run -- --urls \"https://localhost:5001;http://localhost:5000\"",
+      "command": "dotnet watch --project \"${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj\" run -- --urls \"https://localhost:5011;http://localhost:5010\"",
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
@@ -106,7 +106,7 @@
       },
       "serverReadyAction": {
         "action": "openExternally",
-        "pattern": "\\bNow listening on:\\s+(https://localhost:5001\\S*)",
+        "pattern": "\\bNow listening on:\\s+(https://localhost:\\d+\\S*)",
         "uriFormat": "%s"
       },
       "presentation": {
@@ -131,7 +131,7 @@
       },
       "serverReadyAction": {
         "action": "openExternally",
-        "pattern": "\\bNow listening on:\\s+(https://localhost:5001\\S*)",
+        "pattern": "\\bNow listening on:\\s+(https://localhost:\\d+\\S*)",
         "uriFormat": "%s"
       },
       "presentation": {

@@ -61,6 +61,7 @@ nav:
           - Presentation and Hosts:
               - Host: reference/features-presentation.md
               - Configuration: reference/features-presentation-configuration.md
+              - Worktree Development Support: reference/development-worktrees-support.md
               - Logging: reference/features-presentation-logging.md
               - Endpoints: reference/features-presentation-endpoints.md
               - Presentation Streaming: reference/features-presentation-streaming.md

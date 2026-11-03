@@ -13,6 +13,7 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Metrics;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Occurrences;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Recurring;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Retries;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Search;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Servers;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Triggers;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models;
@@ -91,6 +92,11 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Retries.RetriesRequestBuilder Retries
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Retries.RetriesRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The search property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Search.SearchRequestBuilder Search
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Search.SearchRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>The servers property</summary>
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Servers.ServersRequestBuilder Servers

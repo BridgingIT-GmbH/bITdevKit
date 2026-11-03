@@ -180,9 +180,9 @@ builder.Services.AddFakeIdentityProvider(o => o
     .WithClient(
         "WeatherFiesta API",
         "weatherfiesta-api",
-        "https://localhost:5001/authentication/login-callback",
-        "https://localhost:5001/authentication/logout-callback",
-        "https://localhost:5001/openapi/oauth2-redirect.html")
+        "/authentication/login-callback",
+        "/authentication/logout-callback",
+        "/openapi/oauth2-redirect.html")
     .WithClient(
         "bdk dashboard",
         "dashboard",

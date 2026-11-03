@@ -188,8 +188,9 @@
         // Read all tokens from session storage
         try
         {
-            var storageKey = $"oidc.user:https://localhost:5001:blazor-wasm"; // TODO: get from configuration
-            var tokenStorage = await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", storageKey);
+            // the relative authority resolves to the origin that served the client, so the key follows the worktree slot
+            var tokenStorage = await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", $"oidc.user:{Navigation.BaseUri}:blazor-wasm")
+                ?? await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", $"oidc.user:{Navigation.BaseUri.TrimEnd('/')}:blazor-wasm");
 
             if (!string.IsNullOrEmpty(tokenStorage))
             {

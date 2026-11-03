@@ -76,6 +76,18 @@ public class DashboardEndpoints(
             "_bdk.Dashboard.SystemContent",
             "Dashboard System Content",
             "Shows the dashboard system performance content fragment.");
+
+        group.MapDashboardPage<Pages.SystemProcess>(
+            options.EndpointPaths.SystemProcess,
+            "_bdk.Dashboard.SystemProcess",
+            "Dashboard System Process",
+            "Shows the dashboard system process, runtime, server and application details.");
+
+        group.MapDashboardPage<Pages.SystemEnvironment>(
+            options.EndpointPaths.SystemEnvironment,
+            "_bdk.Dashboard.SystemEnvironment",
+            "Dashboard System Environment",
+            "Shows the dashboard system environment, worktree and environment variables.");
     }
 
     private Task<IResult> HandleIndex()

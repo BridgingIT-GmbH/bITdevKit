@@ -31,6 +31,16 @@ public class DashboardEndpointPaths
     public string SystemContent { get; set; } = "/system/content";
 
     /// <summary>
+    ///     Gets or sets the dashboard system process path.
+    /// </summary>
+    public string SystemProcess { get; set; } = "/system/process";
+
+    /// <summary>
+    ///     Gets or sets the dashboard system environment path.
+    /// </summary>
+    public string SystemEnvironment { get; set; } = "/system/environment";
+
+    /// <summary>
     ///     Gets or sets the dashboard identity page path.
     /// </summary>
     public string Identity { get; set; } = "/identity";

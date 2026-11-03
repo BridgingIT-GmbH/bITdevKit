@@ -128,6 +128,63 @@ public class DevKitWebApplicationTests
     }
 
     [Fact]
+    public void HostRuntimeDescriptorWriter_PruneStale_DeletesOnlyDescriptorsOfExitedHosts()
+    {
+        // Arrange
+        var registryPath = Path.Combine(Path.GetTempPath(), "bdk-tests", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(registryPath);
+        var options = new HostDescriptorOptions
+        {
+            RegistryPath = registryPath,
+            RuntimeId = "current-runtime",
+            WorkspacePath = registryPath,
+            StartedAt = DateTimeOffset.UtcNow
+        };
+        var processId = Environment.ProcessId;
+        var processStart = new DateTimeOffset(System.Diagnostics.Process.GetCurrentProcess().StartTime);
+        var running = Path.Combine(registryPath, "running.json");
+        var reused = Path.Combine(registryPath, "reused.json");
+        var reusedInstance = Path.Combine(registryPath, "reused-instance.json");
+        var unreadable = Path.Combine(registryPath, "unreadable.json");
+        var current = HostDescriptorPath.GetDescriptorPath(options);
+        var oldTemporary = Path.Combine(registryPath, "old.json.abc.tmp");
+        var newTemporary = Path.Combine(registryPath, "new.json.abc.tmp");
+        File.WriteAllText(running, $$"""{ "processId": {{processId}}, "startedAt": "{{DateTimeOffset.UtcNow:O}}" }""");
+        File.WriteAllText(reused, $$"""{ "processId": {{processId}}, "startedAt": "{{processStart.AddHours(-1):O}}" }""");
+        File.WriteAllText(reusedInstance, $$"""{ "processId": {{processId}}, "devAppInstance": { "processStartedAt": "{{processStart.AddHours(-1):O}}" } }""");
+        File.WriteAllText(unreadable, "{ not json");
+        File.WriteAllText(current, $$"""{ "processId": {{processId}}, "startedAt": "{{processStart.AddHours(-1):O}}" }""");
+        File.WriteAllText(oldTemporary, string.Empty);
+        File.SetLastWriteTimeUtc(oldTemporary, DateTime.UtcNow.AddHours(-2));
+        File.WriteAllText(newTemporary, string.Empty);
+        var sut = new HostRuntimeDescriptorWriter(
+            Substitute.For<IWebHostEnvironment>(),
+            options,
+            [],
+            NullLogger<HostRuntimeDescriptorWriter>.Instance);
+
+        try
+        {
+            // Act
+            var deleted = sut.PruneStale();
+
+            // Assert
+            deleted.ShouldBe(3);
+            File.Exists(running).ShouldBeTrue();
+            File.Exists(unreadable).ShouldBeTrue();
+            File.Exists(current).ShouldBeTrue();
+            File.Exists(newTemporary).ShouldBeTrue();
+            File.Exists(reused).ShouldBeFalse();
+            File.Exists(reusedInstance).ShouldBeFalse();
+            File.Exists(oldTemporary).ShouldBeFalse();
+        }
+        finally
+        {
+            Directory.Delete(registryPath, recursive: true);
+        }
+    }
+
+    [Fact]
     public async Task McpDispatcher_WhenCapabilitiesRequested_ReturnsRegisteredHandlerCapabilities()
     {
         // Arrange

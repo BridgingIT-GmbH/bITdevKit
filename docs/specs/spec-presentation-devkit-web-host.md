@@ -402,7 +402,7 @@ Responsibilities:
 * collect optional endpoint metadata from registered `HostFeatureEndpointContributor` implementations
 * write descriptors only for eligible local-development hosts
 * remove the host's own descriptor during graceful shutdown when possible
-* tolerate stale descriptors left by crashes or forced process termination
+* tolerate stale descriptors left by crashes or forced process termination, and prune them at startup
 * avoid preventing application startup when descriptor writing fails
 * write debug-level startup, descriptor and feature endpoint diagnostics for visibility
 
@@ -418,6 +418,8 @@ Descriptor lifecycle rules:
 * refresh heartbeat metadata only when useful for stale detection; refreshes must not rotate endpoint nonces
 * remove only the current host's descriptor on graceful shutdown
 * treat missing cleanup on crash as normal behavior
+* at startup, in the background, delete descriptors whose process has exited or whose process ID now belongs to a process that started after the descriptor, and temporary files older than one hour
+* keep descriptors that cannot be read or whose process cannot be inspected
 * never delete descriptors owned by live processes
 
 Host-start lifecycle:

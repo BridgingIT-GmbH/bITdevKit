@@ -216,3 +216,4 @@ With that prefix, `INVENTORY_Application__Region` maps to `Application:Region`.
 - [Presentation Host](./features-presentation.md) covers the devkit host builders and starter extensions.
 - [Modules](./features-modules.md) covers module registration with the composed configuration.
 - [Common Options Builders](./common-options-builders.md) covers devkit option-builder conventions.
+- [Worktree Development Isolation](./development-worktrees-support.md) adds a managed configuration source on top of this sequence for Git linked worktrees.

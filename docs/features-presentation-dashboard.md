@@ -460,9 +460,13 @@ Comparison dialogs have a separate picker for each side; select **Compare** afte
 
 ### <img class="bdk-doc-icon" src="assets/features/system.svg" width="24" height="24" alt=""> System
 
-System at `/_bdk/dashboard/system` shows process CPU, memory, traffic, thread-pool and GC observations. Its trend charts collect recent samples, while route and database sections provide the current operational context. Refresh manually or choose an interval to watch changes. These process snapshots complement [Profiling](features-profiling.md); they do not attribute resource usage to one operation.
+System at `/_bdk/dashboard/system` shows process CPU, memory, traffic, thread-pool and GC observations. Its trend charts collect recent samples, while route and database sections provide the current operational context. Refresh manually or choose an interval to watch changes. These process snapshots complement [Profiling](features-profiling.md); they do not attribute resource usage to one operation. The **Process** tab lists application, runtime, server and process details such as versions, OS, architecture and memory. The **Environment** tab shows environment checks, environment variables and the worktree instance when one applies.
 
 [![System dashboard with process pressure, traffic and runtime trend charts](assets/dashboard/03-system-system.png)](assets/dashboard/03-system-system.png)
+
+[![System Process tab with application, runtime, server and process details](assets/dashboard/system/process.png)](assets/dashboard/system/process.png)
+
+[![System Environment tab with environment checks, the Worktree card and filtered environment variables](assets/dashboard/system/environment.png)](assets/dashboard/system/environment.png)
 
 ### <img class="bdk-doc-icon" src="assets/features/metrics.svg" width="24" height="24" alt=""> Metrics
 

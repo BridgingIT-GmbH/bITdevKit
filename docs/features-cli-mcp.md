@@ -267,7 +267,7 @@ Useful runtime tools:
 | ---------------------- | ------------------------------------------------------------------------------------ |
 | `bdk_mcp_status` | Shows MCP server status, workspace, descriptors and selected runtime. |
 | `bdk_mcp_self_test` | Checks runtime selection, IPC connectivity, protocol compatibility and capabilities. |
-| `bdk_runtimes_list` | Lists ready MCP runtimes in the workspace. |
+| `bdk_runtimes_list` | Lists ready MCP runtimes in the workspace with their URLs and, in a linked worktree, the instance slot. |
 | `bdk_runtimes_select` | Saves a selected runtime for the workspace. |
 | `bdk_capabilities_get` | Lists operations advertised by the selected runtime. |
 | `bdk_project_summary` | Summarizes selected runtime metadata, registered modules and MCP capabilities. |

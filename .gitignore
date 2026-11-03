@@ -435,4 +435,6 @@ tools/llama/**
 .DS_Store
 plan/evidence/**
 plan/profiling/**
-.audit/**
+.audit/
+# Worktree development isolation state
+.dev/

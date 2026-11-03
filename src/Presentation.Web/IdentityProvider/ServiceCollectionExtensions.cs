@@ -34,12 +34,13 @@ public static partial class ServiceCollectionExtensions
         services.AddAuthentication()
             .AddCookie(options.CookieAuthenticationScheme, cookieOptions =>
             {
-                cookieOptions.Cookie.Name = ".Bdk.FakeIdentityProvider";
+                cookieOptions.Cookie.Name = FakeIdentityProviderAuthenticationDefaults.CookieName;
                 cookieOptions.Cookie.HttpOnly = true;
                 cookieOptions.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 cookieOptions.Cookie.SameSite = SameSiteMode.Lax;
                 cookieOptions.ExpireTimeSpan = options.RefreshTokenLifetime;
                 cookieOptions.SlidingExpiration = true;
+                options.ConfigureCookie?.Invoke(cookieOptions);
             });
 
         // Register the appropriate token service based on the provider

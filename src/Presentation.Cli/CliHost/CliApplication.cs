@@ -197,6 +197,7 @@ public static class CliApplication
             new DocsCliCommandModule(),
             new HostsCliCommandModule(),
             new HostForwardingCliCommandModule(),
+            new DevCliCommandModule(),
             new McpCliCommandModule()
         ];
 

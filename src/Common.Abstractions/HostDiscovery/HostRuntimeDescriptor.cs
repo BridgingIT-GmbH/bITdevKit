@@ -64,4 +64,50 @@ public sealed class HostRuntimeDescriptor
     /// Gets or sets host-advertised feature endpoints.
     /// </summary>
     public HostFeatureEndpointCollection Features { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the addresses the host listens on, HTTPS first. Wildcard hosts are reported as <c>localhost</c>.
+    /// Empty until the server has started.
+    /// </summary>
+    public IReadOnlyList<string> Urls { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the linked-worktree development instance, when isolation is active. Omitted otherwise.
+    /// </summary>
+    public HostRuntimeDevAppInstanceDescriptor DevAppInstance { get; set; }
+}
+
+/// <summary>
+/// Describes the active linked-worktree development instance of a running host.
+/// </summary>
+/// <example>
+/// <code>
+/// var instance = new HostRuntimeDevAppInstanceDescriptor { AppId = "forecasthub", Slot = 2, HttpsUrl = "https://localhost:5211" };
+/// </code>
+/// </example>
+public sealed class HostRuntimeDevAppInstanceDescriptor
+{
+    /// <summary>Gets or sets the application ID.</summary>
+    public string AppId { get; set; }
+
+    /// <summary>Gets or sets the worktree ID.</summary>
+    public Guid WorktreeId { get; set; }
+
+    /// <summary>Gets or sets the slot.</summary>
+    public int Slot { get; set; }
+
+    /// <summary>Gets or sets the canonical worktree root.</summary>
+    public string WorktreeRoot { get; set; }
+
+    /// <summary>Gets or sets the HTTP URL.</summary>
+    public string HttpUrl { get; set; }
+
+    /// <summary>Gets or sets the HTTPS URL.</summary>
+    public string HttpsUrl { get; set; }
+
+    /// <summary>Gets or sets the lease file path.</summary>
+    public string LeasePath { get; set; }
+
+    /// <summary>Gets or sets the operating system start time of the host process, used to refuse reused process IDs.</summary>
+    public DateTimeOffset? ProcessStartedAt { get; set; }
 }

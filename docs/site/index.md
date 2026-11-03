@@ -63,7 +63,7 @@ The template creates `./projects/SolutionName/SolutionName.slnx` with applicatio
   <div>
     <p class="section-kicker">AI AGENT SUPPORT</p>
     <h3>Put the docs and a running application in the same conversation.</h3>
-    <p><code>bdk mcp</code> lets MCP-capable coding agents search the official DevKit documentation and inspect diagnostics exposed by a local DevKit host.</p>
+    <p><code>bdk mcp</code> lets MCP-capable coding agents search the official DevKit documentation and inspect diagnostics exposed by a local DevKit host. Several agents can work side by side in parallel Git worktrees, each with its own running application.</p>
   </div>
   <a class="cta-button cta-agent" href="agent-support/">Set up AI Agent Support</a>
 </aside>

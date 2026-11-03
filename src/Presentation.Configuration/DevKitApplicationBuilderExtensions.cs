@@ -67,6 +67,7 @@ public static class ConfigurationDevKitApplicationBuilderExtensions
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(configure);
 
+        builder.CompleteConfiguration();
         builder.Services.AddModules(builder.Configuration, configure);
 
         return builder;

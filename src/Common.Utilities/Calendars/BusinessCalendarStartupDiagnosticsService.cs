@@ -42,7 +42,8 @@ public sealed class BusinessCalendarStartupDiagnosticsService(
             .ToArray();
 
         this.logger.LogDebug(
-            "[BDK] business calendars registered (count={OptionsCount}, calendars={Calendars})",
+            "[{LogKey}] business calendars registered (count={OptionsCount}, calendars={Calendars})",
+            "BDK",
             optionSummaries.Length,
             string.Join("; ", optionSummaries.Select(summary =>
                 $"options#{summary.Index}[default={summary.Default}; registrations={string.Join(",", summary.Registrations)}]")));

@@ -56,5 +56,6 @@ public static class WorkspacePathUtilities
     private static bool IsWorkspaceRoot(DirectoryInfo directory)
         => directory.EnumerateFiles("*.slnx").Any() ||
             directory.EnumerateFiles("*.sln").Any() ||
-            Directory.Exists(Path.Combine(directory.FullName, ".git"));
+            Directory.Exists(Path.Combine(directory.FullName, ".git")) ||
+            File.Exists(Path.Combine(directory.FullName, ".git"));
 }

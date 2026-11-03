@@ -105,6 +105,10 @@ public class SqlServerModuleDbContextFactory<TContext> : IDesignTimeDbContextFac
             // Retrieve the connection string from configuration
             connectionString = configuration[this.connectionStringKey]
                 ?? throw new InvalidOperationException($"Connection string for key '{this.connectionStringKey}' not found in configuration or command-line arguments.");
+
+            // In a Git linked worktree, target the instance database of the worktree
+            connectionString = SqlServerDevAppInstanceAdapter.Instance.ResolveDesignTime(
+                connectionString, this.connectionStringKey, Directory.GetCurrentDirectory(), configuration);
         }
 
         // Configure DbContextOptions

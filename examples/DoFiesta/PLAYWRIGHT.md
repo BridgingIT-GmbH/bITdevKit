@@ -5,20 +5,20 @@ Use this note when automating the local DoFiesta app with Playwright.
 ## Local app
 
 - Start the app with the server project, not the built DLL:
-  - `dotnet run --project examples\DoFiesta\DoFiesta.Presentation.Web.Server\DoFiesta.Presentation.Web.Server.csproj --nologo --urls "https://localhost:5001;http://localhost:5000"`
-- Prefer `https://localhost:5001`.
+  - `dotnet run --project examples\DoFiesta\DoFiesta.Presentation.Web.Server\DoFiesta.Presentation.Web.Server.csproj --nologo --urls "https://localhost:5011;http://localhost:5010"`
+- Prefer `https://localhost:5011`.
 - In Playwright use `ignoreHTTPSErrors: true`.
 - If the app root turns into a white page and the browser console mentions a hashed `_framework/dotnet.<hash>.js` module or a MIME-type failure, treat that as a bootstrap-asset mismatch first:
   - verify the app was started with `dotnet run` on the server project
   - retry with a fresh browser context
-  - probe `https://localhost:5001/`, `https://localhost:5001/_framework/blazor.web.js`, and `https://localhost:5001/_framework/dotnet.js`
+  - probe `https://localhost:5011/`, `https://localhost:5011/_framework/blazor.web.js`, and `https://localhost:5011/_framework/dotnet.js`
   - the healthy state is `200` HTML for `/` and `200` JavaScript for both framework assets
 
 ## Authentication
 
 DoFiesta uses the local fake identity provider in development.
 
-- Authority: `https://localhost:5001`
+- Authority: `https://localhost:5011`
 - Client id: `blazor-wasm`
 - Default scopes include: `openid profile email roles offline_access`
 - Test user:
@@ -27,7 +27,7 @@ DoFiesta uses the local fake identity provider in development.
 
 ### Reliable login flow
 
-1. Open `https://localhost:5001`.
+1. Open `https://localhost:5011`.
 2. Trigger sign-in from the UI and continue into the fake identity provider flow.
 3. On the sign-in page, choose the `luke.skywalker@starwars.com` user card.
 4. Wait for the redirect back into the SPA shell.
@@ -47,7 +47,7 @@ Direct navigation to authenticated routes now works again because the server ser
 
 The OIDC user payload is stored in `sessionStorage` under:
 
-- `oidc.user:https://localhost:5001:blazor-wasm`
+- `oidc.user:https://localhost:5011:blazor-wasm`
 
 That entry contains the access token used by the generated API client.
 

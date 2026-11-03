@@ -12,6 +12,7 @@
   <ItemGroup>
     <Compile Include="../Common.UnitTests/Serialization/Ndjson/NdjsonTestStreams.cs" Link="Web/Ndjson/Fixtures/NdjsonTestStreams.cs" />
     <Compile Include="../Common.UnitTests/Serialization/Ndjson/NdjsonTestTimeProvider.cs" Link="Web/Ndjson/Fixtures/NdjsonTestTimeProvider.cs" />
+    <Compile Include="../Common.UnitTests/Utilities/DevAppInstances/FakeGitRepository.cs" Link="Web/DevAppInstances/Fixtures/FakeGitRepository.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -63,6 +64,7 @@
     <ProjectReference Include="..\..\src\Presentation.Web.Queueing\Presentation.Web.Queueing.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web.Storage\Presentation.Web.Storage.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web\Presentation.Web.csproj" />
+    <ProjectReference Include="..\..\src\Presentation.Web.Client\Presentation.Web.Client.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Configuration\Presentation.Configuration.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Cli\Presentation.Cli.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web.Auditing\Presentation.Web.Auditing.csproj" />

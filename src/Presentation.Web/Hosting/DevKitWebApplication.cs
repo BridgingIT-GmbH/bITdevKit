@@ -36,6 +36,6 @@ public static class DevKitWebApplication
         var options = new DevKitWebApplicationOptions();
         configure?.Invoke(new DevKitWebApplicationOptionsBuilder(options));
 
-        return new DevKitWebApplicationBuilder(webBuilder, options);
+        return new DevKitWebApplicationBuilder(webBuilder, options, args);
     }
 }

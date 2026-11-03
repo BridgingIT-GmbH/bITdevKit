@@ -21,6 +21,7 @@ DevKit MCP gives an agent both implementation guidance and evidence from the run
 - inspect messaging, queueing, jobs, and orchestrations when the host exposes them
 - call project-owned diagnostics registered by the application
 - run explicitly enabled operations after you approve them
+- work in its own Git worktree next to other agents, each with its own running application
 
 The available runtime tools depend on the features registered by the selected application.
 
@@ -29,6 +30,24 @@ The available runtime tools depend on the features registered by the selected ap
 Your MCP client starts `bdk mcp` as a local process. The CLI finds a ready DevKit host in the current workspace and forwards runtime calls over local IPC.
 
 Documentation and API search do not require a running host. Runtime diagnostics do.
+
+## Run agents in parallel worktrees
+
+Coding agents often work on several tasks at once, each in its own Git worktree. DevKit supports this out of the box. Each linked worktree runs its own isolated instance of the application, so agents can build, run, and test side by side without getting in each other's way. It is on by default in Development, and nothing changes in an ordinary checkout.
+
+`bdk mcp` connects each agent to the application of its own worktree, and `bdk_runtimes_current` tells it where that application runs. Start the application of a worktree with:
+
+```powershell
+dotnet tool run bdk dev run
+```
+
+For example, ask the agent in a new worktree:
+
+```text
+Start the application with bdk dev run. Use the bdk MCP runtime tools to find its URL, then reproduce the bug in the browser and check the logs for errors.
+```
+
+See [Worktree Development Support](reference/development-worktrees-support.md) for details and adoption in an existing application.
 
 ## Inspect operations and requests
 

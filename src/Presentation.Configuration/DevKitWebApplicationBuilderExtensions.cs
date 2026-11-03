@@ -65,6 +65,7 @@ public static class ConfigurationDevKitWebApplicationBuilderExtensions
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(configure);
 
+        builder.CompleteConfiguration();
         var environment = builder.Properties.TryGetValue(DevKitBuilderProperties.HostEnvironment, out var value)
             ? value as IWebHostEnvironment
             : null;

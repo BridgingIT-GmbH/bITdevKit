@@ -294,6 +294,8 @@ Fallback:    $TMPDIR/bdk/hosts/selections/<workspace-hash>.json
 
 Descriptors include `workspacePath`, `contentRootPath`, and process metadata so the CLI can filter hosts for the current workspace. They may also include feature endpoint metadata for modules that can connect to the host.
 
+Descriptors also carry `urls`, the addresses the host listens on with HTTPS first. The host writes the descriptor at startup and again on `ApplicationStarted`, because the server addresses are known only after Kestrel binds. Hosts that run as a development app instance add an optional `devAppInstance` object (see [spec-worktree-development-isolation.md](spec-worktree-development-isolation.md)). Host JSON output and the MCP runtime tools expose `url` (primary, HTTPS preferred), `urls` and a `devAppInstance` summary. Workspace matching accepts a host when `workspacePath` or `devAppInstance.worktreeRoot` equals the workspace. Linked worktrees resolve as workspaces through their `.git` file.
+
 In host descriptors, `features` means host-advertised endpoint capabilities. It does not mean CLI command modules.
 
 Shared descriptor DTOs live in `Common.Abstractions` so the CLI and `Presentation.Web` serialize the same schema without duplicating contracts:
@@ -322,6 +324,7 @@ Example descriptor:
   "projectPath": "F:/projects/acme/commerce/src/CommerceApi.Presentation.Web.Server/CommerceApi.Presentation.Web.Server.csproj",
   "processId": 23844,
   "startedAt": "2026-06-19T14:20:00Z",
+  "urls": ["https://localhost:5001", "http://localhost:5000"],
   "assembly": {
     "name": "CommerceApi.Presentation.Web.Server",
     "version": "1.0.0.0",
@@ -875,6 +878,7 @@ Known dependent command modules:
 bdk hosts    shared host discovery and selection commands
 bdk host     standard host Console Command forwarding module
 bdk mcp      specified in spec-presentation-web-mcp-diagnostics.md
+bdk dev      linked-worktree development instances, specified in spec-worktree-development-isolation.md
 ```
 
 Command discovery is registration-based. The CLI package registers each command module explicitly at startup. No automatic assembly scanning, dynamic plugin loading, or project-level CLI module extension is implemented for the initial platform.
@@ -1174,6 +1178,35 @@ Host selection options:
 If no host is available, the command reports `no_host_found` with startup guidance.
 
 If multiple hosts are available and no host can be selected, the command reports `host_selection_required` and lists available host ids.
+
+## Development Instance Commands Module
+
+## bdk dev
+
+Manages linked-worktree development instances. The [worktree development isolation specification](./spec-worktree-development-isolation.md#management-commands) owns the behavior. Hosts do not need the module to start, because the application bootstrap assigns slots on its own. `bdk dev run` is a convenience that starts them.
+
+```bash
+bdk dev status
+bdk dev run [--app forecasthub,forecastadmin] [--no-build]
+bdk dev configure --slot 2
+bdk dev configure --forget-app forecasthub
+bdk dev stop --app forecasthub [--force] [--timeout 60]
+bdk dev reset --app forecasthub --confirm-instance forecasthub:w02
+bdk dev release --confirm-slot 2
+bdk dev prune [--confirm]
+```
+
+Behavior:
+
+* resolves the worktree from the current directory or `--workspace`
+* reads the registry in `<git-common-dir>/bdk-dev/instances.json` and the worktree's `.dev/instance.json`
+* verifies running hosts through the lease file and the `devAppInstance` descriptor object (process ID and start time)
+* `run` finds hosts from the registry inventory and a scan for `Microsoft.NET.Sdk.Web` projects that call `DevKitWebApplication.CreateBuilder`, builds them sequentially, runs them concurrently with `dotnet run --no-build`, prefixes output with `[appId]`, skips hosts whose lease is held and stops them on Ctrl+C
+* runs `reset` and `prune --confirm` by starting the application project with `dotnet run` and the reserved `--bdk-dev-reset=` or `--bdk-dev-orphan-reset=` argument
+* supports `--output json`; the payload is `{ succeeded, code, summary, exitCode, data }` and `status` data carries `schemaVersion` `1`
+* passes the reset host's exit codes through: `2` refused, `3` incomplete
+
+Failure codes include `invalid_arguments`, `confirmation_mismatch`, `resources_remaining`, `stop_timeout`, `no_host_found`, `host_changed`, `kill_failed`, `project_not_found` and `reset_no_result`.
 
 ## Command Module Rules
 

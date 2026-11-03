@@ -38,6 +38,12 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             GroupOrder = 0,
             Order = 10,
             Description = "System performance overview",
+            RememberedViews = new Dictionary<string, string>
+            {
+                ["overview"] = DashboardPath.Combine(options.GroupPath, options.EndpointPaths.System),
+                ["process"] = DashboardPath.Combine(options.GroupPath, options.EndpointPaths.SystemProcess),
+                ["environment"] = DashboardPath.Combine(options.GroupPath, options.EndpointPaths.SystemEnvironment)
+            },
             Card = context =>
             {
                 var dotNetMetrics = context.RequestServices.GetService<IDotNetMetricsSnapshotService>();

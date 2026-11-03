@@ -15,6 +15,7 @@ $includedPatterns = @(
     'INDEX.md',
     'introduction-ddd-guide.md',
     'common-*.md',
+    'development-*.md',
     'features-*.md',
     'features-cli-mcp-clients.md',
     'storage-*.md',

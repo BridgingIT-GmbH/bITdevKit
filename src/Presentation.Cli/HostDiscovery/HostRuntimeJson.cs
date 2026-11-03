@@ -17,9 +17,15 @@ public static class HostRuntimeJson
             host.Descriptor?.ApplicationName,
             host.Descriptor?.EnvironmentName,
             status = host.Status.ToString(),
+            url = host.GetPrimaryUrl(),
+            urls = host.Descriptor?.Urls ?? [],
             features = host.Descriptor?.Features?.Keys.ToArray() ?? [],
             host.Descriptor?.ProcessId,
             host.Descriptor?.StartedAt,
+            host.Descriptor?.WorkspacePath,
+            devAppInstance = host.Descriptor?.DevAppInstance is { } instance
+                ? new { instance.AppId, instance.Slot, instance.WorktreeId, instance.WorktreeRoot, instance.HttpsUrl, instance.HttpUrl }
+                : null,
             reason = host.Reason
         };
 }

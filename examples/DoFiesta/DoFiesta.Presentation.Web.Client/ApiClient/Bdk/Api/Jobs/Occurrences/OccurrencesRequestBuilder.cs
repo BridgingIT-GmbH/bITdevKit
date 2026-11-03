@@ -2,6 +2,7 @@
 #pragma warning disable CS0618
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Occurrences.Bulk;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Occurrences.Item;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Occurrences.Search;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models;
 using Microsoft.Kiota.Abstractions.Extensions;
 using Microsoft.Kiota.Abstractions.Serialization;
@@ -23,6 +24,11 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Occu
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Occurrences.Bulk.BulkRequestBuilder Bulk
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Occurrences.Bulk.BulkRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The search property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Occurrences.Search.SearchRequestBuilder Search
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Occurrences.Search.SearchRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>Gets an item from the BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.bdk.api.jobs.occurrences.item collection</summary>
         /// <param name="position">Unique identifier of the item</param>

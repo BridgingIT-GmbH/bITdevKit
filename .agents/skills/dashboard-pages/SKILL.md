@@ -36,6 +36,7 @@ Use the existing DevKit dashboard as the design system. Read the closest working
 
 - Use `window.bdkDashboard.createRefresher` for refreshable fragments. It handles cancellation, stale responses, hidden tabs, scheduling, and error state. Pause refresh around editing and modal workflows.
 - Use `DashboardPage.RememberedViews` for page-level tabs. Mark explicit links or their containing view with `data-dashboard-view` so saved navigation cannot redirect Apply, Reset, paging, or a deliberate tab choice.
+- Make page-level tabs server routes with the nav outside the refreshed fragment, placed after the refresh toolbar. Every page's tabs must look and behave the same; see the tab notes in page patterns.
 - Scope saved state by feature and route. Keep query parameters for shareable selections; store only appropriate view preferences in browser storage. Preserve existing storage keys when refactoring.
 - Keep exact identifiers separate from shortened labels. Preserve paging/cursor state, read scope, provider capabilities, ETags, and selection/export consistency.
 - Use the shared dialog, correlation, date-range, and chart helpers. Encode server values with Razor and use `textContent` for client-generated text. Dispose subscriptions, charts, timers, and handlers when replacing their owners.
@@ -55,4 +56,6 @@ Use Bootstrap and dashboard CSS variables, contrast-adjusted `--dashboard-*-text
 3. When browser work is requested, verify actual interactions using the session's required browser tool. Check tab restoration, filter/reset/paging, tooltips, menu focus, modal editing, refresh races, and desktop/mobile overflow as applicable.
 4. Follow the icon README's generation, visual, documentation sync, and MkDocs checks for icon work. Rebuild/restart a host to load changed embedded SVGs.
 5. Prefer workspace launch tasks or `dotnet run` for sample browser checks so development static assets load. Inspect startup behavior before restarting a running host; development profiles can recreate databases.
-6. Report the actual checks and any runtime restart requirement. Keep temporary screenshots, logs, and unrelated generated files out of the change.
+6. Recapture or flag documentation screenshots of pages whose layout changed. Follow the screenshot notes in page patterns.
+7. Report the actual checks and any runtime restart requirement. Keep temporary screenshots, logs, and unrelated generated files out of the change.
+8. Add new lessons to [page patterns](references/page-patterns.md) or the [source map](references/source-map.md): a short rule, the reason, and a reference page. Correct notes that turned out wrong, so the next change starts from them.

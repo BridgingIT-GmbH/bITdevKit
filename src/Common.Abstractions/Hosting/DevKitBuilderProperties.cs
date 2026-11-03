@@ -44,4 +44,10 @@ public static class DevKitBuilderProperties
     /// The workspace path property key.
     /// </summary>
     public const string WorkspacePath = "bdk:WorkspacePath";
+
+    /// <summary>
+    /// The property key of the <see cref="Action"/> that runs once when configuration composition is complete. See
+    /// <see cref="DevKitApplicationBuilderConfigurationExtensions.CompleteConfiguration{TBuilder}"/>.
+    /// </summary>
+    public const string ConfigurationCompletion = "bdk:ConfigurationCompletion";
 }

@@ -55,6 +55,8 @@
     <ProjectReference Include="..\..\src\Infrastructure.Windows\Infrastructure.Windows.csproj" />
     <ProjectReference Include="..\Common.UnitTests\Common.UnitTests.csproj" />
     <ProjectReference Include="..\Domain.UnitTests\Domain.UnitTests.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.Postgres\Infrastructure.EntityFramework.Postgres.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.Sqlite\Infrastructure.EntityFramework.Sqlite.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -32,6 +32,7 @@ public static class SerilogDevKitApplicationBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
+        builder.CompleteConfiguration();
         if (!builder.Properties.TryGetValue(DevKitBuilderProperties.LoggingBuilder, out var value) || value is not ILoggingBuilder loggingBuilder)
         {
             throw new InvalidOperationException("The DevKit builder does not expose a logging builder.");

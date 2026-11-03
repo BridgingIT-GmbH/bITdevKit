@@ -3,6 +3,7 @@
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Orchestrations.Definitions;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Orchestrations.Item;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Orchestrations.Metrics;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Orchestrations.Search;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models;
 using Microsoft.Kiota.Abstractions.Extensions;
 using Microsoft.Kiota.Abstractions.Serialization;
@@ -29,6 +30,11 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Orchestra
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Orchestrations.Metrics.MetricsRequestBuilder Metrics
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Orchestrations.Metrics.MetricsRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The search property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Orchestrations.Search.SearchRequestBuilder Search
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Orchestrations.Search.SearchRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>Gets an item from the BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.bdk.api.orchestrations.item collection</summary>
         /// <param name="position">Unique identifier of the item</param>

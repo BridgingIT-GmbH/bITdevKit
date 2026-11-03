@@ -24,4 +24,14 @@ public static class FakeIdentityProviderAuthenticationDefaults
     /// </code>
     /// </example>
     public const string CookieScheme = "_bdk.fakeidentity.cookie";
+
+    /// <summary>
+    ///     The default fake identity provider session cookie name.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var name = FakeIdentityProviderAuthenticationDefaults.CookieName; // .Bdk.FakeIdentityProvider
+    /// </code>
+    /// </example>
+    public const string CookieName = ".Bdk.FakeIdentityProvider";
 }

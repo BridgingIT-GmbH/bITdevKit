@@ -65,6 +65,7 @@ public static class ServiceCollectionExtensions
     {
         EnsureArg.IsNotNull(options, nameof(options));
         EnsureArg.IsNotNullOrEmpty(options.ConnectionString, nameof(options.ConnectionString));
+        options.ConnectionString = DevAppInstanceSession.ResolveConnectionString(services, SqliteDevAppInstanceAdapter.Instance, options.ConnectionString, typeof(TContext).Name);
 
         if (options.CommandLoggerEnabled)
         {
@@ -168,6 +169,7 @@ public static class ServiceCollectionExtensions
         where TContext : DbContext
     {
         EnsureArg.IsNotNullOrEmpty(connectionString, nameof(connectionString));
+        connectionString = DevAppInstanceSession.ResolveConnectionString(services, SqliteDevAppInstanceAdapter.Instance, connectionString, typeof(TContext).Name);
 
         services.AddDbContext<TContext>(o => o.UseSqlite(connectionString, sqliteOptionsBuilder), lifetime);
         services.AddDbContextRegistration<TContext>(Provider.Sqlite);

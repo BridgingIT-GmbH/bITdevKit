@@ -153,12 +153,12 @@ public class FakeIdentityProviderEndpoints(
                 });
             }
 
-            if (!client.RedirectUris.Contains(redirect_uri))
+            if (!RedirectUriNormalizer.Matches(client.RedirectUris, redirect_uri, options.Issuer))
             {
                 return TypedResults.BadRequest(new OAuth2Error
                 {
                     Error = "invalid_request",
-                    ErrorDescription = $"Invalid redirect URI '{redirect_uri}' for client '{client.Name}' ({client.ClientId}). Valid URIs are: {string.Join(", ", client.RedirectUris)}"
+                    ErrorDescription = $"Invalid redirect URI '{redirect_uri}' for client '{client.Name}' ({client.ClientId}). Valid URIs are: {string.Join(", ", RedirectUriNormalizer.ResolveAll(client.RedirectUris, options.Issuer))}"
                 });
             }
         }
@@ -236,12 +236,12 @@ public class FakeIdentityProviderEndpoints(
                     }));
                 }
 
-                if (!client.RedirectUris.Contains(redirect_uri))
+                if (!RedirectUriNormalizer.Matches(client.RedirectUris, redirect_uri, options.Issuer))
                 {
                     return Task.FromResult<IResult>(TypedResults.BadRequest(new OAuth2Error
                     {
                         Error = "invalid_request",
-                        ErrorDescription = $"Invalid redirect URI '{redirect_uri}' for client '{client.Name}' ({client.ClientId}). Valid URIs are: {string.Join(", ", client.RedirectUris)}"
+                        ErrorDescription = $"Invalid redirect URI '{redirect_uri}' for client '{client.Name}' ({client.ClientId}). Valid URIs are: {string.Join(", ", RedirectUriNormalizer.ResolveAll(client.RedirectUris, options.Issuer))}"
                     }));
                 }
             }
@@ -413,7 +413,7 @@ public class FakeIdentityProviderEndpoints(
             {
                 ClientId = client.ClientId,
                 Name = client.Name,
-                RedirectUris = client.RedirectUris,
+                RedirectUris = RedirectUriNormalizer.ResolveAll(client.RedirectUris, options.Issuer),
                 AllowedScopes = client.AllowedScopes
             })],
             ConfiguredUsers = [.. options.Users.Select(user => new UserDebugInfo

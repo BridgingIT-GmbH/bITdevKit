@@ -27,9 +27,9 @@ using Scalar.AspNetCore;
 
 // ===============================================================================================
 // Create the webhost
-var builder = WebApplication.CreateBuilder(args);
-builder.Host.ConfigureAppConfiguration();
-builder.Host.ConfigureLogging(builder.Configuration);
+var builder = DevKitWebApplication.CreateBuilder(args)
+    .AddConfiguration()
+    .AddLogging();
 
 // ===============================================================================================
 // Configure the modules
@@ -143,15 +143,15 @@ builder.Services
 builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth identity provider with its endpoints and signin page
     .Enabled(builder.Environment.IsDevelopment())
     //.WithIssuer("https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net") // host should match Authority (appsettings.json:Authentication:Authority)
-    //.WithIssuer("https://localhost:5001") // default
+    .WithIssuer(builder.Configuration["Authentication:Authority"]) // a worktree instance replaces it with the slot origin
     .WithUsers(FakeUsers.Starwars)
     .WithTokenLifetimes(accessToken: TimeSpan.FromHours(48), refreshToken: TimeSpan.FromDays(14)) // default x2
     .WithClient( // optional client configuration
         "Blazor WASM Frontend",
         "blazor-wasm",
         "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/authentication/login-callback", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/authentication/logout-callback",
-        "https://localhost:5001/authentication/login-callback", "https://localhost:5001/authentication/logout-callback",
-        "https://localhost:5001/openapi/oauth2-redirect.html", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/openapi/oauth2-redirect.html") // swaggerui authorize
+        "/authentication/login-callback", "/authentication/logout-callback", // relative uris resolve against the issuer origin
+        "/openapi/oauth2-redirect.html", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/openapi/oauth2-redirect.html") // swaggerui authorize
     .WithClient(
         "bdk dashboard",
         "dashboard",

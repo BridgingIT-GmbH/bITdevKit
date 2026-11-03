@@ -111,6 +111,8 @@ flowchart LR
 
 The CLI discovers ready DevKit hosts for the current workspace and selects the current runtime. It forwards runtime calls over local IPC and ignores stale runtime descriptors.
 
+In a linked Git worktree, the workspace is that worktree. Each worktree runs its own isolated instance of the application, so parallel agents each work with their own host. `bdk_runtimes_current` returns where that host runs. Start it with `bdk dev run`. See [Worktree Development Support](reference/development-worktrees-support.md).
+
 ## Tool catalog
 
 The CLI owns the stable MCP tool catalog. The selected runtime advertises the application operations it supports.
@@ -192,6 +194,12 @@ Use the bdk MCP tools to verify the selected runtime. Run the MCP self-test, ins
 
 ```text
 Use bdk MCP to check whether this application exposes logs, operation and request profiling, Blob Storage diagnostics, jobs, messaging, queueing, orchestrations, and project-owned operations. Tell me which areas are available and which are not.
+```
+
+### Work in a Git worktree
+
+```text
+Start the application of this worktree with bdk dev run. Use bdk_runtimes_current to get its URL, and confirm the selected runtime belongs to this worktree before testing in the browser.
 ```
 
 ### Debug a local feature
@@ -319,6 +327,7 @@ MCP support runs locally:
 - no public MCP HTTP endpoint is exposed
 - host communication uses local IPC with nonce validation
 - runtime selection is workspace-aware and targets only ready runtimes
+- in a linked Git worktree, runtime discovery lists only the hosts of that worktree
 - tool responses enforce output bounds
 - operations and admin tools require explicit enablement
 - destructive admin operations require confirmation arguments
@@ -331,3 +340,4 @@ These controls separate local diagnostics from production administration.
 - [DevKit MCP Reference](reference/features-cli-mcp.md)
 - [Profiling](reference/features-profiling.md)
 - [DevKit CLI Reference](reference/features-cli.md)
+- [Worktree Development Support](reference/development-worktrees-support.md)

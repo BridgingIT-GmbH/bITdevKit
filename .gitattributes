@@ -3,6 +3,10 @@
 ###############################################################################
 * text=auto
 
+# OpenAPI documents are regenerated on every build with LF endings.
+# Pinning them to LF keeps checkouts identical to the generated output.
+openapi.json text eol=lf
+
 ###############################################################################
 # Set default behavior for command prompt diff.
 #

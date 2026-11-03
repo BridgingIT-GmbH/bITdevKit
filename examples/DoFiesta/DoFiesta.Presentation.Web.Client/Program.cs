@@ -6,6 +6,7 @@
 #pragma warning disable SA1200 // Using directives should be placed correctly
 using System.Net.Http.Headers;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen;
+using BridgingIT.DevKit.Presentation.Web.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Kiota.Abstractions;
@@ -63,6 +64,8 @@ builder.Services.AddScoped(sp =>
 builder.Services.AddOidcAuthentication(options =>
 {
     builder.Configuration.Bind("Authentication", options.ProviderOptions);
+    // a relative authority resolves against the origin that served the client, so every worktree slot uses its own server
+    options.ProviderOptions.Authority = new Uri(new Uri(builder.HostEnvironment.BaseAddress), options.ProviderOptions.Authority).ToString();
 
     // needed for refresh token?
     options.ProviderOptions.ResponseType = "code";

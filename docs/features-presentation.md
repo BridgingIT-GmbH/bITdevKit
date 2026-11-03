@@ -388,7 +388,7 @@ var builder = DevKitWebApplication.CreateBuilder(args, options => options
         .Mcp(false)));
 ```
 
-When local tooling is eligible, the web builder registers host descriptor writing, descriptor cleanup, endpoint contributors and local named-pipe IPC services. Descriptor files are written to the OS user-local `bdk/hosts/runtimes` registry at host startup and removed during graceful shutdown when possible.
+When local tooling is eligible, the web builder registers host descriptor writing, descriptor cleanup, endpoint contributors and local named-pipe IPC services. Descriptor files are written to the OS user-local `bdk/hosts/runtimes` registry at host startup and removed during graceful shutdown when possible. At startup the host also deletes descriptors left by hosts that crashed or were killed. It checks the process ID and start time, so a reused process ID does not keep a stale file alive.
 
 At debug level, DevKit writes startup diagnostics with the host kind, application name, environment, content root, descriptor eligibility and advertised feature flags. The descriptor writer also logs the descriptor path and contributed feature names when it writes or removes a descriptor.
 

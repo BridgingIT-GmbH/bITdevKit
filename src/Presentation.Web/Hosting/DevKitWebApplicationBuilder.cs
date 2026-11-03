@@ -23,13 +23,16 @@ public sealed class DevKitWebApplicationBuilder : IDevKitApplicationBuilder
     private readonly WebApplicationBuilder inner;
     private readonly DevKitWebHostEnvironment devKitEnvironment;
     private readonly Dictionary<string, object> properties = new(StringComparer.OrdinalIgnoreCase);
+    private readonly List<Action> beforeBuildActions = [];
+    private readonly List<Action<WebApplication>> afterBuildActions = [];
 
-    internal DevKitWebApplicationBuilder(WebApplicationBuilder inner, DevKitWebApplicationOptions options)
+    internal DevKitWebApplicationBuilder(WebApplicationBuilder inner, DevKitWebApplicationOptions options, string[] args = null)
     {
         ArgumentNullException.ThrowIfNull(inner);
         ArgumentNullException.ThrowIfNull(options);
 
         this.inner = inner;
+        this.Args = args ?? [];
         this.devKitEnvironment = new DevKitWebHostEnvironment(inner.Environment);
         this.Options = options;
         this.LocalToolingDecision = DevKitLocalToolingPolicy.Evaluate(
@@ -51,6 +54,8 @@ public sealed class DevKitWebApplicationBuilder : IDevKitApplicationBuilder
         {
             this.RegisterLocalToolingServices();
         }
+
+        DevKitWebApplicationBuilderDevAppInstanceExtensions.RegisterDefaultActivation(this);
     }
 
     /// <summary>
@@ -103,6 +108,8 @@ public sealed class DevKitWebApplicationBuilder : IDevKitApplicationBuilder
     /// </summary>
     public DevKitLocalToolingDecision LocalToolingDecision { get; }
 
+    internal string[] Args { get; }
+
     IConfiguration IDevKitApplicationBuilder.Configuration => this.Configuration;
 
     IDevKitHostEnvironment IDevKitApplicationBuilder.Environment => this.devKitEnvironment;
@@ -129,14 +136,29 @@ public sealed class DevKitWebApplicationBuilder : IDevKitApplicationBuilder
     /// </summary>
     /// <returns>The built web application.</returns>
     public WebApplication Build()
-        => this.inner.Build();
+    {
+        this.CompleteConfiguration();
+        for (var i = 0; i < this.beforeBuildActions.Count; i++)
+        {
+            this.beforeBuildActions[i]();
+        }
+
+        var app = this.inner.Build();
+        foreach (var action in this.afterBuildActions)
+        {
+            action(app);
+        }
+
+        return app;
+    }
+
+    internal void OnBeforeBuild(Action action) => this.beforeBuildActions.Add(action);
+
+    internal void OnAfterBuild(Action<WebApplication> action) => this.afterBuildActions.Add(action);
 
     private void RegisterLocalToolingServices()
     {
-        this.Services.AddSingleton(CreateDescriptorOptions(this.inner));
-        this.Services.AddSingleton<LocalIpcEndpointState>();
-        this.Services.AddSingleton<HostRuntimeDescriptorWriter>();
-        this.Services.AddSingleton<HostDescriptorCleanupService>();
+        this.RegisterHostDescriptorCoreServices();
 
         if (this.LocalToolingDecision.ConsoleCommandsEnabled)
         {
@@ -156,6 +178,28 @@ public sealed class DevKitWebApplicationBuilder : IDevKitApplicationBuilder
         }
 
         this.Services.AddHostedService<HostDescriptorLifecycleService>();
+    }
+
+    /// <summary>
+    /// Registers the runtime descriptor writer and its lifecycle once, also when local tooling is disabled.
+    /// </summary>
+    internal void EnsureHostDescriptorServices()
+    {
+        if (this.Services.Any(d => d.ServiceType == typeof(HostRuntimeDescriptorWriter)))
+        {
+            return;
+        }
+
+        this.RegisterHostDescriptorCoreServices();
+        this.Services.AddHostedService<HostDescriptorLifecycleService>();
+    }
+
+    private void RegisterHostDescriptorCoreServices()
+    {
+        this.Services.AddSingleton(CreateDescriptorOptions(this.inner));
+        this.Services.AddSingleton<LocalIpcEndpointState>();
+        this.Services.AddSingleton<HostRuntimeDescriptorWriter>();
+        this.Services.AddSingleton<HostDescriptorCleanupService>();
     }
 
     private static DevKitHostStartupDiagnostics CreateStartupDiagnostics(

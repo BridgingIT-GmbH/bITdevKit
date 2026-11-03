@@ -94,7 +94,7 @@ public sealed class HostRuntimeDiscovery(HostRegistryOptions options)
             return new HostRuntimeInfo { DescriptorPath = descriptorPath, Descriptor = descriptor, Status = HostRuntimeStatus.Invalid, Reason = "Required descriptor fields are missing." };
         }
 
-        if (!IsProcessRunning(descriptor.ProcessId))
+        if (!IsProcessRunning(descriptor))
         {
             return new HostRuntimeInfo { DescriptorPath = descriptorPath, Descriptor = descriptor, Status = HostRuntimeStatus.Stale, Reason = "Host process is not running." };
         }
@@ -131,6 +131,17 @@ public sealed class HostRuntimeDiscovery(HostRegistryOptions options)
 
     private static bool HasFeature(HostRuntimeInfo host, string featureName)
         => host.Descriptor?.Features?.ContainsKey(featureName) == true;
+
+    private static bool IsProcessRunning(HostRuntimeDescriptor descriptor)
+    {
+        if (descriptor.DevAppInstance?.ProcessStartedAt is not null)
+        {
+            // The recorded start time rejects a process that reused the host's process ID.
+            return new DevAppInstanceLeaseHolder(descriptor.ProcessId, descriptor.DevAppInstance.ProcessStartedAt, null, null).IsSameProcessRunning();
+        }
+
+        return IsProcessRunning(descriptor.ProcessId);
+    }
 
     private static bool IsProcessRunning(int processId)
     {

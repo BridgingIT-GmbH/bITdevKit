@@ -96,6 +96,7 @@ dotnet run --project examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta
 ```
 
 - Start DoFiesta with `dotnet run` or `dotnet watch`, rather than its built server DLL. Direct DLL launches can miss development static web assets and cause blank pages with HTTP 500 responses for `/_framework/blazor.web.js` or `/_content/MudBlazor/MudBlazor.min.js`.
+- In a linked Git worktree, DoFiesta and WeatherFiesta run as a development instance: the worktree's slot replaces `--urls`, the catalog names and the cookie names. Read the actual URL from the `[BDK] worktree` startup line or from `bdk dev status --json` (`dotnet run --project src/Presentation.Cli/Presentation.Cli.csproj -- dev status`). Stop an instance with `bdk dev stop --app dofiesta`, drop its catalogs with `bdk dev reset --app dofiesta --confirm-instance dofiesta:wNN`, and run `bdk dev prune` from any checkout after deleting worktrees.
 - Both DoFiesta and WeatherFiesta configure database deletion and recreation when `IsLocalDevelopment()` is true. Create the sample data needed for each browser test.
 - For the repo-local Playwright helper, run `npm install` and `npx playwright install chromium` inside `.agents/skills/playwright-skill/` when dependencies are missing.
 - Pass an absolute script path to `node .agents/skills/playwright-skill/run.js <script>`. The helper changes its working directory before resolving inputs.

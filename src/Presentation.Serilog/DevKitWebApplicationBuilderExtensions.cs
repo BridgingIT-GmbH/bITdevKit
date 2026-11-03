@@ -31,6 +31,7 @@ public static class SerilogDevKitWebApplicationBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
+        builder.CompleteConfiguration();
         GetHostBuilder(builder).ConfigureLogging(
             builder.Configuration,
             exclusionPatterns,

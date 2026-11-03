@@ -29,6 +29,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             GroupOrder = 0,
             Order = 20,
             Description = "Application and runtime metrics",
+            RememberedViews = DashboardEndpoints.Views.ToDictionary(view => view, view => DashboardEndpoints.BuildMetricsPath(options, view)),
             Card = context =>
             {
                 var aspNetMetrics = context.RequestServices.GetService<IAspNetMetricsSnapshotService>();

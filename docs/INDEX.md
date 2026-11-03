@@ -60,6 +60,7 @@ Browse the [feature icon catalog](./site/feature-icons.md) for the complete set 
 
 - <img class="bdk-doc-icon" src="assets/features/host.svg" width="20" height="20" alt=""> [Presentation Host](./features-presentation.md): Configure ASP.NET Core applications through the DevKit web application builder and package-owned starter extensions.
 - <img class="bdk-doc-icon" src="assets/features/configuration.svg" width="20" height="20" alt=""> [Presentation Configuration](./features-presentation-configuration.md): Compose JSON, Azure, and environment-variable configuration providers in the devkit host order.
+- <img class="bdk-doc-icon" src="assets/features/host.svg" width="20" height="20" alt=""> [Worktree Development Isolation](./development-worktrees-support.md): Run one development instance per Git linked worktree with its own ports, databases, cookies and files.
 - <img class="bdk-doc-icon" src="assets/features/logging.svg" width="20" height="20" alt=""> [Presentation Logging](./features-presentation-logging.md): Configure Serilog once for a devkit host and change its global minimum level at runtime.
 - <img class="bdk-doc-icon" src="assets/features/correlation-ids.svg" width="20" height="20" alt=""> [Presentation Correlation IDs](./features-presentation-correlationid.md): Correlate use cases across inbound HTTP, async execution, logs, activities, outbound HTTP and supported transport boundaries.
 - <img class="bdk-doc-icon" src="assets/features/endpoints.svg" width="20" height="20" alt=""> [Presentation Endpoints](./features-presentation-endpoints.md): Define minimal API endpoints as modular classes with automatic discovery and mapping.
@@ -89,7 +90,7 @@ Browse the [feature icon catalog](./site/feature-icons.md) for the complete set 
 
 ## Testing and Test Utilities
 
-- [Worktree Development Isolation specification](./specs/spec-worktree-development-isolation.md): Planned automatic worktree-aware startup with predictable ports and isolated resources, preserving ordinary-checkout configuration.
+- [Worktree Development Isolation specification](./specs/spec-worktree-development-isolation.md): Worktree-aware startup with predictable ports and isolated resources, preserving ordinary-checkout configuration.
 
 - <img class="bdk-doc-icon" src="assets/features/fake-authentication.svg" width="20" height="20" alt=""> [Fake Authentication for Integration Tests](./testing-fake-authentication.md): Simulate authenticated ASP.NET Core requests in integration tests with a lightweight fake-auth scheme.
 - <img class="bdk-doc-icon" src="assets/features/testing.svg" width="20" height="20" alt=""> [Testing Common XUnit](./testing-common-xunit.md): Reuse shared xUnit test helpers for setup, web hosts, fake time, traits and `Result` assertions.

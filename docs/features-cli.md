@@ -171,7 +171,7 @@ Default locations:
 
 Selected hosts are stored in the sibling `bdk/hosts/selections` directory, scoped by the workspace hash.
 
-The CLI reads descriptors. It does not write host descriptors. Descriptor writing belongs to the Presentation Host feature.
+The CLI reads descriptors. It does not write host descriptors. Descriptor writing belongs to the Presentation Host feature. Each host deletes stale descriptors of exited hosts when it starts, so `bdk hosts clean` is rarely needed.
 
 ```mermaid
 flowchart LR
@@ -207,8 +207,14 @@ Important fields:
 | `startedAt` | UTC host start timestamp. |
 | `assembly` | Host entry assembly version metadata. |
 | `features` | Host-advertised local endpoint capabilities. |
+| `urls` | Addresses the host listens on, HTTPS first. The host writes the descriptor again after the server starts, so this list holds the bound addresses. |
+| `devAppInstance` | Optional. Present only when the host runs as a development app instance in a linked worktree: `appId`, `worktreeId`, `slot`, `worktreeRoot`, `httpUrl`, `httpsUrl`, `processStartedAt`, `leasePath`. |
 
 `features.consoleCommands` is required for `bdk host run`. `features.mcp` is required for runtime-bound tools exposed by `bdk mcp`.
+
+`bdk hosts list` shows the primary URL and the worktree slot of each host. The JSON output of `bdk hosts list/current` and the MCP tools `bdk_runtimes_list`, `bdk_runtimes_current` and `bdk_runtimes_select` include `url`, `urls` and `devAppInstance`. An agent in a worktree reads the URL of its own host from there instead of guessing a port.
+
+Workspace matching also accepts a host whose `devAppInstance.worktreeRoot` equals the workspace, so a host whose project sits below a nested solution file is found from the worktree root. When `devAppInstance.processStartedAt` is present, discovery compares it with the running process and reports a reused process ID as `Stale`.
 
 ## Commands
 
@@ -361,6 +367,22 @@ Toolsets:
 | `diagnostics` | Read-only inspection tools. Enabled by default. |
 | `operations` | Runtime actions such as retry, pause, resume, signal or trigger. |
 | `admin` | Destructive maintenance tools such as purge. Admin tools also require `confirm=true` and the operation-specific `confirmation` phrase. |
+
+### `bdk dev`
+
+Manages development instances of Git linked worktrees. DevKit web hosts isolate themselves by default, and normal startup assigns slots without the CLI. See [Worktree Development Isolation](./development-worktrees-support.md) for the full behavior.
+
+```bash
+bdk dev status
+bdk dev run --app forecasthub,forecastadmin
+bdk dev stop --app forecasthub
+bdk dev reset --app forecasthub --confirm-instance forecasthub:w02
+bdk dev release --confirm-slot 2
+bdk dev prune --confirm
+bdk dev configure --slot 2
+```
+
+`status` shows the slot, URLs, databases and verified process state. `run` builds and starts DevKit web hosts of the current checkout, all of them when `--app` is omitted, and stops them on Ctrl+C. `stop` requests a graceful shutdown and only kills with `--force` after verifying the process. `reset` and `prune --confirm` start the application project to drop instance resources, and pass through its exit codes `2` (refused) and `3` (incomplete).
 
 ## Exit codes
 
@@ -702,4 +724,5 @@ bdk host run --host commerce-api-5001 -- status
 - [MCP Client Configuration](./features-cli-mcp-clients.md)
 - [Console Commands](./features-presentation-console-commands.md)
 - [DevKit CLI Specification](./specs/spec-presentation-cli.md)
+- [Worktree Development Isolation](./development-worktrees-support.md)
 - [DevKit STDIO MCP Specification](./specs/spec-presentation-web-mcp-diagnostics.md)

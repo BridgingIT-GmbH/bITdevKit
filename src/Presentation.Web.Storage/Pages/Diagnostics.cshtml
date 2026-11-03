@@ -12,6 +12,23 @@
 }
 
 <div id="storage-diagnostics" data-url="@(Model + "/diagnostics/data")" data-load-url="@(Model + "/diagnostics/load")" data-feature="@Model.Split('/').Last()">
+    <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 py-2 mb-2 border-bottom">
+        <div class="d-flex align-items-center gap-2">
+            <span id="storage-metrics-status" class="small text-muted" role="status">Loading metrics</span>
+            <select id="storage-metrics-interval" class="form-select form-select-sm" style="width:9rem" aria-label="Diagnostics refresh interval">
+                <option value="">Off</option>
+                <option value="1000" selected>1 sec</option>
+                <option value="5000">5 sec</option>
+                <option value="15000">15 sec</option>
+                <option value="30000">30 sec</option>
+            </select>
+            <button id="storage-metrics-refresh" class="btn btn-outline-secondary btn-sm" type="button" title="Refresh diagnostics" aria-label="Refresh diagnostics"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+        </div>
+    </div>
+    <nav class="nav nav-pills mb-2" aria-label="Storage views" data-dashboard-view="diagnostics">
+        <a class="nav-link" href="@Model">Explorer</a>
+        <a class="nav-link active" aria-current="page" href="@(Model + "/diagnostics")">Diagnostics</a>
+    </nav>
     <details id="storage-load-panel" class="card mb-2">
         <summary class="card-header">
             <span>Throughput test</span>
@@ -53,19 +70,6 @@
             <div id="storage-load-error" class="small text-danger mt-1" role="alert" hidden></div>
         </div>
     </details>
-    <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 py-2 mb-2 border-bottom">
-        <div class="d-flex align-items-center gap-2">
-            <span id="storage-metrics-status" class="small text-muted" role="status">Loading metrics</span>
-            <select id="storage-metrics-interval" class="form-select form-select-sm" style="width:9rem" aria-label="Diagnostics refresh interval">
-                <option value="">Off</option>
-                <option value="1000" selected>1 sec</option>
-                <option value="5000">5 sec</option>
-                <option value="15000">15 sec</option>
-                <option value="30000">30 sec</option>
-            </select>
-            <button id="storage-metrics-refresh" class="btn btn-outline-secondary btn-sm" type="button" title="Refresh diagnostics" aria-label="Refresh diagnostics"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
-        </div>
-    </div>
     <div class="row g-2">
         <div class="col-12 col-xl-6">
             <div class="card">

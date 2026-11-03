@@ -1,0 +1,274 @@
+@using BridgingIT.DevKit.Common
+@using BridgingIT.DevKit.Presentation.Web
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.Extensions.Hosting
+@using Microsoft.Extensions.Logging
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var environment = HttpContext.RequestServices.GetService<IHostEnvironment>();
+    var logger = HttpContext.RequestServices.GetService<ILogger<DashboardWorktreeModel>>();
+    var environmentChecks = CreateEnvironmentChecks(environment);
+    var environmentVariables = CreateEnvironmentVariables();
+    var worktree = CreateWorktree(logger);
+}
+
+@(await RenderPartialAsync<SystemStyles>())
+
+<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+    <div class="d-flex align-items-center gap-2">
+        <span class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <button type="button" class="btn btn-outline-secondary btn-sm" title="Refresh environment details" aria-label="Refresh environment details" data-system-reload>
+            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+        </button>
+    </div>
+</div>
+
+@(await RenderPartialAsync<SystemViewNavigation, string>("environment"))
+
+<div class="dashboard-system-grid">
+    <section class="card dashboard-system-span-4">
+        <div class="card-body p-3">
+            <h6 class="card-title">Environment</h6>
+            <table class="table table-sm align-middle mb-0">
+                <tbody>
+                @foreach (var check in environmentChecks)
+                {
+                    <tr>
+                        <td class="dashboard-system-env-key">@check.Name</td>
+                        <td class="text-end">
+                            @if (check.Value is bool boolValue)
+                            {
+                                @RenderBooleanBadge(boolValue)
+                            }
+                            else
+                            {
+                                <span class="dashboard-system-env-value">@DisplayValue(check.Value?.ToString())</span>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    @if (worktree is not null)
+    {
+        <section class="card dashboard-system-span-8" data-system-worktree>
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+                    <h6 class="card-title mb-0">Worktree</h6>
+                    @if (worktree.IsActive)
+                    {
+                        <span class="badge text-bg-success" title="Linked Git worktree isolation is active. Ports, databases, cookies and state belong to this worktree.">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge text-bg-secondary" title="Worktree isolation is not applied. The host uses its configured ports and databases.">Inactive</span>
+                    }
+                </div>
+                <table class="table table-sm align-middle mb-0">
+                    <tbody>
+                    @foreach (var row in worktree.Rows)
+                    {
+                        <tr>
+                            <td class="dashboard-system-env-key text-nowrap">@row.Name</td>
+                            <td class="text-end">
+                                <span class="dashboard-system-env-value" title="@row.Hint">@DisplayValue(row.Value)</span>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    }
+
+    <section class="card @(worktree is null ? "dashboard-system-span-8" : "dashboard-system-span-12")" data-system-environment-variables>
+        <div class="card-body p-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                <h6 class="card-title mb-0">Environment Variables</h6>
+                <div class="d-flex flex-wrap align-items-center justify-content-end gap-2">
+                    <input type="search"
+                           class="form-control form-control-sm dashboard-system-env-filter"
+                           placeholder="Filter variables"
+                           autocomplete="off"
+                           data-system-env-filter>
+                    <span class="text-muted small" data-system-env-count>@(environmentVariables.Count) variable(s)</span>
+                </div>
+            </div>
+            <div class="dashboard-system-env-scroll">
+                <table class="table table-sm align-middle mb-0 dashboard-system-env-table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var variable in environmentVariables)
+                    {
+                        <tr data-system-env-row data-system-env-search="@($"{variable.Name} {variable.Value}")">
+                            <td class="dashboard-system-env-key">@variable.Name</td>
+                            <td class="dashboard-system-env-value">@DisplayValue(variable.Value)</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    (() => {
+        const container = document.querySelector('[data-system-environment-variables]');
+        const filter = container?.querySelector('[data-system-env-filter]');
+        const rows = Array.from(container?.querySelectorAll('[data-system-env-row]') || []);
+        const count = container?.querySelector('[data-system-env-count]');
+        if (!filter) {
+            return;
+        }
+
+        const apply = () => {
+            const query = filter.value.trim().toLowerCase();
+            let visible = 0;
+
+            rows.forEach(row => {
+                const isMatch = !query || (row.dataset.systemEnvSearch || '').toLowerCase().includes(query);
+                row.hidden = !isMatch;
+                if (isMatch) {
+                    visible++;
+                }
+            });
+
+            if (count) {
+                count.textContent = query
+                    ? `${visible} of ${rows.length} variable(s)`
+                    : `${rows.length} variable(s)`;
+            }
+        };
+
+        filter.value = sessionStorage.getItem('bdk.dashboard.system.envFilter') || '';
+        filter.addEventListener('input', () => {
+            sessionStorage.setItem('bdk.dashboard.system.envFilter', filter.value);
+            apply();
+        });
+        apply();
+    })();
+</script>
+
+<script>
+    document.querySelector('[data-system-reload]')?.addEventListener('click', () => location.reload());
+</script>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "System" };
+
+    private DashboardWorktreeModel CreateWorktree(ILogger logger)
+    {
+        try
+        {
+            var context = HttpContext.RequestServices.GetService<DevAppInstanceSession>()?.Context;
+
+            return context is null ? null : new DashboardWorktreeModel(context.IsActive, CreateWorktreeRows(context));
+        }
+        catch (Exception ex)
+        {
+            logger?.LogDebug(ex, "[{LogKey}] worktree instance unavailable for the dashboard system page", "BDK");
+
+            return null;
+        }
+    }
+
+    private static List<DashboardWorktreeRowModel> CreateWorktreeRows(DevAppInstanceContext context)
+    {
+        if (!context.IsActive)
+        {
+            var inactiveRows = new List<DashboardWorktreeRowModel> { new("Reason", context.InactiveReason), new("Application", context.AppId) };
+            if (context.FailureCode is not null)
+            {
+                inactiveRows.Add(new("Error code", context.FailureCode));
+                inactiveRows.Add(new("Error", context.FailureMessage));
+            }
+
+            return inactiveRows;
+        }
+
+        var rows = new List<DashboardWorktreeRowModel>
+        {
+            new("Instance", context.InstanceName),
+            new("Slot", $"{context.Slot} ({context.SelectionReason.ToString().ToLowerInvariant()})"),
+            new("HTTPS", context.HttpsUrl),
+            new("HTTP", context.HttpUrl),
+            new("Worktree", context.WorktreeRoot),
+            new("Worktree ID", context.WorktreeId?.ToString()),
+        };
+
+        // resource plans also carry managed values (connection strings), only the sanitized target is shown
+        foreach (var resource in context.Resources ?? [])
+        {
+            rows.Add(new(resource.ResourceId, resource.Shared ? $"{resource.Target} (shared)" : resource.Target, resource.Kind));
+        }
+
+        rows.Add(new("Data protection", context.DataProtectionApplicationName));
+        rows.Add(new("Cookie suffix", DevAppInstanceCookieIsolation.GetSuffix(context)));
+        rows.Add(new("State", context.StateRoot));
+
+        return rows;
+    }
+
+    private static IHtmlContent RenderBooleanBadge(bool value)
+    {
+        var cssClass = value ? "text-bg-success" : "text-bg-secondary";
+        var label = value ? "True" : "False";
+
+        return new HtmlString($"""<span class="badge {cssClass}">{label}</span>""");
+    }
+
+    private static IReadOnlyList<DashboardEnvironmentCheckModel> CreateEnvironmentChecks(IHostEnvironment environment)
+    {
+        return
+        [
+            new("Name", environment?.EnvironmentName ?? "-"),
+            new("IsDevelopment", environment?.IsDevelopment() == true),
+            new("IsLocalDevelopment", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsLocalDevelopment(environment)),
+            new("IsTesting", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsTesting(environment)),
+            new("IsStaging", environment?.IsStaging() == true),
+            new("IsProduction", environment?.IsProduction() == true),
+            new("IsDocker", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsDocker()),
+            new("IsKubernetes", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsKubernetes()),
+            new("IsCloud", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsCloud()),
+            new("IsAzure", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsAzure()),
+            new("IsContainerized", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsContainerized())
+        ];
+    }
+
+    private static IReadOnlyList<DashboardEnvironmentVariableModel> CreateEnvironmentVariables()
+    {
+        return Environment.GetEnvironmentVariables()
+            .Cast<System.Collections.DictionaryEntry>()
+            .Select(entry => new DashboardEnvironmentVariableModel(
+                entry.Key.ToString() ?? string.Empty,
+                entry.Value?.ToString() ?? string.Empty))
+            .OrderBy(entry => entry.Name, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+    }
+
+    private static string DisplayValue(string value)
+    {
+        return string.IsNullOrEmpty(value) ? "-" : value;
+    }
+
+    private sealed record DashboardEnvironmentCheckModel(string Name, object Value);
+
+    private sealed record DashboardEnvironmentVariableModel(string Name, string Value);
+
+    private sealed record DashboardWorktreeModel(bool IsActive, IReadOnlyList<DashboardWorktreeRowModel> Rows);
+
+    private sealed record DashboardWorktreeRowModel(string Name, string Value, string Hint = null);
+}

@@ -6,6 +6,7 @@
 @inherits RazorSlice
 
 @{
+    var view = ResolveView();
     var metricsModel = CreateModel();
     var applicationRoutes = metricsModel.AspNetRoutes.Routes
         .Where(route => IsApplicationRoute(route.Route))
@@ -81,23 +82,10 @@
     </div>
 </div>
 
-<ul class="nav nav-tabs mb-2" id="dashboardMetricsTabs" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="metrics-app-tab" data-bs-toggle="tab" data-bs-target="#metrics-app" type="button" role="tab" aria-controls="metrics-app" aria-selected="true">App</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="metrics-dotnet-tab" data-bs-toggle="tab" data-bs-target="#metrics-dotnet" type="button" role="tab" aria-controls="metrics-dotnet" aria-selected="false">.NET</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="metrics-aspnet-tab" data-bs-toggle="tab" data-bs-target="#metrics-aspnet" type="button" role="tab" aria-controls="metrics-aspnet" aria-selected="false">ASP.NET</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="metrics-routes-tab" data-bs-toggle="tab" data-bs-target="#metrics-routes" type="button" role="tab" aria-controls="metrics-routes" aria-selected="false">Routes</button>
-    </li>
-</ul>
-
-<div class="tab-content">
-    <div class="tab-pane fade show active" id="metrics-app" role="tabpanel" aria-labelledby="metrics-app-tab" tabindex="0">
+<div id="metrics-view" data-metrics-view="@view">
+    @if (view == "app")
+    {
+    <div id="metrics-app">
         <div class="row g-2 mb-2">
             <div class="col-12 col-xl-4">
                 <div class="card h-100">
@@ -186,8 +174,11 @@
             </div>
         </div>
     </div>
+    }
 
-    <div class="tab-pane fade" id="metrics-dotnet" role="tabpanel" aria-labelledby="metrics-dotnet-tab" tabindex="0">
+    @if (view == "dotnet")
+    {
+    <div id="metrics-dotnet">
         <div class="row g-2">
             <div class="col-12 col-xl-6">
                 <div class="card h-100">
@@ -231,8 +222,11 @@
             </div>
         </div>
     </div>
+    }
 
-    <div class="tab-pane fade" id="metrics-aspnet" role="tabpanel" aria-labelledby="metrics-aspnet-tab" tabindex="0">
+    @if (view == "aspnet")
+    {
+    <div id="metrics-aspnet">
         <div class="row g-2">
             <div class="col-12 col-xl-6">
                 <div class="card h-100">
@@ -274,8 +268,11 @@
             </div>
         </div>
     </div>
+    }
 
-    <div class="tab-pane fade" id="metrics-routes" role="tabpanel" aria-labelledby="metrics-routes-tab" tabindex="0">
+    @if (view == "routes")
+    {
+    <div id="metrics-routes">
         <div class="card">
             <div class="card-body p-3">
                 <h6 class="card-title">Busiest Routes</h6>
@@ -316,9 +313,21 @@
             </div>
         </div>
     </div>
+    }
 </div>
 
 @functions {
+    private string ResolveView()
+    {
+        var requested = HttpContext.Request.Query["view"].ToString();
+        if (string.IsNullOrEmpty(requested))
+        {
+            requested = HttpContext.Request.Path.Value?.TrimEnd('/').Split('/').LastOrDefault();
+        }
+
+        return BridgingIT.DevKit.Presentation.Web.Metrics.Dashboard.DashboardEndpoints.Views.Contains(requested) ? requested : "app";
+    }
+
     private DashboardMetricsViewModel CreateModel()
     {
       // ReSharper disable once PossibleNullReferenceException

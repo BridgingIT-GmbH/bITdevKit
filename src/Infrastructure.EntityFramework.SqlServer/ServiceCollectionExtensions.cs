@@ -64,6 +64,7 @@ public static class ServiceCollectionExtensions
     {
         EnsureArg.IsNotNull(options, nameof(options));
         EnsureArg.IsNotNullOrEmpty(options.ConnectionString, nameof(options.ConnectionString));
+        options.ConnectionString = DevAppInstanceSession.ResolveConnectionString(services, SqlServerDevAppInstanceAdapter.Instance, options.ConnectionString, typeof(TContext).Name);
         sqlServerOptionsBuilder ??= c => { };
 
         if (options.CommandLoggerEnabled)
@@ -167,6 +168,7 @@ public static class ServiceCollectionExtensions
         where TContext : DbContext
     {
         EnsureArg.IsNotNullOrEmpty(connectionString, nameof(connectionString));
+        connectionString = DevAppInstanceSession.ResolveConnectionString(services, SqlServerDevAppInstanceAdapter.Instance, connectionString, typeof(TContext).Name);
 
         services.AddDbContext<TContext>(o => o.UseSqlServer(connectionString, sqlServerOptionsBuilder), lifetime);
         services.AddDbContextRegistration<TContext>(Provider.SqlServer);

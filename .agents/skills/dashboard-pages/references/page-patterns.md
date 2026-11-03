@@ -18,11 +18,16 @@
 - For master/detail pages, use flexible columns with `min-width: 0`, `min-height: 0`, and independent scrolling regions. A long table should not push the selected detail or toolbar off the page. Jobs and Messaging demonstrate this.
 - Keep responsive tables within `.table-responsive`. Bound long lists and histories; make headers sticky only within the intended scroll owner. Avoid viewport heights copied from another page without checking its toolbar, tabs, mobile behavior, and detached window.
 - Scope CSS under a page root or feature prefix. Shared layout changes need cross-page validation.
+- When an overview grows into a wall of unrelated cards, keep a short Overview and move the groups to routed tabs. System does this with Overview, Process (OS, architecture, resources, .NET runtime, versions) and Environment (configuration and worktree details). Put styles shared by the tabs in one partial.
+- Optional or host-specific cards, such as worktree details, must never break the page when their source is missing or fails. Show a short "not active" or unavailable state instead.
 - Respect detached views through the existing `dashboardView=window` behavior and `HideSideBar` layout option. Preserve the intended view mode when building paging, filter, and detail links.
 
 ## Navigation, filters, and time
 
-- Use `nav nav-pills` and an active class for page-level views. Supply `DashboardPage.RememberedViews` with stable view IDs and configured URLs. The shared handler restores sidebar/overview destinations across navigation and preserves Profiling's existing storage key.
+- Page-level tabs look and behave the same on every page: the refresh toolbar row comes first, then `<nav class="nav nav-pills mb-2" aria-label="... views" data-dashboard-view="...">`, then the content. Mark the current link with `active` and `aria-current="page"`. Don't add `gap-1` or use `nav-tabs` for page-level views; `nav-tabs` stays for graph switches inside cards. Each tab is a server route listed in `DashboardPage.RememberedViews`. Keep the nav outside the refreshed fragment and pass the view to the fragment, so a refresh never re-renders or resets the tabs.
+- Map the same full page at each view route. The fragment reads the view from `?view=` or the last path segment, checks it against a whitelist, falls back to the first view, and renders only that view's section. Shared summary cards can stay above the view sections.
+- Supply `DashboardPage.RememberedViews` with stable view IDs and configured URLs. The shared handler restores sidebar/overview destinations across navigation and preserves Profiling's existing storage key.
+- Judge tabs by behavior, not only looks. Metrics once had computed styles identical to System and still felt wrong: its nav sat inside the refreshed fragment, so every refresh reset it to the first tab and replayed the fade; the first tab flashed before the saved one returned; and the URL never changed. Client-side tabs that keep their own state cause this. Use routed tabs.
 - `RememberedViews` currently belongs to `DashboardPage` descriptors. Check a page set's definition-to-metadata mapping before extending it; the current page-set builder does not expose a fluent remembered-view setting.
 - Put `data-dashboard-view` on explicit tab links or the feature view container. Saved state must not rewrite a deliberate tab choice, Reset, paging, or another query-bearing action. The handler matches more specific view paths before a root view.
 - Keep filters discoverable through domain labels. Use `contains` matching for ordinary key/type investigation where the query contracts support it. Do not silently change a field advertised as exact.
@@ -98,9 +103,19 @@ The example uses page-owned URL, selection, modal, and initialization functions.
 - Health pages distinguish missing registration, degraded, unhealthy, and measured checks. Keep units and observation time visible for metrics and runtime snapshots.
 - Console/log-stream panels own their connections and subscriptions. Follow the existing start/stop/dispose lifecycle when toggling, replacing, or leaving a panel. Bound browser-retained output and expose connection/error state.
 
+## Documentation screenshots
+
+- Store dashboard captures in `docs/assets/dashboard/` using the existing numbered names (`03-system-system.png`). Put extra tab captures of one page in a subfolder (`system/process.png`, `system/environment.png`) and link them from the feature guide.
+- Capture the `main` element at 1x scale in a 2000x1700 viewport, about 1740px wide, signed in and with auto refresh off.
+- Replace application names, paths, machine and user names with fictional values (`Contoso.Orders`, `C:\src\orders-export`, `DEV-WORKSTATION`, `developer`). Documentation never shows repository example applications.
+- After changing a page's layout, search `docs/` for its screenshots. Recapture them, or list them as stale in the handback.
+
 ## Validation
 
 - Exercise populated, empty, unavailable, failed, long-name, and unsupported-capability states. Verify custom dashboard paths, disabled features, page/card grouping, saved views, exact identifiers, and safe text rendering.
 - Test meaningful query/action/rendering behavior with the existing TestServer and unit-test patterns. Use focused checks for plain markup or copy edits. Run builds and top-level test commands sequentially in the worktree.
+- Dashboard pages need few unit tests. Cover routes, view resolution, authorization and query contracts; check layout and interaction in a live page instead of writing tests that copy markup.
+- Tab check: open every view route directly, click each tab, set refresh to the shortest interval and confirm the view and nav survive, confirm the sidebar link goes to the remembered view, and look for page errors. Compare against another page's tabs side by side. In Playwright, match tab names with `exact: true`, because `.NET` also matches `ASP.NET`.
+- Keep each file's line endings and BOM when editing `.cshtml` and `.cs` files. A whole-file line in `git diff --stat` usually means they changed.
 - For shared-shell changes, broaden presentation tests and inspect representative page families. For browser work, check narrow and wide layouts, light/dark themes, keyboard access, menu bounds, modal edits, refresh races, and the browser console/network results.
 - Verify real running pages when browser testing is requested. Reuse the session's required browser tools and repository launch instructions. Do not mistake a standalone visual sketch for proof that the integrated page works.

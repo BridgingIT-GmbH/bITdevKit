@@ -277,18 +277,15 @@ public class CosmosSqlProviderOptionsBuilder<T>
     }
 
     /// <summary>
-    /// Executes the time to live operation.
+    /// Sets the default time to live of the container. Cosmos accepts only <c>-1</c> (enabled, items never expire
+    /// unless they set their own <c>ttl</c>) or a positive number of seconds, so zero and negative values map to <c>-1</c>.
     /// </summary>
-    /// <param name="seconds">The seconds used by the operation.</param>
-    /// <returns>The result of the operation.</returns>
+    /// <param name="seconds">The default time to live in seconds, or <c>-1</c> to enable per-item expiry only.</param>
+    /// <returns>The builder for chaining.</returns>
+    /// <example><code>builder.TimeToLive(-1);</code></example>
     public CosmosSqlProviderOptionsBuilder<T> TimeToLive(int seconds)
     {
-        if (seconds < 0)
-        {
-            seconds = 0;
-        }
-
-        this.Target.TimeToLive = seconds;
+        this.Target.TimeToLive = seconds <= 0 ? -1 : seconds;
 
         return this;
     }

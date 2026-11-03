@@ -28,12 +28,29 @@ public sealed class HostRuntimeInfo
     public string Reason { get; init; }
 
     /// <summary>
-    /// Determines whether this host belongs to the supplied workspace.
+    /// Determines whether this host belongs to the supplied workspace. A host started as a development app instance
+    /// also matches when the workspace is its worktree root, so a host whose project sits below a nested solution
+    /// is still found from the worktree root.
     /// </summary>
     /// <param name="workspace">The workspace context.</param>
-    /// <returns><see langword="true" /> when the descriptor workspace matches.</returns>
+    /// <returns><see langword="true" /> when the descriptor workspace or worktree root matches.</returns>
     public bool MatchesWorkspace(CliWorkspaceContext workspace)
-        => string.Equals(Normalize(this.Descriptor?.WorkspacePath), Normalize(workspace.Path), OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
+        => PathEquals(this.Descriptor?.WorkspacePath, workspace.Path) ||
+            PathEquals(this.Descriptor?.DevAppInstance?.WorktreeRoot, workspace.Path);
+
+    /// <summary>
+    /// Gets the primary URL of the host, preferring HTTPS.
+    /// </summary>
+    /// <returns>The primary URL, or <see langword="null" /> when the descriptor carries none.</returns>
+    public string GetPrimaryUrl()
+        => this.Descriptor?.Urls?.FirstOrDefault(url => url.StartsWith("https://", StringComparison.OrdinalIgnoreCase)) ??
+            this.Descriptor?.Urls?.FirstOrDefault() ??
+            this.Descriptor?.DevAppInstance?.HttpsUrl ??
+            this.Descriptor?.DevAppInstance?.HttpUrl;
+
+    private static bool PathEquals(string path, string other)
+        => !string.IsNullOrWhiteSpace(path) &&
+            string.Equals(Normalize(path), Normalize(other), OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 
     private static string Normalize(string path)
         => string.IsNullOrWhiteSpace(path)

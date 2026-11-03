@@ -5,7 +5,7 @@
 
 @{
     var client = Model.Options?.Clients?.FirstOrDefault(c => c.ClientId == Model.Request.ClientId);
-    var isValidRedirectUri = client?.RedirectUris?.Contains(Model.Request.RedirectUri) ?? false;
+    var isValidRedirectUri = client is not null && BridgingIT.DevKit.Presentation.Web.RedirectUriNormalizer.Matches(client.RedirectUris, Model.Request.RedirectUri, Model.Options.Issuer);
     var showUserCards = Model.Options.EnableUserCards && Model.Options?.Users?.Where(u => u.IsEnabled).Any() == true;
     var showManualLogin = Model.Options.EnableLoginCard;
     var workspaceClass = showUserCards && showManualLogin ? "identity-workspace" : "identity-workspace identity-workspace-single";
@@ -148,7 +148,7 @@
                     <code>@Model.Request.RedirectUri</code>
                     <div class="mt-2">Configured URIs:</div>
                     <ul>
-                        @foreach (var uri in client.RedirectUris)
+                        @foreach (var uri in BridgingIT.DevKit.Presentation.Web.RedirectUriNormalizer.ResolveAll(client.RedirectUris, Model.Options.Issuer))
                         {
                             <li><code>@uri</code></li>
                         }

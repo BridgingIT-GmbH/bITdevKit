@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Presentation.Web;
 
 using System.Collections.Generic;
 using BridgingIT.DevKit.Common;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 /// <summary>
 /// Builds fake identity provider endpoints options configuration.
@@ -317,6 +318,24 @@ public class FakeIdentityProviderEndpointsOptionsBuilder
     public FakeIdentityProviderEndpointsOptionsBuilder EnableCookieSingleSignOn(bool value = true)
     {
         this.options.EnableCookieSingleSignOn = value;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Configures the provider session cookie after the defaults are applied.
+    /// </summary>
+    /// <param name="configure">The cookie configuration action.</param>
+    /// <returns>The builder.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddFakeIdentityProvider(o => o
+    ///     .WithCookie(cookie => cookie.Cookie.Name = ".Bdk.FakeIdentityProvider.forecasthub"));
+    /// </code>
+    /// </example>
+    public FakeIdentityProviderEndpointsOptionsBuilder WithCookie(Action<CookieAuthenticationOptions> configure)
+    {
+        this.options.ConfigureCookie = configure;
 
         return this;
     }

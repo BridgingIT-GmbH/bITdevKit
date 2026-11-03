@@ -206,7 +206,8 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
     private static DocumentInfo ToInfo(CosmosStorageDocument x) => new() { Key = new(x.PartitionKey, x.RowKey), ETag = ETag(x), ContentHash = x.ContentHash, CreatedAt = x.CreatedDate, LastModifiedAt = x.UpdatedDate ?? x.CreatedDate, ExpiresAt = x.ExpiresAt, Properties = new PropertyBag(x.Properties) };
     private static string ETag(CosmosStorageDocument x) => NormalizeETag(x.ETag);
     private static string NormalizeETag(string value) => value?.Trim('"');
-    private static string HeaderETag(CosmosStorageDocument x) => x.ETag is null ? null : $"\"{ETag(x)}\"";
+    // send the _etag exactly as the server returned it, Cosmos quotes it but the vnext emulator does not and compares If-Match literally
+    private static string HeaderETag(CosmosStorageDocument x) => x.ETag;
     private static int ToTtl(DateTimeOffset? expiresAt, DateTimeOffset now) => expiresAt is null ? -1 : Math.Max(1, (int)Math.Ceiling((expiresAt.Value - now).TotalSeconds));
     private static string EncodeBag(PropertyBag bag) => JsonSerializer.Serialize((bag ?? new()).ToDictionary(x => x.Key, x => PropertyBagScalarCodec.Encode(x.Value)));
     private static PropertyBag DecodeBag(string json) { if (string.IsNullOrWhiteSpace(json)) return new(); var values = JsonSerializer.Deserialize<Dictionary<string, string>>(json); return new(values.ToDictionary(x => x.Key, x => PropertyBagScalarCodec.Decode(x.Value))); }

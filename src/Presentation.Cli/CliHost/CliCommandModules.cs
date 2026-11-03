@@ -81,6 +81,39 @@ public sealed class HostsCliCommandModule : ICliCommandModule
 }
 
 /// <summary>
+/// Registers the worktree development instance commands.
+/// </summary>
+public sealed class DevCliCommandModule : ICliCommandModule
+{
+    /// <inheritdoc />
+    public string Name => "dev";
+
+    /// <inheritdoc />
+    public string Description => "Worktree development instance commands";
+
+    /// <inheritdoc />
+    public void RegisterServices(IServiceCollection services, CliCommandModuleContext context)
+    {
+        services.AddSingleton<IDevAppInstanceProcessRunner, DevAppInstanceProcessRunner>();
+        services.AddSingleton<BridgingIT.DevKit.Common.IGitCommandRunner, BridgingIT.DevKit.Common.ProcessGitCommandRunner>();
+        services.AddSingleton<DevAppInstanceCliService>();
+    }
+
+    /// <inheritdoc />
+    public void RegisterCommands(ICliCommandRegistry registry)
+        => registry.AddGroup("dev", this.Description, group =>
+        {
+            group.WithCommand<DevStatusCliCommand>();
+            group.WithCommand<DevRunCliCommand>();
+            group.WithCommand<DevConfigureCliCommand>();
+            group.WithCommand<DevStopCliCommand>();
+            group.WithCommand<DevResetCliCommand>();
+            group.WithCommand<DevReleaseCliCommand>();
+            group.WithCommand<DevPruneCliCommand>();
+        });
+}
+
+/// <summary>
 /// Registers host Console Command forwarding commands.
 /// </summary>
 public sealed class HostForwardingCliCommandModule : ICliCommandModule

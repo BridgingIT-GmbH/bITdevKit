@@ -1,5 +1,6 @@
 namespace BridgingIT.DevKit.Cli;
 
+using System.Globalization;
 using BridgingIT.DevKit.Common;
 using Spectre.Console;
 
@@ -15,12 +16,14 @@ public static class HostRuntimeTable
     /// <param name="hosts">The hosts to render.</param>
     public static void Write(IAnsiConsole console, IReadOnlyList<HostRuntimeInfo> hosts)
     {
-        var table = new Table().Border(TableBorder.Minimal).AddColumn("Runtime ID").AddColumn("App").AddColumn("Features").AddColumn("Status");
+        var table = new Table().Border(TableBorder.Minimal).AddColumn("Runtime ID").AddColumn("App").AddColumn("URL").AddColumn("Slot").AddColumn("Features").AddColumn("Status");
         foreach (var host in hosts)
         {
             table.AddRow(
                 GetDisplayRuntimeId(host),
                 GetDisplayApplicationName(host),
+                Markup.Escape(host.GetPrimaryUrl() ?? "-"),
+                host.Descriptor?.DevAppInstance?.Slot.ToString(CultureInfo.InvariantCulture) ?? "-",
                 string.Join(',', host.Descriptor?.Features?.Keys ?? Enumerable.Empty<string>()),
                 StyleStatus(host.Status));
         }

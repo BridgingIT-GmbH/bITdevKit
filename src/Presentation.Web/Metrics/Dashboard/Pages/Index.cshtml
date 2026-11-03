@@ -2,12 +2,16 @@
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using BridgingIT.DevKit.Presentation.Web.Metrics.Dashboard.Pages
 @using Microsoft.Extensions.DependencyInjection
+@using MetricsEndpoints = BridgingIT.DevKit.Presentation.Web.Metrics.Dashboard.DashboardEndpoints
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
     var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-    var contentPath = DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.MetricsContent);
+    var segment = HttpContext.Request.Path.Value?.TrimEnd('/').Split('/').LastOrDefault();
+    var view = MetricsEndpoints.Views.Contains(segment) ? segment : "app";
+    var contentPath = DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.MetricsContent) + "?view=" + view;
+    var labels = new Dictionary<string, string> { ["app"] = "App", ["dotnet"] = ".NET", ["aspnet"] = "ASP.NET", ["routes"] = "Routes" };
 }
 
 <div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
@@ -25,6 +29,12 @@
         </button>
     </div>
 </div>
+<nav class="nav nav-pills mb-2" aria-label="Metrics views" data-dashboard-view="@view">
+    @foreach (var item in MetricsEndpoints.Views)
+    {
+        <a class="nav-link @(item == view ? "active" : "")" aria-current="@(item == view ? "page" : null)" href="@MetricsEndpoints.BuildMetricsPath(dashboardOptions, item)">@labels[item]</a>
+    }
+</nav>
 
 <div id="dashboard-metrics-content">
     @(await RenderPartialAsync<Content>())
@@ -38,8 +48,7 @@
             statusSelector: '#metrics-refresh-status',
             intervalSelector: '#metrics-refresh-interval',
             refreshButtonSelector: '#metrics-refresh-now',
-            storageKey: 'bdk.dashboard.metrics.refreshInterval',
-            preserveActiveTab: true
+            storageKey: 'bdk.dashboard.metrics.refreshInterval'
         });
     })();
 </script>

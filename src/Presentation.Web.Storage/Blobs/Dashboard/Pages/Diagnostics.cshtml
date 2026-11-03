@@ -4,10 +4,6 @@
     var options = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var root = BlobStorageDashboardRoutes.BuildBlobsPath(options);
 }
-<nav class="nav nav-pills gap-1 mb-2" aria-label="Storage views" data-dashboard-view="diagnostics">
-    <a class="nav-link" href="@root">Explorer</a>
-    <a class="nav-link active" aria-current="page" href="@(root + "/diagnostics")">Diagnostics</a>
-</nav>
 @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Pages.Diagnostics, string>(root))
 @functions {
     public DashboardLayoutModel LayoutModel => new() { Title = "Blobs" };

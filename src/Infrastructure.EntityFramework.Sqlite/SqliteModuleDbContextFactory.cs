@@ -105,6 +105,10 @@ public class SqliteModuleDbContextFactory<TContext> : IDesignTimeDbContextFactor
             // Retrieve the connection string from configuration
             connectionString = configuration[this.connectionStringKey]
                 ?? throw new InvalidOperationException($"Connection string for key '{this.connectionStringKey}' not found in configuration or command-line arguments.");
+
+            // In a Git linked worktree, target the instance database file of the worktree
+            connectionString = SqliteDevAppInstanceAdapter.Instance.ResolveDesignTime(
+                connectionString, this.connectionStringKey, Directory.GetCurrentDirectory(), configuration);
         }
 
         // Configure DbContextOptions

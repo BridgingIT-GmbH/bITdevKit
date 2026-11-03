@@ -80,7 +80,7 @@ public class CosmosDocumentStoreClientBuilderContextTests
         var sut = this.fixture.ServiceProvider.GetRequiredService<IDocumentStoreClient<PersonStubDocument>>();
         var key = new DocumentKey("di-partition-" + DateTime.UtcNow.Ticks, "row-1");
 
-        var saveResult = await sut.UpsertResultAsync(
+        var saveResult = await sut.UpsertAsync(
             key,
             new PersonStubDocument
             {
@@ -88,10 +88,10 @@ public class CosmosDocumentStoreClientBuilderContextTests
                 LastName = "DI",
                 Age = 41
             },
-            timeout.Token);
+            cancellationToken: timeout.Token);
         var getResult = await sut.GetResultAsync(key, timeout.Token);
 
-        saveResult.IsSuccess.ShouldBeTrue(saveResult.Errors.Select(e => e.Message).ToString(", "));
+        saveResult.IsSuccess.ShouldBeTrue(string.Join(", ", saveResult.Errors.Select(e => e is DocumentStoreProviderError { InnerException: { } ex } ? $"{e.Message} {ex}" : $"{e.GetType().Name}: {e.Message}")));
         getResult.IsSuccess.ShouldBeTrue();
         getResult.Value.FirstName.ShouldBe("Cosmos");
         getResult.Value.LastName.ShouldBe("DI");

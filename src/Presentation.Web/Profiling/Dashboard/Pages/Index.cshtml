@@ -933,6 +933,8 @@
                     memory: { title: 'Memory History', ariaLabel: 'Focused Memory History chart', traces: memoryTraces, layout: memoryLayout },
                     gc: { title: 'GC Pressure History', ariaLabel: 'Focused GC Pressure History chart', traces: gcTraces, layout: gcLayout }
                 };
+                memory.querySelectorAll(':scope > .profiling-empty').forEach(element => element.remove());
+                gc.querySelectorAll(':scope > .profiling-empty').forEach(element => element.remove());
                 await Promise.all([
                     Plotly.react(memory, memoryTraces, memoryLayout, plotlyConfig),
                     Plotly.react(gc, gcTraces, gcLayout, plotlyConfig)

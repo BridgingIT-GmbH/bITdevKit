@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="BridgingIT.DevKit.Presentation.UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj" />
   </ItemGroup>
 

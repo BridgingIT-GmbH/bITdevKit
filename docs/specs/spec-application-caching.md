@@ -13,7 +13,7 @@ Each collection selects one self-contained cache provider. That provider owns th
 
 The agreed providers are in-memory, Entity Framework, and filesystem. The Entity Framework provider handles SQL Server, PostgreSQL, and SQLite. The filesystem provider uses `Infrastructure.FileSystem` building blocks and supports Windows and Linux. The feature must support both very high entry counts and large individual values, including persistent datasets larger than RAM with a bounded in-process working set. Optional HTTP endpoints expose cache get, set, and invalidation operations to external callers. Optional Dashboard, Console Commands, and MCP integrations provide operational inspection and management. This specification defines the complete feature. Proposed API names and implementation details describe the intended design; nothing in this document describes an implemented API unless explicitly identified as an existing building block.
 
-This remains a design draft for review. Section 19 distinguishes accepted decisions from engineering-selected defaults. Refresh ownership, finite starting budgets, provider formats/recovery, and access/completion semantics are defined. API sketches remain illustrative; actual numeric benchmark reports and provider qualification are implementation acceptance evidence, not results claimed by this document. Further user questions are reserved for material scope changes or genuinely new architectural ambiguity.
+This remains a design draft. Section 19 distinguishes accepted decisions from engineering-selected defaults and records the accepted operating contracts in D-34. Refresh ownership, finite starting budgets, provider formats/recovery, and access/completion semantics are defined. API sketches remain illustrative; actual numeric benchmark reports and provider qualification are implementation acceptance evidence, not results claimed by this document. Further user questions are reserved for material scope changes or genuinely new architectural ambiguity.
 
 ### 1.1 Architecture at a glance
 
@@ -91,6 +91,8 @@ Partitioning, aggregation, query planning, data completeness, and interpretation
 
 HTTP response caching, browser caching, event storage, general-purpose document storage, and a new distributed database are outside the feature's purpose. Dependencies are explicitly declared through dimensions; automatic dependency discovery and recursive entry-to-entry dependency graphs are excluded. Automatic caching of every query and write-behind updates to source systems are also excluded. Applications explicitly select the operations that use caching.
 
+Advanced-cache integrations with command/query pipelines, repositories, and storage clients are deferred until after the advanced cache is implemented. Their design and implementation are outside this specification. The optional HTTP, Dashboard, Console Commands, and MCP integrations remain in scope.
+
 ## 3. Existing DevKit building blocks
 
 The repository already provides:
@@ -98,7 +100,7 @@ The repository already provides:
 - `ICacheProvider` in `Common.Abstractions`, a key-based contract with get, set, enumeration, prefix removal, and sliding or absolute expiration.
 - `Common.Caching`, including `InMemoryCacheProvider`, `CachingBuilderContext`, and the `AddCaching()` registration family.
 - `Application.Storage.DocumentStoreCacheProvider`, which implements the existing cache contract through document storage and `IDistributedCache`.
-- Cache behaviors for queries, commands, requester pipelines, and storage clients.
+- Cache behaviors for queries, commands, requester pipelines, and storage clients belonging to the existing minimal caching feature.
 - Feature-level behavior registration and forwarding decorators in DocumentStorage, and context/continuation execution behaviors in Jobs. Reuse these conventions for cache extensibility, with implementation adapted to the cache's low-allocation hot path.
 - `Common.Serialization.ISerializer`, which reads and writes streams, and implementations such as `SystemTextJsonSerializer` and `CborSerializer`.
 - `CompressionSerializer`, an existing serializer decorator with a fixed Deflate representation.
@@ -110,6 +112,8 @@ The richer feature needs collection identity, metadata indexes, conditional publ
 `Common.Caching` and `Application.Caching` are separate features. `Common.Caching` remains the minimal shared caching building block. `Application.Caching` is the advanced backend caching feature with collections, coordinated loading, retention, invalidation, codecs, compression, and scalable providers. This separation is agreed.
 
 Each feature has its own public contracts, registration, configuration, and provider selection. Applications choose the appropriate feature for each use case and may register both in one host. Registering or configuring the advanced feature cannot replace the minimal feature's services or change its existing consumers. Consolidation, deprecation, and migration of the minimal feature are outside this specification.
+
+The existing minimal-cache behaviors remain with `Common.Caching`. This feature supplies a separate advanced application API. Advanced-cache behaviors for command/query pipelines, repositories, and storage clients are deferred until after implementation; no such behavior is required to complete this specification.
 
 The reusable codec capability belongs in `Common.Serialization` alongside `ISerializer`, with cache-independent contracts and implementations. Application Caching consumes those codecs rather than defining its own codec interface. The current `IBufferSerializer` is internal to `Common.Serialization`; consumers cannot assume access to it. Compression needs an explicit persisted envelope rather than assuming that `CompressionSerializer` supplies algorithm identifiers, format versions, or size limits.
 
@@ -168,6 +172,20 @@ Tenant and authorization scope must participate in collection namespace or key i
 ### 4.4 Dimensions and filters
 
 Dimensions are declared metadata used for invalidation and browsing. The agreed filter model supports typed scalar values, sets of values, and ordered intervals. Values have explicit types and invariant representations; interval comparison cannot depend on arbitrary string formatting.
+
+The supported dimension types are fixed:
+
+| Dimension kind | Accepted values and canonical comparison | Supported forms |
+| --- | --- | --- |
+| String | Strings compared with ordinal-ignore-case semantics | Scalar equality and set membership |
+| Boolean | `bool`, preserving true and false | Scalar equality and set membership |
+| Integer | Signed `sbyte`, `short`, `int`, or `long`, normalized losslessly to `Int64` | Scalar equality, set membership, and intervals |
+| Identifier | `Guid`, preserving its value through a stable invariant representation | Scalar equality and set membership |
+| Timestamp | `DateTimeOffset`, normalized to the UTC instant with .NET tick precision | Scalar equality, set membership, and intervals |
+
+Each dimension declares one kind. Integer CLR aliases share the Integer kind; other kinds are not implicitly coerced. Timestamp indexes preserve the canonical tick value rather than relying on a database timestamp's lower precision. Decimal, floating-point, unsigned integer, `DateTime`, arbitrary CLR, and custom dimension types are unsupported in this version. Applications may use declared scaled integers for decimal quantities. These restrictions apply to dimension metadata and filters, not cached payload contracts.
+
+Sets use the declared element kind and deduplicate values with that kind's comparison rules. Null is allowed only by an explicitly nullable dimension schema. Null equality or membership selects explicitly supplied null values, never an omitted dimension. Interval endpoints must be non-null integers or timestamps. Unsupported kinds, cross-kind filters, and null interval endpoints fail validation before mutation.
 
 Every provider implements the same typed, bounded selection model for invalidation, counts, metadata browsing, and invalidation preview. The accepted baseline includes exact keys, indexed scalar equality, set membership, interval overlap, AND and OR groups, and bounded key patterns. Literal keys and patterns use distinct filter forms. Matching semantics cannot vary with the provider, database collation, filesystem, or operating system. Providers may optimize execution while preserving the same selected entries.
 
@@ -237,9 +255,9 @@ Public asynchronous operations use `Result` or `Result<T>` for recoverable failu
 
 A lookup result separates the source of the returned value from whether it was retained. Proposed lookup outcomes are `Miss`, `Hit`, `Loaded`, `Joined`, and `Bypassed`. Proposed storage outcomes include `NotAttempted`, `Stored`, `Suppressed`, `TooLarge`, `CapacityRejected`, `InvalidatedDuringLoad`, `ProviderUnavailable`, and `ProviderIndeterminate`. A direct hit or miss makes no new storage attempt.
 
-A loader produces a value, optional dimensions, policy overrides, and size information, or a recoverable failure. It may explicitly suppress storage. Failed loads, thrown exceptions, and cancellation are never stored as values. Confirmed source absence uses the explicit not-found marker and optional negative-caching policy in section 5.5; it cannot convert a transient source failure into a negative entry.
+A loader produces a value, optional dimensions, policy overrides, and size information, or a recoverable failure. Typed loaders may explicitly suppress storage. Payload-producing binary loads require confirmed publication under section 9.5. Failed loads, thrown exceptions, and cancellation are never stored as values. Confirmed source absence uses the explicit not-found marker and optional negative-caching policy in section 5.5; it cannot convert a transient source failure into a negative entry.
 
-Explicit cache writes report storage failure. A read-through operation may still return a successfully loaded value when storage fails under its configured failure policy. Invalidation failure must remain visible to its caller.
+Explicit cache writes report storage failure. Typed read-through may still return a successfully loaded value when storage fails under its configured failure policy. Binary payload delivery requires a confirmed stored version. Invalidation failure must remain visible to its caller.
 
 Batch results preserve input order and expose an outcome per item. The proposed policy rejects duplicate normalized keys before invoking the loader. Completion publishes each successful item promptly; a failure in another item does not roll back successful entries. Uncompleted items receive an explicit failure when the loader ends. Large batches are chunked and cannot materialize the entire cache.
 
@@ -276,6 +294,18 @@ public interface ICacheCollection<T>
         CacheEntryDescriptor descriptor,
         CancellationToken cancellationToken = default);
 
+    ValueTask<Result<CacheWriteOutcome>> SetAsync(
+        CacheItem item,
+        T value,
+        CacheEntryDescriptor descriptor,
+        CacheEntryVersion expectedVersion,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<Result> RemoveAsync(
+        string key,
+        CacheEntryVersion expectedVersion,
+        CancellationToken cancellationToken = default);
+
     ValueTask<Result<CacheInvalidationPreview>> PreviewInvalidationAsync(
         CacheSelection selection,
         CancellationToken cancellationToken = default);
@@ -291,7 +321,8 @@ public readonly record struct CacheLookup<T>(
     CacheLookupOutcome LookupOutcome,
     CacheStorageOutcome StorageOutcome,
     CacheAccessMode AccessMode = CacheAccessMode.Normal,
-    bool IsNotFound = false);
+    bool IsNotFound = false,
+    CacheEntryVersion? Version = null);
 
 public sealed record CacheLoadResult<T>(
     T Value,
@@ -301,6 +332,10 @@ public sealed record CacheLoadResult<T>(
 The outer `Result` reports recoverable operation failure. On success, `Found` means a payload value is available, including a permitted `null`. `IsNotFound` means confirmed source absence; a cache miss has neither flag. The flags cannot both be true. Read `Value` only when both `IsSuccess` and `Found` are true. `LookupOutcome` describes the access path, so a cached not-found marker is a `Hit` with `IsNotFound = true`, not a miss. `StorageOutcome` describes any attempt to retain newly loaded content or a marker.
 
 `CacheItem` carries the key and dimensions known before loading. `CacheEntryDescriptor` adds source-produced metadata and bounded policy overrides; an empty descriptor inherits collection policy. `CacheWriteOutcome` carries the publication acknowledgement and version. Invalidation outcomes expose completed work and remaining or failed work, including partial effects when a bulk operation fails. The full supporting contracts must preserve those semantics rather than reducing every write or invalidation to a Boolean.
+
+`Version` is the optional opaque token for the stored version acquired with the value or negative marker. Hits and confirmed stored load/join outcomes return it from the same read/publication snapshot. Misses and successful unretained or indeterminate results have no confirmed stored version. The token does not promise that the version remains current after return. Reuse the acquired version without a separate metadata query or a newly allocated metadata object on each hit. Conditional replacement/removal checks the supplied token atomically; a conflict returns a recoverable failure without mutation or an unconditional retry.
+
+All returned typed values are read-only by contract, including hits, loaded/joined values, bypass results, and successful uncached values. Mutable CLR types remain supported. Callers must not mutate returned instances, and loaders must not mutate values after completing a load. The engine may share that instance among callers. Consumers make their own copy when mutation is needed; the cache performs no automatic cloning. Decoded hot retention still requires the separate immutable-sharing eligibility and size-accounting approval.
 
 Handle resolution uses the startup catalog and verifies the requested value contract. It performs no lookup I/O, does not create collections, and returns the already-composed behavior chain. Await each returned `ValueTask` once. The shared-load engine owns its separate multi-waiter completion mechanism.
 
@@ -351,9 +386,27 @@ if (stored.IsSuccess)
 
 An explicit write that cannot publish returns failure; it cannot report success because the application still owns the supplied value. A successful write does not guarantee a later hit if expiration, invalidation, or another write intervenes. The lowercase lookup demonstrates the same case-insensitive identity as the uppercase write.
 
+A typed lookup supplies the version for a conditional replacement through the same proposed API:
+
+```csharp
+var fetched = await products.GetAsync("p-104", cancellationToken);
+if (fetched.IsSuccess && fetched.Value.Found && fetched.Value.Version is { } expectedVersion)
+{
+	var replaced = await products.SetAsync(
+		item,
+		new ProductCard("P-104", 21.95m),
+		new CacheEntryDescriptor(),
+		expectedVersion,
+		cancellationToken);
+	// Inspect replaced.IsSuccess. A version conflict does not overwrite the winner.
+}
+```
+
+`RemoveAsync(key, expectedVersion, cancellationToken)` uses the same acquired token for conditional removal. Binary read handles expose their acquired version through metadata and use the same conditional-write/removal rules.
+
 ### 5.4 Bypass and explicit refresh contracts
 
-Normal `GetAsync` and `GetOrLoadAsync` retain their defined lookup semantics. An explicit read-through overload accepts proposed `CacheAccessOptions` with `Mode = Normal` or `Bypass`. Bypass skips stored and hot-value lookup and suppresses publication by work owned by that bypass call. It does not remove existing entries, enable hot retention, or bypass admission, authorization, cancellation, source deadlines, or the configured source-work coordination scope. Direct gets have no loader and do not accept this option. External HTTP gets cannot activate a loader or request this bypass mode.
+Normal `GetAsync` and `GetOrLoadAsync` retain their defined lookup semantics. An explicit typed read-through overload accepts proposed `CacheAccessOptions` with `Mode = Normal` or `Bypass`. Bypass skips stored and hot-value lookup and suppresses publication by work owned by that bypass call. It does not remove existing entries, enable hot retention, or bypass admission, authorization, cancellation, source deadlines, or the configured source-work coordination scope. Binary loading rejects bypass and explicit storage suppression before invoking a loader. Direct gets have no loader and do not accept this option. External HTTP gets cannot activate a loader or request this bypass mode.
 
 Bypass may join source work already running for the same identity within the configured scope; it cannot obtain an existing stored value instead. Joining another caller's ordinary load does not prohibit that owner from publishing. A bypass-owned load stays non-storing even if ordinary callers later join it. The lookup exposes the requested access mode in addition to its actual `Loaded`, `Joined`, or `Bypassed` source outcome and the actual shared storage outcome. Provider coordination I/O can still occur in shared-store scope; bypass is not a promise of zero provider I/O. Disabled collection mode retains its separate no-storage/no-cache-lease contract.
 
@@ -368,13 +421,13 @@ ValueTask<Result<CacheLookup<T>>> RefreshAsync(
 
 `RefreshAsync` requests fresh source work even when a valid entry exists. It joins applicable source work or acquires the usual ownership and captures the current entry version and publication fence. Ordinary reads continue to use the existing independently valid version while refresh runs; refresh never removes it first. A missing entry can be loaded and published normally. Completion creates a new version with expiration measured from its publication. Replacement, removal, or invalidation after the captured version/fence prevents a late overwrite. Failure leaves the previous version under its original validity and never extends its expiration.
 
-Successful uncached outcomes and indeterminate publication retain the normal read-through failure semantics. Recoverable version conflicts are explicit outcomes, not unconditional retries. Background refresh adds the stricter existing-entry eligibility rules in section 6.5. These operating contracts are fixed; overload spelling remains illustrative until implementation.
+Successful uncached typed outcomes and indeterminate publication retain the normal read-through failure semantics. Binary payload refresh requires confirmed publication before returning new read handles. Recoverable version conflicts are explicit outcomes, not unconditional retries. Background refresh adds the stricter existing-entry eligibility rules in section 6.5. These operating contracts are fixed; overload spelling remains illustrative until implementation.
 
 ### 5.5 Explicit not-found results and negative caching
 
 Negative caching is optional and disabled by default. A trusted loader explicitly returns a proposed `CacheLoadResult<T>.NotFound(...)` marker, represented by the descriptor's value kind; binary loaders can return the same descriptor without payload bytes. Normal successful null, false, zero, and empty payloads remain ordinary values. The marker is a successful source outcome, never an automatic conversion of a failed `Result`, exception, timeout, cancellation, or HTTP error.
 
-Without opt-in, callers receive `IsNotFound = true` without retaining a marker. When enabled, the default negative TTL is 30 seconds, bounded by collection freshness limits and any shorter requested lifetime. Apply configured expiry jitter to that lifetime once at publication. Markers use the same key, dimensions, contract/version, publication fencing, invalidation, and capacity rules as positive entries; their default eviction priority is lowest. They carry metadata rather than a fabricated serialized null or empty payload. Batch/shared callers receive explicit per-item absence outcomes, and ordinary read-through must not reload a valid negative hit.
+Without opt-in, callers receive `IsNotFound = true` without retaining a marker. This metadata-only absence outcome needs no binary read handle and remains available to binary loaders without retaining payload bytes. When enabled, the default negative TTL is 30 seconds, bounded by collection freshness limits and any shorter requested lifetime. Apply configured expiry jitter to that lifetime once at publication. Markers use the same key, dimensions, contract/version, publication fencing, invalidation, and capacity rules as positive entries; their default eviction priority is lowest. They carry metadata rather than a fabricated serialized null or empty payload. Batch/shared callers receive explicit per-item absence outcomes, and ordinary read-through must not reload a valid negative hit.
 
 Negative markers are excluded from hot-value admission and proactive refresh. Creation or replacement of the source value invalidates the relevant marker through the ordinary key/dimension path. A cacheable refresh that confirms absence conditionally replaces the old value with a marker, or removes its expected old version when negative retention is disabled. Explicit suppression/bypass still prohibits that work's mutation, and source failure leaves the prior version under its original validity. Unretained absence follows the existing successful-uncached cross-instance handoff policy. HTTP lookup returns 404 for a valid negative hit without activating a loader; its internal hit/absence diagnostics remain distinct from an ordinary miss.
 
@@ -394,13 +447,15 @@ Node-local source-load coordination is the default. A collection may explicitly 
 
 Shared-store coordination uses the selected provider's own backing store for ownership, fencing, and bounded completion state. Participating instances must address the same cache namespace, collection, and store authority. Registration of shared storage alone does not enable this mode. Node-local coordination may run one source load on each instance; it still requires shared publication, expiration, and invalidation correctness when those instances use the same store.
 
-Sharing a successfully published value across instances uses the provider's stored binary representation. A successful source load can also produce no reusable published value because storage was suppressed, admission rejected it, or publication failed. In that case, return the successful uncached value to eligible callers in the loading process. Callers on other instances recheck storage and acquire ownership before performing their own source load. This handoff policy is agreed.
+Sharing a successfully published value across instances uses the provider's stored binary representation. A successful typed source load can also produce no reusable published value because storage was suppressed, admission rejected it, or publication failed. In that case, return the successful uncached value read-only to eligible callers in the loading process. Callers on other instances recheck storage and acquire ownership before performing their own source load. This handoff policy is agreed. A payload-producing binary load without confirmed publication instead returns the corresponding recoverable failure to its waiters; it creates no temporary replay store or shared consumable stream.
 
 The handoff preserves the callers' existing wait deadlines, cancellation, admission limits, and publication fences. It does not start one independent load per remote waiter, reset exhausted budgets, or store a temporary result that bypasses size and capacity limits. The cache provides no separate transport for uncached values between instances. A source failure or caller wait timeout still follows the agreed failure policy and cannot trigger this successful-load handoff.
 
-Ownership reassignment requires authoritative provider state. An indeterminate publication outcome follows the provider's recovery rules; a lost acknowledgement does not prove that no value was published. Provider unavailability remains subject to the read-through failure policy and cannot be treated as proof that shared ownership has transferred.
+Ownership reassignment requires authoritative provider state. An indeterminate publication outcome follows the provider's recovery rules; a lost acknowledgement does not prove that no value was published. Shared-store mode requires confirmed ownership before starting source work. If the ownership authority is unavailable or uncertain, return `ProviderUnavailable` and start no new source work. There is no automatic downgrade to node-local coordination. Default node-local typed loading retains its bounded source fallback. Already-running typed work may return a successful value locally without confirmed retention, but cannot publish while ownership or fencing is uncertain. Remote waiters retain their existing deadlines and cannot infer takeover from an outage.
 
 Coordination is bounded by maximum active loads, queued loads, followers per key, and total waiters. Limits apply globally and per collection where appropriate. Encoding and decoding also require concurrency and transient-memory limits.
+
+Inside a cache-owned loader execution, nested cache hits are permitted. If a nested call would start or join source work, reject it with a recoverable `NestedCacheLoad` failure before ownership, queueing, or waiting. Explicit nested refresh and bypass fail by the same rule. Apply it across keys, collections, and cache handles for the execution context, including batch loading and retries. A simple execution-context marker enforces the rule; no dependency graph is maintained. Loaders can call source services or use direct cache lookup without starting nested cache source work.
 
 ### 6.2 Timeouts and cancellation
 
@@ -481,7 +536,7 @@ Create an async DI scope per admitted source execution or bounded maintenance un
 
 #### 6.5.1 Refresh eligibility and source registration
 
-Proactive refresh is disabled by default per collection and independent of hot-entry opt-in. Code registers a trusted typed or binary refresh-loader alias whose contract matches the collection; configuration selects the alias and policy, never a delegate or arbitrary CLR type name. The loader reconstructs its source request from the stable key and declared metadata. Enabling refresh without a compatible registered loader fails startup. Binary loaders write to an engine-owned bounded destination and return a descriptor; each follower gets its own subsequently opened handle, never the owner's consumed stream.
+Proactive refresh is disabled by default per collection and independent of hot-entry opt-in. Code registers a trusted typed or binary refresh-loader alias whose contract matches the collection; configuration selects the alias and policy, never a delegate or arbitrary CLR type name. The loader reconstructs its source request from the stable key and declared metadata. Enabling refresh without a compatible registered loader fails startup. Binary loaders write to an engine-owned bounded destination and return a descriptor. Payload-producing binary work requires confirmed publication; each follower then acquires its own read handle under normal validity and reader limits. Failed publication returns the corresponding failure rather than an uncached stream. Refresh failure leaves any previous independently valid version under its original validity.
 
 The proposed loader contracts use the same owned source context as read-through:
 
@@ -516,7 +571,7 @@ Default refresh scheduling is a 15-second startup delay and 15-second delay betw
 
 On a source failure, retain the old version only until its original expiry. Retry on a later due sweep using version-scoped backoff starting at five seconds and capped at one minute, with bounded jitter. After three consecutive failures for that version, pause automatic attempts for five minutes or until replacement makes the candidate obsolete. This scheduler backoff does not add unbounded retries inside one shared source execution or reset caller budgets. Invalidation and provider uncertainty suppress publication rather than triggering an immediate replacement load.
 
-Optional warm-up is disabled by default. The same refresh service can perform a bounded startup pass over configured seed keys or a code-registered asynchronous key source after delay/readiness. It uses ordinary `GetOrLoad` semantics, bounded batches and the same loader/lifetime/coordination limits, and disposes the key enumerator on cancellation or budget exhaustion. Periodic warm-up requires an explicit interval. Configuration cannot enable arbitrary administrative loaders or make HTTP get invoke them. Warm-up and refresh never enable the hot-entry layer implicitly.
+Optional warm-up is disabled by default. The same refresh service can perform a bounded startup pass over configured seed keys or a code-registered asynchronous key source after delay/readiness. It uses ordinary `GetOrLoad` semantics, including the shared-store outage and confirmed binary publication rules, bounded batches and the same loader/lifetime/coordination limits, and disposes the key enumerator on cancellation or budget exhaustion. Disabled collections admit no warm-up or refresh work. Periodic warm-up requires an explicit interval. Configuration cannot enable arbitrary administrative loaders or make HTTP get invoke them. Warm-up and refresh never enable the hot-entry layer implicitly.
 
 Diagnostics expose readiness, last/next sweep, due/eligible/skipped counts, active refresh owners, failures/backoff, conditional publication outcomes, and last successful refresh. Metrics keep bounded labels. Benchmarks include foreground latency and allocations while refresh/maintenance runs, rather than timing only an idle cache.
 
@@ -611,7 +666,7 @@ An obsolete payload version held by an open reader is reclaimed after its reader
 
 Maximum entry size is configurable per collection, subject to provider hard limits. Separate limits apply to the encoded representation and the decoded value. Large-payload processing uses bounded streaming and transient-memory admission. Section 16.1.1 defines the finite starting defaults; larger supported workloads use explicit environment settings and the benchmark profiles in section 16.6.
 
-Admission checks precede destructive eviction where practical. An entry larger than the allowed maximum is returned uncached for read-through calls or rejected for explicit writes; it cannot evict the entire useful working set and still fail admission.
+Admission checks precede destructive eviction where practical. An entry larger than the allowed maximum is returned uncached for typed read-through or rejected for explicit writes and payload-producing binary loads. It cannot evict the entire useful working set and still fail admission.
 
 The default capacity policy reclaims expired and invalid entries first, then lower-priority eligible entries, then approximately least recently used candidates. A collection may select rejection of new storage instead of evicting valid entries. Under either policy, an individually oversized entry is rejected without evicting the useful working set. Selection and cleanup are incremental and bounded; sorting or copying the whole cache on each limit breach is unacceptable at high cardinality.
 
@@ -813,13 +868,19 @@ Reads return a cache-owned read handle that the caller disposes, releasing the u
 
 Physical chunking is a provider format decision used where needed to meet bounded-streaming and storage requirements; it does not introduce an application-visible partition model or change entry identity. Providers declare their supported entry limits and cannot claim an unsupported size by buffering the whole entry. Every stream belongs to its collection's declared value or payload contract. Applications may choose bounded units of caching through their keys, without the cache imposing domain-specific partition rules.
 
-Typed reads may return newly decoded instances or share an immutable instance from the hot-entry layer's decoded representation. All providers store the binary payload. Provider changes must not alter value meaning, but they may alter reference identity. Applications must not rely on reference equality or mutate shared retained objects.
+Typed reads may return newly decoded instances, share a source result among waiting callers, or share an approved immutable instance from decoded hot retention. All typed results are read-only by contract, including uncached and bypass results. Applications copy values themselves before mutation; the engine does not clone them. All providers store the binary payload. Provider changes must not alter value meaning, but they may alter reference identity. Applications must not rely on reference equality. Only approved immutable contracts qualify for decoded hot retention, even when a mutable CLR contract is used read-only by callers.
 
 The cache never retains caller-owned pooled memory, a request-scoped stream, an open database context, or an ambiguous disposable resource. Stream and buffer ownership must be explicit in any eventual contract.
 
 ### 9.5 Binary stream contract and usage example
 
-The proposed binary handle uses the same successful-hit-or-miss model as typed lookup. The following shows only direct forward-only access; the complete contract also supports the applicable invalidation and management operations:
+The proposed binary handle uses the same successful-hit-or-miss model as typed lookup.
+
+Binary read-through, refresh, and warm-up write into an engine-owned bounded destination and follow a store-then-open contract. A payload-producing load must confirm publication before returning any read handle. Each caller acquires its own handle for the confirmed version under the normal validity, snapshot, and reader limits; publication confirmation does not bypass a later invalidation. Admission rejection, failed publication, and indeterminate publication produce the corresponding recoverable failure for the affected callers. There is no successful uncached payload delivery, temporary replay store, or shared consumable stream. A binary absence marker needs no payload handle and retains section 5.5's metadata-only outcome.
+
+Explicit binary loading options requesting bypass or storage suppression fail capability validation before invoking the loader. A loader that nevertheless returns a suppression descriptor fails the load without publishing or delivering a payload. Disabled collections reject binary source-loading calls before invoking a loader, while direct binary reads report misses. These are explicit exceptions to typed uncached/bypass behavior.
+
+The following sketch shows direct forward-only access. The complete contract also supports loading, invalidation, and management operations:
 
 ```csharp
 public interface ICacheBinaryCollection
@@ -1007,9 +1068,9 @@ Use the existing durability and authority mechanisms where applicable, with expl
 
 ### 10.5 Disabled caching mode
 
-A disabled collection remains declared and discoverable but stores nothing. Reads report misses; read-through operations call the loader and report bypass. It creates no cache ownership leases, binary payloads, hot retained values, or entries.
+A disabled collection remains declared and discoverable but stores nothing. Direct reads report misses; typed read-through calls the loader and reports bypass. Binary source-loading calls report an unsupported-capability failure before invoking a loader because no stored version can be returned. Background refresh and warm-up skip disabled collections. Disabled mode creates no cache ownership leases, binary payloads, hot retained values, or entries.
 
-Global and collection disabled configuration is supported. Explicit backend-work protection still applies where configured. Per-call bypass and explicit refresh follow section 5.4; disabled mode never creates hot entries or a hidden retained-value path. Provider changes use validated startup configuration; live provider switching is not part of this design. Disabling storage cannot change a successful loader's value semantics.
+Global and collection disabled configuration is supported. Explicit backend-work protection still applies where configured. Per-call bypass and explicit refresh follow section 5.4; disabled mode never creates hot entries or a hidden retained-value path. Provider changes use validated startup configuration; live provider switching is not part of this design. Disabling storage cannot change a successful typed loader's value semantics.
 
 ### 10.6 Entity Framework schema and execution contract
 
@@ -1024,6 +1085,8 @@ Keep payloads up to 64 KiB in one logical payload field; the database engine may
 Publication stages a version, then conditionally commits current-version metadata, indexes, size reservations, refresh metadata, and ownership/fence checks in one database transaction. Use engine-appropriate locking/concurrency: SQL Server conditional updates and transaction locks, PostgreSQL conditional updates/row locks, and SQLite serialized write transactions with WAL and a bounded busy timeout. Common opaque entry versions and explicit epochs remain the public concurrency tokens. Failed/uncertain commits reconcile by operation/version identity; never retry an indeterminate mutation blindly. Snapshot reads and persisted reader reservations protect old chunks, and cleanup deletes only the expected obsolete version. EF coordination leases default to 30 seconds with renewal every ten seconds; expiry alone never bypasses a live holder's publication fence.
 
 The SQLite WAL profile uses a local database file, synchronous `FULL` commits, and a five-second busy budget. Multiple processes on that host may share it; multi-host/network-file SQLite is unsupported in this profile. Diagnostics label that shared-store scope as host-local. SQL Server/PostgreSQL provide multi-host relational profiles, and filesystem shares use the separate filesystem provider. This follows [SQLite's WAL requirement that participating processes share one host](https://sqlite.org/wal.html). Reports record each engine's actual commit/durability settings rather than comparing weakened commits with the durable reference as equivalent.
+
+The asynchronous public contract does not promise native asynchronous I/O on SQLite. [Microsoft.Data.Sqlite executes async ADO.NET methods synchronously](https://learn.microsoft.com/en-us/dotnet/standard/data/sqlite/async). Its profile uses bounded chunk operations, the existing provider admission limits, and the configured busy timeout. Cancellation remains cooperative, and occupied provider/thread reservations stay charged until native work ends. No separate worker pool or unbounded `Task.Run` dispatch is introduced to simulate asynchronous I/O. SQL Server/PostgreSQL retain their applicable asynchronous access paths; SQLite's native execution limitation is explicit in capability and benchmark reports.
 
 ### 10.7 Filesystem format, publication, and recovery contract
 
@@ -1042,6 +1105,8 @@ For Durable acknowledgements, persist staged payload data/names, the committed j
 Recovery first validates root identity/profile and proves the required authority. Replay only the checked committed prefix, bounded by the checkpoint/tail limits, verify all referenced payload/index generations, and conditionally discard unreferenced staging/compaction candidates. A torn uncommitted suffix is discarded only under proven exclusivity. A damaged or missing committed generation marks the affected shard unavailable; do not roll back to an older readable entry that might have been invalidated. Recovery requiring more than the online replay budget leaves readiness pending for an explicit bounded offline repair/rebuild. Rebuild consumes committed metadata, not a guessed inventory of payload files.
 
 After unclean Buffered recovery with uncertain recent fences or metadata, invalidate the affected shard generations under a persisted recovery fence before serving any old data. Failure to establish that boundary keeps them unavailable. Rewarming loses disposable cache content but cannot resurrect an invalidated version. A clean verified checkpoint may retain provably valid content. Shared authority markers are not stolen after a timeout: quiescent recovery requires all participating writers stopped or independently fenced, operator proof of exclusivity, verified replay/reset, and a new recorded generation before reopening. Recovery reports its scope and any discarded data; no HTTP clear or ordinary retry can bypass this procedure.
+
+The filesystem provider deliverable includes a cache-aware offline recovery/reset procedure for this format. It identifies and validates the selected store/root, establishes quiescence, reconciles committed indexes, quota reservations, and retained versions, and verifies the recovery fence before reopening. A reset explicitly reports discarded disposable data. Do not apply a blob/document-format recovery routine to cache metadata. Validate the commit/recovery protocol early with a focused prototype in the existing filesystem test project, including concurrent publication/invalidation, quota recovery, and process failure. This is provider implementation evidence, with no additional recovery framework or acceptance harness.
 
 ### 10.8 Filesystem qualification profiles
 
@@ -1354,7 +1419,7 @@ Collection engines and thread-safe provider services are proposed process-wide s
 
 Cache-owned hosted background services perform configured warm-up, proactive refresh, and maintenance using the existing Common hosting/readiness patterns from section 6.5. No Jobs or StartupTasks registration or package dependency is required. Scheduled work observes the same admission, coordination, invalidation, and memory rules as request-driven loads.
 
-Command, query, repository, and storage integrations are opt-in. An application invalidates affected entries after successful source mutation. Existing minimal-cache behaviors continue to use their current feature. Advanced-cache integrations have explicit registrations and feature-specific contracts.
+The existing command, query, requester, repository, and storage cache behaviors continue to use the separate minimal `Common.Caching` feature. Advanced-cache integrations with those features are deferred until after implementation and are outside this specification; no integration API or migration is planned here. Applications use the advanced cache directly and invalidate affected entries after successful source mutation. The optional HTTP, Dashboard, Console Commands, and MCP integrations remain in scope and call the advanced Application operations.
 
 ### 12.1 Behavior-based extension model
 
@@ -1597,13 +1662,17 @@ The optional external API can expose `GET /{collection}/operations/{operationId}
 
 ## 14. Failure policy
 
-Read-through tolerates cache-provider failures when a caller-supplied source loader can still succeed. If provider lookup fails, run the loader subject to the normal load admission, cancellation, and timeout policies and return its successful value without confirmed cache retention. If storage fails after a successful load, return that value without running the loader again. This behavior is agreed.
+Default node-local typed read-through tolerates cache-provider failures when a caller-supplied source loader can still succeed. If provider lookup fails, run the loader subject to the normal load admission, cancellation, and timeout policies and return its successful value read-only without confirmed cache retention. If storage fails after a successful typed load, return that value without running the loader again. This behavior is agreed.
 
-Record provider degradation separately from an ordinary miss. A failed or unfenced lookup cannot justify later publication merely because the provider recovers; return the source value uncached. An indeterminate write may already have committed, so distinguish unconfirmed retention from a confirmed storage failure and apply the existing reconciliation rules.
+Shared-store coordination requires confirmed authoritative ownership before starting source work. If ownership cannot be established because the provider is unavailable or uncertain, return `ProviderUnavailable` without starting a loader or downgrading coordination scope. Already-running typed work may finish and return a successful uncached value locally, but cannot publish while ownership or fencing is uncertain. Remote callers cannot treat an outage as a transfer of ownership. These rules apply to foreground loading, bypass, refresh, and warm-up; disabled typed mode retains its explicit no-storage/no-cache-lease behavior.
+
+Payload-producing binary loads require confirmed publication before returning read handles. Failed/rejected/indeterminate publication returns the corresponding failure, and unsupported binary bypass or suppression follows section 9.5. This rule adds no replay store or transport for uncached binary data. Explicit not-found markers retain their metadata-only semantics.
+
+Record provider degradation separately from an ordinary miss. A failed or unfenced lookup cannot justify later publication merely because the provider recovers. Apply the typed uncached-value and binary failure rules above. An indeterminate write may already have committed, so distinguish unconfirmed retention from a confirmed storage failure and apply the existing reconciliation rules.
 
 Explicit cache get, set, and invalidation operations report provider failures. A get with no loader cannot invent a source value or turn a provider outage into a normal not-found response. The HTTP get endpoint follows this exact-lookup behavior. Successful read-through fallback does not conceal failed explicit writes or invalidation.
 
-Request authorization, validation and contract failures, caller cancellation, and source-loader failures keep their own semantics and are not converted into successful fallback. If streaming bytes have already been delivered, a subsequent failure still terminates that stream explicitly; fallback cannot splice in another value. Provider outages cannot bypass work limits or create unlimited duplicate source loads.
+Request authorization, validation and contract failures, caller cancellation, and source-loader failures keep their own semantics and are not converted into successful fallback. `NestedCacheLoad` is an explicit contract failure, not a miss or provider outage that authorizes another source invocation. If streaming bytes have already been delivered, a subsequent failure still terminates that stream explicitly; fallback cannot splice in another value. Provider outages cannot bypass work limits or create unlimited duplicate source loads.
 
 Permission errors, corruption, source failures, capacity rejection, invalidation failure, and unsupported capabilities are distinct outcomes. A programming or contract error must not disappear into an endless sequence of misses.
 
@@ -1617,7 +1686,7 @@ Serve only logically valid entries to new callers. Expiration or invalidation ca
 
 Circuit breaking is optional and off by default for persistent providers; it is not needed on the synchronous in-memory path. When enabled, a process-local breaker is shared by the named provider instance and fails fast on provider unavailability while open. The default opens after five consecutive classified infrastructure failures, waits ten seconds, and admits one non-mutating half-open readiness probe. A successful probe closes it; a failed probe starts the next bounded cooldown. Reuse existing DevKit resilience facilities and `TimeProvider` conventions rather than introducing another framework or shared breaker store.
 
-Count transport/unavailability and provider-timeout failures. Do not count caller cancellation, validation/authorization, not-found, source errors, version conflicts, capacity rejection, or payload corruption as general provider outages. An open circuit produces explicit provider-unavailable information and remaining cooldown, not a cache miss. Read-through may use its normal bounded source fallback; explicit reads/writes/invalidation retain failure, and hot entries never bypass authoritative validation. Already-started or indeterminate mutations still require their normal reconciliation. Opening/recovery cannot trigger automatic mutation replay or retries of consumed streams.
+Count transport/unavailability and provider-timeout failures. Do not count caller cancellation, validation/authorization, not-found, source errors, version conflicts, capacity rejection, or payload corruption as general provider outages. An open circuit produces explicit provider-unavailable information and remaining cooldown, not a cache miss. Node-local typed read-through may use its bounded source fallback. Shared-store mode starts no new source work without confirmed ownership, and binary payload delivery still requires confirmed publication. Explicit reads/writes/invalidation retain failure, and hot entries never bypass authoritative validation. Already-started or indeterminate mutations still require their normal reconciliation. Opening/recovery cannot trigger automatic mutation replay or retries of consumed streams.
 
 Diagnostics expose provider/node breaker state, opening/recovery, and rejected/probe counts with bounded labels. Disabled breaking adds no policy chain to the in-memory fast path. Benchmarks include enabled persistent-provider overhead and failure/probe behavior; normal deterministic tests cover transitions and error classification.
 
@@ -1632,8 +1701,11 @@ As a backend developer, I want a declared typed cache collection so that related
 1. Given equal keys in different namespaces or collections, writing one value does not change the other value.
 2. Given a valid stored empty collection or nullable value, reading it reports a hit rather than a miss.
 3. Given an incompatible value contract or undeclared collection, startup or access reports the corresponding explicit contract error.
-4. Given a disabled collection, repeated read-through calls invoke the loader without retaining entries or changing successful value semantics.
+4. Given a disabled typed collection, repeated read-through calls invoke the loader without retaining entries or changing successful value semantics.
 5. Given both minimal and advanced cache registrations in one host, configuring the advanced feature does not change the minimal feature's resolved services, provider, or options.
+6. Given loaded/joined, hit, bypassed, or successful uncached typed results, callers treat values as read-only and may receive the same instance; the engine performs no automatic cloning. Mutable CLR contracts remain supported without becoming eligible for decoded hot retention.
+7. Given a positive or negative hit or confirmed stored load/join result, its version token identifies the same acquired snapshot. A miss or successful unretained/indeterminate result has no confirmed stored version, and obtaining the token adds no metadata query or per-hit metadata object.
+8. Given a token from typed lookup and a concurrent replacement, conditional replacement/removal with that token fails without overwriting/removing the winner or retrying unconditionally.
 
 ### 15.2 Read-through and coordination
 
@@ -1644,6 +1716,8 @@ As a backend developer, I want concurrent callers to reuse expensive source load
 3. Given a cancelled follower, other interested callers still receive the load result.
 4. Given different keys or saturated load capacity, unrelated admitted keys can load concurrently while queued operations remain bounded and overload reports its declared outcome.
 5. Given a caller wait timeout while other callers remain, only that caller receives the timeout and no additional source load starts; other waiters may receive the shared result.
+6. Given a loader makes a nested read-through call, an existing positive/negative hit remains usable, but a miss or join requiring source work fails with `NestedCacheLoad` before ownership, queueing, or waiting. Self-key, cross-key/collection, and overlapping active-load cases cannot form a source wait cycle.
+7. Given explicit refresh or bypass from a loader, the nested call fails with `NestedCacheLoad`; the rule also applies to batch loading and retry attempts without resetting the outer execution budget.
 
 ### 15.3 Invalidation
 
@@ -1659,7 +1733,7 @@ As an application owner, I want invalidation to prevent reuse of obsolete entrie
 As an operator, I want explicit validity and capacity limits so that the cache remains disposable and bounded under sustained load.
 
 1. Given an expired value whose physical payload still exists, a read reports a miss.
-2. Given two collections with different entry limits, each enforces its limits within provider hard limits, including for compressed or streamed entries; an oversized read-through result is returned uncached without evicting the whole collection.
+2. Given two collections with different entry limits, each enforces its limits within provider hard limits, including for compressed or streamed entries. An oversized typed read-through result is returned uncached; an oversized binary payload load fails. Neither evicts the whole collection.
 3. Given pressure on hot binary or decoded retention, releasing unpinned local representations does not delete or corrupt the persisted entry; pinned memory remains charged until released.
 4. Given interrupted cleanup and a concurrent replacement, resumed cleanup does not delete the newer version.
 5. Given capacity cannot be reclaimed within the configured work budget, storage reports rejected admission without exceeding hard limits, discarding protected reader versions, or continuing an unbounded eviction scan.
@@ -1683,6 +1757,8 @@ As a backend developer, I want streaming reads and writes so that large payloads
 3. Given a caller-owned input stream, completing a write does not leave the cache retaining that stream.
 4. Given the same payload stored with compression enabled or disabled, public stream reads expose the same uncompressed payload bytes without a storage envelope.
 5. Given a provider, codec, and compression combination without seek or byte-range support, forward-only streaming remains available and unsupported access fails explicitly without whole-entry buffering.
+6. Given a payload-producing binary load, each returned read handle follows confirmed publication and independent acquisition under normal validity/reader limits. Rejected, failed, or indeterminate publication returns the corresponding failure to waiters without an uncached stream or temporary replay store.
+7. Given explicit binary loading bypass/suppression or a disabled collection, validation rejects source loading before invoking the loader; direct disabled reads remain misses. A loader-produced suppression descriptor fails without publication or payload delivery, while confirmed absence retains its metadata-only semantics.
 
 ### 15.7 Atomic streaming writes
 
@@ -1746,6 +1822,7 @@ As a backend developer, I want native filesystem caching on Windows and Linux so
 3. Given indexed dimension queries and cleanup, operations remain bounded without scanning every payload or loading the complete key catalog into RAM.
 4. Given filesystem caching is selected, no Entity Framework, SQLite database, or Blob Storage client is required for its cache storage operations.
 5. Given a configured supported network share, payloads and authoritative metadata remain in its provider-owned root, with explicit access-kind validation and no assumption that local-disk qualification covers the share.
+6. Given cache-format recovery/reset, the documented offline procedure validates the store/root, establishes quiescence, reconciles committed indexes/quotas/retained versions, and verifies a recovery fence before reopening. Any discarded data is reported, and a blob/document recovery routine is not applied to the cache format.
 
 ### 15.14 Concurrent filesystem instances
 
@@ -1778,11 +1855,14 @@ As a host developer, I want explicit durability settings so that cache acknowled
 
 As a backend developer, I want a successful source load to remain usable during cache-provider failures so that the cache does not unnecessarily block the underlying use case.
 
-1. Given a provider lookup failure and an admitted successful loader, read-through returns the loader value and reports the provider degradation without claiming a hit or confirmed retention.
-2. Given storage fails after loading succeeds, the value is returned without a second loader execution; confirmed storage failure and indeterminate retention remain distinguishable.
+1. Given a provider lookup failure in default node-local typed loading and an admitted successful loader, read-through returns the read-only loader value and reports the provider degradation without claiming a hit or confirmed retention.
+2. Given storage fails after typed loading succeeds, the value is returned without a second loader execution; confirmed storage failure and indeterminate retention remain distinguishable.
 3. Given an explicit cache get, set, or invalidation encounters a provider failure, that operation reports failure rather than hiding it through read-through fallback.
 4. Given authorization or validation failure, caller cancellation, or a failed source load, the original failure semantics remain observable. A source failure cannot substitute an expired or invalidated cached value.
 5. Given many callers during a provider outage, fallback obeys the configured load and queue limits and does not publish values without a valid publication fence.
+6. Given shared-store coordination cannot establish authoritative ownership, the operation returns `ProviderUnavailable` without a new source invocation or node-local downgrade. An open provider circuit has the same scope rule.
+7. Given already-running shared-store typed work and subsequent authority uncertainty, successful work may return uncached locally without publication; remote waiters do not infer ownership transfer or reset their deadlines.
+8. Given binary payload publication fails or remains indeterminate, the operation reports failure rather than applying typed uncached-value fallback.
 
 ### 15.18 Expiration policies
 
@@ -1819,12 +1899,13 @@ As a backend developer, I want to choose coordination scope per collection so th
 2. Given explicit shared-store scope on a capable provider, callers on different instances coordinate ownership through that store and reuse a published valid entry without another source load.
 3. Given node-local coordination over a shared provider, acknowledging invalidation still fences matching older loads on every participating instance.
 4. Given a provider that cannot support the selected scope, startup reports a configuration error instead of silently narrowing the scope.
+5. Given a shared-store outage before ownership, two participating instances both retain shared-store scope and invoke no new source loader without confirmed ownership; provider recovery does not silently replay a mutation or reset existing caller budgets.
 
 ### 15.22 Successful uncached results across instances
 
 As a backend developer, I want callers on other instances to handle a successful uncached load without bypassing coordination or resource limits.
 
-1. Given a successful load with storage suppressed or admission rejected, eligible callers in the loading process receive the uncached value and no temporary value is stored for remote handoff.
+1. Given a successful typed load with storage suppressed or admission rejected, eligible callers in the loading process receive the uncached value read-only and no temporary value is stored for remote handoff.
 2. Given a remote caller still waiting after that completion, it rechecks storage and acquires ownership before invoking its loader; concurrent remote callers do not each bypass coordination.
 3. Given a caller's deadline or resource budget expires during handoff, it receives the corresponding outcome without resetting that budget or starting extra work.
 4. Given source failure, wait timeout, or uncertain provider ownership, the successful uncached-result handoff does not authorize a new load or ownership takeover.
@@ -1838,6 +1919,8 @@ As a backend developer, I want one typed filter model so that changing providers
 3. Given a literal key containing wildcard characters, exact-key selection matches that key alone rather than interpreting it as a pattern.
 4. Given a filter with incompatible dimension types or complexity above configured limits, validation fails explicitly before mutation instead of weakening the predicate or removing entries more broadly.
 5. Given overlapping OR branches within nested AND and OR groups, grouping determines the match and each matching entry is counted, returned, or invalidated once.
+6. Given dimension declarations or filters, every provider accepts only the fixed String, Boolean, Integer, Identifier, and Timestamp kinds. Signed integer aliases and equal UTC instants compare identically; unsupported numeric/CLR kinds and cross-kind predicates fail validation before mutation.
+7. Given explicitly nullable scalar/set dimensions, null equality/membership selects supplied null only and does not match omission. Sets deduplicate with the declared comparison rules; intervals accept only non-null Integer or Timestamp endpoints.
 
 ### 15.24 Case-insensitive key and dimension matching
 
@@ -1864,7 +1947,7 @@ As a backend developer, I want interval filters to use identical boundaries acro
 1. Given an entry interval `[10, 20)` and a filter interval `[15, 25)` of the same declared type, every provider reports overlap.
 2. Given entry interval `[10, 20)` and filter interval `[20, 30)`, every provider reports no overlap because they only touch at the boundary.
 3. Given equal or contained nonempty intervals of the same type, every provider reports overlap using the declared endpoint comparisons.
-4. Given an empty, reversed, or type-incompatible interval in entry metadata or a filter, validation rejects it before storage or invalidation mutates entries.
+4. Given an empty, reversed, type-incompatible, null-ended, or unsupported-kind interval in entry metadata or a filter, validation rejects it before storage or invalidation mutates entries. Integer and UTC Timestamp intervals retain their declared precision on every provider.
 
 ### 15.27 Metadata-only selection
 
@@ -1948,6 +2031,7 @@ As an operator, I want independently enabled management surfaces so that cache i
 3. Given the same management operation and a stable dataset, enabled surfaces report equivalent selection scope, count accuracy, completion, and partial-failure outcomes through the common Application operations.
 4. Given a mutation is unauthorized under the host's policy, no invalidation occurs; authorized mutations retain the same publication fences and cross-version scope as in-process calls.
 5. Given a large cache, inspection uses bounded pages and configured redaction without materializing cached payloads or silently claiming complete results after resource limits are reached.
+6. Given adoption of Application Caching, the existing minimal-cache behaviors retain their `Common.Caching` contracts and registrations. This feature requires no advanced command/query, requester, repository, or storage integration, migration, or replacement of those behaviors; such integration design is deferred until after implementation.
 
 ### 15.36 Tabbed Dashboard insights and operations
 
@@ -2078,11 +2162,12 @@ As a backend developer, I want explicitly configured background refresh to repla
 
 As a backend developer, I want explicit uncached-source and refresh operations with predictable coordination and publication behavior.
 
-1. Given read-through bypass, no stored/hot value is used and bypass-owned work suppresses storage; the operation still observes source admission, configured coordination, cancellation, and deadline limits.
+1. Given typed read-through bypass, no stored/hot value is used and bypass-owned work suppresses storage; the operation still observes source admission, configured coordination, cancellation, and deadline limits.
 2. Given bypass joins existing fresh source work, it gets that source outcome and reports its requested mode; it neither prohibits the ordinary owner's publication nor changes a bypass-owned flight into storing work when later callers join.
 3. Given explicit refresh for a valid key, old valid reads remain available while fresh work runs, and a captured version/fence prevents overwriting a concurrent replacement or invalidation.
 4. Given a missing key, explicit refresh can load normally; a storage conflict/failure reports its actual outcome and never triggers an unconditional mutation retry or false confirmed retention.
 5. Given external HTTP get, no bypass/refresh option can activate an arbitrary loader; collection exposure and authorization checks remain independent of these in-process contracts.
+6. Given binary loading requests bypass or explicit storage suppression, capability validation fails before the loader runs; typed bypass remains supported, and binary refresh returns new payload handles only after confirmed publication.
 
 ### 15.50 Streaming validation and access capabilities
 
@@ -2102,6 +2187,7 @@ As a backend developer, I want EF cache storage to preserve the same indexed, tr
 2. Given small values, the indexed lookup/validation target avoids unrelated payload columns and redundant preflight queries; larger values use bounded indexed chunks and native asynchronous streaming instead of a whole tracked byte array.
 3. Given publication, a transaction conditionally updates the selected version, indexes, quota, and fence/ownership state; failure or uncertain commit is reconciled by operation/version identity without blind mutation retries.
 4. Given an old pinned version or expired lease, cleanup and a competing owner still require expected-version/fencing checks; SQLite's serialized-write/WAL profile and additional registration/renewal I/O are measured explicitly.
+5. Given SQLite native I/O, the async public signature does not imply nonblocking database calls. Existing provider admission and busy limits apply, occupied work stays charged until completion, and capability/benchmark reports state the synchronous native execution without a separate worker pool or unbounded dispatch.
 
 ### 15.52 Filesystem format and recovery
 
@@ -2112,6 +2198,7 @@ As an operator, I want a bounded, recoverable filesystem cache whose metadata au
 3. Given torn/uncommitted staging or uncertain committed state, bounded recovery under proven authority discards only safe candidates or marks the affected shard unavailable; it never rolls back into an invalidated version or takes shared authority after a timeout.
 4. Given unclean Buffered recovery with uncertain metadata/fences, a persisted recovery generation invalidates affected old content before serving; inability to prove/persist that boundary keeps readiness failed.
 5. Given a declared local/SMB/NFS profile, startup capability checks and normal cross-host/fault tests establish the required semantics and record the environment; unqualified/unsupported settings do not acquire an implied safe fallback or a claim of Durable persistence.
+6. Given early filesystem provider implementation, a focused prototype in the existing test project demonstrates concurrent publication/invalidation, quota reconciliation, and crash recovery for the cache format before wider feature completion. The offline recovery/reset procedure is exercised without introducing another test/recovery framework.
 
 ### 15.53 Finite defaults and performance evidence
 
@@ -2246,6 +2333,8 @@ Use the normal `Common.UnitTests`, `Application.UnitTests`, `Infrastructure.Unit
 
 Provider tests cover the same observable semantics, relational concurrency on SQL Server, PostgreSQL, and SQLite, and filesystem publication, indexing, reader lifetime, and recovery on Windows and Linux. Reuse the existing filesystem test projects and fixtures; run relevant `Infrastructure.FileSystem.Tests` checks explicitly because its project name does not match the ordinary unit/integration task globs. Check Docker and external-service requirements before running integrations. Keep fixtures lightweight and use normal CI rather than a separate conformance framework.
 
+Include deterministic tests for shared-store authority outages across two instances, read-only shared typed completion, version-token conditional updates, confirmed binary publication/failure, and nested source-work rejection. Exercise the fixed dimension type/comparison matrix on every provider, including integer aliases, UTC tick precision, nullable sets, and invalid interval types. Keep the existing minimal-cache behavior suite independent; new advanced integration suites are deferred with those integrations. Validate the filesystem commit/recovery prototype and cache-aware offline procedure early in its existing test project. Report SQLite synchronous native occupancy separately from asynchronous SQL Server/PostgreSQL I/O.
+
 Use the existing BenchmarkDotNet-based `benchmarks/Application.Benchmarks` project, including its memory diagnostics conventions, for the common provider benchmark suite. Reuse `benchmarks/Presentation.Benchmarks` for separate HTTP transport measurements and `benchmarks/Common.Benchmarks` for cache-independent codec measurements. Common codec tests and benchmarks must not need Application Caching. Benchmark raw binary hits, serialized and compressed hits, retained decoded hits, cold loads, partial and overlapping batches, selective invalidation, eviction pressure, and cleanup. Include compressible and incompressible fictional payloads, hot and cold keys, large entry counts, large values, and concurrent readers and writers. Do not introduce a parallel benchmark or conformance framework.
 
 Microbenchmarks measure per-operation CPU and allocations. Provider load measurements establish latency percentiles and throughput under the agreed concurrency. Include active cleanup, mixed reads and writes, and memory pressure so tail latency and GC pauses remain visible. Unit tests do not enforce flaky wall-clock latency thresholds.
@@ -2303,6 +2392,7 @@ The specification covers the complete caching feature with in-memory, Entity Fra
 Design completion requires:
 
 - Defined collection identity, public contracts, direct access, read-through and batch loading, and independent coexistence with the minimal caching feature.
+- Accepted read-only typed results, snapshot version tokens, nested source-work rejection, fixed dimension kinds, shared-store outage failure, and confirmed binary publication, with advanced feature integrations deferred until after implementation.
 - Defined retention, invalidation, publication fencing, admission, eviction, resource budgets, cancellation, and overload behavior.
 - Defined codecs, encoded formats, compression, hot binary/decoded retention, and large-value access contracts.
 - Cache-independent Common codec ownership and fluent/appsettings composition with configuration-led collection definitions and explicit precedence.
@@ -2423,7 +2513,7 @@ Resolution: sections 16.1 and 16.6 define finite memory/storage/entry/concurrenc
 
 Status: accepted.
 
-Decision: these are separate features. `Common.Caching` remains minimal; the new `Application.Caching` feature provides advanced backend caching. Preserve existing registrations and integrations, and keep advanced-cache adoption explicit. Both features may coexist independently in one host.
+Decision: these are separate features. `Common.Caching` remains minimal; the new `Application.Caching` feature provides advanced backend caching. Preserve existing registrations and integrations, and keep advanced-cache adoption explicit. Both features may coexist independently in one host. The existing cache behaviors remain part of the minimal feature. Advanced command/query, requester, repository, and storage integrations are deferred until after implementation; their planning is outside this specification. Optional HTTP, Dashboard, Console Commands, and MCP integration remains in scope.
 
 ### D-03. Relational provider coverage
 
@@ -2437,7 +2527,9 @@ Status: source-load coordination scope and successful uncached-result handoff ac
 
 Decision: select source-load coordination scope per collection. Default to node-local coordination. Allow explicit shared-store coordination for capable Entity Framework and filesystem providers, with coordination state in the selected provider's own backing store. Validate unsupported combinations at startup and expose the effective scope in diagnostics. Node-local coordination does not promise one source load across instances.
 
-Decision: after a successful source load without a reusable published value, return the uncached result locally. Other instances recheck storage and acquire ownership before loading under the same coordination and resource limits. Existing caller budgets continue to apply. No separate cross-instance uncached-result transport is provided. This handoff does not authorize retries after source failure, fallback after wait timeout, or takeover while provider ownership remains uncertain.
+Decision: after a successful typed source load without a reusable published value, return the result read-only locally. Other instances recheck storage and acquire ownership before loading under the same coordination and resource limits. Existing caller budgets continue to apply. No separate cross-instance uncached-result transport is provided. This handoff does not authorize retries after source failure, fallback after wait timeout, or takeover while provider ownership remains uncertain. Payload-producing binary loads require confirmed publication or return failure.
+
+Decision: shared-store mode starts source work only after authoritative ownership is confirmed. Unavailable/uncertain ownership returns `ProviderUnavailable`, with no automatic node-local downgrade. Default node-local typed loading retains bounded source fallback. Already-running typed work may finish uncached locally but cannot publish under uncertain ownership/fencing.
 
 The design keeps one complete provider per collection, with an optional engine-owned hot-entry layer for binary and immutable decoded representations. Every reuse strictly validates through that provider. It does not introduce a separate local-plus-shared provider hierarchy or a weaker invalidation mode.
 
@@ -2448,6 +2540,10 @@ Status: collection contracts, streaming representation, atomic publication, read
 Decision: expose public streaming reads and writes alongside typed-value access, allowing consumers to process large payloads without whole-value materialization. Stream ownership and disposal must be explicit.
 
 Decision: each collection has one declared value type or binary payload format. Typed values use a declared codec to produce their binary payload; raw binary payloads use a declared streaming representation. This makes codec selection, type validation, format compatibility, and provider switching predictable.
+
+Decision: every typed result is read-only by contract, including loaded/joined, bypass, and uncached values. Mutable CLR contracts remain usable without automatic cloning; consumers copy before mutation. Only separately approved immutable contracts qualify for decoded hot retention. Lookups return an optional opaque version token from the same snapshot for stored values/markers and confirmed stored loads, enabling atomic conditional replacement/removal without another metadata query.
+
+Decision: binary payload loading uses store-then-open semantics. Each delivered handle follows confirmed publication and independent valid acquisition. Failed/rejected/indeterminate publication returns failure. Binary loading rejects bypass, explicit suppression, and disabled-mode source loading before invoking a loader; a loader-produced suppression descriptor fails without publication/delivery. Metadata-only absence remains supported without an uncached payload transport.
 
 Decision: public streams expose logical, uncompressed payload bytes. Binary collections expose their original bytes; typed collections expose their declared codec format. Compression and storage envelopes remain internal to the cache.
 
@@ -2481,11 +2577,15 @@ Decision: a wait timeout ends only that caller's wait and returns a coordination
 
 Decision: all remaining waiters receive the shared load's final outcome. Retries require an explicit bounded policy around that work unit, with one retry budget under the existing overall execution, cancellation, lease, and admission limits. Waiters do not automatically take over or retry independently after failure; later independent calls may start fresh work normally.
 
+Decision: loader executions may use nested cache hits but cannot start or join nested source work. Such misses/joins, explicit refresh, and bypass fail promptly with `NestedCacheLoad` before admission/ownership/waiting, including batch/retry execution. Use a simple execution-context marker across keys and collections, without a dependency graph.
+
 ### D-08. Invalidation expressiveness
 
 Status: common typed filters, fixed case-insensitive matching, bounded patterns/composition, interval and metadata semantics, and explicit dimensions accepted. Query-work defaults and provider index/execution plans are defined in sections 10.6 through 10.8 and 16.1.1.
 
 Decision: every provider supports exact keys, indexed scalar equality, set membership, interval overlap, AND and OR groups, and bounded key patterns with identical matching semantics. Invalidation, counts, metadata browsing, and preview use the same selection model. Full-collection removal remains an explicit clear operation. Provider-specific execution must preserve the public predicate's meaning.
+
+Decision: dimension kinds are String, Boolean, signed Integer normalized to `Int64`, Identifier (`Guid`), and Timestamp (`DateTimeOffset` normalized to UTC ticks). Sets use these kinds; intervals support only non-null Integer/Timestamp endpoints. Null requires explicit schema permission, and never means omission. Unsupported numeric/CLR kinds and cross-kind coercion are rejected as defined in section 4.4. These limits do not restrict cached payload types.
 
 Decision: allow typed AND and OR groups with hard limits on nesting, total clauses, and execution resources. Validate complexity before execution, preserve explicit grouping, and deduplicate entries selected by multiple branches. Arbitrary executable predicates are excluded.
 
@@ -2529,7 +2629,7 @@ Default to reclaiming invalid data, then bounded priority-aware approximate rece
 
 Status: read-through degradation and explicit-operation failures accepted.
 
-Decision: tolerate cache-provider failures during read-through and return a successful loader result without confirmed retention. Explicit cache get, set, and invalidation failures remain visible. Cancellation, request validation or authorization, and source failures are not hidden. Fallback obeys normal resource limits and publication fencing.
+Decision: tolerate cache-provider failures during default node-local typed read-through and return a successful read-only loader result without confirmed retention. Shared-store mode requires confirmed authoritative ownership before source work and returns `ProviderUnavailable` when ownership is unavailable/uncertain. Already-running typed work may finish uncached locally but cannot publish under uncertain ownership/fencing. Binary payload loading requires confirmed publication and otherwise returns failure. Explicit cache get, set, and invalidation failures remain visible. Cancellation, nested source-work rejection, request validation or authorization, and source failures are not hidden. Fallback obeys normal resource limits and publication fencing.
 
 Applications remain responsible for handling failed invalidation after a source commit, including reliable delivery through existing messaging patterns when required. The cache does not treat source loading as proof that a failed invalidation succeeded.
 
@@ -2568,6 +2668,8 @@ Decision: include a complete filesystem caching provider using `Infrastructure.F
 Decision: SQLite remains a relational engine of the Entity Framework provider, alongside SQL Server and PostgreSQL. It does not replace the filesystem provider or supply its metadata backend.
 
 Local disks and network shares are included, with concurrent local processes and share-connected hosts. Sections 10.7 and 10.8 define the sharded index/journal/manifest format, authority/quotas, publication, mode-specific recovery, and qualification profiles. Uncertain ownership blocks affected work until safe authority is proven. Durable remains the default; Buffered recovery fences uncertain generations before serving.
+
+Decision: keep this provider architecture and validate the cache commit/recovery protocol early through a focused prototype in the existing filesystem test project. Its deliverables include the cache-aware offline recovery/reset procedure in section 10.7, with no additional recovery or acceptance framework.
 
 ### D-16. Performance constraints
 
@@ -2686,6 +2788,22 @@ Status: explicitly requested by the user; defaults and bounded contracts resolve
 Decision: include optional downward-only expiration jitter, optional provider-scoped circuit breaking, explicit HTTP cache-control/validators and atomic mutation preconditions, optional short-lived negative caching, and node-scoped refresh/warm-up pause with provider-owned resumable invalidation records. Sections 5.5, 8.4, 11.7, 13.1.1, 13.5, and 14.1 define their contracts. Existing providers, configuration composition, behaviors, background services, authorization, and resource limits remain the building blocks; no generic operation/job service or additional storage provider is introduced.
 
 Scope: retain ordinary UTC/`TimeProvider` handling. The user explicitly declined additional clock-skew machinery.
+
+### D-34. Accepted operating contracts and deferred integrations
+
+Status: explicitly accepted by the user on 2026-11-04.
+
+The accepted resolutions are:
+
+- Shared-store loading requires confirmed authoritative ownership; unavailable/uncertain ownership returns `ProviderUnavailable` without a scope downgrade. Default node-local typed fallback and already-running typed uncached completion follow sections 6.1 and 14.
+- All typed results are read-only by contract, including shared, bypass, and unretained results. Consumers copy for mutation. No automatic cloning is added, and decoded hot retention keeps its separate immutable-sharing approval.
+- Binary payload delivery requires confirmed publication and independent read-handle acquisition. Failed/rejected/indeterminate publication returns failure. Bypass, explicit suppression, and disabled binary source loading are unsupported; section 9.5 defines validation and metadata-only absence.
+- Nested cache hits remain usable inside loaders. Starting/joining nested source work, refresh, or bypass returns `NestedCacheLoad` under the simple execution-context rule in section 6.1; no dependency graph is added.
+- Typed lookup exposes the acquired opaque version token for stored values/markers and confirmed stored loads. Misses and successful unretained/indeterminate results have no confirmed stored token. Conditional replacement/removal uses that snapshot token atomically, without a separate metadata query or per-hit metadata object.
+- Dimension kinds and forms are fixed by section 4.4: String, Boolean, signed Integer, Identifier, and UTC Timestamp; sets use those kinds and intervals use non-null Integer/Timestamp endpoints. Unsupported numeric/custom kinds and cross-kind coercion are rejected.
+- SQLite keeps the asynchronous public API with explicit synchronous native execution, existing bounded provider admission/busy limits, cooperative cancellation, and occupied-work accounting. Section 10.6 requires no separate worker pool or unbounded async simulation.
+- The filesystem architecture remains selected. Early commit/recovery proof and a cache-aware offline recovery/reset procedure are provider deliverables in the existing test/recovery workflow, as defined in section 10.7.
+- Advanced command/query, requester, repository, and storage integrations are deferred until after implementation. Existing minimal-cache behaviors remain with `Common.Caching`; this feature is an independently selected advanced alternative. The optional presentation/management integrations remain in scope.
 
 ## 20. Related DevKit documentation
 

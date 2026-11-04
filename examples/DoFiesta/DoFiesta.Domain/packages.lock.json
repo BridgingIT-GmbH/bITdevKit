@@ -16,8 +16,8 @@
       },
       "Mapster.Core": {
         "type": "Transitive",
-        "resolved": "10.0.13",
-        "contentHash": "fLj/MDJy16QiL7IULC0+e2YXh9nNDhtzdNl13R6CI0Qh6181eadA6EHykWkJWgTHdMjC5Ured3fq5x1QV7U9vg=="
+        "resolved": "10.0.14",
+        "contentHash": "8ad9PtJ9iKXjdwanPBGQrFb3ww0qJLkNE7y2A1vueCoqNaA2rSQZjyFvYPw9708uKTKy4zMhgKUPqNXUg/1ZUw=="
       },
       "MessagePack.Annotations": {
         "type": "Transitive",
@@ -221,8 +221,8 @@
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "Mapster": "[10.0.13, )",
-          "Mapster.DependencyInjection": "[10.0.13, )",
+          "Mapster": "[10.0.14, )",
+          "Mapster.DependencyInjection": "[10.0.14, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[10.0.14, )",
           "Microsoft.Extensions.Configuration.Binder": "[10.0.14, )"
         }
@@ -327,20 +327,20 @@
       },
       "Mapster": {
         "type": "CentralTransitive",
-        "requested": "[10.0.13, )",
-        "resolved": "10.0.13",
-        "contentHash": "/FaFSm4W6rQp5kEZa7yTtvHH2yGmuC1p22Bg2zi83+W8SMJ+5RBTEWgRK0JS2S8jIdXj2hm2s4z1egjkE2azoQ==",
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "lsJwj0ALW/I8LSCxF6WVa9bqp5E693CC5wDzNUxkiLWr/sD2hjNMvc1p/9A9BLMfCsK6ra4hgPYg7ILkouG2Kw==",
         "dependencies": {
-          "Mapster.Core": "10.0.13"
+          "Mapster.Core": "10.0.14"
         }
       },
       "Mapster.DependencyInjection": {
         "type": "CentralTransitive",
-        "requested": "[10.0.13, )",
-        "resolved": "10.0.13",
-        "contentHash": "/465HIt8gnkAHLF9s78JuHd7GEXanL6Yp/g5Jd5+ygC8a/9XNSlJf+0wBXrXASTRa5v64OKIHL8QA7fkgICyVA==",
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "8r98i7jJWVlAOl7t7dhHS/fymMGbvXzxss3pu/SyhHiuTuV08MUOJYBtcfxwchOzDDAGXQzFv/cODg8QCzfzcw==",
         "dependencies": {
-          "Mapster": "10.0.13",
+          "Mapster": "10.0.14",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
         }
       },

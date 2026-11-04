@@ -13,7 +13,7 @@ public class OrchestrationQueryServiceTests(ITestOutputHelper output) : Orchestr
 {
     [Theory]
     [InlineData("Missing", FilterOperator.Equal, "value")]
-    [InlineData("OrchestrationName", FilterOperator.GreaterThan, "value")]
+    [InlineData("OrchestrationName", FilterOperator.Any, "value")]
     [InlineData("StartedUtc", FilterOperator.Equal, "invalid-date")]
     public async Task SearchAsync_InvalidCriteria_ReturnsValidationFailure(string field, FilterOperator operation, string value)
     {
@@ -39,6 +39,33 @@ public class OrchestrationQueryServiceTests(ITestOutputHelper output) : Orchestr
         result.CurrentPage.ShouldBe(1);
         result.PageSize.ShouldBe(50);
         result.Value.ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData(FilterOperator.GreaterThan, new[] { "Charlie" })]
+    [InlineData(FilterOperator.GreaterThanOrEqual, new[] { "Bravo", "Charlie" })]
+    [InlineData(FilterOperator.LessThan, new[] { "Alpha" })]
+    [InlineData(FilterOperator.LessThanOrEqual, new[] { "Alpha", "Bravo" })]
+    public async Task SearchAsync_StringComparison_ReturnsMatchingInstances(FilterOperator operation, string[] expected)
+    {
+        using var provider = this.CreateServices();
+        var instances = provider.GetRequiredService<IOrchestrationInstanceStore>();
+        var sut = provider.GetRequiredService<IOrchestrationQueryService>();
+        var start = new DateTimeOffset(2026, 5, 7, 8, 0, 0, TimeSpan.Zero);
+        foreach (var name in new[] { "Alpha", "Bravo", "Charlie" })
+        {
+            await instances.CreateAsync(CreateContext(Guid.NewGuid(), name, OrchestrationStatus.Waiting, "Waiting", name, start), name);
+        }
+
+        var result = await sut.SearchAsync(new FilterModel
+        {
+            Filters = [new("OrchestrationName", operation, "Bravo")],
+            Orderings = [new() { Field = "OrchestrationName" }]
+        });
+
+        result.IsSuccess.ShouldBeTrue();
+        result.TotalCount.ShouldBe(expected.Length);
+        result.Value.Select(instance => instance.OrchestrationName).ShouldBe(expected);
     }
 
     [Fact]

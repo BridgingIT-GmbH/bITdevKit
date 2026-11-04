@@ -39,10 +39,31 @@ public class LogEntrySearchTests
         filter.PageSize.ShouldBe(1);
     }
 
+    [Fact]
+    public async Task SearchAsync_StringComparison_ReturnsMatchingEntries()
+    {
+        await using var context = CreateContext();
+        context.LogEntries.AddRange(
+            new LogEntry { Id = 1, Message = "Alpha" },
+            new LogEntry { Id = 2, Message = "Bravo" },
+            new LogEntry { Id = 3, Message = "Charlie" });
+        await context.SaveChangesAsync();
+        var sut = CreateService(context);
+
+        var result = await sut.SearchAsync(new FilterModel
+        {
+            Filters = [new("Message", FilterOperator.GreaterThan, "Bravo")]
+        });
+
+        result.IsSuccess.ShouldBeTrue();
+        result.TotalCount.ShouldBe(1);
+        result.Value.Single().Message.ShouldBe("Charlie");
+    }
+
     [Theory]
     [InlineData("Unknown", FilterOperator.Equal, "value")]
     [InlineData("LogEvents", FilterOperator.IsNull, null)]
-    [InlineData("Message", FilterOperator.GreaterThan, "value")]
+    [InlineData("Message", FilterOperator.Any, "value")]
     public async Task SearchAsync_InvalidCriteria_ReturnsValidationFailure(string field, FilterOperator operation, string value)
     {
         await using var context = CreateContext();

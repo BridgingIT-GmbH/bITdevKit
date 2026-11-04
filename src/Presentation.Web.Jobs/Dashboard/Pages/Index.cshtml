@@ -1,3 +1,4 @@
+@using BridgingIT.DevKit.Common
 @using BridgingIT.DevKit.Application.Jobs
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
@@ -8,7 +9,9 @@
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
-  var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new
+  var diagnostics = HttpContext.Request.Path.Value?.EndsWith("/diagnostics", StringComparison.OrdinalIgnoreCase) == true;
+    var occurrences = HttpContext.Request.Path.Value?.EndsWith("/occurrences", StringComparison.OrdinalIgnoreCase) == true;
+    var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new
 DashboardEndpointsOptions();
   var contentPath = JobsDashboardEndpoints.BuildJobsDataContentPath(dashboardOptions);
   var actionBase = JobsDashboardEndpoints.BuildJobsActionBase(dashboardOptions);
@@ -17,40 +20,54 @@ DashboardEndpointsOptions();
   var aliveEnabled = HttpContext.RequestServices.GetService<JobAliveOptions>()?.Enabled == true;
 }
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
-  <div class="d-flex align-items-center gap-2">
-    @if (aliveEnabled)
-    {
-      <button type="button" class="btn btn-outline-primary btn-sm" title="Dispatch alive job"
-              onclick="window.bdkJobsAction('@($"{actionBase}/alive")')">
-        <i class="bi bi-broadcast"></i>
-      </button>
-    }
-    <button type="button" class="btn btn-outline-danger btn-sm" title="Purge retained job occurrences"
-            onclick="window.bdkJobsPurge('@purgePath')">
-      <i class="bi bi-trash3"></i>
-    </button>
-    <span id="jobs-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T",
-                  CultureInfo.InvariantCulture)</span>
-      <select id="jobs-refresh-interval" class="form-select form-select-sm" style="width: 9rem"
-              aria-label="Jobs refresh interval">
-        <option value="">Off</option>
-        <option value="1000">1 sec</option>
-        <option value="5000">5 sec</option>
-        <option value="15000">15 sec</option>
-        <option value="30000">30 sec</option>
-      </select>
-      <button type="button" id="jobs-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh jobs">
-        <i class="bi bi-arrow-clockwise"></i>
-      </button>
+<div class="dashboard-page-toolbar">
+    <div class="d-flex flex-wrap align-items-center justify-content-end gap-2">
+
+        @(await RenderPartialAsync<RefreshControls, DashboardRefreshModel>(new("jobs", "Refresh jobs")))
+        <details class="dashboard-tools"><summary class="btn btn-outline-secondary btn-sm">Tools</summary><div class="dashboard-tools-menu">
+            @if (aliveEnabled) { <button type="button" class="btn btn-outline-secondary btn-sm" title="Dispatch alive job" aria-label="Dispatch alive job" onclick="window.bdkJobsAction('@($"{actionBase}/alive")')"><i class="bi bi-broadcast" aria-hidden="true"></i></button> }
+            <button type="button" class="btn btn-outline-danger btn-sm" title="Purge retained job occurrences" aria-label="Purge retained job occurrences" onclick="window.bdkJobsPurge('@purgePath')"><i class="bi bi-trash3" aria-hidden="true"></i></button>
+        </div></details>
     </div>
-  </div>
+</div>
+
+<nav class="nav nav-pills dashboard-view-tabs mb-2" aria-label="Jobs views" data-dashboard-view>
+    <a class="nav-link @(!diagnostics && !occurrences ? "active" : "")" href="@actionBase@HttpContext.Request.QueryString" aria-current="@(!diagnostics && !occurrences ? "page" : null)">Jobs</a>
+    <a class="nav-link @(occurrences ? "active" : "")" href="@(actionBase + "/occurrences")@HttpContext.Request.QueryString" aria-current="@(occurrences ? "page" : null)">Occurrences</a>
+    <a class="nav-link @(diagnostics ? "active" : "")" href="@(actionBase + "/diagnostics")@HttpContext.Request.QueryString" aria-current="@(diagnostics ? "page" : null)">Diagnostics</a>
+</nav>
+
+@if (!diagnostics && !occurrences)
+{
+    <form id="jobs-filter-form" class="dashboard-filter-panel" method="get">
+        <div class="row g-2 align-items-end">
+            <div class="col-12 col-md-4 col-lg"><label class="form-label" for="jobs-filter-name">Name</label><input id="jobs-filter-name" name="jobName" value="@HttpContext.Request.Query["jobName"]" class="form-control form-control-sm" placeholder="contains" /></div>
+            <div class="col-12 col-md-3"><label class="form-label" for="jobs-filter-group">Group</label><input id="jobs-filter-group" name="jobGroup" value="@HttpContext.Request.Query["jobGroup"]" class="form-control form-control-sm" placeholder="contains" /></div>
+            <div class="col-6 col-md-2"><label class="form-label" for="jobs-filter-enabled">Enabled</label><select id="jobs-filter-enabled" name="jobEnabled" class="form-select form-select-sm"><option value="">All</option><option value="true" selected="@(HttpContext.Request.Query["jobEnabled"] == "true")">Enabled</option><option value="false" selected="@(HttpContext.Request.Query["jobEnabled"] == "false")">Disabled</option></select></div>
+            <div class="col-6 col-md-2"><label class="form-label" for="jobs-filter-paused">Paused</label><select id="jobs-filter-paused" name="jobPaused" class="form-select form-select-sm"><option value="">All</option><option value="true" selected="@(HttpContext.Request.Query["jobPaused"] == "true")">Paused</option><option value="false" selected="@(HttpContext.Request.Query["jobPaused"] == "false")">Not paused</option></select></div>
+            <div class="col-12 col-lg-auto d-flex ms-auto">@(await RenderPartialAsync<FilterActions, DashboardFilterActionsModel>(new(ResetId: "jobs-filter-reset")))</div>
+        </div>
+    </form>
+}
+
+@if (occurrences)
+{
+    <form id="occurrences-filter-form" class="dashboard-filter-panel" method="get">
+        <div class="row g-2 align-items-end">
+            <div class="col-12 col-md-4 col-lg"><label class="form-label" for="occurrences-filter-job">Job</label><input id="occurrences-filter-job" name="occurrenceJob" value="@HttpContext.Request.Query["occurrenceJob"]" class="form-control form-control-sm" placeholder="contains" /></div>
+            <div class="col-12 col-md-3"><label class="form-label" for="occurrences-filter-trigger">Trigger</label><input id="occurrences-filter-trigger" name="occurrenceTrigger" value="@HttpContext.Request.Query["occurrenceTrigger"]" class="form-control form-control-sm" placeholder="contains" /></div>
+            <div class="col-6 col-md-2"><label class="form-label" for="occurrences-filter-status">Status</label><select id="occurrences-filter-status" name="occurrenceStatus" class="form-select form-select-sm"><option value="">All</option>@foreach (var status in Enum.GetNames<JobOccurrenceStatus>()) { <option value="@status" selected="@(HttpContext.Request.Query["occurrenceStatus"] == status)">@status</option> }</select></div>
+            <div class="col-12 col-md-3"><label class="form-label" for="occurrences-filter-correlation">Correlation ID</label><input id="occurrences-filter-correlation" name="occurrenceCorrelation" value="@HttpContext.Request.Query["occurrenceCorrelation"]" class="form-control form-control-sm" placeholder="contains" /></div>
+            <div class="col-12 col-lg-auto d-flex ms-auto">@(await RenderPartialAsync<FilterActions, DashboardFilterActionsModel>(new(ResetId: "occurrences-filter-reset")))</div>
+        </div>
+    </form>
+}
 
   <div id="dashboard-jobs-shell">
     @(await RenderPartialAsync<Content>())
   </div>
 
-  <div class="modal fade" id="jobs-occurrence-context-modal" tabindex="-1" aria-labelledby="jobs-occurrence-context-title"
+  <div class="dashboard-dialog dashboard-tabbed-inspector modal fade" id="jobs-occurrence-context-modal" tabindex="-1" aria-labelledby="jobs-occurrence-context-title"
        aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content">
@@ -61,28 +78,38 @@ DashboardEndpointsOptions();
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <div class="row g-2 mb-3" id="jobs-occurrence-context-summary"></div>
+<div class="px-2 pt-2 flex-shrink-0"><div class="row g-2 mb-3" id="jobs-occurrence-context-summary"></div>
+                <div class="nav nav-tabs" role="tablist" aria-label="Details views">
+                    <button class="nav-link active" id="jobs-occurrence-context-0-tab" type="button" role="tab" aria-selected="true" aria-controls="jobs-occurrence-context-0-pane" data-bs-toggle="tab" data-bs-target="#jobs-occurrence-context-0-pane">Overview</button>
+                    <button class="nav-link" id="jobs-occurrence-context-1-tab" type="button" role="tab" aria-selected="false" aria-controls="jobs-occurrence-context-1-pane" data-bs-toggle="tab" data-bs-target="#jobs-occurrence-context-1-pane">Messages</button>
+                    <button class="nav-link" id="jobs-occurrence-context-2-tab" type="button" role="tab" aria-selected="false" aria-controls="jobs-occurrence-context-2-pane" data-bs-toggle="tab" data-bs-target="#jobs-occurrence-context-2-pane">Properties</button>
+                </div>
+            </div>
 
-          <h6 class="mb-2">Messages</h6>
-          <div id="jobs-occurrence-context-messages" class="d-flex flex-column gap-2"></div>
-          <hr/>
-
-          <h6 class="mb-2">Details</h6>
+            <div class="modal-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="jobs-occurrence-context-0-pane" role="tabpanel" aria-labelledby="jobs-occurrence-context-0-tab" tabindex="0"><h6 class="mb-2">Details</h6>
           <div class="table-responsive mb-3">
-            <table class="table table-sm align-middle mb-0">
+            <table class="table table-sm align-middle mb-0 dashboard-detail-table">
               <tbody id="jobs-occurrence-context-details"></tbody>
             </table>
           </div>
 
-          <h6 class="mb-2">Properties</h6>
+          </div>
+                    <div class="tab-pane" id="jobs-occurrence-context-1-pane" role="tabpanel" aria-labelledby="jobs-occurrence-context-1-tab" tabindex="0"><h6 class="mb-2">Messages</h6>
+          <div id="jobs-occurrence-context-messages" class="d-flex flex-column gap-2"></div>
+
+
+          </div>
+                    <div class="tab-pane" id="jobs-occurrence-context-2-pane" role="tabpanel" aria-labelledby="jobs-occurrence-context-2-tab" tabindex="0"><h6 class="mb-2">Properties</h6>
           <div class="table-responsive mb-3">
-            <table class="table table-sm align-middle mb-0">
+            <table class="table table-sm align-middle mb-0 dashboard-detail-table">
               <tbody id="jobs-occurrence-context-properties"></tbody>
             </table>
           </div>
+        </div></div></div>
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.ModalActions, DashboardModalActionsModel>(new()))
         </div>
-      </div>
     </div>
   </div>
 
@@ -96,14 +123,50 @@ DashboardEndpointsOptions();
         : null;
       let occurrenceModalOpen = false;
 
+      let appliedUrl = new URL('@contentPath', location.origin);
+      if (@(occurrences ? "true" : "false")) appliedUrl.searchParams.set('view', 'occurrences');
+      for (const key of ['occurrenceTake', 'jobName', 'jobGroup', 'jobEnabled', 'jobPaused', 'occurrenceJob', 'occurrenceTrigger', 'occurrenceStatus', 'occurrenceCorrelation']) if (new URL(location.href).searchParams.has(key)) appliedUrl.searchParams.set(key, new URL(location.href).searchParams.get(key));
+      let pendingUrl = null;
+      let pendingList = null;
+      const growingLists = window.bdkDashboard.createGrowingLists({
+        owner: shellElement, root: () => shellElement.querySelector('#dashboard-jobs-content'),
+        appliedUrl: () => new URL(appliedUrl), hasPending: key => pendingUrl !== null && (!key || key === pendingList),
+        lists: [
+          { key: 'jobs-occurrences', historyVersion: 2, cursor: 'occurrenceCursor', boundary: 'occurrenceBoundary', size: 'occurrenceTake' }
+        ],
+        onSizeChange: (list, size) => { pendingList = list.key; pendingUrl = new URL(pendingUrl || appliedUrl); pendingUrl.searchParams.set(list.size, size); refresher.refresh(true); }
+      });
       const refresher = window.bdkDashboard.createRefresher({
-        contentUrl: '@contentPath',
+        buildUrl: () => new URL(pendingUrl || appliedUrl),
+        applyResponse: growingLists.applyResponse,
+        onSuccess: () => { if (pendingUrl) { appliedUrl = pendingUrl; pendingUrl = null; const page = new URL(location.href); page.search = appliedUrl.search; page.searchParams.delete('view'); history.replaceState(null, '', page); } },
+        onError: () => { pendingUrl = null; pendingList = null; },
         contentSelector: () => shellElement?.querySelector('#dashboard-jobs-content') ?? null,
         statusSelector: '#jobs-refresh-status',
-        intervalSelector: '#jobs-refresh-interval',
-        refreshButtonSelector: '#jobs-refresh-now',
+        intervalSelector: @(diagnostics ? "true" : "false") ? null : '#jobs-refresh-interval',
+        refreshButtonSelector: @(diagnostics ? "true" : "false") ? null : '#jobs-refresh-now',
         storageKey: 'bdk.dashboard.jobs.refreshInterval',
-        shouldRefresh: () => !occurrenceModalOpen
+        shouldRefresh: () => @(diagnostics ? "false" : "true") && !occurrenceModalOpen && !growingLists.busy()
+      });
+
+      const occurrenceView = @(occurrences ? "true" : "false");
+      const jobForm = document.getElementById(occurrenceView ? 'occurrences-filter-form' : 'jobs-filter-form');
+      const jobFilterKeys = occurrenceView ? ['occurrenceJob', 'occurrenceTrigger', 'occurrenceStatus', 'occurrenceCorrelation'] : ['jobName', 'jobGroup', 'jobEnabled', 'jobPaused'];
+      function applyJobFilters(reset = false) {
+        pendingList = occurrenceView ? 'jobs-occurrences' : null;
+        pendingUrl = new URL(appliedUrl);
+        for (const key of jobFilterKeys) {
+          const value = reset ? '' : jobForm.elements.namedItem(key).value.trim();
+          if (value) pendingUrl.searchParams.set(key, value); else pendingUrl.searchParams.delete(key);
+        }
+        pendingUrl.searchParams.delete(occurrenceView ? 'occurrenceCursor' : 'jobCursor'); pendingUrl.searchParams.delete(occurrenceView ? 'occurrenceBoundary' : 'jobBoundary');
+        growingLists.cancel();
+        refresher.refresh(true);
+      }
+      jobForm?.addEventListener('submit', event => { event.preventDefault(); applyJobFilters(); });
+      document.getElementById(occurrenceView ? 'occurrences-filter-reset' : 'jobs-filter-reset')?.addEventListener('click', () => {
+        for (const key of jobFilterKeys) jobForm.elements.namedItem(key).value = '';
+        applyJobFilters(true);
       });
 
       function text(value) {
@@ -120,7 +183,7 @@ DashboardEndpointsOptions();
         }
 
         const date = new Date(value);
-        return Number.isNaN(date.getTime()) ? text(value) : date.toLocaleString();
+        return Number.isNaN(date.getTime()) ? text(value) : date.toISOString().replace('T', ' ').replace('Z', ' UTC');
       }
 
       function setText(id, value) {

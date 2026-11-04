@@ -1,0 +1,186 @@
+@inherits RazorSlice
+<script>
+window.bdkDashboard.createGrowingLists = function(settings) {
+    const owner = settings.owner;
+    const lists = new Map(settings.lists.map(list => [list.key, { ...list, appended: false, controller: null }]));
+    const region = (root, key) => root?.querySelector(`[data-dashboard-list="${key}"]`);
+    const footer = element => element?.querySelector('[data-dashboard-list-footer]');
+    const rows = element => [...(element?.querySelectorAll('tbody[data-dashboard-list-rows] > tr[data-dashboard-row-id]') || [])];
+    const status = element => element?.querySelector('[data-dashboard-list-status]');
+    let restoring = false;
+    const stateKey = list => {
+        const url = new URL(settings.appliedUrl());
+        for (const item of lists.values()) { url.searchParams.delete(item.cursor); url.searchParams.delete(item.boundary); }
+        url.searchParams.delete('_'); url.searchParams.delete('list'); url.searchParams.sort();
+        return `bdk.dashboard.history:${location.pathname}:${list.key}${list.historyVersion ? ":v" + list.historyVersion : ""}:${url.search}`;
+    };
+    function remember() {
+        for (const list of lists.values()) {
+            const current = region(settings.root(), list.key);
+            if (!current || !rows(current).length) continue;
+            try { sessionStorage.setItem(stateKey(list), JSON.stringify({ boundary: footer(current)?.dataset.boundary, count: rows(current).length, scroll: current.querySelector('[data-dashboard-list-scroll]')?.scrollTop || 0, pageScroll: window.scrollY })); } catch { }
+        }
+    }
+    async function restore() {
+        restoring = true;
+        try {
+            for (const list of lists.values()) {
+                let saved; try { saved = JSON.parse(sessionStorage.getItem(stateKey(list))); } catch { }
+                if (!saved?.boundary || !Number.isInteger(saved.count) || saved.count < 1 || saved.count > 20000 || !region(settings.root(), list.key)) continue;
+                const url = new URL(settings.appliedUrl());
+                url.searchParams.set(list.boundary, saved.boundary);
+                const controller = new AbortController(); list.controller = controller;
+                const response = await fetch(url, { cache: 'no-store', signal: controller.signal });
+                if (!response.ok || response.redirected || !(response.headers.get('content-type') || '').includes('text/html')) throw new Error('History could not be restored');
+                const html = await response.text(); const template = document.createElement('template'); template.innerHTML = html;
+                if (template.content.querySelector('[data-dashboard-query-error]') || !region(template.content, list.key)) throw new Error('History could not be restored');
+                if (controller.signal.aborted) return;
+                region(settings.root(), list.key).replaceWith(region(template.content, list.key));
+                list.controller = null; list.appended = true;
+                let batches = 0;
+                while (rows(region(settings.root(), list.key)).length < saved.count && batches++ < 100) {
+                    const current = region(settings.root(), list.key), before = rows(current).length;
+                    if (current.querySelector('[data-dashboard-load-more]')?.disabled) break;
+                    await loadMore(list);
+                    if (rows(current).length === before) break;
+                }
+                const current = region(settings.root(), list.key), scroll = current.querySelector('[data-dashboard-list-scroll]');
+                if (scroll) scroll.scrollTop = saved.scroll;
+                window.scrollTo({ top: saved.pageScroll || 0 });
+            }
+        } catch { settings.owner.querySelector('[data-dashboard-list-status]')?.replaceChildren(document.createTextNode('History restoration failed. Refresh to retry.')); }
+        finally { for (const list of lists.values()) list.controller = null; restoring = false; }
+    }
+    function updateCount(element) {
+        const count = rows(element).length;
+        const label = status(element); if (label) label.textContent = `${count} rows loaded`;
+        element?.querySelectorAll('[data-dashboard-list-count]').forEach(value => value.textContent = count);
+    }
+    function cancel() {
+        for (const list of lists.values()) {
+            if (list.controller) {
+                list.controller.abort();
+                const button = region(settings.root(), list.key)?.querySelector('[data-dashboard-load-more]');
+                if (button?.dataset.nextCursor) { button.disabled = false; const label = status(region(settings.root(), list.key)); if (label?.textContent === 'Loading more…') label.textContent = 'Load canceled. Try Load more again.'; }
+            }
+            list.controller = null;
+        }
+    }
+    async function loadMore(list) {
+        const root = settings.root(), current = region(root, list.key);
+        const button = current?.querySelector('[data-dashboard-load-more]');
+        if (!button || button.disabled || list.controller || settings.hasPending?.(list.key)) return;
+        const next = button.dataset.nextCursor;
+        if (!next) return;
+        const controller = new AbortController(); list.controller = controller;
+        const focused = document.activeElement === button;
+        button.disabled = true; status(current).textContent = 'Loading more…';
+        const url = new URL(settings.appliedUrl());
+        url.searchParams.set(list.cursor, next);
+        url.searchParams.set(list.boundary, footer(current).dataset.boundary || '');
+        url.searchParams.set('list', list.key);
+        try {
+            const response = await fetch(url, { cache: 'no-store', headers: { 'X-Requested-With': 'fetch' }, signal: controller.signal });
+            if (!response.ok || response.redirected || !(response.headers.get('content-type') || '').includes('text/html')) throw new Error('Load failed');
+            const template = document.createElement('template'); template.innerHTML = await response.text();
+            if (template.content.querySelector('[data-dashboard-query-error]')) throw new Error('Query failed');
+            if (controller.signal.aborted || list.controller !== controller || !current.isConnected) return;
+            const incoming = region(template.content, list.key);
+            const nextFooter = footer(incoming);
+            if (!incoming || !nextFooter) throw new Error('Unexpected list response');
+            const seen = new Set(rows(current).map(row => row.dataset.dashboardRowId));
+            const body = current.querySelector('tbody[data-dashboard-list-rows]');
+            const scroll = current.querySelector('[data-dashboard-list-scroll]'); const top = scroll?.scrollTop;
+            for (const row of rows(incoming)) if (!seen.has(row.dataset.dashboardRowId)) { seen.add(row.dataset.dashboardRowId); body.append(row); }
+            const nextButton = nextFooter.querySelector('[data-dashboard-load-more]');
+            button.dataset.nextCursor = nextButton.dataset.nextCursor || '';
+            button.disabled = nextButton.disabled;
+            if (focused) (button.disabled ? current.querySelector('[data-dashboard-batch-size]') : button)?.focus({ preventScroll: true });
+            list.appended = true;
+            if (scroll) scroll.scrollTop = top;
+            updateCount(current);
+            settings.onAppended?.(current);
+        } catch (error) {
+            if (error.name !== 'AbortError' && list.controller === controller && current.isConnected) {
+                button.disabled = false;
+                if (focused) button.focus({ preventScroll: true });
+                status(current).textContent = 'Load failed. Try Load more again.';
+            }
+        } finally { if (list.controller === controller) list.controller = null; }
+    }
+    function applyResponse(root, html) {
+        cancel();
+        const keep = [];
+        for (const list of lists.values()) {
+            const current = region(root, list.key);
+            if (list.appended && !settings.hasPending?.(list.key) && current) {
+                const scroll = current.querySelector('[data-dashboard-list-scroll]');
+                keep.push({ list, element: current, rows: rows(current), footer: footer(current), total: current.dataset.dashboardListTotal || '0', scroll: scroll?.scrollTop || 0, focus: current.contains(document.activeElement) ? document.activeElement : null });
+            } else list.appended = false;
+        }
+        root.innerHTML = html;
+        for (const saved of keep) {
+            const current = region(root, saved.list.key), body = current?.querySelector('tbody[data-dashboard-list-rows]');
+            if (!body) {
+                current?.replaceWith(saved.element);
+                status(saved.element).textContent = 'Previously loaded rows retained; no current matching rows.';
+                continue;
+            }
+            const incoming = new Map(rows(current).map(row => [row.dataset.dashboardRowId, row]));
+            const existing = new Set(saved.rows.map(row => row.dataset.dashboardRowId));
+            const newRecords = BigInt(current.dataset.dashboardListTotal || '0') > BigInt(saved.total) || rows(current).some(row => !existing.has(row.dataset.dashboardRowId));
+            body.replaceChildren(...saved.rows.map(old => incoming.get(old.dataset.dashboardRowId) || old));
+            footer(current)?.replaceWith(saved.footer);
+            if (saved.focus?.isConnected) saved.focus.focus({ preventScroll: true });
+            const scroll = current.querySelector('[data-dashboard-list-scroll]'); if (scroll) scroll.scrollTop = saved.scroll;
+            updateCount(current);
+            if (newRecords) {
+                status(current).textContent += '. New records are available.';
+                const restart = current.querySelector('[data-dashboard-restart-list]'); if (restart) restart.hidden = false;
+            }
+        }
+        for (const list of lists.values()) if (!keep.some(saved => saved.list === list)) updateCount(region(root, list.key));
+        queueMicrotask(remember);
+    }
+    owner.addEventListener('click', event => {
+        const restart = event.target.closest('[data-dashboard-restart-list]');
+        if (restart) {
+            const key = restart.closest('[data-dashboard-list-footer]')?.dataset.dashboardListFooter;
+            if (lists.has(key)) { cancel(); settings.onSizeChange(lists.get(key), restart.closest('[data-dashboard-list-footer]').querySelector('[data-dashboard-batch-size]').value); }
+            return;
+        }
+        const button = event.target.closest('[data-dashboard-load-more]');
+        const key = button?.closest('[data-dashboard-list-footer]')?.dataset.dashboardListFooter;
+        if (lists.has(key)) loadMore(lists.get(key));
+    });
+    owner.addEventListener('change', event => {
+        if (!event.target.matches('[data-dashboard-batch-size]')) return;
+        const key = event.target.closest('[data-dashboard-list-footer]')?.dataset.dashboardListFooter;
+        if (!lists.has(key)) return;
+        cancel();
+        try { localStorage.setItem(`bdk.dashboard.${key}.rowsPerLoad`, event.target.value); } catch { }
+        settings.onSizeChange(lists.get(key), event.target.value);
+    });
+    queueMicrotask(() => {
+        for (const list of lists.values()) {
+            const select = region(settings.root(), list.key)?.querySelector('[data-dashboard-batch-size]');
+            if (!select) continue;
+            if (new URL(location.href).searchParams.has(list.size)) continue;
+            try {
+                const size = localStorage.getItem(`bdk.dashboard.${list.key}.rowsPerLoad`);
+                if (size && size !== select.value && [...select.options].some(option => option.value === size)) { select.value = size; settings.onSizeChange(list, size); }
+            } catch { }
+        }
+    });
+    document.querySelectorAll('[data-dashboard-view] a').forEach(link => link.addEventListener('click', () => {
+        remember();
+        const destination = new URL(link.href), applied = new URL(settings.appliedUrl());
+        destination.search = applied.search; destination.searchParams.delete('view');
+        const view = new URL(location.href).searchParams.get('dashboardView'); if (view) destination.searchParams.set('dashboardView', view);
+        link.href = destination.href;
+    }));
+    window.addEventListener('pagehide', () => { remember(); cancel(); });
+    queueMicrotask(restore);
+    return { applyResponse, cancel, loadMore: key => loadMore(lists.get(key)), lists, busy: () => restoring || [...lists.values()].some(list => list.controller !== null) };
+};
+</script>

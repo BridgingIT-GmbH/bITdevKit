@@ -33,7 +33,7 @@ public static class FilterModelQueryExtensions
         }
     }
 
-    /// <summary>Applies explicit sort criteria, preserving the existing order when none are supplied.</summary>
+    /// <summary>Applies explicit sort criteria, preserving existing order when none are supplied. GUID criteria use canonical text order to match seek comparisons.</summary>
     /// <example><code>var ordered = records.ApplyOrder(filter);</code></example>
     public static IQueryable<T> ApplyOrder<T>(this IQueryable<T> source, FilterModel filter, Expression<Func<T, object>> tieBreaker = null)
     {
@@ -46,8 +46,13 @@ public static class FilterModelQueryExtensions
             }
 
             var parameter = Expression.Parameter(typeof(T), "item");
-            var property = Property(parameter, order.Field);
+            Expression property = Property(parameter, order.Field);
             ValidateScalar(property.Type);
+            if (property.Type == typeof(Guid))
+            {
+                property = GuidText(property);
+            }
+
             var method = first ? "OrderBy" : "ThenBy";
             method += order.Direction == OrderDirection.Descending ? "Descending" : string.Empty;
             source = source.Provider.CreateQuery<T>(Expression.Call(typeof(Queryable), method,
@@ -165,14 +170,40 @@ public static class FilterModelQueryExtensions
             FilterOperator.NotEqual => Expression.NotEqual(property, constant),
             FilterOperator.IsNull => nullValue is null ? Expression.Constant(false) : Expression.Equal(property, nullValue),
             FilterOperator.IsNotNull => nullValue is null ? Expression.Constant(true) : Expression.NotEqual(property, nullValue),
-            FilterOperator.GreaterThan => Expression.GreaterThan(property, constant),
-            FilterOperator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(property, constant),
-            FilterOperator.LessThan => Expression.LessThan(property, constant),
-            FilterOperator.LessThanOrEqual => Expression.LessThanOrEqual(property, constant),
+            FilterOperator.GreaterThan => Compare(property, constant, FilterOperator.GreaterThan),
+            FilterOperator.GreaterThanOrEqual => Compare(property, constant, FilterOperator.GreaterThanOrEqual),
+            FilterOperator.LessThan => Compare(property, constant, FilterOperator.LessThan),
+            FilterOperator.LessThanOrEqual => Compare(property, constant, FilterOperator.LessThanOrEqual),
             FilterOperator.IsEmpty when type == typeof(string) => Expression.OrElse(Expression.Equal(property, nullValue), Expression.Equal(property, Expression.Constant(string.Empty))),
             FilterOperator.IsNotEmpty when type == typeof(string) => Expression.AndAlso(Expression.NotEqual(property, nullValue), Expression.NotEqual(property, Expression.Constant(string.Empty))),
             FilterOperator.Contains or FilterOperator.DoesNotContain or FilterOperator.StartsWith or FilterOperator.DoesNotStartWith or FilterOperator.EndsWith or FilterOperator.DoesNotEndWith when type == typeof(string) && converted is string => StringMatch(property, constant, filter.Operator),
             _ => throw new ArgumentException($"Operator '{filter.Operator}' is not supported for '{filter.Field}'.")
+        };
+    }
+
+    private static Expression GuidText(Expression value) => Expression.Call(
+        Expression.Call(value, nameof(Guid.ToString), Type.EmptyTypes), nameof(string.ToLower), Type.EmptyTypes);
+
+    private static Expression Compare(Expression left, Expression right, FilterOperator operation)
+    {
+        if (left.Type == typeof(Guid))
+        {
+            left = GuidText(left);
+            right = GuidText(right);
+        }
+
+        if (left.Type == typeof(string))
+        {
+            left = Expression.Call(typeof(string), nameof(string.Compare), Type.EmptyTypes, left, right);
+            right = Expression.Constant(0);
+        }
+
+        return operation switch
+        {
+            FilterOperator.GreaterThan => Expression.GreaterThan(left, right),
+            FilterOperator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(left, right),
+            FilterOperator.LessThan => Expression.LessThan(left, right),
+            _ => Expression.LessThanOrEqual(left, right)
         };
     }
 

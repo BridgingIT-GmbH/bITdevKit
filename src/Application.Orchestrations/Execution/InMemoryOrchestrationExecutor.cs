@@ -2082,6 +2082,9 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         var typedSeries = Metrics.Series("orchestrations_finish", context.OrchestrationName, context.Status.ToString());
         this.metricsService?.AddCounter(series);
         this.metricsService?.AddCounter(typedSeries);
+        this.metricsService?.AddCounter(series + "." + context.Status.ToString().ToLowerInvariant());
+        this.metricsService?.RecordHistogram("orchestrations_instance_duration",
+            Math.Max(0D, ((context.CompletedUtc ?? this.clock.UtcNow) - context.StartedUtc).TotalMilliseconds), "ms");
 
         if (context.Status == OrchestrationStatus.Failed)
         {

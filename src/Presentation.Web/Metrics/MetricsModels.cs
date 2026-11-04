@@ -80,10 +80,13 @@ public class MetricLatencyModel
 }
 
 /// <summary>
-/// Represents an aggregated histogram snapshot for one devkit duration series.
+/// Represents an aggregated histogram snapshot with its measurement unit.
 /// </summary>
 public class BdkHistogramSnapshotModel
 {
+    /// <summary>Gets or sets the unit of the aggregated measurements.</summary>
+    public string Unit { get; set; }
+
     /// <summary>
     /// Gets or sets the number of histogram measurements.
     /// </summary>
@@ -129,6 +132,9 @@ public class BdkFeatureSnapshotModel
     /// Gets or sets the duration histograms.
     /// </summary>
     public Dictionary<string, BdkHistogramSnapshotModel> Durations { get; set; } = [];
+
+    /// <summary>Gets or sets non-duration histograms with their original units.</summary>
+    public Dictionary<string, BdkHistogramSnapshotModel> Histograms { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the summed cumulative success total for the feature.

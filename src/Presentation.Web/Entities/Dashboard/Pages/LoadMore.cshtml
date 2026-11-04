@@ -1,13 +1,2 @@
 @inherits RazorSlice<EntitiesDashboardRowsViewModel>
-<div id="entities-load-more" class="entities-footer">
-    <button type="button" class="btn btn-outline-secondary btn-sm" id="entities-load-more-button" data-entities-load-more data-next-batch="@Model.NextBatch" disabled="@(!Model.HasMore)">Load more</button>
-    @if (Model.PageSizes.Count > 0)
-    {
-        <select id="entities-page-size" class="form-select form-select-sm entities-page-size" data-entities-page-size title="Rows per load" aria-label="Rows per load">
-            @foreach (var size in Model.PageSizes)
-            {
-                <option value="@size" selected="@(size == Model.BatchSize)">@size</option>
-            }
-        </select>
-    }
-</div>
+@(await RenderPartialAsync<ListFooter, DashboardListFooterModel>(new("entities", Model.BatchSize, Model.HasMore, Model.NextBatch.ToString(CultureInfo.InvariantCulture), Sizes: Model.PageSizes, SelectorId: "entities-page-size", LoadedCount: Model.Rows.Count)))

@@ -52,7 +52,7 @@ else
         </div>
         }
         <dl class="entities-properties">
-            @foreach (var property in Model.Properties)
+            @foreach (var property in Model.Properties.Where(property => !(property.IsAudit || property.Name is "DomainEvents" or "ConcurrencyVersion")))
             {
                 Model.Row.TryGetValue(property.Name, out var value);
                 <dt data-property="@property.Path">@property.Path</dt>
@@ -80,6 +80,40 @@ else
                 </dd>
             }
         </dl>
+        @if (Model.Properties.Any(property => property.IsAudit || property.Name is "DomainEvents" or "ConcurrencyVersion"))
+        {
+            <details><summary>Metadata</summary>
+        <dl class="entities-properties">
+            @foreach (var property in Model.Properties.Where(property => property.IsAudit || property.Name is "DomainEvents" or "ConcurrencyVersion"))
+            {
+                Model.Row.TryGetValue(property.Name, out var value);
+                <dt data-property="@property.Path">@property.Path</dt>
+                <dd data-property-value="@property.Path" class="@(property.IsAudit ? "entities-audit" : null)">
+                    @if (value is null)
+                    {
+                        <span class="entities-null">null</span>
+                    }
+                    else if (property.IsMasked)
+                    {
+                        <span class="entities-masked">@Text(value)</span>
+                    }
+                    else if (property.EditorKind == EntitiesDashboardEditorKind.Json)
+                    {
+                        <pre class="entities-json">@Pretty(Text(value))</pre>
+                    }
+                    else if (property.Reference is not null)
+                    {
+                        <a href="@Model.Path?entity=@Uri.EscapeDataString(property.Reference.TargetKey)&id=@Uri.EscapeDataString(Text(value))" data-entities-reference data-entities-target="@property.Reference.TargetKey" data-entity-id="@Text(value)">@Text(value)</a>
+                    }
+                    else
+                    {
+                        @Text(value)
+                    }
+                </dd>
+            }
+        </dl>
+            </details>
+        }
         </div>
         <div class="entities-dialog-foot">
             <button type="button" class="btn btn-outline-secondary btn-sm entities-foot-start" data-entities-copy><i class="bi bi-clipboard" aria-hidden="true"></i> Copy JSON</button>

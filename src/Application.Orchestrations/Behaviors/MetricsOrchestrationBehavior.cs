@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Common;
 
 /// <summary>
-/// Emits orchestration activity total, current, failure, and duration metrics.
+/// Emits orchestration activity attempt, returned-call, current, exception and duration metrics.
 /// </summary>
 /// <example>
 /// <code>
@@ -51,7 +51,10 @@ public class MetricsOrchestrationBehavior(IMetricsService metricsService = null)
 
         try
         {
-            return await next().AnyContext();
+            var outcome = await next().AnyContext();
+            metricsService.AddCounter(executeSeries + ".completed");
+            metricsService.AddCounter(typedExecuteSeries + ".completed");
+            return outcome;
         }
         catch
         {

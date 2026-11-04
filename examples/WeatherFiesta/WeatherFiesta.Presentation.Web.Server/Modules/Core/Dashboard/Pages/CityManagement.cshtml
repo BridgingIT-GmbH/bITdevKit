@@ -7,15 +7,11 @@
     var addPath = DashboardPath.Combine(pagePath, "add");
 }
 
-<div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
-    <div>
-        <h4 class="m-0">City Management</h4>
-        <div class="text-muted small">Search and add WeatherFiesta cities</div>
-    </div>
-    <div class="d-flex align-items-center gap-2">
-        <span id="weatherfiesta-city-management-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
-        <button type="button" id="weatherfiesta-city-management-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh cities">
-            <i class="bi bi-arrow-clockwise"></i>
+<div class="dashboard-page-toolbar">
+    <div class="d-flex flex-wrap justify-content-end align-items-center gap-2">
+        <span id="weatherfiesta-city-management-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.ToString("HH:mm:ss 'UTC'", CultureInfo.InvariantCulture)</span>
+        <button type="button" id="weatherfiesta-city-management-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh cities" aria-label="Refresh cities">
+            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
         </button>
     </div>
 </div>
@@ -33,7 +29,7 @@
             </div>
             <div class="col-6 col-lg-2">
                 <button id="weatherfiesta-city-add" class="btn btn-primary btn-sm w-100" type="submit" disabled>
-                    <i class="bi bi-plus-lg me-1"></i>Add city
+                    <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add city
                 </button>
             </div>
             <div class="col-12 col-lg-3">

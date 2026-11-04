@@ -1,0 +1,24 @@
+{
+  "layouts": [
+    {
+      "width": 1440,
+      "rightGap": 7.999969482421875,
+      "padding": 8,
+      "closeWidth": 21,
+      "centerDifference": 0.39999961853027344,
+      "insideViewport": true,
+      "noPageOverflow": true
+    },
+    {
+      "width": 390,
+      "rightGap": 8.00001335144043,
+      "padding": 8,
+      "closeWidth": 21,
+      "centerDifference": 0.39999961853027344,
+      "insideViewport": true,
+      "noPageOverflow": true
+    }
+  ],
+  "errors": [],
+  "closeWorks": true
+}

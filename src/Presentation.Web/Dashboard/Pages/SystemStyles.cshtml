@@ -55,7 +55,7 @@
     .dashboard-system-gauge {
         align-items: center;
         display: grid;
-        grid-template-columns: 6.25rem 1fr;
+        grid-template-columns: 6.25rem minmax(0, 1fr);
         gap: .75rem;
     }
 
@@ -77,53 +77,6 @@
         stroke-width: 10;
         transform: rotate(-90deg);
         transform-origin: 50% 50%;
-    }
-
-    .dashboard-system-chart {
-        position: relative;
-        border: 1px solid var(--bs-border-color);
-        border-radius: .35rem;
-        height: 9rem;
-        overflow: hidden;
-        width: 100%;
-    }
-
-    .dashboard-system-chart svg {
-        display: block;
-        height: 100%;
-        width: 100%;
-    }
-
-    .dashboard-system-chart-grid {
-        stroke: rgba(var(--bs-secondary-rgb), .18);
-        stroke-width: 1;
-    }
-
-    .dashboard-system-chart-line {
-        fill: none;
-        stroke: var(--bs-primary);
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        stroke-width: 3;
-    }
-
-    .dashboard-system-chart-point {
-        fill: var(--bs-primary);
-        transition: opacity .15s ease;
-    }
-
-    .dashboard-system-chart-tooltip {
-        position: absolute;
-        left: .5rem;
-        right: .5rem;
-        bottom: .5rem;
-        padding: .25rem .4rem;
-        background: var(--bs-body-bg);
-        color: var(--bs-body-color);
-        border: 1px solid var(--bs-border-color);
-        font-size: .75rem;
-        white-space: pre-line;
-        pointer-events: none;
     }
 
     .dashboard-system-statusbar {
@@ -177,13 +130,13 @@
 
     .dashboard-system-env-filter {
         max-width: 22rem;
-        min-width: 16rem;
+        min-width: min(16rem, 100%);
     }
 
     .dashboard-system-db-grid {
         display: grid;
         gap: .75rem;
-        grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
     }
 
     .dashboard-system-db-heading {
@@ -228,17 +181,11 @@
         font-weight: 650;
     }
 
-    .dashboard-system-db-panel {
-        border: 1px solid var(--bs-border-color);
-        @* border-left: .25rem solid var(--bs-success); *@
-        border-radius: .45rem;
+    .dashboard-system-db-context {
+        min-width: 0;
+        grid-template-columns: minmax(0, 1fr);
         display: grid;
-        gap: .85rem;
-        padding: .95rem;
-    }
-
-    .dashboard-system-db-panel-unavailable {
-        border-left-color: var(--bs-danger);
+        gap: .65rem;
     }
 
     .dashboard-system-db-title {
@@ -248,6 +195,7 @@
     }
 
     .dashboard-system-db-provider {
+        overflow-wrap: anywhere;
         color: var(--bs-secondary-color);
         font-size: .78rem;
         margin-top: .1rem;
@@ -276,26 +224,22 @@
 
     .dashboard-system-db-metrics {
         display: grid;
-        gap: .45rem;
+        gap: .85rem 1rem;
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
-    .dashboard-system-db-metric {
-        background: rgba(var(--bs-secondary-rgb), .045);
-        border: 1px solid var(--bs-border-color);
-        border-radius: .38rem;
+    .dashboard-system-db-value {
         min-width: 0;
-        padding: .55rem .65rem;
     }
 
-    .dashboard-system-db-metric span {
+    .dashboard-system-db-value span {
         color: var(--bs-secondary-color);
         display: block;
         font-size: .72rem;
         line-height: 1.1;
     }
 
-    .dashboard-system-db-metric strong {
+    .dashboard-system-db-value strong {
         display: block;
         font-size: .95rem;
         font-weight: 650;
@@ -327,7 +271,7 @@
 
     @@media (max-width: 767.98px) {
         .dashboard-system-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: minmax(0, 1fr);
         }
 
         .dashboard-system-span-3,
@@ -344,17 +288,12 @@
     }
 
     @@media (max-width: 459.98px) {
+        .dashboard-system-db-context > .d-flex { flex-wrap: wrap; }
+        .dashboard-system-db-context > .d-flex > div { min-width: 0; }
         .dashboard-system-db-summary {
             justify-content: flex-start;
             width: 100%;
         }
 
-        .dashboard-system-db-metrics {
-            grid-template-columns: 1fr;
-        }
-
-        .dashboard-system-db-wide {
-            grid-column: span 1;
-        }
     }
 </style>

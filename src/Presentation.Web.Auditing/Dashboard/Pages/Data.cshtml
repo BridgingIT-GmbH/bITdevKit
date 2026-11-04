@@ -23,8 +23,7 @@ else
     }
     </tbody></table></div>
     @if (Model.Records.TotalCount == 0) { <div class="audit-empty">No executions match these filters.</div> }
-    <div class="card-footer text-center" id="audit-load-more" data-page="@Model.Records.CurrentPage" data-url="@(Model.Path + "/data")">
-    @if (Model.Records.HasNextPage) { <button type="button" class="btn btn-outline-secondary btn-sm" data-audit-load-more data-next-page="@(Model.Records.CurrentPage + 1)">Load more</button> }
-    <span class="d-block small text-muted" role="status" aria-live="polite" tabindex="-1" data-audit-load-status></span>
+    <div id="audit-load-more" data-page="@Model.Records.CurrentPage" data-url="@(Model.Path + "/data")">
+        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.ListFooter, DashboardListFooterModel>(new("audit-results", Model.Records.PageSize, Model.Records.HasNextPage, (Model.Records.CurrentPage + 1).ToString(), Sizes: [10, 25, 50, 100, 200, 250, 500], SelectorId: "audit-size", LoadedCount: Model.Records.Value.Count(), FormId: "audit-filters", SizeName: "pageSize")))
     </div></section>
 }

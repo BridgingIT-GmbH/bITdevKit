@@ -249,7 +249,7 @@
             layout.xaxis.tickformat = '%H:%M:%S';
             layout.xaxis.tickangle = 0;
             layout.yaxis.title = unit;
-            if (id === 'storage-items-chart') layout.yaxis.tickformat = ',d';
+            if (id === 'storage-items-chart') layout.yaxis.tickformat = '~g';
             await plotly.react(document.getElementById(id), fields.map((field, index) => ({
                 x, y: samples.map(sample => sample[field]), type: 'scatter', mode: id === 'storage-speed-chart' || id === 'storage-latency-chart' ? 'lines+markers' : 'lines',
                 marker: { size: 4 },
@@ -259,6 +259,7 @@
         }
     }
     const refresher = window.bdkDashboard.createRefresher({
+        responseType: 'json',
         contentSelector: '#storage-diagnostics',
         statusSelector: '#storage-metrics-status',
         intervalSelector: '#storage-metrics-interval',

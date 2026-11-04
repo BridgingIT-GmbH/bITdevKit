@@ -8,12 +8,9 @@
     var actionBase = StorageDashboardEndpoints.BuildFilesActionBase(dashboardOptions);
 }
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
     <div class="d-flex align-items-center gap-2">
-        <span id="storage-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
-        <button type="button" id="storage-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh files">
-            <i class="bi bi-arrow-clockwise"></i>
-        </button>
+        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.RefreshControls, BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardRefreshModel>(new("storage", "Refresh files", false)))
     </div>
 </div>
 <nav class="nav nav-pills mb-2" aria-label="Storage views" data-dashboard-view="explorer">
@@ -25,11 +22,11 @@
     @(await RenderPartialAsync<Content>())
 </div>
 
-<div class="modal fade" id="storage-create-folder-modal" tabindex="-1" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="storage-create-folder-modal" tabindex="-1" aria-hidden="true" aria-labelledby="storage-create-folder-modal-title">
     <div class="modal-dialog">
         <form class="modal-content" data-storage-action="@($"{actionBase}/create-directory")">
             <div class="modal-header">
-                <h5 class="modal-title">Create Folder</h5>
+                <h5 class="modal-title" id="storage-create-folder-modal-title">Create Folder</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -39,18 +36,18 @@
                 <input id="storage-folder-name" class="form-control" name="name" autocomplete="off" required>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-sm">Create</button>
             </div>
         </form>
     </div>
 </div>
 
-<div class="modal fade" id="storage-create-text-modal" tabindex="-1" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="storage-create-text-modal" tabindex="-1" aria-hidden="true" aria-labelledby="storage-create-text-modal-title">
     <div class="modal-dialog modal-lg">
         <form class="modal-content" data-storage-action="@($"{actionBase}/create-text-file")">
             <div class="modal-header">
-                <h5 class="modal-title">Create Text File</h5>
+                <h5 class="modal-title" id="storage-create-text-modal-title">Create Text File</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -62,18 +59,18 @@
                 <textarea id="storage-text-content" class="form-control font-monospace" name="content" rows="12"></textarea>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-sm">Save</button>
             </div>
         </form>
     </div>
 </div>
 
-<div class="modal fade" id="storage-upload-modal" tabindex="-1" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="storage-upload-modal" tabindex="-1" aria-hidden="true" aria-labelledby="storage-upload-modal-title">
     <div class="modal-dialog">
         <form class="modal-content" data-storage-action="@($"{actionBase}/upload")" enctype="multipart/form-data">
             <div class="modal-header">
-                <h5 class="modal-title">Upload File</h5>
+                <h5 class="modal-title" id="storage-upload-modal-title">Upload File</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -82,18 +79,18 @@
                 <input class="form-control" type="file" name="file" required>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Upload</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-sm">Upload</button>
             </div>
         </form>
     </div>
 </div>
 
-<div class="modal fade" id="storage-rename-modal" tabindex="-1" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="storage-rename-modal" tabindex="-1" aria-hidden="true" aria-labelledby="storage-rename-modal-title">
     <div class="modal-dialog">
         <form class="modal-content" data-storage-rename-form>
             <div class="modal-header">
-                <h5 class="modal-title">Rename</h5>
+                <h5 class="modal-title" id="storage-rename-modal-title">Rename</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -105,18 +102,18 @@
                 <input id="storage-rename-name" class="form-control" name="name" autocomplete="off" required>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Rename</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-sm">Rename</button>
             </div>
         </form>
     </div>
 </div>
 
-<div class="modal fade" id="storage-copy-move-modal" tabindex="-1" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="storage-copy-move-modal" tabindex="-1" aria-hidden="true" aria-labelledby="storage-copy-move-modal-title">
     <div class="modal-dialog">
         <form class="modal-content" data-storage-copy-move-form>
             <div class="modal-header">
-                <h5 class="modal-title">Copy Or Move</h5>
+                <h5 class="modal-title" id="storage-copy-move-modal-title">Copy Or Move</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -127,18 +124,18 @@
                 <input id="storage-copy-move-destination" class="form-control" name="destinationPath" autocomplete="off" required>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Apply</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-sm">Apply</button>
             </div>
         </form>
     </div>
 </div>
 
-<div class="modal fade" id="storage-delete-modal" tabindex="-1" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="storage-delete-modal" tabindex="-1" aria-hidden="true" aria-labelledby="storage-delete-modal-title">
     <div class="modal-dialog">
         <form class="modal-content" data-storage-delete-form>
             <div class="modal-header">
-                <h5 class="modal-title">Delete</h5>
+                <h5 class="modal-title" id="storage-delete-modal-title">Delete</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -148,8 +145,8 @@
                 <p class="mb-0" data-storage-delete-message></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
             </div>
         </form>
     </div>
@@ -203,7 +200,7 @@
 
             if (response.ok) {
                 shellElement.innerHTML = await response.text();
-                document.getElementById('storage-refresh-status').textContent = `Updated ${new Date().toLocaleTimeString()}`;
+                document.getElementById('storage-refresh-status').textContent = `Updated ${new Date().toISOString().slice(11, 19)} UTC`;
             }
         }
 
@@ -251,6 +248,7 @@
         function hideModal(form) {
             const modalElement = form.closest('.modal');
             if (modalElement) {
+                window.bdkDashboard.markDialogSaved(modalElement);
                 window.bootstrap.Modal.getOrCreateInstance(modalElement).hide();
             }
         }
@@ -295,6 +293,7 @@
                 });
 
                 if (!response.ok) {
+                    window.bdkDashboard.showDialogError(form.closest('.modal'), 'The action failed. Your changes have been kept; try again.');
                     console.error('Storage action failed:', await response.text().catch(() => response.statusText));
                     return;
                 }
@@ -303,6 +302,7 @@
                 form.reset();
                 await refresher.refresh(false);
             } catch (error) {
+                window.bdkDashboard.showDialogError(form.closest('.modal'), 'The action failed. Your changes have been kept; try again.');
                 console.error('Storage action error:', error);
             } finally {
                 if (button) {

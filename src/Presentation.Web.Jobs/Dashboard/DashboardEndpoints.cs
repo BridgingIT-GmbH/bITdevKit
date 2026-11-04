@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard;
 
-using System.Collections.Concurrent;
 using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
@@ -13,6 +12,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 /// <summary>
 /// Maps the Jobs dashboard plugin pages, content fragment, and inline action routes.
@@ -30,9 +30,13 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
     internal const string JobsRealtimeDataPath = "/jobs/data/realtime";
     internal const string JobsHistoryDataPath = "/jobs/data/history";
 
-    private const int RealtimeSessionSampleLimit = 180;
-
-    private static readonly ConcurrentDictionary<string, RealtimeGraphSession> RealtimeGraphSessions = new(StringComparer.OrdinalIgnoreCase);
+    internal static readonly IReadOnlyList<DashboardWorkloadChart> DiagnosticsCharts =
+    [
+        new("Execution rate", "executions/s", [new("jobs_executions_started", "Started"), new("jobs_executions_completed", "Completed")]),
+        new("Outcome rates", "executions/s", [new("jobs_executions_completed", "Completed"), new("jobs_executions_failed", "Failed"), new("jobs_executions_retried", "Retried"), new("jobs_executions_timedout", "Timed out"), new("jobs_executions_cancelled", "Cancelled"), new("jobs_executions_interrupted", "Interrupted")]),
+        new("Execution duration", "ms", [new("jobs_execution_duration", "Mean execution", true)]),
+        new("Scheduling delay", "ms", [new("jobs_occurrence_age", "Mean delay after due time", true)])
+    ];
 
     /// <inheritdoc />
     public override void Map(IEndpointRouteBuilder app)
@@ -53,6 +57,14 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             "Dashboard Jobs",
             "Shows registered jobs with their triggers, occurrences, and management actions.");
 
+        group.MapDashboardPage<Pages.Index>(
+            JobsPath + "/diagnostics",
+            "_bdk.Dashboard.Jobs.Diagnostics", "Jobs Diagnostics", "Shows jobs diagnostics.");
+
+        group.MapDashboardPage<Pages.Index>(
+            JobsPath + "/occurrences",
+            "_bdk.Dashboard.Jobs.Occurrences", "Job Occurrences", "Shows retained job occurrences.");
+
         group.MapDashboardPage<Pages.Content>(
             JobsContentPath,
             "_bdk.Dashboard.JobsContent",
@@ -66,46 +78,12 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             "Shows the refreshable jobs dashboard data fragment.");
 
         // Graph data endpoints
-        group.MapGet(JobsRealtimeDataPath, async (HttpContext ctx, CancellationToken ct) =>
-        {
-            var query = ctx.RequestServices.GetService<IJobSchedulerQueryService>();
-            if (query is null)
-            {
-                return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
-            }
-
-            var summaryTask = query.GetDashboardSummaryAsync(cancellationToken: ct);
-            var metricsTask = query.GetMetricsAsync(cancellationToken: ct);
-            await Task.WhenAll(summaryTask, metricsTask);
-
-            var summary = await summaryTask;
-            var metrics = await metricsTask;
-
-            if (summary.IsFailure)
-            {
-                return Results.Problem(summary.Errors.FirstOrDefault()?.Message ?? "Realtime jobs data could not be loaded.");
-            }
-
-            var completedCount = metrics.IsSuccess
-                ? metrics.Value.OccurrenceCountsByStatus?.GetValueOrDefault(JobOccurrenceStatus.Completed) ?? 0
-                : 0;
-
-            var sample = new RealtimeGraphSample(
-                DateTimeOffset.UtcNow,
-                summary.Value.RunningOccurrenceCount,
-                summary.Value.FailedOccurrenceCount,
-                summary.Value.DueOccurrenceCount,
-                completedCount);
-
-            var sessionId = GetOrCreateRealtimeSessionId(ctx);
-            var samples = AppendRealtimeSample(sessionId, sample);
-
-            return Results.Ok(new
-            {
-                sessionId,
-                samples,
-            });
-        }).WithName("_bdk.Dashboard.Jobs.RealtimeData").WithSummary("Jobs realtime data").ExcludeFromDescription();
+        var metricHistory = new DashboardMetricsHistory(DiagnosticsCharts.SelectMany(chart => chart.Series));
+        app.ServiceProvider.GetRequiredService<IHostApplicationLifetime>().ApplicationStopped.Register(metricHistory.Dispose);
+        group.MapGet(JobsRealtimeDataPath, (HttpContext context) => Results.Json(metricHistory.Snapshot(
+            context.RequestServices.GetService<IMetricsService>() is not null &&
+            context.RequestServices.GetService<MetricsOptions>()?.Enabled != false)))
+            .WithName("_bdk.Dashboard.Jobs.RealtimeData").WithSummary("Measured jobs throughput and latency").ExcludeFromDescription();
 
         group.MapGet(JobsHistoryDataPath, async (HttpContext ctx, CancellationToken ct) =>
         {
@@ -306,45 +284,4 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
         return countsByStatus.TryGetValue(key, out var value) ? value : 0;
     }
-
-    private static string GetOrCreateRealtimeSessionId(HttpContext context)
-    {
-        var requestedSessionId = context.Request.Query.TryGetValue("sessionId", out var values)
-            ? values.ToString()
-            : null;
-
-        return !string.IsNullOrWhiteSpace(requestedSessionId) && requestedSessionId.Length <= 128
-            ? requestedSessionId
-            : Guid.NewGuid().ToString("N");
-    }
-
-    private static IReadOnlyList<RealtimeGraphSample> AppendRealtimeSample(string sessionId, RealtimeGraphSample sample)
-    {
-        var session = RealtimeGraphSessions.GetOrAdd(sessionId, _ => new RealtimeGraphSession());
-        lock (session.Samples)
-        {
-            session.LastTouchedUtc = DateTimeOffset.UtcNow;
-            session.Samples.Add(sample);
-            if (session.Samples.Count > RealtimeSessionSampleLimit)
-            {
-                session.Samples.RemoveRange(0, session.Samples.Count - RealtimeSessionSampleLimit);
-            }
-
-            return session.Samples.ToArray();
-        }
-    }
-
-    private sealed class RealtimeGraphSession
-    {
-        public List<RealtimeGraphSample> Samples { get; } = [];
-
-        public DateTimeOffset LastTouchedUtc { get; set; } = DateTimeOffset.UtcNow;
-    }
-
-    private sealed record RealtimeGraphSample(
-        DateTimeOffset TimestampUtc,
-        long Running,
-        long Failed,
-        long Due,
-        long Completed);
 }

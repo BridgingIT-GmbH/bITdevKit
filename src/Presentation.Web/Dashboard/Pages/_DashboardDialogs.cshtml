@@ -1,5 +1,5 @@
 @inherits RazorSlice
-<div class="modal fade" id="dashboard-dialog-modal" tabindex="-1" aria-labelledby="dashboard-dialog-heading" aria-describedby="dashboard-dialog-selection dashboard-dialog-message" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="dashboard-dialog-modal" tabindex="-1" aria-labelledby="dashboard-dialog-heading" aria-describedby="dashboard-dialog-selection dashboard-dialog-message" aria-hidden="true">
     <div class="modal-dialog"><div class="modal-content">
         <div class="modal-header py-2"><h2 id="dashboard-dialog-heading" class="modal-title h6"></h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
         <div class="modal-body py-2 small">
@@ -42,7 +42,10 @@
     async function openDialog(options) {
         const trigger = document.activeElement;
         const parent = document.querySelector('.modal.show');
-        if (parent) await hideModal(parent);
+        if (parent) {
+            parent.dataset.dashboardSuspended = 'true';
+            await hideModal(parent);
+        }
 
         heading.textContent = options.title;
         selection.textContent = options.selection || '';
@@ -65,7 +68,10 @@
         dismiss.focus();
         await closed;
         confirm.onclick = null;
-        if (parent?.isConnected) await showModal(parent);
+        if (parent?.isConnected) {
+            await showModal(parent);
+            delete parent.dataset.dashboardSuspended;
+        }
         if (trigger?.isConnected && trigger.getClientRects().length) trigger.focus();
         return accepted;
     }

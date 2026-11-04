@@ -44,15 +44,15 @@
 </style>
 
 <div class="dashboard-logstream-page">
-    <div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+    <div class="dashboard-page-toolbar">
         <div class="d-flex align-items-center gap-2">
             <span id="logstream-count" class="text-muted small">0 entries</span>
             <span id="logstream-status" class="text-muted small">Disconnected</span>
-            <button type="button" id="logstream-stop" class="btn btn-outline-secondary btn-sm" title="Stop stream">
-                <i class="bi bi-stop-circle"></i>
+            <button type="button" id="logstream-stop" class="btn btn-outline-secondary btn-sm" title="Stop stream" aria-label="Stop stream">
+                <i class="bi bi-stop-circle" aria-hidden="true"></i>
             </button>
-            <button type="button" id="logstream-clear" class="btn btn-outline-secondary btn-sm" title="Clear terminal">
-                <i class="bi bi-eraser"></i>
+            <button type="button" id="logstream-clear" class="btn btn-outline-secondary btn-sm" title="Clear terminal" aria-label="Clear terminal">
+                <i class="bi bi-eraser" aria-hidden="true"></i>
             </button>
         </div>
     </div>
@@ -64,7 +64,7 @@
         </div>
     }
 
-    <form id="logstream-filter-form" class="card dashboard-logstream-filter mb-2">
+    <form id="logstream-filter-form" class="card dashboard-logstream-filter dashboard-filter-panel mb-2">
         <div class="card-body p-2">
             <div class="row g-2 align-items-end">
                 <div class="col-12 col-md-3 col-xl-2">
@@ -84,9 +84,9 @@
                     <input id="logstream-logkey" name="logKey" class="form-control form-control-sm" placeholder="All log keys">
                 </div>
                 <div class="col-12 col-md-3 col-xl-2 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary btn-sm flex-fill">Start Stream</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Start Stream</button>
                     <button type="button" id="logstream-reset" class="btn btn-outline-secondary btn-sm" title="Reset filters" aria-label="Reset filters">
-                        <i class="bi bi-x-circle"></i>
+                        <i class="bi bi-x-circle" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>

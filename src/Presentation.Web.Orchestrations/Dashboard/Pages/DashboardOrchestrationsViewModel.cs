@@ -37,6 +37,21 @@ public sealed class DashboardOrchestrationsViewModel
     /// </summary>
     public IReadOnlyList<OrchestrationInstanceModel> Instances { get; set; } = [];
 
+    /// <summary>Gets or sets the selected number of instances per load.</summary>
+    public int BatchSize { get; set; } = 50;
+
+    /// <summary>Gets or sets whether the bounded query found another instance.</summary>
+    public bool HasMore { get; set; }
+
+    /// <summary>Gets or sets the next immutable instance cursor.</summary>
+    public string NextCursor { get; set; }
+
+    /// <summary>Gets or sets the initial browsing boundary.</summary>
+    public string Boundary { get; set; }
+
+    /// <summary>Gets or sets the matching count before this batch is trimmed.</summary>
+    public long MatchingCount { get; set; }
+
     /// <summary>
     /// Gets or sets the latest context snapshots keyed by orchestration instance id.
     /// </summary>
@@ -87,8 +102,34 @@ public sealed class DashboardOrchestrationsViewModel
 /// Represents orchestration definition summary.
 /// </summary>
 /// <param name="Name">The name of the value.</param>
-/// <param name="Count">The number of values to process.</param>
-public sealed record OrchestrationDefinitionSummary(string Name, long Count);
+/// <param name="TypeName">The registered orchestration type.</param>
+public sealed record OrchestrationDefinitionSummary(string Name, string TypeName)
+{
+    /// <summary>Gets the readable orchestration type label.</summary>
+    public string TypeLabel { get; init; }
+
+    /// <summary>Gets the readable data type label.</summary>
+    public string DataTypeLabel { get; init; }
+
+    /// <summary>Gets the definition data type.</summary>
+    public string DataTypeName { get; init; }
+
+    /// <summary>Gets the initial state.</summary>
+    public string InitialState { get; init; }
+
+    /// <summary>Gets the authored states and their activities.</summary>
+    public IReadOnlyList<OrchestrationDefinitionState> States { get; init; } = [];
+
+    /// <summary>Gets a readable metadata error without removing the catalog entry.</summary>
+    public string Error { get; init; }
+}
+
+/// <summary>Describes a registered state without executing its activities or conditions.</summary>
+/// <param name="Name">The state name.</param>
+/// <param name="Activities">Activities in authored order, including signal activities.</param>
+/// <param name="Transitions">Outgoing transitions, signals and timers.</param>
+/// <param name="Directive">The configured terminal or wait directive.</param>
+public sealed record OrchestrationDefinitionState(string Name, IReadOnlyList<string> Activities, IReadOnlyList<string> Transitions, string Directive);
 
 /// <summary>
 /// Represents orchestration state summary.

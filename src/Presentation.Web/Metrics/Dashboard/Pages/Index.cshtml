@@ -14,19 +14,9 @@
     var labels = new Dictionary<string, string> { ["app"] = "App", ["dotnet"] = ".NET", ["aspnet"] = "ASP.NET", ["routes"] = "Routes" };
 }
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
     <div class="d-flex align-items-center gap-2">
-        <span id="metrics-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
-        <select id="metrics-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Metrics refresh interval">
-            <option value="">Off</option>
-            <option value="1000">1 sec</option>
-            <option value="5000">5 sec</option>
-            <option value="15000">15 sec</option>
-            <option value="30000">30 sec</option>
-        </select>
-        <button type="button" id="metrics-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh metrics">
-            <i class="bi bi-arrow-clockwise"></i>
-        </button>
+        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.RefreshControls, DashboardRefreshModel>(new("metrics", "Refresh metrics")))
     </div>
 </div>
 <nav class="nav nav-pills mb-2" aria-label="Metrics views" data-dashboard-view="@view">

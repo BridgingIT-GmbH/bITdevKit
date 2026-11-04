@@ -1,0 +1,20 @@
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using Microsoft.Extensions.DependencyInjection
+@inherits RazorSlice
+@implements IUsesLayout<_DashboardLayout, DashboardLayoutModel>
+@{
+    var options = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var dataPath = DashboardPath.Combine(options.GroupPath, options.EndpointPaths.SystemDiagnosticsData);
+}
+
+<div class="dashboard-page-toolbar">
+    @(await RenderPartialAsync<RefreshControls, DashboardRefreshModel>(new("system", "Refresh system diagnostics")))
+</div>
+
+@(await RenderPartialAsync<SystemViewNavigation, string>("diagnostics"))
+@(await RenderPartialAsync<WorkloadCharts, DashboardWorkloadChartsModel>(new("system", dataPath, DashboardSystemHistory.Charts)))
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "System" };
+}

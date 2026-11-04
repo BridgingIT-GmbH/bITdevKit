@@ -1,0 +1,148 @@
+@inherits RazorSlice
+<script>
+(() => {
+    document.addEventListener('show.bs.modal', event => {
+        const modal = event.target.closest?.('.dashboard-tabbed-inspector');
+        if (!modal) return;
+        const first = modal.querySelector('[role="tab"]');
+        if (first) window.bootstrap.Tab.getOrCreateInstance(first).show();
+        modal.querySelector('.modal-body').scrollTop = 0;
+    });
+    document.addEventListener('shown.bs.tab', event => {
+        const body = event.target.closest('.dashboard-tabbed-inspector')?.querySelector('.modal-body');
+        if (body) body.scrollTop = 0;
+    });
+    const filterViewport = matchMedia('(max-width: 767.98px)');
+    filterViewport.addEventListener('change', () => {
+        document.querySelectorAll('details.dashboard-secondary-filters').forEach(detail => detail.open = !filterViewport.matches);
+    });
+    function initializeSecondaryFilters() {
+        document.querySelectorAll('details.dashboard-secondary-filters').forEach(detail => {
+            if (detail.dataset.initialized) return;
+            detail.dataset.initialized = 'true';
+            detail.open = !filterViewport.matches;
+            const summary = detail.querySelector('summary');
+            const badge = document.createElement('span'); badge.className = 'badge text-bg-secondary ms-1';
+            summary.append(badge);
+            const update = () => {
+                const count = [...detail.querySelectorAll('input,select')].filter(input => {
+                    if (!input.name || input.disabled) return false;
+                    if (input.type === 'checkbox') return input.checked;
+                    const value = input.value.trim();
+                    const defaultValue = input.dataset.defaultValue ?? (input.tagName === 'SELECT' ? input.options[0]?.value : '') ?? '';
+                    return value && value !== '[]' && value !== '{}' && value !== defaultValue;
+                }).length;
+                badge.textContent = count ? `${count} selected` : ''; badge.hidden = !count;
+            };
+            detail.addEventListener('input', update); update();
+        });
+    }
+    window.bdkDashboard.initializeSecondaryFilters = initializeSecondaryFilters;
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initializeSecondaryFilters, {once:true});
+    else initializeSecondaryFilters();
+    const states = new WeakMap();
+    const lifetime = new AbortController();
+    window.bdkDashboard.showDialogError = function(dialog, message) {
+        const body = dialog?.querySelector('.modal-body, .entities-dialog-body');
+        if (!body) return;
+        let alert = body.querySelector('[data-dashboard-dialog-error]');
+        if (!alert) {
+            alert = document.createElement('div'); alert.className = 'alert alert-danger py-2';
+            alert.dataset.dashboardDialogError = ''; alert.setAttribute('role', 'alert'); body.prepend(alert);
+        }
+        alert.textContent = message;
+    };
+    const snapshot = dialog => JSON.stringify([...dialog.querySelectorAll('input, textarea, select')]
+        .filter(field => !['hidden', 'submit', 'button'].includes(field.type))
+        .map(field => [field.name || field.id, field.value, field.checked]));
+    function state(dialog) {
+        if (!states.has(dialog)) states.set(dialog, { baseline: snapshot(dialog), changed: false, trigger: document.activeElement, pending: null });
+        return states.get(dialog);
+    }
+    window.bdkDashboard.isDialogDirty = dialog => !!dialog?.querySelector('form button[type="submit"], form input[type="submit"]') && state(dialog).changed && state(dialog).baseline !== snapshot(dialog);
+    window.bdkDashboard.markDialogSaved = dialog => {
+        if (!dialog) return;
+        const value = state(dialog); value.baseline = snapshot(dialog); value.changed = false;
+        dialog.querySelector('[data-dashboard-dialog-error]')?.remove();
+    };
+    window.bdkDashboard.confirmInDialog = function(dialog, options) {
+        const value = state(dialog);
+        if (value.pending) return value.pending;
+        const active = document.activeElement;
+        const body = dialog.querySelector('.modal-body, .entities-dialog-body');
+        const footer = dialog.querySelector('.modal-footer, .entities-dialog-foot');
+        const panel = document.createElement('section');
+        panel.className = 'dashboard-discard p-3'; panel.setAttribute('role', 'alert');
+        const title = document.createElement('h3'); title.className = 'h6'; title.textContent = options.title;
+        const text = document.createElement('p'); text.className = 'small text-break'; text.textContent = [options.selection, options.message].filter(Boolean).join('\n');
+        const actions = document.createElement('div'); actions.className = 'dashboard-filter-actions';
+        const keep = document.createElement('button'); keep.type = 'button'; keep.className = 'btn btn-outline-secondary btn-sm'; keep.textContent = options.cancelText || 'Cancel';
+        const discard = document.createElement('button'); discard.type = 'button'; discard.className = 'btn btn-danger btn-sm'; discard.textContent = options.confirmText || 'Confirm';
+        actions.append(keep, discard); panel.append(title, text, actions);
+        const bodyHidden = body?.hidden, footerHidden = footer?.hidden;
+        if (body) body.hidden = true; if (footer) footer.hidden = true;
+        (dialog.querySelector('.modal-content, .entities-dialog-form') || dialog).append(panel);
+        value.pending = new Promise(resolve => {
+            const finish = accepted => {
+                panel.remove(); if (body) body.hidden = bodyHidden; if (footer) footer.hidden = footerHidden;
+                value.pending = null; value.cancel = null;
+                if (active?.isConnected) active.focus();
+                resolve(accepted);
+            };
+            value.cancel = () => finish(false);
+            keep.addEventListener('click', () => finish(false), { once: true });
+            discard.addEventListener('click', () => finish(true), { once: true });
+        });
+        keep.focus();
+        return value.pending;
+    };
+    window.bdkDashboard.confirmDialogDiscard = function(dialog) {
+        if (!window.bdkDashboard.isDialogDirty(dialog)) return Promise.resolve(true);
+        return window.bdkDashboard.confirmInDialog(dialog, {
+            title: 'Discard unsaved changes?', message: 'Your changes have not been saved.', cancelText: 'Keep editing', confirmText: 'Discard changes'
+        }).then(accepted => { if (accepted) window.bdkDashboard.markDialogSaved(dialog); return accepted; });
+    };
+    document.addEventListener('input', changed, { capture: true, signal: lifetime.signal });
+    document.addEventListener('change', changed, { capture: true, signal: lifetime.signal });
+    function changed(event) {
+        const dialog = event.target.closest('.dashboard-dialog');
+        if (dialog && !event.target.closest('.dashboard-discard')) state(dialog).changed = true;
+    }
+    document.addEventListener('show.bs.modal', event => { if (event.target.dataset.dashboardSuspended !== 'true') state(event.target).trigger = document.activeElement; }, { signal: lifetime.signal });
+    document.addEventListener('shown.bs.modal', event => { if (event.target.dataset.dashboardSuspended !== 'true') window.bdkDashboard.markDialogSaved(event.target); }, { signal: lifetime.signal });
+    document.addEventListener('hide.bs.modal', event => {
+        const dialog = event.target;
+        if (event.defaultPrevented || dialog.dataset.dashboardSuspended === 'true' || !window.bdkDashboard.isDialogDirty(dialog)) return;
+        event.preventDefault();
+        window.bdkDashboard.confirmDialogDiscard(dialog).then(accepted => {
+            if (accepted && dialog.isConnected) window.bootstrap.Modal.getInstance(dialog)?.hide();
+        });
+    }, { signal: lifetime.signal });
+    document.addEventListener('hidden.bs.modal', event => {
+        const trigger = state(event.target).trigger;
+        if (trigger?.isConnected && trigger.getClientRects().length) trigger.focus();
+        else document.querySelector('main [id$="refresh-now"]')?.focus();
+    }, { signal: lifetime.signal });
+    window.addEventListener('click', event => {
+        const dialog = event.target.closest('.dashboard-dialog');
+        if (!dialog) return;
+        if (state(dialog).pending && event.target.closest('.btn-close, [data-entities-editor-cancel], [data-dashboard-dialog-dismiss]')) {
+            event.preventDefault(); event.stopImmediatePropagation(); state(dialog).cancel(); return;
+        }
+        if (event.target === dialog && window.bdkDashboard.isDialogDirty(dialog)) { event.preventDefault(); event.stopImmediatePropagation(); return; }
+        if (event.target.closest('[data-dashboard-dialog-dismiss]') && dialog.tagName === 'DIALOG') {
+            const cancel = new Event('cancel', { cancelable: true });
+            if (dialog.dispatchEvent(cancel)) dialog.close();
+        }
+    }, { capture: true, signal: lifetime.signal });
+    document.addEventListener('keydown', event => {
+        const dialog = event.target.closest('.dashboard-dialog');
+        if (event.key === 'Escape' && dialog && state(dialog).cancel) { event.preventDefault(); event.stopImmediatePropagation(); state(dialog).cancel(); }
+    }, { capture: true, signal: lifetime.signal });
+    const observer = new MutationObserver(records => {
+        for (const record of records) if (record.target.tagName === 'DIALOG' && record.target.open) window.bdkDashboard.markDialogSaved(record.target);
+    });
+    observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open'] });
+    window.addEventListener('pagehide', event => { if (!event.persisted) { observer.disconnect(); lifetime.abort(); } });
+})();
+</script>

@@ -41,7 +41,7 @@ public sealed class OperationProfilingDashboardTests
         Regex.Matches(html, "data-operation-id=").Count.ShouldBe(500);
         var choices = Regex.Match(html, "<select id=\"operation-limit\"[^>]*>(.*?)</select>").Groups[1].Value;
         Regex.Matches(choices, "value=\"([^\"]+)\"").Select(match => match.Groups[1].Value).ShouldBe(new[] { "50", "100", "250", "500" });
-        html.ShouldContain("class=\"d-flex justify-content-center mt-2\" data-operation-paging");
+        html.ShouldContain("class=\"dashboard-list-footer\" data-operation-paging");
         html.ShouldContain("data-operation-load-more");
     }
 
@@ -154,7 +154,9 @@ public sealed class OperationProfilingDashboardTests
         pages.ShouldBe(3);
         seen.SetEquals(expected).ShouldBeTrue();
         groupKeys.Count.ShouldBe(view == "ByCount" ? 23 : 2);
-        html.ShouldNotContain("data-operation-load-more");
+        Regex.Match(html, "<button[^>]*data-operation-load-more[^>]*>").Value.ShouldContain("disabled");
+        html.ShouldContain("Rows per load");
+        html.ShouldContain(view == "ByCount" ? "groups loaded" : "rows loaded");
     }
 
     /// <summary>Hotspot rankings analyze every retained root beyond the visible group limit and use shared dialogs.</summary>
@@ -543,8 +545,8 @@ public sealed class OperationProfilingDashboardTests
         var content = await client.GetStringAsync("/admin/profiling/requests/content" + parameters);
         var groups = await client.GetFromJsonAsync<OperationProfilingGroupPage>("/admin/profiling/operations/api/groups?kind=HttpRequest&view=" + mode + "&limit=250");
 
-        page.ShouldContain("title=\"View retained executions matching this group\">2 executions</a>");
-        content.ShouldContain("title=\"View retained executions matching this group\">2 executions</a>");
+        page.ShouldContain("title=\"View retained executions matching this group\" aria-label=\"View retained executions matching this group\">2 executions</a>");
+        content.ShouldContain("title=\"View retained executions matching this group\" aria-label=\"View retained executions matching this group\">2 executions</a>");
         groups.TotalOperationCount.ShouldBe(2);
         groups.TotalGroupCount.ShouldBe(1);
         groups.Groups.Single().Count.ShouldBe(2);
@@ -807,7 +809,7 @@ public sealed class OperationProfilingDashboardTests
         var groups = await client.GetFromJsonAsync<OperationProfilingGroupPage>("/admin/profiling/operations/api/groups?view=" + mode);
 
         page.ShouldContain("title=\"Key: " + key + "\"><span>Message handler</span> &#183; <strong>OrderMessageHandler</strong>");
-        page.ShouldContain("title=\"View retained executions matching this group\">2 executions</a>");
+        page.ShouldContain("title=\"View retained executions matching this group\" aria-label=\"View retained executions matching this group\">2 executions</a>");
         page.ShouldContain("data-key=\"" + key + "\" data-kind=\"MessageHandler\" title=\"" + key + "\">Message handler &#183; OrderMessageHandler</option>");
         page.ShouldNotContain("<strong>" + key + "</strong>");
         groups.Groups.Single().Key.ShouldBe(key);

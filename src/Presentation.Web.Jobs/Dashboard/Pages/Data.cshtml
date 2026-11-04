@@ -2,6 +2,7 @@
 @using BridgingIT.DevKit.Application.Jobs
 @using BridgingIT.DevKit.Common
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages
 @using Microsoft.Extensions.DependencyInjection
 @using Microsoft.Extensions.Logging
@@ -11,6 +12,7 @@
 @{
     var vm = await CreateModelAsync();
     var actionBase = vm.ActionBase;
+    var occurrences = HttpContext.Request.Path.Value?.EndsWith("/occurrences", StringComparison.OrdinalIgnoreCase) == true || HttpContext.Request.Query["view"] == "occurrences";
 }
 
 @if (!vm.IsAvailable)
@@ -23,16 +25,17 @@ else
 {
     @if (vm.Errors.Count > 0)
     {
-        <div class="alert alert-danger py-2 mb-2">
+        <div class="alert alert-danger py-2 mb-2" data-dashboard-query-error>
             @foreach (var error in vm.Errors)
             {
                 <div>@error</div>
             }
         </div>
+        return;
     }
 
     var s = vm.Summary;
-    <div class="row g-2 jobs-card-grid">
+    <div class="row g-2 jobs-card-grid dashboard-history-summary">
         <div class="col-6 col-lg-2">
             <div class="card dashboard-metric h-100" data-metric-tone="primary">
                 <div class="card-body p-3">
@@ -84,15 +87,17 @@ else
     </div>
 
     <div class="jobs-data-zone">
-        <section class="jobs-panel">
+        @if (!occurrences)
+        {
+        <section class="jobs-panel" data-jobs-registrations>
             <div class="jobs-panel-header">
                 <span>Jobs</span>
-                <span class="badge rounded-pill text-bg-secondary">@vm.Jobs.Count</span>
+                <span class="badge rounded-pill text-bg-secondary" data-dashboard-list-count>@vm.Jobs.Count</span>
             </div>
-            <div class="jobs-panel-body">
+            <div class="jobs-panel-body" data-dashboard-list-scroll>
             @if (vm.Jobs.Count == 0)
             {
-                <div class="text-muted small py-2">No jobs are registered.</div>
+                <div class="text-muted small py-2">No jobs match the current filters.</div>
             }
             else
             {
@@ -111,7 +116,7 @@ else
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody data-dashboard-list-rows>
                         @foreach (var job in vm.Jobs)
                         {
                             var dispatchUrl = $"{actionBase}/dispatch/{Uri.EscapeDataString(job.JobName)}";
@@ -122,7 +127,7 @@ else
                             var nextExecutionUtc = vm.NextExecutionByJobName.TryGetValue(job.JobName, out var nextDueUtc) ? nextDueUtc : null;
                             var triggerDetails = vm.TriggerDetailsByJobName.TryGetValue(job.JobName, out var details) ? details : "No trigger details available.";
                             var jobDescription = DisplayValue(job.Description);
-                            <tr>
+                            <tr data-dashboard-row-id="@job.JobName">
                                 <td>
                                     <div class="fw-medium" title="@jobDescription">@job.JobName</div>
                                     @if (!string.IsNullOrWhiteSpace(job.DisplayName) && job.DisplayName != job.JobName)
@@ -141,35 +146,35 @@ else
                                 <td class="text-end text-muted small">@FormatRelative(job.LastExecutionUtc)</td>
                                 <td class="text-end text-nowrap">
                                     <button class="btn btn-sm btn-outline-primary" title="Dispatch now"
-                                            onclick="window.bdkJobsAction('@dispatchUrl')">
-                                        <i class="bi bi-play-fill"></i>
+                                            onclick="window.bdkJobsAction('@dispatchUrl')" aria-label="Dispatch now">
+                                        <i class="bi bi-play-fill" aria-hidden="true"></i>
                                     </button>
                                     @if (job.Paused)
                                     {
                                         <button class="btn btn-sm btn-outline-success ms-1" title="Resume job"
-                                                onclick="window.bdkJobsAction('@resumeUrl')">
-                                            <i class="bi bi-play-circle"></i>
+                                                onclick="window.bdkJobsAction('@resumeUrl')" aria-label="Resume job">
+                                            <i class="bi bi-play-circle" aria-hidden="true"></i>
                                         </button>
                                     }
                                     else
                                     {
                                         <button class="btn btn-sm btn-outline-warning ms-1" title="Pause job"
-                                                onclick="window.bdkJobsAction('@pauseUrl')">
-                                            <i class="bi bi-pause-circle"></i>
+                                                onclick="window.bdkJobsAction('@pauseUrl')" aria-label="Pause job">
+                                            <i class="bi bi-pause-circle" aria-hidden="true"></i>
                                         </button>
                                     }
                                     @if (job.EffectiveEnabled)
                                     {
                                         <button class="btn btn-sm btn-outline-secondary ms-1" title="Disable job"
-                                                onclick="window.bdkJobsAction('@disableUrl')">
-                                            <i class="bi bi-slash-circle"></i>
+                                                onclick="window.bdkJobsAction('@disableUrl')" aria-label="Disable job">
+                                            <i class="bi bi-slash-circle" aria-hidden="true"></i>
                                         </button>
                                     }
                                     else
                                     {
                                         <button class="btn btn-sm btn-outline-success ms-1" title="Enable job"
-                                                onclick="window.bdkJobsAction('@enableUrl')">
-                                            <i class="bi bi-check-circle"></i>
+                                                onclick="window.bdkJobsAction('@enableUrl')" aria-label="Enable job">
+                                            <i class="bi bi-check-circle" aria-hidden="true"></i>
                                         </button>
                                     }
                                 </td>
@@ -182,12 +187,15 @@ else
             </div>
         </section>
 
-        <section class="jobs-panel">
+        }
+        @if (occurrences)
+        {
+        <section class="jobs-panel" data-dashboard-list="jobs-occurrences" data-dashboard-list-total="@vm.OccurrencesMatchingCount">
             <div class="jobs-panel-header">
                 <span>Occurrences</span>
-                <span class="badge rounded-pill text-bg-secondary">@vm.Occurrences.Count</span>
+                <span class="badge rounded-pill text-bg-secondary" data-dashboard-list-count>@vm.Occurrences.Count</span>
             </div>
-            <div class="jobs-panel-body">
+            <div class="jobs-panel-body" data-dashboard-list-scroll>
             @if (vm.Occurrences.Count == 0)
             {
                 <div class="text-muted small py-2">No occurrences found.</div>
@@ -200,13 +208,14 @@ else
                             <tr>
                                 <th>Status</th>
                                 <th>Job</th>
+                                <th>Occurrence ID</th>
                                 <th>Trigger</th>
                                 <th>Created</th>
                                 <th>Took</th>
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody data-dashboard-list-rows>
                         @foreach (var occ in vm.Occurrences)
                         {
                             var cancelUrl = $"{actionBase}/occurrences/{occ.OccurrenceId}/cancel";
@@ -215,9 +224,13 @@ else
                             var isActive = occ.Status is JobOccurrenceStatus.Running or JobOccurrenceStatus.Due or JobOccurrenceStatus.Pending or JobOccurrenceStatus.Scheduled;
                             var isRunning = occ.Status == JobOccurrenceStatus.Running;
                             var isFailed = occ.Status == JobOccurrenceStatus.Failed;
-                            <tr>
+                            <tr data-dashboard-row-id="@occ.OccurrenceId">
                                 <td>@RenderOccurrenceStatusBadge(occ.Status)</td>
                                 <td class="fw-medium">@occ.JobName</td>
+                                <td class="text-muted small text-nowrap">
+                                    <span class="font-monospace">@occ.OccurrenceId</span>
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1" data-dashboard-copy="@occ.OccurrenceId" title="Copy occurrence ID" aria-label="Copy occurrence ID"><i class="bi bi-copy" aria-hidden="true"></i></button>
+                                </td>
                                 <td class="text-muted small">@DisplayValue(occ.TriggerName)</td>
                                 <td class="text-muted small">@FormatRelative(occ.CreatedDate)</td>
                                 <td class="text-muted small">@FormatDurationSeconds(occ.LatestExecutionDurationSeconds)</td>
@@ -225,28 +238,28 @@ else
                                     <button type="button"
                                             class="btn btn-sm btn-outline-secondary"
                                             title="Show occurrence context"
-                                            data-job-occurrence-context="@CreateOccurrenceContext(occ)">
-                                        <i class="bi bi-info-circle"></i>
+                                            data-job-occurrence-context="@CreateOccurrenceContext(occ)" aria-label="Show occurrence context">
+                                        <i class="bi bi-info-circle" aria-hidden="true"></i>
                                     </button>
                                     @if (isRunning)
                                     {
                                         <button class="btn btn-sm btn-outline-warning ms-1" title="Interrupt"
-                                                onclick="window.bdkJobsAction('@interruptUrl')">
-                                            <i class="bi bi-stop-circle"></i>
+                                                onclick="window.bdkJobsAction('@interruptUrl')" aria-label="Interrupt">
+                                            <i class="bi bi-stop-circle" aria-hidden="true"></i>
                                         </button>
                                     }
                                     @if (isActive)
                                     {
                                         <button class="btn btn-sm btn-outline-danger ms-1" title="Cancel"
-                                                onclick="window.bdkJobsAction('@cancelUrl')">
-                                            <i class="bi bi-x-circle"></i>
+                                                onclick="window.bdkJobsAction('@cancelUrl')" aria-label="Cancel">
+                                            <i class="bi bi-x-circle" aria-hidden="true"></i>
                                         </button>
                                     }
                                     @if (isFailed)
                                     {
                                         <button class="btn btn-sm btn-outline-primary ms-1" title="Retry"
-                                                onclick="window.bdkJobsAction('@retryUrl')">
-                                            <i class="bi bi-arrow-repeat"></i>
+                                                onclick="window.bdkJobsAction('@retryUrl')" aria-label="Retry">
+                                            <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
                                         </button>
                                     }
                                 </td>
@@ -255,10 +268,11 @@ else
                         </tbody>
                     </table>
                 </div>
-                <div class="text-muted small mt-1">Showing @vm.Occurrences.Count most recent occurrences.</div>
             }
             </div>
+            @(await RenderPartialAsync<ListFooter, DashboardListFooterModel>(new("jobs-occurrences", vm.OccurrencesBatchSize, vm.OccurrencesHasMore, vm.OccurrencesNextCursor, Boundary: vm.OccurrencesBoundary, LoadedCount: vm.Occurrences.Count)))
         </section>
+        }
     </div>
 }
 
@@ -284,6 +298,7 @@ else
         try
         {
             var result = await query.GetDashboardSummaryAsync(cancellationToken: ct);
+            if (result.IsFailure) throw new InvalidOperationException("The scheduler query failed.");
             if (result.IsSuccess)
             {
                 model.Summary = result.Value;
@@ -295,26 +310,50 @@ else
             model.Errors.Add("Summary could not be loaded.");
         }
 
-        try
+        var occurrenceView = HttpContext.Request.Path.Value?.EndsWith("/occurrences", StringComparison.OrdinalIgnoreCase) == true || HttpContext.Request.Query["view"] == "occurrences";
+        if (!occurrenceView)
         {
-            var result = await query.QueryJobsAsync(new JobSchedulerJobQueryRequest { Take = 200, SortBy = "jobName", SortDescending = false }, ct);
-            if (result.IsSuccess)
+            try
             {
-                model.Jobs = result.Value.ToList();
+                var filter = new FilterModel { Page = 1, PageSize = 1000, Orderings = [new() { Field = "JobName" }] };
+                var name = HttpContext.Request.Query["jobName"].ToString().Trim();
+                var group = HttpContext.Request.Query["jobGroup"].ToString().Trim();
+                if (name.Length > 0) filter.Filters.Add(new("JobName", FilterOperator.Contains, name));
+                if (group.Length > 0) filter.Filters.Add(new("Group", FilterOperator.Contains, group));
+                if (bool.TryParse(HttpContext.Request.Query["jobEnabled"], out var enabled)) filter.Filters.Add(new("EffectiveEnabled", FilterOperator.Equal, enabled));
+                if (bool.TryParse(HttpContext.Request.Query["jobPaused"], out var paused)) filter.Filters.Add(new("Paused", FilterOperator.Equal, paused));
+                var jobs = new List<JobSchedulerJobModel>();
+                while (true)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    var result = await query.SearchAsync(filter, ct);
+                    if (result.IsFailure) throw new InvalidOperationException("The scheduler query failed.");
+                    var batch = result.Value.ToList();
+                    jobs.AddRange(batch);
+                    if (batch.Count == 0 || jobs.Count >= result.TotalCount) break;
+                    filter.Page++;
+                }
+                model.Jobs = jobs;
             }
-        }
-        catch (Exception ex)
-        {
-            logger?.LogWarning(ex, "Jobs dashboard: jobs query failed.");
-            model.Errors.Add("Jobs list could not be loaded.");
-        }
-
-        try
-        {
-            var result = await query.QueryTriggersAsync(new JobSchedulerTriggerQueryRequest { Take = 500, SortBy = "jobName", SortDescending = false }, ct);
-            if (result.IsSuccess)
+            catch (Exception ex)
             {
-                model.NextExecutionByJobName = result.Value
+                logger?.LogWarning(ex, "Jobs dashboard: jobs query failed.");
+                model.Errors.Add("Jobs list could not be loaded.");
+            }
+
+            try
+            {
+                var triggers = new List<JobSchedulerTriggerModel>();
+                while (true)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    var result = await query.QueryTriggersAsync(new JobSchedulerTriggerQueryRequest { Skip = triggers.Count, Take = 500, SortBy = "jobName", SortDescending = false }, ct);
+                    if (result.IsFailure) throw new InvalidOperationException("The scheduler query failed.");
+                    var batch = result.Value.ToList();
+                    triggers.AddRange(batch);
+                    if (batch.Count == 0 || triggers.Count >= result.TotalCount) break;
+                }
+                model.NextExecutionByJobName = triggers
                     .GroupBy(x => x.JobName)
                     .ToDictionary(
                         x => x.Key,
@@ -323,25 +362,44 @@ else
                             .OrderBy(y => y)
                             .FirstOrDefault());
 
-                model.TriggerDetailsByJobName = result.Value
+                model.TriggerDetailsByJobName = triggers
                     .GroupBy(x => x.JobName)
                     .ToDictionary(
                         x => x.Key,
                         x => string.Join(Environment.NewLine, x.Select(FormatTriggerDetails)));
             }
-        }
-        catch (Exception ex)
-        {
-            logger?.LogWarning(ex, "Jobs dashboard: triggers query failed.");
-            model.Errors.Add("Next execution times could not be loaded.");
+            catch (Exception ex)
+            {
+                logger?.LogWarning(ex, "Jobs dashboard: triggers query failed.");
+                model.Errors.Add("Next execution times could not be loaded.");
+            }
+
         }
 
         try
         {
-            var result = await query.QueryOccurrencesAsync(new JobSchedulerOccurrenceQueryRequest { Take = 50, SortDescending = true }, ct);
+            var size = ReadBatchSize("occurrenceTake");
+            var filter = new FilterModel { Page = 1, PageSize = size + 1, Orderings = [new() { Field = "OccurrenceId", Direction = OrderDirection.Descending }] };
+            foreach (var (key, field) in new[] { ("occurrenceJob", "JobName"), ("occurrenceTrigger", "TriggerName"), ("occurrenceCorrelation", "CorrelationId") })
+            {
+                var value = HttpContext.Request.Query[key].ToString().Trim();
+                if (value.Length > 0) filter.Filters.Add(new(field, FilterOperator.Contains, value));
+            }
+            if (Enum.TryParse<JobOccurrenceStatus>(HttpContext.Request.Query["occurrenceStatus"], out var status) && Enum.IsDefined(status)) filter.Filters.Add(new("Status", FilterOperator.Equal, status));
+            var before = HttpContext.Request.Query["occurrenceCursor"].ToString();
+            var boundary = HttpContext.Request.Query["occurrenceBoundary"].ToString();
+            DashboardHistoryCursor.Apply(filter, "OccurrenceId", before, boundary);
+            var result = await query.SearchOccurrencesAsync(filter, ct);
+            if (result.IsFailure) throw new InvalidOperationException("The scheduler query failed.");
             if (result.IsSuccess)
             {
-                model.Occurrences = result.Value.ToList();
+                model.OccurrencesMatchingCount = result.TotalCount;
+                model.OccurrencesBatchSize = size;
+                var occurrences = result.Value.ToList();
+                model.OccurrencesHasMore = occurrences.Count > size;
+                model.Occurrences = occurrences.Take(size).ToList();
+                model.OccurrencesBoundary = boundary.Length > 0 ? boundary : (model.Occurrences.FirstOrDefault() is { } first ? DashboardHistoryCursor.Encode(first.CreatedDate, first.OccurrenceId) : null);
+                model.OccurrencesNextCursor = (model.Occurrences.LastOrDefault() is { } last ? DashboardHistoryCursor.Encode(last.CreatedDate, last.OccurrenceId) : null);
             }
         }
         catch (Exception ex)
@@ -352,6 +410,8 @@ else
 
         return model;
     }
+
+    private int ReadBatchSize(string key) => int.TryParse(HttpContext.Request.Query[key], out var size) && new[] { 10, 25, 50, 100, 200 }.Contains(size) ? size : 50;
 
     private static string DisplayValue(string value) =>
         string.IsNullOrWhiteSpace(value) ? "-" : value;

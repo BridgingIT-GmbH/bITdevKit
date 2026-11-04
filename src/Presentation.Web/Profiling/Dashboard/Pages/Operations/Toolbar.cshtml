@@ -1,5 +1,6 @@
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
 @inherits RazorSlice<string>
-<div class="operation-toolbar d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar operation-toolbar d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 mb-2 border-bottom">
     @if (!string.IsNullOrEmpty(Model))
     {
         <a href="@Model" class="btn btn-outline-secondary btn-sm" title="Back to the list" aria-label="Back to the list"><i class="bi bi-arrow-left" aria-hidden="true"></i></a>
@@ -11,11 +12,6 @@
             <button class="btn btn-outline-primary btn-sm" type="button" data-operation-comparison-open title="Compare executions of the same operation" aria-label="Compare executions"><i class="bi bi-arrow-left-right" aria-hidden="true"></i></button>
         }
         <button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#operation-health-modal" title="Capture health" aria-label="Capture health"><i class="bi bi-heart-pulse" aria-hidden="true"></i></button>
-        @if (string.IsNullOrEmpty(Model))
-        {
-            <div class="form-check form-switch mb-0"><input id="operation-tail" class="form-check-input" type="checkbox" role="switch"><label class="form-check-label small" for="operation-tail">Tail</label></div>
-        }
-        <span id="operation-refresh-status" class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.ToString("HH:mm:ss 'UTC'", CultureInfo.InvariantCulture)</span>
-        <button id="operation-refresh-now" class="btn btn-outline-warning btn-sm" type="button" title="Refresh latest" aria-label="Refresh latest"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.RefreshControls, DashboardRefreshModel>(new("operation", "Refresh operations", false, string.IsNullOrEmpty(Model) ? "operation-tail" : null)))
     </div>
 </div>

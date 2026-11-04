@@ -1,3 +1,4 @@
+@using BridgingIT.DevKit.Common
 @using System.Text.Json
 @using BridgingIT.DevKit.Application.Orchestrations
 @using Microsoft.Extensions.Logging
@@ -5,6 +6,8 @@
 @inherits RazorSlice
 
 @{
+    var instances = IsInstancesView();
+    var diagnostics = HttpContext.Request.Path.Value?.EndsWith("/diagnostics", StringComparison.OrdinalIgnoreCase) == true;
     var vm = await CreateModelAsync();
     var actionBase = vm.ActionBase;
 }
@@ -19,18 +22,26 @@ else
 {
     @if (vm.Errors.Count > 0)
     {
-        <div class="alert alert-danger py-2 mb-2">
+        <div class="alert alert-danger py-2 mb-2" data-dashboard-query-error>
             @foreach (var error in vm.Errors)
             {
                 <div>@error</div>
             }
         </div>
+        return;
+    }
+
+    @if (!instances && !diagnostics)
+    {
+        @(await RenderPartialAsync<Definitions, IReadOnlyList<OrchestrationDefinitionSummary>>(vm.Definitions))
+        return;
     }
 
     var metrics = vm.Metrics;
     var problemCount = metrics.FailedCount + metrics.CancelledCount + metrics.TerminatedCount;
 
-    <div class="row g-2 orchestrations-card-grid">
+    <div class="dashboard-history-scope" title="Counts use orchestration, status and exact state. Correlation and partial state matches are list criteria.">Totals · orchestration / status / state</div>
+    <div class="row g-2 orchestrations-card-grid dashboard-history-summary">
         @RenderMetricCard("Total", metrics.TotalCount, "text-primary")
         @RenderMetricCard("Running", metrics.RunningCount, "text-info")
         @RenderMetricCard("Waiting", metrics.WaitingCount, "text-warning")
@@ -40,12 +51,14 @@ else
     </div>
 
     <div class="orchestrations-data-zone">
-        <section class="orchestrations-panel">
+        @if (instances)
+        {
+        <section class="orchestrations-panel" data-dashboard-list="orchestrations-instances" data-dashboard-list-total="@vm.MatchingCount">
             <div class="orchestrations-panel-header">
                 <span>Instances</span>
-                <span class="badge rounded-pill text-bg-secondary">@vm.Instances.Count</span>
+                <span class="badge rounded-pill text-bg-secondary" data-dashboard-list-count>@vm.Instances.Count</span>
             </div>
-            <div class="orchestrations-panel-body">
+            <div class="orchestrations-panel-body" data-dashboard-list-scroll>
             @if (vm.Instances.Count == 0)
             {
                 <div class="text-muted small py-2">No orchestration instances matched the current filters.</div>
@@ -66,7 +79,7 @@ else
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody data-dashboard-list-rows>
                         @foreach (var instance in vm.Instances)
                         {
                             vm.ContextsByInstanceId.TryGetValue(instance.InstanceId, out var context);
@@ -80,12 +93,11 @@ else
                             var archiveUrl = $"{actionBase}/{instance.InstanceId}/archive";
                             var releaseLeaseUrl = $"{actionBase}/{instance.InstanceId}/repair/release-lease";
                             var requeueTimersUrl = $"{actionBase}/{instance.InstanceId}/repair/requeue-timers";
-                            <tr>
+                            <tr data-dashboard-row-id="@instance.InstanceId">
                                 <td>@RenderStatusBadge(instance.Status)</td>
                                 <td class="text-muted small" title="@FormatTimestamp(instance.LastUpdatedUtc)">@FormatRelative(instance.LastUpdatedUtc)</td>
                                 <td>
                                     <div class="fw-medium" title="@DisplayValue(instance.OrchestrationName)">@TrimValue(instance.OrchestrationName, 44)</div>
-                                    <div class="text-muted small">@TrimFromStart(instance.InstanceId.ToString(), 12)</div>
                                 </td>
                                 <td>@DisplayValue(instance.CurrentState)</td>
                                 <td title="@DisplayValue(instance.CurrentActivity)">@TrimValue(instance.CurrentActivity, 32)</td>
@@ -95,41 +107,41 @@ else
                                     <button type="button"
                                             class="btn btn-sm btn-outline-secondary"
                                             title="Show instance details"
-                                            data-orchestration-instance-context="@CreateInstanceContext(instance, context, history, signals, timers)">
-                                        <i class="bi bi-info-circle"></i>
+                                            data-orchestration-instance-context="@CreateInstanceContext(instance, context, history, signals, timers)" aria-label="Show instance details">
+                                        <i class="bi bi-info-circle" aria-hidden="true"></i>
                                     </button>
                                     @if (CanResume(instance))
                                     {
-                                        <button class="btn btn-sm btn-outline-success ms-1" title="Resume" onclick="window.bdkOrchestrationAction('@resumeUrl')">
-                                            <i class="bi bi-play-circle"></i>
+                                        <button class="btn btn-sm btn-outline-success ms-1" title="Resume" onclick="window.bdkOrchestrationAction('@resumeUrl')" aria-label="Resume">
+                                            <i class="bi bi-play-circle" aria-hidden="true"></i>
                                         </button>
                                     }
                                     else if (CanPause(instance))
                                     {
-                                        <button class="btn btn-sm btn-outline-warning ms-1" title="Pause" onclick="window.bdkOrchestrationAction('@pauseUrl')">
-                                            <i class="bi bi-pause-circle"></i>
+                                        <button class="btn btn-sm btn-outline-warning ms-1" title="Pause" onclick="window.bdkOrchestrationAction('@pauseUrl')" aria-label="Pause">
+                                            <i class="bi bi-pause-circle" aria-hidden="true"></i>
                                         </button>
                                     }
                                     @if (CanStop(instance))
                                     {
-                                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Cancel" onclick="window.bdkOrchestrationAction('@cancelUrl')">
-                                            <i class="bi bi-x-circle"></i>
+                                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Cancel" onclick="window.bdkOrchestrationAction('@cancelUrl')" aria-label="Cancel">
+                                            <i class="bi bi-x-circle" aria-hidden="true"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-danger ms-1" title="Terminate" onclick="window.bdkOrchestrationAction('@terminateUrl')">
-                                            <i class="bi bi-stop-circle"></i>
+                                        <button class="btn btn-sm btn-outline-danger ms-1" title="Terminate" onclick="window.bdkOrchestrationAction('@terminateUrl')" aria-label="Terminate">
+                                            <i class="bi bi-stop-circle" aria-hidden="true"></i>
                                         </button>
                                     }
                                     @if (CanArchive(instance))
                                     {
-                                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Archive" onclick="window.bdkOrchestrationAction('@archiveUrl')">
-                                            <i class="bi bi-archive"></i>
+                                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Archive" onclick="window.bdkOrchestrationAction('@archiveUrl')" aria-label="Archive">
+                                            <i class="bi bi-archive" aria-hidden="true"></i>
                                         </button>
                                     }
-                                    <button class="btn btn-sm btn-outline-secondary ms-1" title="Release lease" onclick="window.bdkOrchestrationAction('@releaseLeaseUrl')">
-                                        <i class="bi bi-unlock"></i>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1" title="Release lease" onclick="window.bdkOrchestrationAction('@releaseLeaseUrl')" aria-label="Release lease">
+                                        <i class="bi bi-unlock" aria-hidden="true"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary ms-1" title="Requeue timers" onclick="window.bdkOrchestrationAction('@requeueTimersUrl')">
-                                        <i class="bi bi-clock-history"></i>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1" title="Requeue timers" onclick="window.bdkOrchestrationAction('@requeueTimersUrl')" aria-label="Requeue timers">
+                                        <i class="bi bi-clock-history" aria-hidden="true"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -139,32 +151,13 @@ else
                 </div>
             }
             </div>
+            @(await RenderPartialAsync<ListFooter, DashboardListFooterModel>(new("orchestrations-instances", vm.BatchSize, vm.HasMore, vm.NextCursor, Boundary: vm.Boundary, LoadedCount: vm.Instances.Count, Sizes: [10, 25, 50, 100, 250, 500])))
         </section>
 
+        }
+        @if (diagnostics)
+        {
         <div class="orchestrations-side-zone">
-            <section class="orchestrations-panel">
-                <div class="orchestrations-panel-header">
-                    <span>Definitions</span>
-                    <span class="badge rounded-pill text-bg-secondary">@vm.Definitions.Count</span>
-                </div>
-                <div class="orchestrations-panel-body">
-                @if (vm.Definitions.Count == 0)
-                {
-                    <div class="text-muted small py-2">No orchestration definitions have persisted instances.</div>
-                }
-                else
-                {
-                    @foreach (var definition in vm.Definitions)
-                    {
-                        <div class="d-flex justify-content-between border-bottom py-2">
-                            <span class="fw-medium" title="@definition.Name">@TrimValue(definition.Name, 52)</span>
-                            <span class="badge text-bg-secondary">@definition.Count.ToString("N0", CultureInfo.InvariantCulture)</span>
-                        </div>
-                    }
-                }
-                </div>
-            </section>
-
             <section class="orchestrations-panel">
                 <div class="orchestrations-panel-header">
                     <span>States</span>
@@ -204,10 +197,16 @@ else
                 </div>
             </section>
         </div>
+        }
     </div>
 }
 
 @functions {
+    private bool IsInstancesView() =>
+        HttpContext.Request.Path.Value?.EndsWith("/instances", StringComparison.OrdinalIgnoreCase) == true ||
+        (HttpContext.Request.Path.Value?.EndsWith("/content", StringComparison.OrdinalIgnoreCase) == true &&
+         HttpContext.Request.Query["view"] == "instances");
+
     private async Task<DashboardOrchestrationsViewModel> CreateModelAsync()
     {
         var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
@@ -219,13 +218,35 @@ else
             ActionBase = OrchestrationsDashboardEndpoints.BuildOrchestrationsActionBase(dashboardOptions)
         };
 
+        var instances = IsInstancesView();
+        var diagnostics = HttpContext.Request.Path.Value?.EndsWith("/diagnostics", StringComparison.OrdinalIgnoreCase) == true;
+        if (!instances && !diagnostics)
+        {
+            var registrations = HttpContext.RequestServices.GetService<OrchestrationRegistrationStore>();
+            model.IsAvailable = registrations is not null;
+            if (registrations is null) return model;
+            try
+            {
+                model.Definitions = registrations.GetRegisteredTypes()
+                    .Select(type => OrchestrationDefinitionReader.Read(type, HttpContext.RequestServices, registrations, logger))
+                    .OrderBy(item => item.Name, StringComparer.OrdinalIgnoreCase)
+                    .ToArray();
+            }
+            catch (Exception ex)
+            {
+                logger?.LogWarning(ex, "Orchestrations dashboard: definition discovery failed.");
+                model.Errors.Add("Orchestration definitions could not be loaded.");
+            }
+            return model;
+        }
+
         if (query is null)
         {
             model.IsAvailable = false;
             return model;
         }
 
-        var request = CreateQueryRequest();
+        var request = instances ? CreateQueryRequest() : new OrchestrationQueryRequest();
         var metricRequest = new OrchestrationMetricsRequest
         {
             OrchestrationName = request.OrchestrationName,
@@ -243,12 +264,6 @@ else
             if (result.IsSuccess)
             {
                 model.Metrics = result.Value;
-                model.Definitions = result.Value.CountsByOrchestration
-                    .OrderByDescending(pair => pair.Value)
-                    .ThenBy(pair => pair.Key, StringComparer.OrdinalIgnoreCase)
-                    .Take(12)
-                    .Select(pair => new OrchestrationDefinitionSummary(pair.Key, pair.Value))
-                    .ToList();
                 model.States = result.Value.CountsByState
                     .OrderByDescending(pair => pair.Value)
                     .ThenBy(pair => pair.Key, StringComparer.OrdinalIgnoreCase)
@@ -277,12 +292,20 @@ else
             model.Errors.Add("Orchestration metrics could not be loaded.");
         }
 
+        if (!instances) return model;
+
         try
         {
-            var result = await query.QueryAsync(request, cancellationToken);
+            var result = await query.SearchAsync(CreateInstanceFilter(request), cancellationToken);
             if (result.IsSuccess)
             {
-                model.Instances = result.Value.ToList();
+                model.BatchSize = GetTake();
+                model.MatchingCount = result.TotalCount;
+                var batch = result.Value.ToList();
+                model.HasMore = batch.Count > model.BatchSize;
+                model.Instances = batch.Take(model.BatchSize).ToList();
+                model.Boundary = GetQuery("boundary") ?? (model.Instances.Count > 0 ? EncodeCursor(model.Instances[0]) : null);
+                model.NextCursor = model.HasMore ? EncodeCursor(model.Instances.Last()) : null;
                 model.ContextsByInstanceId = await GetContextsAsync(query, model.Instances, cancellationToken);
                 model.HistoryByInstanceId = await GetHistoryAsync(query, model.Instances, cancellationToken);
                 model.SignalsByInstanceId = await GetSignalsAsync(query, model.Instances, cancellationToken);
@@ -374,6 +397,35 @@ else
         return result;
     }
 
+    private FilterModel CreateInstanceFilter(OrchestrationQueryRequest request)
+    {
+        var filter = new FilterModel { Page = 1, PageSize = GetTake() + 1, Orderings =
+            [new() { Field = "StartedUtc", Direction = OrderDirection.Descending }, new() { Field = "InstanceId", Direction = OrderDirection.Descending }] };
+        foreach (var (value, field) in new[] { (GetQuery("state"), "CurrentState"), (request.CorrelationId, "CorrelationId") })
+        {
+            if (!string.IsNullOrWhiteSpace(value)) filter.Filters.Add(new(field, FilterOperator.Contains, value));
+        }
+        if (!string.IsNullOrWhiteSpace(request.OrchestrationName)) filter.Filters.Add(new("OrchestrationName", FilterOperator.Equal, request.OrchestrationName));
+        if (!string.IsNullOrWhiteSpace(GetQuery("status"))) filter.Filters.Add(new("Status", FilterOperator.Equal, GetQuery("status")));
+        foreach (var key in new[] { "cursor", "boundary" })
+        {
+            var token = GetQuery(key);
+            if (string.IsNullOrWhiteSpace(token)) continue;
+            var cursor = JsonSerializer.Deserialize<InstanceCursor>(Convert.FromBase64String(token)) ?? throw new ArgumentException("Invalid instance cursor.");
+            filter.Filters.Add(new FilterCriteria { Filters =
+            [
+                new("StartedUtc", FilterOperator.LessThan, cursor.StartedUtc) { Logic = FilterLogicOperator.Or },
+                new() { Filters = [new("StartedUtc", FilterOperator.Equal, cursor.StartedUtc), new("InstanceId", key == "cursor" ? FilterOperator.LessThan : FilterOperator.LessThanOrEqual, cursor.InstanceId)] }
+            ] });
+        }
+        return filter;
+    }
+
+    private static string EncodeCursor(OrchestrationInstanceModel instance) =>
+        Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(new InstanceCursor(instance.StartedUtc, instance.InstanceId)));
+
+    private sealed record InstanceCursor(DateTimeOffset StartedUtc, Guid InstanceId);
+
     private OrchestrationQueryRequest CreateQueryRequest()
     {
         var status = GetQuery("status");
@@ -456,7 +508,7 @@ else
         string.IsNullOrWhiteSpace(value) ? "-" : value;
 
     private static string FormatTimestamp(DateTimeOffset? value) =>
-        value?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz", CultureInfo.InvariantCulture) ?? "-";
+        value?.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) ?? "-";
 
     private static string FormatRelative(DateTimeOffset? value)
     {

@@ -108,7 +108,7 @@
     </header>
     <div class="dashboard-access-denied-panel">
         <div class="dashboard-access-denied-icon" aria-hidden="true">
-            <i class="bi bi-shield-lock"></i>
+            <i class="bi bi-shield-lock" aria-hidden="true"></i>
         </div>
         <p class="dashboard-access-denied-copy">
             The signed-in account does not have permission to use this dashboard.
@@ -117,7 +117,7 @@
             <form method="post" action="@signOutPath" class="m-0">
                 <input type="hidden" name="returnUrl" value="@retryReturnUrl" />
                 <button class="btn btn-primary" type="submit">
-                    <i class="bi bi-box-arrow-right me-1"></i>
+                    <i class="bi bi-box-arrow-right me-1" aria-hidden="true"></i>
                     Sign out and retry
                 </button>
             </form>

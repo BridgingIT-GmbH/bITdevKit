@@ -1,33 +1,36 @@
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using Microsoft.Extensions.DependencyInjection
-@inherits RazorSlice
+@using Microsoft.AspNetCore.WebUtilities
+@inherits RazorSlice<DashboardIndexModel>
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
     var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-    var contentPath = DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.IndexContent);
+    var indexPath = DashboardPath.Combine(dashboardOptions.GroupPath, "/");
+    var contentPath = QueryHelpers.AddQueryString(DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.IndexContent), "group", Model.SelectedGroup);
 }
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
   <div class="d-flex align-items-center gap-2">
-      <span id="dashboard-index-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
-      <select id="dashboard-index-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Dashboard card refresh interval">
-          <option value="">Off</option>
-          <option value="1000">1 sec</option>
-          <option value="5000">5 sec</option>
-          <option value="15000">15 sec</option>
-          <option value="30000">30 sec</option>
-      </select>
-      <button type="button" id="dashboard-index-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh dashboard cards">
-          <i class="bi bi-arrow-clockwise"></i>
-      </button>
+      @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.RefreshControls, BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardRefreshModel>(new("dashboard-index", "Refresh dashboard cards", true)))
   </div>
 </div>
 
-<div id="dashboard-index-content">
-    @(await RenderPartialAsync<DashboardIndexContent>())
-</div>
+@if (Model.Groups.Count > 0)
+{
+    <nav class="nav nav-pills mb-2" aria-label="Overview groups" data-dashboard-view="@Model.SelectedGroup">
+        @foreach (var group in Model.Groups)
+        {
+            var selected = group == Model.SelectedGroup;
+            <a class="nav-link @(selected ? "active" : "")" aria-current="@(selected ? "page" : null)" href="@QueryHelpers.AddQueryString(indexPath, "group", group)">@group</a>
+        }
+    </nav>
+}
+
+<section id="dashboard-index-content" aria-label="Overview cards">
+    @(await RenderPartialAsync<DashboardIndexContent, DashboardIndexModel>(Model))
+</section>
 
 <script>
     (() => {

@@ -68,7 +68,7 @@
     {
         var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
         var values = new Dictionary<string, string> { ["nodeId"] = node.Node.Identity.Id.ToString("D"), ["fromUtc"] = participation.JoinedUtc.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture), ["toUtc"] = (participation.CompletedUtc ?? DateTimeOffset.UtcNow).ToUniversalTime().ToString("O", CultureInfo.InvariantCulture), ["overlap"] = "true" };
-        <a class="btn btn-outline-secondary btn-sm mb-2" href="@(ProfilingDashboardEndpoints.BuildOperationsPath(options) + QueryString.Create(values))" title="Operations on this node during the selected collection interval">Related operations</a>
+        <a class="btn btn-outline-secondary btn-sm mb-2" href="@(ProfilingDashboardEndpoints.BuildOperationsPath(options) + QueryString.Create(values))" title="Operations on this node during the selected collection interval" aria-label="Operations on this node during the selected collection interval">Related operations</a>
     }
 
     <div id="profiling-action-outcomes" class="mb-2" role="status" aria-live="polite"></div>
@@ -98,9 +98,9 @@
                         </form>
                         <hr />
                         <div class="d-grid gap-2">
-                            <button id="profiling-delete-session" class="btn btn-outline-danger btn-sm" type="button" title="Delete the selected terminal session">Delete selected session</button>
-                            <button id="profiling-delete-unpinned" class="btn btn-outline-danger btn-sm" type="button" title="Delete every unpinned terminal session">Delete all unpinned</button>
-                            <button id="profiling-clear" class="btn btn-danger btn-sm" type="button" title="Permanently clear all profiling data, including pinned sessions">Clear all profiling data</button>
+                            <button id="profiling-delete-session" class="btn btn-outline-danger btn-sm" type="button" title="Delete the selected terminal session" aria-label="Delete the selected terminal session">Delete selected session</button>
+                            <button id="profiling-delete-unpinned" class="btn btn-outline-danger btn-sm" type="button" title="Delete every unpinned terminal session" aria-label="Delete every unpinned terminal session">Delete all unpinned</button>
+                            <button id="profiling-clear" class="btn btn-danger btn-sm" type="button" title="Permanently clear all profiling data, including pinned sessions" aria-label="Permanently clear all profiling data, including pinned sessions">Clear all profiling data</button>
                         </div>
                     </div>
                 </details>
@@ -162,7 +162,7 @@
         </div>
     </section>
 
-    <div class="modal fade" id="profiling-metadata-modal" tabindex="-1" aria-labelledby="profiling-metadata-title" aria-hidden="true">
+    <div class="dashboard-dialog modal fade" id="profiling-metadata-modal" tabindex="-1" aria-labelledby="profiling-metadata-title" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <form id="profiling-metadata-form" class="modal-content" aria-label="Edit session metadata">
                 <div class="modal-header">
@@ -348,7 +348,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="profiling-runtime-context-modal" tabindex="-1" aria-labelledby="profiling-runtime-title" aria-hidden="true">
+    <div class="dashboard-dialog modal fade" id="profiling-runtime-context-modal" tabindex="-1" aria-labelledby="profiling-runtime-title" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">

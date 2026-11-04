@@ -1,0 +1,9 @@
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@inherits RazorSlice<DashboardModalActionsModel>
+<div class="dashboard-dialog-footer @(Model.Native ? "entities-dialog-foot" : "modal-footer")">
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="@(Model.Native ? null : "modal")" data-dashboard-dialog-dismiss>@(Model.ActionText is null ? "Close" : "Cancel")</button>
+    @if (Model.ActionText is not null)
+    {
+        <button id="@Model.ActionId" type="submit" class="btn @(Model.Destructive ? "btn-danger" : "btn-primary") btn-sm">@Model.ActionText</button>
+    }
+</div>

@@ -14,6 +14,42 @@ using Microsoft.Extensions.DependencyInjection;
 
 public class JobSchedulerQueryServiceTests(ITestOutputHelper output) : JobSchedulerTestBase(output)
 {
+    /// <summary>Equal-time occurrence batches retain unique IDs and all initial rows while new work arrives.</summary>
+    /// <example><code>await suite.SearchOccurrencesAsync_SeekPaging_RetainsInitialRowsAcrossArrival();</code></example>
+    [Fact]
+    public async Task SearchOccurrencesAsync_SeekPaging_RetainsInitialRowsAcrossArrival()
+    {
+        using var harness = this.CreateHarness(jobs => jobs.WithJob<NoOpQueryJob>("sample",
+            job => job.AddTrigger("manual", trigger => trigger.Manual())), nowUtc: DateTimeOffset.Parse("2026-11-04T12:00:00Z"));
+        for (var index = 0; index < 35; index++)
+        {
+            (await harness.DispatchAsync<NoOpQueryJob>()).IsSuccess.ShouldBeTrue();
+        }
+
+        var sut = harness.Services.GetRequiredService<IJobSchedulerQueryService>();
+        var initial = (await sut.SearchOccurrencesAsync(new() { PageSize = 100 })).Value.Select(row => row.OccurrenceId).ToArray();
+        var seen = new List<Guid>();
+        Guid? cursor = null;
+        Guid? boundary = null;
+        for (var batch = 0; batch < 10; batch++)
+        {
+            var filter = new FilterModel { PageSize = 10, Orderings = [new() { Field = "OccurrenceId", Direction = OrderDirection.Descending }] };
+            if (cursor.HasValue) filter.Filters.Add(new("OccurrenceId", FilterOperator.LessThan, cursor.Value));
+            if (boundary.HasValue) filter.Filters.Add(new("OccurrenceId", FilterOperator.LessThanOrEqual, boundary.Value));
+            var result = await sut.SearchOccurrencesAsync(filter);
+            result.IsSuccess.ShouldBeTrue();
+            var ids = result.Value.Select(row => row.OccurrenceId).ToArray();
+            if (ids.Length == 0) break;
+            boundary ??= ids[0];
+            cursor = ids[^1];
+            seen.AddRange(ids);
+            if (batch == 0) (await harness.DispatchAsync<NoOpQueryJob>()).IsSuccess.ShouldBeTrue();
+        }
+
+        seen.Distinct().Count().ShouldBe(seen.Count);
+        initial.ShouldAllBe(id => seen.Contains(id));
+    }
+
     [Fact]
     public async Task SearchOccurrencesAsync_FilteredSecondPage_ReturnsAccurateTotalAndRedactedPayload()
     {
@@ -49,7 +85,7 @@ public class JobSchedulerQueryServiceTests(ITestOutputHelper output) : JobSchedu
 
     [Theory]
     [InlineData("Missing", FilterOperator.Equal, "value")]
-    [InlineData("JobName", FilterOperator.GreaterThan, "value")]
+    [InlineData("JobName", FilterOperator.Any, "value")]
     public async Task SearchOccurrencesAsync_InvalidCriteria_ReturnsValidationFailure(string field, FilterOperator operation, string value)
     {
         using var harness = this.CreateHarness(jobs => jobs.WithJob<NoOpQueryJob>("sample",

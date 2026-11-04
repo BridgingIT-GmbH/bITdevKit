@@ -13,15 +13,15 @@
     var identityModel = await CreateModelAsync();
 }
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
     <div class="d-flex align-items-center gap-2">
-        <span class="text-muted small">Captured @identityModel.CapturedAtUtc.LocalDateTime.ToString("g", CultureInfo.InvariantCulture)</span>
+        <span class="text-muted small">Updated @identityModel.CapturedAtUtc.ToString("HH:mm:ss 'UTC'", CultureInfo.InvariantCulture)</span>
         @* @if (identityModel.CanLoginWithClientCredentials)
         {
             <form method="post" action="@identityModel.ClientCredentialsLoginPath" class="m-0">
                 <input type="hidden" name="returnUrl" value="@identityModel.ClientCredentialsReturnUrl" />
-                <button type="submit" class="btn btn-outline-secondary btn-sm" title="Use fake identity provider client credentials">
-                    <i class="bi bi-box-arrow-in-right me-1"></i>Client credentials
+                <button type="submit" class="btn btn-outline-secondary btn-sm" title="Use fake identity provider client credentials" aria-label="Use fake identity provider client credentials">
+                    <i class="bi bi-box-arrow-in-right me-1" aria-hidden="true"></i>Client credentials
                 </button>
             </form>
         } *@
@@ -60,13 +60,13 @@
         <div class="card h-100">
             <div class="card-body p-3">
                 <div class="d-flex align-items-center mb-2">
-                    <i class="bi bi-person-circle fs-3 text-secondary me-2"></i>
+                    <i class="bi bi-person-circle fs-3 text-secondary me-2" aria-hidden="true"></i>
                     <div>
                         <h6 class="card-title mb-0">Current User</h6>
                         <div class="text-muted small">@DisplayValue(identityModel.UserName)</div>
                     </div>
                 </div>
-                <table class="table table-sm mb-0">
+                <table class="table table-sm mb-0" style="table-layout:fixed;overflow-wrap:anywhere">
                     <tbody>
                     <tr>
                         <td>Status</td>
@@ -96,7 +96,7 @@
             <div class="card h-100">
                 <div class="card-body p-3">
                     <h6 class="card-title">Identity Provider</h6>
-                    <table class="table table-sm mb-0">
+                    <table class="table table-sm mb-0" style="table-layout:fixed;overflow-wrap:anywhere">
                         <tbody>
                         <tr><td>Client</td><td class="text-end text-break">@DisplayValue(identityModel.ClientCredentialsClientName)</td></tr>
                         <tr><td>Client ID</td><td class="text-end text-break"><code>@DisplayValue(identityModel.ClientCredentialsClientId)</code></td></tr>
@@ -152,11 +152,11 @@
                         <div class="mt-2">
                             <textarea id="@tokenId" class="form-control font-monospace small" rows="5" readonly>@token.Value</textarea>
                             <div class="d-flex justify-content-end gap-2 mt-2">
-                                <a href="@jwtIoUrl" class="btn btn-outline-secondary btn-sm" target="_blank" rel="noopener noreferrer" title="Open token in jwt.io">
-                                    <i class="bi bi-box-arrow-up-right me-1"></i>jwt.io
+                                <a href="@jwtIoUrl" class="btn btn-outline-secondary btn-sm" target="_blank" rel="noopener noreferrer" title="Open token in jwt.io" aria-label="Open token in jwt.io">
+                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>jwt.io
                                 </a>
-                                <button type="button" class="btn btn-outline-secondary btn-sm" data-copy-token="@tokenId" title="Copy token">
-                                    <i class="bi bi-copy me-1"></i>Copy
+                                <button type="button" class="btn btn-outline-secondary btn-sm" data-copy-token="@tokenId" title="Copy token" aria-label="Copy token">
+                                    <i class="bi bi-copy me-1" aria-hidden="true"></i>Copy
                                 </button>
                             </div>
                         </div>
@@ -177,7 +177,7 @@
 
                     await navigator.clipboard.writeText(target.value);
                     const original = button.innerHTML;
-                    button.innerHTML = '<i class="bi bi-check2 me-1"></i>Copied';
+                    button.innerHTML = '<i class="bi bi-check2 me-1" aria-hidden="true"></i>Copied';
                     window.setTimeout(() => button.innerHTML = original, 1200);
                 });
             });

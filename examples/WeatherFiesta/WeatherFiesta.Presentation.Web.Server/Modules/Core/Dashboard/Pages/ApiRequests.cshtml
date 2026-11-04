@@ -9,11 +9,8 @@
     var profiling = Dashboard.Service<ProfilingOptions>();
     var captureEnabled = profiling?.OperationEnabled == true && profiling.Requests.Enabled;
 }
-<div class="py-2 mb-3 border-bottom">
-    <h1 id="http-heading" class="h4 mb-1">API Requests</h1>
-    <p class="small text-muted mb-0">Generate a bounded burst of requests against the cities and weather API.</p>
-</div>
-<section class="card card-body" aria-labelledby="http-heading">
+<div class="dashboard-page-toolbar">@if (captureEnabled) { <a class="btn btn-outline-secondary btn-sm" href="@requestsPath">Request profiles</a> }</div>
+<section class="card card-body" aria-label="API requests">
     <form id="api-requests-form" class="row g-2" autocomplete="off">
         <div class="col-12 col-md-6"><label class="form-label small" for="api-request-workload">Workload</label><select id="api-request-workload" class="form-select form-select-sm"><option value="cities">Cities</option><option value="weather">City weather</option><option value="mixed">Cities and weather</option></select></div>
         <div class="col-6 col-md-3"><label class="form-label small" for="api-request-count">Requests</label><input id="api-request-count" class="form-control form-control-sm" type="number" min="1" max="100" value="10" required title="Number of workload requests, excluding the initial city lookup for weather workloads." /></div>
@@ -22,10 +19,10 @@
         <div class="col-12 d-flex flex-wrap gap-2 mt-3">
             <button id="api-request-run" class="btn btn-primary btn-sm" type="submit">Send requests</button>
             <button id="api-request-cancel" class="btn btn-outline-secondary btn-sm" type="button" disabled>Cancel requests</button>
-            @if (captureEnabled) { <a class="btn btn-outline-secondary btn-sm" href="@requestsPath">Request profiles</a> }
+
         </div>
     </form>
-    <p class="small text-muted mt-3 mb-2">Calls the cities and weather API directly. Weather workloads first load your subscribed cities, then rotate their weather requests. Profiles appear after periodic persistence.</p>
+    <details class="small mt-3 mb-2"><summary>About these requests</summary><p class="text-muted mt-1 mb-0">Calls the cities and weather API directly. Weather workloads first load your subscribed cities, then rotate their weather requests. Profiles appear after periodic persistence.</p></details>
     <div id="api-request-status" class="small mb-2" role="status" aria-live="polite"></div>
     <div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Request</th><th>Status</th><th title="Browser elapsed time until the response body has been received.">Duration</th><th>Profile</th></tr></thead><tbody id="api-request-results"></tbody></table></div>
 </section>

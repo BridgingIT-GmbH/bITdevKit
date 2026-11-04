@@ -1,0 +1,148 @@
+@using System.Text.Json
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@inherits RazorSlice<DashboardWorkloadChartsModel>
+@{
+    var charts = JsonSerializer.Serialize(Model.Charts, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+}
+<style>
+    .dashboard-workload-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+    .dashboard-workload-grid .card { min-width: 0; }
+    .dashboard-workload-canvas { height: 245px; min-width: 0; }
+    @@media (max-width: 767.98px) { .dashboard-workload-grid { grid-template-columns: minmax(0, 1fr); } }
+</style>
+<div id="@(Model.Prefix + "-realtime-graph")" data-workload-charts data-prefix="@Model.Prefix" data-url="@Model.DataUrl" data-charts="@charts" data-history-url="@Model.HistoryUrl" data-history-unit="@Model.HistoryUnit" data-history-series="@JsonSerializer.Serialize(Model.HistorySeries ?? ["completed", "failed", "running"])">
+    <div class="small text-muted mb-2" title="Measurements from this application process since collection started. Register the feature metric behaviors to observe activity.">Local process · last 15 minutes <span data-workload-state></span></div>
+    <div class="dashboard-workload-grid">
+    @for (var i = 0; i < Model.Charts.Count; i++)
+    {
+        <section class="card">
+            <div class="card-header">@Model.Charts[i].Title <span class="small text-muted">@Model.Charts[i].Unit</span></div>
+            <div class="dashboard-workload-canvas" id="@(Model.Prefix + "-metric-chart-" + i)" data-workload-chart="@i"></div>
+        </section>
+    }
+    </div>
+    @if (Model.HistoryUrl is not null)
+    {
+        <details class="card mt-2" data-workload-history data-preserve-key="@(Model.Prefix + "-retained-history")">
+            <summary class="card-header" title="Counts from retained @Model.HistoryUnit. Retention and archival can change these counts.">@Model.HistoryTitle</summary>
+            <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 p-2">
+                <span class="small text-muted" data-history-status>@Model.HistoryUnit per bucket</span>
+                <div class="btn-group btn-group-sm" role="group" aria-label="Retained history window">
+                    <button class="btn btn-outline-secondary active" type="button" data-history-window="day">Day</button>
+                    <button class="btn btn-outline-secondary" type="button" data-history-window="week">Week</button>
+                    <button class="btn btn-outline-secondary" type="button" data-history-window="month">Month</button>
+                </div>
+                <button class="btn btn-outline-secondary btn-sm" type="button" data-history-refresh title="Refresh retained history" aria-label="Refresh retained history"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+            </div>
+            <div class="dashboard-workload-canvas" id="@(Model.Prefix + "-history-graph")"></div>
+        </details>
+    }
+</div>
+<script>
+(() => {
+    const root = document.getElementById('@(Model.Prefix + "-realtime-graph")');
+    const prefix = root.dataset.prefix;
+    const definitions = JSON.parse(root.dataset.charts);
+    const ownerKey = 'bdk' + prefix.charAt(0).toUpperCase() + prefix.slice(1) + 'GraphState';
+    window[ownerKey]?.dispose();
+    let latest, history, historyController, resizeFrame, disposed = false, renderVersion = 0, historyWindow = 'day';
+    const historyPanel = root.querySelector('[data-workload-history]');
+    const interval = document.getElementById(prefix + '-refresh-interval');
+    const storageKey = 'bdk.dashboard.' + prefix + '.diagnostics.refreshInterval';
+    try { if (interval && localStorage.getItem(storageKey) === null) interval.value = '1000'; } catch { }
+
+    async function render(host, traces, unit) {
+        if (disposed || !host || !host.clientWidth) return;
+        const plotly = await window.bdkDashboard.loadPlotly();
+        if (disposed) return;
+        const layout = window.bdkDashboard.createPlotlyLayout({ showlegend: true, margin: { l: 58, r: 16, t: 16, b: 62 } });
+        layout.width = host.clientWidth;
+        layout.xaxis.type = 'date';
+        layout.xaxis.nticks = innerWidth < 576 ? 3 : 6;
+        layout.xaxis.tickformat = '%H:%M:%S';
+        layout.yaxis.title = { text: unit };
+        layout.yaxis.rangemode = 'tozero';
+        if (!traces.some(trace => trace.x.length)) layout.xaxis.range = [new Date(Date.now() - 900000), new Date()];
+        await plotly.react(host, traces, layout, { responsive: true, displayModeBar: false });
+    }
+
+    async function draw() {
+        if (!latest || disposed || document.hidden) return;
+        const version = ++renderVersion;
+        const theme = window.bdkDashboard.getChartTheme();
+        const colors = [theme.primary, theme.secondary, theme.danger, theme.warning, theme.success, theme.info];
+        const samples = latest.samples;
+        for (let i = 0; i < definitions.length; i++) {
+            if (disposed || version !== renderVersion) return;
+            const chart = definitions[i];
+            await render(root.querySelector(`[data-workload-chart="${i}"]`), chart.series.map((series, index) => ({
+                x: samples.map(sample => sample.at), y: samples.map(sample => sample.values[series.instrumentName]),
+                name: series.label, type: 'scatter', mode: series.isDuration ? 'lines+markers' : 'lines', connectgaps: false,
+                marker: { size: 4 }, line: { color: colors[index % colors.length], width: 2, dash: index === 1 ? 'dash' : 'solid' }
+            })), chart.unit);
+        }
+        if (historyPanel?.open && history) await drawHistory();
+    }
+
+    async function drawHistory() {
+        if (!history || disposed || !historyPanel.open) return;
+        const theme = window.bdkDashboard.getChartTheme();
+        await render(document.getElementById(prefix + '-history-graph'), JSON.parse(root.dataset.historySeries).map((key, index) => ({
+            x: history.buckets.map(bucket => bucket.startUtc), y: history.buckets.map(bucket => bucket[key] || 0),
+            name: key.charAt(0).toUpperCase() + key.slice(1), type: 'scatter', mode: 'lines',
+            line: { color: [theme.success, theme.danger, theme.primary, theme.warning, theme.secondary][index], width: 2 }
+        })), root.dataset.historyUnit + ' / bucket');
+    }
+
+    async function loadHistory() {
+        if (!historyPanel?.open || disposed || document.hidden) return;
+        historyController?.abort();
+        const controller = new AbortController(); historyController = controller;
+        try {
+            const url = new URL(root.dataset.historyUrl, location.origin); url.searchParams.set('window', historyWindow);
+            const response = await fetch(url, { cache: 'no-store', headers: { Accept: 'application/json' }, signal: controller.signal });
+            if (!response.ok || response.redirected || !response.headers.get('content-type')?.includes('application/json')) throw new Error('History unavailable');
+            const payload = await response.json();
+            if (disposed || controller.signal.aborted) return;
+            history = payload; await drawHistory();
+            root.querySelector('[data-history-status]').textContent = 'Retained ' + root.dataset.historyUnit + ' · ' + payload.bucketMinutes + ' min buckets';
+        } catch (error) {
+            if (error.name !== 'AbortError' && !disposed) root.querySelector('[data-history-status]').textContent = 'History refresh failed; previous data retained';
+        }
+    }
+
+    const refresher = window.bdkDashboard.createRefresher({
+        responseType: 'json', contentElement: root, contentUrl: root.dataset.url,
+        statusSelector: '#' + prefix + '-refresh-status', intervalSelector: '#' + prefix + '-refresh-interval',
+        refreshButtonSelector: '#' + prefix + '-refresh-now', storageKey,
+        shouldRefresh: () => !disposed,
+        applyResponse: async (_, text) => {
+            const payload = JSON.parse(text);
+            if (!Array.isArray(payload.samples)) throw new Error('Invalid metrics snapshot');
+            latest = payload;
+            root.querySelector('[data-workload-state]').textContent = !payload.enabled ? '· Metrics unavailable' : payload.sourceStatus ? '· ' + payload.sourceStatus : !payload.observed ? '· Awaiting measurements' : '';
+            await draw();
+        }
+    });
+    const redraw = () => draw().catch(() => { document.getElementById(prefix + '-refresh-status').textContent = 'Chart unavailable'; });
+    const observer = new ResizeObserver(() => { cancelAnimationFrame(resizeFrame); resizeFrame = requestAnimationFrame(redraw); });
+    observer.observe(root);
+    historyPanel?.addEventListener('toggle', () => { if (historyPanel.open) loadHistory(); });
+    root.querySelectorAll('[data-history-window]').forEach(button => button.addEventListener('click', () => {
+        historyWindow = button.dataset.historyWindow;
+        root.querySelectorAll('[data-history-window]').forEach(value => value.classList.toggle('active', value === button));
+        loadHistory();
+    }));
+    root.querySelector('[data-history-refresh]')?.addEventListener('click', loadHistory);
+    function dispose() {
+        disposed = true; renderVersion++; refresher.cancel(); historyController?.abort(); observer.disconnect(); cancelAnimationFrame(resizeFrame);
+        document.removeEventListener('bdk-dashboard-theme-changed', redraw);
+        if (window.Plotly) root.querySelectorAll('.js-plotly-plot').forEach(host => window.Plotly.purge(host));
+    }
+    document.addEventListener('bdk-dashboard-theme-changed', redraw);
+    window.addEventListener('pagehide', event => { refresher.cancel(); historyController?.abort(); if (!event.persisted) dispose(); });
+    window.addEventListener('pageshow', event => { if (event.persisted) { refresher.refresh(); if (historyPanel?.open) loadHistory(); } });
+    window[ownerKey] = { dispose, refresh: () => refresher.refresh() };
+    refresher.refresh();
+})();
+</script>

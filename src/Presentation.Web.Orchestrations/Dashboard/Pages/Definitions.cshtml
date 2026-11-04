@@ -1,0 +1,103 @@
+@using BridgingIT.DevKit.Application.Orchestrations
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using Microsoft.Extensions.DependencyInjection
+@inherits RazorSlice<IReadOnlyList<OrchestrationDefinitionSummary>>
+@{
+    var options = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var actionBase = DashboardPath.Combine(options.GroupPath, "/orchestrations");
+    var diagramsAvailable = HttpContext.RequestServices.GetService<IOrchestrationDiagramService>() is not null;
+}
+<style>
+    .orchestration-definition { min-width: 0; }
+    .orchestration-definition summary { cursor: pointer; gap: .75rem; }
+    .orchestration-definition-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+    .orchestration-definition summary .bi-chevron-right { transition: transform .15s; }
+    .orchestration-definition[open] > summary .bi-chevron-right { transform: rotate(90deg); }
+    .orchestration-definition-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: .75rem; }
+    .orchestration-definition-flow { overflow: auto; max-height: 32rem; background: var(--bs-light); border: 1px solid var(--bs-border-color); }
+    .orchestration-definition-flow img { display: block; max-width: none; margin: auto; }
+    [data-bs-theme="dark"] .orchestration-definition-flow { background: var(--bs-body-bg); }
+    [data-bs-theme="dark"] .orchestration-definition-flow img { filter: invert(.9) hue-rotate(180deg); }
+    .orchestration-definition-states { max-height: 32rem; overflow: auto; min-width: 0; }
+    .orchestration-definition-state { padding: .75rem; border: 1px solid var(--bs-border-color); overflow-wrap: anywhere; }
+    .orchestration-definition-state + .orchestration-definition-state { margin-top: .5rem; }
+    @@media (max-width: 767.98px) {
+        #orchestrations-dashboard-root .orchestration-definition summary { display: grid; grid-template-columns: 1rem minmax(0, 1fr); align-items: start; }
+        .orchestration-definition summary > span:last-child { grid-column: 2; }
+    }
+    @@media (max-width: 991.98px) { .orchestration-definition-grid { grid-template-columns: minmax(0, 1fr); } }
+</style>
+<section data-orchestration-definitions>
+    @if (Model.Count == 0)
+    {
+        <div class="dashboard-empty-state">No orchestration definitions are registered.</div>
+    }
+    @for (var i = 0; i < Model.Count; i++)
+    {
+        var definition = Model[i];
+        var activityCount = definition.States.Sum(state => state.Activities.Count);
+        var diagramUrl = actionBase + "/definitions/diagram?name=" + Uri.EscapeDataString(definition.Name);
+        <details class="orchestrations-panel orchestration-definition mb-2" open="@(i == 0)" data-preserve-key="@("definition-" + definition.TypeName)">
+            <summary class="orchestrations-panel-header flex-wrap">
+                <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                <span class="orchestration-definition-name"><span class="d-block">@definition.Name</span><span class="small text-muted fw-normal" title="@definition.TypeName">@(definition.TypeLabel ?? definition.TypeName)</span></span>
+                <span class="d-flex flex-wrap gap-2 small fw-normal">
+                    @if (definition.InitialState is not null) { <span>Start: <strong>@definition.InitialState</strong></span> }
+                    @if (definition.Error is null)
+                    {
+                    <span class="badge text-bg-secondary">@definition.States.Count @(definition.States.Count == 1 ? "state" : "states")</span>
+                    <span class="badge text-bg-secondary">@activityCount @(activityCount == 1 ? "activity" : "activities")</span>
+                    }
+                    else { <span class="text-warning">Details unavailable</span> }
+                </span>
+            </summary>
+            <div class="p-2">
+                @if (definition.Error is not null)
+                {
+                    <div class="text-warning small" role="status">@definition.Error</div>
+                }
+                else
+                {
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                        <span class="small text-muted text-break" title="@definition.DataTypeName">Data: @definition.DataTypeLabel</span>
+                        <a class="btn btn-outline-secondary btn-sm" href="@(actionBase + "/instances?name=" + Uri.EscapeDataString(definition.Name))">View instances</a>
+                    </div>
+                    <div class="orchestration-definition-grid">
+                        <div class="min-width-0">
+                            <div class="d-flex justify-content-between align-items-center mb-2"><strong class="small">State flow</strong>
+                                @if (diagramsAvailable) { <a class="small" href="@diagramUrl" target="_blank" rel="noopener">Open diagram</a> }
+                            </div>
+                            @if (diagramsAvailable)
+                            {
+                                <div class="orchestration-definition-flow">
+                                    <img src="@diagramUrl" alt="State flow for @definition.Name" loading="lazy" onerror="this.hidden=true;this.nextElementSibling.hidden=false;">
+                                    <div class="small p-2" hidden role="status">Diagram unavailable. State and activity details are shown alongside.</div>
+                                </div>
+                            }
+                            else { <div class="small text-muted">Diagram unavailable.</div> }
+                        </div>
+                        <div>
+                            <strong class="small d-block mb-2">States &amp; activities</strong>
+                            <div class="orchestration-definition-states">
+                                @foreach (var state in definition.States)
+                                {
+                                    <section class="orchestration-definition-state">
+                                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2"><strong>@state.Name</strong><span>
+                                            @if (string.Equals(state.Name, definition.InitialState, StringComparison.OrdinalIgnoreCase)) { <span class="badge text-bg-primary">Initial</span> }
+                                            @if (state.Directive is not null) { <span class="badge text-bg-secondary">@state.Directive</span> }
+                                        </span></div>
+                                        @if (state.Activities.Count > 0)
+                                        {
+                                            <ol class="small ps-3 mb-2">@foreach (var activity in state.Activities) { <li>@activity</li> }</ol>
+                                        }
+                                        @foreach (var transition in state.Transitions) { <div class="small text-muted">@transition</div> }
+                                    </section>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </details>
+    }
+</section>

@@ -235,6 +235,8 @@
     }
 
     function confirmDialog(options) {
+        const native = document.querySelector('dialog[open]');
+        if (native && window.bdkDashboard?.confirmInDialog) return window.bdkDashboard.confirmInDialog(native, options);
         if (window.bdkDashboard && typeof window.bdkDashboard.confirmAction === 'function') {
             return window.bdkDashboard.confirmAction(options);
         }
@@ -832,6 +834,10 @@
     }
 
     function updateLoadMore(hasMore) {
+        const count = loadMoreBox?.querySelector('[data-dashboard-list-status]');
+        if (count) {
+            count.textContent = `${dataRows().length} rows loaded`;
+        }
         if (loadMoreButton) {
             moreAvailable = !!hasMore;
             loadMoreButton.hidden = false;
@@ -1666,6 +1672,7 @@
             : pageTarget();
         const onPage = sameTarget(saved, pageTarget());
 
+        window.bdkDashboard.markDialogSaved(editorDialog);
         closeEditor();
         setStatus(mode === 'create' ? 'Record created.' : 'Record saved.');
         if (mode === 'create') {
@@ -1760,9 +1767,8 @@
             submitEditor();
         });
         dialog.addEventListener('cancel', event => {
-            if (editorBusy) {
-                event.preventDefault();
-            }
+            event.preventDefault();
+            if (!editorBusy) closeEditor();
         });
         dialog.addEventListener('close', () => cleanupEditor(dialog));
     }
@@ -1788,6 +1794,10 @@
             return;
         }
 
+        if (window.bdkDashboard.isDialogDirty(dialog)) {
+            window.bdkDashboard.confirmDialogDiscard(dialog).then(accepted => { if (accepted && editorDialog === dialog) closeEditor(); });
+            return false;
+        }
         const opener = editorOpener;
         if (dialog.open) {
             dialog.close();
@@ -1931,7 +1941,7 @@
             }
         } else if ((match = pick('[data-entities-sort]')) && root.contains(match)) {
             sortBy(match.dataset.entitiesSort);
-        } else if ((match = pick('[data-entities-load-more]'))) {
+        } else if ((match = pick('#entities-load-more-button'))) {
             loadRows(true);
         } else if (pick('[data-entities-add-condition]')) {
             clearFilterError();
@@ -1945,7 +1955,7 @@
             if (add) {
                 add.focus();
             }
-        } else if (pick('[data-entities-reset]')) {
+        } else if (pick('#entities-reset')) {
             resetFilters();
         } else if (pick('[data-entities-refresh]')) {
             if (!editorDialog) {
@@ -2004,7 +2014,7 @@
             }
         } else if (target.matches('input[data-entities-select]')) {
             onSelectChange(target);
-        } else if (target.matches('[data-entities-page-size]')) {
+        } else if (target.matches('#entities-page-size')) {
             writeStorage(PAGE_SIZE_KEY, target.value);
             loadRows(false);
         } else if (target.matches('[data-entities-select-all]')) {
@@ -2028,9 +2038,14 @@
 
     window.addEventListener('popstate', () => {
         const state = parseUrlState(window.location.search);
-        if (editorDialog) {
-            closeEditor();
+        if (editorDialog && window.bdkDashboard.isDialogDirty(editorDialog)) {
+            window.bdkDashboard.confirmDialogDiscard(editorDialog).then(accepted => {
+                if (accepted) { closeEditor(); window.dispatchEvent(new PopStateEvent('popstate')); }
+                else pushState(applied, '');
+            });
+            return;
         }
+        if (editorDialog) closeEditor();
 
         if (detailId) {
             closeDetail();

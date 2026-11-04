@@ -40,7 +40,8 @@ public sealed class DashboardMessageTypeTests
             var service = Substitute.For<IMessageBrokerService>();
             var message = new BrokerMessageInfo { Id = Guid.NewGuid(), Type = type, MessageId = "message-1" };
             service.GetMessageStatsAsync().ReturnsForAnyArgs(new BrokerMessageStats());
-            service.GetMessagesAsync().ReturnsForAnyArgs(new[] { message });
+            service.SearchMessagesAsync(Arg.Any<FilterModel>(), Arg.Any<bool?>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
+                .ReturnsForAnyArgs(ResultPaged<BrokerMessageInfo>.Success([message], 1, 1, 50));
             service.GetSubscriptionsAsync().ReturnsForAnyArgs(Array.Empty<BrokerMessageSubscriptionInfo>());
             service.GetWaitingMessagesAsync().ReturnsForAnyArgs(new[] { message });
             services.AddSingleton(service);
@@ -50,7 +51,8 @@ public sealed class DashboardMessageTypeTests
             var service = Substitute.For<IQueueBrokerService>();
             var message = new QueueMessageInfo { Id = Guid.NewGuid(), Type = type, MessageId = "message-1" };
             service.GetMessageStatsAsync().ReturnsForAnyArgs(new QueueMessageStats());
-            service.GetMessagesAsync().ReturnsForAnyArgs(new[] { message });
+            service.SearchMessagesAsync(Arg.Any<FilterModel>(), Arg.Any<bool?>(), Arg.Any<CancellationToken>())
+                .ReturnsForAnyArgs(ResultPaged<QueueMessageInfo>.Success([message], 1, 1, 50));
             service.GetSubscriptionsAsync().ReturnsForAnyArgs(Array.Empty<QueueSubscriptionInfo>());
             service.GetWaitingMessagesAsync().ReturnsForAnyArgs(new[] { message });
             services.AddSingleton(service);
@@ -59,6 +61,8 @@ public sealed class DashboardMessageTypeTests
         using var provider = services.BuildServiceProvider();
         await using var body = new MemoryStream();
         var context = new DefaultHttpContext { RequestServices = provider };
+        context.Request.Path = $"/{feature}/content";
+        context.Request.QueryString = new("?view=messages");
         context.Response.Body = body;
 
         if (feature == "messaging")

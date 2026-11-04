@@ -60,6 +60,8 @@
         // Prevent pagehide from saving the discarded form over the reset state.
         window.removeEventListener('pagehide', remember);
         const url = new URL(event.currentTarget.href);
+        const limit = new URL(appliedSelection).searchParams.get("limit");
+        if (limit) url.searchParams.set("limit", limit);
         if (current.searchParams.has('dashboardView')) url.searchParams.set('dashboardView', current.searchParams.get('dashboardView'));
         event.currentTarget.href = url;
     });
@@ -67,10 +69,10 @@
     function cancelOlder() {
         olderController?.abort(); olderController = null;
         const button = content.querySelector('[data-operation-load-more]');
-        if (button) { button.disabled = false; button.textContent = 'Load more'; }
+        if (button) { button.disabled = !button.dataset.nextUrl; button.textContent = 'Load more'; }
     }
     function unpin() { cancelOlder(); cancelTail(); current.searchParams.delete('cursor'); document.getElementById('operation-refresh-status').removeAttribute('title'); }
-    function selectionUrl() {
+    function readSelectionUrl() {
         const url = new URL(content.dataset.contentUrl, location.origin);
         if (current.searchParams.has('dashboardView')) url.searchParams.set('dashboardView', current.searchParams.get('dashboardView'));
         let advanced = {};
@@ -86,9 +88,18 @@
         else current.searchParams.forEach((value, key) => url.searchParams.set(key, value));
         return url;
     }
+    let appliedSelection = readSelectionUrl().toString();
+    let pendingSelection = null;
+    function selectionUrl() { return new URL(pendingSelection ?? appliedSelection); }
+    function acceptSelection() {
+        if (pendingSelection === null) return;
+        appliedSelection = pendingSelection; pendingSelection = null;
+        const page = new URL(appliedSelection); page.pathname = content.dataset.pageUrl;
+        history.replaceState(null, "", page);
+    }
     function pagingUrl(value) {
         const url = new URL(value, location.origin);
-        const limit = form?.elements.namedItem('limit')?.value;
+        const limit = new URL(appliedSelection).searchParams.get('limit');
         if (limit) url.searchParams.set('limit', limit);
         return url;
     }
@@ -369,7 +380,7 @@
     }
     const refresher = window.bdkDashboard.createRefresher({ contentElement: content, statusSelector: '#operation-refresh-status', buildUrl: selectionUrl,
         applyResponse: (element, html) => { const state = captureState(); window.bdkProfiling.disposeHelp(element); element.querySelectorAll('.js-plotly-plot').forEach(chart => window.Plotly?.purge(chart)); element.innerHTML = html; window.bdkDashboard.applySeriesColors(element); restoreState(state); synchronizeNodes(); synchronizeMetadata(); restoreDetails(); applyTimingMode(); window.bdkProfiling.initializeHelp(element); },
-        onSuccess: () => { resetTail(); return charts(); }, formatUpdatedAt: window.bdkProfiling.formatUpdatedAt, errorText: 'Refresh failed; showing previous data.' });
+        onError: () => { pendingSelection = null; }, onSuccess: () => { acceptSelection(); resetTail(); return charts(); }, formatUpdatedAt: window.bdkProfiling.formatUpdatedAt, errorText: 'Refresh failed; showing previous data.' });
     async function loadNewer() {
         tailTimer = null;
         if (!tail?.checked || tail.disabled || filtersDirty || document.hidden || tailController !== null || !tailCheckpoint) return;
@@ -391,6 +402,7 @@
                 next = view.querySelector('[data-operation-load-more]')?.dataset.nextUrl;
             } while (next);
             const loaded = mergeGroups(views, true);
+            updateLoaded();
             const head = views[0];
             tailCheckpoint = { watermark: head.dataset.tailWatermark, epoch: head.dataset.tailEpoch, revision: head.dataset.tailRevision };
             window.bdkDashboard.clearRefreshError(content);
@@ -414,7 +426,10 @@
             if (controller.signal.aborted || controller !== olderController || !button.isConnected) return;
             const loaded = mergeGroups([view]);
             const next = view.querySelector('[data-operation-load-more]')?.dataset.nextUrl;
-            if (next) button.dataset.nextUrl = next; else button.closest('[data-operation-paging]').remove();
+            button.dataset.nextUrl = next || '';
+            button.disabled = !next;
+            if (!next && document.activeElement === button) document.getElementById('operation-limit')?.focus();
+            updateLoaded();
             window.bdkDashboard.clearRefreshError(content);
             setStatus(`Loaded ${loaded} more ${loaded === 1 ? 'recording' : 'recordings'}`);
         } catch (error) {
@@ -422,10 +437,25 @@
         } finally {
             if (controller === olderController) {
                 olderController = null;
-                if (button.isConnected) { button.disabled = false; button.textContent = 'Load more'; }
+                if (button.isConnected) { button.disabled = !button.dataset.nextUrl; button.textContent = 'Load more'; }
             }
         }
     }
+    function updateLoaded() {
+        const view = content.querySelector('[data-operation-view]');
+        const grouped = view?.dataset.operationMode === 'ByCount';
+        const count = content.querySelectorAll(grouped ? '[data-operation-group]' : '[data-operation-id]').length;
+        const label = content.querySelector('[data-operation-loaded]');
+        if (label) label.textContent = `${count} ${grouped ? 'groups' : 'rows'} loaded`;
+    }
+    content.addEventListener('change', event => {
+        if (event.target.id !== 'operation-limit') return;
+        const url = new URL(appliedSelection);
+        url.searchParams.set('limit', event.target.value);
+        url.searchParams.delete('cursor'); url.searchParams.delete('boundary');
+        unpin(); pendingSelection = url.toString();
+        remember(); refresher.refresh(true);
+    });
     content.addEventListener('click', event => {
         const button = event.target.closest('[data-operation-load-more]');
         if (button) loadOlder(button);
@@ -445,22 +475,27 @@
         refresher.refresh(true);
     });
     form?.addEventListener('submit', event => {
-        event.preventDefault(); unpin();
-        const url = selectionUrl(); url.pathname = content.dataset.pageUrl;
-        history.replaceState(null, '', url); remember(); refresher.refresh(true);
+        event.preventDefault();
+        const selector = document.getElementById('operation-query');
+        if (selector) {
+            selector.setCustomValidity('');
+            try { JSON.parse(selector.value || '{}'); }
+            catch { selector.setCustomValidity('Enter valid selector JSON.'); }
+        }
+        if (!form.reportValidity()) return;
+        unpin(); pendingSelection = readSelectionUrl().toString();
+        remember(); refresher.refresh(true);
     });
     function pauseForFilters(event) {
+        if (event.target.id === 'operation-query') event.target.setCustomValidity('');
         remember(); cancelOlder(); cancelTail(); refresher.cancel();
-        if (event.target.name === 'limit') {
-            const url = new URL(location.href); url.searchParams.set('limit', event.target.value); history.replaceState(null, '', url);
-            scheduleTail(); return;
-        }
+
         filtersDirty = true; updateTailControl();
     }
     form?.addEventListener('input', pauseForFilters);
     form?.addEventListener('change', pauseForFilters);
     function selectionQuery() {
-        const url = selectionUrl();
+        const url = new URL(appliedSelection);
         const normalize = window.bdkOperationDimensions.normalize;
         const query = normalize(JSON.parse(url.searchParams.get('query') || '{}'));
         for (const name of ['kind', 'correlationId', 'applicationVersion', 'fromUtc', 'toUtc', 'nodeId']) if (url.searchParams.has(name)) query[name] = url.searchParams.get(name) || null;

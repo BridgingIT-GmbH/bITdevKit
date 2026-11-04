@@ -17,9 +17,9 @@
 
 @(await RenderPartialAsync<SystemStyles>())
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
     <div class="d-flex align-items-center gap-2">
-        <span class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <span class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.ToString("HH:mm:ss 'UTC'", CultureInfo.InvariantCulture)</span>
         <button type="button" class="btn btn-outline-secondary btn-sm" title="Refresh process details" aria-label="Refresh process details" data-system-reload>
             <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
         </button>

@@ -304,7 +304,7 @@
             </div>
         }
 
-        <section class="storage-toolbar">
+        <section class="storage-toolbar dashboard-filter-panel">
             <div class="row g-2 align-items-end">
                 <div class="col-12 col-lg-3">
                     <label class="form-label small mb-1" for="storage-provider-select">Provider</label>
@@ -330,13 +330,13 @@
                 <div class="col-12 col-lg-4">
                     <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
                         <button type="button" class="btn btn-primary btn-sm" data-storage-command="create-folder" @(string.IsNullOrWhiteSpace(vm.SelectedProviderName) ? "disabled" : null)>
-                            <i class="bi bi-folder-plus me-1"></i>Folder
+                            <i class="bi bi-folder-plus me-1" aria-hidden="true"></i>Folder
                         </button>
                         <button type="button" class="btn btn-outline-secondary btn-sm" data-storage-command="create-text" @(string.IsNullOrWhiteSpace(vm.SelectedProviderName) ? "disabled" : null)>
-                            <i class="bi bi-file-earmark-plus me-1"></i>Text File
+                            <i class="bi bi-file-earmark-plus me-1" aria-hidden="true"></i>Text File
                         </button>
                         <button type="button" class="btn btn-outline-secondary btn-sm" data-storage-command="upload" @(string.IsNullOrWhiteSpace(vm.SelectedProviderName) ? "disabled" : null)>
-                            <i class="bi bi-upload me-1"></i>Upload
+                            <i class="bi bi-upload me-1" aria-hidden="true"></i>Upload
                         </button>
                     </div>
                 </div>
@@ -365,21 +365,21 @@
                                             data-storage-tree-toggle
                                             aria-label="Collapse Root"
                                             title="Collapse Root">
-                                        <i class="bi bi-chevron-right"></i>
+                                        <i class="bi bi-chevron-right" aria-hidden="true"></i>
                                     </button>
                                 }
                                 else
                                 {
                                     <button type="button" class="storage-tree-toggle" disabled aria-hidden="true" tabindex="-1">
-                                        <i class="bi bi-chevron-right"></i>
+                                        <i class="bi bi-chevron-right" aria-hidden="true"></i>
                                     </button>
                                 }
                                 <button type="button"
                                         class="storage-tree-link"
                                         data-storage-command="open"
                                         data-path=""
-                                        title="/">
-                                    <i class="bi bi-folder-fill"></i>
+                                        title="/" aria-label="/">
+                                    <i class="bi bi-folder-fill" aria-hidden="true"></i>
                                     <span class="storage-tree-label">Root</span>
                                 </button>
                             </div>
@@ -433,7 +433,7 @@
                                     <tr>
                                         <td>
                                             <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none storage-name-cell" data-storage-command="open" data-path="@directory.Path" title="@directory.Path">
-                                                <i class="bi bi-folder-fill text-warning"></i>
+                                                <i class="bi bi-folder-fill text-warning" aria-hidden="true"></i>
                                                 <span>@ShortenPath(directory.Name, 48)</span>
                                             </button>
                                         </td>
@@ -442,11 +442,11 @@
                                         <td class="text-muted">-</td>
                                         <td class="text-end text-nowrap">
                                             <span class="storage-actions">
-                                                <button type="button" class="btn btn-sm btn-outline-secondary" title="Rename folder" data-storage-command="rename" data-kind="directory" data-path="@directory.Path">
-                                                    <i class="bi bi-pencil"></i>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" title="Rename folder" data-storage-command="rename" data-kind="directory" data-path="@directory.Path" aria-label="Rename folder">
+                                                    <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-outline-danger" title="Delete folder" data-storage-command="delete" data-kind="directory" data-path="@directory.Path">
-                                                    <i class="bi bi-trash"></i>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" title="Delete folder" data-storage-command="delete" data-kind="directory" data-path="@directory.Path" aria-label="Delete folder">
+                                                    <i class="bi bi-trash" aria-hidden="true"></i>
                                                 </button>
                                             </span>
                                         </td>
@@ -459,7 +459,7 @@
                                     <tr>
                                         <td>
                                             <div class="storage-name-cell" title="@file.Path">
-                                                <i class="bi bi-file-earmark-text"></i>
+                                                <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
                                                 <code>@displayFileName</code>
                                             </div>
                                         </td>
@@ -468,31 +468,31 @@
                                         <td class="text-muted small">@FormatTimestamp(file.LastModified)</td>
                                         <td class="text-end text-nowrap">
                                             <span class="storage-actions">
-                                                <a class="btn btn-sm btn-outline-secondary" title="Download file" href="@downloadUrl">
-                                                    <i class="bi bi-download"></i>
+                                                <a class="btn btn-sm btn-outline-secondary" title="Download file" href="@downloadUrl" aria-label="Download file">
+                                                    <i class="bi bi-download" aria-hidden="true"></i>
                                                 </a>
                                                 @if (vm.PermalinksEnabled)
                                                 {
                                                     <form class="d-inline" method="post" target="_blank" action="@permalinkAction">
                                                         <input type="hidden" name="kind" value="File"><input type="hidden" name="registration" value="@vm.SelectedProviderName"><input type="hidden" name="scope" value=""><input type="hidden" name="path" value="@file.Path">
-                                                        <button class="btn btn-sm btn-outline-secondary" title="Permalink download"><i class="bi bi-link-45deg"></i></button>
+                                                        <button class="btn btn-sm btn-outline-secondary" title="Permalink download" aria-label="Permalink download"><i class="bi bi-link-45deg" aria-hidden="true"></i></button>
                                                     </form>
                                                     <form class="d-inline" method="post" action="@permalinkCopyAction" data-permalink-copy-form>
                                                         <input type="hidden" name="kind" value="File"><input type="hidden" name="registration" value="@vm.SelectedProviderName"><input type="hidden" name="scope" value=""><input type="hidden" name="path" value="@file.Path">
-                                                        <button class="btn btn-sm btn-outline-secondary" title="Copy permalink"><i class="bi bi-clipboard"></i></button>
+                                                        <button class="btn btn-sm btn-outline-secondary" title="Copy permalink" aria-label="Copy permalink"><i class="bi bi-clipboard" aria-hidden="true"></i></button>
                                                     </form>
                                                 }
-                                                <button type="button" class="btn btn-sm btn-outline-secondary" title="Rename file" data-storage-command="rename" data-kind="file" data-path="@file.Path">
-                                                    <i class="bi bi-pencil"></i>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" title="Rename file" data-storage-command="rename" data-kind="file" data-path="@file.Path" aria-label="Rename file">
+                                                    <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-outline-secondary" title="Copy file" data-storage-command="copy" data-kind="file" data-path="@file.Path">
-                                                    <i class="bi bi-copy"></i>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" title="Copy file" data-storage-command="copy" data-kind="file" data-path="@file.Path" aria-label="Copy file">
+                                                    <i class="bi bi-copy" aria-hidden="true"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-outline-secondary" title="Move file" data-storage-command="move" data-kind="file" data-path="@file.Path">
-                                                    <i class="bi bi-arrows-move"></i>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" title="Move file" data-storage-command="move" data-kind="file" data-path="@file.Path" aria-label="Move file">
+                                                    <i class="bi bi-arrows-move" aria-hidden="true"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-outline-danger" title="Delete file" data-storage-command="delete" data-kind="file" data-path="@file.Path">
-                                                    <i class="bi bi-trash"></i>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" title="Delete file" data-storage-command="delete" data-kind="file" data-path="@file.Path" aria-label="Delete file">
+                                                    <i class="bi bi-trash" aria-hidden="true"></i>
                                                 </button>
                                             </span>
                                         </td>
@@ -777,7 +777,7 @@
         string.IsNullOrWhiteSpace(value) ? "-" : value;
 
     private static string FormatTimestamp(DateTime? value) =>
-        value?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) ?? "-";
+        value?.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) ?? "-";
 
     private static string FormatSize(long? value)
     {
@@ -883,7 +883,7 @@
                             data-storage-tree-toggle
                             aria-label="{encodedToggleLabel}"
                             title="{encodedToggleLabel}">
-                        <i class="bi bi-chevron-right"></i>
+                        <i class="bi bi-chevron-right" aria-hidden="true"></i>
                     </button>
                 """);
         }
@@ -891,7 +891,7 @@
         {
             html.Append("""
                     <button type="button" class="storage-tree-toggle" disabled aria-hidden="true" tabindex="-1">
-                        <i class="bi bi-chevron-right"></i>
+                        <i class="bi bi-chevron-right" aria-hidden="true"></i>
                     </button>
                 """);
         }
@@ -901,8 +901,8 @@
                         class="storage-tree-link"
                         title="{encodedPath}"
                         data-storage-command="open"
-                        data-path="{encodedPath}">
-                    <i class="bi {iconClass}"></i>
+                        data-path="{encodedPath}" aria-label="{encodedPath}">
+                    <i class="bi {iconClass}" aria-hidden="true"></i>
                     <span class="storage-tree-label">{encodedName}</span>
                 </button>
             </div>

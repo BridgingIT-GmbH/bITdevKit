@@ -127,6 +127,7 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
     private readonly ConcurrentDictionary<string, double> counters = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, double> gauges = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, HistogramAccumulator> histograms = new(StringComparer.Ordinal);
+    private readonly ConcurrentDictionary<string, string> units = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, MetricInstrumentKind> instruments = new(StringComparer.Ordinal);
     private readonly DateTimeOffset processStartedAtUtc = new(Process.GetCurrentProcess().StartTime.ToUniversalTime());
 
@@ -143,6 +144,7 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
             }
 
             this.instruments[instrument.Name] = GetInstrumentKind(instrument);
+            this.units[instrument.Name] = instrument.Unit ?? string.Empty;
             listener.EnableMeasurementEvents(instrument);
         };
 
@@ -211,12 +213,16 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
 
             var feature = GetOrAddFeature(snapshot.Features, featureName);
             var value = pair.Value.GetSnapshot();
-            feature.Durations[pair.Key] = new BdkHistogramSnapshotModel
+            var unit = this.units.GetValueOrDefault(pair.Key, string.Empty);
+            var multiplier = unit switch { "s" => 1000d, "ms" => 1d, "us" or "µs" => .001d, "ns" => .000001d, _ => 0d };
+            var target = multiplier > 0 ? feature.Durations : feature.Histograms;
+            target[pair.Key] = new BdkHistogramSnapshotModel
             {
                 Count = value.Count,
-                Sum = value.Sum,
-                Average = value.Count == 0 ? 0 : value.Sum / value.Count,
-                Max = value.Max
+                Unit = multiplier > 0 ? "ms" : unit,
+                Sum = value.Sum * (multiplier > 0 ? multiplier : 1),
+                Average = value.Count == 0 ? 0 : value.Sum / value.Count * (multiplier > 0 ? multiplier : 1),
+                Max = value.Max * (multiplier > 0 ? multiplier : 1)
             };
         }
 
@@ -450,7 +456,8 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
             .SelectMany(pair =>
                 pair.Value.Counters.Keys.Select(name => new BdkMetricDescriptorModel { Name = name, Feature = pair.Key, Kind = IsFailureSeries(name) ? "failure" : "total" })
                     .Concat(pair.Value.Current.Keys.Select(name => new BdkMetricDescriptorModel { Name = name, Feature = pair.Key, Kind = "current" }))
-                    .Concat(pair.Value.Durations.Keys.Select(name => new BdkMetricDescriptorModel { Name = name, Feature = pair.Key, Kind = "duration", Unit = "ms" })))
+                    .Concat(pair.Value.Durations.Keys.Select(name => new BdkMetricDescriptorModel { Name = name, Feature = pair.Key, Kind = "duration", Unit = "ms" }))
+                    .Concat(pair.Value.Histograms.Select(metric => new BdkMetricDescriptorModel { Name = metric.Key, Feature = pair.Key, Kind = "histogram", Unit = metric.Value.Unit })))
             .DistinctBy(model => model.Name)
             .OrderBy(model => model.Feature, StringComparer.Ordinal)
             .ThenBy(model => model.Kind, StringComparer.Ordinal)

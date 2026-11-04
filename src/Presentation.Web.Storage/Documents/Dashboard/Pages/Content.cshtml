@@ -11,8 +11,8 @@
 
 <style>
     #documents-dashboard-root {
-        height: calc(100vh - 7.75rem);
-        min-height: 560px;
+        height: auto;
+        min-height: 0;
         display: flex;
         flex-direction: column;
         gap: .5rem;
@@ -21,6 +21,7 @@
 
     #documents-dashboard-root .documents-toolbar,
     #documents-dashboard-root .documents-panel {
+        min-width: 0;
         border: 1px solid var(--bs-border-color);
         border-radius: .1rem;
         background: transparent;
@@ -41,12 +42,14 @@
     }
 
     #documents-dashboard-root .documents-panel {
+        min-width: 0;
         min-height: 0;
         display: flex;
         flex-direction: column;
     }
 
     #documents-dashboard-root .documents-panel-header {
+        flex-wrap: wrap;
         padding: .48rem .6rem;
         border-bottom: 1px solid var(--bs-border-color);
         font-weight: 600;
@@ -57,6 +60,9 @@
     }
 
     #documents-dashboard-root .documents-panel-body {
+        min-width: 0;
+        max-width: 100%;
+        max-height: 65vh;
         min-height: 0;
         overflow: auto;
         padding: .45rem;
@@ -95,11 +101,12 @@
         }
 
         #documents-dashboard-root .documents-layout {
-            grid-template-columns: 1fr;
+            grid-template-columns: minmax(0, 1fr);
             overflow: visible;
         }
 
         #documents-dashboard-root .documents-panel {
+        min-width: 0;
             max-height: none;
         }
 
@@ -107,6 +114,8 @@
             opacity: 1;
         }
     }
+    #documents-dashboard-root .table-responsive { max-width: 100%; }
+    #documents-dashboard-root .documents-panel-header > div { flex-wrap: wrap; min-width: 0; }
 </style>
 
 <div id="documents-dashboard-root"
@@ -128,7 +137,7 @@
     {
         @if (vm.Errors.Count > 0)
         {
-            <div class="alert alert-danger py-2 mb-0">
+            <div class="alert alert-danger py-2 mb-0" data-dashboard-query-error>
                 @foreach (var error in vm.Errors)
                 {
                     <div>@error</div>
@@ -136,7 +145,8 @@
             </div>
         }
 
-        <form class="documents-toolbar" data-documents-filter-form>
+
+        <form class="documents-toolbar dashboard-filter-panel" data-documents-filter-form id="documents-filter-form">
             <div class="row g-2 align-items-end">
                 <div class="col-12 col-lg-2">
                     <label class="form-label small mb-1" for="documents-client">Type</label>
@@ -178,44 +188,27 @@
                         }
                     </select>
                 </div>
-                <div class="col-6 col-lg-1">
-                    <label class="form-label small mb-1" for="documents-page-size">Size</label>
-                    <select id="documents-page-size" class="form-select form-select-sm" name="pageSize" data-documents-filter>
-                        @foreach (var pageSize in PageSizeOptions)
-                        {
-                            <option value="@pageSize" @(vm.PageSize == pageSize ? "selected" : null)>@pageSize</option>
-                        }
-                    </select>
-                </div>
-                <div class="col-6 col-lg-1 d-flex gap-1">
-                    <button type="submit" class="btn btn-primary btn-sm">
-                        Apply
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary btn-sm" title="Clear filters" aria-label="Clear filters" data-documents-command="clear-filter">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
-                </div>
-                <div class="col-6 col-lg-1 d-grid">
+                <div class="col-12 col-lg-auto d-flex justify-content-end ms-auto">@(await RenderPartialAsync<FilterActions, DashboardFilterActionsModel>(new(ResetId: "documents-filter-reset")))</div>
+
+            </div>
+        </form>
+
+        <div class="documents-layout">
+            <section class="documents-panel" data-dashboard-list="documents">
+                <div class="documents-panel-header">
+                    <span>Documents</span>
+                    <div class="d-flex align-items-center gap-2">
                     <button type="button"
                             class="btn btn-outline-secondary btn-sm"
                             data-documents-command="new"
                             title="New document"
                             aria-label="New document">
-                        <i class="bi bi-plus-lg"></i>
+                        <i class="bi bi-plus-lg" aria-hidden="true"></i> New document
                     </button>
-                </div>
-            </div>
-        </form>
-
-        <div class="documents-layout">
-            <section class="documents-panel">
-                <div class="documents-panel-header">
-                    <span>Documents</span>
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="text-muted small">@DisplayCount(vm.TotalCount) · @vm.Entries.Count row(s)</span>
+                        <span class="text-muted small">@DisplayCount(vm.TotalCount) · <span data-dashboard-list-count>@vm.Entries.Count</span> row(s)</span>
                     </div>
                 </div>
-                <div class="documents-panel-body">
+                <div class="documents-panel-body" data-dashboard-list-scroll>
                     @if (vm.Entries.Count == 0)
                     {
                         <div class="dashboard-empty">No documents matched this query.</div>
@@ -234,7 +227,7 @@
                                         <th class="text-end"></th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody data-dashboard-list-rows>
                                     @foreach (var entry in vm.Entries)
                                     {
                                         var key = entry.Info.Key;
@@ -242,13 +235,13 @@
                                         var displayRowKey = Shortener.Apply(key.RowKey, new ShorteningOptions { MaximumLength = 64 });
                                         var active = string.Equals(key.PartitionKey, vm.SelectedPartitionKey, StringComparison.Ordinal) &&
                                             string.Equals(key.RowKey, vm.SelectedRowKey, StringComparison.Ordinal);
-                                        <tr class="@(active ? "table-active" : null)">
+                                        <tr class="@(active ? "table-active" : null)" data-dashboard-row-id="@JsonSerializer.Serialize(new[] { key.PartitionKey, key.RowKey })">
                                             <td class="documents-key-cell" title="@key.PartitionKey">
                                                 <button type="button"
                                                         class="btn btn-link btn-sm p-0 align-baseline text-start font-monospace"
                                                         data-documents-command="filter-partition"
                                                         data-partition-key="@key.PartitionKey"
-                                                        title="Filter by this partition">
+                                                        title="Filter by this partition" aria-label="Filter by this partition">
                                                     @displayPartitionKey
                                                 </button>
                                             </td>
@@ -261,18 +254,18 @@
                                                     <a class="btn btn-outline-secondary"
                                                        href="@BuildDownloadUrl(vm, key)"
                                                        title="Download document"
-                                                       data-documents-download>
-                                                        <i class="bi bi-download"></i>
+                                                       data-documents-download aria-label="Download document">
+                                                        <i class="bi bi-download" aria-hidden="true"></i>
                                                     </a>
                                                     @if (vm.PermalinksEnabled)
                                                     {
                                                         <form class="d-inline" method="post" target="_blank" action="@permalinkAction">
                                                             <input type="hidden" name="kind" value="Document"><input type="hidden" name="registration" value="@vm.SelectedClientId"><input type="hidden" name="scope" value="@key.PartitionKey"><input type="hidden" name="path" value="@key.RowKey">
-                                                            <button class="btn btn-outline-secondary" title="Permalink download"><i class="bi bi-link-45deg"></i></button>
+                                                            <button class="btn btn-outline-secondary" title="Permalink download" aria-label="Permalink download"><i class="bi bi-link-45deg" aria-hidden="true"></i></button>
                                                         </form>
                                                         <form class="d-inline" method="post" action="@permalinkCopyAction" data-permalink-copy-form>
                                                             <input type="hidden" name="kind" value="Document"><input type="hidden" name="registration" value="@vm.SelectedClientId"><input type="hidden" name="scope" value="@key.PartitionKey"><input type="hidden" name="path" value="@key.RowKey">
-                                                            <button class="btn btn-outline-secondary" title="Copy permalink"><i class="bi bi-clipboard"></i></button>
+                                                            <button class="btn btn-outline-secondary" title="Copy permalink" aria-label="Copy permalink"><i class="bi bi-clipboard" aria-hidden="true"></i></button>
                                                         </form>
                                                     }
                                                     <button type="button"
@@ -280,8 +273,8 @@
                                                             data-documents-command="select"
                                                             data-partition-key="@key.PartitionKey"
                                                             data-row-key="@key.RowKey"
-                                                            title="Document details">
-                                                        <i class="bi bi-info-circle"></i>
+                                                            title="Document details" aria-label="Document details">
+                                                        <i class="bi bi-info-circle" aria-hidden="true"></i>
                                                     </button>
                                                     <button type="button"
                                                             class="btn btn-outline-danger"
@@ -289,8 +282,8 @@
                                                             data-partition-key="@key.PartitionKey"
                                                             data-row-key="@key.RowKey"
                                                             data-etag="@entry.Info.ETag"
-                                                            title="Delete document">
-                                                        <i class="bi bi-trash"></i>
+                                                            title="Delete document" aria-label="Delete document">
+                                                        <i class="bi bi-trash" aria-hidden="true"></i>
                                                     </button>
                                                 </div>
                                             </td>
@@ -301,18 +294,8 @@
                         </div>
                     }
 
-                    @if (!string.IsNullOrWhiteSpace(vm.NextContinuationToken))
-                    {
-                        <div class="d-flex justify-content-end pt-2">
-                            <button type="button"
-                                    class="btn btn-outline-secondary btn-sm"
-                                    data-documents-command="page"
-                                    data-continuation-token="@vm.NextContinuationToken">
-                                Next <i class="bi bi-chevron-right"></i>
-                            </button>
-                        </div>
-                    }
                 </div>
+                @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.ListFooter, DashboardListFooterModel>(new("documents", vm.PageSize, !string.IsNullOrWhiteSpace(vm.NextContinuationToken), vm.NextContinuationToken, Sizes: PageSizeOptions, SelectorId: "documents-page-size", LoadedCount: vm.Entries.Count, FormId: "documents-filter-form", SizeName: "pageSize")))
             </section>
         </div>
 
@@ -567,7 +550,7 @@
     };
 
     private static string FormatTimestamp(DateTimeOffset? value) =>
-        value?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) ?? "-";
+        value?.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) ?? "-";
 
     private static string DisplayClient(DocumentStoreClientDescriptor descriptor) =>
         descriptor is null ? "-" : $"{descriptor.DocumentTypeName} · {descriptor.ProviderName}";

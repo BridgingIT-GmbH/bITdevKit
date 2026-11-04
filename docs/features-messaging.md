@@ -465,15 +465,19 @@ public class AppDbContext : DbContext, IMessagingContext
 
 Open Messaging at `/_bdk/dashboard/messaging` to inspect retained broker messages and their handler registrations. Reference `Presentation.Web.Messaging`, register messaging with a broker, and enable the [Dashboard](features-presentation-dashboard.md). The page reads `IMessageBrokerService` directly and uses the dashboard's authorization.
 
-Choose Status and Archive, enter a type or message-ID filter, then select Apply. Archive defaults to Active; select All when a completed message is no longer in that list. The counters show the selected archive working set, while Rows bounds the message table. Subscriptions show the registered message-to-handler mappings. Waiting lists messages that have no handler.
+Overview shows broker counts and registered message-to-handler subscriptions without a message filter. Select Messages (`/_bdk/dashboard/messaging/messages`), choose Status and Archive, enter a type or message-ID filter, then select Apply. Archive defaults to Active; select All when a completed message is no longer in that list. The Messages counters show the selected archive working set. Rows per load controls each batch, and the footer reports the cumulative loaded count. Overview contains the subscription controls. The Messages view also has a waiting-for-handler preview for all messages, independent of the filters.
 
-[![Messaging dashboard with succeeded messages, archive filters and registered handlers](assets/dashboard/10-messaging-messaging.png)](assets/dashboard/10-messaging-messaging.png)
+This illustration predates the separate Overview and Messages tabs.
 
-Select a row's information button to open its details dialog. Inspect the stored payload, properties, attempts, lease, errors and handler results. The correlation ID links to Logs and has a copy button, so you can follow the same publication through processing.
+[![Earlier Messaging dashboard with succeeded messages, archive filters and registered handlers](assets/dashboard/10-messaging-messaging.png)](assets/dashboard/10-messaging-messaging.png)
+
+Select a row's information button to open its details dialog. The dialog keeps status visible and separates Overview, Processing, Properties and Payload into tabs. Processing includes attempts, lease, errors and handler results. Each message opens on Overview. The correlation ID links to Logs and has a copy button, so you can follow the same publication through processing.
 
 [![Message details with publication properties, correlation ID and handler outcome](assets/dashboard/messaging/message-details.png)](assets/dashboard/messaging/message-details.png)
 
-The page also provides retry and archive actions for eligible messages, plus pause and resume controls for message types. These act on the broker; retained data and supported operations depend on the broker implementation. The toolbar can publish an alive message when that feature is enabled. Manual refresh and the interval selector update the page; the Message Flow chart collects samples during the browser session.
+The page also provides retry and archive actions for eligible messages, plus pause and resume controls for message types. These act on the broker; retained data and supported operations depend on the broker implementation. The toolbar can publish an alive message when that feature is enabled. Manual refresh and the interval selector update Messages using the last applied filters. Load more and Rows per load share a footer below the messages. The Diagnostics view at `/_bdk/dashboard/messaging/diagnostics` shows publication rates, handler-call rates, failure rates and mean publication/handler latency. Returning to Messages restores loaded history.
+
+Diagnostics collects completed one-second intervals from the application process and retains up to fifteen minutes, independently of polling or viewer count. Register `IMetricsService` through `AddMetrics()` and the existing `MetricsMessagePublisherBehavior` and `MetricsMessageHandlerBehavior` behaviors. Successful-completion counters use the `.completed` suffix after the aggregate or typed series name; existing attempt and failure counters retain their names. A successful publication means the corresponding pipeline returned normally. Handler counts represent metric-behavior pipeline calls, including fan-out; they are not unique-message counts. Behavior ordering determines retry coverage. Duration averages include measured attempts and remain gaps when no timing was observed. Metrics-disabled hosts keep the chart frames with unavailable values.
 
 ## Operational endpoints
 

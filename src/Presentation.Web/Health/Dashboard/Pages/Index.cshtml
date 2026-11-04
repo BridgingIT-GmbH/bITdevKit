@@ -106,19 +106,9 @@
     }
 </style>
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
     <div class="d-flex align-items-center gap-2">
-        <span id="health-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
-        <select id="health-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Health refresh interval">
-            <option value="">Off</option>
-            <option value="1000">1 sec</option>
-            <option value="5000">5 sec</option>
-            <option value="15000">15 sec</option>
-            <option value="30000">30 sec</option>
-        </select>
-        <button type="button" id="health-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh health checks">
-            <i class="bi bi-arrow-clockwise"></i>
-        </button>
+        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.RefreshControls, DashboardRefreshModel>(new("health", "Refresh health")))
     </div>
 </div>
 
@@ -126,7 +116,7 @@
     @(await RenderPartialAsync<Content>())
 </div>
 
-<div class="modal fade" id="health-entry-data-modal" tabindex="-1" aria-labelledby="health-entry-data-title" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="health-entry-data-modal" tabindex="-1" aria-labelledby="health-entry-data-title" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
@@ -140,7 +130,7 @@
                 <div class="row g-2 mb-3" id="health-entry-data-summary"></div>
                 <h6 class="mb-2">Data</h6>
                 <div class="table-responsive">
-                    <table class="table table-sm align-middle mb-0">
+                    <table class="table table-sm align-middle mb-0 dashboard-detail-table">
                         <tbody id="health-entry-data-table"></tbody>
                     </table>
                 </div>

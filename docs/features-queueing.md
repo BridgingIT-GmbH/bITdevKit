@@ -221,15 +221,19 @@ A successful request returns HTTP 202. The in-process consumer then writes `Proc
 
 Open Queueing at `/_bdk/dashboard/queueing` to inspect work items, subscriptions and processing pressure. Reference `Presentation.Web.Queueing`, register queueing with a broker, and enable the [Dashboard](features-presentation-dashboard.md). The page queries `IQueueBrokerService` in process.
 
-Filter by status, archive state, queue and message type, then select Apply. Use All under Archive to include retained completed work. The summary separates pending, waiting-for-handler, processing and failed messages, and reports open circuits. Subscription controls can pause an entire queue, pause a message type, or reset that type's circuit.
+Overview shows broker counts and registered queue subscriptions without message filters. Select Messages (`/_bdk/dashboard/queueing/messages`) to filter by status, archive state, queue and message type, then select Apply. Use All under Archive to include retained completed work. The summary separates pending, waiting-for-handler, processing and failed messages, and reports open circuits. Overview subscription controls can pause an entire queue, pause a message type, or reset that type's circuit. Messages also includes a waiting-for-handler preview for all messages, independent of the filters.
 
-[![Queueing dashboard with retained work items, processing counters and queue subscriptions](assets/dashboard/11-queueing-queueing.png)](assets/dashboard/11-queueing-queueing.png)
+This illustration predates the separate Overview and Messages tabs.
 
-Select the information button on a work item to inspect its queue, attempt count, expiration, lease, last error, properties and payload. Its correlation ID links to Logs and can be copied. Retry and archive controls appear for eligible items. Their availability and retained history depend on the configured broker.
+[![Earlier Queueing dashboard with retained work items, processing counters and queue subscriptions](assets/dashboard/11-queueing-queueing.png)](assets/dashboard/11-queueing-queueing.png)
+
+Select the information button on a work item to open its details. Status stays visible above four tabs: Overview, Processing, Properties and Payload. Overview shows identity and expiration; Processing shows the handler, lease and last error. Each message opens on Overview. Its correlation ID links to Logs and can be copied. Retry and archive controls appear for eligible items. Their availability and retained history depend on the configured broker.
 
 [![Queue message details with processing metadata and propagated correlation ID](assets/dashboard/queueing/message-details.png)](assets/dashboard/queueing/message-details.png)
 
-Use the refresh button for a current snapshot or select an automatic interval. Queue Pressure shows samples collected during this browser session. The alive-message action is available when queueing alive support is enabled.
+Use the refresh button for a current snapshot or select an automatic interval. The Diagnostics view at `/_bdk/dashboard/queueing/diagnostics` shows enqueue rates, handler-call rates, failure rates and mean enqueue/handler latency. Messages retains its applied filters and loaded history when returning. Load more and Rows per load share the footer below the work items. The alive-message action is available when queueing alive support is enabled.
+
+Diagnostics collects completed one-second intervals from the application process and retains up to fifteen minutes, independently of polling or viewer count. Register `IMetricsService` through `AddMetrics()` and the existing `MetricsQueueEnqueuerBehavior` and `MetricsQueueHandlerBehavior` behaviors. Successful-completion counters use the `.completed` suffix after the aggregate or typed series name; existing attempt and failure counters retain their names. A successful enqueue means the corresponding pipeline returned normally. Handler counts represent metric-behavior pipeline calls, including fan-out; they are not unique-message counts. Behavior ordering determines retry coverage. Duration averages include measured attempts and remain gaps when no timing was observed. Metrics-disabled hosts keep the chart frames with unavailable values.
 
 ## Operational endpoints
 

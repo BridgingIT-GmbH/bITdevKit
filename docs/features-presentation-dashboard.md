@@ -460,7 +460,9 @@ Comparison dialogs have a separate picker for each side; select **Compare** afte
 
 ### <img class="bdk-doc-icon" src="assets/features/system.svg" width="24" height="24" alt=""> System
 
-System at `/_bdk/dashboard/system` shows process CPU, memory, traffic, thread-pool and GC observations. Its trend charts collect recent samples, while route and database sections provide the current operational context. Refresh manually or choose an interval to watch changes. These process snapshots complement [Profiling](features-profiling.md); they do not attribute resource usage to one operation. The **Process** tab lists application, runtime, server and process details such as versions, OS, architecture and memory. The **Environment** tab shows environment checks, environment variables and the worktree instance when one applies.
+System at `/_bdk/dashboard/system` shows process CPU, memory, traffic, thread-pool and GC observations. Overview keeps the current summaries, routes and database context. The **Diagnostics** tab shows four charts with the shared workload layout: process CPU and its five-sample mean; working set, private, managed and GC heap memory; started/completed/failed requests per second; and interval versus process-lifetime mean request latency. Server sampling retains up to fifteen minutes independently of browser visits. Rates use actual elapsed sampling time, and idle intervals leave latency gaps. Runtime and HTTP sources can be unavailable independently. Refresh manually or choose an interval to watch changes. These process snapshots complement [Profiling](features-profiling.md); they do not attribute resource usage to one operation. The **Process** tab lists application, runtime, server and process details such as versions, OS, architecture and memory. The **Environment** tab shows environment checks, environment variables and the worktree instance when one applies.
+
+The System overview illustration below predates moving the charts to Diagnostics.
 
 [![System dashboard with process pressure, traffic and runtime trend charts](assets/dashboard/03-system-system.png)](assets/dashboard/03-system-system.png)
 
@@ -666,6 +668,8 @@ Use `DashboardPageSlice` for full dashboard pages and `DashboardContentSlice` fo
 }
 ```
 
+`createRefresher` expects an HTML fragment by default. For a JSON data endpoint, set `responseType: 'json'` and provide an `applyResponse(contentElement, responseText)` callback that parses the JSON and updates the page. The helper checks the expected response format and preserves the current display on a failed or redirected request. HTML query-error markers are checked only for HTML responses.
+
 ### Page descriptor guidance
 
 - `.Title(...)`: Display name in sidebar and default card title.
@@ -812,3 +816,14 @@ builder.Services.AddDashboard(options =>
     options.WithPluginAssemblyContaining<HealthDashboard>();
 });
 ```
+
+
+## Consistent page controls
+
+The breadcrumb provides the page title. Equivalent pages place their compact refresh toolbar first, routed view pills second, then context and filters, results, and continuation controls. Filter forms use a text Apply action and a circled-X Reset action (`bi-x-circle`, with the accessible name Reset filters) beside the final criteria on desktop. The pair wraps together on narrow screens. Editing a criterion creates a draft; refresh, export and continuation use the last successful selection. Reset preserves context, row-size and refresh preferences while clearing investigation criteria.
+
+Growing lists keep Load more below the results beside Rows per load and show the cumulative number of items loaded. Exhausted lists retain a disabled button and an enabled selector. Changing the batch size loads a fresh first batch without applying other draft criteria. Jobs and broker lists preserve loaded history across Diagnostics navigation by replaying bounded requests; browser storage contains query boundaries, counts and scroll positions rather than row payloads. Restoration is limited to 100 batches and 20,000 rows.
+
+Jobs has Jobs, Occurrences and Diagnostics views. Messaging and Queueing have Operations and Diagnostics. Graphs load and poll only inside Diagnostics. Diagnostic session statistics retain their own scope and do not imply the operational filters have been applied to them.
+
+Editors keep unsaved values after failures. Escape, Cancel and the close button offer a discard decision in the existing dialog; clicking the backdrop leaves a dirty editor open. Read-only dialogs provide Close. Refresh status uses an explicit UTC time.

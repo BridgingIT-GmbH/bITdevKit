@@ -2,14 +2,21 @@
 @inherits RazorSlice
 
 @{
+    var diagnostics = HttpContext.Request.Path.Value?.EndsWith("/diagnostics", StringComparison.OrdinalIgnoreCase) == true;
     var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var realtimeDataPath = QueueingDashboardEndpoints.BuildQueueingRealtimeDataPath(dashboardOptions);
 }
 
+@if (diagnostics)
+{
+    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.WorkloadCharts, DashboardWorkloadChartsModel>(new("queueing", realtimeDataPath, QueueingDashboardEndpoints.DiagnosticsCharts)))
+    return;
+}
+
 <style>
     #queueing-dashboard-root {
-        height: calc(100vh - 14.25rem);
-        min-height: 560px;
+        height: auto;
+        min-height: 0;
         min-width: 0;
         display: flex;
         flex-direction: column;
@@ -58,6 +65,7 @@
     }
 
     #queueing-dashboard-root .queueing-panel-body {
+        max-height: 65vh;
         min-height: 0;
         min-width: 0;
         overflow: auto;
@@ -79,28 +87,7 @@
         white-space: nowrap;
     }
 
-    #queueing-dashboard-root .queueing-graph-zone {
-        flex: 0 0 auto;
-        border: 1px solid var(--bs-border-color);
-        border-radius: .375rem;
-        background: var(--bs-body-bg);
-        min-height: 255px;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
 
-    #queueing-dashboard-root .queueing-graph-canvas {
-        height: 220px;
-        width: 100%;
-    }
-
-    @@media (min-width: 1400px) {
-        #queueing-dashboard-root .queueing-data-zone {
-            grid-template-columns: minmax(0, 1fr) minmax(20rem, 24rem);
-        }
-    }
 
     @@media (max-width: 1399.98px) {
         #queueing-dashboard-root {
@@ -117,116 +104,14 @@
         }
 
         #queueing-dashboard-root .queueing-panel-body {
+        max-height: 65vh;
             max-height: 28rem;
         }
     }
 </style>
 
-<div id="queueing-dashboard-root" data-realtime-url="@realtimeDataPath">
+<div class="dashboard-operational-root" id="queueing-dashboard-root">
     <div id="dashboard-queueing-content">
-        @(await RenderPartialAsync<Data>())
+        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.Pages.Data>())
     </div>
-
-    <section class="queueing-graph-zone">
-        <div class="queueing-panel-header">
-            <span>Queue Pressure</span>
-            <span class="text-muted small">Realtime session</span>
-        </div>
-        <div class="queueing-graph-canvas" id="queueing-realtime-graph"></div>
-    </section>
 </div>
-
-<script>
-    (() => {
-        const root = document.getElementById('queueing-dashboard-root');
-        if (!root) {
-            return;
-        }
-
-        if (window.bdkQueueingGraphState && typeof window.bdkQueueingGraphState.dispose === 'function') {
-            window.bdkQueueingGraphState.dispose();
-        }
-
-        const realtimeUrl = root.getAttribute('data-realtime-url');
-        const graphHost = document.getElementById('queueing-realtime-graph');
-        const storageKey = 'bdk.dashboard.queueing.sessionId';
-        const sessionId = getOrCreateSessionId();
-        let disposed = false;
-        let timer = null;
-        const themeChanged = () => sample();
-
-        function dispose() {
-            disposed = true;
-            if (timer !== null) {
-                window.clearInterval(timer);
-                timer = null;
-            }
-            document.removeEventListener('bdk-dashboard-theme-changed', themeChanged);
-            if (window.Plotly && graphHost) {
-                window.Plotly.purge(graphHost);
-            }
-        }
-
-        function getOrCreateSessionId() {
-            try {
-                const existing = sessionStorage.getItem(storageKey);
-                if (existing) {
-                    return existing;
-                }
-                const created = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-                sessionStorage.setItem(storageKey, created);
-                return created;
-            } catch {
-                return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-            }
-        }
-
-        async function ensurePlotly() {
-            return window.bdkDashboard.loadPlotly();
-        }
-
-        async function sample() {
-            if (disposed || !graphHost || graphHost.clientWidth === 0) {
-                return;
-            }
-
-            try {
-                const url = new URL(realtimeUrl, window.location.origin);
-                url.searchParams.set('sessionId', sessionId);
-                url.searchParams.set('_', Date.now().toString());
-                const response = await fetch(url.toString(), {
-                    cache: 'no-store',
-                    headers: { 'X-Requested-With': 'fetch' }
-                });
-                if (!response.ok) {
-                    return;
-                }
-
-                const payload = await response.json();
-                const samples = Array.isArray(payload.samples) ? payload.samples : [];
-                const x = samples.map(sample => new Date(sample.timestampUtc));
-                const Plotly = await ensurePlotly();
-                const theme = window.bdkDashboard.getChartTheme();
-                await Plotly.react(graphHost, [
-                    { x, y: samples.map(s => s.pending ?? 0), name: 'Pending', mode: 'lines', line: { color: theme.primary, width: 2 }, type: 'scatter' },
-                    { x, y: samples.map(s => s.waitingForHandler ?? 0), name: 'Waiting', mode: 'lines', line: { color: theme.secondary, width: 2 }, type: 'scatter' },
-                    { x, y: samples.map(s => s.processing ?? 0), name: 'Processing', mode: 'lines', line: { color: theme.warning, width: 2 }, type: 'scatter' },
-                    { x, y: samples.map(s => s.failed ?? 0), name: 'Failed', mode: 'lines', line: { color: theme.danger, width: 2 }, type: 'scatter' },
-                    { x, y: samples.map(s => s.deadLettered ?? 0), name: 'Dead-lettered', mode: 'lines', line: { color: theme.accent, width: 2 }, type: 'scatter' },
-                    { x, y: samples.map(s => s.openCircuits ?? 0), name: 'Open circuits', mode: 'lines', line: { color: theme.info, width: 2, dash: 'dot' }, type: 'scatter' }
-                ], window.bdkDashboard.createPlotlyLayout(), {
-                    displayModeBar: false,
-                    responsive: true,
-                    staticPlot: false
-                });
-            } catch {
-                // best effort chart rendering
-            }
-        }
-
-        sample();
-        document.addEventListener('bdk-dashboard-theme-changed', themeChanged);
-        timer = window.setInterval(sample, 5000);
-        window.bdkQueueingGraphState = { dispose };
-    })();
-</script>

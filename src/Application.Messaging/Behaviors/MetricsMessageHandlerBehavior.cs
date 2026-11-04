@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
 
 /// <summary>
-/// Emits message handler total, current, and failure metrics around message processing.
+/// Emits handler attempts, successful completions, failures, in-flight values, and durations.
 /// </summary>
 /// <example>
 /// <code>
@@ -55,9 +55,13 @@ public class MetricsMessageHandlerBehavior(ILoggerFactory loggerFactory, IMetric
         metricsService.AddUpDownCounter(currentHandleSeries, 1);
         metricsService.AddUpDownCounter(currentTypedHandleSeries, 1);
 
+        var startedTimestamp = Metrics.StartTimestamp();
+
         try
         {
             await next().AnyContext(); // continue pipeline
+            metricsService.AddCounter(handleSeries + ".completed");
+            metricsService.AddCounter(typedHandleSeries + ".completed");
         }
         catch
         {
@@ -70,6 +74,8 @@ public class MetricsMessageHandlerBehavior(ILoggerFactory loggerFactory, IMetric
         {
             metricsService.AddUpDownCounter(currentHandleSeries, -1);
             metricsService.AddUpDownCounter(currentTypedHandleSeries, -1);
+            metricsService.RecordHistogramDuration(Metrics.DurationSeries(handleSeries), startedTimestamp);
+            metricsService.RecordHistogramDuration(Metrics.DurationSeries(typedHandleSeries), startedTimestamp);
         }
     }
 }

@@ -1,0 +1,14 @@
+@using BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using Microsoft.Extensions.DependencyInjection
+@using RazorSlices
+@inherits RazorSlice<string>
+@{
+    var options = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+}
+<nav class="nav nav-pills dashboard-view-tabs mb-2" aria-label="MCP views" data-dashboard-view="@Model">
+    @foreach (var (key, title) in new[] { ("overview", "Overview"), ("connections", "Connections"), ("handlers", "Handlers"), ("operations", "Operations") })
+    {
+        <a class="nav-link @(Model == key ? "active" : "")" aria-current="@(Model == key ? "page" : null)" href="@McpDashboardEndpoints.BuildMcpPath(options, key)">@title</a>
+    }
+</nav>

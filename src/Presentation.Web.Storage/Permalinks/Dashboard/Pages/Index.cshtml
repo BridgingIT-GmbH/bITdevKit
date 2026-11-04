@@ -29,39 +29,42 @@
     }
 </style>
 
-<div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
-    <div><strong>Storage Permalinks</strong> <span class="text-muted small">@entries.Count link(s)</span></div>
-    <div class="d-flex gap-2 align-items-center"><span id="permalink-refresh-status" class="text-muted small">Updated @DateTime.Now.ToString("T")</span><select id="permalink-refresh-interval" class="form-select form-select-sm" style="width:8rem"><option value="">Off</option><option value="5000">5 sec</option><option value="15000">15 sec</option><option value="30000">30 sec</option><option value="60000">1 min</option></select><button id="permalink-refresh-now" class="btn btn-sm btn-outline-secondary" title="Refresh"><i class="bi bi-arrow-clockwise"></i></button></div>
+<div class="dashboard-page-toolbar">
+    <div class="d-flex gap-2 align-items-center">@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.RefreshControls, BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardRefreshModel>(new("permalink", "Refresh", true)))</div>
 </div>
-<form class="row g-2 mb-2" method="get" data-permalink-filter-form>
-    <div class="col-md-2"><select class="form-select form-select-sm" name="kind"><option value="">All types</option>@foreach (var value in Enum.GetValues<StorageResourceKind>()) { <option value="@value" @(kind == value ? "selected" : null)>@value</option> }</select></div>
-    <div class="col-md-2"><select class="form-select form-select-sm" name="status"><option value="">Active + expired</option>@foreach (var value in Enum.GetValues<StoragePermalinkStatus>()) { <option value="@value" @(status == value ? "selected" : null)>@value</option> }</select></div>
-    <div class="col-md-2"><input class="form-control form-control-sm" name="registration" value="@query["registration"]" placeholder="Registration"></div>
-    <div class="col-md-3"><input class="form-control form-control-sm" name="location" value="@query["location"]" placeholder="Location contains"></div>
-    <div class="col-md-1"><select class="form-select form-select-sm" name="pageSize">@foreach (var value in new[] { 25, 50, 100, 250, 500 }) { <option value="@value" @(pageSize == value ? "selected" : null)>@value</option> }</select></div>
-    <div class="col-md-2 d-flex gap-1"><button class="btn btn-sm btn-primary" type="submit">Apply</button><button class="btn btn-sm btn-outline-secondary" type="button" title="Clear filters" aria-label="Clear filters" data-permalink-clear-filter><i class="bi bi-x-lg"></i></button></div>
+<form class="dashboard-filter-panel" method="get" data-permalink-filter-form id="permalink-filter-form">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-2"><label class="form-label small" for="permalink-kind">Type</label><select id="permalink-kind" class="form-select form-select-sm" name="kind"><option value="">All types</option>@foreach (var value in Enum.GetValues<StorageResourceKind>()) { <option value="@value" @(kind == value ? "selected" : null)>@value</option> }</select></div>
+        <div class="col-md-2"><label class="form-label small" for="permalink-status">Status</label><select id="permalink-status" class="form-select form-select-sm" name="status"><option value="">Active + expired</option>@foreach (var value in Enum.GetValues<StoragePermalinkStatus>()) { <option value="@value" @(status == value ? "selected" : null)>@value</option> }</select></div>
+        <div class="col-md-2"><label class="form-label small" for="permalink-registration">Registration</label><input id="permalink-registration" class="form-control form-control-sm" name="registration" value="@query["registration"]" placeholder="Registration"></div>
+        <div class="col-md-3"><label class="form-label small" for="permalink-location">Location contains</label><input id="permalink-location" class="form-control form-control-sm" name="location" value="@query["location"]" placeholder="Location contains"></div>
+        <div class="col-12 col-lg-auto d-flex justify-content-end ms-auto">@(await RenderPartialAsync<FilterActions, DashboardFilterActionsModel>(new(ResetId: "permalink-filter-reset")))</div>
+    </div>
 </form>
-@if (result.IsFailure) { <div class="alert alert-danger py-2">@result.Errors.FirstOrDefault()?.Message</div> }
-<div class="table-responsive border rounded-1">
-<table class="table table-sm table-hover align-middle mb-0"><thead><tr><th>Type</th><th>Location</th><th>Created</th><th>Status</th><th>Expires</th><th class="text-end">Actions</th></tr></thead><tbody>
+<div id="permalink-list-root">
+@if (result.IsFailure) { <div class="alert alert-danger py-2" data-dashboard-query-error>@result.Errors.FirstOrDefault()?.Message</div> }
+<section data-dashboard-list="permalinks">
+<div class="table-responsive border rounded-1 m-0" data-dashboard-list-scroll>
+<table class="table table-sm table-hover align-middle mb-0"><thead><tr><th>Type</th><th>Location</th><th>Created</th><th>Status</th><th>Expires</th><th class="text-end">Actions</th></tr></thead><tbody data-dashboard-list-rows>
 @foreach (var entry in entries)
 {
     var location = string.IsNullOrEmpty(entry.Location.Scope) ? entry.Location.Path : $"{entry.Location.Scope}/{entry.Location.Path}";
     var displayLocation = Shortener.Apply(location, new ShorteningOptions { MaximumLength = 64 });
-    <tr><td>@entry.Location.Kind</td><td class="permalinks-location-cell" title="@entry.Location.ToCanonicalString()"><code>@displayLocation</code></td><td class="text-muted small text-nowrap" title="@entry.CreatedAt.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">@entry.CreatedAt.LocalDateTime.ToString("g")</td><td><span class="badge text-bg-@(entry.Status == StoragePermalinkStatus.Active ? "success" : entry.Status == StoragePermalinkStatus.Expired ? "warning" : "secondary")">@entry.Status</span></td><td class="text-muted small text-nowrap">@(entry.ExpiresAt?.LocalDateTime.ToString("g") ?? "-")</td><td class="text-end text-nowrap"><a class="btn btn-sm btn-outline-primary" href="@PublicRoutes.Download(entry.Id)" title="Download"><i class="bi bi-download"></i></a> <button type="button" class="btn btn-sm btn-outline-secondary" title="Copy permalink" data-copy-permalink="@PublicRoutes.Download(entry.Id)"><i class="bi bi-clipboard"></i></button> <button type="button" class="btn btn-sm btn-outline-secondary" title="Permalink details" data-permalink-details data-id="@entry.Id.Value" data-etag="@entry.ETag" data-type="@entry.Location.Kind" data-location="@location" data-created-at="@entry.CreatedAt.ToString("O")" data-status="@entry.Status" data-expires-at="@entry.ExpiresAt?.ToString("O")"><i class="bi bi-info-circle"></i></button> <form class="d-inline" method="post" action="@actions/delete" data-permalink-delete><input type="hidden" name="id" value="@entry.Id.Value"><input type="hidden" name="etag" value="@entry.ETag"><button class="btn btn-sm btn-outline-danger" title="Delete permalink"><i class="bi bi-trash"></i></button></form></td></tr>
+    <tr data-dashboard-row-id="@entry.Id.Value"><td>@entry.Location.Kind</td><td class="permalinks-location-cell" title="@entry.Location.ToCanonicalString()"><code>@displayLocation</code></td><td class="text-muted small text-nowrap" title="@entry.CreatedAt.UtcDateTime.ToString("yyyy-MM-dd HH:mm:ss 'UTC'")">@entry.CreatedAt.UtcDateTime.ToString("yyyy-MM-dd HH:mm 'UTC'")</td><td><span class="badge text-bg-@(entry.Status == StoragePermalinkStatus.Active ? "success" : entry.Status == StoragePermalinkStatus.Expired ? "warning" : "secondary")">@entry.Status</span></td><td class="text-muted small text-nowrap">@(entry.ExpiresAt?.UtcDateTime.ToString("yyyy-MM-dd HH:mm 'UTC'") ?? "-")</td><td class="text-end text-nowrap"><a class="btn btn-sm btn-outline-primary" href="@PublicRoutes.Download(entry.Id)" title="Download" aria-label="Download"><i class="bi bi-download" aria-hidden="true"></i></a> <button type="button" class="btn btn-sm btn-outline-secondary" title="Copy permalink" data-copy-permalink="@PublicRoutes.Download(entry.Id)" aria-label="Copy permalink"><i class="bi bi-clipboard" aria-hidden="true"></i></button> <button type="button" class="btn btn-sm btn-outline-secondary" title="Permalink details" data-permalink-details data-id="@entry.Id.Value" data-etag="@entry.ETag" data-type="@entry.Location.Kind" data-location="@location" data-created-at="@entry.CreatedAt.ToString("O")" data-status="@entry.Status" data-expires-at="@entry.ExpiresAt?.ToString("O")" aria-label="Permalink details"><i class="bi bi-info-circle" aria-hidden="true"></i></button> <form class="d-inline" method="post" action="@actions/delete" data-permalink-delete><input type="hidden" name="id" value="@entry.Id.Value"><input type="hidden" name="etag" value="@entry.ETag"><button class="btn btn-sm btn-outline-danger" title="Delete permalink" aria-label="Delete permalink"><i class="bi bi-trash" aria-hidden="true"></i></button></form></td></tr>
 }
 </tbody></table></div>
-@if (result.IsSuccess && !string.IsNullOrWhiteSpace(result.Value.ContinuationToken)) { <a class="btn btn-sm btn-outline-secondary mt-2" href="?kind=@kind&status=@status&registration=@query["registration"]&location=@query["location"]&pageSize=@pageSize&continuationToken=@Uri.EscapeDataString(result.Value.ContinuationToken)">Next</a> }
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.ListFooter, DashboardListFooterModel>(new("permalinks", pageSize, result.IsSuccess && !string.IsNullOrWhiteSpace(result.Value.ContinuationToken), result.IsSuccess ? result.Value.ContinuationToken : null, Sizes: [25, 50, 100, 250, 500], SelectorId: "permalink-pageSize", LoadedCount: entries.Count(), FormId: "permalink-filter-form", SizeName: "pageSize")))
+</section></div>
 
-<div class="modal fade" id="permalink-details-modal" tabindex="-1" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="permalink-details-modal" tabindex="-1" aria-hidden="true" aria-labelledby="permalink-details-modal-title">
     <div class="modal-dialog modal-dialog-scrollable">
         <form class="modal-content" method="post" action="@actions/expiration" data-permalink-expiration-form>
-            <div class="modal-header"><div><h5 class="modal-title">Permalink Details</h5><div class="text-muted small font-monospace text-break" data-permalink-details-location></div></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+            <div class="modal-header"><div><h5 class="modal-title" id="permalink-details-modal-title">Permalink Details</h5><div class="text-muted small font-monospace text-break" data-permalink-details-location></div></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
             <div class="modal-body">
                 <input type="hidden" name="id"><input type="hidden" name="etag">
                 <div class="row g-2 small mb-3"><div class="col-6"><span class="text-muted">Type</span><div data-permalink-details-type></div></div><div class="col-6"><span class="text-muted">Status</span><div data-permalink-details-status></div></div><div class="col-12"><span class="text-muted">Created</span><div data-permalink-details-created></div></div></div>
                 <label class="form-label small mb-1" for="permalink-details-expires">Expires at</label>
-                <div class="input-group"><input id="permalink-details-expires" class="form-control form-control-sm" type="datetime-local" name="expiresAt"><button class="btn btn-outline-secondary btn-sm" type="button" title="Clear expiration" aria-label="Clear expiration" data-permalink-clear-expiration><i class="bi bi-x-lg"></i></button></div>
+                <div class="input-group"><input id="permalink-details-expires" class="form-control form-control-sm" type="datetime-local" name="expiresAt"><button class="btn btn-outline-secondary btn-sm" type="button" title="Clear expiration" aria-label="Clear expiration" data-permalink-clear-expiration><i class="bi bi-x-lg" aria-hidden="true"></i></button></div>
                 <div class="form-text">Clear the value to remove expiration, then save the changes.</div>
             </div>
             <div class="modal-footer"><button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button><button type="submit" class="btn btn-primary btn-sm">Save changes</button></div>
@@ -77,12 +80,27 @@
     const detailsModal = detailsElement && window.bootstrap ? window.bootstrap.Modal.getOrCreateInstance(detailsElement) : null;
     const expirationForm = detailsElement?.querySelector('[data-permalink-expiration-form]');
     const toLocalInputValue = value => { if (!value) return ''; const date = new Date(value); const offset = date.getTimezoneOffset(); return Number.isNaN(date.valueOf()) ? '' : new Date(date.getTime() - offset * 60000).toISOString().slice(0, 16); };
-    select.value = localStorage.getItem(key) || '';
-    let timer;
-    const schedule = () => { clearInterval(timer); localStorage.setItem(key, select.value); if (select.value) timer = setInterval(() => { if (!document.querySelector('.modal.show, [data-permalink-delete][data-confirming="true"]')) location.reload(); }, Number(select.value)); };
-    select.addEventListener('change', schedule);
-    document.getElementById('permalink-refresh-now').addEventListener('click', () => location.reload());
-    document.querySelector('[data-permalink-clear-filter]')?.addEventListener('click', () => location.assign(location.pathname));
+    const owner = document.getElementById('permalink-list-root');
+    let appliedUrl = new URL(location.href), pendingUrl = null;
+    const growingList = window.bdkDashboard.createGrowingLists({
+        owner, root: () => owner, appliedUrl: () => new URL(appliedUrl), hasPending: () => pendingUrl !== null,
+        lists: [{ key: 'permalinks', cursor: 'continuationToken', boundary: 'listBoundary', size: 'pageSize' }],
+        onSizeChange: (list, value) => { pendingUrl = new URL(appliedUrl); pendingUrl.searchParams.set('pageSize', value); pendingUrl.searchParams.delete('continuationToken'); refresher.refresh(true); }
+    });
+    const refresher = window.bdkDashboard.createRefresher({
+        buildUrl: () => new URL(pendingUrl || appliedUrl), contentSelector: () => owner,
+        applyResponse: (root, html) => {
+            const template = document.createElement('template'); template.innerHTML = html;
+            const incoming = template.content.querySelector('#permalink-list-root');
+            if (!incoming) throw new Error('Unexpected permalink response');
+            growingList.applyResponse(root, incoming.innerHTML);
+        },
+        onSuccess: () => { if (pendingUrl) { appliedUrl = pendingUrl; pendingUrl = null; history.replaceState(null, '', appliedUrl); } },
+        onError: () => { pendingUrl = null; },
+        statusSelector: '#permalink-refresh-status', intervalSelector: '#permalink-refresh-interval', refreshButtonSelector: '#permalink-refresh-now', storageKey: key,
+        shouldRefresh: () => !growingList.busy() && !document.querySelector('.modal.show, [data-permalink-delete][data-confirming="true"]')
+    });
+    document.getElementById('permalink-filter-reset')?.addEventListener('click', () => { const url = new URL(location.pathname, location.origin); url.searchParams.set('pageSize', document.getElementById('permalink-pageSize').value); location.assign(url); });
     document.addEventListener('submit', async event => {
         const form = event.target.closest('[data-permalink-delete]');
         if (!form) return;
@@ -110,12 +128,11 @@
         detailsElement.querySelector('[data-permalink-details-location]').textContent = details.dataset.location || '-';
         detailsElement.querySelector('[data-permalink-details-type]').textContent = details.dataset.type || '-';
         detailsElement.querySelector('[data-permalink-details-status]').textContent = details.dataset.status || '-';
-        detailsElement.querySelector('[data-permalink-details-created]').textContent = details.dataset.createdAt ? new Date(details.dataset.createdAt).toLocaleString() : '-';
+        detailsElement.querySelector('[data-permalink-details-created]').textContent = details.dataset.createdAt ? new Date(details.dataset.createdAt).toISOString().replace('T', ' ').replace('Z', ' UTC') : '-';
         expirationForm.elements.expiresAt.value = toLocalInputValue(details.dataset.expiresAt);
         detailsModal.show();
     });
     detailsElement?.querySelector('[data-permalink-clear-expiration]')?.addEventListener('click', () => { expirationForm.elements.expiresAt.value = ''; expirationForm.elements.expiresAt.focus(); });
-    schedule();
 })();
 </script>
 

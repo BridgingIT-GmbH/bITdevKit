@@ -41,6 +41,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             RememberedViews = new Dictionary<string, string>
             {
                 ["overview"] = DashboardPath.Combine(options.GroupPath, options.EndpointPaths.System),
+                ["diagnostics"] = DashboardPath.Combine(options.GroupPath, options.EndpointPaths.SystemDiagnostics),
                 ["process"] = DashboardPath.Combine(options.GroupPath, options.EndpointPaths.SystemProcess),
                 ["environment"] = DashboardPath.Combine(options.GroupPath, options.EndpointPaths.SystemEnvironment)
             },

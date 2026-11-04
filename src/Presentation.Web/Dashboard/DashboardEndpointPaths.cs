@@ -31,6 +31,16 @@ public class DashboardEndpointPaths
     public string SystemContent { get; set; } = "/system/content";
 
     /// <summary>
+    /// Gets or sets the system diagnostics page path.
+    /// </summary>
+    public string SystemDiagnostics { get; set; } = "/system/diagnostics";
+
+    /// <summary>
+    /// Gets or sets the system diagnostics JSON history path.
+    /// </summary>
+    public string SystemDiagnosticsData { get; set; } = "/system/diagnostics/data";
+
+    /// <summary>
     ///     Gets or sets the dashboard system process path.
     /// </summary>
     public string SystemProcess { get; set; } = "/system/process";

@@ -7,21 +7,10 @@
 @{ var dashboardOptions = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>(); }
 
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
     <div class="d-flex align-items-center gap-2">
         <button type="button" id="profiling-stress" class="btn btn-outline-warning btn-sm profiling-tool-button profiling-stress-button" aria-label="Run a 30-second profiling stress workload" title="Stress this process for 30 seconds with high CPU, managed allocations, and retained memory"><i class="bi bi-fire" aria-hidden="true"></i></button>
-        <span id="profiling-refresh-status" class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.ToString("HH:mm:ss 'UTC'", CultureInfo.InvariantCulture)</span>
-        <label for="profiling-refresh-interval" class="visually-hidden">Profiling refresh interval</label>
-        <select id="profiling-refresh-interval" class="form-select form-select-sm" style="width: 9rem">
-            <option value="">Off</option>
-            <option value="1000">1 sec</option>
-            <option value="5000" selected>5 sec</option>
-            <option value="10000">10 sec</option>
-            <option value="15000">15 sec</option>
-            <option value="30000">30 sec</option>
-            <option value="60000">60 sec</option>
-        </select>
-        <button type="button" id="profiling-refresh-now" class="btn btn-outline-warning btn-sm" aria-label="Refresh profiling dashboard now" title="Refresh now"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.RefreshControls, BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardRefreshModel>(new("profiling", "Refresh now", true)))
     </div>
 </div>
 
@@ -34,7 +23,7 @@
 @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Interactions>())
 @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog>())
 
-<div class="modal fade" id="profiling-chart-focus-modal" tabindex="-1" aria-labelledby="profiling-chart-focus-title" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="profiling-chart-focus-modal" tabindex="-1" aria-labelledby="profiling-chart-focus-title" aria-hidden="true">
     <div class="modal-dialog profiling-chart-focus-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -55,7 +44,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="profiling-snapshot-focus-modal" tabindex="-1" aria-labelledby="profiling-snapshot-focus-title" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="profiling-snapshot-focus-modal" tabindex="-1" aria-labelledby="profiling-snapshot-focus-title" aria-hidden="true">
     <div class="modal-dialog profiling-snapshot-focus-dialog">
         <div class="modal-content">
             <div class="modal-header">

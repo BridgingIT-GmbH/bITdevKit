@@ -25,7 +25,7 @@ public static class LogEntriesDashboard
     /// <summary>
     /// Defines the default page size value.
     /// </summary>
-    public const int DefaultPageSize = 100;
+    public const int DefaultPageSize = 50;
     /// <summary>
     /// Defines the default level value.
     /// </summary>
@@ -161,7 +161,7 @@ public static class LogEntriesDashboard
     /// <returns>The result of the operation.</returns>
     public static string FormatTimestamp(DateTimeOffset value)
     {
-        return value.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
+        return value.UtcDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff 'UTC'", CultureInfo.InvariantCulture);
     }
 
     /// <summary>
@@ -171,7 +171,7 @@ public static class LogEntriesDashboard
     /// <returns>The result of the operation.</returns>
     public static string FormatShortTimestamp(DateTimeOffset value)
     {
-        return value.LocalDateTime.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture);
+        return value.UtcDateTime.ToString("HH:mm:ss.fff 'UTC'", CultureInfo.InvariantCulture);
     }
 
     /// <summary>
@@ -248,7 +248,7 @@ public static class LogEntriesDashboard
     private static int ParsePageSize(string value)
     {
         return int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed)
-            ? Math.Clamp(parsed, 25, 500)
+            ? Math.Clamp(parsed, 10, 500)
             : DefaultPageSize;
     }
 

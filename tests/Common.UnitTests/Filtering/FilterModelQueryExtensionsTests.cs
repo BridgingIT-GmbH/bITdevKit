@@ -5,6 +5,20 @@ using System.Text.Json;
 public class FilterModelQueryExtensionsTests
 {
     [Fact]
+    public void Search_StringSeek_UsesTheSameOrderAsPaging()
+    {
+        var sut = Enumerable.Range(1, 35).Select(index => new Row(index, $"job{index:000}", index)).AsQueryable();
+        var filter = new FilterModel
+        {
+            Page = 1, PageSize = 10,
+            Filters = [new("Name", FilterOperator.GreaterThan, "job010")],
+            Orderings = [new() { Field = "Name" }]
+        };
+
+        sut.ApplyFilter(filter).ApplyOrder(filter).ApplyPage(filter).Select(row => row.Id).ShouldBe(Enumerable.Range(11, 10));
+    }
+
+    [Fact]
     public void Search_FiltersBeforePagingAndOrdersByMultipleFields()
     {
         var source = new[] { new Row(1, "Beta", 2), new Row(2, "Alpha", 3), new Row(3, "Alpha", 4), new Row(4, null, 0) }.AsQueryable();
@@ -46,7 +60,7 @@ public class FilterModelQueryExtensionsTests
     [InlineData("Missing", FilterOperator.Equal, "1")]
     [InlineData("Score", FilterOperator.Equal, "invalid")]
     [InlineData("Name.Length", FilterOperator.Equal, "1")]
-    [InlineData("Name", FilterOperator.GreaterThan, "a")]
+    [InlineData("Name", FilterOperator.Any, "a")]
     public void Search_RejectsInvalidFieldsAndValues(string field, FilterOperator operation, string value)
     {
         Should.Throw<ArgumentException>(() => Array.Empty<Row>().AsQueryable()

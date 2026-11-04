@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard;
 
-using System.Collections.Concurrent;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
@@ -13,6 +12,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 /// <summary>
 /// Maps the Orchestrations dashboard plugin page, fragments, graph data, and operational actions.
@@ -29,8 +29,13 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
     internal const string OrchestrationsRealtimeDataPath = "/orchestrations/data/realtime";
     internal const string OrchestrationsHistoryDataPath = "/orchestrations/data/history";
 
-    private const int RealtimeSessionSampleLimit = 180;
-    private static readonly ConcurrentDictionary<string, RealtimeGraphSession> RealtimeGraphSessions = new(StringComparer.OrdinalIgnoreCase);
+    internal static readonly IReadOnlyList<DashboardWorkloadChart> DiagnosticsCharts =
+    [
+        new("Instance rate", "instances/s", [new("orchestrations_start", "Started"), new("orchestrations_finish", "Finished")]),
+        new("Outcome rates", "instances/s", [new("orchestrations_finish.completed", "Completed"), new("orchestrations_finish.failed", "Failed"), new("orchestrations_finish.cancelled", "Cancelled"), new("orchestrations_finish.terminated", "Terminated")]),
+        new("Activity execution rate", "activity calls/s", [new("orchestrations_activity_execute", "Attempts"), new("orchestrations_activity_execute.completed", "Returned"), new("orchestrations_activity_execute_failure", "Exceptions")]),
+        new("Operation duration", "ms", [new("orchestrations_instance_duration", "Instance mean", true), new("orchestrations_activity_execute_duration", "Activity mean", true)]),
+    ];
 
     /// <inheritdoc />
     public override void Map(IEndpointRouteBuilder app)
@@ -49,7 +54,19 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             OrchestrationsPath,
             "_bdk.Dashboard.Orchestrations",
             "Dashboard Orchestrations",
-            "Shows persisted orchestration instances and operational controls.");
+            "Shows all registered orchestration definitions.");
+
+        group.MapDashboardPage<Pages.Index>(
+            OrchestrationsPath + "/instances",
+            "_bdk.Dashboard.Orchestrations.Instances",
+            "Dashboard Orchestration Instances",
+            "Shows filterable orchestration instances and operational controls.");
+
+        group.MapDashboardPage<Pages.Index>(
+            OrchestrationsPath + "/diagnostics",
+            "_bdk.Dashboard.Orchestrations.Diagnostics",
+            "Dashboard Orchestration Diagnostics",
+            "Shows orchestration runtime metrics and charts.");
 
         group.MapDashboardPage<Pages.Data>(
             OrchestrationsContentPath,
@@ -57,35 +74,23 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             "Dashboard Orchestrations Content",
             "Shows the refreshable orchestration dashboard content fragment.");
 
-        group.MapGet(OrchestrationsRealtimeDataPath, async (HttpContext context, CancellationToken cancellationToken) =>
+        group.MapGet("/orchestrations/definitions/diagram", async (string name, HttpContext context, CancellationToken cancellationToken) =>
         {
-            var query = context.RequestServices.GetService<IOrchestrationQueryService>();
-            if (query is null)
-            {
-                return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
-            }
+            if (string.IsNullOrWhiteSpace(name)) return Results.BadRequest();
+            var diagrams = context.RequestServices.GetService<IOrchestrationDiagramService>();
+            if (diagrams is null) return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+            var result = await diagrams.GetDefinitionDiagramAsync(name, DiagramRenderFormat.Svg, cancellationToken);
+            return result.IsSuccess
+                ? (Microsoft.AspNetCore.Http.IResult)Results.Text(result.Value.GetText(), "image/svg+xml")
+                : Results.Problem("The definition diagram could not be loaded.");
+        }).WithName("_bdk.Dashboard.Orchestrations.DefinitionDiagram").ExcludeFromDescription();
 
-            var result = await query.GetMetricsAsync(cancellationToken: cancellationToken);
-            if (result.IsFailure)
-            {
-                return Results.Problem(result.Errors.FirstOrDefault()?.Message ?? "Realtime orchestration data could not be loaded.");
-            }
-
-            var metrics = result.Value;
-            var sample = new RealtimeGraphSample(
-                DateTimeOffset.UtcNow,
-                metrics.RunningCount,
-                metrics.WaitingCount,
-                metrics.PausedCount,
-                metrics.CompletedCount,
-                metrics.FailedCount,
-                metrics.CancelledCount + metrics.TerminatedCount);
-
-            var sessionId = GetOrCreateRealtimeSessionId(context);
-            var samples = AppendRealtimeSample(sessionId, sample);
-
-            return Results.Ok(new { sessionId, samples });
-        }).WithName("_bdk.Dashboard.Orchestrations.RealtimeData").WithSummary("Orchestrations realtime data").ExcludeFromDescription();
+        var metricHistory = new DashboardMetricsHistory(DiagnosticsCharts.SelectMany(chart => chart.Series));
+        app.ServiceProvider.GetRequiredService<IHostApplicationLifetime>().ApplicationStopped.Register(metricHistory.Dispose);
+        group.MapGet(OrchestrationsRealtimeDataPath, (HttpContext context) => Results.Json(metricHistory.Snapshot(
+            context.RequestServices.GetService<IMetricsService>() is not null &&
+            context.RequestServices.GetService<MetricsOptions>()?.Enabled != false)))
+            .WithName("_bdk.Dashboard.Orchestrations.RealtimeData").WithSummary("Measured orchestration throughput and duration").ExcludeFromDescription();
 
         group.MapGet(OrchestrationsHistoryDataPath, async (HttpContext context, CancellationToken cancellationToken) =>
         {
@@ -257,33 +262,6 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
     private static long GetCount(IReadOnlyDictionary<string, long> countsByStatus, string status) =>
         countsByStatus is not null && countsByStatus.TryGetValue(status, out var value) ? value : 0;
 
-    private static string GetOrCreateRealtimeSessionId(HttpContext context)
-    {
-        var requestedSessionId = context.Request.Query.TryGetValue("sessionId", out var values)
-            ? values.ToString()
-            : null;
-
-        return !string.IsNullOrWhiteSpace(requestedSessionId) && requestedSessionId.Length <= 128
-            ? requestedSessionId
-            : Guid.NewGuid().ToString("N");
-    }
-
-    private static IReadOnlyList<RealtimeGraphSample> AppendRealtimeSample(string sessionId, RealtimeGraphSample sample)
-    {
-        var session = RealtimeGraphSessions.GetOrAdd(sessionId, _ => new RealtimeGraphSession());
-        lock (session.Samples)
-        {
-            session.LastTouchedUtc = DateTimeOffset.UtcNow;
-            session.Samples.Add(sample);
-            if (session.Samples.Count > RealtimeSessionSampleLimit)
-            {
-                session.Samples.RemoveRange(0, session.Samples.Count - RealtimeSessionSampleLimit);
-            }
-
-            return session.Samples.ToArray();
-        }
-    }
-
     private static IReadOnlyList<HistoryBucket> CreateHistoryBuckets(
         IEnumerable<OrchestrationInstanceModel> instances,
         DateTimeOffset fromUtc,
@@ -311,22 +289,6 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
         return buckets;
     }
-
-    private sealed class RealtimeGraphSession
-    {
-        public List<RealtimeGraphSample> Samples { get; } = [];
-
-        public DateTimeOffset LastTouchedUtc { get; set; } = DateTimeOffset.UtcNow;
-    }
-
-    private sealed record RealtimeGraphSample(
-        DateTimeOffset TimestampUtc,
-        long Running,
-        long Waiting,
-        long Paused,
-        long Completed,
-        long Failed,
-        long Problem);
 
     private sealed record HistoryBucket(DateTimeOffset StartUtc, DateTimeOffset EndUtc)
     {

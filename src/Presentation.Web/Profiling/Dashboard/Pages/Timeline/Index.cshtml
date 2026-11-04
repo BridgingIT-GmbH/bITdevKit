@@ -17,11 +17,11 @@
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 mb-2 border-bottom">
     <div class="d-flex align-items-center gap-2 ms-auto">
         <span id="timeline-refresh-status" class="small text-muted" role="status">Loading timeline</span>
-        <button id="timeline-refresh-now" class="btn btn-outline-warning btn-sm" type="button" title="Refresh latest" aria-label="Refresh latest"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+        <button id="timeline-refresh-now" class="btn btn-outline-secondary btn-sm" type="button" title="Refresh latest" aria-label="Refresh latest"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
     </div>
 </div>
 @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ViewNavigation, string>("timeline"))
-<form id="timeline-filters" class="card card-body p-2 mb-2" action="@path" method="get">
+<form id="timeline-filters" class="card card-body p-2 mb-2 dashboard-filter-panel" action="@path" method="get">
     <div class="row g-2 align-items-end">
         <div class="col-md-2"><label for="timeline-resolution" class="form-label small">Window</label><select id="timeline-resolution" name="resolution" class="form-select form-select-sm"><option value="15m">15 min</option><option value="30m">30 min</option><option value="hour" selected>Hour</option><option value="12h">12 hours</option><option value="day">Day</option><option value="week">Week</option><option value="month">Month (30 days)</option></select></div>
         <div class="col-md-4"><label for="timeline-key" class="form-label small">Key contains</label><input id="timeline-key" name="key" class="form-control form-control-sm" maxlength="128" placeholder="contains" /></div>
@@ -29,7 +29,7 @@
         <div class="col-md-3"><label for="timeline-node" class="form-label small">Node</label><select id="timeline-node" name="nodeId" class="form-select form-select-sm"><option value="">All nodes</option></select></div>
         <div class="col-md-4"><label for="timeline-from" class="form-label small">From UTC</label><div class="input-group input-group-sm">@(await RenderPartialAsync<DateRange, DashboardDateRangeModel>(new("timeline-from", "timeline-to")))<input id="timeline-from" name="fromUtc" type="datetime-local" step="60" class="form-control form-control-sm" /></div></div>
         <div class="col-md-4"><label for="timeline-to" class="form-label small">To UTC</label><input id="timeline-to" name="toUtc" type="datetime-local" step="60" class="form-control form-control-sm" /></div>
-        <div class="col-md-4 d-flex justify-content-end gap-2"><button type="submit" class="btn btn-primary btn-sm">Apply</button><button id="timeline-reset" type="button" class="btn btn-outline-secondary btn-sm">Reset</button></div>
+        <div class="col-md-4 d-flex justify-content-end gap-2">@(await RenderPartialAsync<FilterActions, DashboardFilterActionsModel>(new(ResetId: "timeline-reset")))</div>
     </div>
 </form>
 <div id="timeline-error" class="alert alert-warning py-2" role="alert" hidden></div>
@@ -39,7 +39,7 @@
         <div class="timeline-scroll"><div id="timeline-chart" class="timeline-grid" aria-label="Operation timeline"><p class="text-muted small p-3" role="status">Loading retained operations...</p></div></div>
     </div>
 </div>
-<div class="modal fade" id="timeline-cluster-modal" tabindex="-1" aria-labelledby="timeline-cluster-heading" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="timeline-cluster-modal" tabindex="-1" aria-labelledby="timeline-cluster-heading" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable"><div class="modal-content">
         <div class="modal-header"><h2 id="timeline-cluster-heading" class="modal-title h5">Executions</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close execution list"></button></div>
         <div class="modal-body"><p id="timeline-cluster-summary" class="small text-muted"></p><div id="timeline-cluster-status" class="small" role="status"></div><div class="table-responsive"><table class="table table-sm align-middle"><thead><tr><th>Started UTC</th><th>Operation</th><th>Node</th><th>Outcome</th><th>Duration</th><th aria-label="Details"></th></tr></thead><tbody id="timeline-cluster-rows"></tbody></table></div><button id="timeline-cluster-more" class="btn btn-outline-primary btn-sm" type="button" hidden>Load more</button></div>

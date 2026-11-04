@@ -3,7 +3,7 @@
     var query = Model.Filter?.Query;
     var visibleColumns = query?.Columns ?? [];
 }
-<form id="entities-filter-form" class="entities-toolbar" action="@Model.Path" method="get" novalidate aria-label="Filter @Model.Entity.Name">
+<form id="entities-filter-form" class="entities-toolbar dashboard-filter-panel" action="@Model.Path" method="get" novalidate aria-label="Filter @Model.Entity.Name">
     <input type="hidden" name="entity" value="@Model.Entity.Key" />
     <input type="hidden" name="source" value="@Model.Source" />
     <div class="entities-toolbar-row entities-selection-row">
@@ -80,8 +80,7 @@
             <input id="entities-quick-search" name="q" type="search" maxlength="256" value="@query?.QuickSearch" placeholder="Search text columns" class="form-control form-control-sm" />
         </div>
         <div class="entities-toolbar-end">
-            <button type="submit" class="btn btn-primary btn-sm" id="entities-apply">Apply</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm" id="entities-reset" data-entities-reset title="Reset filter" aria-label="Reset filter"><i class="bi bi-x-circle" aria-hidden="true"></i></button>
+            @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.FilterActions, DashboardFilterActionsModel>(new("entities-apply", "entities-reset")))
         </div>
     </div>
     <div id="entities-filter-error" class="entities-error" role="alert" hidden></div>

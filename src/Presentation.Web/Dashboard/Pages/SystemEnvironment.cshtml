@@ -18,9 +18,9 @@
 
 @(await RenderPartialAsync<SystemStyles>())
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
     <div class="d-flex align-items-center gap-2">
-        <span class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <span class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.ToString("HH:mm:ss 'UTC'", CultureInfo.InvariantCulture)</span>
         <button type="button" class="btn btn-outline-secondary btn-sm" title="Refresh environment details" aria-label="Refresh environment details" data-system-reload>
             <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
         </button>
@@ -95,7 +95,7 @@
                 <div class="d-flex flex-wrap align-items-center justify-content-end gap-2">
                     <input type="search"
                            class="form-control form-control-sm dashboard-system-env-filter"
-                           placeholder="Filter variables"
+                           placeholder="Filter variables" aria-label="Filter environment variables"
                            autocomplete="off"
                            data-system-env-filter>
                     <span class="text-muted small" data-system-env-count>@(environmentVariables.Count) variable(s)</span>

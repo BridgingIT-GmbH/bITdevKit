@@ -1,6 +1,6 @@
 ---
 created: 2026-11-03
-status: draft
+status: implemented
 scope: Presentation dashboard
 ---
 
@@ -8,7 +8,7 @@ scope: Presentation dashboard
 
 ## Purpose and status
 
-Give every dashboard page the same visual and interaction rules, especially the filter and action bars at the top. This document records an assessment and proposes a contract for later implementation. It does not authorize or implement a redesign.
+Give every dashboard page the same visual and interaction rules, especially the filter and action bars at the top. This document preserves the original assessment and the implemented design contract. All eight implementation phases are recorded in the [execution plan](../../plan/pln-refactor-dashboard-page-consistency-1.md).
 
 The existing shell, palettes, compact controls, and routed pill tabs provide a useful base. Keep them. The main gap is that each feature assembles its own toolbar and filters, with different spacing, action placement, labels, and refresh behavior.
 
@@ -271,10 +271,10 @@ Do not add an empty toolbar or filter panel to pages that do not need one. Prese
 
 ### C03. Apply and Reset
 
-- Show the exact text **Apply** and **Reset** on every explicit filter form.
+- Show the exact text **Apply** and an icon-only circled-X Reset (`bi bi-x-circle`) on every explicit filter form. Give Reset the tooltip and accessible name **Reset filters**; mark its icon `aria-hidden="true"`.
 - Render Apply with `btn btn-primary btn-sm` and Reset with `btn btn-outline-secondary btn-sm`.
 - Use natural button widths with a `.5rem` gap. Do not stretch only Apply to fill unused grid space.
-- Place the pair at the trailing edge of the final filter row, after all filter controls. A small one-row form can keep them inline. A multi-row form keeps them after its last field or advanced-filter region.
+- Place the pair at the trailing edge of the filter row. Logs and Errors use the first row, with secondary identifiers below. Other multi-row forms keep the pair beside their final criteria or advanced-filter region.
 - Keep the pair together when wrapping. On narrow screens it may occupy a separate full-width row, aligned to the end.
 - Enter in a normal filter input performs Apply. Textarea editing and specialized keyboard widgets retain their expected behavior.
 - Resource mutations such as Upload, Create, Delete, and Purge are outside the Apply/Reset pair.
@@ -350,7 +350,7 @@ The placement requirement is explicit: below each growing list, place **Load mor
 - Scope list state and the preference by feature, route/view, and list identity. Jobs registrations and occurrences need independent continuation and footer state.
 - Show loaded count and total only when the query supplies a truthful total. Keep global summary counts separate from loaded-row counts.
 
-Existing query APIs can support the first implementation. `IMessageBrokerService.SearchMessagesAsync` and `IQueueBrokerService.SearchMessagesAsync` return `ResultPaged<T>` from a `FilterModel`. Jobs query requests already provide Skip, Take, and sorting. Reuse these before adding any query contract. Verify tie-breaking and moving-dataset behavior; if an existing provider cannot preserve a browsing boundary, make the smallest required change in its owning query layer. The reusable footer must not access persistence directly.
+Existing query APIs can support the first implementation. `IMessageBrokerService.SearchMessagesAsync` and `IQueueBrokerService.SearchMessagesAsync` return `ResultPaged<T>` from a `FilterModel`. Jobs query requests already provide Skip, Take, and sorting. Reuse these before adding any query contract. Verify tie-breaking and moving-dataset behavior; make required paging adjustments in owning query contracts and provider implementations when existing behavior cannot preserve the browsing boundary. The reusable footer must not access persistence directly.
 
 ### C10. Page-level tabs and Diagnostics separation
 
@@ -366,7 +366,7 @@ Existing query APIs can support the first implementation. `IMessageBrokerService
 
 ## Implementation approach for later work
 
-Keep the change in Presentation. Reuse `_DashboardLayout`, `DashboardPageSlice`, existing RazorSlice partials, `ViewNavigation`, `DateRange`, shared dialogs, and `window.bdkDashboard.createRefresher`. Keep provider queries and mutations in their existing services.
+Keep dashboard composition in Presentation. Query-layer changes for paging deficiencies or adjustments are authorized; keep them with owning services and providers. Reuse `_DashboardLayout`, `DashboardPageSlice`, existing RazorSlice partials, `ViewNavigation`, `DateRange`, shared dialogs, and `window.bdkDashboard.createRefresher`. Keep provider queries and mutations in their existing services.
 
 Introduce a small shared toolbar/filter styling contract and reusable markup where it removes real duplication. Avoid a new UI framework, a generic query builder, or a dashboard-specific persistence abstraction. Feature pages still own their field sets and supported actions. Replace feature-name CSS matching for common controls with explicit shared classes as pages migrate.
 
@@ -394,7 +394,7 @@ Reuse these before extracting another implementation:
 | `DashboardPageToolbar` | Overview, System, Metrics, Health, Jobs, MCP, broker pages, storage, Auditing, Profiling | Row layout, spacing, wrapping, action slots, and placement of refresh and tools | Which actions are available and which workflow each action invokes |
 | `DashboardRefreshControls` | Repeated Updated span, interval select, refresh icon, and IDs across most pages | Consistent status markup, formatter, neutral refresh button, accessible name, optional interval/Tail presentation | Supported modes and intervals, content URL, storage key, and pause conditions supplied to the existing refresher |
 | `DashboardFilterPanel` | Logs/Errors cards, broker filter cards, Auditing, analytical forms, Entities, and document/blob toolbars | Filter background, border, density, field regions, optional advanced disclosure, and a final action region | Field markup, contextual selectors, validation rules, matching modes, and supported query predicates |
-| `DashboardFilterActions` | Apply/Reset repeated in every explicit filter form | Text labels, order, natural widths, gap, busy/disabled presentation, form association, and Reset link/button support | Apply and Reset destinations or callbacks, default state, and permission to query |
+| `DashboardFilterActions` | Apply/Reset repeated in every explicit filter form | Apply label, circled-X Reset with accessible name, order, natural widths, gap, busy/disabled presentation, form association, and Reset link/button support | Apply and Reset destinations or callbacks, default state, and permission to query |
 | `DashboardIconAction` | Refresh, export, compare, details, and mutation triggers | Shared small-button/link markup, icon, accessible name, focus treatment, tooltip initialization contract, and semantic role | Target URL or callback, enabled reason, authorization, and confirmation requirement |
 | Applied-filter client helper | Logs, Errors, Messaging, Queueing, Orchestrations, and storage pages assemble similar request state separately | Draft/applied state separation, commit/reset notifications, and a stable applied-selection accessor for refresh/export/paging | Query serialization, cursor rules, safe defaults, provider changes, and server validation |
 | `DashboardListFooter` | Entities is the placement reference; Jobs occurrences, Messaging, and Queueing need the same growing-list controls | Compose Load more and its immediately adjacent Rows per load selector, count/status, busy/end/retry states, and stable instance IDs | Continuation queries, exact row identity, applied filters, sorting, refresh reconciliation, and provider limits |
@@ -438,132 +438,31 @@ The following are draft decisions for this spec. A separate ADR is only needed i
 - A page can supply a feature-specific field or action without copying the entire shared component.
 - Existing storage keys, query parameters, exact identifiers, capability limits, and cancellation behavior remain compatible unless a separately tested behavior change is required by C04.
 
-## Agent implementation phases
+## Implementation plan
 
-All phases are Planned. The assessment and reference screenshots are complete; implementation has not started. This section replaces the earlier delivery sequence with bounded work packages. Keep this plan in the spec rather than creating a second task manifest.
+The eight-phase checklist, dependencies, status, and evidence now live in [the dashboard consistency implementation plan](../../plan/pln-refactor-dashboard-page-consistency-1.md). The plan retains the original phase/task IDs and is the single execution tracker. All phases remain Planned. Plan creation does not start application implementation.
 
-### Execution rules
+### Confirmed decisions
 
-- Work on the phase named in the implementation request. Follow `AGENTS.md` and the dashboard-pages skill, inspect current source, and preserve unrelated changes.
-- Read the phase dependencies before editing. If a prerequisite is missing, report the concrete missing component or behavior. Do not silently implement an additional phase or mark a prerequisite complete.
-- Keep queries, capabilities, authorization, mutations, concurrency, and feature-specific content with their existing owners. Add shared components when the named phase has real consumers; do not prebuild every candidate.
-- Run top-level builds and tests sequentially. Use existing test projects and browser workflows. Do not add a separate acceptance framework, source scanner, or generated conformance manifest.
-- Finish a phase by updating its status below and recording changed files, commands/results, screenshot references, limitations, and remaining work under that phase. Mark it Complete only when its exit criteria pass. If a check cannot run, record it as unverified and keep the phase In progress.
-- Preserve the original screenshots as the before baseline. Add separately named after captures for changed pages using comparable viewports, palettes, and populated/empty states. Follow the screenshot distinction between assessment evidence and public documentation examples.
-- Commit or push only when the implementation request asks for it. Document edits alone do not start any implementation phase.
+The user explicitly permits query-layer changes for paging deficiencies or adjustments. Keep dashboard composition in Presentation and make required paging changes in owning query contracts, application services, and providers. Shared UI components must not access persistence. Add focused tests for changed query/provider behavior.
+
+The user confirmed that Load more remains visible and disabled when no further data is available, with the adjacent row-count selector usable. This includes empty successful lists and supersedes the older hide-at-end advice in the dashboard page patterns.
 
 ### Requirements and working defaults
 
-The user explicitly requested a global look and feel, reusable elements, consistent filter actions and dialogs, a row-count selector directly beside Load more below growing lists, and a Jobs Diagnostics tab for graphs. These are requirements.
+The user requested a global look and feel, reusable elements, consistent filter actions and dialogs, a row-count selector directly beside Load more, and a Jobs Diagnostics tab for graphs. These are requirements.
 
-C01 through C10 provide the working defaults for later implementation. Specific component names, exact spacing, UTC status wording, and the three-view Jobs layout are proposals rather than claims of user approval. When implementation of this spec is requested without another choice, use those defaults and record the result. The two-view Jobs layout in F11 is an alternative, not a second task to implement. Seek clarification only if a material conflict prevents the requested phase from proceeding.
+C01 through C10 remain the design contract. Component names, exact spacing, UTC status wording, and the three-view Jobs layout remain working defaults. The plan records a concrete dirty-editor dismissal default and distinguishes it from confirmed user decisions. The two-view Jobs layout in F11 remains an alternative.
 
-### Phase status and dependencies
+### Execution and evidence
 
-| Phase | Work package | Depends on | Status |
-| --- | --- | --- | --- |
-| PHASE-01 | Baseline and contract readiness | None | Planned |
-| PHASE-02 | Shared toolbar/filter controls and phone header | PHASE-01 | Planned |
-| PHASE-03 | Investigation filters and applied state | PHASE-02 | Planned |
-| PHASE-04 | Storage and Change History controls | PHASE-03 | Planned |
-| PHASE-05 | Shared modal frames and lifecycle | PHASE-04 | Planned |
-| PHASE-06 | Growing-list footer and continuation | PHASE-03, PHASE-05 | Planned |
-| PHASE-07 | Operational and Diagnostics routes | PHASE-06 | Planned |
-| PHASE-08 | Remaining pages and final verification | PHASE-02 through PHASE-07 | Planned |
+Follow PHASE-01 through PHASE-08 in the linked plan. Check prerequisites before editing. Preserve before screenshots and record separately named after captures, changed files, commands/results, limitations, and remaining work under each phase in the plan. A missing required check keeps a phase In progress. Mark this spec implemented only after all phases are Complete.
 
-The default execution order is PHASE-01 through PHASE-08. Dependencies describe prerequisites, not authorization to launch parallel agents.
-
-### PHASE-01. Baseline and contract readiness
-
-Scope is the spec, its source references, and local read-only inspection. No application code changes belong to this phase.
-
-- [ ] TASK-01.1: Compare the current revision, dashboard page providers, and `src/Presentation.Web/Dashboard/Pages/_DashboardLayout.cshtml` with the review baseline. Record source drift that changes a finding or target file.
-- [ ] TASK-01.2: Record the working defaults used for C03 through C05 and C08 through C10. Map F01 through F11 to the later phases below. Retain any unresolved material conflict with its affected phase.
-- [ ] TASK-01.3: Confirm the actual build/test commands, host startup isolation, and availability of fictional rows for Jobs occurrence and broker context dialogs. Inspect existing query paging contracts; do not add a new query abstraction.
-
-Exit criteria: source references still resolve, drift and material blockers are explicit, the defaults for implementation are recorded, and the verification host can be started without targeting another instance's data. This phase needs no application unit-test run.
-
-### PHASE-02. Shared toolbar/filter controls and phone header
-
-Scope is C01 through C03, C05, and C06, addressing F01 through F04, F06, and F07. Start in `src/Presentation.Web/Dashboard/Pages/`, `src/Presentation.Web.Messaging/Dashboard/Pages/Index.cshtml`, and `src/Presentation.Web/Profiling/Dashboard/Pages/Operations/Index.cshtml` plus its `Toolbar.cshtml`.
-
-- [ ] TASK-02.1: Fix the shared header so wrapped global actions reserve space and cannot overlap page controls at 390 and 320 pixels.
-- [ ] TASK-02.2: Extract the minimum shared toolbar, refresh, filter-panel, and Apply/Reset markup/styles. Preserve stable IDs, tooltip behavior, theme roles, and `createRefresher` bindings.
-- [ ] TASK-02.3: Migrate Messaging and Operations as the simple and multi-row references. Keep ordinary Reset text, natural action widths, neutral Refresh, and consistent labels. Leave new append controls and Diagnostics routes to PHASE-06 and PHASE-07.
-
-Exit criteria: both reference pages meet the scoped contracts at 1440, 1024, 768, 390, and 320 pixels, in dark, light, and monochrome palettes. Their existing filter and refresh behavior still works. Build affected web projects and run `tests/Presentation.UnitTests/Presentation.UnitTests.csproj` because this phase changes shared layout/helpers. Save before/after evidence for both references.
-
-### PHASE-03. Investigation filters and applied state
-
-Scope is C02 through C05 and C07, addressing F01 through F06. Targets are Logging, Profiling, and Entities dashboard pages under `src/Presentation.Web/`, `src/Presentation.Web.Auditing/Dashboard/Pages/`, and the Messaging, Queueing, and Orchestrations filter scripts in their `src/Presentation.Web.*` packages.
-
-- [ ] TASK-03.1: Migrate Logs, Errors, Auditing, Entities, and the remaining analytical Profiling forms to the shared controls. Add visible or associated labels where placeholders currently carry the field meaning.
-- [ ] TASK-03.2: Separate draft and applied filters for fragment-driven pages, including the broker and orchestration forms. Refresh, export, paging, and existing Load more consume the applied selection. Keep normal GET forms where they already provide that boundary.
-- [ ] TASK-03.3: Implement the C04 Reset rules per feature, document its default range/context fallback, and preserve preferences and explicit navigation.
-
-Exit criteria: typing without Apply leaves results, exports, and next-batch queries unchanged; Apply and Reset have the documented results; invalid filters retain prior data. Run relevant existing Logging, Auditing, Profiling, Entities, Messaging, Queueing, and Orchestrations tests. Add focused state/query tests where coverage is missing and verify draft/refresh/export behavior in the browser.
-
-### PHASE-04. Storage and Change History controls
-
-Scope is C01 through C07, addressing F01 through F06 and F08. Targets are `src/Presentation.Web.Storage/{Files,Documents,Blobs,Permalinks}/Dashboard/` and `src/Presentation.Web.EntityFramework/ChangeHistory/Dashboard/`.
-
-- [ ] TASK-04.1: Migrate storage filter/context strips and Change History forms to shared controls. Add Permalink labels and separate creation/upload tools from the Apply/Reset group.
-- [ ] TASK-04.2: Apply C04 while preserving provider/store/container context, dependent filters, scan permission defaults, ETags, and supported match modes. Do not make all providers support identical queries.
-- [ ] TASK-04.3: Align result framing and empty/unavailable/error messages without replacing the Files tree or forcing all storage results into one layout.
-
-Exit criteria: filter/reset/provider switching preserves supported behavior and safe scan defaults, and continuation/download/edit targets retain exact identifiers. Run existing `DocumentStorageDashboardTests`, `BlobStorageDashboardTests`, and `ChangeHistoryDashboardTests` plus relevant Files/Permalinks tests. Verify populated, empty, and unsupported/unavailable cases with representative provider capabilities.
-
-### PHASE-05. Shared modal frames and lifecycle
-
-Scope is C08 and C06, addressing F09. Start with `src/Presentation.Web/Dashboard/Pages/_DashboardDialogs.cshtml`, Auditing `DetailDialog.cshtml`, storage modal markup, and Entities `Content.cshtml`, `Editor.cshtml`, `Detail.cshtml`, and `Script.cshtml`. Then cover Jobs, Messaging, Queueing, Profiling, Health, MCP, and Change History dialogs.
-
-- [ ] TASK-05.1: Extract a small shared visual/action contract. Validate it with Auditing details, a Blob editor, and the native Entities dialog before migrating other families. Do not replace native dialogs solely to match Bootstrap markup.
-- [ ] TASK-05.2: Link every visible title to its dialog, align header/footer sizing and action roles, and replace generic OK with a specific action. Keep destructive confirmation separate from ordinary editor submit.
-- [ ] TASK-05.3: Reuse detail loading/cancellation/focus logic where it actually repeats. Implement consistent dirty-editor dismissal, retain form values on failed saves, and preserve refresh pause and concurrency checks.
-
-Exit criteria: every affected dialog meets C08 on desktop and phone, including keyboard focus, Escape/backdrop policy, long-body scrolling, retry, and return to the originating list. Verify row-backed Jobs/Messaging/Queueing dialogs with fictional rows rather than claiming source-only coverage. Run existing `AuditDashboardDialogTests`, relevant `OperationProfilingDashboardTests`, Entities, and storage tests. Check two mounted dialog instances for ID and handler collisions when the shared component supports composition.
-
-### PHASE-06. Growing-list footer and continuation
-
-Scope is C09 and C04, addressing F10. Targets are Entities `LoadMore.cshtml` as the reference, Jobs `Pages/Data.cshtml`, and Messaging/Queueing `Pages/Index.cshtml`, `Data.cshtml`, and `Content.cshtml`. Query owners are `src/Application.Jobs/Queries/`, `src/Application.Messaging/IMessageBrokerService.cs`, and `src/Application.Queueing/IQueueBrokerService.cs`.
-
-- [ ] TASK-06.1: Extract `DashboardListFooter` and render Load more immediately followed by Rows per load below each growing list. Migrate Jobs occurrences and broker messages, remove duplicate top-bar batch selectors, and give each Jobs list independent state.
-- [ ] TASK-06.2: Reuse Jobs Skip/Take queries and broker `SearchMessagesAsync` with bounded, deterministic ordering. Preserve applied query scope, exact identity, continuation, and a browsing boundary while new records arrive. Change an owning query layer only if its existing contract cannot support this behavior.
-- [ ] TASK-06.3: Implement batch-size persistence, first-batch reload on size change, append/retry/end states, loaded-count semantics, and refresh reconciliation. Do not hide older rows behind a larger Take or materialize an unbounded collection.
-
-Exit criteria: each migrated list loads at least three distinct batches with no duplicates or skipped boundary rows; changing the selector reloads the first batch; failure retries the same continuation; new arrivals do not corrupt historical browsing. At the end, Load more is disabled while the adjacent selector remains usable. Run relevant Presentation and owning-query tests, including tie timestamps, row deletion, and concurrent arrivals where the provider supports them. Capture the footer on Jobs, Messaging, and Queueing at desktop and phone widths.
-
-### PHASE-07. Operational and Diagnostics routes
-
-Scope is C10, addressing F11. Targets are `DashboardEndpoints.cs`, `DashboardPageProvider.cs`, and the page/fragment/chart code in `src/Presentation.Web.Jobs/Dashboard/`, `src/Presentation.Web.Messaging/Dashboard/`, and `src/Presentation.Web.Queueing/Dashboard/`. Reuse Blob storage's existing navigation pattern and shared remembered views.
-
-- [ ] TASK-07.1: Implement the recorded Jobs layout default: Jobs, Occurrences, and Diagnostics. Preserve the Jobs root and move realtime/history graphs and their windows entirely into Diagnostics.
-- [ ] TASK-07.2: Add Operations/Diagnostics views for Messaging and Queueing. Retain subscriptions and waiting-handler context with messages; move flow charts into Diagnostics. Reuse routed pill markup and preserve configured dashboard roots and access rules.
-- [ ] TASK-07.3: Restore applied filters, loaded history, row-count preference, and scroll when returning to a list. Stop polling and dispose charts when leaving Diagnostics; initialize and resize them on activation and palette changes.
-
-Exit criteria: direct links, remembered views, refresh fragments, and a custom dashboard root reach the correct view. Operational pages load no diagnostic charts or graph polling. Changing tabs preserves PHASE-06 list state and does not alter query scope. Run existing Jobs/Messaging/Queueing endpoint tests plus relevant dashboard navigation tests, and verify chart lifecycle and repeated tab transitions in the browser.
-
-### PHASE-08. Remaining pages and final verification
-
-Scope is the remaining page inventory, C01 through C10, and all findings. Targets include Dashboard overview, System, Metrics, Health, Identity, Console, Logs Stream, MCP, Broadcasting, Orchestrations, and equivalent application-owned controls. Keep specialized terminal, stream, and navigation workflows intact.
-
-- [ ] TASK-08.1: Migrate remaining equivalent toolbars, controls, and result framing. Record justified exceptions for specialized workflows. Do not add artificial filters, append controls, or empty Diagnostics tabs.
-- [ ] TASK-08.2: Run the complete acceptance criteria against the final page inventory. Cover populated/empty/unavailable/error states, long identifiers, keyboard use, responsive widths, and dark/light/monochrome palettes. Recheck shared component disposal and explicit navigation after fragment replacement.
-- [ ] TASK-08.3: Add after screenshots, update affected fictional public documentation captures and dashboard guidance, and record the final test results and any unresolved limitations. Preserve the original assessment captures.
-
-Exit criteria: all global acceptance criteria pass or a remaining gap keeps this phase In progress. Run the complete Presentation unit suite and relevant owning-layer tests for actual behavior changes, then finish browser verification. Stop verification hosts and confirm their ports are released. Mark the overall spec implemented only after every phase is Complete.
-
-### Agent task prompt
-
-Use this pattern with the actual phase identifier:
-
-> Implement PHASE-02 only from `docs/specs/spec-dashboard-page-consistency.md`. Follow `AGENTS.md` and the dashboard-pages skill. Check the declared prerequisites, apply this phase's contracts and working defaults, and preserve feature behavior outside its scope. Run its required tests and browser checks. Update its checklist, status, results, and screenshot references in the spec. Leave later phases untouched. Do not commit or push.
-
-The phase identifier in this example is illustrative; it does not request execution.
+Commit or push only when requested. Preserve unrelated changes and run top-level builds/tests sequentially.
 
 ## Acceptance criteria
 
-- Every explicit filter form has the same labeled Apply/Reset pair and shared panel style.
+- Every explicit filter form has the same text Apply / circled-X Reset pair, accessible Reset name and shared panel style.
 - Comparable controls have the same computed height, label style, spacing, border, palette role, and keyboard behavior within one theme and viewport.
 - Refresh has one neutral visual role and consistent status placement, including across Profiling views.
 - Editing a filter without Apply does not change refreshed results, exports, or subsequent result batches.
@@ -759,3 +658,23 @@ A long execution body scrolls internally while the title and Close footer remain
 - [Dashboard page patterns](../../.agents/skills/dashboard-pages/references/page-patterns.md).
 - [Clean Architecture](../adr/0001-clean-onion-architecture.md).
 - [Modular monolith architecture](../adr/0003-modular-monolith-architecture.md).
+
+
+## Implementation verification
+
+Completed on 2026-11-04. The original assessment images above remain unchanged. Final browser checks covered 44 routes, five widths and three palettes (660 layout checks), plus filters, continuation, route restoration and representative populated dialogs. Build/test evidence and practical limits are in the [verification report](../../plan/dashboard-page-consistency-verification.md).
+
+| Before | After |
+| --- | --- |
+| [Messaging desktop](assets/dashboard-page-consistency/messaging.png) | [Shared toolbar, filters and routed views](assets/dashboard-page-consistency/after-messaging-1440.png) |
+| [Operations phone](assets/dashboard-page-consistency/operations-mobile.png) | [Wrapped header and compact filters](assets/dashboard-page-consistency/after-operations-390.png) |
+| [Documents phone](assets/dashboard-page-consistency/documents-mobile.png) | [Consistent controls and labels](assets/dashboard-page-consistency/after-documents-390.png) |
+| [Document editor](assets/dashboard-page-consistency/dialog-document-new.png) | [Bounded phone editor with visible actions](assets/dashboard-page-consistency/after-document-editor-mobile.png) |
+
+[Messaging footer](assets/dashboard-page-consistency/after-messaging-footer-390.png), [Queueing footer](assets/dashboard-page-consistency/after-queueing-footer-390.png), and [Jobs occurrence footer](assets/dashboard-page-consistency/after-jobs-occurrences-footer-390.png) retain Load more beside Rows per load. Exhausted buttons remain visible and disabled.
+
+Orchestrations follow-up: [before the split](assets/dashboard-page-consistency/before-orchestrations-view-split.png), [unfiltered definitions Overview](assets/dashboard-page-consistency/after-orchestrations-overview-1440.png), [filterable Instances](assets/dashboard-page-consistency/after-orchestrations-instances-1440.png), and [Diagnostics charts](assets/dashboard-page-consistency/after-orchestrations-diagnostics-1440.png). Definitions now come from the registration catalog, including definitions with no persisted instances.
+
+Broker follow-up: Messaging and Queueing now have separate Overview, Messages and Diagnostics routes. [Messaging Messages](assets/dashboard-page-consistency/after-messaging-messages-1440.png) and [Queueing Messages](assets/dashboard-page-consistency/after-queueing-messages-1440.png) keep filters and bounded Load more controls with the retained items. Overview contains unfiltered counters and subscriptions.
+
+Permalinks spacing: [before](assets/dashboard-page-consistency/before-permalinks-filter-spacing.png), [aligned desktop filters](assets/dashboard-page-consistency/after-permalinks-filter-spacing-1280.png), and [aligned phone borders](assets/dashboard-page-consistency/after-permalinks-filter-spacing-390.png). The filter panel wraps its grid; the standalone bordered table retains aligned edges on phones.

@@ -55,7 +55,6 @@
     }
 </style>
 
-<div id="change-history-dashboard-root">
     @if (vm.Errors.Count > 0)
     {
         <div class="alert alert-warning py-2 mb-0">
@@ -66,12 +65,18 @@
         </div>
     }
 
-    <form class="change-history-filter" method="get" action="@vm.PagePath">
+    @if (vm.Registrations.Count == 0)
+    {
+        <div class="alert alert-info mb-0">No ChangeHistory entities are registered for the dashboard.</div>
+        return;
+    }
+<div id="change-history-dashboard-root">
+    <form id="change-history-filters" class="change-history-filter dashboard-filter-panel" method="get" action="@vm.PagePath">
         <input type="hidden" name="page" value="1">
         <div class="row g-2 align-items-end">
             <div class="col-12 col-xl-3">
                 <label class="form-label" for="change-history-registration">Registration</label>
-                <select id="change-history-registration" class="form-select form-select-sm" name="registration" onchange="this.form.submit()">
+                <select id="change-history-registration" class="form-select form-select-sm" name="registration" onchange="const url = new URL(this.form.action); url.searchParams.set('registration', this.value); url.searchParams.set('pageSize', this.form.elements.pageSize.value); location.assign(url);">
                     @foreach (var registration in vm.Registrations)
                     {
                         <option value="@registration.Key" selected="@(registration.Key == query.RegistrationKey ? "selected" : null)">
@@ -84,7 +89,28 @@
                 <label class="form-label" for="change-history-entity-id">Entity id</label>
                 <input id="change-history-entity-id" class="form-control form-control-sm" name="entityId" value="@query.EntityId" autocomplete="off">
             </div>
-            <div class="col-12 col-md-6 col-xl-2">
+            <div class="col-6 col-xl-2">
+                <label class="form-label" for="change-history-date-from">From UTC</label>
+                <div class="input-group input-group-sm">
+                    @(await RenderPartialAsync<DateRange, DashboardDateRangeModel>(new("change-history-date-from", "change-history-date-to")))
+                    <input id="change-history-date-from" class="form-control form-control-sm" type="datetime-local" step="60" name="changedDateFrom" value="@DashboardDateTime.FormatInput(query.ChangedDateFrom)" autocomplete="off">
+                </div>
+            </div>
+            <div class="col-6 col-xl-2">
+                <label class="form-label" for="change-history-date-to">To UTC</label>
+                <input id="change-history-date-to" class="form-control form-control-sm" type="datetime-local" step="60" name="changedDateTo" value="@DashboardDateTime.FormatInput(query.ChangedDateTo)" autocomplete="off">
+            </div>
+            <div class="col-6 col-md-auto">
+                <div class="form-check mb-1">
+                    <input id="change-history-order-ascending" class="form-check-input" type="checkbox" name="orderAscending" value="true" checked="@(query.OrderAscending ? "checked" : null)">
+                    <label class="form-check-label" for="change-history-order-ascending">Oldest first</label>
+                </div>
+            </div>
+            <div class="col-12 col-lg-auto d-flex justify-content-end ms-auto">
+                @(await RenderPartialAsync<FilterActions, DashboardFilterActionsModel>(new(ResetUrl: vm.PagePath + "?registration=" + Uri.EscapeDataString(query.RegistrationKey ?? "") + "&pageSize=" + query.PageSize)))
+            </div>
+        </div>
+        <details open class="dashboard-secondary-filters"><summary>More filters</summary><div class="row g-2">            <div class="col-12 col-md-6 col-xl-2">
                 <label class="form-label" for="change-history-property-name">Property</label>
                 <input id="change-history-property-name" class="form-control form-control-sm" name="propertyName" value="@query.PropertyName" autocomplete="off">
             </div>
@@ -104,10 +130,6 @@
                 <label class="form-label" for="change-history-capture-status">Capture status</label>
                 <input id="change-history-capture-status" class="form-control form-control-sm" name="captureStatus" value="@query.CaptureStatus" autocomplete="off" placeholder="Captured, Failed">
             </div>
-            <div class="col-12 col-xl-1">
-                <label class="form-label" for="change-history-page-size">Page size</label>
-                <input id="change-history-page-size" class="form-control form-control-sm" type="number" min="1" max="100" name="pageSize" value="@query.PageSize">
-            </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <label class="form-label" for="change-history-change-set-id">Change set id</label>
                 <input id="change-history-change-set-id" class="form-control form-control-sm" name="changeSetId" value="@query.ChangeSetId" autocomplete="off">
@@ -120,28 +142,7 @@
                 <label class="form-label" for="change-history-user-id">User id</label>
                 <input id="change-history-user-id" class="form-control form-control-sm" name="changedByUserId" value="@query.ChangedByUserId" autocomplete="off">
             </div>
-            <div class="col-12 col-md-6 col-xl-2">
-                <label class="form-label" for="change-history-date-from">From UTC</label>
-                <div class="input-group input-group-sm">
-                    @(await RenderPartialAsync<DateRange, DashboardDateRangeModel>(new("change-history-date-from", "change-history-date-to")))
-                    <input id="change-history-date-from" class="form-control form-control-sm" type="datetime-local" step="60" name="changedDateFrom" value="@DashboardDateTime.FormatInput(query.ChangedDateFrom)" autocomplete="off">
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-xl-2">
-                <label class="form-label" for="change-history-date-to">To UTC</label>
-                <input id="change-history-date-to" class="form-control form-control-sm" type="datetime-local" step="60" name="changedDateTo" value="@DashboardDateTime.FormatInput(query.ChangedDateTo)" autocomplete="off">
-            </div>
-            <div class="col-12 col-md-6 col-xl-2">
-                <div class="form-check mb-1">
-                    <input id="change-history-order-ascending" class="form-check-input" type="checkbox" name="orderAscending" value="true" checked="@(query.OrderAscending ? "checked" : null)">
-                    <label class="form-check-label" for="change-history-order-ascending">Oldest first</label>
-                </div>
-            </div>
-            <div class="col-12 col-xl-2 d-flex gap-2">
-                <button type="submit" class="btn btn-primary btn-sm flex-fill">Apply</button>
-                <a class="btn btn-outline-secondary btn-sm" href="@vm.PagePath">Reset</a>
-            </div>
-        </div>
+</div></details>
     </form>
 
     @if (!vm.IsAvailable)
@@ -219,6 +220,7 @@
             <div class="text-muted small">
                 Page @(vm.ChangeSets?.CurrentPage ?? query.Page) of @(vm.ChangeSets?.TotalPages ?? 1)
             </div>
+            <select id="change-history-page-size" name="pageSize" form="change-history-filters" class="form-select form-select-sm" style="width:auto" aria-label="Rows per page" title="Rows per page" onchange="this.form.requestSubmit()">@foreach (var size in new[] { 10, 20, 50, 100 }.Append(query.PageSize).Distinct().Order()) { <option value="@size" selected="@(query.PageSize == size)">@size</option> }</select>
             <div class="btn-group btn-group-sm">
                 <button class="btn btn-outline-secondary" type="submit" form="change-history-pager-form" name="page" value="@(Math.Max(1, query.Page - 1))" disabled="@(!(vm.ChangeSets?.HasPreviousPage ?? false) ? "disabled" : null)">Previous</button>
                 <button class="btn btn-outline-secondary" type="submit" form="change-history-pager-form" name="page" value="@(query.Page + 1)" disabled="@(!(vm.ChangeSets?.HasNextPage ?? false) ? "disabled" : null)">Next</button>

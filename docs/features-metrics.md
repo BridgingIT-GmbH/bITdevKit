@@ -196,6 +196,8 @@ Open Metrics at `/_bdk/dashboard/metrics` with both metrics and the [Dashboard](
 
 The App tab summarizes devkit feature successes, failures, current work and duration series. It lists the busiest and slowest recorded series beside the feature overview. The .NET tab shows process, memory, GC and thread-pool values. ASP.NET summarizes HTTP traffic.
 
+Duration histograms recorded in seconds, milliseconds, microseconds or nanoseconds are normalized to milliseconds in snapshot `Durations` and latency highlights. Other histograms retain their original units in snapshot `Histograms` and the App tab's Other measurements table. A transfer-rate histogram such as bytes per second is not a latency measurement. Discovery descriptors retain each histogram's unit and distinguish `duration` from `histogram`.
+
 [![Metrics App tab with feature counters, current work and recorded duration series](assets/dashboard/04-metrics-metrics.png)](assets/dashboard/04-metrics-metrics.png)
 
 Select Routes to compare request counts, failures and average latency per HTTP method and route. These are aggregate measurements. Use [Request Profiling](features-profiling.md#dashboard) when you need one execution's segment breakdown.

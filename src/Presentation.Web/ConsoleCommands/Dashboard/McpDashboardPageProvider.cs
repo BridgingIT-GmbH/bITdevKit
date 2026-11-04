@@ -36,6 +36,13 @@ public sealed class McpDashboardPageProvider(DashboardEndpointsOptions options) 
             Order = 55,
             ShowInSidebar = false,
             Description = "Local MCP handlers and IPC bridge",
+            RememberedViews = new Dictionary<string, string>
+            {
+                ["overview"] = McpDashboardEndpoints.BuildMcpPath(options),
+                ["connections"] = McpDashboardEndpoints.BuildMcpPath(options, "connections"),
+                ["handlers"] = McpDashboardEndpoints.BuildMcpPath(options, "handlers"),
+                ["operations"] = McpDashboardEndpoints.BuildMcpPath(options, "operations")
+            },
             Card = GetCardAsync
         };
     }

@@ -326,8 +326,8 @@
         <div class="navbar-nav">
             <div class="nav-item text-nowrap">
                 <button class="btn btn-link nav-link px-3 theme-toggle" type="button" aria-label="Toggle theme">
-                    <i class="bi bi-sun-fill light-icon"></i>
-                    <i class="bi bi-moon-fill dark-icon"></i>
+                    <i class="bi bi-sun-fill light-icon" aria-hidden="true"></i>
+                    <i class="bi bi-moon-fill dark-icon" aria-hidden="true"></i>
                 </button>
             </div>
             @* <div class="nav-item text-nowrap">
@@ -352,7 +352,7 @@
                     }))
                 @await RenderSectionAsync("nav-menu")
                 <button class="btn sidebar-toggle d-none d-md-flex" type="button" aria-label="Toggle sidebar">
-                    <i class="bi bi-layout-sidebar"></i>
+                    <i class="bi bi-layout-sidebar" aria-hidden="true"></i>
                 </button>
             }
 

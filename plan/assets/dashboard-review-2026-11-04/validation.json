@@ -1,0 +1,11 @@
+{
+  "markdownFiles": 4,
+  "localLinks": 61,
+  "skillFrontmatter": "valid",
+  "skillLines": 75,
+  "routes": 52,
+  "baselineCaptures": 104,
+  "detailCaptures": 42,
+  "dialogEscapeChecks": 12,
+  "logsAppend": "50 to 100 unique rows, originals preserved"
+}

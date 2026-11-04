@@ -1,3 +1,4 @@
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using System.Text.Json
 @using BridgingIT.DevKit.Application.Messaging
 @using Microsoft.Extensions.Logging
@@ -5,6 +6,7 @@
 @inherits RazorSlice
 
 @{
+    var messagesView = IsMessagesView();
     var vm = await CreateModelAsync();
     var actionBase = vm.ActionBase;
 }
@@ -19,15 +21,17 @@ else
 {
     @if (vm.Errors.Count > 0)
     {
-        <div class="alert alert-danger py-2 mb-2">
+        <div class="alert alert-danger py-2 mb-2" data-dashboard-query-error>
             @foreach (var error in vm.Errors)
             {
                 <div>@error</div>
             }
         </div>
+        return;
     }
 
-    <div class="row g-2 messaging-card-grid">
+    <div class="dashboard-history-scope">All retained messages Â· selected archive scope</div>
+    <div class="row g-2 messaging-card-grid dashboard-history-summary">
         @RenderMetricCard("Total", vm.Stats.Total, "text-primary")
         @RenderMetricCard("Pending", vm.Stats.Pending, "text-info")
         @RenderMetricCard("Processing", vm.Stats.Processing, "text-warning")
@@ -36,13 +40,15 @@ else
         @RenderMetricCard("Dead-lettered", vm.Stats.DeadLettered, vm.Stats.DeadLettered > 0 ? "text-danger" : null)
     </div>
 
-    <div class="messaging-data-zone">
-        <section class="messaging-panel">
+    <div class="messaging-data-zone" data-view="@(messagesView ? "messages" : "overview")">
+        @if (messagesView)
+        {
+        <section class="messaging-panel" data-dashboard-list="messaging" data-dashboard-list-total="@vm.MatchingCount">
             <div class="messaging-panel-header">
                 <span>Messages</span>
-                <span class="badge rounded-pill text-bg-secondary">@vm.Messages.Count</span>
+                <span class="badge rounded-pill text-bg-secondary" data-dashboard-list-count>@vm.Messages.Count</span>
             </div>
-            <div class="messaging-panel-body">
+            <div class="messaging-panel-body" data-dashboard-list-scroll>
             @if (vm.Messages.Count == 0)
             {
                 <div class="text-muted small py-2">No broker messages matched the current filters.</div>
@@ -63,14 +69,14 @@ else
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody data-dashboard-list-rows>
                         @foreach (var message in vm.Messages)
                         {
                             vm.MessageDetailsById.TryGetValue(message.Id, out var detail);
                             vm.MessageContentById.TryGetValue(message.Id, out var content);
                             var retryUrl = $"{actionBase}/messages/{message.Id}/retry";
                             var archiveUrl = $"{actionBase}/messages/{message.Id}/archive";
-                            <tr>
+                            <tr data-dashboard-row-id="@message.Id">
                                 <td>
                                     @RenderStatusBadge(message.Status)
                                     @if (message.IsArchived)
@@ -97,19 +103,19 @@ else
                                     <button type="button"
                                             class="btn btn-sm btn-outline-secondary"
                                             title="Show message details"
-                                            data-messaging-message-context="@CreateMessageContext(message, detail, content)">
-                                        <i class="bi bi-info-circle"></i>
+                                            data-messaging-message-context="@CreateMessageContext(message, detail, content)" aria-label="Show message details">
+                                        <i class="bi bi-info-circle" aria-hidden="true"></i>
                                     </button>
                                     @if (CanRetryMessage(message))
                                     {
-                                        <button class="btn btn-sm btn-outline-warning ms-1" title="Retry message" onclick="window.bdkMessagingAction('@retryUrl')">
-                                            <i class="bi bi-arrow-repeat"></i>
+                                        <button class="btn btn-sm btn-outline-warning ms-1" title="Retry message" onclick="window.bdkMessagingAction('@retryUrl')" aria-label="Retry message">
+                                            <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
                                         </button>
                                     }
                                     @if (CanArchiveMessage(message))
                                     {
-                                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Archive message" onclick="window.bdkMessagingAction('@archiveUrl')">
-                                            <i class="bi bi-archive"></i>
+                                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Archive message" onclick="window.bdkMessagingAction('@archiveUrl')" aria-label="Archive message">
+                                            <i class="bi bi-archive" aria-hidden="true"></i>
                                         </button>
                                     }
                                 </td>
@@ -120,9 +126,13 @@ else
                 </div>
             }
             </div>
+            @(await RenderPartialAsync<ListFooter, DashboardListFooterModel>(new("messaging", vm.BatchSize, vm.HasMore, vm.NextCursor, Sizes: [10, 25, 50, 100, 200, 250, 500], SelectorId: "messaging-take-filter", Boundary: vm.Boundary, LoadedCount: vm.Messages.Count)))
         </section>
 
+        }
         <div class="messaging-side-zone">
+            @if (!messagesView)
+            {
             <section class="messaging-panel">
                 <div class="messaging-panel-header">
                     <span>Subscriptions</span>
@@ -139,18 +149,23 @@ else
                     {
                         var pauseUrl = $"{actionBase}/types/{Uri.EscapeDataString(subscription.MessageType)}/pause";
                         var resumeUrl = $"{actionBase}/types/{Uri.EscapeDataString(subscription.MessageType)}/resume";
-                        <div class="border-bottom py-2">
-                            <div class="fw-medium" title="@subscription.MessageType">@TrimValue(subscription.MessageType, 54)</div>
-                            <div class="text-muted small" title="@subscription.HandlerType">@TrimValue(subscription.HandlerType, 54)</div>
-                            <div class="d-flex flex-wrap gap-2 align-items-center mt-2">
+                        <div class="border-bottom py-2 d-flex align-items-center justify-content-between gap-2" data-subscription-row>
+                            <div style="min-width: 0" class="flex-grow-1">
+                                <div class="fw-medium text-break" title="@subscription.MessageType">@TrimValue(subscription.MessageType, 54)</div>
+                                <div class="text-muted small text-break" title="@subscription.HandlerType">@TrimValue(subscription.HandlerType, 54)</div>
                                 @if (subscription.IsMessageTypePaused)
                                 {
-                                    <span class="badge text-bg-warning">Paused</span>
-                                    <button class="btn btn-sm btn-outline-success" onclick="window.bdkMessagingAction('@resumeUrl')">Resume</button>
+                                    <span class="badge text-bg-warning mt-1">Paused</span>
+                                }
+                            </div>
+                            <div class="d-flex flex-nowrap gap-2 align-items-center flex-shrink-0 ms-auto">
+                                @if (subscription.IsMessageTypePaused)
+                                {
+                                    <button type="button" class="btn btn-sm btn-outline-success" onclick="window.bdkMessagingAction('@resumeUrl')" title="Resume message type" aria-label="Resume message type"><i class="bi bi-play-circle" aria-hidden="true"></i></button>
                                 }
                                 else
                                 {
-                                    <button class="btn btn-sm btn-outline-warning" onclick="window.bdkMessagingAction('@pauseUrl')">Pause</button>
+                                    <button type="button" class="btn btn-sm btn-outline-warning" onclick="window.bdkMessagingAction('@pauseUrl')" title="Pause message type" aria-label="Pause message type"><i class="bi bi-pause-circle" aria-hidden="true"></i></button>
                                 }
                             </div>
                         </div>
@@ -159,9 +174,12 @@ else
                 </div>
             </section>
 
+            }
+            @if (messagesView)
+            {
             <section class="messaging-panel">
                 <div class="messaging-panel-header">
-                    <span>Waiting</span>
+                    <span title="All messages waiting for a handler, independent of the filters">Waiting for handlers</span>
                     <span class="badge rounded-pill text-bg-secondary">@vm.WaitingMessages.Count</span>
                 </div>
                 <div class="messaging-panel-body">
@@ -182,11 +200,17 @@ else
                 }
                 </div>
             </section>
+            }
         </div>
     </div>
 }
 
 @functions {
+    private bool IsMessagesView() =>
+        HttpContext.Request.Path.Value?.EndsWith("/messages", StringComparison.OrdinalIgnoreCase) == true ||
+        (HttpContext.Request.Path.Value?.EndsWith("/content", StringComparison.OrdinalIgnoreCase) == true &&
+         HttpContext.Request.Query["view"] == "messages");
+
     private async Task<DashboardMessagingViewModel> CreateModelAsync()
     {
         var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
@@ -204,8 +228,9 @@ else
             return model;
         }
 
+        var messagesView = IsMessagesView();
         var status = TryParseEnum<BrokerMessageStatus>(GetQuery("status"));
-        var archive = GetArchiveFilter(GetQuery("archive"));
+        var archive = messagesView ? GetArchiveFilter(GetQuery("archive")) : false;
         var take = GetTake();
         var type = GetQuery("type");
         var messageId = GetQuery("messageId");
@@ -229,43 +254,63 @@ else
             logger?.LogWarning(ex, "Messaging dashboard: summary failed.");
         }
 
-        try
+        if (messagesView)
         {
-            var messages = await service.GetMessagesAsync(
-                status,
-                type,
-                messageId,
-                isArchived: archive,
-                includeHandlers: false,
-                take: take,
-                cancellationToken: cancellationToken);
-            model.Messages = messages.OrderByDescending(message => message.CreatedDate).ToList();
-            model.MessageDetailsById = await GetMessageDetailsAsync(service, model.Messages, cancellationToken);
-            model.MessageContentById = await GetMessageContentsAsync(service, model.Messages, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            logger?.LogWarning(ex, "Messaging dashboard: messages query failed.");
-            model.Errors.Add("Messages could not be loaded.");
+            try
+            {
+                var filter = new FilterModel
+                {
+                    Page = 1, PageSize = take + 1,
+                    Orderings = [new() { Field = "Id", Direction = OrderDirection.Descending }]
+                };
+                if (status.HasValue) filter.Filters.Add(new("Status", FilterOperator.Equal, status.Value));
+                if (!string.IsNullOrWhiteSpace(type)) filter.Filters.Add(new("Type", FilterOperator.Contains, type));
+                if (!string.IsNullOrWhiteSpace(messageId)) filter.Filters.Add(new("MessageId", FilterOperator.Contains, messageId));
+                var before = GetQuery("cursor");
+                var boundary = GetQuery("boundary");
+                DashboardHistoryCursor.Apply(filter, "Id", before, boundary);
+                var page = await service.SearchMessagesAsync(filter, archive, includeHandlers: false, cancellationToken: cancellationToken);
+                if (page.IsFailure) throw new InvalidOperationException("The retained message query failed.");
+                var messages = page.Value.ToList();
+                model.MatchingCount = page.TotalCount;
+                model.BatchSize = take;
+                model.HasMore = messages.Count > take;
+                model.Messages = messages.Take(take).ToList();
+                model.Boundary = boundary ?? (model.Messages.FirstOrDefault() is { } first ? DashboardHistoryCursor.Encode(first.CreatedDate, first.Id) : null);
+                model.NextCursor = (model.Messages.LastOrDefault() is { } last ? DashboardHistoryCursor.Encode(last.CreatedDate, last.Id) : null);
+                model.MessageDetailsById = await GetMessageDetailsAsync(service, model.Messages, cancellationToken);
+                model.MessageContentById = await GetMessageContentsAsync(service, model.Messages, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger?.LogWarning(ex, "Messaging dashboard: messages query failed.");
+                model.Errors.Add("Messages could not be loaded.");
+            }
         }
 
-        try
+        if (!messagesView)
         {
-            model.Subscriptions = (await service.GetSubscriptionsAsync(cancellationToken)).ToList();
-        }
-        catch (Exception ex)
-        {
-            logger?.LogWarning(ex, "Messaging dashboard: subscriptions query failed.");
-            model.Errors.Add("Subscriptions could not be loaded.");
+            try
+            {
+                model.Subscriptions = (await service.GetSubscriptionsAsync(cancellationToken)).ToList();
+            }
+            catch (Exception ex)
+            {
+                logger?.LogWarning(ex, "Messaging dashboard: subscriptions query failed.");
+                model.Errors.Add("Subscriptions could not be loaded.");
+            }
         }
 
-        try
+        if (messagesView)
         {
-            model.WaitingMessages = (await service.GetWaitingMessagesAsync(25, cancellationToken)).ToList();
-        }
-        catch (Exception ex)
-        {
-            logger?.LogWarning(ex, "Messaging dashboard: waiting messages query failed.");
+            try
+            {
+                model.WaitingMessages = (await service.GetWaitingMessagesAsync(25, cancellationToken)).ToList();
+            }
+            catch (Exception ex)
+            {
+                logger?.LogWarning(ex, "Messaging dashboard: waiting messages query failed.");
+            }
         }
 
         return model;
@@ -366,7 +411,7 @@ else
         string.IsNullOrWhiteSpace(value) ? "-" : value;
 
     private static string FormatTimestamp(DateTimeOffset? value) =>
-        value?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz", CultureInfo.InvariantCulture) ?? "-";
+        value?.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) ?? "-";
 
     private static string FormatRelative(DateTimeOffset? value)
     {
@@ -444,12 +489,12 @@ else
             properties = source.Properties?.ToDictionary(pair => pair.Key, pair => pair.Value?.ToString() ?? string.Empty) ?? new Dictionary<string, string>(),
             handlers = (source.Handlers ?? []).Select(handler => new
             {
-                handler.SubscriptionKey,
-                handler.HandlerType,
+                subscriptionKey = handler.SubscriptionKey,
+                handlerType = handler.HandlerType,
                 status = handler.Status.ToString(),
-                handler.AttemptCount,
-                handler.ProcessedDate,
-                handler.LastError
+                attemptCount = handler.AttemptCount,
+                processedDate = handler.ProcessedDate,
+                lastError = handler.LastError
             }).ToArray()
         };
 

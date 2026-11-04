@@ -1413,17 +1413,21 @@ builder.Services.AddJobScheduler()
 
 ## Dashboard guide
 
-Open Jobs at `/_bdk/dashboard/jobs` after registering the scheduler and [Dashboard](features-presentation-dashboard.md), with `Presentation.Web.Jobs` referenced. The page uses `IJobSchedulerQueryService` to show registered jobs and recent occurrences.
+Open Jobs at `/_bdk/dashboard/jobs` after registering the scheduler and [Dashboard](features-presentation-dashboard.md), with `Presentation.Web.Jobs` referenced. The page uses `IJobSchedulerQueryService` to show registered jobs, retained occurrences and diagnostics in separate routed views.
 
-The job table distinguishes definition state from execution state. A job can be active while having no running occurrences. Check trigger counts, next execution and last execution beside the running and failed counts. The adjacent occurrence table shows the outcome, trigger, creation time and duration of individual runs.
+Filter Jobs by name, group, enabled state and paused state, then select Apply. Reset clears these criteria while retaining the batch size. Refresh and continuation use the applied selection and preserve draft edits.
 
-[![Jobs dashboard with registered definitions and completed scheduler occurrences](assets/dashboard/06-jobs-jobs.png)](assets/dashboard/06-jobs-jobs.png)
+The job table distinguishes definition state from execution state. A job can be active while having no running occurrences. Check trigger counts, next execution and last execution beside the running and failed counts. Filter Occurrences by job, trigger, status and correlation ID, then select Apply. Its Reset preserves the occurrence batch size, and refresh and continuation use its applied selection.
+
+The Occurrences view shows the outcome, trigger, creation time and duration of individual runs.
+
+[![Jobs dashboard with registered definitions and routed Occurrences and Diagnostics views](assets/dashboard/06-jobs-jobs.png)](assets/dashboard/06-jobs-jobs.png)
 
 Select an occurrence's information button to inspect its context, correlation ID, messages and latest execution details. Follow the correlation ID to Logs or copy it for a support lookup.
 
 [![Job occurrence context and execution information in a dashboard dialog](assets/dashboard/jobs/occurrence-details.png)](assets/dashboard/jobs/occurrence-details.png)
 
-Dispatch, pause and disable actions operate on job definitions. Occurrences expose cancel, interrupt or retry actions when their current state permits them. Realtime Graph samples the current browser session; History Graph queries retained scheduler history. Use the toolbar refresh button or interval selector to update the projections.
+Dispatch, pause and disable actions operate on job definitions. Occurrences expose cancel, interrupt or retry actions when their current state permits them. Diagnostics shows four process-local runtime charts: started/completed executions per second, outcome rates per second including successful completions, mean execution duration, and mean scheduling delay after the due time. Measurements use completed one-second intervals with up to fifteen minutes of history. The collapsed Retained job history panel queries retained scheduler occurrences separately; retention and archival can change those historical counts. Jobs shows every registration matching its filters in a full-width table. Occurrences shows each complete Occurrence ID beside the job name, with a copy button. It keeps its Load more / Rows per load footer, loaded history and scroll restoration when returning from Diagnostics. Use the toolbar refresh button or interval selector to update the projections. Runtime collection continues independently of browser polling. Missing duration observations appear as gaps; metrics-disabled hosts keep the chart frames with unavailable values.
 
 ## Operational notes
 
@@ -1461,6 +1465,8 @@ Dispatch, pause and disable actions operate on job definitions. Occurrences expo
 | `GET` | `/_bdk/api/jobs/metrics` | Get aggregate operational metrics. |
 
 #### Dashboard endpoints
+
+The dashboard also exposes `/_bdk/dashboard/jobs/occurrences` and `/_bdk/dashboard/jobs/diagnostics`. They inherit the configured dashboard root and access rules.
 
 | Method | Route | Description |
 | --- | --- | --- |

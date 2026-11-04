@@ -10,12 +10,8 @@
     var contentPath = Dashboard.Url("core-overview", "content");
 }
 
-<div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
-    <div>
-        <h4 class="m-0">Overview</h4>
-        <div class="text-muted small">WeatherFiesta Core module</div>
-    </div>
-    <div class="d-flex align-items-center gap-2">
+<div class="dashboard-page-toolbar">
+    <div class="d-flex flex-wrap justify-content-end align-items-center gap-2">
         @if (cities.Count > 0)
         {
             <select id="weatherfiesta-city-select" class="form-select form-select-sm" style="width: 14rem" aria-label="Select city current weather">
@@ -27,7 +23,7 @@
                 }
             </select>
         }
-        <span id="weatherfiesta-overview-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <span id="weatherfiesta-overview-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.ToString("HH:mm:ss 'UTC'", CultureInfo.InvariantCulture)</span>
         <select id="weatherfiesta-overview-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="WeatherFiesta overview refresh interval">
             <option value="">Off</option>
             <option value="1000">1 sec</option>
@@ -35,8 +31,8 @@
             <option value="15000">15 sec</option>
             <option value="30000">30 sec</option>
         </select>
-        <button type="button" id="weatherfiesta-overview-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh overview">
-            <i class="bi bi-arrow-clockwise"></i>
+        <button type="button" id="weatherfiesta-overview-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh overview" aria-label="Refresh overview">
+            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
         </button>
     </div>
 </div>

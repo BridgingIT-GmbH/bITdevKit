@@ -13,8 +13,8 @@
 
 <style>
     #blobs-dashboard-root {
-        height: calc(100vh - 7.75rem);
-        min-height: 560px;
+        height: auto;
+        min-height: 0;
         display: flex;
         flex-direction: column;
         gap: .5rem;
@@ -23,6 +23,7 @@
 
     #blobs-dashboard-root .blobs-toolbar,
     #blobs-dashboard-root .blobs-panel {
+        min-width: 0;
         border: 1px solid var(--bs-border-color);
         border-radius: .1rem;
         background: transparent;
@@ -34,6 +35,7 @@
     }
 
     #blobs-dashboard-root .blobs-panel {
+        min-width: 0;
         flex: 1 1 auto;
         min-height: 0;
         display: flex;
@@ -41,6 +43,7 @@
     }
 
     #blobs-dashboard-root .blobs-panel-header {
+        flex-wrap: wrap;
         padding: .48rem .6rem;
         border-bottom: 1px solid var(--bs-border-color);
         font-weight: 600;
@@ -51,6 +54,9 @@
     }
 
     #blobs-dashboard-root .blobs-panel-body {
+        min-width: 0;
+        max-width: 100%;
+        max-height: 65vh;
         min-height: 0;
         overflow: auto;
         padding: .45rem;
@@ -102,6 +108,8 @@
             opacity: 1;
         }
     }
+    #blobs-dashboard-root .table-responsive { max-width: 100%; }
+    #blobs-dashboard-root .blobs-panel-header > div { flex-wrap: wrap; min-width: 0; }
 </style>
 
 <div id="blobs-dashboard-root"
@@ -121,7 +129,7 @@
     {
         @if (vm.Errors.Count > 0)
         {
-            <div class="alert alert-danger py-2 mb-0">
+            <div class="alert alert-danger py-2 mb-0" data-dashboard-query-error>
                 @foreach (var error in vm.Errors)
                 {
                     <div>@error</div>
@@ -129,7 +137,8 @@
             </div>
         }
 
-        <form class="blobs-toolbar" data-blobs-filter-form>
+
+        <form class="blobs-toolbar dashboard-filter-panel" data-blobs-filter-form id="blobs-filter-form">
             <div class="row g-2 align-items-end">
                 <div class="col-12 col-lg-2">
                     <label class="form-label small mb-1" for="blobs-store">Store</label>
@@ -156,50 +165,29 @@
                     <input id="blobs-prefix" class="form-control form-control-sm" name="prefix" value="@vm.Prefix" list="blobs-prefix-history" autocomplete="off" placeholder="2026/">
                     <datalist id="blobs-prefix-history"></datalist>
                 </div>
-                <div class="col-6 col-lg-1">
-                    <label class="form-label small mb-1" for="blobs-take">Size</label>
-                    <select id="blobs-take" class="form-select form-select-sm" name="take">
-                        @foreach (var take in PageSizeOptions)
-                        {
-                            <option value="@take" @(vm.Take == take ? "selected" : null)>@take</option>
-                        }
-                    </select>
-                </div>
                 <div class="col-6 col-lg-2">
                     <div class="form-check mb-1">
                         <input id="blobs-full-scan" class="form-check-input" type="checkbox" name="allowFullScan" value="true" @(vm.AllowFullScan ? "checked" : null)>
                         <label class="form-check-label small" for="blobs-full-scan">Allow full scan</label>
                     </div>
                 </div>
-                <div class="col-6 col-lg-1 d-flex gap-1">
-                    <button type="submit" class="btn btn-primary btn-sm">Apply</button>
-                    <button type="button" class="btn btn-outline-secondary btn-sm" title="Clear filters" aria-label="Clear filters" data-blobs-command="clear-filter"><i class="bi bi-x-lg"></i></button>
-                </div>
-                <div class="col-6 col-lg-1 d-grid">
-                    <button type="button" class="btn btn-outline-secondary btn-sm" data-blobs-command="upload" @(string.IsNullOrWhiteSpace(vm.SelectedStoreName) || string.IsNullOrWhiteSpace(vm.Container) ? "disabled" : null)>
-                        <i class="bi bi-upload"></i>
-                    </button>
-                </div>
+                <div class="col-12 col-lg-auto d-flex justify-content-end ms-auto">@(await RenderPartialAsync<FilterActions, DashboardFilterActionsModel>(new(ResetId: "blobs-filter-reset")))</div>
+
             </div>
         </form>
 
-        <section class="blobs-panel">
+        <section class="blobs-panel" data-dashboard-list="blobs">
             <div class="blobs-panel-header">
                 <span>Blobs</span>
                 <div class="d-flex align-items-center gap-2">
-                    <span class="text-muted small">@DisplayQuery(vm) · @vm.Blobs.Count row(s)</span>
-                    @if (vm.HasMore)
-                    {
-                        <button type="button"
-                                class="btn btn-outline-secondary btn-sm"
-                                data-blobs-command="next"
-                                data-continuation-token="@vm.NextContinuationToken">
-                            Next
-                        </button>
-                    }
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-blobs-command="upload" @(string.IsNullOrWhiteSpace(vm.SelectedStoreName) || string.IsNullOrWhiteSpace(vm.Container) ? "disabled" : null)>
+                        <i class="bi bi-upload" aria-hidden="true"></i> Upload
+                    </button>
+                    <span class="text-muted small">@DisplayQuery(vm) · <span data-dashboard-list-count>@vm.Blobs.Count</span> row(s)</span>
+
                 </div>
             </div>
-            <div class="blobs-panel-body">
+            <div class="blobs-panel-body" data-dashboard-list-scroll>
                 @if (string.IsNullOrWhiteSpace(vm.Container))
                 {
                     <div class="dashboard-empty">Enter a container to list blobs.</div>
@@ -223,15 +211,15 @@
                                     <th class="text-end"></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody data-dashboard-list-rows>
                             @foreach (var blob in vm.Blobs)
                             {
                                 var downloadUrl = BuildDownloadUrl(vm.DownloadPath, vm.SelectedStoreName, blob.Container, blob.Name);
                                 var displayName = Shortener.Apply(blob.Name, new ShorteningOptions { MaximumLength = 64 });
-                                <tr>
+                                <tr data-dashboard-row-id="@blob.Name">
                                     <td>
                                         <div class="blobs-name-cell" title="@blob.Name">
-                                            <i class="bi bi-file-earmark-binary me-1"></i><code>@displayName</code>
+                                            <i class="bi bi-file-earmark-binary me-1" aria-hidden="true"></i><code>@displayName</code>
                                         </div>
                                     </td>
                                     <td class="text-muted small">@DisplayValue(blob.ContentType)</td>
@@ -243,18 +231,18 @@
                                     </td>
                                     <td class="text-end text-nowrap">
                                         <span class="blobs-actions">
-                                            <a class="btn btn-sm btn-outline-secondary" title="Download blob" href="@downloadUrl">
-                                                <i class="bi bi-download"></i>
+                                            <a class="btn btn-sm btn-outline-secondary" title="Download blob" href="@downloadUrl" aria-label="Download blob">
+                                                <i class="bi bi-download" aria-hidden="true"></i>
                                             </a>
                                             @if (vm.PermalinksEnabled)
                                             {
                                                 <form class="d-inline" method="post" target="_blank" action="@permalinkAction">
                                                     <input type="hidden" name="kind" value="Blob"><input type="hidden" name="registration" value="@vm.SelectedStoreName"><input type="hidden" name="scope" value="@blob.Container"><input type="hidden" name="path" value="@blob.Name">
-                                                    <button class="btn btn-sm btn-outline-secondary" title="Permalink download"><i class="bi bi-link-45deg"></i></button>
+                                                    <button class="btn btn-sm btn-outline-secondary" title="Permalink download" aria-label="Permalink download"><i class="bi bi-link-45deg" aria-hidden="true"></i></button>
                                                 </form>
                                                 <form class="d-inline" method="post" action="@permalinkCopyAction" data-permalink-copy-form>
                                                     <input type="hidden" name="kind" value="Blob"><input type="hidden" name="registration" value="@vm.SelectedStoreName"><input type="hidden" name="scope" value="@blob.Container"><input type="hidden" name="path" value="@blob.Name">
-                                                    <button class="btn btn-sm btn-outline-secondary" title="Copy permalink"><i class="bi bi-clipboard"></i></button>
+                                                    <button class="btn btn-sm btn-outline-secondary" title="Copy permalink" aria-label="Copy permalink"><i class="bi bi-clipboard" aria-hidden="true"></i></button>
                                                 </form>
                                             }
                                             <button type="button"
@@ -270,8 +258,8 @@
                                                     data-created-at="@blob.CreatedAt?.ToString("O", CultureInfo.InvariantCulture)"
                                                     data-modified-at="@blob.LastModifiedAt?.ToString("O", CultureInfo.InvariantCulture)"
                                                     data-expires-at="@blob.ExpiresAt?.ToString("O", CultureInfo.InvariantCulture)"
-                                                    data-properties="@SerializeProperties(blob.Properties)">
-                                                <i class="bi bi-info-circle"></i>
+                                                    data-properties="@SerializeProperties(blob.Properties)" aria-label="Blob details">
+                                                <i class="bi bi-info-circle" aria-hidden="true"></i>
                                             </button>
                                             <button type="button"
                                                     class="btn btn-sm btn-outline-danger"
@@ -279,8 +267,8 @@
                                                     data-blobs-command="delete"
                                                     data-container="@blob.Container"
                                                     data-name="@blob.Name"
-                                                    data-etag="@blob.ETag">
-                                                <i class="bi bi-trash"></i>
+                                                    data-etag="@blob.ETag" aria-label="Delete blob">
+                                                <i class="bi bi-trash" aria-hidden="true"></i>
                                             </button>
                                         </span>
                                     </td>
@@ -291,6 +279,7 @@
                     </div>
                 }
             </div>
+            @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.ListFooter, DashboardListFooterModel>(new("blobs", vm.Take, vm.HasMore, vm.NextContinuationToken, Sizes: PageSizeOptions, SelectorId: "blobs-take", LoadedCount: vm.Blobs.Count, FormId: "blobs-filter-form", SizeName: "take")))
         </section>
     }
 </div>
@@ -460,7 +449,7 @@
         (properties ?? new PropertyBag()).ToDictionary(item => item.Key, item => item.Value));
 
     private static string FormatTimestamp(DateTimeOffset? value) =>
-        value?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) ?? "-";
+        value?.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) ?? "-";
 
     private static string FormatSize(long value)
     {

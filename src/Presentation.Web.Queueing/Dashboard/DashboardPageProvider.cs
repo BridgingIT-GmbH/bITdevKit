@@ -32,6 +32,12 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Order = 46,
             Description = "Retained queue messages, queues, and queue subscriptions",
             Tooltip = "Queue messages and subscriptions",
+            RememberedViews = new Dictionary<string, string>
+            {
+                ["operations"] = DashboardEndpoints.BuildQueueingPath(options),
+                ["messages"] = DashboardEndpoints.BuildQueueingPath(options) + "/messages",
+                ["diagnostics"] = DashboardEndpoints.BuildQueueingPath(options) + "/diagnostics"
+            },
             Card = GetCardAsync
         };
     }

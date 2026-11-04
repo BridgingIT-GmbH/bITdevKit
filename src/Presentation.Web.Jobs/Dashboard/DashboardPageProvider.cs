@@ -31,6 +31,12 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             GroupOrder = 0,
             Order = 40,
             Description = "Registered jobs, occurrences, and scheduling controls",
+            RememberedViews = new Dictionary<string, string>
+            {
+                ["jobs"] = DashboardEndpoints.BuildJobsPath(options),
+                ["occurrences"] = DashboardEndpoints.BuildJobsPath(options) + "/occurrences",
+                ["diagnostics"] = DashboardEndpoints.BuildJobsPath(options) + "/diagnostics"
+            },
             Card = GetCardAsync
         };
     }

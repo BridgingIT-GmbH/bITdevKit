@@ -82,7 +82,7 @@
                     <button id="copy-selected-city-weather-json"
                             type="button"
                             class="btn btn-sm btn-outline-secondary"
-                            onclick="const payload=document.getElementById('selected-city-weather-json');if(!payload){return false;}payload.focus();payload.select();payload.setSelectionRange(0,payload.value.length);const copied=document.execCommand('copy');const label=this.dataset.copyLabel||this.textContent;this.dataset.copyLabel=label;this.textContent=copied?'Copied':'Copy failed';window.setTimeout(()=>this.textContent=label,1600);return false;">Copy JSON</button>
+                            data-dashboard-copy="@citiesModel.SelectedCityWeatherJson" title="Copy weather JSON" aria-label="Copy weather JSON">Copy JSON</button>
                 }
                 @if (citiesModel.CurrentWeather is not null)
                 {
@@ -145,7 +145,6 @@
 
 @if (!string.IsNullOrWhiteSpace(citiesModel.SelectedCityWeatherJson))
 {
-    <textarea id="selected-city-weather-json" readonly style="position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;">@citiesModel.SelectedCityWeatherJson</textarea>
 }
 
 <div class="card mb-2">

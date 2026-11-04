@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
 
 /// <summary>
-/// Emits message publish total, current, and failure metrics around message dispatch.
+/// Emits publication attempts, successful completions, failures, in-flight values, and durations.
 /// </summary>
 /// <example>
 /// <code>
@@ -53,9 +53,13 @@ public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMetr
         metricsService.AddUpDownCounter(currentPublishSeries, 1);
         metricsService.AddUpDownCounter(currentTypedPublishSeries, 1);
 
+        var startedTimestamp = Metrics.StartTimestamp();
+
         try
         {
             await next().AnyContext(); // continue pipeline
+            metricsService.AddCounter(publishSeries + ".completed");
+            metricsService.AddCounter(typedPublishSeries + ".completed");
         }
         catch
         {
@@ -68,6 +72,8 @@ public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMetr
         {
             metricsService.AddUpDownCounter(currentPublishSeries, -1);
             metricsService.AddUpDownCounter(currentTypedPublishSeries, -1);
+            metricsService.RecordHistogramDuration(Metrics.DurationSeries(publishSeries), startedTimestamp);
+            metricsService.RecordHistogramDuration(Metrics.DurationSeries(typedPublishSeries), startedTimestamp);
         }
     }
 }

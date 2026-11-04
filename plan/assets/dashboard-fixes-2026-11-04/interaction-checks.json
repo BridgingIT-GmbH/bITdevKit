@@ -1,0 +1,101 @@
+{
+  "checks": [
+    {
+      "name": "alive-orchestration",
+      "started": true
+    },
+    {
+      "name": "documents-populated",
+      "rows": 1,
+      "viewport": 390,
+      "width": 390
+    },
+    {
+      "name": "chronology",
+      "route": "jobs/occurrences",
+      "rows": 4,
+      "descending": true
+    },
+    {
+      "name": "chronology",
+      "route": "messaging/messages",
+      "rows": 1,
+      "descending": true
+    },
+    {
+      "name": "chronology",
+      "route": "queueing/messages",
+      "rows": 1,
+      "descending": true
+    },
+    {
+      "name": "inspector",
+      "route": "jobs/occurrences",
+      "tabs": 3,
+      "fits": true,
+      "resetsFirstTab": true
+    },
+    {
+      "name": "inspector",
+      "route": "orchestrations/instances",
+      "tabs": 5,
+      "fits": true,
+      "resetsFirstTab": true
+    },
+    {
+      "name": "secondary-filters",
+      "route": "auditing",
+      "collapsedOnPhone": true,
+      "opens": true,
+      "emptyCriteriaNotCounted": true
+    },
+    {
+      "name": "secondary-filters",
+      "route": "profiling/operations",
+      "collapsedOnPhone": true,
+      "opens": true,
+      "emptyCriteriaNotCounted": true
+    },
+    {
+      "name": "secondary-filters",
+      "route": "profiling/requests",
+      "collapsedOnPhone": true,
+      "opens": true,
+      "emptyCriteriaNotCounted": true
+    },
+    {
+      "name": "profiling-footer",
+      "rowsBefore": 100,
+      "rowsAfter": 184,
+      "countText": "184 rows loaded",
+      "belowItems": true,
+      "exhaustedVisible": true
+    },
+    {
+      "name": "profiling-size-change",
+      "usesAppliedQuery": true,
+      "preservesDraft": true
+    },
+    {
+      "name": "mcp-search",
+      "total": 71,
+      "matching": 1,
+      "preservedOnRefresh": true,
+      "reset": true
+    },
+    {
+      "name": "change-history-unavailable",
+      "noInactiveForm": true
+    },
+    {
+      "name": "environment-search",
+      "named": true
+    },
+    {
+      "name": "weather-copy",
+      "sharedHelper": true,
+      "noOffscreenField": true
+    }
+  ],
+  "errors": []
+}

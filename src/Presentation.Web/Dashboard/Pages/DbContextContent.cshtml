@@ -14,7 +14,7 @@
     <div class="card-body p-3">
         <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
             <div class="dashboard-system-db-heading">
-                @* <span class="dashboard-system-db-icon"><i class="bi bi-database"></i></span> *@
+                @* <span class="dashboard-system-db-icon"><i class="bi bi-database" aria-hidden="true"></i></span> *@
                 <div>
                     <h6 class="card-title mb-0">Databases</h6>
                     @* <div class="text-muted small">Registered Entity Framework contexts</div> *@
@@ -38,7 +38,7 @@
             <div class="dashboard-system-db-grid">
                 @foreach (var database in model.Databases)
                 {
-                    <div class="dashboard-system-db-panel @(database.IsConnected ? "" : "dashboard-system-db-panel-unavailable")">
+                    <div class="dashboard-system-db-context">
                         <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
                             <div class="min-w-0">
                                 <div class="dashboard-system-db-title text-break" title="The registered EF Core DbContext type.">@database.Name</div>
@@ -47,23 +47,23 @@
                             <span class="dashboard-system-db-status @(database.IsConnected ? "text-bg-success" : "text-bg-danger")"
                                   title="Connection status from DbContext.Database.CanConnect during this refresh."
                                   aria-label="Database connection status: @(database.IsConnected ? "Connected" : "Unavailable")">
-                                <i class="bi @(database.IsConnected ? "bi-check-circle-fill" : "bi-exclamation-triangle-fill")"></i>
+                                <i class="bi @(database.IsConnected ? "bi-check-circle-fill" : "bi-exclamation-triangle-fill")" aria-hidden="true"></i>
                                 @(database.IsConnected ? "Connected" : "Unavailable")
                             </span>
                         </div>
                         @* <div class="dashboard-system-db-name">
-                            <i class="bi bi-hdd-stack me-1"></i>@(string.IsNullOrWhiteSpace(database.DatabaseName) ? "-" : database.DatabaseName)
+                            <i class="bi bi-hdd-stack me-1" aria-hidden="true"></i>@(string.IsNullOrWhiteSpace(database.DatabaseName) ? "-" : database.DatabaseName)
                         </div> *@
                         <div class="dashboard-system-db-metrics">
-                            <div class="dashboard-system-db-metric" title="Elapsed time for the connection probe using DbContext.Database.CanConnect."><span>Connect</span><strong>@FormatNullable(database.ConnectLatencyMs, " ms")</strong></div>
-                            <div class="dashboard-system-db-metric" title="Elapsed time for a lightweight SELECT 1 query through the DbContext connection."><span>Query</span><strong>@FormatNullable(database.QueryLatencyMs, " ms")</strong></div>
-                            <div class="dashboard-system-db-metric" title="Approximate database size in megabytes."><span>Size</span><strong>@FormatNullable(database.SizeMb, " MB")</strong></div>
-                            <div class="dashboard-system-db-metric" title="Physical base table count reported by the database provider metadata query."><span>Tables</span><strong>@FormatNullable(database.TableCount)</strong></div>
-                            <div class="dashboard-system-db-metric" title="EF Core model entity type count in this DbContext. This can differ from physical table count."><span>Entity Types</span><strong>@FormatCount(database.EntityTypes)</strong></div>
-                            <div class="dashboard-system-db-metric" title="Current database sessions or connections reported by provider metadata, when available."><span>Sessions</span><strong>@FormatNullable(database.ActiveSessions)</strong></div>
-                            <div class="dashboard-system-db-metric" title="Currently active/running database requests reported by provider metadata, when available."><span>Running</span><strong>@FormatNullable(database.RunningRequests)</strong></div>
-                            <div class="dashboard-system-db-metric" title="Blocked SQL Server requests or PostgreSQL lock waits reported by provider metadata, when available."><span>Blocking</span><strong class="@(database.BlockedRequests > 0 ? "text-danger" : "")">@FormatNullable(database.BlockedRequests)</strong></div>
-                            <div class="dashboard-system-db-metric dashboard-system-db-wide" title="EF Core migrations that are present in the application but not applied to this database."><span>Pending Migrations</span><strong class="@(database.PendingMigrations > 0 ? "text-warning" : "")">@FormatNullable(database.PendingMigrations)</strong></div>
+                            <div class="dashboard-system-db-value" title="Elapsed time for the connection probe using DbContext.Database.CanConnect."><span>Connect</span><strong>@FormatNullable(database.ConnectLatencyMs, " ms")</strong></div>
+                            <div class="dashboard-system-db-value" title="Elapsed time for a lightweight SELECT 1 query through the DbContext connection."><span>Query</span><strong>@FormatNullable(database.QueryLatencyMs, " ms")</strong></div>
+                            <div class="dashboard-system-db-value" title="Approximate database size in megabytes."><span>Size</span><strong>@FormatNullable(database.SizeMb, " MB")</strong></div>
+                            <div class="dashboard-system-db-value" title="Physical base table count reported by the database provider metadata query."><span>Tables</span><strong>@FormatNullable(database.TableCount)</strong></div>
+                            <div class="dashboard-system-db-value" title="EF Core model entity type count in this DbContext. This can differ from physical table count."><span>Entity Types</span><strong>@FormatCount(database.EntityTypes)</strong></div>
+                            <div class="dashboard-system-db-value" title="Current database sessions or connections reported by provider metadata, when available."><span>Sessions</span><strong>@FormatNullable(database.ActiveSessions)</strong></div>
+                            <div class="dashboard-system-db-value" title="Currently active/running database requests reported by provider metadata, when available."><span>Running</span><strong>@FormatNullable(database.RunningRequests)</strong></div>
+                            <div class="dashboard-system-db-value" title="Blocked SQL Server requests or PostgreSQL lock waits reported by provider metadata, when available."><span>Blocking</span><strong class="@(database.BlockedRequests > 0 ? "text-danger" : "")">@FormatNullable(database.BlockedRequests)</strong></div>
+                            <div class="dashboard-system-db-value dashboard-system-db-wide" title="EF Core migrations that are present in the application but not applied to this database."><span>Pending Migrations</span><strong class="@(database.PendingMigrations > 0 ? "text-warning" : "")">@FormatNullable(database.PendingMigrations)</strong></div>
                         </div>
                         @if (!string.IsNullOrWhiteSpace(database.Error))
                         {

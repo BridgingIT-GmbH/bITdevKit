@@ -112,7 +112,7 @@ public class AuditDashboardDialogTests
         firstIds.ShouldBe(ids.Take(25));
         nextIds.ShouldBe(ids.Skip(25));
         page.ShouldContain("data-url=\"/ops/auditing/data\"");
-        page.ShouldContain("data-next-page=\"2\"");
+        page.ShouldContain("data-next-cursor=\"2\"");
         page.ShouldContain("Load more</button>");
         page.ShouldNotContain("Previous page");
         page.ShouldNotContain("Next page");
@@ -120,7 +120,9 @@ public class AuditDashboardDialogTests
         response.Headers.CacheControl.NoStore.ShouldBeTrue();
         response.Content.Headers.ContentType.MediaType.ShouldBe("text/html");
         next.ShouldContain("id=\"audit-load-more\" data-page=\"2\"");
-        next.ShouldNotContain("data-next-page");
+        next.ShouldContain("data-next-cursor=\"3\"");
+        next.ShouldContain("disabled=\"disabled\"");
+        next.ShouldContain("id=\"audit-size\"");
         next.ShouldNotContain("<!DOCTYPE");
         next.ShouldNotContain("audit-detail-modal");
         next.ShouldContain($"data-audit-detail-url=\"/ops/auditing/{ids[25]}/details\"");

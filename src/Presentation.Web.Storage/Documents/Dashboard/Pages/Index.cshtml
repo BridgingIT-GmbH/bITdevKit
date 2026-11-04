@@ -8,19 +8,9 @@
     var actionBase = StorageDashboardEndpoints.Actions(dashboardOptions);
 }
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
     <div class="d-flex align-items-center gap-2">
-        <span id="documents-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
-        <select id="documents-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Document storage refresh interval">
-            <option value="">Off</option>
-            <option value="1000">1 sec</option>
-            <option value="5000">5 sec</option>
-            <option value="15000">15 sec</option>
-            <option value="30000">30 sec</option>
-        </select>
-        <button type="button" id="documents-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh documents">
-            <i class="bi bi-arrow-clockwise"></i>
-        </button>
+        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.RefreshControls, BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardRefreshModel>(new("documents", "Refresh documents", true)))
     </div>
 </div>
 <nav class="nav nav-pills mb-2" aria-label="Storage views" data-dashboard-view="explorer">
@@ -41,12 +31,13 @@
     }
 
     #documents-details-modal .documents-editor {
-        min-height: 28rem;
+        min-height: 12rem;
+        height: clamp(12rem, 30vh, 24rem);
         resize: vertical;
     }
 </style>
 
-<div class="modal fade" id="documents-details-modal" tabindex="-1" aria-labelledby="documents-details-title" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="documents-details-modal" tabindex="-1" aria-labelledby="documents-details-title" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <form id="documents-details-form" class="modal-content" method="post" action="@($"{actionBase}/save")" data-documents-action="@($"{actionBase}/save")">
             <div class="modal-header">
@@ -95,7 +86,7 @@
                         <label class="form-label small mb-1" for="documents-details-expires">Expires at (UTC)</label>
                         <div class="input-group">
                             <input id="documents-details-expires" class="form-control form-control-sm" type="datetime-local" name="expiresAt">
-                            <button type="button" class="btn btn-outline-secondary btn-sm" title="Clear expiration" aria-label="Clear expiration" data-documents-clear-expiration><i class="bi bi-x-lg"></i></button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" title="Clear expiration" aria-label="Clear expiration" data-documents-clear-expiration><i class="bi bi-x-lg" aria-hidden="true"></i></button>
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
@@ -108,18 +99,18 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer justify-content-between">
-                <button type="submit"
-                        class="btn btn-outline-danger btn-sm"
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-danger btn-sm me-auto"
                         formaction="@($"{actionBase}/delete")"
                         data-documents-action="@($"{actionBase}/delete")"
                         data-documents-delete-button>
-                    <i class="bi bi-trash me-1"></i>Delete
+                    <i class="bi bi-trash me-1" aria-hidden="true"></i>Delete
                 </button>
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary btn-sm" data-documents-save-button>
-                        <i class="bi bi-save me-1"></i>Save Changes
+                        <i class="bi bi-save me-1" aria-hidden="true"></i>Save changes
                     </button>
                 </div>
             </div>
@@ -175,7 +166,7 @@
         function setBusy(isBusy, message = null) {
             shellElement.classList.toggle('documents-busy', isBusy);
             shellElement.setAttribute('aria-busy', isBusy ? 'true' : 'false');
-            document.querySelectorAll('[data-documents-command], [data-documents-filter]')
+            document.querySelectorAll('[data-documents-command], [data-documents-filter], #documents-filter-reset')
                 .forEach(element => {
                     element.disabled = isBusy;
                 });
@@ -585,6 +576,7 @@
                     clearSelectedDocument(state);
                 }
 
+                window.bdkDashboard.markDialogSaved(detailsModalElement);
                 detailsModal?.hide();
                 await refresh(state);
             } finally {
@@ -608,38 +600,64 @@
             window.history.replaceState({}, '', url);
         }
 
-        async function refresh(state, updateUrl = true) {
+        let contentController = null;
+        async function refresh(state, updateUrl = true, preserveDraft = false) {
+            listPending = !state.selectedPartitionKey && !state.selectedRowKey;
+            growingList.cancel();
+            refresher.cancel();
+            contentController?.abort();
+            const controller = new AbortController(); contentController = controller;
+            const previous = stateFromRoot();
+            const sameSelection = ['clientId', 'partitionKey', 'rowKey', 'rowKeyMode', 'pageSize'].every(key => String(state[key] ?? '') === String(previous[key] ?? ''));
             setBusy(true, 'Loading documents...');
-
             try {
                 const response = await fetch(buildContentUrl(state).toString(), {
-                    cache: 'no-store',
-                    headers: { 'X-Requested-With': 'fetch' }
+                    cache: 'no-store', headers: { 'X-Requested-With': 'fetch' }, signal: controller.signal
                 });
-
-                if (response.ok) {
-                    shellElement.innerHTML = await response.text();
-                    if (updateUrl) {
-                        setPageUrl(state);
-                    }
-                    populateFilterHistory();
-                    document.getElementById('documents-refresh-status').textContent = `Updated ${new Date().toLocaleTimeString()}`;
-                } else {
-                    await window.bdkDashboard.showMessage({ title: 'Load failed', message: await readResponseMessage(response, 'Documents could not be loaded.'), kind: 'danger' });
+                if (!response.ok || response.redirected || !(response.headers.get('content-type') || '').includes('text/html')) throw new Error('Documents could not be loaded.');
+                const html = await response.text();
+                if (controller.signal.aborted || contentController !== controller) return;
+                const draft = (sameSelection || preserveDraft) ? window.bdkDashboard.captureFilterDraft(shellElement, '[data-documents-filter-form]') : null;
+                const validation = document.createElement('template'); validation.innerHTML = html;
+                if (validation.content.querySelector('[data-dashboard-query-error]')) throw new Error('Query failed');
+                growingList.applyResponse(shellElement, html);
+                if (draft) window.bdkDashboard.restoreFilterDraft(shellElement, '[data-documents-filter-form]', draft);
+                if (updateUrl) setPageUrl(state);
+                populateFilterHistory();
+                window.bdkDashboard.clearRefreshError(shellElement);
+                document.getElementById('documents-refresh-status').textContent = `Updated ${new Date().toISOString().slice(11, 19)} UTC`;
+            } catch (error) {
+                if (error.name !== 'AbortError' && contentController === controller) {
+                    window.bdkDashboard.showRefreshError(shellElement);
+                    document.getElementById('documents-refresh-status').textContent = 'Refresh failed; displayed data is stale';
                 }
             } finally {
-                setBusy(false);
+                if (contentController === controller) { contentController = null; listPending = false; setBusy(false); refresher.schedule(); }
             }
         }
 
-        window.bdkDashboard.createRefresher({
+        let listPending = false;
+        const growingList = window.bdkDashboard.createGrowingLists({
+            owner: shellElement, root: () => shellElement,
+            appliedUrl: () => buildContentUrl(stateFromRoot()), hasPending: () => listPending,
+            lists: [{ key: 'documents', cursor: 'continuationToken', boundary: 'listBoundary', size: 'pageSize' }],
+            onSizeChange: (list, value) => {
+                const state = stateFromRoot(); state.pageSize = value; state.continuationToken = '';
+                clearPagingAndSelection(state); rememberPageSize(value);
+                refresh(state, true, true);
+            }
+        });
+
+        const refresher = window.bdkDashboard.createRefresher({
+            applyResponse: growingList.applyResponse,
             buildUrl: () => buildContentUrl(stateFromRoot()),
             contentSelector: () => shellElement,
+            preserveDraftSelector: "[data-documents-filter-form]",
             statusSelector: '#documents-refresh-status',
             intervalSelector: '#documents-refresh-interval',
             refreshButtonSelector: '#documents-refresh-now',
             storageKey: 'bdk.dashboard.documents.refreshInterval',
-            shouldRefresh: () => detailsModalElement?.classList.contains('show') !== true &&
+            shouldRefresh: () => !growingList.busy() && detailsModalElement?.classList.contains('show') !== true &&
                 shellElement.getAttribute('aria-busy') !== 'true',
             onSuccess: () => populateFilterHistory()
         });
@@ -687,6 +705,7 @@
             await submitDocumentAction(actionForm, event.submitter);
         });
 
+        detailsDeleteButton?.addEventListener('click', () => submitDocumentAction(detailsForm, detailsDeleteButton));
         detailsForm?.addEventListener('submit', async event => {
             event.preventDefault();
             await submitDocumentAction(event.currentTarget, event.submitter);
@@ -708,7 +727,7 @@
                 return;
             }
 
-            const target = event.target.closest('[data-documents-command]');
+            const target = event.target.closest('[data-documents-command], #documents-filter-reset');
             if (!target) {
                 return;
             }
@@ -730,14 +749,15 @@
             if (target.dataset.documentsCommand === 'filter-partition') {
                 state.partitionKey = target.dataset.partitionKey || '';
                 state.rowKey = '';
-                state.rowKeyMode = 'prefix';
+                state.rowKeyMode = currentRoot()?.querySelector('[name=rowKeyMode] option')?.value || 'exact';
+                state.allowFullScan = false;
                 clearPagingAndSelection(state);
                 rememberFilterHistory(state);
                 await refresh(state);
                 return;
             }
 
-            if (target.dataset.documentsCommand === 'clear-filter') {
+            if (target.id === 'documents-filter-reset' || target.dataset.documentsCommand === 'clear-filter') {
                 state.partitionKey = '';
                 state.rowKey = '';
                 state.rowKeyMode = 'prefix';
@@ -751,12 +771,6 @@
                 return;
             }
 
-            if (target.dataset.documentsCommand === 'page') {
-                state.continuationToken = target.dataset.continuationToken || '';
-                state.selectedPartitionKey = '';
-                state.selectedRowKey = '';
-                await refresh(state);
-            }
         });
 
         const state = stateFromRoot();

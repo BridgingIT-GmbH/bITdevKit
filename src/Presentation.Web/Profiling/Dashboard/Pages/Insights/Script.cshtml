@@ -20,15 +20,16 @@
     }
     if (typeof saved.refresh === 'string' && [...interval.options].some(option => option.value === saved.refresh)) interval.value = saved.refresh;
     let applied = Object.fromEntries(new FormData(form));
+    let pending = null;
     const number = value => Number(value || 0).toLocaleString();
     const duration = value => value == null ? '—' : value >= 1000 ? (value / 1000).toFixed(3) + ' s' : value.toFixed(3) + ' ms';
     const failed = value => value.outcomes?.Failed || 0;
     const rate = value => value.count ? (failed(value) / value.count * 100).toFixed(1) + '%' : '—';
     const identity = group => JSON.stringify([group.kind, group.key, group.httpMethod]);
     function remember() { try { localStorage.setItem(stateKey, JSON.stringify({ filters: Object.fromEntries(new FormData(form)), refresh: interval.value })); } catch { } }
-    function urlFor(path) {
+    function urlFor(path, selection = applied) {
         const url = new URL(path, location.href);
-        for (const [key, value] of Object.entries(applied)) if (value) url.searchParams.set(key, ['fromUtc', 'toUtc'].includes(key) ? value + 'Z' : value);
+        for (const [key, value] of Object.entries(selection)) if (value) url.searchParams.set(key, ['fromUtc', 'toUtc'].includes(key) ? value + 'Z' : value);
         if (current.searchParams.has('dashboardView')) url.searchParams.set('dashboardView', current.searchParams.get('dashboardView'));
         return url;
     }
@@ -117,25 +118,28 @@
         window.bdkDashboard.applySeriesColors(rows);
     }
     async function refresh() {
+        const candidate = pending;
         clearTimeout(timer); controller?.abort();
-        const active = new AbortController(); controller = active; const selection = { ...applied };
+        const active = new AbortController(); controller = active; const selection = { ...(candidate ?? applied) };
         rows.setAttribute('aria-busy', 'true');
         try {
-            const response = await fetch(urlFor(root.dataset.dataUrl), { signal: active.signal, cache: 'no-store' });
+            const response = await fetch(urlFor(root.dataset.dataUrl, candidate ?? applied), { signal: active.signal, cache: 'no-store' });
             if (response.redirected || !(response.headers.get('content-type') || '').includes('json')) throw new Error('Insights unavailable. Check your connection and dashboard sign-in.');
             const value = await response.json();
             if (!response.ok) throw new Error((value.detail || value.title || 'Insights could not be loaded.').slice(0, 300));
             if (controller !== active || active.signal.aborted) return;
+            if (candidate) { applied = candidate; if (pending === candidate) pending = null; history.replaceState(null, "", urlFor(root.dataset.pageUrl)); }
             render(value, selection); error.hidden = true; status.textContent = 'Updated ' + new Date().toISOString().slice(11, 19) + ' UTC'; status.className = 'small text-muted';
         } catch (failure) {
+            if (pending === candidate) pending = null;
             if (controller !== active || active.signal.aborted) return;
             error.textContent = failure.message; error.hidden = false; status.textContent = 'Refresh failed; showing previous data.'; status.className = 'small text-danger';
         } finally { if (controller === active) { rows.setAttribute('aria-busy', 'false'); schedule(); } }
     }
-    function apply() { applied = Object.fromEntries(new FormData(form)); history.replaceState(null, '', urlFor(root.dataset.pageUrl)); remember(); refresh(); }
+    function apply() { if (!form.reportValidity()) return; pending = Object.fromEntries(new FormData(form)); remember(); refresh(); }
     form.addEventListener('submit', event => { event.preventDefault(); apply(); }); form.addEventListener('input', remember);
-    document.getElementById('insights-rank').addEventListener('change', apply); document.getElementById('insights-limit').addEventListener('change', apply);
-    document.getElementById('insights-reset').addEventListener('click', () => { form.reset(); interval.value = ''; apply(); });
+
+    document.getElementById('insights-reset').addEventListener('click', () => { const limit = form.elements.namedItem('limit')?.value; form.reset(); if (limit) form.elements.namedItem('limit').value = limit; apply(); });
     interval.addEventListener('change', () => { remember(); schedule(); }); document.getElementById('insights-refresh-now').addEventListener('click', refresh);
     modal.addEventListener('hidden.bs.modal', () => { if (segmentTrigger?.isConnected) segmentTrigger.focus(); else document.getElementById('insights-refresh-now').focus(); });
     window.addEventListener('pagehide', () => { remember(); controller?.abort(); clearTimeout(timer); });

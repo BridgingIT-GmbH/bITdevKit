@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Common;
 
 /// <summary>
-/// Emits queue handler total, current, failure, and duration metrics.
+/// Emits handler attempts, successful completions, failures, in-flight values, and durations.
 /// </summary>
 /// <example>
 /// <code>
@@ -48,6 +48,8 @@ public class MetricsQueueHandlerBehavior(IMetricsService metricsService = null) 
         try
         {
             await next().AnyContext();
+            metricsService.AddCounter(handleSeries + ".completed");
+            metricsService.AddCounter(typedHandleSeries + ".completed");
         }
         catch
         {

@@ -4,6 +4,8 @@
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
+    var diagnostics = HttpContext.Request.Path.Value?.EndsWith("/diagnostics", StringComparison.OrdinalIgnoreCase) == true;
+    var messages = HttpContext.Request.Path.Value?.EndsWith("/messages", StringComparison.OrdinalIgnoreCase) == true;
     var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = QueueingDashboardEndpoints.BuildQueueingContentPath(dashboardOptions);
     var actionBase = QueueingDashboardEndpoints.BuildQueueingActionBase(dashboardOptions);
@@ -12,32 +14,33 @@
     var aliveEnabled = HttpContext.RequestServices.GetService<QueueingAliveOptions>()?.Enabled == true;
 }
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
     <div class="d-flex flex-wrap justify-content-end align-items-center gap-2">
+
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.RefreshControls, DashboardRefreshModel>(new("queueing", "Refresh queueing")))
+        <details class="dashboard-tools"><summary class="btn btn-outline-secondary btn-sm">Tools</summary><div class="dashboard-tools-menu">
         @if (aliveEnabled)
         {
-            <button type="button" class="btn btn-outline-primary btn-sm" title="Enqueue alive message" onclick="window.bdkQueueingAction('@($"{actionBase}/alive")')">
-                <i class="bi bi-broadcast"></i>
+            <button type="button" class="btn btn-outline-primary btn-sm" title="Enqueue alive message" onclick="window.bdkQueueingAction('@($"{actionBase}/alive")')" aria-label="Enqueue alive message">
+                <i class="bi bi-broadcast" aria-hidden="true"></i>
             </button>
         }
-        <button type="button" class="btn btn-outline-danger btn-sm" title="Purge queue messages" onclick="window.bdkQueueingPurge('@purgePath')">
-            <i class="bi bi-trash3"></i>
+        <button type="button" class="btn btn-outline-danger btn-sm" title="Purge queue messages" onclick="window.bdkQueueingPurge('@purgePath')" aria-label="Purge queue messages">
+            <i class="bi bi-trash3" aria-hidden="true"></i>
         </button>
-        <span id="queueing-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
-        <select id="queueing-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Queueing refresh interval">
-            <option value="">Off</option>
-            <option value="1000">1 sec</option>
-            <option value="5000">5 sec</option>
-            <option value="15000">15 sec</option>
-            <option value="30000">30 sec</option>
-        </select>
-        <button type="button" id="queueing-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh queueing">
-            <i class="bi bi-arrow-clockwise"></i>
-        </button>
+                </div></details>
     </div>
 </div>
 
-<div class="card mb-2">
+<nav class="nav nav-pills dashboard-view-tabs mb-2" aria-label="Queueing views" data-dashboard-view>
+    <a class="nav-link @(!diagnostics && !messages ? "active" : "")" href="@actionBase@HttpContext.Request.QueryString" aria-current="@(!diagnostics && !messages ? "page" : null)">Overview</a>
+    <a class="nav-link @(messages ? "active" : "")" href="@(actionBase + "/messages")@HttpContext.Request.QueryString" aria-current="@(messages ? "page" : null)">Messages</a>
+    <a class="nav-link @(diagnostics ? "active" : "")" href="@(actionBase + "/diagnostics")@HttpContext.Request.QueryString" aria-current="@(diagnostics ? "page" : null)">Diagnostics</a>
+</nav>
+
+@if (messages)
+{
+<div class="dashboard-filter-panel">
     <div class="card-body py-2">
         <div class="row g-2 align-items-end">
             <div class="col-6 col-lg-2">
@@ -61,36 +64,27 @@
                     <option value="all">All</option>
                 </select>
             </div>
-            <div class="col-6 col-lg-2">
-                <label class="form-label small mb-1" for="queueing-take-filter">Rows</label>
-                <select id="queueing-take-filter" class="form-select form-select-sm">
-                    <option>25</option>
-                    <option selected>50</option>
-                    <option>100</option>
-                    <option>250</option>
-                </select>
-            </div>
-            <div class="col-12 col-lg-2">
+
+            <div class="col-12 col-lg">
                 <label class="form-label small mb-1" for="queueing-queue-filter">Queue</label>
                 <input id="queueing-queue-filter" class="form-control form-control-sm" placeholder="contains">
             </div>
-            <div class="col-12 col-lg-2">
+            <div class="col-12 col-lg">
                 <label class="form-label small mb-1" for="queueing-type-filter">Type</label>
                 <input id="queueing-type-filter" class="form-control form-control-sm" placeholder="contains">
             </div>
-            <div class="col-12 col-lg-2 d-flex gap-2">
-                <button type="button" id="queueing-filter-apply" class="btn btn-primary btn-sm flex-fill">Apply</button>
-                <button type="button" id="queueing-filter-reset" class="btn btn-outline-secondary btn-sm">Reset</button>
-            </div>
+            <div class="col-12 col-lg-auto d-flex ms-auto">@(await RenderPartialAsync<FilterActions, DashboardFilterActionsModel>(new("queueing-filter-apply", "queueing-filter-reset", Submit: false)))</div>
         </div>
     </div>
 </div>
+
+}
 
 <div id="dashboard-queueing-shell">
     @(await RenderPartialAsync<Content>())
 </div>
 
-<div class="modal fade" id="queueing-message-context-modal" tabindex="-1" aria-labelledby="queueing-message-context-title" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="queueing-message-context-modal" tabindex="-1" aria-labelledby="queueing-message-context-title" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
@@ -100,23 +94,44 @@
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="row g-2 mb-3" id="queueing-message-context-summary"></div>
-                <h6 class="mb-2">Details</h6>
-                <div class="table-responsive mb-3">
-                    <table class="table table-sm align-middle mb-0">
-                        <tbody id="queueing-message-context-details"></tbody>
-                    </table>
+            <div class="px-3 pt-2 flex-shrink-0">
+                <div class="row g-2 mb-2" id="queueing-message-context-summary"></div>
+                <div class="nav nav-tabs" role="tablist" aria-label="Message details">
+                    <button class="nav-link active" id="queueing-message-context-overview-tab" data-bs-toggle="tab" data-bs-target="#queueing-message-context-overview-pane" type="button" role="tab" aria-controls="queueing-message-context-overview-pane" aria-selected="true">Overview</button>
+                    <button class="nav-link" id="queueing-message-context-processing-tab" data-bs-toggle="tab" data-bs-target="#queueing-message-context-processing-pane" type="button" role="tab" aria-controls="queueing-message-context-processing-pane" aria-selected="false">Processing</button>
+                    <button class="nav-link" id="queueing-message-context-properties-tab" data-bs-toggle="tab" data-bs-target="#queueing-message-context-properties-pane" type="button" role="tab" aria-controls="queueing-message-context-properties-pane" aria-selected="false">Properties</button>
+                    <button class="nav-link" id="queueing-message-context-payload-tab" data-bs-toggle="tab" data-bs-target="#queueing-message-context-payload-pane" type="button" role="tab" aria-controls="queueing-message-context-payload-pane" aria-selected="false">Payload</button>
                 </div>
-                <h6 class="mb-2">Properties</h6>
-                <div class="table-responsive mb-3">
-                    <table class="table table-sm align-middle mb-0">
-                        <tbody id="queueing-message-context-properties"></tbody>
-                    </table>
-                </div>
-                <h6 class="mb-2">Payload</h6>
-                <pre class="small border rounded p-2 mb-0 text-break" id="queueing-message-context-payload">-</pre>
             </div>
+            <div class="modal-body">
+                <div class="tab-content">
+                    <div class="tab-pane show active" id="queueing-message-context-overview-pane" role="tabpanel" aria-labelledby="queueing-message-context-overview-tab" tabindex="0">
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle mb-0" style="table-layout: fixed; min-width: 0; width: 100%">
+                                <tbody id="queueing-message-context-details"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="queueing-message-context-processing-pane" role="tabpanel" aria-labelledby="queueing-message-context-processing-tab" tabindex="0">
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle mb-0" style="table-layout: fixed; min-width: 0; width: 100%">
+                                <tbody id="queueing-message-context-processing"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="queueing-message-context-properties-pane" role="tabpanel" aria-labelledby="queueing-message-context-properties-tab" tabindex="0">
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle mb-0" style="table-layout: fixed; min-width: 0; width: 100%">
+                                <tbody id="queueing-message-context-properties"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="queueing-message-context-payload-pane" role="tabpanel" aria-labelledby="queueing-message-context-payload-tab" tabindex="0">
+                        <pre class="small border rounded p-2 mb-0" style="white-space: pre-wrap; overflow-wrap: anywhere" id="queueing-message-context-payload">-</pre>
+                    </div>
+                </div>
+            </div>
+        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.ModalActions, DashboardModalActionsModel>(new()))
         </div>
     </div>
 </div>
@@ -132,8 +147,10 @@
             : null;
         let messageModalOpen = false;
 
-        function buildContentUrl() {
+        function readFilterUrl() {
             const url = new URL('@contentPath', window.location.origin);
+            if (@(messages ? "false" : "true")) { url.search = location.search; url.searchParams.delete("view"); return url; }
+            url.searchParams.set("view", "messages");
             const fields = [
                 ['status', document.getElementById('queueing-status-filter')?.value],
                 ['archive', document.getElementById('queueing-archive-filter')?.value],
@@ -149,14 +166,35 @@
             return url;
         }
 
+        const initial = new URLSearchParams(location.search);
+        if (initial.has('status') && document.getElementById('queueing-status-filter')) document.getElementById('queueing-status-filter').value = initial.get('status');
+        if (initial.has('archive') && document.getElementById('queueing-archive-filter')) document.getElementById('queueing-archive-filter').value = initial.get('archive');
+        if (initial.has('take') && document.getElementById('queueing-take-filter')) document.getElementById('queueing-take-filter').value = initial.get('take');
+        if (initial.has('queue') && document.getElementById('queueing-queue-filter')) document.getElementById('queueing-queue-filter').value = initial.get('queue');
+        if (initial.has('type') && document.getElementById('queueing-type-filter')) document.getElementById('queueing-type-filter').value = initial.get('type');
+        const filters = window.bdkDashboard.createAppliedFilters(readFilterUrl);
+        const buildContentUrl = () => filters.request();
+        document.querySelector('.dashboard-filter-panel')?.addEventListener('keydown', event => {
+            if (event.key === 'Enter' && event.target.tagName === 'INPUT') { event.preventDefault(); filters.stage(); refresher.refresh(true); }
+        });
+        const growingLists = window.bdkDashboard.createGrowingLists({
+            owner: shellElement,
+            root: () => shellElement.querySelector('#dashboard-queueing-content'),
+            appliedUrl: () => filters.applied(), hasPending: () => filters.hasPending(),
+            lists: @(messages ? "true" : "false") ? [{ key: 'queueing', historyVersion: 2, cursor: 'cursor', boundary: 'boundary', size: 'take' }] : [],
+            onSizeChange: (list, size) => { filters.stageApplied(url => url.searchParams.set(list.size, size)); refresher.refresh(true); }
+        });
         const refresher = window.bdkDashboard.createRefresher({
+            applyResponse: growingLists.applyResponse,
+            onSuccess: () => filters.accept(),
+            onError: () => filters.reject(),
             buildUrl: buildContentUrl,
             contentSelector: () => shellElement?.querySelector('#dashboard-queueing-content') ?? null,
             statusSelector: '#queueing-refresh-status',
-            intervalSelector: '#queueing-refresh-interval',
-            refreshButtonSelector: '#queueing-refresh-now',
+            intervalSelector: @(diagnostics ? "true" : "false") ? null : '#queueing-refresh-interval',
+            refreshButtonSelector: @(diagnostics ? "true" : "false") ? null : '#queueing-refresh-now',
             storageKey: 'bdk.dashboard.queueing.refreshInterval',
-            shouldRefresh: () => !messageModalOpen
+            shouldRefresh: () => @(diagnostics ? "false" : "true") && !messageModalOpen && !growingLists.busy()
         });
 
         function text(value) {
@@ -169,7 +207,7 @@
             }
 
             const date = new Date(value);
-            return Number.isNaN(date.getTime()) ? text(value) : date.toLocaleString();
+            return Number.isNaN(date.getTime()) ? text(value) : date.toISOString().replace('T', ' ').replace('Z', ' UTC');
         }
 
         function setText(id, value) {
@@ -198,7 +236,8 @@
         function appendRow(container, label, value) {
             const row = document.createElement('tr');
             const labelCell = document.createElement('td');
-            labelCell.className = 'text-muted text-nowrap';
+            labelCell.className = 'text-muted text-break';
+            labelCell.style.width = '30%';
             labelCell.textContent = label;
             const valueCell = document.createElement('td');
             valueCell.className = 'text-break';
@@ -242,15 +281,16 @@
                 return;
             }
 
-            setText('queueing-message-context-title', payload.type);
             setText('queueing-message-context-subtitle', payload.messageId);
 
             const summary = document.getElementById('queueing-message-context-summary');
             const details = document.getElementById('queueing-message-context-details');
+            const processing = document.getElementById('queueing-message-context-processing');
             const properties = document.getElementById('queueing-message-context-properties');
             const content = document.getElementById('queueing-message-context-payload');
             summary.replaceChildren();
             details.replaceChildren();
+            processing.replaceChildren();
             properties.replaceChildren();
 
             appendCell(summary, 'Status', payload.status);
@@ -262,24 +302,30 @@
             appendRow(details, 'Message ID', payload.messageId);
             appendRow(details, 'Queue', payload.queueName);
             appendRow(details, 'Type', payload.type);
-            appendRow(details, 'Handler', payload.registeredHandlerType);
+            appendRow(processing, 'Handler', payload.registeredHandlerType);
             appendRow(details, 'Created', formatDate(payload.createdDate));
             appendRow(details, 'Expires', formatDate(payload.expiresOn));
-            appendRow(details, 'Locked By', payload.lockedBy);
-            appendRow(details, 'Locked Until', formatDate(payload.lockedUntil));
-            appendRow(details, 'Processing Started', formatDate(payload.processingStartedDate));
-            appendRow(details, 'Processed', formatDate(payload.processedDate));
+            appendRow(processing, 'Locked By', payload.lockedBy);
+            appendRow(processing, 'Locked Until', formatDate(payload.lockedUntil));
+            appendRow(processing, 'Processing Started', formatDate(payload.processingStartedDate));
+            appendRow(processing, 'Processed', formatDate(payload.processedDate));
             appendRow(details, 'Archived', formatDate(payload.archivedDate));
             appendRow(details, 'Content Hash', payload.contentHash);
-            appendRow(details, 'Last Error', payload.lastError);
+            appendRow(processing, 'Last Error', payload.lastError);
 
             renderProperties(properties, payload.properties);
             content.textContent = formatPayload(payload.content);
+            window.bootstrap.Tab.getOrCreateInstance(document.getElementById('queueing-message-context-overview-tab')).show();
+            messageModalElement.querySelector('.modal-body').scrollTop = 0;
             messageModalOpen = true;
             messageModal.show();
         }
 
         if (messageModalElement) {
+            messageModalElement.addEventListener('shown.bs.tab', () => {
+                messageModalElement.querySelector('.modal-body').scrollTop = 0;
+            });
+
             messageModalElement.addEventListener('shown.bs.modal', () => {
                 messageModalOpen = true;
             });
@@ -303,14 +349,13 @@
             }
         });
 
-        document.getElementById('queueing-filter-apply').addEventListener('click', () => refresher.refresh(true));
-        resetButton.addEventListener('click', () => {
+        document.getElementById('queueing-filter-apply')?.addEventListener('click', () => { filters.stage(); refresher.refresh(true); });
+        resetButton?.addEventListener('click', () => {
             document.getElementById('queueing-status-filter').value = '';
             document.getElementById('queueing-archive-filter').value = 'active';
-            document.getElementById('queueing-take-filter').value = '50';
             document.getElementById('queueing-queue-filter').value = '';
             document.getElementById('queueing-type-filter').value = '';
-            refresher.refresh(true);
+            filters.stage(); refresher.refresh(true);
         });
 
         window.bdkQueueingAction = async function(url) {

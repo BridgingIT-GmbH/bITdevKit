@@ -4,7 +4,7 @@
     var title = isCreate ? $"New {Model.Entity.Name}" : $"Edit {Model.Entity.Name} {Model.Id}";
     var blocked = !Model.CanEdit || Model.Error is not null;
 }
-<dialog id="entities-editor" class="entities-dialog" aria-labelledby="entities-editor-title" data-entities-editor data-mode="@Model.Mode" data-entity="@Model.Entity.Key" data-source="@Model.Source" data-entity-id="@Model.Id" data-blocked="@(blocked ? "true" : "false")" data-concurrency-version="@Model.ConcurrencyVersion">
+<dialog id="entities-editor" class="dashboard-dialog entities-dialog" aria-labelledby="entities-editor-title" data-entities-editor data-mode="@Model.Mode" data-entity="@Model.Entity.Key" data-source="@Model.Source" data-entity-id="@Model.Id" data-blocked="@(blocked ? "true" : "false")" data-concurrency-version="@Model.ConcurrencyVersion">
     <form id="entities-editor-form" class="entities-dialog-form" novalidate>
         <div class="entities-dialog-head">
             <h2 id="entities-editor-title" class="entities-dialog-title">@title</h2>
@@ -121,13 +121,7 @@
                 }
             }
         </div>
-        <div class="entities-dialog-foot">
-            <button type="button" class="btn btn-outline-secondary btn-sm" data-entities-editor-cancel>@(blocked ? "Close" : "Cancel")</button>
-            @if (!blocked)
-            {
-                <button type="submit" class="btn btn-primary btn-sm" id="entities-editor-submit" data-entities-editor-submit>OK</button>
-            }
-        </div>
+        @(await RenderPartialAsync<ModalActions, DashboardModalActionsModel>(new(blocked ? null : isCreate ? "Create record" : "Save changes", "entities-editor-submit", Native: true)))
     </form>
 </dialog>
 @functions {

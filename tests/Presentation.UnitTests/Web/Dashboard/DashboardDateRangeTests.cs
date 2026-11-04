@@ -8,6 +8,10 @@ namespace BridgingIT.DevKit.Presentation.UnitTests.Web.Dashboard;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages;
 using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard;
+using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using Microsoft.EntityFrameworkCore;
+using HistoryEntity = EntityFramework.ChangeHistoryDashboardTests.HistoryEntity;
+using HistoryDbContext = EntityFramework.ChangeHistoryDashboardTests.HistoryDbContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
@@ -119,6 +123,14 @@ public sealed class DashboardDateRangeTests
     {
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
+        if (page == "change-history")
+        {
+            builder.Services.AddDbContext<HistoryDbContext>(options => options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
+            builder.Services.AddChangeHistory(options => options.Track<HistoryEntity>());
+            builder.Services.AddScoped(_ => Substitute.For<BridgingIT.DevKit.Domain.Repositories.IGenericRepository<HistoryEntity>>());
+            builder.Services.AddChangeHistoryDashboard<HistoryEntity, HistoryDbContext>();
+        }
+
         builder.Services.AddDashboard(options => options.AllowAnonymous().WithGroupPath("/admin")
             .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints>());
         await using var app = builder.Build();
@@ -136,5 +148,23 @@ public sealed class DashboardDateRangeTests
         html.ShouldNotContain("step=\"0.001\"");
         html.ShouldContain("Last minute");
         html.ShouldContain("Last week");
+    }
+
+    [Fact]
+    public async Task ChangeHistory_WithoutRegistrations_ShowsAvailabilityBeforeQueryControls()
+    {
+        var builder = WebApplication.CreateBuilder();
+        builder.WebHost.UseTestServer();
+        builder.Services.AddDashboard(options => options.AllowAnonymous().WithGroupPath("/admin")
+            .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints>());
+        await using var app = builder.Build();
+        app.MapEndpoints();
+        await app.StartAsync();
+
+        var html = await app.GetTestClient().GetStringAsync("/admin/change-history");
+
+        html.ShouldContain("No ChangeHistory entities are registered");
+        html.ShouldNotContain("id=\"change-history-filters\"");
+        html.ShouldNotContain("id=\"change-history-page-size\"");
     }
 }

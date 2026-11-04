@@ -1,0 +1,6 @@
+{
+  "readBytes": 37,
+  "rateUnit": "By/s",
+  "rateExcludedFromLatency": true,
+  "compactValuesFit": true
+}

@@ -1,0 +1,81 @@
+[
+  {
+    "name": "logs-load-more",
+    "before": 50,
+    "after": 100,
+    "unique": 100,
+    "preserved": true,
+    "buttonBefore": "Load more",
+    "buttonAfter": "Load more"
+  },
+  {
+    "name": "documents-before-modal",
+    "width": 1038
+  },
+  {
+    "name": "documents-open-modal",
+    "width": 1038,
+    "overflow": [
+      {
+        "tag": "SECTION",
+        "id": "",
+        "className": "documents-panel",
+        "right": 409,
+        "scrollWidth": 1022
+      },
+      {
+        "tag": "DIV",
+        "id": "",
+        "className": "documents-panel-header",
+        "right": 408,
+        "scrollWidth": 1022
+      },
+      {
+        "tag": "DIV",
+        "id": "",
+        "className": "d-flex align-items-center gap-2",
+        "right": 399,
+        "scrollWidth": 261
+      },
+      {
+        "tag": "SPAN",
+        "id": "",
+        "className": "text-muted small",
+        "right": 399,
+        "scrollWidth": 139
+      },
+      {
+        "tag": "DIV",
+        "id": "",
+        "className": "documents-panel-body",
+        "right": 408,
+        "scrollWidth": 1022
+      },
+      {
+        "tag": "DIV",
+        "id": "",
+        "className": "table-responsive",
+        "right": 404,
+        "scrollWidth": 1014
+      },
+      {
+        "tag": "TABLE",
+        "id": "",
+        "className": "table table-sm align-middle",
+        "right": 404,
+        "scrollWidth": 1014
+      },
+      {
+        "tag": "THEAD",
+        "id": "",
+        "className": "",
+        "right": 404,
+        "scrollWidth": 1014
+      }
+    ]
+  },
+  {
+    "name": "documents-closed-modal",
+    "width": 1038
+  }
+]

@@ -11,19 +11,9 @@
 
 @(await RenderPartialAsync<SystemStyles>())
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
     <div class="d-flex align-items-center gap-2">
-        <span id="system-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
-        <select id="system-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="System refresh interval">
-            <option value="">Off</option>
-            <option value="1000">1 sec</option>
-            <option value="5000">5 sec</option>
-            <option value="15000">15 sec</option>
-            <option value="30000">30 sec</option>
-        </select>
-        <button type="button" id="system-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh system metrics">
-            <i class="bi bi-arrow-clockwise"></i>
-        </button>
+        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.RefreshControls, BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardRefreshModel>(new("system", "Refresh system metrics", true)))
     </div>
 </div>
 
@@ -35,127 +25,15 @@
 
 <script>
     (() => {
-        const storageKey = 'bdk.dashboard.system.samples';
-        const maxSamples = 48;
-
-        function readSamples() {
-            try {
-                const raw = localStorage.getItem(storageKey);
-                return raw ? JSON.parse(raw) : [];
-            } catch {
-                return [];
-            }
-        }
-
-        function writeSamples(samples) {
-            localStorage.setItem(storageKey, JSON.stringify(samples.slice(-maxSamples)));
-        }
-
-        function numberFrom(element, name) {
-            const value = Number(element?.dataset?.[name]);
-            return Number.isFinite(value) ? value : 0;
-        }
-
-        function buildPoints(samples, key, maxValue) {
-            if (samples.length === 0) {
-                return '';
-            }
-
-            const width = 300;
-            const height = 92;
-            const max = Math.max(maxValue || 0, ...samples.map(item => Number(item[key]) || 0), 1);
-            return samples.map((item, index) => {
-                const x = samples.length === 1 ? width : (index / (samples.length - 1)) * width;
-                const y = height - ((Number(item[key]) || 0) / max) * height;
-                return `${x.toFixed(1)},${y.toFixed(1)}`;
-            }).join(' ');
-        }
-
-        function drawChart(id, samples, key, maxValue) {
-            const chart = document.getElementById(id);
-            if (!chart) return;
-            const path = chart.querySelector('polyline[data-system-line]');
-            if (path) {
-                path.setAttribute('points', buildPoints(samples, key, maxValue));
-            }
-
-            const point = chart.querySelector('circle[data-system-point]');
-            const tooltip = chart.querySelector('[role="tooltip"]');
-            if (!point || !tooltip || !samples.length) return;
-            const max = Math.max(maxValue || 0, ...samples.map(item => Number(item[key]) || 0), 1);
-            let selectedIndex = samples.length - 1;
-            const positionPoint = index => {
-                point.setAttribute('cx', samples.length === 1 ? '150' : (index / (samples.length - 1) * 300).toFixed(1));
-                point.setAttribute('cy', (92 - (Number(samples[index][key]) || 0) / max * 92).toFixed(1));
-            };
-            const show = index => {
-                selectedIndex = Math.max(0, Math.min(samples.length - 1, index));
-                const sample = samples[selectedIndex];
-                const timestamp = new Date(Number(sample.capturedAt));
-                const time = Number.isNaN(timestamp.getTime()) ? '' : timestamp.toISOString().slice(0, 19).replace('T', ' ') + ' UTC';
-                tooltip.textContent = `${chart.dataset.seriesLabel}: ${Number(sample[key] || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })} ${chart.dataset.seriesUnit}\n${time}`;
-                tooltip.hidden = false;
-                positionPoint(selectedIndex);
-                point.setAttribute('opacity', '1');
-            };
-            const hide = () => {
-                tooltip.hidden = true;
-                positionPoint(0);
-                point.setAttribute('opacity', samples.length === 1 ? '1' : '0');
-            };
-            chart.onpointermove = event => {
-                const bounds = chart.getBoundingClientRect();
-                show(Math.round((event.clientX - bounds.left) / bounds.width * (samples.length - 1)));
-            };
-            chart.onpointerleave = () => { if (document.activeElement !== chart) hide(); };
-            chart.onfocus = () => show(samples.length - 1);
-            chart.onblur = hide;
-            chart.onkeydown = event => {
-                if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
-                event.preventDefault();
-                show(event.key === 'Home' ? 0 : event.key === 'End' ? samples.length - 1 : selectedIndex + (event.key === 'ArrowLeft' ? -1 : 1));
-            };
-            hide();
-        }
-
-        window.bdkDashboard.updateSystemOverview = function(contentElement) {
-            const snapshot = contentElement?.querySelector('.dashboard-system-snapshot');
-            if (!snapshot) {
-                return;
-            }
-
-            const samples = readSamples();
-            const next = {
-                capturedAt: snapshot.dataset.capturedAt,
-                cpu: numberFrom(snapshot, 'cpu'),
-                memory: numberFrom(snapshot, 'workingSet'),
-                rpm: numberFrom(snapshot, 'requestsPerMinute'),
-                latency: numberFrom(snapshot, 'averageLatency')
-            };
-
-            if (samples.length === 0 || samples[samples.length - 1].capturedAt !== next.capturedAt) {
-                samples.push(next);
-                writeSamples(samples);
-            }
-
-            const current = samples.slice(-maxSamples);
-            drawChart('system-cpu-history', current, 'cpu', 100);
-            drawChart('system-memory-history', current, 'memory');
-            drawChart('system-request-history', current, 'rpm');
-            drawChart('system-latency-history', current, 'latency');
-        };
-
         const refresher = window.bdkDashboard.createRefresher({
             contentUrl: '@contentPath',
             contentSelector: '#dashboard-system-content',
             statusSelector: '#system-refresh-status',
             intervalSelector: '#system-refresh-interval',
             refreshButtonSelector: '#system-refresh-now',
-            storageKey: 'bdk.dashboard.system.refreshInterval',
-            onSuccess: window.bdkDashboard.updateSystemOverview
+            storageKey: 'bdk.dashboard.system.refreshInterval'
         });
 
-        window.bdkDashboard.updateSystemOverview(document.querySelector('#dashboard-system-content'));
     })();
 </script>
 

@@ -127,8 +127,11 @@ public class EntitiesDashboardEndpointTests
         var html = await client.GetStringAsync($"{BasePath}?entity={CustomerKey}");
 
         // Assert
-        html.ShouldContain("data-entities-page-size");
+        html.ShouldContain("data-dashboard-batch-size");
         html.ShouldContain("entities-load-more-button");
+        html.ShouldContain("2 rows loaded");
+        System.Text.RegularExpressions.Regex.Match(html, "<button[^>]*id=\"entities-load-more-button\"[^>]*>").Value.ShouldContain("disabled");
+        System.Text.RegularExpressions.Regex.Match(html, "<select[^>]*id=\"entities-page-size\"[^>]*>").Value.ShouldNotContain("disabled");
     }
 
     [Fact]

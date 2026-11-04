@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Messaging.Dashboard;
 
-using System.Collections.Concurrent;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
@@ -13,6 +12,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 /// <summary>
 /// Maps the Messaging dashboard plugin page, content fragment, graph data, and operational actions.
@@ -28,8 +28,13 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
     internal const string MessagingContentPath = "/messaging/content";
     internal const string MessagingRealtimeDataPath = "/messaging/data/realtime";
 
-    private const int RealtimeSessionSampleLimit = 180;
-    private static readonly ConcurrentDictionary<string, RealtimeGraphSession> RealtimeGraphSessions = new(StringComparer.OrdinalIgnoreCase);
+    internal static readonly IReadOnlyList<DashboardWorkloadChart> DiagnosticsCharts =
+    [
+        new("Publication rate", "messages/s", [new("messaging_publish", "Attempts"), new("messaging_publish.completed", "Succeeded")]),
+        new("Handler execution rate", "handler calls/s", [new("messaging_handle", "Attempts"), new("messaging_handle.completed", "Succeeded")]),
+        new("Failure rates", "operations/s", [new("messaging_publish_failure", "Publication failures"), new("messaging_handle_failure", "Handler failures")]),
+        new("Operation latency", "ms", [new("messaging_publish_duration", "Publication mean", true), new("messaging_handle_duration", "Handler mean", true)]),
+    ];
 
     /// <inheritdoc />
     public override void Map(IEndpointRouteBuilder app)
@@ -50,34 +55,26 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             "Dashboard Messaging",
             "Shows persisted broker messages and message subscriptions.");
 
+        group.MapDashboardPage<Pages.Index>(
+            MessagingPath + "/diagnostics",
+            "_bdk.Dashboard.Messaging.Diagnostics", "Messaging Diagnostics", "Shows messaging diagnostics.");
+
+        group.MapDashboardPage<Pages.Index>(
+            MessagingPath + "/messages",
+            "_bdk.Dashboard.Messaging.Messages", "Messaging Messages", "Shows filterable retained messages with bounded continuation.");
+
         group.MapDashboardPage<Pages.Data>(
             MessagingContentPath,
             "_bdk.Dashboard.MessagingContent",
             "Dashboard Messaging Content",
             "Shows the refreshable messaging dashboard content fragment.");
 
-        group.MapGet(MessagingRealtimeDataPath, async (HttpContext context, CancellationToken cancellationToken) =>
-        {
-            var service = context.RequestServices.GetService<IMessageBrokerService>();
-            if (service is null)
-            {
-                return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
-            }
-
-            var stats = await service.GetMessageStatsAsync(isArchived: false, cancellationToken: cancellationToken);
-            var sample = new RealtimeGraphSample(
-                DateTimeOffset.UtcNow,
-                stats.Pending,
-                stats.Processing,
-                stats.Succeeded,
-                stats.Failed,
-                stats.DeadLettered);
-
-            var sessionId = GetOrCreateRealtimeSessionId(context);
-            var samples = AppendRealtimeSample(sessionId, sample);
-
-            return Results.Ok(new { sessionId, samples });
-        }).WithName("_bdk.Dashboard.Messaging.RealtimeData").WithSummary("Messaging realtime data").ExcludeFromDescription();
+        var metricHistory = new DashboardMetricsHistory(DiagnosticsCharts.SelectMany(chart => chart.Series));
+        app.ServiceProvider.GetRequiredService<IHostApplicationLifetime>().ApplicationStopped.Register(metricHistory.Dispose);
+        group.MapGet(MessagingRealtimeDataPath, (HttpContext context) => Results.Json(metricHistory.Snapshot(
+            context.RequestServices.GetService<IMetricsService>() is not null &&
+            context.RequestServices.GetService<MetricsOptions>()?.Enabled != false)))
+            .WithName("_bdk.Dashboard.Messaging.RealtimeData").WithSummary("Measured messaging throughput and latency").ExcludeFromDescription();
 
         if (IsAliveEnabled(app))
         {
@@ -175,46 +172,4 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
     private static bool IsAliveEnabled(IEndpointRouteBuilder app) =>
         app.ServiceProvider.GetService<MessagingAliveOptions>()?.Enabled == true;
-
-    private static string GetOrCreateRealtimeSessionId(HttpContext context)
-    {
-        var requestedSessionId = context.Request.Query.TryGetValue("sessionId", out var values)
-            ? values.ToString()
-            : null;
-
-        return !string.IsNullOrWhiteSpace(requestedSessionId) && requestedSessionId.Length <= 128
-            ? requestedSessionId
-            : Guid.NewGuid().ToString("N");
-    }
-
-    private static IReadOnlyList<RealtimeGraphSample> AppendRealtimeSample(string sessionId, RealtimeGraphSample sample)
-    {
-        var session = RealtimeGraphSessions.GetOrAdd(sessionId, _ => new RealtimeGraphSession());
-        lock (session.Samples)
-        {
-            session.LastTouchedUtc = DateTimeOffset.UtcNow;
-            session.Samples.Add(sample);
-            if (session.Samples.Count > RealtimeSessionSampleLimit)
-            {
-                session.Samples.RemoveRange(0, session.Samples.Count - RealtimeSessionSampleLimit);
-            }
-
-            return session.Samples.ToArray();
-        }
-    }
-
-    private sealed class RealtimeGraphSession
-    {
-        public List<RealtimeGraphSample> Samples { get; } = [];
-
-        public DateTimeOffset LastTouchedUtc { get; set; } = DateTimeOffset.UtcNow;
-    }
-
-    private sealed record RealtimeGraphSample(
-        DateTimeOffset TimestampUtc,
-        int Pending,
-        int Processing,
-        int Succeeded,
-        int Failed,
-        int DeadLettered);
 }

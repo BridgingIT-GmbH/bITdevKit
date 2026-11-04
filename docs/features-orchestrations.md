@@ -1328,17 +1328,23 @@ await harness.Assert(dispatch.Value).HaveStatusAsync(OrchestrationStatus.Termina
 
 ## Dashboard guide
 
-Open Orchestrations at `/_bdk/dashboard/orchestrations` to inspect persisted instances. Reference `Presentation.Web.Orchestrations`, register orchestration services and enable the [Dashboard](features-presentation-dashboard.md). The page reads `IOrchestrationQueryService` directly.
+Open Orchestrations at `/_bdk/dashboard/orchestrations` to see all registered definitions. Reference `Presentation.Web.Orchestrations`, register orchestration services and enable the [Dashboard](features-presentation-dashboard.md). Overview reads the registration catalog, including definitions with no persisted instances. It has no filters. Each definition shows its initial state and state/activity counts. Expand it to inspect the state-flow diagram and activity lists, transitions, signal waits, timers, retry markers and compensation names. Definition activities and conditions are not executed to read this metadata. The first definition opens initially; expanded sections retain their state during refresh. The diagram uses the existing orchestration diagram service through the dashboard group, independently of optional management endpoints. State details remain readable if diagram rendering is unavailable.
 
-Filter by status, name, state or correlation ID and select Apply. Instances show their current state, activity, last update and duration. Definitions and States summarize persisted instances; an orchestration definition without a persisted instance does not appear in those counts. Runtime shows average duration and the oldest waiting instance.
+Select Instances (`/orchestrations/instances`) to filter persisted instances by status, orchestration, state or correlation ID, then select Apply. The Orchestration selector lists registered definitions, including those with no instances; All orchestrations clears that criterion. Selection matches the definition name exactly. Instances show their current state, activity, last update and duration. Reset clears the filters and retains the selected Rows per load value. Load more, Rows per load and the cumulative loaded count appear together below the instances. Load more remains visible and disabled at exhaustion. The list uses bounded batches ordered by creation time and instance ID, preserving loaded rows during refresh and navigation. This view reads `IOrchestrationQueryService`.
 
-[![Orchestrations dashboard with completed instances and persisted state summaries](assets/dashboard/12-orchestrations-orchestrations.png)](assets/dashboard/12-orchestrations-orchestrations.png)
+Diagnostics (`/orchestrations/diagnostics`) shows four process-local charts: instance starts/finishes per second, terminal outcome rates including Completed, activity attempts/returns/exceptions per second, and mean instance/activity duration in milliseconds. Instance filters do not affect Diagnostics. The selected page tab is remembered.
+
+This illustration predates the separate Overview, Instances and Diagnostics tabs and the four runtime diagnostics charts.
+
+[![Earlier Orchestrations dashboard with completed instances and persisted state summaries](assets/dashboard/12-orchestrations-orchestrations.png)](assets/dashboard/12-orchestrations-orchestrations.png)
 
 Select the information button to inspect instance details, properties, typed data, history and timers. The correlation ID links to Logs and can be copied. History helps identify the activity or transition associated with a failure or wait.
 
 [![Orchestration instance dialog with state, correlation and execution history](assets/dashboard/orchestrations/instance-details.png)](assets/dashboard/orchestrations/instance-details.png)
 
-Pause, resume, cancel, terminate and archive actions appear according to instance state. Lease-release and timer-requeue controls support recovery workflows. Refresh manually or choose an interval. Realtime Graph collects browser-session samples; History Graph uses retained history.
+This detail figure predates the common dialog spacing; its fields and workflow remain representative.
+
+Pause, resume, cancel, terminate and archive actions appear according to instance state. Lease-release and timer-requeue controls support recovery workflows. Refresh manually or choose an interval. Runtime measurements use completed one-second buckets, retaining up to fifteen minutes independently of browser visits. Instance duration includes waiting time. Activity returns count delegate returns, including retry and wait outcomes; they are not completed instances. Register `IMetricsService` with `AddMetrics()` to collect instance measurements and add `MetricsOrchestrationBehavior` for activity measurements. Missing timings remain gaps; unavailable metrics are labelled. The collapsed Retained orchestration history panel queries retained instances separately, and retention or archive changes can affect those historical counts.
 
 ## Operational endpoints
 

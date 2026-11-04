@@ -17,9 +17,22 @@ using BridgingIT.DevKit.Application.Queueing;
 /// </example>
 public sealed class DashboardQueueingViewModel
 {
-    /// <summary>
-    /// Gets or sets the captured at utc.
-    /// </summary>
+    /// <summary>Gets or sets the last observed total for the applied message selection.</summary>
+    public long MatchingCount { get; set; }
+
+    /// <summary>Gets or sets the supported rows per load.</summary>
+    public int BatchSize { get; set; } = 50;
+
+    /// <summary>Gets or sets whether another bounded batch is available.</summary>
+    public bool HasMore { get; set; }
+
+    /// <summary>Gets or sets the last immutable row identity in this batch.</summary>
+    public string NextCursor { get; set; }
+
+    /// <summary>Gets or sets the initial identity boundary for retained browsing.</summary>
+    public string Boundary { get; set; }
+
+    /// <summary>Gets or sets the UTC time of the successful model read.</summary>
     public DateTimeOffset CapturedAtUtc { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>

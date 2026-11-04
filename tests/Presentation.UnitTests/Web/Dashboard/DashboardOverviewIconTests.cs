@@ -87,7 +87,8 @@ public sealed class DashboardOverviewIconTests
         var context = new DefaultHttpContext { RequestServices = serviceProvider };
         context.Response.Body = body;
 
-        await Results.RazorSlice<DashboardIndexContent>().ExecuteAsync(context);
+        var model = new DashboardIndexModel(await context.GetDashboardPageCardsAsync());
+        await Results.RazorSlice<DashboardIndexContent, DashboardIndexModel>(model).ExecuteAsync(context);
 
         body.Position = 0;
         using var reader = new StreamReader(body);

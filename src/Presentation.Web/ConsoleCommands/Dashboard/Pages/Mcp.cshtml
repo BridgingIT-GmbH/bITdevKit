@@ -7,30 +7,32 @@
 
 @{
     var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-    var contentPath = McpDashboardEndpoints.BuildMcpContentPath(dashboardOptions);
+    var view = McpDashboardEndpoints.GetView(HttpContext);
+    var contentPath = McpDashboardEndpoints.BuildMcpContentPath(dashboardOptions, view);
 }
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
     <div class="d-flex align-items-center gap-2">
-        <span id="mcp-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
-        <select id="mcp-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="MCP refresh interval">
-            <option value="">Off</option>
-            <option value="1000">1 sec</option>
-            <option value="5000">5 sec</option>
-            <option value="15000">15 sec</option>
-            <option value="30000">30 sec</option>
-        </select>
-        <button type="button" id="mcp-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh MCP diagnostics">
-            <i class="bi bi-arrow-clockwise"></i>
-        </button>
+        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.RefreshControls, BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardRefreshModel>(new("mcp", "Refresh MCP diagnostics", true)))
     </div>
 </div>
+
+@(await RenderPartialAsync<McpViewNavigation, string>(view))
+
+@if (view == "operations")
+{
+    <div class="dashboard-filter-panel"><div class="row g-2 align-items-end">
+        <div class="col"><label class="form-label small" for="mcp-operation-search">Search operations</label><input id="mcp-operation-search" type="search" class="form-control form-control-sm" placeholder="Name, feature, toolset or handler" /></div>
+        <div class="col-auto"><button id="mcp-operation-reset" type="button" class="btn btn-outline-secondary btn-sm" title="Reset filters" aria-label="Reset filters"><i class="bi bi-x-circle" aria-hidden="true"></i></button></div>
+        <div class="col-auto"><span id="mcp-operation-count" class="small text-muted" role="status"></span></div>
+    </div></div>
+}
 
 <div id="dashboard-mcp-content">
     @(await RenderPartialAsync<McpContent>())
 </div>
 
-<div class="modal fade" id="dashboard-mcp-schema-modal" tabindex="-1" aria-labelledby="dashboard-mcp-schema-title" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="dashboard-mcp-schema-modal" tabindex="-1" aria-labelledby="dashboard-mcp-schema-title" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
@@ -43,6 +45,7 @@
             <div class="modal-body">
                 <pre id="dashboard-mcp-schema-content" class="dashboard-mcp-schema-pre bg-body-tertiary border rounded p-3 mb-0"></pre>
             </div>
+            @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.ModalActions, BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardModalActionsModel>(new()))
         </div>
     </div>
 </div>
@@ -54,6 +57,19 @@
         const schemaElement = document.getElementById('dashboard-mcp-schema-content');
         let schemaModalOpen = false;
 
+        const search = document.getElementById('mcp-operation-search');
+        function filterOperations() {
+            const query = (search?.value || '').trim().toLocaleLowerCase();
+            const rows = [...document.querySelectorAll('.dashboard-mcp-operations-table tbody > tr')];
+            let count = 0;
+            rows.forEach(row => { row.hidden = !row.textContent.toLocaleLowerCase().includes(query); if (!row.hidden) count++; });
+            const status = document.getElementById('mcp-operation-count');
+            if (status) status.textContent = `${count} of ${rows.length} operations`;
+        }
+        search?.addEventListener('input', filterOperations);
+        document.getElementById('mcp-operation-reset')?.addEventListener('click', () => { search.value = ''; filterOperations(); search.focus(); });
+        filterOperations();
+
         const refresher = window.bdkDashboard.createRefresher({
             contentUrl: '@contentPath',
             contentSelector: '#dashboard-mcp-content',
@@ -61,6 +77,7 @@
             intervalSelector: '#mcp-refresh-interval',
             refreshButtonSelector: '#mcp-refresh-now',
             storageKey: 'bdk.dashboard.mcp.refreshInterval',
+            onSuccess: filterOperations,
             shouldRefresh: () => !schemaModalOpen
         });
 

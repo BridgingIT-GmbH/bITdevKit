@@ -52,7 +52,7 @@
         }
       </div>
     </div>
-    <dialog id="entities-detail-dialog" class="entities-dialog entities-detail-dialog" aria-label="@Model.Entity.Name record">
+    <dialog id="entities-detail-dialog" class="dashboard-dialog entities-dialog entities-detail-dialog" aria-label="@Model.Entity.Name record" aria-labelledby="entities-detail-title">
         <div id="entities-detail-region" class="entities-detail-region" data-entities-initial-id="@(showDetail ? Model.Detail.Id : null)">
             @if (showDetail)
             {

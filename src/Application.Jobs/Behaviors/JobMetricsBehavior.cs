@@ -49,8 +49,25 @@ public sealed class JobMetricsBehavior(
                     result.Value.Status,
                     (result.Value.CompletedUtc ?? timeProvider.GetUtcNow()) - result.Value.StartedUtc);
             }
+            else
+            {
+                this.metrics.RecordExecutionCompleted(
+                    occurrence with { Status = JobOccurrenceStatus.Failed },
+                    context.Trigger,
+                    JobExecutionStatus.Failed,
+                    timeProvider.GetUtcNow() - context.ExecutionContext.StartedUtc);
+            }
 
             return result;
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            this.metrics.RecordExecutionCompleted(
+                occurrence with { Status = JobOccurrenceStatus.Cancelled },
+                context.Trigger,
+                JobExecutionStatus.Cancelled,
+                timeProvider.GetUtcNow() - context.ExecutionContext.StartedUtc);
+            throw;
         }
         catch (Exception)
         {

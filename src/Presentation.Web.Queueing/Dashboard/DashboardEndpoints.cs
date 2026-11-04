@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard;
 
-using System.Collections.Concurrent;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
@@ -13,6 +12,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 /// <summary>
 /// Maps the Queueing dashboard plugin page, content fragment, graph data, and operational actions.
@@ -28,8 +28,13 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
     internal const string QueueingContentPath = "/queueing/content";
     internal const string QueueingRealtimeDataPath = "/queueing/data/realtime";
 
-    private const int RealtimeSessionSampleLimit = 180;
-    private static readonly ConcurrentDictionary<string, RealtimeGraphSession> RealtimeGraphSessions = new(StringComparer.OrdinalIgnoreCase);
+    internal static readonly IReadOnlyList<DashboardWorkloadChart> DiagnosticsCharts =
+    [
+        new("Enqueue rate", "messages/s", [new("queueing_enqueue", "Attempts"), new("queueing_enqueue.completed", "Succeeded")]),
+        new("Handler execution rate", "handler calls/s", [new("queueing_handle", "Attempts"), new("queueing_handle.completed", "Succeeded")]),
+        new("Failure rates", "operations/s", [new("queueing_enqueue_failure", "Enqueue failures"), new("queueing_handle_failure", "Handler failures")]),
+        new("Operation latency", "ms", [new("queueing_enqueue_duration", "Enqueue mean", true), new("queueing_handle_duration", "Handler mean", true)]),
+    ];
 
     /// <inheritdoc />
     public override void Map(IEndpointRouteBuilder app)
@@ -50,36 +55,26 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             "Dashboard Queueing",
             "Shows retained queue messages and queue subscriptions.");
 
+        group.MapDashboardPage<Pages.Index>(
+            QueueingPath + "/diagnostics",
+            "_bdk.Dashboard.Queueing.Diagnostics", "Queueing Diagnostics", "Shows queueing diagnostics.");
+
+        group.MapDashboardPage<Pages.Index>(
+            QueueingPath + "/messages",
+            "_bdk.Dashboard.Queueing.Messages", "Queueing Messages", "Shows filterable retained messages with bounded continuation.");
+
         group.MapDashboardPage<Pages.Data>(
             QueueingContentPath,
             "_bdk.Dashboard.QueueingContent",
             "Dashboard Queueing Content",
             "Shows the refreshable queueing dashboard content fragment.");
 
-        group.MapGet(QueueingRealtimeDataPath, async (HttpContext context, CancellationToken cancellationToken) =>
-        {
-            var service = context.RequestServices.GetService<IQueueBrokerService>();
-            if (service is null)
-            {
-                return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
-            }
-
-            var stats = await service.GetMessageStatsAsync(isArchived: false, cancellationToken: cancellationToken);
-            var sample = new RealtimeGraphSample(
-                DateTimeOffset.UtcNow,
-                stats.Pending,
-                stats.WaitingForHandler,
-                stats.Processing,
-                stats.Succeeded,
-                stats.Failed,
-                stats.DeadLettered,
-                stats.OpenCircuits?.Count ?? 0);
-
-            var sessionId = GetOrCreateRealtimeSessionId(context);
-            var samples = AppendRealtimeSample(sessionId, sample);
-
-            return Results.Ok(new { sessionId, samples });
-        }).WithName("_bdk.Dashboard.Queueing.RealtimeData").WithSummary("Queueing realtime data").ExcludeFromDescription();
+        var metricHistory = new DashboardMetricsHistory(DiagnosticsCharts.SelectMany(chart => chart.Series));
+        app.ServiceProvider.GetRequiredService<IHostApplicationLifetime>().ApplicationStopped.Register(metricHistory.Dispose);
+        group.MapGet(QueueingRealtimeDataPath, (HttpContext context) => Results.Json(metricHistory.Snapshot(
+            context.RequestServices.GetService<IMetricsService>() is not null &&
+            context.RequestServices.GetService<MetricsOptions>()?.Enabled != false)))
+            .WithName("_bdk.Dashboard.Queueing.RealtimeData").WithSummary("Measured queueing throughput and latency").ExcludeFromDescription();
 
         if (IsAliveEnabled(app))
         {
@@ -213,48 +208,4 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
     private static bool IsAliveEnabled(IEndpointRouteBuilder app) =>
         app.ServiceProvider.GetService<QueueingAliveOptions>()?.Enabled == true;
-
-    private static string GetOrCreateRealtimeSessionId(HttpContext context)
-    {
-        var requestedSessionId = context.Request.Query.TryGetValue("sessionId", out var values)
-            ? values.ToString()
-            : null;
-
-        return !string.IsNullOrWhiteSpace(requestedSessionId) && requestedSessionId.Length <= 128
-            ? requestedSessionId
-            : Guid.NewGuid().ToString("N");
-    }
-
-    private static IReadOnlyList<RealtimeGraphSample> AppendRealtimeSample(string sessionId, RealtimeGraphSample sample)
-    {
-        var session = RealtimeGraphSessions.GetOrAdd(sessionId, _ => new RealtimeGraphSession());
-        lock (session.Samples)
-        {
-            session.LastTouchedUtc = DateTimeOffset.UtcNow;
-            session.Samples.Add(sample);
-            if (session.Samples.Count > RealtimeSessionSampleLimit)
-            {
-                session.Samples.RemoveRange(0, session.Samples.Count - RealtimeSessionSampleLimit);
-            }
-
-            return session.Samples.ToArray();
-        }
-    }
-
-    private sealed class RealtimeGraphSession
-    {
-        public List<RealtimeGraphSample> Samples { get; } = [];
-
-        public DateTimeOffset LastTouchedUtc { get; set; } = DateTimeOffset.UtcNow;
-    }
-
-    private sealed record RealtimeGraphSample(
-        DateTimeOffset TimestampUtc,
-        int Pending,
-        int WaitingForHandler,
-        int Processing,
-        int Succeeded,
-        int Failed,
-        int DeadLettered,
-        int OpenCircuits);
 }

@@ -1,46 +1,52 @@
 @using BridgingIT.DevKit.Application.Orchestrations
+@using Microsoft.Extensions.Logging
 @using OrchestrationsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
+    var diagnostics = HttpContext.Request.Path.Value?.EndsWith("/diagnostics", StringComparison.OrdinalIgnoreCase) == true;
+    var instances = HttpContext.Request.Path.Value?.EndsWith("/instances", StringComparison.OrdinalIgnoreCase) == true;
     var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = OrchestrationsDashboardEndpoints.BuildOrchestrationsContentPath(dashboardOptions);
     var actionBase = OrchestrationsDashboardEndpoints.BuildOrchestrationsActionBase(dashboardOptions);
     var purgePath = $"{actionBase}/purge";
     var logEntriesPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesPath(dashboardOptions);
     var aliveEnabled = HttpContext.RequestServices.GetService<OrchestrationAliveOptions>()?.Enabled == true;
+    IReadOnlyList<string> orchestrationNames = instances ? OrchestrationDefinitionReader.GetNames(HttpContext.RequestServices,
+        HttpContext.RequestServices.GetService<OrchestrationRegistrationStore>(), HttpContext.RequestServices.GetService<ILogger<DashboardOrchestrationsViewModel>>()) : [];
+    var selectedOrchestration = HttpContext.Request.Query["name"].ToString();
 }
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
     <div class="d-flex align-items-center gap-2">
+        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.RefreshControls, DashboardRefreshModel>(new("orchestrations", "Refresh orchestrations")))
+        <details class="dashboard-tools"><summary class="btn btn-outline-secondary btn-sm">Tools</summary><div class="dashboard-tools-menu">
         @if (aliveEnabled)
         {
-            <button type="button" class="btn btn-outline-primary btn-sm" title="Start alive orchestration" onclick="window.bdkOrchestrationAction('@($"{actionBase}/alive")')">
-                <i class="bi bi-broadcast"></i>
+            <button type="button" class="btn btn-outline-primary btn-sm" title="Start alive orchestration" onclick="window.bdkOrchestrationAction('@($"{actionBase}/alive")')" aria-label="Start alive orchestration">
+                <i class="bi bi-broadcast" aria-hidden="true"></i>
             </button>
         }
-        <button type="button" class="btn btn-outline-danger btn-sm" title="Purge orchestration data" onclick="window.bdkOrchestrationPurge('@purgePath')">
-            <i class="bi bi-trash3"></i>
+        <button type="button" class="btn btn-outline-danger btn-sm" title="Purge orchestration data" onclick="window.bdkOrchestrationPurge('@purgePath')" aria-label="Purge orchestration data">
+            <i class="bi bi-trash3" aria-hidden="true"></i>
         </button>
-        <span id="orchestrations-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
-        <select id="orchestrations-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Orchestrations refresh interval">
-            <option value="">Off</option>
-            <option value="1000">1 sec</option>
-            <option value="5000">5 sec</option>
-            <option value="15000">15 sec</option>
-            <option value="30000">30 sec</option>
-        </select>
-        <button type="button" id="orchestrations-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh orchestrations">
-            <i class="bi bi-arrow-clockwise"></i>
-        </button>
+        </div></details>
     </div>
 </div>
 
-<div class="card mb-2">
+<nav class="nav nav-pills dashboard-view-tabs mb-2" aria-label="Orchestration views" data-dashboard-view>
+    <a class="nav-link @(!instances && !diagnostics ? "active" : "")" href="@actionBase@HttpContext.Request.QueryString" aria-current="@(!instances && !diagnostics ? "page" : null)">Overview</a>
+    <a class="nav-link @(instances ? "active" : "")" href="@(actionBase + "/instances")@HttpContext.Request.QueryString" aria-current="@(instances ? "page" : null)">Instances</a>
+    <a class="nav-link @(diagnostics ? "active" : "")" href="@(actionBase + "/diagnostics")@HttpContext.Request.QueryString" aria-current="@(diagnostics ? "page" : null)">Diagnostics</a>
+</nav>
+
+@if (instances)
+{
+<div class="dashboard-filter-panel">
     <div class="card-body py-2">
         <div class="row g-2 align-items-end">
-            <div class="col-6 col-lg-2">
+            <div class="col-12 col-lg-2">
                 <label class="form-label small mb-1" for="orchestrations-status-filter">Status</label>
                 <select id="orchestrations-status-filter" class="form-select form-select-sm">
                     <option value="">All</option>
@@ -54,40 +60,40 @@
                     <option>Terminated</option>
                 </select>
             </div>
-            <div class="col-6 col-lg-2">
-                <label class="form-label small mb-1" for="orchestrations-take-filter">Rows</label>
-                <select id="orchestrations-take-filter" class="form-select form-select-sm">
-                    <option>25</option>
-                    <option selected>50</option>
-                    <option>100</option>
-                    <option>250</option>
+            <div class="col-12 col-lg">
+                <label class="form-label small mb-1" for="orchestrations-name-filter">Orchestration</label>
+                <select id="orchestrations-name-filter" class="form-select form-select-sm">
+                    <option value="">All orchestrations</option>
+                    @foreach (var name in orchestrationNames)
+                    {
+                        <option value="@name" selected="@(name == selectedOrchestration)">@name</option>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(selectedOrchestration) && !orchestrationNames.Contains(selectedOrchestration, StringComparer.Ordinal))
+                    {
+                        <option value="@selectedOrchestration" selected>@selectedOrchestration (not registered)</option>
+                    }
                 </select>
             </div>
-            <div class="col-12 col-lg-2">
-                <label class="form-label small mb-1" for="orchestrations-name-filter">Name</label>
-                <input id="orchestrations-name-filter" class="form-control form-control-sm" placeholder="contains">
-            </div>
-            <div class="col-12 col-lg-2">
+            <div class="col-12 col-lg">
                 <label class="form-label small mb-1" for="orchestrations-state-filter">State</label>
                 <input id="orchestrations-state-filter" class="form-control form-control-sm" placeholder="contains">
             </div>
-            <div class="col-12 col-lg-2">
+            <div class="col-12 col-lg">
                 <label class="form-label small mb-1" for="orchestrations-correlation-filter">Correlation</label>
                 <input id="orchestrations-correlation-filter" class="form-control form-control-sm" placeholder="id">
             </div>
-            <div class="col-12 col-lg-2 d-flex gap-2">
-                <button type="button" id="orchestrations-filter-apply" class="btn btn-primary btn-sm flex-fill">Apply</button>
-                <button type="button" id="orchestrations-filter-reset" class="btn btn-outline-secondary btn-sm">Reset</button>
-            </div>
+            <div class="col-12 col-lg-auto d-flex ms-auto">@(await RenderPartialAsync<FilterActions, DashboardFilterActionsModel>(new("orchestrations-filter-apply", "orchestrations-filter-reset", Submit: false)))</div>
         </div>
     </div>
 </div>
+
+}
 
 <div id="dashboard-orchestrations-shell">
     @(await RenderPartialAsync<Content>())
 </div>
 
-<div class="modal fade" id="orchestration-instance-context-modal" tabindex="-1" aria-labelledby="orchestration-instance-context-title" aria-hidden="true">
+<div class="dashboard-dialog dashboard-tabbed-inspector modal fade" id="orchestration-instance-context-modal" tabindex="-1" aria-labelledby="orchestration-instance-context-title" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
@@ -97,23 +103,37 @@
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+<div class="px-2 pt-2 flex-shrink-0"><div class="row g-2 mb-3" id="orchestration-instance-context-summary"></div>
+                <div class="nav nav-tabs" role="tablist" aria-label="Instance details">
+                    <button class="nav-link active" id="orchestration-instance-context-0-tab" type="button" role="tab" aria-selected="true" aria-controls="orchestration-instance-context-0-pane" data-bs-toggle="tab" data-bs-target="#orchestration-instance-context-0-pane">Details</button>
+                    <button class="nav-link" id="orchestration-instance-context-1-tab" type="button" role="tab" aria-selected="false" aria-controls="orchestration-instance-context-1-pane" data-bs-toggle="tab" data-bs-target="#orchestration-instance-context-1-pane">Context</button>
+                    <button class="nav-link" id="orchestration-instance-context-2-tab" type="button" role="tab" aria-selected="false" aria-controls="orchestration-instance-context-2-pane" data-bs-toggle="tab" data-bs-target="#orchestration-instance-context-2-pane">History</button>
+                    <button class="nav-link" id="orchestration-instance-context-3-tab" type="button" role="tab" aria-selected="false" aria-controls="orchestration-instance-context-3-pane" data-bs-toggle="tab" data-bs-target="#orchestration-instance-context-3-pane">Signals</button>
+                    <button class="nav-link" id="orchestration-instance-context-4-tab" type="button" role="tab" aria-selected="false" aria-controls="orchestration-instance-context-4-pane" data-bs-toggle="tab" data-bs-target="#orchestration-instance-context-4-pane">Timers</button>
+                </div>
+            </div>
             <div class="modal-body">
-                <div class="row g-2 mb-3" id="orchestration-instance-context-summary"></div>
-                <h6 class="mb-2">Details</h6>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="orchestration-instance-context-0-pane" role="tabpanel" aria-labelledby="orchestration-instance-context-0-tab" tabindex="0"><h6 class="mb-2">Details</h6>
                 <div class="table-responsive mb-3">
-                    <table class="table table-sm align-middle mb-0">
+                    <table class="table table-sm align-middle mb-0 dashboard-detail-table">
                         <tbody id="orchestration-instance-context-details"></tbody>
                     </table>
                 </div>
-                <h6 class="mb-2">Context</h6>
+                </div>
+                    <div class="tab-pane" id="orchestration-instance-context-1-pane" role="tabpanel" aria-labelledby="orchestration-instance-context-1-tab" tabindex="0"><h6 class="mb-2">Context</h6>
                 <pre class="small border rounded p-2 mb-3 text-break" id="orchestration-instance-context-json">-</pre>
-                <h6 class="mb-2">History</h6>
+                </div>
+                    <div class="tab-pane" id="orchestration-instance-context-2-pane" role="tabpanel" aria-labelledby="orchestration-instance-context-2-tab" tabindex="0"><h6 class="mb-2">History</h6>
                 <div id="orchestration-instance-context-history" class="d-flex flex-column gap-2 mb-3"></div>
-                <h6 class="mb-2">Signals</h6>
+                </div>
+                    <div class="tab-pane" id="orchestration-instance-context-3-pane" role="tabpanel" aria-labelledby="orchestration-instance-context-3-tab" tabindex="0"><h6 class="mb-2">Signals</h6>
                 <div id="orchestration-instance-context-signals" class="d-flex flex-column gap-2 mb-3"></div>
-                <h6 class="mb-2">Timers</h6>
+                </div>
+                    <div class="tab-pane" id="orchestration-instance-context-4-pane" role="tabpanel" aria-labelledby="orchestration-instance-context-4-tab" tabindex="0"><h6 class="mb-2">Timers</h6>
                 <div id="orchestration-instance-context-timers" class="d-flex flex-column gap-2"></div>
-            </div>
+            </div></div></div>
+
         </div>
     </div>
 </div>
@@ -122,6 +142,8 @@
     (() => {
         const shellElement = document.getElementById('dashboard-orchestrations-shell');
         const logEntriesPath = '@logEntriesPath';
+        const diagnostics = @(diagnostics ? "true" : "false");
+        const instances = @(instances ? "true" : "false");
         const resetButton = document.getElementById('orchestrations-filter-reset');
         const instanceModalElement = document.getElementById('orchestration-instance-context-modal');
         const instanceModal = instanceModalElement && window.bootstrap
@@ -133,7 +155,6 @@
             const parameters = new URLSearchParams(window.location.search);
             const mappings = [
                 ['status', 'orchestrations-status-filter'],
-                ['take', 'orchestrations-take-filter'],
                 ['name', 'orchestrations-name-filter'],
                 ['state', 'orchestrations-state-filter'],
                 ['correlationId', 'orchestrations-correlation-filter'],
@@ -148,11 +169,13 @@
             });
         }
 
-        function buildContentUrl() {
+        function readFilterUrl() {
             const url = new URL('@contentPath', window.location.origin);
+            if (!instances) return url;
+            url.searchParams.set('view', 'instances');
             const fields = [
                 ['status', document.getElementById('orchestrations-status-filter')?.value],
-                ['take', document.getElementById('orchestrations-take-filter')?.value],
+                ['take', document.querySelector('[data-dashboard-batch-size]')?.value],
                 ['name', document.getElementById('orchestrations-name-filter')?.value],
                 ['state', document.getElementById('orchestrations-state-filter')?.value],
                 ['correlationId', document.getElementById('orchestrations-correlation-filter')?.value],
@@ -167,19 +190,32 @@
 
         applyQueryFilters();
 
+        const filters = window.bdkDashboard.createAppliedFilters(readFilterUrl);
+        const buildContentUrl = () => filters.request();
+        const growingLists = instances ? window.bdkDashboard.createGrowingLists({
+            owner: shellElement, root: () => shellElement.querySelector('#dashboard-orchestrations-content'),
+            appliedUrl: () => filters.applied(), hasPending: () => filters.hasPending(),
+            lists: [{ key: 'orchestrations-instances', cursor: 'cursor', boundary: 'boundary', size: 'take' }],
+            onSizeChange: (list, size) => {
+                filters.stageApplied(url => { url.searchParams.set('take', size); url.searchParams.delete('cursor'); url.searchParams.delete('boundary'); });
+                refresher.refresh(true);
+            }
+        }) : null;
+        document.querySelector('.dashboard-filter-panel')?.addEventListener('keydown', event => {
+            if (event.key === 'Enter' && event.target.tagName === 'INPUT') { event.preventDefault(); filters.stage(); refresher.refresh(true); }
+        });
         const refresher = window.bdkDashboard.createRefresher({
+            onSuccess: () => filters.accept(),
+            onError: () => filters.reject(),
             buildUrl: buildContentUrl,
+            applyResponse: instances ? growingLists.applyResponse : undefined,
             contentSelector: () => shellElement?.querySelector('#dashboard-orchestrations-content') ?? null,
             statusSelector: '#orchestrations-refresh-status',
-            intervalSelector: '#orchestrations-refresh-interval',
-            refreshButtonSelector: '#orchestrations-refresh-now',
+            intervalSelector: diagnostics ? null : '#orchestrations-refresh-interval',
+            refreshButtonSelector: diagnostics ? null : '#orchestrations-refresh-now',
             storageKey: 'bdk.dashboard.orchestrations.refreshInterval',
-            shouldRefresh: () => !instanceModalOpen
+            shouldRefresh: () => !diagnostics && !instanceModalOpen && !growingLists?.busy()
         });
-
-        if (window.location.search) {
-            refresher.refresh(true);
-        }
 
         function text(value) {
             return value === null || value === undefined || value === '' ? '-' : value.toString();
@@ -191,7 +227,7 @@
             }
 
             const date = new Date(value);
-            return Number.isNaN(date.getTime()) ? text(value) : date.toLocaleString();
+            return Number.isNaN(date.getTime()) ? text(value) : date.toISOString().replace('T', ' ').replace('Z', ' UTC');
         }
 
         function setText(id, value) {
@@ -389,14 +425,13 @@
             }
         });
 
-        document.getElementById('orchestrations-filter-apply').addEventListener('click', () => refresher.refresh(true));
-        resetButton.addEventListener('click', () => {
+        document.getElementById('orchestrations-filter-apply')?.addEventListener('click', () => { filters.stage(); refresher.refresh(true); });
+        resetButton?.addEventListener('click', () => {
             document.getElementById('orchestrations-status-filter').value = '';
-            document.getElementById('orchestrations-take-filter').value = '50';
             document.getElementById('orchestrations-name-filter').value = '';
             document.getElementById('orchestrations-state-filter').value = '';
             document.getElementById('orchestrations-correlation-filter').value = '';
-            refresher.refresh(true);
+            filters.stage(); refresher.refresh(true);
         });
 
         window.bdkOrchestrationAction = async function(url) {

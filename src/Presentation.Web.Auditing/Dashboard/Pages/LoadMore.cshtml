@@ -1,82 +1,57 @@
 @inherits RazorSlice
 <script>
 (() => {
-    const footer = document.getElementById('audit-load-more');
-    const table = document.getElementById('audit-records');
-    const button = footer?.querySelector('[data-audit-load-more]');
-    if (!button || !table) return;
-
-    const status = footer.querySelector('[data-audit-load-status]');
+    const owner = document.querySelector('.audit-view');
     const query = new URLSearchParams(location.search);
-    const ids = new Set([...table.querySelectorAll('tr[data-audit-id]')].map(row => row.dataset.auditId));
-
-    button.addEventListener('click', async () => {
-        if (button.disabled) return;
-        const page = Number(button.dataset.nextPage);
-        if (!Number.isInteger(page) || page <= Number(footer.dataset.page)) return;
-
+    let controller = null;
+    async function request(size = null) {
+        const footer = owner.querySelector('#audit-load-more'), table = owner.querySelector('#audit-records');
+        const button = footer?.querySelector('[data-dashboard-load-more]');
+        if (!button || !table || (size === null && button.disabled)) return;
+        controller?.abort(); const own = new AbortController(); controller = own;
+        const page = size === null ? Number(button.dataset.nextCursor) : 1;
+        const selection = new URLSearchParams(query); selection.set('page', page);
+        if (size !== null) selection.set('pageSize', size);
+        const url = new URL(footer.dataset.url, location.origin); url.search = selection;
+        const status = footer.querySelector('[data-dashboard-list-status]');
         const hadFocus = document.activeElement === button;
-        button.disabled = true;
-        button.textContent = 'Loading...';
-        table.setAttribute('aria-busy', 'true');
-        status.textContent = '';
-        status.classList.remove('text-danger');
-        status.classList.add('text-muted');
-        const url = new URL(footer.dataset.url, location.origin);
-        url.search = query.toString();
-        url.searchParams.set('page', page);
-
+        button.disabled = true; table.setAttribute('aria-busy', 'true'); status.textContent = 'Loadingâ€¦';
         try {
-            const response = await fetch(url, {
-                headers: { 'X-Requested-With': 'fetch' },
-                cache: 'no-store',
-                redirect: 'error'
-            });
-            if (!response.ok || response.redirected || !response.headers.get('content-type')?.includes('text/html')) {
-                throw new Error('Audit results are unavailable.');
-            }
-
-            const template = document.createElement('template');
-            template.innerHTML = await response.text();
-            const nextTable = template.content.querySelector('#audit-records');
-            const nextFooter = template.content.querySelector('#audit-load-more');
-            const nextButton = nextFooter?.querySelector('[data-audit-load-more]');
-            const nextPage = nextButton ? Number(nextButton.dataset.nextPage) : null;
-            if (!nextTable?.tBodies[0] || Number(nextFooter?.dataset.page) !== page
-                || (nextButton && (!Number.isInteger(nextPage) || nextPage <= page))) {
-                throw new Error('Audit results are unavailable.');
-            }
-
-            const rows = [...nextTable.tBodies[0].rows];
-            if (rows.some(row => !row.dataset.auditId)) throw new Error('Audit results are unavailable.');
-            const fragment = document.createDocumentFragment();
-            let count = 0;
-            rows.forEach(row => {
-                if (ids.has(row.dataset.auditId)) return;
-                ids.add(row.dataset.auditId);
-                fragment.appendChild(row);
-                count++;
-            });
-            const firstLink = fragment.querySelector('[data-audit-detail-url]');
-            table.tBodies[0].appendChild(fragment);
-            footer.dataset.page = String(page);
-            if (nextButton) button.dataset.nextPage = String(nextPage);
-            else {
-                if (hadFocus && [button, document.body].includes(document.activeElement)) {
-                    (firstLink ?? status).focus({ preventScroll: true });
+            const response = await fetch(url, { cache: 'no-store', redirect: 'error', signal: own.signal });
+            if (!response.ok || response.redirected || !response.headers.get('content-type')?.includes('text/html')) throw new Error('Unavailable');
+            const template = document.createElement('template'); template.innerHTML = await response.text();
+            const nextTable = template.content.querySelector('#audit-records'), nextFooter = template.content.querySelector('#audit-load-more');
+            const nextButton = nextFooter?.querySelector('[data-dashboard-load-more]');
+            if (!nextTable?.tBodies[0] || !nextButton || Number(nextFooter.dataset.page) !== page) throw new Error('Unavailable');
+            if (own.signal.aborted || controller !== own) return;
+            if (size !== null) {
+                table.closest('section.card').replaceWith(nextTable.closest('section.card'));
+                query.set('pageSize', size); query.delete('page');
+                const address = new URL(location.href); address.search = query; history.replaceState(null, '', address);
+            } else {
+                const ids = new Set([...table.tBodies[0].rows].map(row => row.dataset.auditId));
+                for (const row of [...nextTable.tBodies[0].rows]) {
+                    if (!row.dataset.auditId) throw new Error('Unavailable');
+                    if (!ids.has(row.dataset.auditId)) { ids.add(row.dataset.auditId); table.tBodies[0].append(row); }
                 }
-                button.remove();
+                footer.dataset.page = String(page); button.dataset.nextCursor = nextButton.dataset.nextCursor; button.disabled = nextButton.disabled;
+                status.textContent = `${table.tBodies[0].rows.length} executions loaded`;
+                if (hadFocus) (button.disabled ? footer.querySelector('select') : button)?.focus({ preventScroll: true });
             }
-            status.textContent = `Loaded ${count} more executions.`;
-        } catch {
-            status.classList.remove('text-muted');
-            status.classList.add('text-danger');
-            status.textContent = 'Could not load executions. Try again.';
-        } finally {
-            button.disabled = false;
-            button.textContent = 'Load more';
-            table.removeAttribute('aria-busy');
-        }
+        } catch (error) {
+            if (error.name !== 'AbortError') { button.disabled = false; status.textContent = 'Could not load executions. Try again.'; }
+        } finally { table.removeAttribute('aria-busy'); if (controller === own) controller = null; }
+    }
+    owner?.addEventListener('click', event => { if (event.target.closest('#audit-results-load-more-button')) request(); });
+    owner?.addEventListener('change', event => {
+        if (!event.target.matches('#audit-size')) return;
+        try { localStorage.setItem('bdk.dashboard.auditing.rowsPerLoad', event.target.value); } catch { }
+        request(event.target.value);
     });
+    try {
+        const size = localStorage.getItem('bdk.dashboard.auditing.rowsPerLoad'), select = owner?.querySelector('#audit-size');
+        if (!query.has('pageSize') && select && size && select.value !== size && [...select.options].some(option => option.value === size)) request(size);
+    } catch { }
+    window.addEventListener('pagehide', () => controller?.abort());
 })();
 </script>

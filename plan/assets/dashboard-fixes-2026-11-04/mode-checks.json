@@ -1,0 +1,14 @@
+[
+  {
+    "mode": "Slow",
+    "loaded": 2,
+    "unit": "rows",
+    "append": true
+  },
+  {
+    "mode": "ByCount",
+    "loaded": 2,
+    "unit": "groups",
+    "append": true
+  }
+]

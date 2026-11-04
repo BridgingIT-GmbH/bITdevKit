@@ -32,6 +32,12 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Order = 45,
             Description = "Persisted broker messages, subscriptions, and handler state",
             Tooltip = "Broker messages and subscriptions",
+            RememberedViews = new Dictionary<string, string>
+            {
+                ["operations"] = DashboardEndpoints.BuildMessagingPath(options),
+                ["messages"] = DashboardEndpoints.BuildMessagingPath(options) + "/messages",
+                ["diagnostics"] = DashboardEndpoints.BuildMessagingPath(options) + "/diagnostics"
+            },
             Card = GetCardAsync
         };
     }

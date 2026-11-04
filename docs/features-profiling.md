@@ -369,6 +369,8 @@ Choose **Group by operation dimension** to split each operation key and kind int
 
 [![One service operation grouped by a numeric workload dimension, with counts, median and p95 timings for each group](assets/dashboard/profiling/operation-dimensions.png)](assets/dashboard/profiling/operation-dimensions.png)
 
+This detail figure predates the common dialog spacing; its fields and workflow remain representative.
+
 Use a group's comparison action to set the baseline conditions. Choose another **Recorded group** of the same operation in the comparison dialog, or edit the conditions independently. Group conditions appear as removable chips. Dates, node, and application version remain independent on each side. This supports questions such as cache hits versus misses for the same workload, with segment timings showing where duration differs.
 
 Execution details provide dimension actions to filter the list, group by an operation dimension, or use a condition for either comparison side. Segment conditions require a **Segment filter path**, including every parent. They never match a similarly named sibling or an operation dimension. Mixed and partial segment values stay visible; equality suggestions include only complete, uniform values. Segment discovery counts executions owning that path, not repeated invocations.
@@ -459,6 +461,8 @@ Session controls above the tabs start or stop collection, take a manual snapshot
 The Overview charts align memory, CPU, allocation and GC observations on a UTC timeline. Markers identify workload transitions; the shaded range identifies a measured Runtime segment. Collapse Sessions and Current Snapshot to give the charts more space.
 
 [![Runtime Analysis with evidence-backed allocation, heap-growth, retention, and GC-pressure signals](assets/dashboard/profiling/runtime-analysis.png)](assets/dashboard/profiling/runtime-analysis.png)
+
+This detail figure predates the common dialog spacing; its fields and workflow remain representative.
 
 Analysis shows each signal's confidence, supporting measurements and suggested next step. Byte values use readable units; information icons retain the recorded value and explain each metric. Read the sampling-quality summary alongside the signals before deciding what to investigate.
 
@@ -553,6 +557,8 @@ The segment table matches full, case-insensitive paths, including parent segment
 
 [![Comparing executions of the same operation under independently selected conditions in a dashboard dialog](assets/dashboard/profiling/operation-comparison.png)](assets/dashboard/profiling/operation-comparison.png)
 
+This detail figure predates the common dialog spacing; its fields and workflow remain representative.
+
 [![Recent handler and orchestration executions with readable group names, information buttons and single-line rows](assets/dashboard/profiling/operations.png)](assets/dashboard/profiling/operations.png)
 
 Rows show the execution's start timestamp in UTC, executing node, root outcome, duration and a duration breakdown. Hover or focus a bar bucket to see its duration and percentage. A completed root can contain failed segments; the list flags those separately. The summary cards show matching executions, groups, queued records and dropped records. The **Capture health** toolbar icon opens persistence and sampling details in a dialog.
@@ -569,6 +575,8 @@ Request details separate application correlation from the transport request ID. 
 
 [![Request detail modal with application correlation, route and transport metadata](assets/dashboard/profiling/request-metadata.png)](assets/dashboard/profiling/request-metadata.png)
 
+This detail figure predates the common dialog spacing; its fields and workflow remain representative.
+
 The top toolbar provides manual **Refresh** and a **Tail** switch in Recent view. Tail prepends newly persisted recordings while keeping older loaded rows and open groups. Refresh replaces the list with the latest page. Pending records appear after the periodic writer persists them; neither action forces a flush.
 
 #### Repeated and nested segments
@@ -581,11 +589,15 @@ The **Duration / %** control beside **Segments** switches all timing columns, in
 
 [![Operation detail modal with typed metadata and repeated, nested segment statistics, including successful and failed invocations](assets/dashboard/profiling/operation-details.png)](assets/dashboard/profiling/operation-details.png)
 
+This detail figure predates the common dialog spacing; its fields and workflow remain representative.
+
 #### Runtime context around one operation
 
 The **Runtime overlay** section shows matching process snapshots around the operation's observed UTC interval. The shaded interval identifies the operation; surrounding samples, collection windows and gaps remain visible. Select **Open Runtime** to inspect the wider session for the same node and interval. Expand **Sample coverage** for sampling gaps and collection windows.
 
 [![Runtime overlay with process CPU, memory, allocation, and GC observations around a selected operation interval](assets/dashboard/profiling/runtime-overlay.png)](assets/dashboard/profiling/runtime-overlay.png)
+
+This detail figure predates the common dialog spacing; its fields and workflow remain representative.
 
 These counters describe the whole process. They provide context for the operation's segment timings without assigning process CPU, memory or GC activity to that operation.
 

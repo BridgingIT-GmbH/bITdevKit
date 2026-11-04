@@ -8,19 +8,9 @@
     var restoreActionPath = ChangeHistoryDashboardEndpoints.BuildRestoreActionPath(dashboardOptions);
 }
 
-<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
     <div class="d-flex align-items-center gap-2">
-        <span id="change-history-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
-        <select id="change-history-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="ChangeHistory refresh interval">
-            <option value="">Off</option>
-            <option value="5000">5 sec</option>
-            <option value="15000">15 sec</option>
-            <option value="30000">30 sec</option>
-            <option value="60000">1 min</option>
-        </select>
-        <button type="button" id="change-history-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh ChangeHistory">
-            <i class="bi bi-arrow-clockwise"></i>
-        </button>
+        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.RefreshControls, BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardRefreshModel>(new("change-history", "Refresh ChangeHistory", true)))
     </div>
 </div>
 
@@ -28,11 +18,11 @@
     @(await RenderPartialAsync<Content>())
 </div>
 
-<div class="modal fade" id="change-history-restore-modal" tabindex="-1" aria-hidden="true">
+<div class="dashboard-dialog modal fade" id="change-history-restore-modal" tabindex="-1" aria-hidden="true" aria-labelledby="change-history-restore-modal-title">
     <div class="modal-dialog">
         <form class="modal-content" id="change-history-restore-form">
             <div class="modal-header">
-                <h5 class="modal-title">Restore Change Set</h5>
+                <h5 class="modal-title" id="change-history-restore-modal-title">Restore Change Set</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -63,8 +53,8 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-danger">Restore</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger btn-sm">Restore</button>
             </div>
         </form>
     </div>
@@ -89,6 +79,7 @@
         const refresher = window.bdkDashboard.createRefresher({
             buildUrl: buildContentUrl,
             contentSelector: () => shellElement,
+            preserveDraftSelector: "form.change-history-filter",
             statusSelector: '#change-history-refresh-status',
             intervalSelector: '#change-history-refresh-interval',
             refreshButtonSelector: '#change-history-refresh-now',

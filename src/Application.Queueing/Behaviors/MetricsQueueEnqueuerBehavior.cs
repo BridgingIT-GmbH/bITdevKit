@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Common;
 
 /// <summary>
-/// Emits queue enqueue total, current, failure, and duration metrics.
+/// Emits enqueue attempts, successful completions, failures, in-flight values, and durations.
 /// </summary>
 /// <example>
 /// <code>
@@ -47,6 +47,8 @@ public class MetricsQueueEnqueuerBehavior(IMetricsService metricsService = null)
         try
         {
             await next().AnyContext();
+            metricsService.AddCounter(enqueueSeries + ".completed");
+            metricsService.AddCounter(typedEnqueueSeries + ".completed");
         }
         catch
         {

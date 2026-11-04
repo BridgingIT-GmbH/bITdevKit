@@ -1,0 +1,13 @@
+{
+  "markdownFiles": 7,
+  "localLinks": 154,
+  "routes": 52,
+  "routeCaptures": 104,
+  "dialogTypes": 12,
+  "interactionChecks": 16,
+  "browserErrors": 0,
+  "pageOverflow": 0,
+  "metricUnits": "verified",
+  "ownedTestDocument": "removed",
+  "skillStructure": "valid"
+}

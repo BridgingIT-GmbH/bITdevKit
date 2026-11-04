@@ -30,7 +30,13 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Group = "bdk",
             GroupOrder = 0,
             Order = 47,
-            Description = "Persisted orchestration instances and operational controls",
+            Description = "Registered orchestration definitions, instances, and diagnostics",
+            RememberedViews = new Dictionary<string, string>
+            {
+                ["overview"] = DashboardEndpoints.BuildOrchestrationsPath(options),
+                ["instances"] = DashboardEndpoints.BuildOrchestrationsPath(options) + "/instances",
+                ["diagnostics"] = DashboardEndpoints.BuildOrchestrationsPath(options) + "/diagnostics"
+            },
             Tooltip = "Orchestration instances and controls",
             Card = GetCardAsync
         };

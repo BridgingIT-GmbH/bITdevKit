@@ -12,9 +12,22 @@ using BridgingIT.DevKit.Application.Jobs;
 /// </summary>
 public sealed class DashboardJobsViewModel
 {
-    /// <summary>
-    /// Gets or sets the UTC timestamp when this model was captured.
-    /// </summary>
+    /// <summary>Gets or sets the last observed matching occurrences count.</summary>
+    public long OccurrencesMatchingCount { get; set; }
+
+    /// <summary>Gets or sets the supported occurrences batch size.</summary>
+    public int OccurrencesBatchSize { get; set; } = 50;
+
+    /// <summary>Gets or sets whether more occurrences remain.</summary>
+    public bool OccurrencesHasMore { get; set; }
+
+    /// <summary>Gets or sets the immutable occurrences continuation.</summary>
+    public string OccurrencesNextCursor { get; set; }
+
+    /// <summary>Gets or sets the initial occurrences browsing boundary.</summary>
+    public string OccurrencesBoundary { get; set; }
+
+    /// <summary>Gets or sets the UTC time of the successful model read.</summary>
     public DateTimeOffset CapturedAtUtc { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
@@ -43,7 +56,7 @@ public sealed class DashboardJobsViewModel
     public JobSchedulerDashboardSummaryModel Summary { get; set; } = new();
 
     /// <summary>
-    /// Gets or sets the paged list of registered jobs.
+    /// Gets or sets all registered jobs matching the filters.
     /// </summary>
     public IReadOnlyList<JobSchedulerJobModel> Jobs { get; set; } = [];
 

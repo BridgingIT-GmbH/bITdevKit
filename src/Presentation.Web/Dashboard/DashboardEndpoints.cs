@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 /// <summary>
@@ -36,13 +39,13 @@ public class DashboardEndpoints(
         //.DisableAntiforgery();
         //.RequireCors(nameof(BridgingIT.DevKit.Presentation.Web.Dashboard));
 
-        group.MapGet("/", this.HandleIndex)
+        group.MapGet("/", (Delegate)this.HandleIndex)
             .WithName("_bdk.Dashboard.Index")
             .WithSummary("Dashboard Index")
             .WithDescription("Shows the dashboard index page.")
             .Produces<string>();
 
-        group.MapGet(options.EndpointPaths.IndexContent, this.HandleIndexContent)
+        group.MapGet(options.EndpointPaths.IndexContent, (Delegate)this.HandleIndexContent)
             .WithName("_bdk.Dashboard.IndexContent")
             .WithSummary("Dashboard Index Content")
             .WithDescription("Shows the dashboard index card content fragment.")
@@ -77,6 +80,17 @@ public class DashboardEndpoints(
             "Dashboard System Content",
             "Shows the dashboard system performance content fragment.");
 
+        group.MapDashboardPage<Pages.SystemDiagnostics>(
+            options.EndpointPaths.SystemDiagnostics,
+            "_bdk.Dashboard.SystemDiagnostics", "System Diagnostics", "Shows runtime and HTTP diagnostic charts.");
+        var systemHistory = new DashboardSystemHistory(
+            app.ServiceProvider.GetService<IDotNetMetricsSnapshotService>(),
+            app.ServiceProvider.GetService<IAspNetMetricsSnapshotService>(),
+            logger: app.ServiceProvider.GetService<ILogger<DashboardSystemHistory>>());
+        app.ServiceProvider.GetRequiredService<IHostApplicationLifetime>().ApplicationStopped.Register(systemHistory.Dispose);
+        group.MapGet(options.EndpointPaths.SystemDiagnosticsData, () => Results.Json(systemHistory.Snapshot()))
+            .WithName("_bdk.Dashboard.SystemDiagnosticsData").ExcludeFromDescription();
+
         group.MapDashboardPage<Pages.SystemProcess>(
             options.EndpointPaths.SystemProcess,
             "_bdk.Dashboard.SystemProcess",
@@ -90,16 +104,16 @@ public class DashboardEndpoints(
             "Shows the dashboard system environment, worktree and environment variables.");
     }
 
-    private Task<IResult> HandleIndex()
+    private async Task<IResult> HandleIndex(HttpContext httpContext)
     {
-        return Task.FromResult(
-            Results.RazorSlice<Pages.DashboardIndex>());
+        var model = new DashboardIndexModel(await httpContext.GetDashboardPageCardsAsync(), httpContext.Request.Query["group"]);
+        return Results.RazorSlice<Pages.DashboardIndex, DashboardIndexModel>(model);
     }
 
-    private Task<IResult> HandleIndexContent()
+    private async Task<IResult> HandleIndexContent(HttpContext httpContext)
     {
-        return Task.FromResult(
-            Results.RazorSlice<Pages.DashboardIndexContent>());
+        var model = new DashboardIndexModel(await httpContext.GetDashboardPageCardsAsync(), httpContext.Request.Query["group"]);
+        return Results.RazorSlice<Pages.DashboardIndexContent, DashboardIndexModel>(model);
     }
 
     private IResult HandleAccessDenied()

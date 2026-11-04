@@ -12295,6 +12295,15 @@
               "$ref": "#/components/schemas/BdkHistogramSnapshotModel"
             }
           },
+          "histograms": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/BdkHistogramSnapshotModel"
+            }
+          },
           "successTotal": {
             "type": "number",
             "format": "double"
@@ -12348,6 +12357,12 @@
       "BdkHistogramSnapshotModel": {
         "type": "object",
         "properties": {
+          "unit": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "count": {
             "type": "integer",
             "format": "int64"

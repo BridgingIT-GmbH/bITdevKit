@@ -27,6 +27,7 @@
     }
     if (![...document.getElementById('timeline-resolution').options].some(option => option.selected)) document.getElementById('timeline-resolution').value = 'hour';
     let applied = Object.fromEntries(new FormData(form));
+    let pending = null;
     let data = null, chartClock = 0, controller = null, refreshTimer = null, clusterController = null, clusterQuery = null, clusterTrigger = null, nextCursor = null;
     const elements = [];
     const label = kind => labels[kind] || labels[kind.toUpperCase()] || kind;
@@ -132,19 +133,22 @@
         document.getElementById('timeline-period').textContent = '· ' + utc(start) + ' → ' + utc(end) + ' UTC';
     }
     async function refresh() {
+        const candidate = pending;
         clearTimeout(refreshTimer);
         controller?.abort();
         const active = new AbortController(); controller = active;
         chart.setAttribute('aria-busy', 'true');
         try {
-            const url = urlFor(root.dataset.dataUrl);
+            const url = urlFor(root.dataset.dataUrl, candidate ?? applied);
             const width = chart.querySelector('.timeline-lane-events')?.clientWidth || Math.max(400, chart.clientWidth - 192);
             url.searchParams.set('buckets', Math.min(256, Math.max(12, Math.floor(width / 30))));
             const value = await read(url, active.signal);
             if (controller !== active || active.signal.aborted) return;
+            if (candidate) { applied = candidate; if (pending === candidate) pending = null; history.replaceState(null, "", urlFor(root.dataset.pageUrl)); }
             data = value; chartClock = performance.now(); choices(); render(); error.hidden = true;
             status.textContent = 'Updated ' + new Date().toISOString().slice(11, 19) + ' UTC'; status.className = 'small text-muted';
         } catch (failure) {
+            if (pending === candidate) pending = null;
             if (active.signal.aborted || controller !== active) return;
             status.textContent = data ? 'Refresh failed; showing previous data.' : 'Timeline unavailable'; status.className = 'small text-danger';
             error.textContent = failure.message; error.hidden = false;
@@ -154,14 +158,13 @@
         }
     }
     function apply() {
-        applied = Object.fromEntries(new FormData(form));
-        data = null; elements.length = 0;
-        const url = urlFor(root.dataset.pageUrl); history.replaceState(null, '', url); remember(); refresh();
+        if (!form.reportValidity()) return;
+        pending = Object.fromEntries(new FormData(form));
+        remember(); refresh();
     }
     form.addEventListener('submit', event => { event.preventDefault(); apply(); });
     form.addEventListener('input', remember);
-    document.getElementById('timeline-resolution').addEventListener('change', apply);
-    document.getElementById('timeline-reset').addEventListener('click', () => { form.reset(); apply(); });
+    document.getElementById('timeline-reset').addEventListener('click', () => { const limit = form.elements.namedItem('limit')?.value; form.reset(); if (limit) form.elements.namedItem('limit').value = limit; apply(); });
     document.getElementById('timeline-refresh-now').addEventListener('click', refresh);
     let sizeTimer;
     new ResizeObserver(() => { clearTimeout(sizeTimer); sizeTimer = setTimeout(() => { if (data && !document.hidden) refresh(); }, 200); }).observe(root.parentElement);

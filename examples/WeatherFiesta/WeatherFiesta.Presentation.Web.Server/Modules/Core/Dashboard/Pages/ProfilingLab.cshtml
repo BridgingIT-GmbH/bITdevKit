@@ -11,32 +11,26 @@
     var requestsPath = ProfilingDashboard.BuildOperationsPath(options, true);
     var jobsPath = DashboardPath.Combine(options.GroupPath, "/jobs");
 }
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 mb-3 border-bottom">
-    <div><h1 class="h4 mb-1">Profiling Lab</h1><p class="small text-muted mb-0">Explore stored weather, background work, and the process that runs them.</p></div>
-    <nav class="d-flex flex-wrap gap-2" aria-label="Profiling views">
+<div class="dashboard-page-toolbar">
+    <nav class="d-flex flex-wrap gap-2 me-auto" aria-label="Profiling views">
         <a class="btn btn-outline-secondary btn-sm" href="@runtimePath">Runtime</a>
         <a class="btn btn-outline-secondary btn-sm" href="@(operationsPath + "?key=weather%3Acity-review&view=Recent")">City reviews</a>
         <a class="btn btn-outline-secondary btn-sm" href="@operationsPath">All operations</a>
         <a class="btn btn-outline-secondary btn-sm" href="@requestsPath">Requests</a>
     </nav>
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.RefreshControls, BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardRefreshModel>(new("profiling-lab", "Refresh workload status", true)))
 </div>
 @if (!profiling.OperationEnabled)
 {
     <div class="alert alert-warning">Operation Profiling is disabled. Enable Profiling to capture these workloads.</div>
 }
-<div class="d-flex flex-wrap gap-2 align-items-center mb-2">
-    <span id="profiling-lab-refresh-status" class="small text-muted" aria-live="polite"></span>
-    <label for="profiling-lab-refresh-interval" class="small ms-auto">Status refresh</label>
-    <select id="profiling-lab-refresh-interval" class="form-select form-select-sm" style="width:7rem"><option value="">Off</option><option value="5000" selected>5 sec</option><option value="15000">15 sec</option></select>
-    <button id="profiling-lab-refresh-now" class="btn btn-outline-secondary btn-sm" type="button">Refresh</button>
-</div>
+
 <div id="profiling-lab-content"></div>
 <div class="row g-3 mt-1">
     <section class="col-12 col-xl-7" aria-labelledby="review-heading">
         <div class="card h-100"><div class="card-body">
             <h2 id="review-heading" class="h5">Review stored city weather</h2>
-            <p class="small text-muted">Read cities and their current weather without an external API call or changing records. Repeated reads aggregate under the same segment key.</p>
-            <form id="profiling-lab-review" class="row g-2">
+                        <form id="profiling-lab-review" class="row g-2">
                 <div class="col-6 col-md-3"><label class="form-label small" for="lab-cities">City limit</label><input id="lab-cities" class="form-control form-control-sm" type="number" min="1" max="10" value="3" required /></div>
                 <div class="col-6 col-md-3"><label class="form-label small" for="lab-repetitions">Read passes</label><input id="lab-repetitions" class="form-control form-control-sm" type="number" min="1" max="5" value="2" required /></div>
                 <div class="col-6 col-md-3"><label class="form-label small" for="lab-count">Operations</label><input id="lab-count" class="form-control form-control-sm" type="number" min="1" max="10" value="1" required /></div>
@@ -46,31 +40,28 @@
                     <button id="lab-cancel" class="btn btn-outline-secondary btn-sm" type="button" disabled>Cancel running reviews</button>
                 </div>
             </form>
-            <p class="small text-muted mt-3 mb-2">Group <code>weather:city-review</code> by <code>cityLimit</code> and <code>repetitions</code>. Start with one operation, then compare a bounded concurrent burst. Each operation has its own database scope.</p>
-            <div id="lab-review-status" class="small" role="status" aria-live="polite"></div>
+                        <div id="lab-review-status" class="small" role="status" aria-live="polite"></div>
             <ol id="lab-results" class="small ps-3 mt-2"></ol>
-            <p class="small text-muted mb-0">Records appear after periodic persistence. Missing weather is counted and marks its read segment as failed. The review can still complete with the available cities.</p>
+                        <details class="mt-2"><summary class="small">Workload help</summary><p class="small text-muted mt-2">Read cities and their current weather without an external API call or changing records. Repeated reads aggregate under the same segment key.</p><p class="small text-muted mt-2">Group <code>weather:city-review</code> by <code>cityLimit</code> and <code>repetitions</code>. Start with one operation, then compare a bounded concurrent burst. Each operation has its own database scope.</p><p class="small text-muted mt-2">Records appear after periodic persistence. Missing weather is counted and marks its read segment as failed. The review can still complete with the available cities.</p></details>
         </div></div>
     </section>
     <section class="col-12 col-xl-5" aria-labelledby="runtime-heading">
         <div class="card h-100"><div class="card-body">
             <h2 id="runtime-heading" class="h5">Observe the Runtime</h2>
-            <p class="small text-muted">Start a two-minute session before a workload. Take a baseline snapshot, run reviews or a background job, then take another snapshot.</p>
-            <div class="d-flex flex-wrap gap-2 mb-3">
+                        <div class="d-flex flex-wrap gap-2 mb-3">
                 <button class="btn btn-outline-primary btn-sm lab-runtime" data-action="start" type="button" disabled="@(!profiling.RuntimeEnabled)">Start Runtime session</button>
                 <button class="btn btn-outline-secondary btn-sm lab-runtime" data-action="snapshot" type="button" disabled="@(!profiling.RuntimeEnabled)">Take snapshot</button>
                 <button class="btn btn-outline-secondary btn-sm lab-runtime" data-action="stop" type="button" disabled="@(!profiling.RuntimeEnabled)">Stop session</button>
             </div>
             <div id="lab-runtime-status" class="small mb-3" role="status" aria-live="polite"></div>
-            <p class="small text-muted">Open a review's operation detail for overlapping Runtime observations on the same node. Process CPU and memory describe the whole process.</p>
-            <hr />
+                        <hr />
             <h3 class="h6">Follow background work</h3>
-            <p class="small text-muted">The hello-world orchestration records actions and publishes a message and a queue message. Each consumer records its own operation and executing node.</p>
-            <button class="btn btn-outline-primary btn-sm lab-job" data-scenario="orchestration" type="button" disabled="@(!profiling.OperationEnabled)">Dispatch orchestration</button>
+                        <button class="btn btn-outline-primary btn-sm lab-job" data-scenario="orchestration" type="button" disabled="@(!profiling.OperationEnabled)">Dispatch orchestration</button>
             <p class="small text-muted mt-3">The manual stress job generates CPU, allocation, and GC pressure for about 20 seconds. Run it when that load is intended.</p>
             <button class="btn btn-outline-warning btn-sm lab-job" data-scenario="stress" type="button" disabled="@(!profiling.OperationEnabled)">Dispatch Runtime stress job</button>
             <a class="btn btn-link btn-sm" href="@jobsPath">Job history</a>
             <div id="lab-job-status" class="small mt-2" role="status" aria-live="polite"></div>
+            <details class="mt-2"><summary class="small">Workload help</summary><p class="small text-muted mt-2">Start a two-minute session before a workload. Take a baseline snapshot, run reviews or a background job, then take another snapshot.</p><p class="small text-muted mt-2">Open a review's operation detail for overlapping Runtime observations on the same node. Process CPU and memory describe the whole process.</p><p class="small text-muted mt-2">The hello-world orchestration records actions and publishes a message and a queue message. Each consumer records its own operation and executing node.</p></details>
         </div></div>
     </section>
 </div>

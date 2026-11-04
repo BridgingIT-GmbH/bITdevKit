@@ -21,7 +21,6 @@ using Microsoft.AspNetCore.Routing;
 public sealed class McpDashboardEndpoints(DashboardEndpointsOptions options) : EndpointsBase, IDashboardEndpoints
 {
     private const string McpPath = "/mcp";
-    private const string McpContentPath = "/mcp/content";
     private const string McpStatusPath = "/mcp/status";
 
     /// <inheritdoc />
@@ -37,17 +36,22 @@ public sealed class McpDashboardEndpoints(DashboardEndpointsOptions options) : E
         var group = this.MapGroup(app, options)
             .WithTags("_bdk.Dashboard");
 
-        group.MapDashboardPage<Pages.Mcp>(
-            McpPath,
-            "_bdk.Dashboard.Mcp",
-            "Dashboard MCP",
-            "Shows local MCP runtime, IPC, and handler diagnostics.");
+        foreach (var view in new[] { "overview", "connections", "handlers", "operations" })
+        {
+            var suffix = view == "overview" ? string.Empty : $"/{view}";
+            var name = view == "overview" ? "Mcp" : $"Mcp.{view}";
+            group.MapDashboardPage<Pages.Mcp>(
+                McpPath + suffix,
+                $"_bdk.Dashboard.{name}",
+                "Dashboard MCP",
+                "Shows local MCP runtime, IPC, and handler diagnostics.");
 
-        group.MapDashboardPage<Pages.McpContent>(
-            McpContentPath,
-            "_bdk.Dashboard.McpContent",
-            "Dashboard MCP Content",
-            "Shows the MCP dashboard content fragment.");
+            group.MapDashboardPage<Pages.McpContent>(
+                McpPath + suffix + "/content",
+                $"_bdk.Dashboard.{name}Content",
+                "Dashboard MCP Content",
+                "Shows the selected MCP dashboard content fragment.");
+        }
 
         group.MapGet(McpStatusPath, (HttpContext context) =>
             {
@@ -61,9 +65,9 @@ public sealed class McpDashboardEndpoints(DashboardEndpointsOptions options) : E
             .Produces(StatusCodes.Status200OK);
     }
 
-    internal static string BuildMcpPath(DashboardEndpointsOptions options)
+    internal static string BuildMcpPath(DashboardEndpointsOptions options, string view = "overview")
     {
-        return DashboardPath.Combine(options?.GroupPath, McpPath);
+        return DashboardPath.Combine(options?.GroupPath, McpPath + (view == "overview" ? string.Empty : $"/{view}"));
     }
 
     internal static string BuildMcpStatusPath(DashboardEndpointsOptions options)
@@ -71,8 +75,16 @@ public sealed class McpDashboardEndpoints(DashboardEndpointsOptions options) : E
         return DashboardPath.Combine(options?.GroupPath, McpStatusPath);
     }
 
-    internal static string BuildMcpContentPath(DashboardEndpointsOptions options)
+    internal static string BuildMcpContentPath(DashboardEndpointsOptions options, string view = "overview")
     {
-        return DashboardPath.Combine(options?.GroupPath, McpContentPath);
+        return BuildMcpPath(options, view) + "/content";
+    }
+
+    internal static string GetView(HttpContext context)
+    {
+        var path = context.Request.Path.Value?.TrimEnd('/') ?? string.Empty;
+        return new[] { "connections", "handlers", "operations" }.FirstOrDefault(view =>
+            path.EndsWith($"/mcp/{view}", StringComparison.OrdinalIgnoreCase) ||
+            path.EndsWith($"/mcp/{view}/content", StringComparison.OrdinalIgnoreCase)) ?? "overview";
     }
 }

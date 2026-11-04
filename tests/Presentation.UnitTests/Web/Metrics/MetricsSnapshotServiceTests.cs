@@ -9,6 +9,33 @@ using BridgingIT.DevKit.Presentation.Web;
 
 public class MetricsSnapshotServiceTests
 {
+    [Theory]
+    [InlineData("s", 2, 2000)]
+    [InlineData("ms", 2, 2)]
+    [InlineData("us", 2000, 2)]
+    [InlineData("ns", 2000000, 2)]
+    public void GetSnapshot_MixedHistogramUnits_NormalizesOnlyDurations(string unit, double value, double expected)
+    {
+        var suffix = Guid.NewGuid().ToString("N");
+        var duration = $"blobstorage_duration_{suffix}";
+        var rate = $"blobstorage_rate_{suffix}";
+        using var sut = new MetricsSnapshotService();
+        using var metrics = new MetricsService();
+        metrics.RecordHistogram(duration, value, unit);
+        metrics.RecordHistogram(rate, 128, "By/s");
+
+        var snapshot = sut.GetSnapshot();
+
+        var feature = snapshot.Features["blobstorage"];
+        feature.Durations[duration].Average.ShouldBe(expected);
+        feature.Durations[duration].Unit.ShouldBe("ms");
+        feature.Durations.ShouldNotContainKey(rate);
+        feature.Histograms[rate].Average.ShouldBe(128);
+        feature.Histograms[rate].Unit.ShouldBe("By/s");
+        feature.LatencyHighlights.ShouldNotContain(metric => metric.Name == rate);
+        snapshot.AvailableMetrics.ShouldContain(metric => metric.Name == rate && metric.Kind == "histogram" && metric.Unit == "By/s");
+    }
+
     [Fact]
     public void GetSnapshot_WithBroadcastingMetrics_ClassifiesBroadcastingFamily()
     {

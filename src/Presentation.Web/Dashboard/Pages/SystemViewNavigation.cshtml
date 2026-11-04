@@ -4,8 +4,9 @@
 @{
     var options = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
 }
-<nav class="nav nav-pills mb-2" aria-label="System views" data-dashboard-view="@Model">
+<nav class="nav nav-pills dashboard-view-tabs mb-2" aria-label="System views" data-dashboard-view="@Model">
     <a class="nav-link @(Model == "overview" ? "active" : "")" aria-current="@(Model == "overview" ? "page" : null)" href="@DashboardPath.Combine(options.GroupPath, options.EndpointPaths.System)">Overview</a>
     <a class="nav-link @(Model == "process" ? "active" : "")" aria-current="@(Model == "process" ? "page" : null)" href="@DashboardPath.Combine(options.GroupPath, options.EndpointPaths.SystemProcess)">Process</a>
     <a class="nav-link @(Model == "environment" ? "active" : "")" aria-current="@(Model == "environment" ? "page" : null)" href="@DashboardPath.Combine(options.GroupPath, options.EndpointPaths.SystemEnvironment)">Environment</a>
+    <a class="nav-link @(Model == "diagnostics" ? "active" : "")" aria-current="@(Model == "diagnostics" ? "page" : null)" href="@DashboardPath.Combine(options.GroupPath, options.EndpointPaths.SystemDiagnostics)">Diagnostics</a>
 </nav>

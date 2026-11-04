@@ -1,0 +1,13 @@
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@inherits RazorSlice<DashboardFilterActionsModel>
+<div class="dashboard-filter-actions">
+    <button id="@Model.ApplyId" type="@(Model.Submit ? "submit" : "button")" class="btn btn-primary btn-sm">Apply</button>
+    @if (Model.ResetUrl is not null)
+    {
+        <a id="@Model.ResetId" href="@Model.ResetUrl" class="btn btn-outline-secondary btn-sm" title="Reset filters" aria-label="Reset filters"><i class="bi bi-x-circle" aria-hidden="true"></i></a>
+    }
+    else
+    {
+        <button id="@Model.ResetId" type="button" class="btn btn-outline-secondary btn-sm" title="Reset filters" aria-label="Reset filters" data-dashboard-filter-reset><i class="bi bi-x-circle" aria-hidden="true"></i></button>
+    }
+</div>

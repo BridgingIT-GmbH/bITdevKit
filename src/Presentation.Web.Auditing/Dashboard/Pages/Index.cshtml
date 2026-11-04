@@ -2,10 +2,10 @@
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 <section class="audit-view" data-dashboard-view>
 @(await RenderPartialAsync<Style>())
-<div class="d-flex align-items-center justify-content-end gap-2 py-2 mb-2 border-bottom">
+<div class="dashboard-page-toolbar">
     @if (Model.HasDetail) { <a href="@Model.Path" class="btn btn-outline-secondary btn-sm me-auto" title="Back to executions" aria-label="Back to executions"><i class="bi bi-arrow-left" aria-hidden="true"></i></a> }
     <span class="small text-muted">Updated @DateTimeOffset.UtcNow.ToString("HH:mm:ss 'UTC'")</span>
-    <a href="@HttpContext.Request.Path@HttpContext.Request.QueryString" class="btn btn-outline-warning btn-sm" title="Refresh current view" aria-label="Refresh current view"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></a>
+    <a href="@HttpContext.Request.Path@HttpContext.Request.QueryString" class="btn btn-outline-secondary btn-sm" title="Refresh current view" aria-label="Refresh current view"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></a>
     @if (Model.Diagnostics is null) { @(await RenderPartialAsync<Download, AuditingViewModel>(Model)) }
 </div>
 <nav class="nav nav-pills mb-2" aria-label="Audit review">
@@ -22,20 +22,21 @@ else if (Model.HasDetail)
 }
 else
 {
-    <form action="@Model.Path" method="get" class="card card-body p-2 mb-2" id="audit-filters">
+    <form action="@Model.Path" method="get" class="card card-body p-2 mb-2 dashboard-filter-panel" id="audit-filters">
     <div class="row g-2">
-        <div class="col-12 col-sm-6 col-lg"><label for="audit-key" class="form-label">Business key</label><input id="audit-key" name="key" maxlength="256" value="@HttpContext.Request.Query["key"]" placeholder="contains" title="Matches any part of the business key" class="form-control form-control-sm" /></div>
-        <div class="col-12 col-sm-6 col-lg"><label for="audit-actor" class="form-label">Actor ID</label><input id="audit-actor" name="actor" maxlength="256" value="@HttpContext.Request.Query["actor"]" class="form-control form-control-sm" /></div>
-        <div class="col-12 col-sm-6 col-lg"><label for="audit-role" class="form-label">Actor role</label><select id="audit-role" name="actorRole" class="form-select form-select-sm"><option value="executing" selected="@(HttpContext.Request.Query["actorRole"] != "initiating")">Executing actor</option><option value="initiating" selected="@(HttpContext.Request.Query["actorRole"] == "initiating")">Initiating actor</option></select></div>
-        <div class="col-12 col-sm-6 col-lg"><label for="audit-module" class="form-label">Module</label><input id="audit-module" name="module" maxlength="256" value="@HttpContext.Request.Query["module"]" class="form-control form-control-sm" /></div>
-        <div class="col-12 col-sm-6 col-lg"><label for="audit-outcome" class="form-label">Outcome</label><select id="audit-outcome" name="outcome" class="form-select form-select-sm"><option value="">Any</option>@foreach (var outcome in Enum.GetNames<BridgingIT.DevKit.Common.AuditOutcome>()) { <option value="@outcome" selected="@(HttpContext.Request.Query["outcome"] == outcome)">@outcome</option> }</select></div>
+        <div class="col-8 col-lg"><label for="audit-key" class="form-label">Business key</label><input id="audit-key" name="key" maxlength="256" value="@HttpContext.Request.Query["key"]" placeholder="contains" title="Matches any part of the business key" class="form-control form-control-sm" /></div>
+        <div class="col-4 col-lg"><label for="audit-outcome" class="form-label">Outcome</label><select id="audit-outcome" name="outcome" class="form-select form-select-sm"><option value="">Any</option>@foreach (var outcome in Enum.GetNames<BridgingIT.DevKit.Common.AuditOutcome>()) { <option value="@outcome" selected="@(HttpContext.Request.Query["outcome"] == outcome)">@outcome</option> }</select></div>
     </div>
     <div class="row g-2 mt-1">
-        <div class="col-12 col-sm-6 col-lg"><label for="audit-from" class="form-label">From UTC</label><input id="audit-from" name="fromUtc" type="datetime-local" value="@HttpContext.Request.Query["fromUtc"]" class="form-control form-control-sm" /></div>
-        <div class="col-12 col-sm-6 col-lg"><label for="audit-to" class="form-label">To UTC</label><input id="audit-to" name="toUtc" type="datetime-local" value="@HttpContext.Request.Query["toUtc"]" class="form-control form-control-sm" /></div>
-        <div class="col-12 col-sm-6 col-lg"><label for="audit-lifecycle" class="form-label">Lifecycle</label><select id="audit-lifecycle" name="lifecycle" class="form-select form-select-sm">@foreach (var state in new[] { "Active", "Archived", "All" }) { <option value="@state" selected="@(HttpContext.Request.Query["lifecycle"].ToString() == state)">@state</option> }</select></div>
-        <div class="col-12 col-sm-6 col-lg"><label for="audit-size" class="form-label">Rows</label><select id="audit-size" name="pageSize" class="form-select form-select-sm">@foreach (var size in new[] { 25, 50, 100, 250, 500 }) { <option value="@size" selected="@(Model.Records.PageSize == size)">@size</option> }</select></div>
+        <div class="col-6 col-lg"><label for="audit-from" class="form-label">From UTC</label><div class="input-group input-group-sm">@(await RenderPartialAsync<DateRange, DashboardDateRangeModel>(new("audit-from", "audit-to")))<input id="audit-from" name="fromUtc" type="datetime-local" value="@HttpContext.Request.Query["fromUtc"]" class="form-control form-control-sm" /></div></div>
+        <div class="col-6 col-lg"><label for="audit-to" class="form-label">To UTC</label><input id="audit-to" name="toUtc" type="datetime-local" value="@HttpContext.Request.Query["toUtc"]" class="form-control form-control-sm" /></div>
+        <div class="col-6 col-lg"><label for="audit-lifecycle" class="form-label">Lifecycle</label><select id="audit-lifecycle" name="lifecycle" class="form-select form-select-sm">@foreach (var state in new[] { "Active", "Archived", "All" }) { <option value="@state" selected="@(HttpContext.Request.Query["lifecycle"].ToString() == state)">@state</option> }</select></div>
+        <div class="col-auto ms-auto d-flex align-items-end">@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.FilterActions, DashboardFilterActionsModel>(new(ResetUrl: Model.Path + "?pageSize=" + Model.Records.PageSize)))</div>
     </div>
+    <details open class="dashboard-secondary-filters"><summary>More filters</summary><div class="row g-2">        <div class="col-12 col-sm-6 col-lg"><label for="audit-actor" class="form-label">Actor ID</label><input id="audit-actor" name="actor" maxlength="256" value="@HttpContext.Request.Query["actor"]" class="form-control form-control-sm" /></div>
+        <div class="col-12 col-sm-6 col-lg"><label for="audit-role" class="form-label">Actor role</label><select id="audit-role" name="actorRole" class="form-select form-select-sm"><option value="executing" selected="@(HttpContext.Request.Query["actorRole"] != "initiating")">Executing actor</option><option value="initiating" selected="@(HttpContext.Request.Query["actorRole"] == "initiating")">Initiating actor</option></select></div>
+        <div class="col-12 col-sm-6 col-lg"><label for="audit-module" class="form-label">Module</label><input id="audit-module" name="module" maxlength="256" value="@HttpContext.Request.Query["module"]" class="form-control form-control-sm" /></div>
+</div></details>
     <input type="hidden" id="audit-quick-filters" name="filter" value="@HttpContext.Request.Query["filter"]" />
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-2">
         <div class="d-flex gap-2" aria-label="Quick filters">
@@ -43,7 +44,6 @@ else
             <button type="button" class="btn btn-outline-secondary btn-sm audit-filter-chip" data-field="HasCommittedChanges" title="Filter executions with committed changes" aria-label="Filter executions with committed changes"><i class="bi bi-database-check" aria-hidden="true"></i></button>
             <button type="button" class="btn btn-outline-secondary btn-sm audit-filter-chip" data-field="HasUnknownChanges" title="Filter executions with unknown change state" aria-label="Filter executions with unknown change state"><i class="bi bi-database-exclamation" aria-hidden="true"></i></button>
         </div>
-        <div class="d-flex gap-2"><button type="submit" class="btn btn-primary btn-sm">Apply</button><a href="@Model.Path" class="btn btn-outline-secondary btn-sm" title="Reset filters" aria-label="Reset filters">Reset</a></div>
     </div>
     <script>
     (() => {

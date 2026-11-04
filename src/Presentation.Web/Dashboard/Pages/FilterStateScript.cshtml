@@ -1,0 +1,49 @@
+@inherits RazorSlice
+<script>
+    window.bdkDashboard.captureFilterDraft = function(root, selector) {
+        const owner = root?.querySelector(selector);
+        return owner ? [...owner.querySelectorAll('input, select, textarea')]
+            .filter(field => field.name && !['hidden', 'file'].includes(field.type))
+            .map(field => ({ name: field.name, value: field.value, checked: field.checked })) : [];
+    };
+    window.bdkDashboard.restoreFilterDraft = function(root, selector, values) {
+        const owner = root?.querySelector(selector);
+        if (!owner) return;
+        for (const saved of values) {
+            const field = [...owner.querySelectorAll('input, select, textarea')].find(field => field.name === saved.name);
+            if (!field) continue;
+            if (field.tagName === 'SELECT' && ![...field.options].some(option => option.value === saved.value)) continue;
+            field.value = saved.value;
+            if (['checkbox', 'radio'].includes(field.type)) field.checked = saved.checked;
+        }
+    };
+    window.bdkDashboard.createAppliedFilters = function(readDraft) {
+        let applied = readDraft().toString();
+        let pending = null;
+        return {
+            stage() { pending = readDraft().toString(); },
+            stageApplied(change) { const selection = new URL(applied, location.origin); change(selection); pending = selection.toString(); },
+            hasPending() { return pending !== null; },
+            request() { return new URL(pending ?? applied, location.origin); },
+            applied() { return new URL(applied, location.origin); },
+            accept() {
+                if (pending === null) return;
+                applied = pending;
+                pending = null;
+                const page = new URL(location.href);
+                const view = page.searchParams.get('dashboardView');
+                page.search = new URL(applied, location.origin).search;
+                if (view) page.searchParams.set('dashboardView', view);
+                history.replaceState(null, '', page);
+            },
+            reject() { pending = null; }
+        };
+    };
+    document.addEventListener('click', event => {
+        document.querySelectorAll('details.dashboard-tools[open]').forEach(tools => { if (!tools.contains(event.target)) tools.open = false; });
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key !== 'Escape') return;
+        document.querySelectorAll('details.dashboard-tools[open]').forEach(tools => { tools.open = false; tools.querySelector('summary')?.focus(); });
+    });
+</script>

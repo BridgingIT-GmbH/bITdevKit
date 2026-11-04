@@ -81,7 +81,6 @@ public class CoreModule : WebModuleBase
                 .AddTrigger("schedule", trigger => trigger
                     .Cron(JobsCronExpressions.EveryMinute)
                     .Data(new EchoJobData { Message = "First echo" })))
-            .AddEndpoints()
             .AddConsoleCommands();
 
         // filter
@@ -167,9 +166,7 @@ public class CoreModule : WebModuleBase
             .WithOrchestration<TodoItemLifecycleOrchestration>()
             .WithBehavior<MetricsOrchestrationBehavior>()
             .WithEntityFramework<CoreDbContext>()
-            .AddEndpoints();
-
-        // services.AddOrchestrationEndpoints(options => options.RequireAuthorization());
+            .AddMcpHandlers();
 
         services.AddScoped<ITodoItemOrchestrationCoordinator, TodoItemOrchestrationCoordinator>();
 
@@ -191,8 +188,7 @@ public class CoreModule : WebModuleBase
                         .PageSize(200)
                         .MaximumBufferedContentSize(8 * 1024 * 1024))
                 .WithAuditing()
-                .WithLifetime(ServiceLifetime.Singleton)))
-            .AddEndpoints(options => options.RequireAuthorization());
+                .WithLifetime(ServiceLifetime.Singleton)));
 
         //services.AddInMemoryDbContext<CoreDbContext>()
         //    .WithDatabaseCreatorService(o => o
@@ -333,19 +329,12 @@ public class CoreModule : WebModuleBase
         services.AddChangeHistoryDashboard<TodoItem, CoreDbContext>(options => options.IncludeValues = true);
         services.AddChangeHistoryDashboard<Subscription, CoreDbContext>(options => options.IncludeValues = true);
         services.AddEndpoints<CoreTodoItemEndpoints>();
-        services.AddEndpoints<CoreStreamingEndpoints>();
         services.AddEndpoints<CoreEnumerationEndpoints>();
         services.AddEndpoints<CoreDataPorterEndpoints>();
         services.AddChangeHistoryEndpoints<TodoItem, CoreDbContext>(options => options
             .GroupPath("api/core/todoitems/history")
             .GroupTag("Core.TodoItem.ChangeHistory")
             .RouteNamePrefix("Core.TodoItem.ChangeHistory")
-            .RequireAuthorization()
-            .IncludeValues());
-        services.AddChangeHistoryEndpoints<Subscription, CoreDbContext>(options => options
-            .GroupPath("api/core/subscriptions/history")
-            .GroupTag("Core.Subscription.ChangeHistory")
-            .RouteNamePrefix("Core.Subscription.ChangeHistory")
             .RequireAuthorization()
             .IncludeValues());
 

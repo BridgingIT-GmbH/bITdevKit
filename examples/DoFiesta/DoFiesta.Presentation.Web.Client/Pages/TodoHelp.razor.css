@@ -1,0 +1,56 @@
+/* Hallmark · theme: wayfind (by request) · wayfind: night · scope: app · redesign: full */
+/* Critique: replace raised help cards with a ruled reference grid; keep the existing guidance. */
+/* Hallmark · waive 26b · TodoHelp.razor has static headings and lists with no local interactive controls · The reference grid displays guidance, not buttons; navigation control states belong to the shared shell. */
+.wf-help {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 48px;
+}
+
+.help-heading {
+    grid-column: 1 / -1;
+}
+
+.help-section {
+    min-width: 0;
+    padding: 24px 0;
+    border-top: 2px solid var(--wf-rule);
+}
+
+.help-section ::deep .mud-typography-h5 {
+    margin-bottom: 20px;
+    color: var(--wf-ink);
+}
+
+.help-section ::deep .mud-typography-h6 {
+    margin-bottom: 12px;
+    color: var(--wf-ink);
+}
+
+.help-section ::deep .mud-list {
+    padding: 0;
+}
+
+.help-section ::deep .mud-list-item {
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--wf-rule);
+}
+
+.help-section ::deep .mud-list-item:last-child {
+    border-bottom: 0;
+}
+
+.help-section ::deep .mud-list-item-icon {
+    min-width: 40px;
+}
+
+.help-section ::deep .mud-alert {
+    margin: 0;
+}
+
+@media (max-width: 800px) {
+    .wf-help {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

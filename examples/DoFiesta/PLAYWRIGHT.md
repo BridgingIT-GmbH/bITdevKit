@@ -4,105 +4,79 @@ Use this note when automating the local DoFiesta app with Playwright.
 
 ## Local app
 
-- Start the app with the server project, not the built DLL:
-  - `dotnet run --project examples\DoFiesta\DoFiesta.Presentation.Web.Server\DoFiesta.Presentation.Web.Server.csproj --nologo --urls "https://localhost:5011;http://localhost:5010"`
-- Prefer `https://localhost:5011`.
-- In Playwright use `ignoreHTTPSErrors: true`.
-- If the app root turns into a white page and the browser console mentions a hashed `_framework/dotnet.<hash>.js` module or a MIME-type failure, treat that as a bootstrap-asset mismatch first:
-  - verify the app was started with `dotnet run` on the server project
-  - retry with a fresh browser context
-  - probe `https://localhost:5011/`, `https://localhost:5011/_framework/blazor.web.js`, and `https://localhost:5011/_framework/dotnet.js`
-  - the healthy state is `200` HTML for `/` and `200` JavaScript for both framework assets
+Start the server project with `dotnet run`, rather than its built DLL:
+
+```powershell
+dotnet run --project examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj --nologo
+```
+
+In a linked worktree, read the actual URL from the `[BDK] worktree` startup line or `bdk dev status --json`. Each worktree has its own ports, catalogs and cookies. Use the instance's HTTPS origin and set Playwright's `ignoreHTTPSErrors: true`.
+
+If the app root becomes blank and the browser reports hashed framework module or MIME-type failures:
+
+- Confirm the server was started with `dotnet run`.
+- Retry in a fresh browser context.
+- Probe `/`, `/_framework/blazor.web.js` and `/_framework/dotnet.js` on the actual instance origin. Expect HTML for the root and JavaScript for the framework assets.
+
+Stop instances started for verification with `bdk dev stop --app dofiesta` and confirm their ports are released.
 
 ## Authentication
 
-DoFiesta uses the local fake identity provider in development.
+DoFiesta uses the local fake identity provider in development. Its authority follows the instance origin. The Blazor client id is `blazor-wasm`; its scopes include `openid profile email roles offline_access`.
 
-- Authority: `https://localhost:5011`
-- Client id: `blazor-wasm`
-- Default scopes include: `openid profile email roles offline_access`
-- Test user:
-  - email: `luke.skywalker@starwars.com`
-  - password: `starwars`
+1. Open the instance's home page.
+2. Trigger sign-in from the UI.
+3. Choose a configured fake user card, such as `luke.skywalker@starwars.com`.
+4. Wait for the redirect back into the app.
+5. Click `Get Started` or `Todos`.
 
-### Reliable login flow
+Direct navigation to `/todos` serves the app shell, then the client router handles authentication. Wait for the login redirect to settle before asserting page content.
 
-1. Open `https://localhost:5011`.
-2. Trigger sign-in from the UI and continue into the fake identity provider flow.
-3. On the sign-in page, choose the `luke.skywalker@starwars.com` user card.
-4. Wait for the redirect back into the SPA shell.
-5. Only then navigate by clicking app links such as `Todos`, `Operations`, or `Notifications`.
-
-### Navigation rule
-
-Direct navigation to authenticated routes now works again because the server serves the SPA shell first and the client router performs the auth redirect. For reliable automation you can still prefer visible in-app navigation after login, but these direct entry routes should no longer return a raw `401` document response:
-
-- `/todos`
-- `/operations`
-- `/operations/notifications`
-- `/operations/files`
-- `/operations/fileevents`
-
-### Useful auth detail
-
-The OIDC user payload is stored in `sessionStorage` under:
-
-- `oidc.user:https://localhost:5011:blazor-wasm`
-
-That entry contains the access token used by the generated API client.
+The DevKit dashboard has its own authentication flow and requires an administrator role. Follow its login flow when opening a dashboard link; the Blazor login alone does not establish the dashboard session.
 
 ## Navigation
 
-- Top-level nav link: `Todos`
-- Operations nav group: `Operations`
-- Operations overview button: `Open Notifications`
-- Operations nav link: `Notifications`
-- Reliable post-login entry into Todos: home-page `Get Started`
+- Home and Todos are application pages. Todo help remains at `/todos/help`.
+- The Dashboard link in the app header opens the DevKit dashboard in a new tab.
+- The dashboard overview is `/_bdk/dashboard`.
+- Navigate to Auditing, Change History, Entities, Jobs, Logs, Metrics, Messaging, Orchestrations, Queueing, Files and Health from the dashboard itself.
+- The Files dashboard is `/_bdk/dashboard/storage/files`.
+- Legacy `/operations*` pages and the `/streaming` page are removed. Do not use them as test entry points.
+- This checkout has no Notifications or File Events dashboard. Do not use obsolete sample links or invent replacement routes.
 
-Unauthenticated direct hits to protected routes should redirect into the login flow through the SPA shell instead of rendering a raw `401` response. During automation, prefer waiting for the redirect/login UI to settle before asserting page content.
+DevKit dashboard pages and login retain their own UI. They are outside the planned Blazor application restyling.
 
 ## Todo creation
 
-- The add action lives on the todos page toolbar.
-- A newly created todo is assigned to the current user by default on the server.
-- Todo creation should queue a notification email row in `core.__Notifications_Emails`.
-- The quick-add input is the textbox labeled `New Todo`.
-- The create action is the filled secondary plus button in the same quick-add row.
-- The `New Todo` input uses `Immediate="false"`. In Playwright, commit the value first (for example with `Tab` or blur) before clicking the add button, otherwise `AddNewTodo()` still sees an empty `newTodoTitle`.
-- The create flow persists the todo immediately, but email visibility depends on outbox-domain-event processing. With the current configuration it now forwards new events immediately instead of waiting only for the periodic background sweep.
+- A newly created todo is assigned to the current user by default.
+- The quick-add input is labeled `New Todo`.
+- The quick-add field updates while typing. Its Add Todo action stays disabled until task options and the list have loaded.
+- The adjacent detailed-create button opens the `Create Task` dialog.
+- Title, status, priority, due date and local due time remain editable in the table.
+- Attachments, Change History, import/export and bulk completion remain available.
+- Creating a todo still queues its notification email. Removing the old operations APIs does not remove notification processing or storage.
 
-## Notifications operations page
+## Dashboard verification
 
-- After opening `Operations`, click `Notifications`.
-- The page filter label is `Subject contains`, but the backing provider query parameter is `subject`.
-- The notifications endpoint used by the page is:
-  - `GET /_bdk/api/notifications/emails?subject=<title-fragment>&take=10`
-- A successfully queued todo email shows:
-  - `to = luke.skywalker@starwars.com`
-  - `from = DoFiesta <noreply@dofiesta.local>`
-  - subject format `DoFiesta Todo #<number>: <title>`
+1. Sign in and create a todo with a unique title.
+2. Click Dashboard in the app header, then open Auditing from the dashboard.
+3. Complete the dashboard administrator login if needed.
+4. Inspect the captured Todo action.
+5. Use Change History to inspect the tracked changes.
+6. Use Messaging, Queueing and Jobs for their respective processing state.
+
+The dashboards use their own server-rendered content and action routes under `/_bdk/dashboard`. The optional operational REST APIs for jobs, logs, metrics, messaging, queueing, notifications, orchestrations and file storage are not exposed by this sample. Do not verify them with `/_bdk/api/notifications/emails` or other removed operations APIs.
+
+The Todo APIs, enumerations, attachment endpoints, DataPorter and Todo Change History API remain. The standalone subscription Change History API and all three streaming demo endpoints are removed. System discovery and the development identity provider remain available.
 
 ## Known automation quirks
 
-- The `Operations` nav toggle can end up outside the viewport when the todos page is scrolled deep into the list.
-- If a normal Playwright click on the nav toggle fails because of viewport layout, scroll back to the top or use the nav link after bringing the shell back into view.
-- Querying provider-backed endpoints from Playwright requires the bearer token from `sessionStorage`; cookies alone are not enough for `/_bdk/api/...` fetch calls.
-- For provider verification, prefer the notifications endpoint over direct database inspection.
-- A clean Playwright browser context currently loads `/` and the direct `/todos` route successfully. If a previously opened browser still requests an older hashed `dotnet.*.js` module, suspect stale client bootstrap state before suspecting the current server build.
-
-## Recommended automation pattern
-
-1. Detect the dev server first.
-2. Open the home page.
-3. Log in with the fake identity provider user above.
-4. After redirect, click `Get Started` to reach `Todos`.
-5. Fill the `New Todo` textbox with a unique title and trigger the plus button in the same row.
-6. Click `Operations`, then `Notifications`.
-7. Filter by the unique title.
-8. Verify a matching email row exists through the notifications UI or `GET /_bdk/api/notifications/emails`.
+- Capture the new tab opened by the header's Dashboard link.
+- Use a fresh context if the browser requests stale hashed bootstrap assets.
+- Keep generated API-client checks separate from dashboard authentication: Todo API calls use the Blazor bearer-token client, while dashboards use their own authenticated session.
 
 ## Backend tables
 
-- todo items: `core.TodoItems`
-- notification outbox: `core.__Notifications_Emails`
-- notification attachments: `core.__Notifications_EmailAttachments`
+- Todo items: `core.TodoItems`
+- Notification outbox: `core.__Notifications_Emails`
+- Notification attachments: `core.__Notifications_EmailAttachments`

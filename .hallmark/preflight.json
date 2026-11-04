@@ -1,0 +1,12 @@
+{
+  "mode": "redesign",
+  "scope": "app",
+  "theme": "wayfind",
+  "colourway": "night",
+  "approved": "Option B and homepage mock",
+  "sources": ["Layout/MainLayout.razor", "Layout/Themes.cs", "Pages/Home.razor", "Pages/TodoItemIndex.razor", ".hallmark/comps/variant-b.html", ".hallmark/comps/homepage-b.html"],
+  "keeps": ["Todo API calls and callbacks", "authentication routes", "single header dashboard link", "all surviving app routes", "DevKit login and dashboard UI"],
+  "introduces": ["dark theme tokens", "top navigation", "responsive task rows", "static homepage composition"],
+  "baseline": ".hallmark/before",
+  "applicationOrigin": "https://localhost:5301"
+}

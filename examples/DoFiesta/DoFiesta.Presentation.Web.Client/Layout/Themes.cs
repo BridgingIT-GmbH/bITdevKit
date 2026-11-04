@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -9,32 +9,64 @@ using MudBlazor;
 
 public static class Themes
 {
-    public static readonly MudTheme Custom = new() // https://mudblazor.com/customization/overview#custom-themes
+    public static readonly MudTheme Custom = new()
     {
-        PaletteLight = new PaletteLight()
+        PaletteDark = new PaletteDark
         {
-            Primary = "#1a4151",
-            Secondary = "#d35a24",
-            Background = "#ffffff",
-            AppbarBackground = "#1a4151",
-            DrawerBackground = "#ffffff",
-            DrawerText = "#000000",
-            DrawerIcon = "#000000",
+            Primary = "#315bf0",
+            PrimaryContrastText = "#fcfdff",
+            Secondary = "#acb7c8",
+            SecondaryContrastText = "#0d121a",
+            Tertiary = "#acb7c8",
+            Background = "#181d27",
+            BackgroundGray = "#242c39",
+            Surface = "#0d121a",
+            AppbarBackground = "#0d121a",
+            AppbarText = "#e7edf7",
+            DrawerBackground = "#0d121a",
+            DrawerText = "#e7edf7",
+            DrawerIcon = "#acb7c8",
+            TextPrimary = "#e7edf7",
+            TextSecondary = "#acb7c8",
+            TextDisabled = "#acb7c8",
+            ActionDefault = "#acb7c8",
+            ActionDisabled = "#acb7c8",
+            ActionDisabledBackground = "#242c39",
+            LinesDefault = "#465267",
+            LinesInputs = "#465267",
+            TableLines = "#465267",
+            TableHover = "#242c39",
+            Divider = "#465267",
+            Info = "#acb7c8",
+            Success = "#e7edf7",
+            Warning = "#f4c34c",
+            Error = "#f19696"
         },
-        PaletteDark = new PaletteDark()
+        LayoutProperties = new LayoutProperties
         {
-            Primary = "#2d5a6b",
-            Secondary = "#ff7d45",
-            Background = "#212529",
-            AppbarBackground = "#2d5a6b",
-            DrawerBackground = "#1a1d20",
-            DrawerText = "#dee2e6",
-            DrawerIcon = "#dee2e6",
-            AppbarText = "#dee2e6",
-            TextPrimary = "#dee2e6",
+            DefaultBorderRadius = "0px",
+            AppbarHeight = "68px",
+            DrawerWidthLeft = "240px"
+        },
+        Typography = new Typography
+        {
+            Default = new DefaultTypography
+            {
+                FontFamily = ["Chivo Mono", "ui-monospace", "monospace"],
+                FontSize = "1rem",
+                FontWeight = "400",
+                LineHeight = "1.55",
+                LetterSpacing = "0"
+            },
+            Button = new ButtonTypography
+            {
+                FontWeight = "500",
+                FontSize = ".875rem",
+                TextTransform = "none",
+                LetterSpacing = "0"
+            }
         }
     };
-
     /*
     !
     * Bootswatch v5.3.3 (https://bootswatch.com)

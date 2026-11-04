@@ -1,4 +1,4 @@
-﻿@page "/user-profile"
+@page "/user-profile"
 @using System.IdentityModel.Tokens.Jwt
 @using System.Security.Claims
 @using System.Text.Json
@@ -8,8 +8,13 @@
 @inject NavigationManager Navigation
 @attribute [RequireAuthentication]
 
-<MudContainer Class="mt-4">
-    <MudGrid>
+<PageTitle>DoFiesta - User profile</PageTitle>
+
+<div class="wf-page wf-profile">
+    <header class="wf-page-header">
+        <MudText Typo="Typo.h3" HtmlTag="h1">User profile</MudText>
+    </header>
+    <MudGrid Class="profile-identity">
         <MudItem xs="12" sm="2">
             @if (!string.IsNullOrEmpty(userAvatar))
             {
@@ -32,7 +37,7 @@
 
     <MudDivider Class="my-4" />
 
-    <MudText Typo="Typo.h6" Class="mb-2">Roles</MudText>
+    <MudText Typo="Typo.h6" HtmlTag="h2" Class="mb-2">Roles</MudText>
     <MudChipSet T="string">
         @foreach (var role in userRoles)
         {
@@ -42,7 +47,7 @@
 
     <MudDivider Class="my-4" />
 
-    <MudText Typo="Typo.h6" Class="mb-2">Scopes</MudText>
+    <MudText Typo="Typo.h6" HtmlTag="h2" Class="mb-2">Scopes</MudText>
     <MudChipSet T="string">
         @foreach (var scope in scopes)
         {
@@ -52,7 +57,7 @@
 
     <MudDivider Class="my-4" />
 
-    <MudText Typo="Typo.h6" Class="mb-2">ID Token Claims (oidc)</MudText>
+    <MudText Typo="Typo.h6" HtmlTag="h2" Class="mb-2">ID Token Claims (oidc)</MudText>
     <MudList Dense="true" T="Claim">
         @foreach (var claim in idTokenClaims.Where(c => !SkipClaims.Contains(c.Type)))
         {
@@ -64,7 +69,7 @@
 
     <MudDivider Class="my-4" />
 
-    <MudText Typo="Typo.h6" Class="mb-2">Access Token Claims (oauth2)</MudText>
+    <MudText Typo="Typo.h6" HtmlTag="h2" Class="mb-2">Access Token Claims (oauth2)</MudText>
     <MudList Dense="true" T="Claim">
         @foreach (var claim in accessTokenClaims.Where(c => !SkipClaims.Contains(c.Type)))
         {
@@ -76,14 +81,14 @@
 
     <MudDivider Class="my-4" />
 
-    <MudText Typo="Typo.h6" Class="mb-2">Tokens</MudText>
+    <MudText Typo="Typo.h6" HtmlTag="h2" Class="mb-2">Tokens</MudText>
     <MudButton OnClick="RefreshToken" Color="Color.Primary" Variant="Variant.Filled">
         Refresh Token
     </MudButton>
 
-    <MudExpansionPanels Dense="true">
+    <MudExpansionPanels Dense="true" Class="profile-tokens">
         <MudExpansionPanel Text="Access Token">
-            <MudText Typo="Typo.body2" Style="word-wrap: break-word;">@accessToken</MudText>
+            <MudText Typo="Typo.body2" Class="profile-token">@accessToken</MudText>
             <div class="d-flex gap-2 mt-2">
                 <MudLink Href="@($"https://jwt.io/#debugger-io?token={accessToken}")" Target="_blank">
                     <MudButton Color="Color.Primary" Variant="Variant.Text">
@@ -98,7 +103,7 @@
             </div>
         </MudExpansionPanel>
         <MudExpansionPanel Text="ID Token">
-            <MudText Typo="Typo.body2" Style="word-wrap: break-word;">@idToken</MudText>
+            <MudText Typo="Typo.body2" Class="profile-token">@idToken</MudText>
             <div class="d-flex gap-2 mt-2">
                 <MudLink Href="@($"https://jwt.io/#debugger-io?token={idToken}")" Target="_blank">
                     <MudButton Color="Color.Primary" Variant="Variant.Text">
@@ -113,7 +118,7 @@
             </div>
         </MudExpansionPanel>
         <MudExpansionPanel Text="Refresh Token">
-            <MudText Typo="Typo.body2" Style="word-wrap: break-word;">@refreshToken</MudText>
+            <MudText Typo="Typo.body2" Class="profile-token">@refreshToken</MudText>
             <div class="d-flex gap-2 mt-2">
                 <MudLink Href="@($"https://jwt.io/#debugger-io?token={refreshToken}")" Target="_blank">
                     <MudButton Color="Color.Primary" Variant="Variant.Text">
@@ -128,7 +133,7 @@
             </div>
         </MudExpansionPanel>
     </MudExpansionPanels>
-</MudContainer>
+</div>
 
 @code {
     private string userAvatar;

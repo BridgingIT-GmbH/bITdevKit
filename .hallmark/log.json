@@ -1,0 +1,35 @@
+[
+ {
+  "scope": "app",
+  "signature": "editable Todo timetable",
+  "date": "2026-11-04",
+  "verification": "0 FAIL, 0 WARN; build 0 warnings; 15 tests passed; desktop and phone flows passed; fresh finish review ship with two findings resolved",
+  "nav": "top with temporary mobile drawer",
+  "axes": "dark utilitarian monochrome",
+  "waived": [
+   "26b Counter uses shared active state"
+  ],
+  "shape": "approved Option B",
+  "mode": "redesign",
+  "prompt": "Redesign TodoFiesta with approved dark Wayfind Option B; preserve MudBlazor and exclude DevKit login/dashboard",
+  "sections": [
+   "Home",
+   "Todos",
+   "Help",
+   "Profile",
+   "Counter",
+   "Culture"
+  ],
+  "imagery": "real application and illustrative task preview",
+  "footer": "lifecycle and hosted demo",
+  "fingerprint": "Chivo Mono, cobalt actions, amber due dates, square ruled surfaces",
+  "theme": "wayfind",
+  "dismissed": [
+   "3 mobile navigation selection stripe"
+  ],
+  "hero": "welcome beside illustrative Todo board",
+  "depth": "full",
+  "entry": "Get Started",
+  "photos": []
+ }
+]

@@ -24,24 +24,6 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .MapGroup("api/core/todoitems").RequireAuthorization()
             .WithTags("CoreModule.TodoItems");
 
-        group.MapGet("/stream", async (IRequester requester, CancellationToken ct) =>
-                (await requester.SendAsync(new TodoItemStreamQuery(), cancellationToken: ct)).MapHttpNdjson())
-            .WithName("Core.TodoItems.Stream")
-            .WithDescription("Streams authorized Todos from detached batches; no snapshot or replay guarantee.")
-            .RequireEntityPermission<TodoItem>(Permission.List)
-            .WithNdjson<TodoItemModel>()
-            .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesResultProblem(StatusCodes.Status400BadRequest);
-
-        group.MapGet("/stream/enveloped", async (IRequester requester, CancellationToken ct) =>
-                (await requester.SendAsync(new TodoItemStreamQuery(), cancellationToken: ct)).MapHttpNdjson())
-            .WithName("Core.TodoItems.Stream.Enveloped")
-            .WithDescription("Streams authorized Todos with version-one lifecycle envelopes.")
-            .RequireEntityPermission<TodoItem>(Permission.List)
-            .WithNdjson<TodoItemModel>(o => o.Mode = NdjsonMode.Envelope)
-            .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesResultProblem(StatusCodes.Status400BadRequest);
-
         // GET single TodoItem
         group.MapGet("/{id}",
             async ([FromServices] IRequester requester,

@@ -1,0 +1,15 @@
+/* Hallmark · Wayfind app base · scope: app */
+/* Critique: native fields and keyboard focus share the dark system. */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+html { scroll-padding-top: 80px; scrollbar-color: var(--wf-muted) var(--wf-bg); }
+body { margin: 0; background: var(--wf-bg); color: var(--wf-ink); font-family: var(--wf-font); font-size: 16px; line-height: 1.55; font-variant-numeric: tabular-nums; }
+::selection { background: var(--wf-amber); color: var(--wf-plate); }
+:focus-visible:not(h1) { outline: 2px solid var(--wf-amber) !important; outline-offset: 3px; }
+h1[tabindex="-1"]:focus { outline: none !important; }
+a { text-underline-offset: 4px; }
+h1, h2, h3 { overflow-wrap: break-word; min-width: 0; text-wrap: balance; }
+button, input, select, textarea { font: inherit; }
+button:active { filter: brightness(.9); }
+button:disabled { background: var(--wf-surface); color: var(--wf-muted); cursor: not-allowed; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }

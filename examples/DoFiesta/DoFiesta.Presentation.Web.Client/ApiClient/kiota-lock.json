@@ -1,5 +1,5 @@
 {
-  "descriptionHash": "9DB6F9DFCC1242B71156689CE5798FF6B5C709C42C057D2BC35CF43F5EF9952CBC4EC1A469E53F7B5964E5C4E71DD1447AA93FD806AADE5B7956B757A506DBEF",
+  "descriptionHash": "2315F47A28E64B248B560D8A4E08469E2C84A5CBF095A3F7C249B9185135E1865EF3001359A0188D44D83AE4E5A60E37C8BAA062D1DDBE75CA8368E095E8798C",
   "descriptionLocation": "../../DoFiesta.Presentation.Web.Server/wwwroot/openapi.json",
   "lockFileVersion": "1.0.0",
   "kiotaVersion": "1.38.0",
@@ -28,7 +28,9 @@
     "application/x-www-form-urlencoded;q=0.2",
     "multipart/form-data;q=0.1"
   ],
-  "includePatterns": [],
+  "includePatterns": [
+    "/api/core/**"
+  ],
   "excludePatterns": [],
   "disabledValidationRules": [],
   "allowedExternalOrigins": []

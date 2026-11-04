@@ -1,18 +1,21 @@
-﻿@page "/todos/help"
+@page "/todos/help"
 @* @inject IStringLocalizer<Global> localizer *@
 
 <PageTitle>DoFiesta - Help</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.Large" Style="margin-top: 20px;">
-    <MudPaper Class="pa-4 mb-4">
-        <MudText Typo="Typo.h5" GutterBottom="true">Getting Started</MudText>
+<div class="wf-page wf-help">
+    <header class="wf-page-header help-heading">
+        <MudText Typo="Typo.h3" HtmlTag="h1">Todo help</MudText>
+    </header>
+    <section class="help-section">
+        <MudText Typo="Typo.h5" HtmlTag="h2" GutterBottom="true">Getting Started</MudText>
         <MudText>
             The Todo application helps you manage your tasks efficiently. Here are the main features:
         </MudText>
 
         <MudDivider Class="my-4"/>
 
-        <MudText Typo="Typo.h6">Creating Tasks</MudText>
+        <MudText Typo="Typo.h6" HtmlTag="h3">Creating Tasks</MudText>
         <MudList T="string">
             <MudListItem Icon="@Icons.Material.Filled.Add" IconColor="Color.Secondary">
                 Enter your task in the "New Todo" field at the top
@@ -22,31 +25,31 @@
             </MudListItem>
         </MudList>
 
-        <MudText Typo="Typo.h6" Class="mt-4">Task Status</MudText>
+        <MudText Typo="Typo.h6" HtmlTag="h3" Class="mt-4">Task Status</MudText>
         <MudList T="string">
             <MudListItem>
-                <MudIcon Icon="@Icons.Material.Filled.FiberNew" Color="Color.Info" Class="mr-2"/> New - Newly created tasks
+                <MudIcon Icon="@Icons.Material.Filled.FiberNew" Color="Color.Inherit" Class="mr-2"/> New - Newly created tasks
             </MudListItem>
             <MudListItem>
-                <MudIcon Icon="@Icons.Material.Filled.RunCircle" Color="Color.Warning" Class="mr-2"/> InProgress - Tasks being worked on
+                <MudIcon Icon="@Icons.Material.Filled.RunCircle" Color="Color.Primary" Class="mr-2"/> InProgress - Tasks being worked on
             </MudListItem>
             <MudListItem>
-                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Class="mr-2"/> Completed - Finished tasks
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Inherit" Class="mr-2"/> Completed - Finished tasks
             </MudListItem>
         </MudList>
 
-        <MudText Typo="Typo.h6" Class="mt-4">Priority Levels</MudText>
+        <MudText Typo="Typo.h6" HtmlTag="h3" Class="mt-4">Priority Levels</MudText>
         <MudList T="string">
             <MudListItem Icon="@Icons.Material.Filled.ArrowDownward">Low - Regular tasks</MudListItem>
             <MudListItem Icon="@Icons.Material.Filled.Remove">Medium - Important tasks</MudListItem>
             <MudListItem Icon="@Icons.Material.Filled.ArrowUpward">High - Urgent tasks</MudListItem>
         </MudList>
-    </MudPaper>
+    </section>
 
-    <MudPaper Class="pa-4 mb-4">
-        <MudText Typo="Typo.h5" GutterBottom="true">Special Features</MudText>
+    <section class="help-section">
+        <MudText Typo="Typo.h5" HtmlTag="h2" GutterBottom="true">Special Features</MudText>
 
-        <MudText Typo="Typo.h6">Bulk Actions</MudText>
+        <MudText Typo="Typo.h6" HtmlTag="h3">Bulk Actions</MudText>
         <MudList T="string">
             <MudListItem Icon="@Icons.Material.Filled.Refresh">
                 Refresh - Update your task list
@@ -56,7 +59,7 @@
             </MudListItem>
         </MudList>
 
-        <MudText Typo="Typo.h6" Class="mt-4">Filtering</MudText>
+        <MudText Typo="Typo.h6" HtmlTag="h3" Class="mt-4">Filtering</MudText>
         <MudList T="string">
             <MudListItem Icon="@Icons.Material.Filled.FilterList">
                 Use status chips to filter tasks by their current state
@@ -68,10 +71,10 @@
                 Search tasks by title using the search field
             </MudListItem>
         </MudList>
-    </MudPaper>
+    </section>
 
-    <MudPaper Class="pa-4">
-        <MudText Typo="Typo.h5" GutterBottom="true">Tips & Tricks</MudText>
+    <section class="help-section">
+        <MudText Typo="Typo.h5" HtmlTag="h2" GutterBottom="true">Tips & Tricks</MudText>
         <MudList T="string">
             <MudListItem Icon="@Icons.Material.Filled.Lightbulb">
                 Click on a task title to edit it directly
@@ -86,11 +89,11 @@
                 Hover over a task to see its full description
             </MudListItem>
         </MudList>
-    </MudPaper>
+    </section>
 
-    <MudPaper Class="pa-4 mt-4">
+    <section class="help-section">
         <MudAlert Severity="Severity.Info" Class="mb-4">
             Need more help? Contact your system administrator or reach out to support.
         </MudAlert>
-    </MudPaper>
-</MudContainer>
+    </section>
+</div>

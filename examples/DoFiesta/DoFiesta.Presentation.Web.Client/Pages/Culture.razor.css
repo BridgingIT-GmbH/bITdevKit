@@ -1,0 +1,64 @@
+/* Hallmark · theme: wayfind (by request) · wayfind: night · scope: app · redesign: full */
+/* Critique: retain the culture examples and their native input behavior in compact ruled sections. */
+.wf-culture {
+    max-width: 880px;
+    min-width: 0;
+}
+
+.wf-culture ::deep .mud-typography-h5 {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 2px solid var(--wf-rule);
+}
+
+.wf-culture ul {
+    padding: 0;
+    list-style: none;
+}
+
+.wf-culture li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--wf-rule);
+    overflow-wrap: anywhere;
+}
+
+.wf-culture label {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.wf-culture input {
+    width: 100%;
+    max-width: 320px;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 2px solid var(--wf-rule);
+    border-radius: 0;
+    background: var(--wf-surface);
+    color: var(--wf-ink);
+    font-family: var(--wf-font);
+}
+
+.wf-culture input:focus-visible {
+    outline: 3px solid var(--wf-amber);
+    outline-offset: 4px;
+}
+
+.wf-culture code {
+    font-family: var(--wf-font);
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+    .wf-culture label {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .wf-culture input {
+        max-width: none;
+    }
+}

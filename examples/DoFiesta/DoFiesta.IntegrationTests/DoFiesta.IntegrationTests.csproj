@@ -26,8 +26,4 @@
     <ProjectReference Include="..\..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="../../../tests/Common.UnitTests/Serialization/Ndjson/NdjsonTestStreams.cs" Link="Fixtures/NdjsonTestStreams.cs" />
-    <Compile Include="../../../tests/Common.UnitTests/Serialization/Ndjson/NdjsonTestTimeProvider.cs" Link="Fixtures/NdjsonTestTimeProvider.cs" />
-  </ItemGroup>
 </Project>

@@ -24,7 +24,7 @@
     <Exec Command="dotnet tool restore" ContinueOnError="WarnAndContinue" />
 
     <Message Text="Generating Kiota client from $(OpenApiJson)" Importance="high" />
-    <Exec Command="dotnet kiota generate --log-level Error --language $(KiotaLanguage) --openapi $(OpenApiJson) --output $(KiotaOutDir) --namespace-name $(KiotaNamespace) --class-name $(KiotaClientName)" ContinueOnError="WarnAndContinue" />
+    <Exec Command="dotnet kiota generate --log-level Error --language $(KiotaLanguage) --openapi $(OpenApiJson) --output $(KiotaOutDir) --namespace-name $(KiotaNamespace) --class-name $(KiotaClientName) --include-path /api/core/**" ContinueOnError="WarnAndContinue" />
   </Target>
 
   <ItemGroup>
@@ -36,7 +36,6 @@
     <PackageReference Include="Humanizer.Core" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
     <PackageReference Include="Microsoft.Extensions.Localization" />
@@ -51,7 +50,6 @@
     <ProjectReference Include="..\..\..\src\Application.Storage\Application.Storage.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Abstractions\Common.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj" />
-    <ProjectReference Include="..\..\..\src\Presentation.Web.Client\Presentation.Web.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>

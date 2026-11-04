@@ -6,7 +6,6 @@
 #pragma warning disable SA1200 // Using directives should be placed correctly
 using System.Net.Http.Headers;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen;
-using BridgingIT.DevKit.Presentation.Web.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Kiota.Abstractions;
@@ -26,7 +25,6 @@ builder.Logging.SetMinimumLevel(LogLevel.Debug);
 builder.Logging.AddFilter("Microsoft.AspNetCore.Components.WebAssembly.Authentication", LogLevel.Debug);
 
 builder.Services.AddLocalization();
-builder.Services.AddScoped<BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client.Services.StreamingDemoClient>();
 //builder.Services.AddHttpClient("backend-api")
 //    .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
 //    .AddResilienceHandler("timeout", resilience => resilience.AddTimeout(TimeSpan.FromSeconds(30)));

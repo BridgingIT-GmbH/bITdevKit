@@ -1,0 +1,15 @@
+/* Hallmark · Wayfind night · approved Option B tokens */
+:root {
+ color-scheme: dark;
+ --wf-bg: #181d27; --wf-surface: #242c39; --wf-plate: #0d121a;
+ --wf-ink: #e7edf7; --wf-muted: #acb7c8; --wf-rule: #465267;
+ --wf-primary: #315bf0; --wf-amber: #f4c34c; --wf-on-primary: #fcfdff;
+ --wf-error: #f19696; --wf-clear: transparent;
+ --wf-font: "Chivo Mono", ui-monospace, monospace;
+ --color-paper: var(--wf-bg); --color-paper-2: var(--wf-surface); --color-paper-3: var(--wf-plate);
+ --color-ink: var(--wf-ink); --color-muted: var(--wf-muted); --color-rule: var(--wf-rule);
+ --color-accent: var(--wf-primary); --color-accent-2: var(--wf-amber); --color-focus: var(--wf-amber);
+ --font-display: var(--wf-font); --font-body: var(--wf-font);
+ --container: 1216px; --gutter: 32px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px;
+ --text-sm: .875rem; --text-md: 1rem; --text-display: 2.75rem; --text-section: 1.5rem; --text-title: 1.25rem; --dur-micro: 120ms;
+}

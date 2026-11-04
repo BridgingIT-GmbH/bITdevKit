@@ -1,129 +1,45 @@
-﻿@inherits LayoutComponentBase
-@* @inject IStringLocalizer<Global> localizer *@
-@*@implements IAsyncDisposable*@
+@inherits LayoutComponentBase
 
-<MudThemeProvider @ref="@mudThemeProvider" @bind-IsDarkMode="@isDarkMode" Theme="theme" />
-<MudPopoverProvider/>
-<MudDialogProvider/>
-<MudSnackbarProvider/>
+<MudThemeProvider IsDarkMode="true" Theme="Themes.Custom" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-<MudLayout>
-    <MudAppBar Elevation="0" Dense="true">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(e => DrawerToggle())" />
-        <MudLink Href="/" Underline="Underline.None" Color="Color.Inherit">
-            <MudText Typo="Typo.h6" Color="Color.Inherit">DoFiesta</MudText>
+<MudLayout Class="wf-app">
+    <MudAppBar Elevation="0" Dense="true" Class="wf-header">
+        <MudIconButton Class="wf-mobile-menu" Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit"
+                       aria-label="Open navigation" OnClick="@(() => drawerOpen = !drawerOpen)" />
+        <MudLink Href="/" Underline="Underline.None" Class="wf-brand" aria-label="DoFiesta home">
+            <span class="wf-brand-mark"><MudIcon Icon="@Icons.Material.Filled.Check" Size="Size.Small" /></span>
+            DoFiesta
         </MudLink>
-        <MudIconButton Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Secondary" Href="todos" />
-        <MudIconButton Icon="@Icons.Material.Filled.Help" Color="Color.Tertiary" Href="todos/help" />
+        <div class="wf-header-nav"><NavMenu /></div>
         <MudSpacer />
-
+        <MudButton Href="/_bdk/dashboard" Target="_blank" Color="Color.Inherit" Size="Size.Small">Dashboard</MudButton>
         <AuthorizeView>
             <Authorized>
-                <MudMenu Icon="@Icons.Material.Filled.Person" Color="Color.Inherit">
-                    @* <MudText Typo="Typo.body2" Class="px-4 py-2">
-                        @context.User?.Identity?.Name
-                    </MudText> *@
-                    <MudNavLink Href="/user-profile" Match="NavLinkMatch.Prefix">@context.User?.Identity?.Name</MudNavLink>
+                <MudMenu Icon="@Icons.Material.Filled.PersonOutline" Color="Color.Inherit" aria-label="Account">
+                    <MudMenuItem Href="/user-profile">@context.User?.Identity?.Name</MudMenuItem>
                     <MudDivider />
                     <MudMenuItem OnClick="BeginSignOut">Logout</MudMenuItem>
                 </MudMenu>
             </Authorized>
             <NotAuthorized>
-                <MudButton Color="Color.Inherit" OnClick="BeginSignIn">Login</MudButton>
+                <MudButton Color="Color.Inherit" Size="Size.Small" OnClick="BeginSignIn">Login</MudButton>
             </NotAuthorized>
         </AuthorizeView>
-
-        <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
-            @* <MudTooltip Text="User Profile">
-                <MudIconButton Icon="@Icons.Material.Filled.VerifiedUser" Color="Color.Inherit" Href="/user-profile" />
-            </MudTooltip> *@
-            <MudTooltip Text="Operations">
-                <MudMenu Icon="@Icons.Material.Filled.SettingsInputComponent" Color="Color.Info">
-                    <MudMenuItem Href="/_bdk/dashboard" Target="_blank">Dashboard</MudMenuItem>
-                    <MudMenuItem Href="/_bdk/dashboard/jobs" Target="_blank">Jobs</MudMenuItem>
-                    <MudMenuItem Href="/_bdk/dashboard/logentries" Target="_blank">Logs</MudMenuItem>
-                    <MudMenuItem Href="/_bdk/dashboard/metrics" Target="_blank">Metrics</MudMenuItem>
-                    <MudMenuItem Href="/_bdk/dashboard/messaging" Target="_blank">Messaging</MudMenuItem>
-                    <MudMenuItem Href="/_bdk/dashboard/orchestrations" Target="_blank">Orchestrations</MudMenuItem>
-                    <MudMenuItem Href="/_bdk/dashboard/queueing" Target="_blank">Queueing</MudMenuItem>
-                    <MudMenuItem Href="/_bdk/dashboard/storage/files" Target="_blank">Files</MudMenuItem>
-                    <MudMenuItem Href="/_bdk/dashboard/health" Target="_blank">Health</MudMenuItem>
-                </MudMenu>
-            </MudTooltip>
-            <MudTooltip Text="OpenAPI documentation">
-                <MudIconButton Icon="@Icons.Material.Filled.Api" Color="Color.Inherit" Href="scalar" Target="_blank" />
-            </MudTooltip>
-            <MudTooltip Text="Logs">
-                <MudIconButton Icon="@Icons.Material.Filled.ManageSearch" Color="Color.Inherit" Href="http://localhost:15347" Target="_blank" />
-            </MudTooltip>
-            <MudTooltip Text="Traces">
-                <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Color="Color.Inherit" Href="http://localhost:16688" Target="_blank" />
-            </MudTooltip>
-            <MudTooltip Text="Health">
-                <MudIconButton Icon="@Icons.Material.Filled.MonitorHeart" Color="@(IsHealthy ? Color.Success : Color.Error)" Href="healthz" Target="_blank" />
-            </MudTooltip>
-            <MudTooltip Text="Theme">
-                <MudIconButton Icon="@ThemeToggleIcon" Color="@Color.Warning" OnClick="ToggleTheme" />
-            </MudTooltip>
-        </MudHidden>
     </MudAppBar>
-    <MudDrawer @bind-Open="drawerOpen" Elevation="1" Width="150px">
-        <MudDrawerHeader>
-            @* <MudText Typo="Typo.h6">DoFiesta</MudText> *@
-        </MudDrawerHeader>
-        <NavMenu/>
+    <MudDrawer @bind-Open="drawerOpen" Variant="DrawerVariant.Temporary" Elevation="0" Class="wf-mobile-drawer">
+        <MudDrawerHeader><MudText Typo="Typo.h6">DoFiesta</MudText></MudDrawerHeader>
+        <div @onclick="@(() => drawerOpen = false)"><NavMenu /></div>
     </MudDrawer>
-    <MudMainContent>
-        @* <LoginDisplay /> *@
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
-            @Body
-        </MudContainer>
+    <MudMainContent Class="wf-content">
+        @Body
     </MudMainContent>
 </MudLayout>
 
 @code {
-    private MudThemeProvider mudThemeProvider;
-    private readonly MudTheme theme = Themes.Custom;
-    private bool isDarkMode;
-    private bool drawerOpen = false;
-    private HubConnection hubConnection;
-    private bool IsConnected { get; set; }
-    private bool IsHealthy { get; set; } = true;
-
-    protected override async Task OnInitializedAsync()
-    {
-        hubConnection = new HubConnectionBuilder().WithUrl(navigationManager.ToAbsoluteUri("/signalrhub")).Build();
-        hubConnection.On<string>("CheckHealth", notification =>
-        {
-            IsHealthy = !notification.Contains("Unhealthy");
-            StateHasChanged();
-        });
-        await hubConnection.StartAsync();
-
-        IsConnected = hubConnection.State == HubConnectionState.Connected;
-        if (IsConnected)
-        {
-            snackbar.Add("signalr connected", Severity.Success);
-        }
-        else
-        {
-            snackbar.Add("signalr not connected", Severity.Error);
-        }
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            isDarkMode = await mudThemeProvider.GetSystemDarkModeAsync();
-            StateHasChanged();
-        }
-    }
-
-    void DrawerToggle()
-    {
-        drawerOpen = !drawerOpen;
-    }
+    private bool drawerOpen;
 
     private void BeginSignIn()
     {
@@ -134,31 +50,4 @@
     {
         navigationManager.NavigateToLogout("authentication/logout");
     }
-
-    private void ToggleTheme()
-    {
-        isDarkMode = !isDarkMode;
-    }
-
-    private string ThemeToggleIcon => isDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.LightMode;
-
-    //public async ValueTask DisposeAsync()
-    //{
-    //	await hubConnection.DisposeAsync();
-    //}
-
-    // private string Localize(string value)
-    // {
-    //     if (string.IsNullOrEmpty(value))
-    //     {
-    //         return value;
-    //     }
-
-    //     // localize specific parts of a string, parts marked with [TEXT] will be localized
-    //     return System.Text.RegularExpressions.Regex.Replace(
-    //         value,
-    //         @"\[(.*?)\]", (match) => Localizer[match.Value.Replace("[", string.empty).Replace("]", string.empty)],
-    //         System.Text.RegularExpressions.RegexOptions.IgnoreCase,
-    //         new TimeSpan(0, 0, 3));
-    // }
 }

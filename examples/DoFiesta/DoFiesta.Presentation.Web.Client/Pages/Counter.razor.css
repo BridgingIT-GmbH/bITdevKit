@@ -1,0 +1,17 @@
+/* Hallmark · theme: wayfind (by request) · wayfind: night · scope: app · redesign: full */
+/* Critique: set the actual count in a simple ink plate and retain the increment action. */
+.wf-counter ::deep .counter-value {
+    display: inline-block;
+    margin-bottom: 24px;
+    padding: 24px;
+    border: 2px solid var(--wf-rule);
+    background: var(--wf-plate);
+    color: var(--wf-amber);
+    font-size: 24px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.wf-counter ::deep .mud-button-root {
+    display: block;
+}

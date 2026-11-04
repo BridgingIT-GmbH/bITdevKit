@@ -1,0 +1,376 @@
+/* Hallmark · theme: wayfind (by request) · wayfind: night · scope: app · redesign: full · comp: approved Option B */
+/* Critique: the static welcome and sample task board share the app's timetable styling. */
+.home-page {
+    min-width: 0;
+}
+
+.home-welcome {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: 64px;
+    padding: 64px 0 56px;
+}
+
+.home-introduction {
+    min-width: 0;
+}
+
+.home-page ::deep .home-title {
+    max-width: 10ch;
+    min-width: 0;
+    margin: 0;
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -.04em;
+    overflow-wrap: break-word;
+    text-wrap: balance;
+}
+
+.home-page ::deep .home-intro {
+    max-width: 35ch;
+    margin-top: 24px;
+    color: var(--wf-muted);
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.home-page ::deep .home-start {
+    min-height: 48px;
+    margin-top: 32px;
+    padding: 12px 24px;
+}
+
+.home-preview {
+    min-width: 0;
+}
+
+.home-task-board {
+    min-width: 0;
+    border: 2px solid var(--wf-ink);
+    background: var(--wf-plate);
+}
+
+.home-preview-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 2px solid var(--wf-ink);
+}
+
+.home-preview-heading ::deep h2 {
+    text-wrap: balance;
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 800;
+}
+
+.home-preview-heading > span {
+    color: var(--wf-muted);
+    font-size: .6875rem;
+}
+
+.home-sample-task {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) 104px;
+    align-items: center;
+    gap: 12px;
+    min-height: 88px;
+    padding: 20px;
+    border-bottom: 1px solid var(--wf-rule);
+}
+
+.home-sample-task:last-child {
+    border-bottom: 0;
+}
+
+.home-task-title {
+    min-width: 0;
+    font-size: .875rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.home-task-title small {
+    display: block;
+    margin-top: 8px;
+    color: var(--wf-muted);
+    font-size: .6875rem;
+    font-weight: 400;
+}
+
+.home-task-due {
+    color: var(--wf-amber);
+    font-size: .75rem;
+    font-weight: 800;
+    line-height: 1.6;
+    text-align: right;
+}
+
+.home-task-due span {
+    display: block;
+    color: var(--wf-muted);
+    font-size: .6875rem;
+    font-weight: 400;
+}
+
+.home-task-state {
+    display: inline-grid;
+    width: 20px;
+    height: 20px;
+    place-items: center;
+    border: 2px solid var(--wf-rule);
+}
+
+.home-task-state ::deep .mud-icon-root {
+    width: 16px;
+    height: 16px;
+}
+
+.home-task-state-progress {
+    border-color: var(--wf-primary);
+    background: var(--wf-primary);
+    color: var(--wf-on-primary);
+}
+
+.home-task-state-completed {
+    border-color: var(--wf-ink);
+    background: var(--wf-ink);
+    color: var(--wf-plate);
+}
+
+.home-preview-caption {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 12px;
+    color: var(--wf-muted);
+    font-size: .6875rem;
+    line-height: 1.6;
+}
+
+.home-features {
+    border-top: 2px solid var(--wf-ink);
+    border-bottom: 2px solid var(--wf-ink);
+}
+
+.home-feature {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr);
+    align-items: center;
+    gap: 32px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--wf-rule);
+}
+
+.home-feature:last-child {
+    border-bottom: 0;
+}
+
+.home-feature ::deep h2 {
+    text-wrap: balance;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+}
+
+.home-feature ::deep p {
+    color: var(--wf-muted);
+    font-size: .875rem;
+    line-height: 1.6;
+}
+
+.home-progress {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    align-items: center;
+    gap: 48px;
+    padding: 40px 0;
+}
+
+.home-progress ::deep h2 {
+    text-wrap: balance;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -.03em;
+}
+
+.home-page ::deep .home-progress-description {
+    margin-top: 12px;
+    color: var(--wf-muted);
+    font-size: .75rem;
+    line-height: 1.7;
+}
+
+.home-lifecycle {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    border: 2px solid var(--wf-rule);
+    background: var(--wf-plate);
+    list-style: none;
+}
+
+.home-lifecycle li {
+    padding: 20px 12px;
+    border-right: 1px solid var(--wf-rule);
+    font-size: .8125rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.home-lifecycle li:last-child {
+    border-right: 0;
+}
+
+.home-getting-started {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 28px 0 40px;
+    border-top: 1px solid var(--wf-rule);
+}
+
+.home-getting-started ::deep h2 {
+    text-wrap: balance;
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.home-page ::deep .home-hosted-description {
+    margin-top: 12px;
+    color: var(--wf-muted);
+    font-size: .75rem;
+    line-height: 1.7;
+}
+
+.home-page ::deep .home-hosted-link {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: .75rem;
+    overflow-wrap: anywhere;
+}
+
+.home-qr {
+    flex-shrink: 0;
+    padding: 8px;
+    background: var(--wf-on-primary);
+    line-height: 0;
+}
+
+.home-qr > svg {
+    display: block;
+    width: 112px;
+    height: 112px;
+}
+
+@media (max-width: 900px) {
+    .home-welcome {
+        gap: 32px;
+    }
+
+    .home-page ::deep .home-title {
+        font-size: 2.75rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .home-welcome {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 40px;
+        padding: 40px 0;
+    }
+
+    .home-page ::deep .home-title {
+        font-size: 2.625rem;
+    }
+
+    .home-page ::deep .home-intro {
+        margin-top: 20px;
+        font-size: .875rem;
+    }
+
+    .home-page ::deep .home-start {
+        margin-top: 24px;
+    }
+
+    .home-preview-heading {
+        padding: 16px 12px;
+    }
+
+    .home-preview-heading ::deep h2 {
+        text-wrap: balance;
+        font-size: 1rem;
+    }
+
+    .home-preview-heading > span {
+        font-size: .625rem;
+    }
+
+    .home-sample-task {
+        grid-template-columns: 20px minmax(0, 1fr) 76px;
+        gap: 8px;
+        padding: 16px 12px;
+    }
+
+    .home-task-title {
+        font-size: .75rem;
+    }
+
+    .home-task-title small,
+    .home-task-due,
+    .home-task-due span,
+    .home-preview-caption {
+        font-size: .625rem;
+    }
+
+    .home-feature {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .home-feature ::deep h2 {
+        text-wrap: balance;
+        font-size: 1.125rem;
+    }
+
+    .home-feature ::deep p {
+        font-size: .8125rem;
+    }
+
+    .home-progress {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
+        padding: 32px 0;
+    }
+
+    .home-lifecycle li {
+        padding: 20px 8px;
+        font-size: .6875rem;
+    }
+
+    .home-getting-started {
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .home-getting-started ::deep h2 {
+        text-wrap: balance;
+        font-size: 1.125rem;
+    }
+
+    .home-page ::deep .home-hosted-link {
+        font-size: .875rem;
+        min-height: 44px;
+    }
+
+    .home-qr > svg {
+        width: 88px;
+        height: 88px;
+    }
+}

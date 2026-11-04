@@ -79,13 +79,13 @@ builder.Services.AddMessaging(builder.Configuration, o => o
     .WithBehavior<RetryMessageHandlerBehavior>()
     .WithBehavior<TimeoutMessageHandlerBehavior>()
     .WithEntityFrameworkBroker<CoreDbContext>()
-    .AddEndpoints();
+    .AddMcpHandlers();
 
 builder.Services.AddQueueing(builder.Configuration, o => o
         .StartupDelay("00:00:10"))
     .WithAuditing()
     .WithEntityFrameworkBroker<CoreDbContext>()
-    .AddEndpoints();
+    .AddMcpHandlers();
 
 builder.Services.AddNotificationService<EmailMessage>(builder.Configuration, o =>
     {
@@ -115,15 +115,13 @@ builder.Services.AddNotificationService<EmailMessage>(builder.Configuration, o =
         //     settings.SenderName ??= "DoFiesta";
         //     settings.SenderAddress ??= "noreply@dofiesta.local";
         // });
-    })
-    .AddEndpoints(options => options.RequireAuthorization());
+    });
 
 builder.Services.AddMapping().WithMapster();
 
-// Register log services and endpoints
+// Register log services for the DevKit dashboard.
 builder.Services.AddLogEntryServices<CoreDbContext>(o => o
-        .Enabled(builder.Environment.IsDevelopment() || EnvironmentExtensions.IsBuildTimeOpenApiGeneration()))
-    .AddEndpoints(builder.Environment.IsDevelopment() || EnvironmentExtensions.IsBuildTimeOpenApiGeneration());
+        .Enabled(builder.Environment.IsDevelopment() || EnvironmentExtensions.IsBuildTimeOpenApiGeneration()));
 
 // Startup Tasks ==============================
 builder.Services.AddStartupTasks(o => o
@@ -158,8 +156,6 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
         $"{builder.Configuration["Authentication:Authority"]}/_bdk/dashboard/signin-oidc")
     .WithClient("Scalar", "scalar", $"{builder.Configuration["Authentication:Authority"]}/scalar/")); // trailing slash is needed for login popup to close!?
 
-// builder.Services.AddMessagingEndpoints(options => options
-//     .RequireAuthorization(false));
 builder.Services.AddEndpoints<SystemEndpoints>();
 builder.Services.AddDashboard(o => o
     .Enabled()
@@ -171,8 +167,7 @@ builder.Services.AddDashboard(o => o
 builder.Services.AddEntitiesDashboard(o => o.EditRoles.Add(Role.Administrators));
 MetricsServiceCollectionExtensions.AddMetrics(
     builder.Services, o => o
-        .Enabled()
-        .AddEndpoints());
+        .Enabled());
 builder.Services.AddAppOpenTelemetry(builder.Configuration, builder.Environment);
 
 builder.Services.ConfigureJson();
@@ -180,12 +175,6 @@ builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 builder.Services.AddHealthChecks();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddNdjsonStreaming();
-builder.Services.AddResponseCompression(options =>
-{
-    options.EnableForHttps = true;
-    options.MimeTypes = Microsoft.AspNetCore.ResponseCompression.ResponseCompressionDefaults.MimeTypes.Concat([NdjsonDefaults.CONTENT_TYPE]);
-});
 
 builder.Services.AddControllers(); // needed for openapi gen, even with no controllers
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -233,7 +222,6 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddMudServices();
-builder.Services.AddSignalR();
 builder.Services.AddConsoleCommandsInteractive();
 
 // ===============================================================================================
@@ -281,9 +269,6 @@ app.UseRequestLogging();
 app.UseRequestMetrics();
 
 app.UseRouting();
-// This app previously had no response compression. Keep ordinary responses unchanged.
-app.UseWhen(context => context.GetEndpoint()?.Metadata.GetMetadata<NdjsonEndpointDescriptor>() is not null,
-    branch => branch.UseNdjsonResponseCompression());
 app.UseCors();
 app.UseAntiforgery();
 
@@ -311,7 +296,6 @@ app.MapHealthChecks("/healthz", new HealthCheckOptions
 {
     ResponseWriter = WriteHealthCheckResponse
 });
-app.MapHub<NotificationHub>("/signalrhub");
 
 app.UseConsoleCommandsInteractiveStats();
 app.UseConsoleCommandsInteractive();

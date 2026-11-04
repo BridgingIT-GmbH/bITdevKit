@@ -1,4 +1,4 @@
-﻿@page "/todos"
+@page "/todos"
 @using System.Net.Http.Headers
 @using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
 @using Microsoft.Kiota.Abstractions
@@ -12,78 +12,35 @@
 
 <PageTitle>DoFiesta - Todos</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.Large" Style="margin-top: 20px;">
-    <MudGrid>
-        <MudItem xs="12" Class="d-flex align-center">
-            @* <MudSelect T="int" @bind-Value="newTodoPriority">
-                <MudSelectItem Value="1">-</MudSelectItem>
-                @foreach (var priority in enums.TodoPriorities.Where(e => e.Enabled))
-                {
-                    <MudSelectItem Value="@priority.Id">@priority.Value</MudSelectItem>
-                }
-            </MudSelect> *@
-            <MudTextField @bind-Value="newTodoTitle"
-                          Immediate="false"
-                          Label="New Todo"
-                          Variant="Variant.Text"
-                          Margin="Margin.Dense" />
-            <MudTooltip Text="Add Todo">
-                <MudIconButton Icon="@Icons.Material.Filled.Add"
-                               Variant="Variant.Filled"
-                               Color="Color.Secondary"
-                               Size="Size.Large"
-                               OnClick="@(() => AddNewTodo())" />
-            </MudTooltip>
-            <MudTooltip Text="Create detailed task">
-                <MudIconButton Icon="@Icons.Material.Filled.NoteAdd"
-                               Variant="Variant.Outlined"
-                               Color="Color.Primary"
-                               Size="Size.Large"
-                               OnClick="OpenCreateTodoDialog" />
-            </MudTooltip>
-            <MudSpacer />
-            <MudTooltip Text="Refresh">
-                <MudIconButton Icon="@Icons.Material.Filled.Refresh"
-                               Color="Color.Secondary"
-                               Size="Size.Large"
-                               OnClick="@(() => LoadItems())" />
-            </MudTooltip>
-
-            <MudTooltip Text="Complete all items which are InProgress">
-                <MudIconButton Icon="@Icons.Material.Filled.Checklist"
-                               Color="Color.Success"
-                               Size="Size.Large"
-                               OnClick="@(() => CompleteAll())" />
-            </MudTooltip>
-
-            <MudTooltip Text="Export TodoItems">
-                <MudIconButton Icon="@Icons.Material.Filled.FileUpload"
-                               Color="Color.Info"
-                               Size="Size.Large"
-                               OnClick="@(() => showExportDialog = true)" />
-            </MudTooltip>
-
-            <MudTooltip Text="Import TodoItems">
-                <MudIconButton Icon="@Icons.Material.Filled.FileDownload"
-                               Color="Color.Warning"
-                               Size="Size.Large"
-                               OnClick="@(() => showImportDialog = true)" />
-            </MudTooltip>
-        </MudItem>
-
-        <MudItem xs="12">
-            @if (enums == null || items == null)
-            {
-                <MudSkeleton Animation="Animation.Pulse" Width="80%" />
-                <MudSkeleton Animation="Animation.Pulse" Width="80%" />
-                <MudSkeleton Animation="Animation.Pulse" Width="80%" />
-            }
-            else
-            {
+<MudContainer MaxWidth="MaxWidth.Large" Class="wf-todos">
+    <div class="wf-page-heading">
+        <h1>Todos</h1>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(loading || enums?.TodoStatuses?.Any() != true || items == null)" OnClick="OpenCreateTodoDialog">Create Task</MudButton>
+    </div>
+    <div class="wf-quick-add">
+        <MudTextField @bind-Value="newTodoTitle" Immediate="true" Disabled="@(loading || enums?.TodoStatuses?.Any() != true || items == null)" Label="New Todo" Variant="Variant.Outlined" Margin="Margin.Dense" />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(loading || enums?.TodoStatuses?.Any() != true || items == null)" StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => AddNewTodo())">Add Todo</MudButton>
+        <MudButton Variant="Variant.Outlined" Disabled="@(loading || enums?.TodoStatuses?.Any() != true || items == null)" StartIcon="@Icons.Material.Filled.Refresh" OnClick="ReloadPageAsync">Refresh</MudButton>
+    </div>
+    @if (!string.IsNullOrEmpty(loadError))
+    {
+        <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">
+            @loadError
+            <MudButton OnClick="ReloadPageAsync">Retry</MudButton>
+        </MudAlert>
+    }
+    else if (enums == null || items == null)
+    {
+        <MudSkeleton Animation="Animation.Pulse" Height="80px" />
+        <MudSkeleton Animation="Animation.Pulse" Height="80px" />
+        <MudSkeleton Animation="Animation.Pulse" Height="80px" />
+    }
+    else
+    {
                 <MudTable Items="@items" AllowUnsorted="false" Hover="true" Dense="true"
-                    Striped="false" Bordered="false" Loading="@loading" LoadingProgressColor="Color.Info">
+                    Striped="false" Bordered="false" Breakpoint="Breakpoint.Sm" Loading="@loading" LoadingProgressColor="Color.Info">
                     <ToolBarContent>
-                        <MudHidden Breakpoint="Breakpoint.Sm" Invert="true">
+                        <div class="wf-filter-group">
                             <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
                                         Color="Color.Primary" CheckMark SelectedValueChanged="OnStatusChipChanged">
                                 @foreach (var e in enums.TodoStatuses.Where(e => e.Enabled == true))
@@ -99,22 +56,22 @@
                                 @foreach (var e in enums.TodoPriorities.Where(e => e.Enabled == true))
                                 {
                                     <MudTooltip Text="@e.Description">
-                                        <MudChip T="int" Value="@(e.Id ?? 0)">>@e.Value</MudChip>
+                                        <MudChip T="int" Value="@(e.Id ?? 0)">@e.Value</MudChip>
                                     </MudTooltip>
                                 }
                             </MudChipSet>
                             <MudSpacer />
-                            <MudTextField @bind-Value="filterTitle" Immediate="false" Label="Search"
+                            <MudTextField Class="wf-filter-search" @bind-Value="filterTitle" Immediate="false" Label="Search"
                                           Variant="Variant.Text" Margin="Margin.Dense" Clearable="true"
                                           Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="LoadItems" />
-                        </MudHidden>
+                        </div>
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh></MudTh>
-                        <MudTh Style="width: 40%">Title</MudTh>
+                        <MudTh Class="wf-title-cell">Title</MudTh>
                         <MudTh>Status</MudTh>
                         <MudTh>Priority</MudTh>
-                        <MudTh Style="width: 25%">
+                        <MudTh Class="wf-due-cell">
                             <MudTableSortLabel T="string" @onclick="@OnDueDateSortClick"
                                                SortDirection="@currentSortDirection" InitialDirection="SortDirection.Ascending">
                                 Due
@@ -123,22 +80,22 @@
                         <MudTh></MudTh>
                     </HeaderContent>
                     <RowTemplate Context="todoItem">
-                        <MudTd>
-                            <MudHidden Breakpoint="Breakpoint.Sm" Invert="true">
+                        <MudTd Class="wf-status-icon">
+                            <div>
                                 @{
                                     var (icon, color) = GetStatusIcon(todoItem.Status ?? 0);
                                     <MudIcon Icon="@icon" Color="@color" />
                                 }
-                            </MudHidden>
+                            </div>
                         </MudTd>
-                        <MudTd DataLabel="Title" Style="width: 100%">
+                        <MudTd DataLabel="Title" Class="wf-title-cell">
                             <MudTooltip Text="@todoItem.Description">
                                 <MudTextField @bind-Value="todoItem.Title" Variant="Variant.Text" Margin="Margin.Dense"
-                                              Immediate="true" Class="flex-grow-1" Style="width: 100%; min-width: 350px;"
+                                              Immediate="true" Class="flex-grow-1" Style="width: 100%;"
                                               OnBlur="@(() => UpdateTodo(todoItem))" />
                             </MudTooltip>
                         </MudTd>
-                        <MudTd DataLabel="Status">
+                        <MudTd DataLabel="Status" Class="wf-status-cell">
                             <MudSelect Value="todoItem.Status" T="int?"
                                        ValueChanged="async value => { todoItem.Status = value; await UpdateTodo(todoItem); }">
                                 @foreach (var status in enums.TodoStatuses.Where(e => e.Enabled == true))
@@ -147,7 +104,7 @@
                                 }
                             </MudSelect>
                         </MudTd>
-                        <MudTd DataLabel="Priority">
+                        <MudTd DataLabel="Priority" Class="wf-priority-cell">
                             <MudSelect Value="todoItem.Priority" T="int?" ValueChanged="async value => { todoItem.Priority = value; await UpdateTodo(todoItem); }">
                                 @foreach (var priority in enums.TodoPriorities.Where(e => e.Enabled == true))
                                 {
@@ -155,12 +112,11 @@
                                 }
                             </MudSelect>
                         </MudTd>
-                        <MudTd DataLabel="Due Date" HideSmall="true">
+                        <MudTd DataLabel="Due" Class="wf-due-cell">
                             <MudStack Spacing="1">
                                 <MudDatePicker Date="ToDateTime(todoItem.DueDate)"
                                                DateChanged="async date => await OnTodoDueDateChangedAsync(todoItem, date)"
                                                DateFormat="yyyy-MM-dd"
-                                               Style="min-width: 150px;"
                                                Editable="true"
                                                Placeholder="Select Date" />
                                 <MudTextField T="string"
@@ -173,27 +129,34 @@
                                               HelperText="Local time" />
                             </MudStack>
                         </MudTd>
-                        <MudTd HideSmall="true">
+                        <MudTd DataLabel="Actions"><div class="wf-row-actions">
                             <MudTooltip Text="Attachments">
-                                <MudIconButton Icon="@Icons.Material.Filled.AttachFile"
+                                <MudIconButton aria-label="Attachments" Icon="@Icons.Material.Filled.AttachFile"
                                                Color="Color.Info"
                                                Size="Size.Small"
                                                OnClick="@(() => OpenAttachmentsDialogAsync(todoItem))" />
                             </MudTooltip>
                             <MudTooltip Text="Change history">
-                                <MudIconButton Icon="@Icons.Material.Filled.History"
+                                <MudIconButton aria-label="Change history" Icon="@Icons.Material.Filled.History"
                                                Color="Color.Secondary"
                                                Size="Size.Small"
                                                OnClick="@(() => OpenHistoryDialogAsync(todoItem))" />
                             </MudTooltip>
                             <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                            Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteTodo(todoItem))" />
-                        </MudTd>
+                                            Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteTodo(todoItem))" aria-label="Delete task" />
+                        </div></MudTd>
                     </RowTemplate>
+                    <NoRecordsContent><div class="wf-empty">No tasks match. Add a Todo or adjust your filters.</div></NoRecordsContent>
                 </MudTable>
-            }
-        </MudItem>
-    </MudGrid>
+    }
+    <div class="wf-secondary-actions">
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Checklist" OnClick="@(() => CompleteAll())">Complete in-progress</MudButton>
+        <div class="wf-transfer-actions">
+            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.FileUpload" OnClick="@(() => showExportDialog = true)">Export</MudButton>
+            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.FileDownload" OnClick="@(() => showImportDialog = true)">Import</MudButton>
+        </div>
+    </div>
+    <MudText Typo="Typo.caption" Class="wf-action-feedback" role="status" aria-live="polite">@actionFeedback</MudText>
 </MudContainer>
 
 @* Change History Dialog *@
@@ -548,6 +511,8 @@
     }
 
     private bool loading = true;
+    private string loadError = string.Empty;
+    private string actionFeedback = string.Empty;
     private ICollection<TodoItemModel> items;
     private EnumerationModel enums;
     private string newTodoTitle;
@@ -585,8 +550,18 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await ReloadPageAsync();
+    }
+
+    private async Task ReloadPageAsync()
+    {
+        loadError = string.Empty;
+        actionFeedback = string.Empty;
         await LoadEnumerations();
-        await LoadItems();
+        if (string.IsNullOrEmpty(loadError))
+        {
+            await LoadItems();
+        }
     }
 
     private async Task LoadEnumerations()
@@ -595,9 +570,9 @@
         {
             enums = await Api.Api.Core.Enumerations.GetAsync() ?? new EnumerationModel();
         }
-        catch (ApiException ex)
+        catch (ApiException)
         {
-            Snackbar.Add($"Error loading enumerations: {ex.Message}", Severity.Error);
+            loadError = "Could not load task options. Try again.";
             items = new List<TodoItemModel>();
         }
     }
@@ -605,6 +580,7 @@
     private async Task LoadItems()
     {
         loading = true;
+        loadError = string.Empty;
 
         try
         {
@@ -666,9 +642,9 @@
             items = await Api.Api.Core.Todoitems.Search.PostAsync(filter) ?? [];
             StoreTodoSnapshots(items);
         }
-        catch (ApiException ex)
+        catch (ApiException)
         {
-            Snackbar.Add($"Error loading items: {ex.Message}", Severity.Error);
+            loadError = "Could not load your tasks. Try again.";
             enums = new EnumerationModel();
         }
         finally
@@ -1036,8 +1012,8 @@
 
             _ = await Api.Api.Core.Todoitems.PostAsync(newItem);
 
-            Snackbar.Add("Added successfully", Severity.Success);
             await LoadItems();
+            actionFeedback = "Task added.";
         }
         // catch (ApiException<ProblemDetails> pex)
         // {
@@ -1151,7 +1127,7 @@
 
             todoSnapshots[item.Id] = CreateTodoSnapshot(item);
 
-            Snackbar.Add("Updated successfully", Severity.Success);
+            actionFeedback = "Task updated.";
         }
         catch (ApiException ex)
         {

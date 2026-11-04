@@ -1,0 +1,58 @@
+/* Hallmark · theme: wayfind (by request) · wayfind: night · scope: app · redesign: full */
+/* Critique: keep identity data readable in ruled sections and contain long claim and token values. */
+.wf-profile {
+    min-width: 0;
+}
+
+.wf-profile ::deep .profile-identity {
+    align-items: center;
+    margin-top: 0;
+}
+
+.wf-profile ::deep .mud-avatar {
+    border-radius: 0;
+    border: 2px solid var(--wf-rule);
+}
+
+.wf-profile ::deep .mud-chip {
+    margin-left: 0;
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+
+.wf-profile ::deep .mud-list {
+    padding: 0;
+}
+
+.wf-profile ::deep .mud-list-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--wf-rule);
+}
+
+.wf-profile ::deep .mud-list-item:last-child {
+    border-bottom: 0;
+}
+
+.wf-profile ::deep .mud-list-item-text {
+    overflow-wrap: anywhere;
+    min-width: 0;
+}
+
+.wf-profile ::deep .profile-tokens {
+    margin-top: 24px;
+}
+
+.wf-profile ::deep .profile-token {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.wf-profile ::deep .mud-expand-panel {
+    border: 1px solid var(--wf-rule);
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.wf-profile ::deep .mud-expand-panel-header {
+    min-height: 52px;
+}

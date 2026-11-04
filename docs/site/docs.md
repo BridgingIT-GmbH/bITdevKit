@@ -56,6 +56,7 @@ Use the host and tooling features to expose endpoints, inspect runtime state, an
 
 - [Presentation](reference/features-presentation.md) configures the host and its feature builders.
 - [Developer Dashboards](developer-dashboards.md) exposes local pages for health, logs, metrics, jobs, queues, and other registered features.
+- [Entities Dashboard](reference/features-presentation-dashboard-entities.md) provides a guarded table-style view and maintenance surface for repository and ActiveEntity types.
 - [Log Entries](reference/features-log-entries.md), [Metrics](reference/features-metrics.md), and [Correlation IDs](reference/features-presentation-correlationid.md) connect requests to runtime evidence.
 - [Startup Tasks](reference/features-startuptasks.md) runs ordered work during application startup.
 - [CLI](reference/features-cli.md) and [Console Commands](reference/features-presentation-console-commands.md) provide local operational commands.

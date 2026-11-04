@@ -69,6 +69,7 @@ nav:
               - MCP: reference/features-cli-mcp.md
               - MCP Client Configuration: reference/features-cli-mcp-clients.md
               - Dashboard: reference/features-presentation-dashboard.md
+              - Entities Dashboard: reference/features-presentation-dashboard-entities.md
               - Console Commands: reference/features-presentation-console-commands.md
               - CORS Configuration: reference/features-presentation-cors.md
               - Correlation IDs: reference/features-presentation-correlationid.md

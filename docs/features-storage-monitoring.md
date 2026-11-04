@@ -385,5 +385,5 @@ When the MCP runtime is present, `DocumentStorageMcpHandler` adds `documents.sum
 ## Related docs
 
 - [FileStorage](./features-storage-files.md)
-- [JobScheduling](./features-jobscheduling.md)
+- [Jobs](./features-jobs.md)
 - [DocumentStorage](./features-storage-documents.md)

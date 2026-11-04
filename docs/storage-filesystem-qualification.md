@@ -32,7 +32,7 @@ For each executed profile, retain the source revision, OS/client/server/mount co
 
 ## Related documents
 
-- [Provider requirements](prd/storage/prd-0000-STORAGE-filesystem-blob-and-document-providers.md)
+- [Provider requirements](../docs/prd/storage/prd-0000-STORAGE-filesystem-blob-and-document-providers.md)
 - [Implementation plan](../plan/pln-feature-filesystem-storage-providers-1.md)
 - [ADR-0037](adr/0037-filesystem-storage-provider-composition.md)
 - [ADR-0038](adr/0038-shared-filesystem-infrastructure-for-file-storage.md)

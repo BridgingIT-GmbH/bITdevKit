@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dashboard Mockups"
+  short_description: "Create abstract DevKit dashboard wireframes"
+  default_prompt: "Use $dashboard-mockups to create a black-and-white wireframe of this DevKit dashboard from its specification."

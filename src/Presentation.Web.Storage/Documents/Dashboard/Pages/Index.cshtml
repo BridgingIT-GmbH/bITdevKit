@@ -236,12 +236,12 @@
         }
 
         function rememberPageSize(value) {
-            localStorage.setItem(pageSizeStorageKey, normalizePageSize(value));
+            window.bdkDashboard.state.set(pageSizeStorageKey, normalizePageSize(value));
         }
 
         function rememberClient(value) {
             if (value) {
-                localStorage.setItem(clientStorageKey, value);
+                window.bdkDashboard.state.set(clientStorageKey, value);
             }
         }
 
@@ -251,7 +251,7 @@
 
         function readHistoryMap(storageKey) {
             try {
-                const value = JSON.parse(localStorage.getItem(storageKey) || '{}');
+                const value = window.bdkDashboard.state.getJson(storageKey, {});
                 if (Array.isArray(value)) {
                     return { default: value };
                 }
@@ -280,7 +280,7 @@
             const values = Array.isArray(map[scope]) ? map[scope] : [];
             map[scope] = [text, ...values.filter(item => item !== text)]
                 .slice(0, filterHistoryLimit);
-            localStorage.setItem(storageKey, JSON.stringify(map));
+            window.bdkDashboard.state.setJson(storageKey, map);
         }
 
         function rememberFilterHistory(state) {
@@ -784,7 +784,7 @@
         if (urlPageSize) {
             rememberPageSize(urlPageSize);
         } else {
-            const storedPageSize = normalizePageSize(localStorage.getItem(pageSizeStorageKey));
+            const storedPageSize = normalizePageSize(window.bdkDashboard.state.get(pageSizeStorageKey));
             if (storedPageSize !== state.pageSize) {
                 state.pageSize = storedPageSize;
                 state.continuationToken = '';
@@ -795,7 +795,7 @@
         }
 
         if (!urlClientId) {
-            const storedClientId = localStorage.getItem(clientStorageKey);
+            const storedClientId = window.bdkDashboard.state.get(clientStorageKey);
             if (storedClientId && knownClientIds().includes(storedClientId) && storedClientId !== state.clientId) {
                 state.clientId = storedClientId;
                 state.partitionKey = '';

@@ -52,31 +52,6 @@
         });
     }
 
-    function readStorage(key, fallback) {
-        try {
-            const raw = window.localStorage.getItem(key);
-            return raw ? JSON.parse(raw) : fallback;
-        } catch (error) {
-            return fallback;
-        }
-    }
-
-    function writeStorage(key, value) {
-        try {
-            window.localStorage.setItem(key, JSON.stringify(value));
-        } catch (error) {
-            // storage unavailable or full: the feature degrades to session-only
-        }
-    }
-
-    function removeStorage(key) {
-        try {
-            window.localStorage.removeItem(key);
-        } catch (error) {
-            // ignore
-        }
-    }
-
     const storageKey = suffix => 'bdk.dashboard.entities.' + entityKey + '.' + suffix;
 
     function parseCondition(raw) {
@@ -280,7 +255,7 @@
     const LAST_VIEW_KEY = 'bdk.dashboard.entities.last';
 
     if (!window.location.search && !entityKey) {
-        const last = readStorage(LAST_VIEW_KEY, '');
+        const last = window.bdkDashboard.state.getJson(LAST_VIEW_KEY, '');
         if (typeof last === 'string' && last.indexOf('entity=') >= 0) {
             window.location.replace(basePath + '?' + last);
 
@@ -524,7 +499,7 @@
     }
 
     function loadEntries(kind) {
-        const stored = readStorage(storageKey(kind), []);
+        const stored = window.bdkDashboard.state.getJson(storageKey(kind), []);
 
         return Array.isArray(stored) ? stored.filter(entry => entry && Array.isArray(entry.conditions)) : [];
     }
@@ -538,7 +513,7 @@
         const key = entryKey(entry);
         const list = loadEntries('recent').filter(item => entryKey(item) !== key);
         list.unshift(entry);
-        writeStorage(storageKey('recent'), list.slice(0, 10));
+        window.bdkDashboard.state.setJson(storageKey('recent'), list.slice(0, 10));
         renderFilterLists();
     }
 
@@ -622,14 +597,14 @@
                     if (name && name.trim()) {
                         const list = loadEntries('saved');
                         list[index].name = name.trim().substring(0, 64);
-                        writeStorage(storageKey('saved'), list);
+                        window.bdkDashboard.state.setJson(storageKey('saved'), list);
                         renderFilterLists();
                     }
                 });
                 const remove = smallButton('bi-trash', 'Delete ' + entry.name, () => {
                     const list = loadEntries('saved');
                     list.splice(index, 1);
-                    writeStorage(storageKey('saved'), list);
+                    window.bdkDashboard.state.setJson(storageKey('saved'), list);
                     renderFilterLists();
                 });
 
@@ -664,7 +639,7 @@
         entry.name = name.substring(0, 64);
         const list = loadEntries('saved').filter(item => item.name !== entry.name);
         list.push(entry);
-        writeStorage(storageKey('saved'), list);
+        window.bdkDashboard.state.setJson(storageKey('saved'), list);
         nameInput.value = '';
         renderFilterLists();
     }
@@ -688,7 +663,7 @@
     }
 
     function loadColumnConfig() {
-        const stored = readStorage(storageKey('columns'), null);
+        const stored = window.bdkDashboard.state.getJson(storageKey('columns'), null);
         if (!stored || typeof stored !== 'object') {
             columnChecks.forEach(check => {
                 if (!check.checked) {
@@ -715,7 +690,7 @@
     }
 
     function saveColumnConfig() {
-        writeStorage(storageKey('columns'), { order: columnOrder, hidden: Array.from(hiddenColumns) });
+        window.bdkDashboard.state.setJson(storageKey('columns'), { order: columnOrder, hidden: Array.from(hiddenColumns) });
     }
 
     function syncColumnPicker() {
@@ -799,7 +774,7 @@
         const reset = one('[data-entities-columns-reset]', columnsMenu);
         if (reset) {
             reset.addEventListener('click', () => {
-                removeStorage(storageKey('columns'));
+                window.bdkDashboard.state.remove(storageKey('columns'));
                 columnOrder = defaultColumnOrder.slice();
                 hiddenColumns.clear();
                 syncColumnPicker();
@@ -976,7 +951,7 @@
 
     function rememberView() {
         if (entityKey) {
-            writeStorage(LAST_VIEW_KEY, filterSignature(applied));
+            window.bdkDashboard.state.setJson(LAST_VIEW_KEY, filterSignature(applied));
         }
     }
 
@@ -2015,7 +1990,7 @@
         } else if (target.matches('input[data-entities-select]')) {
             onSelectChange(target);
         } else if (target.matches('#entities-page-size')) {
-            writeStorage(PAGE_SIZE_KEY, target.value);
+            window.bdkDashboard.state.setJson(PAGE_SIZE_KEY, target.value);
             loadRows(false);
         } else if (target.matches('[data-entities-select-all]')) {
             onSelectAll(target);
@@ -2072,7 +2047,7 @@
     if (entityKey) {
         rememberView();
     } else if (window.location.search) {
-        removeStorage(LAST_VIEW_KEY);
+        window.bdkDashboard.state.remove(LAST_VIEW_KEY);
     }
 
     if (content) {
@@ -2082,7 +2057,7 @@
         syncSelectionUi();
         updateLoadMore(moreAvailable);
         if (pageSizeSelect) {
-            const storedSize = String(readStorage(PAGE_SIZE_KEY, ''));
+            const storedSize = String(window.bdkDashboard.state.getJson(PAGE_SIZE_KEY, ''));
             if (storedSize && storedSize !== pageSizeSelect.value && Array.from(pageSizeSelect.options).some(o => o.value === storedSize)) {
                 pageSizeSelect.value = storedSize;
                 loadRows(false);

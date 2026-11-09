@@ -49,7 +49,7 @@
     const historyPanel = root.querySelector('[data-workload-history]');
     const interval = document.getElementById(prefix + '-refresh-interval');
     const storageKey = 'bdk.dashboard.' + prefix + '.diagnostics.refreshInterval';
-    try { if (interval && localStorage.getItem(storageKey) === null) interval.value = '1000'; } catch { }
+    try { if (interval && window.bdkDashboard.state.get(storageKey) === null) interval.value = '1000'; } catch { }
 
     async function render(host, traces, unit) {
         if (disposed || !host || !host.clientWidth) return;

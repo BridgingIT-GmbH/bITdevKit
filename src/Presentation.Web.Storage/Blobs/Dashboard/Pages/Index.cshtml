@@ -194,7 +194,7 @@
 
         function readPrefixHistoryMap() {
             try {
-                const value = JSON.parse(localStorage.getItem(prefixHistoryStorageKey) || '{}');
+                const value = window.bdkDashboard.state.getJson(prefixHistoryStorageKey, {});
                 if (Array.isArray(value)) {
                     return { default: value };
                 }
@@ -220,7 +220,7 @@
             const scope = prefixHistoryScope(state);
             const values = Array.isArray(map[scope]) ? map[scope] : [];
             map[scope] = [normalized, ...values.filter(value => value !== normalized)].slice(0, prefixHistoryLimit);
-            localStorage.setItem(prefixHistoryStorageKey, JSON.stringify(map));
+            window.bdkDashboard.state.setJson(prefixHistoryStorageKey, map);
         }
 
         function populatePrefixHistory(state = getState()) {
@@ -378,7 +378,7 @@
                 continuationToken: ''
             };
 
-            localStorage.setItem(fullScanStorageKey, state.allowFullScan ? 'true' : 'false');
+            window.bdkDashboard.state.set(fullScanStorageKey, state.allowFullScan ? 'true' : 'false');
             rememberPrefix(state);
 
             await refreshContent(state, true);
@@ -470,9 +470,9 @@
         });
 
         populatePrefixHistory();
-        const storedFullScan = localStorage.getItem(fullScanStorageKey);
+        const storedFullScan = window.bdkDashboard.state.get(fullScanStorageKey);
         if (storedFullScan === null) {
-            localStorage.setItem(fullScanStorageKey, 'true');
+            window.bdkDashboard.state.set(fullScanStorageKey, 'true');
         } else {
             const desired = storedFullScan === 'true';
             const state = getState();

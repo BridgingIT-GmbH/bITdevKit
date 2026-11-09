@@ -38,7 +38,7 @@
     }
     function remember() {
         if (resetting) return;
-        try { localStorage.setItem(storageKey, JSON.stringify(state())); } catch { }
+        window.bdkDashboard.state.setJson(storageKey, state());
     }
     function invalidate() {
         controller?.abort(); controller = null;
@@ -140,7 +140,7 @@
         sides.forEach(side => applySide(side, { from: start, to: end, node: document.getElementById('operation-node')?.value || '',
             version: raw.applicationVersion || '', dimensions: (raw.dimensions || []).map(item => ({ ...normalize(item), value: normalize(item.value || item.Value) })) }));
         setPeriod(true);
-        const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+        const saved = window.bdkDashboard.state.getJson(storageKey);
         if (saved && JSON.stringify(saved).length <= 32768) {
             if (typeof saved.operation?.key === 'string' && saved.operation.key.length <= 128 && typeof saved.operation.kind === 'string' && saved.operation.kind.length <= 128) selectOperation(saved.operation);
             sides.forEach(side => applySide(side, saved[side]));
@@ -314,7 +314,7 @@
         }
     });
     window.addEventListener('pagehide', () => { controller?.abort(); remember(); });
-    document.getElementById('operation-reset')?.addEventListener('click', () => { resetting = true; try { localStorage.removeItem(storageKey); } catch { } });
+    document.getElementById('operation-reset')?.addEventListener('click', () => { resetting = true; window.bdkDashboard.state.remove(storageKey); });
     window.bdkOperationComparison = { synchronize, open, seed, selectOperation, useDimension(context, item, side, path = null) {
         const previous = selectedOperation();
         selectOperation(context);

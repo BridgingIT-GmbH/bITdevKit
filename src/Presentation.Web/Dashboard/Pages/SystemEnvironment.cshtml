@@ -153,9 +153,9 @@
             }
         };
 
-        filter.value = sessionStorage.getItem('bdk.dashboard.system.envFilter') || '';
+        filter.value = window.bdkDashboard.state.session.get('bdk.dashboard.system.envFilter') || '';
         filter.addEventListener('input', () => {
-            sessionStorage.setItem('bdk.dashboard.system.envFilter', filter.value);
+            window.bdkDashboard.state.session.set('bdk.dashboard.system.envFilter', filter.value);
             apply();
         });
         apply();

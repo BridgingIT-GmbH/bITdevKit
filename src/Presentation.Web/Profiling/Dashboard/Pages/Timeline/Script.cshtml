@@ -16,7 +16,7 @@
     const labels = JSON.parse(root.dataset.kindLabels || '{}');
     const current = new URL(location.href);
     let saved = {};
-    try { saved = JSON.parse(localStorage.getItem(stateKey) || '{}') || {}; } catch { }
+    try { saved = window.bdkDashboard.state.getJson(stateKey, {}) || {}; } catch { }
     const explicit = [...form.elements].some(control => control.name && current.searchParams.has(control.name));
     for (const control of form.elements) {
         if (!control.name) continue;
@@ -38,7 +38,7 @@
         return { start, end };
     };
     function remember() {
-        try { localStorage.setItem(stateKey, JSON.stringify({ filters: Object.fromEntries(new FormData(form)) })); } catch { }
+        window.bdkDashboard.state.setJson(stateKey, { filters: Object.fromEntries(new FormData(form)) });
     }
     function urlFor(path, selection = applied) {
         const url = new URL(path, location.href);

@@ -17,8 +17,8 @@
         const currentPath = normalize(location.pathname);
         let selected = rememberCurrent ? views.find(view => currentPath === normalize(view.path) || currentPath.startsWith(normalize(view.path) + '/')) : undefined;
         try {
-            if (selected) localStorage.setItem(storageKey, selected.key);
-            else selected = views.find(view => view.key === localStorage.getItem(storageKey));
+            if (selected) window.bdkDashboard.state.set(storageKey, selected.key);
+            else selected = views.find(view => view.key === window.bdkDashboard.state.get(storageKey));
         } catch { }
 
         document.querySelectorAll('a[href]').forEach(link => {

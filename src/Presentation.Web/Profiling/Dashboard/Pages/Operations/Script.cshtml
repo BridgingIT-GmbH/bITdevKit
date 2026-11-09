@@ -11,7 +11,7 @@
     const current = new URL(location.href);
     const stateKey = 'bdk.profiling.filters:' + content.dataset.pageUrl;
     let remembered = {};
-    try { remembered = JSON.parse(localStorage.getItem(stateKey) || '{}') || {}; } catch { }
+    try { remembered = window.bdkDashboard.state.getJson(stateKey, {}) || {}; } catch { }
     const explicitSelection = form && [...form.elements].some(control => control.name && current.searchParams.has(control.name));
     const restoreFilters = form && !explicitSelection && !current.searchParams.has('cursor') && remembered.filters;
     if (restoreFilters) {
@@ -25,8 +25,8 @@
     }
     function remember() {
         if (!form) return;
-        try { localStorage.setItem(stateKey, JSON.stringify({ filters: Object.fromEntries(new FormData(form)),
-            details: remembered.details || {}, groupsCollapsed: remembered.groupsCollapsed === true })); } catch { }
+        try { window.bdkDashboard.state.setJson(stateKey, { filters: Object.fromEntries(new FormData(form)),
+            details: remembered.details || {}, groupsCollapsed: remembered.groupsCollapsed === true }); } catch { }
     }
     document.addEventListener('toggle', event => {
         const key = event.target.dataset?.preserveKey;
@@ -56,7 +56,7 @@
     form?.addEventListener('input', remember);
     window.addEventListener('pagehide', remember);
     document.getElementById('operation-reset')?.addEventListener('click', event => {
-        try { localStorage.removeItem(stateKey); } catch { }
+        window.bdkDashboard.state.remove(stateKey);
         // Prevent pagehide from saving the discarded form over the reset state.
         window.removeEventListener('pagehide', remember);
         const url = new URL(event.currentTarget.href);
@@ -123,7 +123,7 @@
         window.bdkOperationDimensions?.refreshChoices?.();
     }
     let timingMode = 'duration';
-    try { if (localStorage.getItem('bdk.profiling.segment-timing') === 'percentage') timingMode = 'percentage'; } catch { }
+    try { if (window.bdkDashboard.state.get('bdk.profiling.segment-timing') === 'percentage') timingMode = 'percentage'; } catch { }
     function applyTimingMode() {
         timingRoots.forEach(root => root.querySelectorAll('[data-segment-timing]').forEach(value => { value.textContent = value.dataset[timingMode]; }));
         timingRoots.forEach(root => root.querySelectorAll('[data-segment-timing-mode]').forEach(button => {
@@ -136,7 +136,7 @@
         const button = event.target.closest('[data-segment-timing-mode]');
         if (!button) return;
         timingMode = button.dataset.segmentTimingMode;
-        try { localStorage.setItem('bdk.profiling.segment-timing', timingMode); } catch { }
+        window.bdkDashboard.state.set('bdk.profiling.segment-timing', timingMode);
         applyTimingMode();
     }));
     function captureState() {
@@ -268,7 +268,7 @@
     let tailBlocked = false;
     let tailCheckpoint = null;
     const tailKey = stateKey + ':tail';
-    try { tailRequested = localStorage.getItem(tailKey) === 'true'; } catch { }
+    try { tailRequested = window.bdkDashboard.state.get(tailKey) === 'true'; } catch { }
     function setStatus(text, failed = false) {
         const status = document.getElementById('operation-refresh-status');
         status.textContent = text;
@@ -462,7 +462,7 @@
     });
     tail?.addEventListener('change', () => {
         tailRequested = tail.checked;
-        try { localStorage.setItem(tailKey, String(tailRequested)); } catch { }
+        window.bdkDashboard.state.set(tailKey, String(tailRequested));
         cancelTail();
         if (tailRequested) loadNewer();
     });

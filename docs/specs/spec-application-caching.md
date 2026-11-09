@@ -93,6 +93,54 @@ HTTP response caching, browser caching, event storage, general-purpose document 
 
 Advanced-cache integrations with command/query pipelines, repositories, and storage clients are deferred until after the advanced cache is implemented. Their design and implementation are outside this specification. The optional HTTP, Dashboard, Console Commands, and MCP integrations remain in scope.
 
+### 2.3 Caching patterns and policy coverage
+
+The following map describes the planned `Application.Caching` feature. A supported policy is not necessarily enabled by default. These capabilities belong to the advanced collection API; they do not change `Common.Caching` or add the deferred pipeline, repository, and storage integrations.
+
+#### 2.3.1 Access and source-write patterns
+
+| Pattern | Feature coverage | Boundary |
+| --- | --- | --- |
+| Cache-aside | Direct `GetAsync`, `SetAsync`, and invalidation let application code manage lookup, source access, and population. | A manual get, source read, and set sequence does not automatically acquire shared-load ownership or a pre-read publication fence. Engine-managed loading uses `GetOrLoadAsync`. See sections 5.1 and 7.2. |
+| Read-through | `GetOrLoadAsync` orchestrates lookup, a trusted caller-supplied loader, admission, and conditional publication. Batch loading applies the same rules per item. | The application supplies source access and key/dependency metadata. The cache does not discover repositories or automatically cache queries. See sections 5 and 6. |
+| Invalidate-on-write and write-around | Application source writes commit first, then explicitly invalidate affected keys, dimensions, or collections. The next read-through miss repopulates the cache. | Source writes do not populate the cache automatically. Skipping invalidation can leave an existing value or negative marker readable until expiry. Outbox-based delivery is an application integration, not an atomic source/cache transaction. See section 7. |
+| Write-through and write-behind | Excluded. Cache writes store derived values in the selected cache provider. | The engine never owns a source mutation or queues a later write to the source. A persistent cache provider remains disposable cache storage. |
+
+The usual composition is explicit read-through plus source-commit-then-invalidate. Direct cache-aside remains available for callers that own the additional coordination. Neither composition promises immediate consistency with source changes that have not yet reached the cache.
+
+#### 2.3.2 Expiration and refresh policies
+
+| Policy | Feature coverage and default | Validity rule |
+| --- | --- | --- |
+| Absolute TTL and lazy reload | Default. A finite lifetime starts at successful publication; a later read-through miss loads on demand. | Hits do not extend expiry. Logical expiration applies even before physical cleanup. See section 8.1. |
+| Sliding expiration | Optional, with a finite idle timeout and an absolute maximum lifetime. | A valid access can renew idle expiry only within the absolute cap. A touch does not refresh source data or revive an expired or invalidated version. See section 8.1. |
+| Explicit refresh | `RefreshAsync` requests source work even when a valid entry exists, using normal coordination and expected-version publication. | Ordinary reads can keep using the independently valid old version. Failure does not extend its expiry. See section 5.4. |
+| Refresh-ahead | Optional and disabled by default. The background service refreshes active, existing valid entries near absolute expiry through a code-registered trusted loader. | Best effort, within the normal load limits. If the old version expires during refresh, new callers miss and may join the work. Negative markers are ineligible. See section 6.5. |
+| Warm-up | Optional and disabled by default. Bounded seed keys or a registered asynchronous key source use ordinary read-through after startup/readiness gating. | No automatic whole-store preload. Warm-up uses the same coordination, capacity, and source-work limits as foreground loading. See section 6.5.2. |
+| Expiry jitter | Optional and disabled by default. Sample a downward-only lifetime reduction once at publication and persist the resulting expiry. | Jitter spreads expiry across different keys without extending freshness. It does not replace same-key coordination. See section 8.4. |
+| Negative caching | Optional and disabled by default. Retain explicitly confirmed absence, with a default enabled TTL of 30 seconds within collection limits. | Null and empty values remain values; source failures are never negative results. Source creation must invalidate the relevant marker. See section 5.5. |
+| Stale-while-revalidate and stale-if-error | Excluded. No new caller receives an expired or invalidated entry while loading runs or after loading fails. | Refresh-ahead serves only an old version that is still valid. Physical retention and already-open stream lifetimes do not authorize new stale reads. See sections 8.1 and 14. |
+
+These policies bound cache validity. They do not certify how current the source snapshot was when the loader read it. Applications choose TTLs and source-read consistency for their own freshness requirements.
+
+#### 2.3.3 Concurrent load, invalidation, and failure coverage
+
+| Problem or pattern | Covered mechanism | Remaining limit or application responsibility |
+| --- | --- | --- |
+| Cache stampede on one key | Shared loading, also called single-flight or request coalescing, is the default. Followers share one source execution and its bounded retry budget. | Node-local scope can run one load per host. Cross-instance coalescing requires explicit shared-store scope and confirmed provider ownership; independent loading is an explicit alternative. See section 6. |
+| Cache avalanche or cold start across many keys | Optional expiry jitter and bounded warm-up spread work. Process-wide and per-collection admission bound active loads, queues, and waiters. | Per-key coalescing alone cannot limit distinct-key demand. Process limits multiply across hosts; source capacity and deployment pacing remain application concerns. No fleet-wide source admission service is introduced. See sections 6, 6.5, and 8.4. |
+| Cache penetration through repeated absent keys | Optional negative caching avoids repeated loads for the same confirmed absence. Validation, finite entry budgets, and load admission bound accepted work. | Distinct random keys can still cause distinct source reads. Authorization and request-rate limits belong at application boundaries; no Bloom filter or source-existence index is added. See sections 5.5 and 8.3. |
+| Hot keys and repeated payload decoding | Optional bounded hot entries retain binary representations, approved immutable decoded values, or both. | Every reuse still validates authoritative provider state. Persistent-provider metadata I/O can remain a bottleneck even when payload transfer or decoding is avoided. See section 9.3. |
+| One-time scans displacing reused values | Hot-entry admission normally requires a second access. Provider capacity uses invalid-first, priority-aware approximate recency eviction or explicit reject-new policy. | Reuse-based hot admission does not imply LFU admission for the persistent provider. Admission, eviction, expiration, and physical cleanup remain separate decisions. See sections 8.2, 8.3, and 9.3. |
+| An old load publishing after invalidation | Engine-managed source loads capture publication fences before source access. Conditional publication checks ownership, versions, and invalidation state atomically. | Fences reject superseded work; they cannot make a lagging source replica current or make source commit and cache invalidation atomic. Invalidation cannot revoke an already-returned value; open streams retain their bounded reader lifetime. See section 7. |
+| Cache-provider outage and retry amplification | Bounded node-local typed fallback, shared-load retry budgets, and an optional provider circuit breaker retain the failure contracts in section 14. | Shared-store mode starts no source work without confirmed ownership. Binary payload delivery needs confirmed publication. The provider breaker does not itself protect source capacity; fallback still uses normal load admission. |
+
+Collection keys must distinguish source requests whose results are not interchangeable, including relevant tenant, authorization, locale, and query inputs. Dependency dimensions select invalidation targets; they do not make two requests with the same entry key distinct. Dataset partitioning and cache granularity remain consumer decisions, as defined in sections 2.2 and 4.
+
+Implementation must verify this coverage through the existing acceptance criteria and performance profiles in sections 15 and 16. Hit ratio alone is insufficient evidence. Diagnostics also distinguish actual source invocations, joins, rejected work, provider validation I/O, payload bytes, and latency. This map adds no new policy framework or source integration.
+
+Pattern terminology follows Microsoft's [Cache-Aside pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/cache-aside) and AWS's [Caching challenges and strategies](https://aws.amazon.com/builders-library/caching-challenges-and-strategies/). [RFC 5861](https://www.rfc-editor.org/rfc/rfc5861.html) defines the HTTP stale-serving terms used for the excluded policies; it does not add HTTP cache semantics to the application engine.
+
 ## 3. Existing DevKit building blocks
 
 The repository already provides:
@@ -437,7 +485,11 @@ Negative markers are excluded from hot-value admission and proactive refresh. Cr
 
 Shared loading, also called single-flight or coordinated loading, is the standard read-through strategy. For concurrent misses of the same entry identity, exactly one caller owns the source work while admitted followers wait for that work to complete. The identity includes namespace, collection, contract version, and the case-insensitive key. Followers do not invoke their own loader delegate while waiting.
 
+Source loaders read authoritative data or compute derived values and must be safe to run again. Retries, later misses, explicit refresh, restarts, or another host may invoke the loader again. Loaders must not perform business mutations or irreversible business side effects. This caller contract applies to all cache-invoked typed and binary source work; the engine does not inspect delegates to prove repeatability.
+
 The owner performs the expensive fetch or computation and attempts publication once. On successful cacheable completion, waiting callers reuse the resulting value or acquire the published entry; they do not repeat the source work. Storage is rechecked after acquiring ownership so a just-published entry is reused. Different keys can load concurrently within admission limits; a shared load must not serialize unrelated keys behind one global source-work lock.
+
+The owner captures its validated `CacheItem` before source execution. That item's known dimensions and the owner's completed loader descriptor determine the result metadata, dependency dimensions, and TTL overrides within collection/provider limits. Joining callers cannot replace the loader, merge dimensions, or amend the publication policy. Their own cancellation and wait deadlines remain independent, and section 5.4 retains the existing bypass/refresh participation rules. Callers using the same identity must provide compatible value and dependency semantics. This is a caller contract, not delegate comparison or a new identity derived from policy overrides. Callers needing different collection policies use separate collections.
 
 The owner consumes the source continuation once and publishes its outcome through an engine-owned completion mechanism that supports multiple waiters. Do not hand the same single-consumption `ValueTask` or a single caller-owned stream to every follower. The shared completion and waiter state are bounded and remain owned by the shared work until it finishes.
 
@@ -474,6 +526,8 @@ A coordination wait timeout is not a cache-provider outage or an ordinary miss a
 The shared load delivers its final outcome to all remaining waiters. If it fails, they receive that failure without automatic per-waiter retries or leadership takeover. A later independent call may start fresh work normally. Failed source results are not stored as cache values. This failure policy is agreed.
 
 Source retries require an explicit bounded resilience policy around the shared load, implemented through its execution behaviors using existing resilience facilities or an appropriately configured application loader. One work unit owns the retry budget; adding waiters does not multiply attempts. The load behavior chain executes inside acquired ownership and the engine's execution budget, not separately for every waiter. The overall execution timeout, cancellation, ownership lease, and admission limits cover every attempt and backoff. Retry configuration cannot reset those budgets or replay an operation whose outcome remains indeterminate.
+
+Single-flight coalesces overlapping work only. A source that fails quickly can still receive repeated calls from successive work units. For dependencies needing outage protection, configure bounded retry backoff and optional source circuit breaking through the existing DevKit resilience policy in the owned-load behavior or application loader. A source breaker shares process-local state under a bounded configured dependency/policy alias, not one breaker per cache key or waiter. Its short-circuit returns an explicit source-resilience failure and starts no source attempt. Cache hits remain ordinary hits, and provider failures retain their separate classification. This is an optional usage policy, not a new cache-owned resilience framework. Without explicit configuration, source execution still defaults to one attempt with no source breaker. Failures never become negative entries, and no engine-managed per-key failure cache or cooldown is introduced.
 
 Cancellation is cooperative. If a loader ignores cancellation, the cache cannot terminate its code. It must fence off late publication and report stuck work. Releasing a logical lease does not release an occupied execution slot or make its allocated memory disappear.
 
@@ -598,7 +652,9 @@ The source system remains responsible for ordering its commit before invalidatio
 
 ### 7.2 Publication fencing
 
-Every load captures a publication fence before reading source data. Publication checks that fence, ownership token, and relevant entry version atomically with the write. Collection invalidation fences cover the targeted logical collection's contract versions, so an older deployed application cannot republish pre-invalidation data. A separate check followed by an unconditional write is insufficient.
+Every engine-managed source load captures a publication fence before reading source data. Publication checks that fence, ownership token, and relevant entry version atomically with the write. Collection invalidation fences cover the targeted logical collection's contract versions, so an older deployed application cannot republish pre-invalidation data. A separate check followed by an unconditional write is insufficient.
+
+A direct `SetAsync` does not identify when application code read the source and cannot retroactively acquire that pre-read fence. A manual cache-aside sequence therefore does not inherit source-load coordination or invalidation protection automatically. Conditional replacement checks an acquired entry version, but does not establish source freshness. Use the engine-managed loader path when those load guarantees are required.
 
 Key removal must fence old loads even when no stored entry exists. Clear must also fence all old work. A timed-out owner cannot overwrite a newer owner or a direct replacement.
 
@@ -1686,6 +1742,8 @@ Serve only logically valid entries to new callers. Expiration or invalidation ca
 
 Circuit breaking is optional and off by default for persistent providers; it is not needed on the synchronous in-memory path. When enabled, a process-local breaker is shared by the named provider instance and fails fast on provider unavailability while open. The default opens after five consecutive classified infrastructure failures, waits ten seconds, and admits one non-mutating half-open readiness probe. A successful probe closes it; a failed probe starts the next bounded cooldown. Reuse existing DevKit resilience facilities and `TimeProvider` conventions rather than introducing another framework or shared breaker store.
 
+This provider breaker protects cache-provider I/O. Source-outage protection uses the separately configured source resilience policy in section 6.2; opening one breaker does not open the other.
+
 Count transport/unavailability and provider-timeout failures. Do not count caller cancellation, validation/authorization, not-found, source errors, version conflicts, capacity rejection, or payload corruption as general provider outages. An open circuit produces explicit provider-unavailable information and remaining cooldown, not a cache miss. Node-local typed read-through may use its bounded source fallback. Shared-store mode starts no new source work without confirmed ownership, and binary payload delivery still requires confirmed publication. Explicit reads/writes/invalidation retain failure, and hot entries never bypass authoritative validation. Already-started or indeterminate mutations still require their normal reconciliation. Opening/recovery cannot trigger automatic mutation replay or retries of consumed streams.
 
 Diagnostics expose provider/node breaker state, opening/recovery, and rejected/probe counts with bounded labels. Disabled breaking adds no policy chain to the in-memory fast path. Benchmarks include enabled persistent-provider overhead and failure/probe behavior; normal deterministic tests cover transitions and error classification.
@@ -1718,6 +1776,7 @@ As a backend developer, I want concurrent callers to reuse expensive source load
 5. Given a caller wait timeout while other callers remain, only that caller receives the timeout and no additional source load starts; other waiters may receive the shared result.
 6. Given a loader makes a nested read-through call, an existing positive/negative hit remains usable, but a miss or join requiring source work fails with `NestedCacheLoad` before ownership, queueing, or waiting. Self-key, cross-key/collection, and overlapping active-load cases cannot form a source wait cycle.
 7. Given explicit refresh or bypass from a loader, the nested call fails with `NestedCacheLoad`; the rule also applies to batch loading and retry attempts without resetting the outer execution budget.
+8. Given admitted same-identity callers with different item metadata or policy overrides, the owner's captured item and completed descriptor govern publication within collection/provider limits. Joining callers neither run their delegates nor merge dimensions or change the published TTL. Each caller keeps its own wait/cancellation limits. Same-identity value/dependency compatibility remains a documented caller contract without delegate comparison or additional load identities.
 
 ### 15.3 Invalidation
 
@@ -1890,6 +1949,8 @@ As a backend developer, I want coordinated callers to share retry work and its f
 1. Given a failed shared load without a configured retry policy, all remaining waiters receive its failure and do not independently invoke the loader again.
 2. Given a bounded retry policy and many waiters, one shared retry budget controls the source attempts rather than allocating an attempt budget to each waiter.
 3. Given cancellation or the overall execution deadline during retry or backoff, no further attempt bypasses that limit and no failed result is stored as a cache value.
+4. Given a later miss, explicit refresh, or another permitted coordination scope after earlier work completes, a repeatable loader may execute again. Public loader documentation excludes business mutations and makes no global exactly-once promise; default execution without an explicit resilience policy remains one attempt per owned work unit.
+5. Given an explicitly configured source breaker is open, a miss fails with the source-resilience outcome before invoking the loader. Same-dependency work uses the configured process-local policy state across keys, while followers share the owned outcome. Valid cache hits still succeed, source failure neither opens the provider breaker nor becomes a negative marker, and no key-scoped failure cache is created.
 
 ### 15.21 Source-load coordination scope
 
@@ -2392,6 +2453,8 @@ The specification covers the complete caching feature with in-memory, Entity Fra
 Design completion requires:
 
 - Defined collection identity, public contracts, direct access, read-through and batch loading, and independent coexistence with the minimal caching feature.
+- Explicit coverage of standard caching patterns, expiration/refresh policies, and their limits, including application-owned source consistency and excluded stale-serving and source-write policies in section 2.3.
+- Defined repeatable source-loader responsibilities, owner-controlled shared-result metadata/policy, and optional source-outage resilience through the existing execution extension point, distinct from provider circuit breaking and negative caching.
 - Accepted read-only typed results, snapshot version tokens, nested source-work rejection, fixed dimension kinds, shared-store outage failure, and confirmed binary publication, with advanced feature integrations deferred until after implementation.
 - Defined retention, invalidation, publication fencing, admission, eviction, resource budgets, cancellation, and overload behavior.
 - Defined codecs, encoded formats, compression, hot binary/decoded retention, and large-value access contracts.
@@ -2804,6 +2867,18 @@ The accepted resolutions are:
 - SQLite keeps the asynchronous public API with explicit synchronous native execution, existing bounded provider admission/busy limits, cooperative cancellation, and occupied-work accounting. Section 10.6 requires no separate worker pool or unbounded async simulation.
 - The filesystem architecture remains selected. Early commit/recovery proof and a cache-aware offline recovery/reset procedure are provider deliverables in the existing test/recovery workflow, as defined in section 10.7.
 - Advanced command/query, requester, repository, and storage integrations are deferred until after implementation. Existing minimal-cache behaviors remain with `Common.Caching`; this feature is an independently selected advanced alternative. The optional presentation/management integrations remain in scope.
+
+### D-35. Repeatable loaders, owner metadata, and source resilience
+
+Status: explicitly accepted by the user on 2026-11-09.
+
+The accepted resolutions are:
+
+- Cache-invoked loaders read or compute derived data and must be safe to repeat without business mutations. Retry, refresh, a later miss, restart, or another coordination scope can invoke them again. Repeatability is a documented caller contract, not engine inspection or an exactly-once guarantee.
+- The current load owner's captured item and completed descriptor control result metadata, dependency dimensions, and bounded TTL overrides. Followers cannot replace the loader or merge/amend publication metadata. Same-identity value/dependency compatibility is a caller contract; add no delegate comparison or policy-based load identity.
+- Source-outage backoff and optional process-local source circuit breaking use existing configured resilience in the owned-load behavior or application loader. Share state by a bounded dependency/policy alias rather than key/waiter. Preserve one default attempt, no default source breaker, explicit failures, and separate provider-breaker classification. Add no error entries, per-key cooldown store, or new resilience framework.
+
+Sections 6.1, 6.2, 14.1, 15.2, and 15.20 define these contracts. Section 2.3 remains the pattern coverage map; its manual cache-aside and source-consistency limits are unchanged.
 
 ## 20. Related DevKit documentation
 

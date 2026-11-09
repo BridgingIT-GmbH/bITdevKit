@@ -141,6 +141,26 @@ Implementation must verify this coverage through the existing acceptance criteri
 
 Pattern terminology follows Microsoft's [Cache-Aside pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/cache-aside) and AWS's [Caching challenges and strategies](https://aws.amazon.com/builders-library/caching-challenges-and-strategies/). [RFC 5861](https://www.rfc-editor.org/rfc/rfc5861.html) defines the HTTP stale-serving terms used for the excluded policies; it does not add HTTP cache semantics to the application engine.
 
+### 2.4 Relationship to Key/Value Storage
+
+[Key/Value Storage](spec-application-storage-keyvalue.md#relationship-to-caching) and `Application.Caching` are two separate features. Key/value storage owns application state under its selected backend's durability contract. The advanced cache stores derived copies whose authoritative source remains elsewhere. Applications may use either or both alongside the existing minimal `Common.Caching` feature.
+
+| Concern | Key/Value Storage | Application Caching |
+| --- | --- | --- |
+| Data ownership | Stores application state. The selected persistent backend is authoritative for persistent stores; pure in-memory state is local and non-durable. | Stores derived, disposable copies of data owned by another source. A persistent cache remains disposable. |
+| Main operations | Exact-key get/set/delete, conditional writes, atomic counters, and bounded independent bulk writes. | Collection-based lookup, coordinated source loading, refresh, and invalidation by key, dimensions, or collection. |
+| Expiration and capacity | Configured expiry ends the stored state's lifetime. Quota pressure rejects writes rather than silently deleting live authoritative entries; local read copies can be evicted. | TTL bounds reuse of a cached result. Admission and eviction manage disposable entries within resource limits. |
+| Local read policy | Optional local acceleration is eventually consistent across nodes through change-log polling and local TTL. `Fresh` and `BackendOnly` select backend reads. | Optional hot entries strictly validate authoritative cache-provider state on every reuse. There is no timed local trust window. |
+| Typical use | Application preferences, temporary state markers, and per-key usage counters. | Product projections, reference datasets, computed reports, and reusable generated payloads. |
+
+Key/value `GetOrSet` initializes a missing stored value. Cache `GetOrLoadAsync` coordinates a repeatable read or computation from an external source and applies cache publication rules. Similar get/set, TTL, version, single-flight, or local-memory mechanisms do not make the APIs interchangeable.
+
+Key/value write-through commits its own authoritative backend before updating local acceleration. It is separate from writing cache results back to source systems, which this cache excludes. Key/value change-log polling permits eventual local reads; it cannot substitute for the strict provider validation required by this feature's hot-entry layer. Strict cache validity still does not certify the freshness of the external source snapshot.
+
+The features may reuse Common serialization, results, resilience, hosting, and diagnostics primitives. They retain independent public/provider contracts, registration, configuration, storage formats, and operational state. Initial implementation creates no automatic adapter or backend dependency between them, and registering one does not enable the other.
+
+`Common.Caching`, `ICacheProvider`, `AddCaching()`, existing provider implementations, and existing cache consumers remain intact under both specifications. The proposed key/value `IKeyValueStoreProvider` is a new optional convenience API over `IKeyValueStoreClient`; it does not replace or redirect the minimal cache. Any later rename, consolidation, adapter, or consumer migration requires a separate architectural decision and implementation scope.
+
 ## 3. Existing DevKit building blocks
 
 The repository already provides:
@@ -2454,6 +2474,7 @@ Design completion requires:
 
 - Defined collection identity, public contracts, direct access, read-through and batch loading, and independent coexistence with the minimal caching feature.
 - Explicit coverage of standard caching patterns, expiration/refresh policies, and their limits, including application-owned source consistency and excluded stale-serving and source-write policies in section 2.3.
+- Explicit separation from Key/Value Storage in section 2.4, including state ownership, local-read consistency, independent contracts/registration, and preservation of the existing minimal cache without a required migration.
 - Defined repeatable source-loader responsibilities, owner-controlled shared-result metadata/policy, and optional source-outage resilience through the existing execution extension point, distinct from provider circuit breaking and negative caching.
 - Accepted read-only typed results, snapshot version tokens, nested source-work rejection, fixed dimension kinds, shared-store outage failure, and confirmed binary publication, with advanced feature integrations deferred until after implementation.
 - Defined retention, invalidation, publication fencing, admission, eviction, resource budgets, cancellation, and overload behavior.
@@ -2882,6 +2903,7 @@ Sections 6.1, 6.2, 14.1, 15.2, and 15.20 define these contracts. Section 2.3 rem
 
 ## 20. Related DevKit documentation
 
+- [Key/Value Storage specification and feature boundaries](spec-application-storage-keyvalue.md#relationship-to-caching)
 - [Common Caching](../common-caching.md)
 - [Common Serialization](../common-serialization.md)
 - [Filesystem infrastructure and providers](../storage-filesystem-providers.md)

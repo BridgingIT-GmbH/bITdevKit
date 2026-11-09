@@ -33,12 +33,30 @@ Because this feature is primarily a shared application-state store, production c
 
 Multi-node local-state invalidation is based on a lightweight backend change log and polling worker. The existing message broker may be supported as an optional invalidation adapter, but it is not the default mechanism because full broker persistence, handler tracking, retries, and operational visibility are too heavy for invalidating a node-local read layer.
 
+## Relationship to caching
+
+Key/Value Storage and [Application Caching](spec-application-caching.md#24-relationship-to-keyvalue-storage) are two separate features with independent contracts, registration, configuration, backends, and operational state. An application may use either or both alongside the existing minimal `Common.Caching` feature.
+
+| Concern | Key/Value Storage | Application Caching |
+| --- | --- | --- |
+| Data ownership | Stores application state. The selected persistent backend is authoritative for persistent stores; pure in-memory state is local and non-durable. | Stores derived, disposable copies of data owned by another source. A persistent cache remains disposable. |
+| Main operations | Exact-key get/set/delete, conditional writes, atomic counters, and bounded independent bulk writes. | Collection-based lookup, coordinated source loading, refresh, and invalidation by key, dimensions, or collection. |
+| Expiration and capacity | Configured expiry ends the stored state's lifetime. Quota pressure rejects writes rather than silently deleting live authoritative entries; local read copies can be evicted. | TTL bounds reuse of a cached result. Admission and eviction manage disposable entries within resource limits. |
+| Local read policy | Optional local acceleration is eventually consistent across nodes through change-log polling and local TTL. `Fresh` and `BackendOnly` select backend reads. | Optional hot entries strictly validate authoritative cache-provider state on every reuse. There is no timed local trust window. |
+| Typical use | Application preferences, temporary state markers, and per-key usage counters. | Product projections, reference datasets, computed reports, and reusable generated payloads. |
+
+`GetOrSet` initializes missing key/value state through a factory. Its local single-flight and conditional-write rules do not provide the advanced cache's source-loading, refresh, or dependency-invalidation engine. Key/value write-through commits the authoritative key/value backend before updating local acceleration; it does not write a cache result back to an external source system.
+
+The features may reuse Common serialization, results, resilience, hosting, and diagnostics components. Their storage protocols and local read policies remain independent. Initial implementation introduces no automatic adapter, backend dependency, shared store format, or implicit registration between them.
+
+`Common.Caching`, `ICacheProvider`, `AddCaching()`, existing provider implementations, and existing cache consumers remain intact. The proposed `IKeyValueStoreProvider` is an additive key/value convenience API over `IKeyValueStoreClient`. It does not inherit from, replace, obsolete, or redirect `ICacheProvider`. Any later rename, consolidation, adapter, or consumer migration belongs to a separate architectural decision and implementation scope.
+
 ## Goals
 
 The goals of this feature are:
 
 * Provide a backend-neutral key/value storage abstraction.
-* Keep the advanced client and operational APIs Result-native while preserving the simple provider's established signatures.
+* Keep the client and operational APIs Result-native while offering a separate optional simple typed key/value provider over the same client.
 * Support string values, binary values, and numeric counters.
 * Support generic typed value convenience operations that serialize through a per-client `ISerializer`.
 * Default typed value serialization to `SystemTextJsonSerializer` while allowing explicit per-client replacement.
@@ -71,7 +89,7 @@ The goals of this feature are:
 * Provide an extensible key/value client behavior system consistent with other devkit storage features.
 * Expose internal key/value operation flow through typed logging.
 * Provide a built-in value encryption behavior based on `EncryptionHelper`.
-* Rename the existing `ICacheProvider` abstraction to `IKeyValueStoreProvider` and back its default distributed implementation with `IKeyValueStoreClient`.
+* Provide an additive `IKeyValueStoreProvider` convenience API backed by `IKeyValueStoreClient`, preserving `Common.Caching`, `ICacheProvider`, and all existing cache consumers.
 * Support optimistic concurrency through expected version checks.
 * Support optional set-if-absent semantics.
 * Support bounded, backend-native bulk value writes for adding many independent keys efficiently.
@@ -124,7 +142,7 @@ This feature does not introduce:
 * Range reads.
 * Append-only value mutation.
 * Backend-specific public APIs.
-* Maintaining separate cache-oriented and key/value-oriented names for the same simple provider abstraction.
+* Renaming, replacing, deprecating, or migrating the existing minimal-cache contracts, providers, registrations, or consumers.
 * Authentication or authorization policy enforcement.
 * Encryption key management or rotation orchestration.
 * Backup, restore, or backend disaster-recovery orchestration.
@@ -149,7 +167,7 @@ This feature does not introduce:
 | Version | Backend-neutral optimistic concurrency token for an entry. |
 | TTL | Time-to-live after which the entry is treated as expired. |
 | Expiry | Absolute timestamp after which a key is treated as missing. |
-| Key/value provider | Simple application-facing typed key/value abstraction, renamed from `ICacheProvider`. |
+| Key/value provider | New optional simple typed key/value abstraction over `IKeyValueStoreClient`, independent of the existing `ICacheProvider`. |
 | In-memory store | Local store that keeps all entries in process memory only. |
 | Persistent store | Store that places entries in a durable backend. |
 | Locally accelerated persistent store | Persistent store with an optional per-node in-memory read layer. |
@@ -172,7 +190,7 @@ This feature does not introduce:
 ## Design Principles
 
 * The public API is backend-neutral.
-* `IKeyValueStoreClient` and operational APIs are Result-native; `IKeyValueStoreProvider` preserves the existing simple typed contract.
+* `IKeyValueStoreClient` and operational APIs are Result-native; the new optional `IKeyValueStoreProvider` offers a separate simple typed key/value contract.
 * The store is exact-key oriented.
 * Atomic counters are first-class exact-key primitives.
 * Store names are first-class namespaces.
@@ -220,13 +238,13 @@ Feature-level registration, documentation headings, dashboard labels, and author
 
 ## Relationship Between Provider, Client, And Backend
 
-The existing `ICacheProvider` abstraction is renamed to `IKeyValueStoreProvider`. This removes the assumption that all values are disposable cache entries and makes the abstraction suitable for ordinary typed application state.
+`IKeyValueStoreProvider` is a new optional convenience contract for ordinary typed key/value state. It delegates to a selected `IKeyValueStoreClient` and remains independent of the existing minimal `ICacheProvider`. Existing cache services and consumers keep their contracts, names, registrations, and behavior.
 
-`IKeyValueStoreProvider` remains intentionally small:
+`IKeyValueStoreProvider` is intentionally small:
 
 * it stores typed objects through `Get`, `TryGet`, `Set`, and `Remove` operations;
 * it supports sliding and absolute expiration;
-* it retains `GetKeys` and `RemoveStartsWith` for compatibility with existing consumers;
+* it offers `GetKeys` and `RemoveStartsWith` within its configured key/value namespace, following the enumeration rules below;
 * it does not expose Result-native failures, metadata, versions, hashes, tags, fresh reads, counters, optimistic concurrency, set-if-absent, local acceleration controls, health, quotas, or maintenance inspection.
 
 ```csharp
@@ -313,7 +331,7 @@ Provider rules:
 * The provider does not expose versions, tags, counters, maintenance inspection, change-log details, or fresh-read options.
 * Provider logs must use typed logging and must not log value content.
 
-`IKeyValueStoreProvider` retains `GetKeys` and `RemoveStartsWith`, while `IKeyValueStoreClient` intentionally does not expose listing or prefix scans. The provider implementation handles those methods without changing the advanced client contract.
+`IKeyValueStoreProvider` offers `GetKeys` and `RemoveStartsWith`, while `IKeyValueStoreClient` intentionally does not expose listing or prefix scans. The provider implementation handles those methods without changing the advanced client contract.
 
 Allowed strategies:
 
@@ -323,30 +341,21 @@ Allowed strategies:
 
 Enumeration rules:
 
-* the default distributed provider configuration supports `GetKeys` and `RemoveStartsWith` because they are part of the renamed interface contract;
+* the new provider's default configuration supports `GetKeys` and `RemoveStartsWith` as declared key/value convenience operations, independent of the existing cache-provider contract;
 * an internal key index is maintained by provider writes and deletes, tolerates stale entries, and verifies key existence before returning keys or deleting by prefix;
 * prefix removal is eventually consistent across nodes and relies on exact-key deletion plus normal change-log invalidation;
 * enumeration is scoped to the provider's configured namespace;
 * provider internals do not add listing, querying, prefix scans, or full-store scans to `IKeyValueStoreClient`.
 
-### Rename And Migration
+### Coexistence with existing caching
 
-The target API contains `IKeyValueStoreProvider`, not `ICacheProvider`. Implementation should perform a repository-wide rename of the interface, implementations, behaviors, constructor parameters, tests, and registration extensions.
+Key/Value Storage adds its own client, optional simple provider, and backend contracts. `IKeyValueStoreBackend` is its internal storage SPI. Neither that SPI nor `IKeyValueStoreProvider` is a renamed existing cache abstraction.
 
-Initial symbol mapping:
+Implement this feature without renaming `ICacheProvider`, `InMemoryCacheProvider`, `LoggingCacheProviderBehavior`, `DocumentStoreCacheProvider`, their configuration types, or existing registration extensions. Existing requester, command/query, repository, and storage cache behaviors keep their current dependencies and semantics.
 
-| Current symbol | Target symbol |
-| --- | --- |
-| `ICacheProvider` | `IKeyValueStoreProvider` |
-| `InMemoryCacheProvider` | `InMemoryKeyValueStoreProvider` |
-| `InMemoryCacheProviderConfiguration` | `InMemoryKeyValueStoreProviderConfiguration` |
-| `LoggingCacheProviderBehavior` | `LoggingKeyValueStoreProviderBehavior` |
-| `DocumentStoreCacheProvider` | `DocumentStoreKeyValueStoreProvider` |
-| `DocumentStoreCacheProviderConfiguration` | `DocumentStoreKeyValueStoreProviderConfiguration` |
+`AddKeyValueStoreProvider(...)` registers only the new key/value convenience provider. It cannot replace or forward existing cache services, rebind their options, mark them obsolete, or change their consumers. Applications explicitly select the feature appropriate to their use case.
 
-Types whose actual responsibility is caching, such as requester query caching or document-client cache behaviors, may retain `Cache` in their behavior name. The rename applies to the general storage abstraction and its implementations; it does not obscure a genuinely cache-specific policy.
-
-If a compatibility release is required, `ICacheProvider` may remain for one release as an obsolete forwarding interface or adapter. New code, documentation, and registrations use only `IKeyValueStoreProvider`; the compatibility type must not become a second independently configured abstraction.
+Any later migration of existing cache APIs or consumers requires a separate architectural decision and implementation scope. No migration table, obsolete compatibility shim, or repository-wide cache rename is required by this specification.
 
 ## Backend Shapes
 
@@ -2710,7 +2719,7 @@ Registration rules:
 
 ### Simple Provider Registration
 
-Applications that use the renamed simple abstraction select one named client as its backing store:
+Applications that opt into the new simple key/value abstraction select one named client as its backing store:
 
 ```csharp
 public static IServiceCollection AddKeyValueStoreProvider(
@@ -2746,7 +2755,8 @@ Rules:
 * `KeyPrefix` scopes provider-owned enumeration and prefix removal without changing direct client keys outside that namespace;
 * `EnableEnumeration = false` disables `GetKeys` and `RemoveStartsWith` according to the established unsupported-operation behavior;
 * applications needing several simple providers use keyed `IKeyValueStoreProvider` registrations, each selecting one named client and namespace;
-* registration must not construct a second client pipeline or serializer.
+* registration must not construct a second client pipeline or serializer;
+* registration must preserve existing `ICacheProvider`, `AddCaching()`, and advanced-cache registrations, options, and consumers. It does not register an adapter between these features.
 
 ### Typed Serialization Registration
 
@@ -3001,6 +3011,7 @@ Required tests:
 * several differently backed named clients resolve through one factory;
 * `AddKeyValueStoreProvider` resolves the selected named client and registers one default `IKeyValueStoreProvider`;
 * simple provider registration fails clearly for an unknown client name or a second unkeyed default;
+* adding key/value registrations alongside the minimal cache preserves the original `ICacheProvider`, provider options, and existing cache consumer resolution;
 * duplicate client names fail registration.
 
 ## Health Checks
@@ -3343,8 +3354,8 @@ Acceptance criteria:
 5. Given a consumer calls `RemoveStartsWith`, when provider key enumeration is enabled, then matching keys are deleted through exact-key operations and locally accelerated nodes invalidate through the normal change-log mechanism.
 6. Given provider key enumeration is disabled, when `GetKeys` or `RemoveStartsWith` is called, then the provider follows its configured unsupported-operation behavior without adding scans to `IKeyValueStoreClient`.
 7. Given values are written through the provider, when typed logging is enabled, then logs include operation, store name, result status, and the raw key by default without value content.
-8. Given the rename is complete, when public APIs and implementations are inspected, then the target abstraction is `IKeyValueStoreProvider` and `ICacheProvider` exists only as an explicitly obsolete compatibility shim when required.
-9. Given a component implements a genuine caching policy, when symbols are renamed, then cache-specific behavior names may remain while the general provider dependency changes to `IKeyValueStoreProvider`.
+8. Given the minimal cache is already registered, when key/value clients and the optional `IKeyValueStoreProvider` are added, then the original `ICacheProvider`, provider configuration, registrations, and cache consumer resolution remain unchanged. The new provider does not forward or replace the existing cache service.
+9. Given existing cache-specific components, when Key/Value Storage is implemented, then their symbols and dependencies remain intact. No repository-wide cache rename, obsolete `ICacheProvider` shim, or automatic consumer migration is introduced.
 
 ### Story 13: Observe Internal Operations With Typed Logging
 
@@ -3489,9 +3500,9 @@ Acceptance criteria:
 * Cross-node invalidation evicts positive values, counters, and cached not-found/existence state for the changed key.
 * Per-key invalidation generations prevent reads started before an observed change from repopulating stale local state afterward.
 * Local caches converge through invalidation and demand loading; the feature does not replicate newly written values into every node's memory.
-* The existing `ICacheProvider` abstraction is renamed to `IKeyValueStoreProvider`; the target API no longer presents ordinary typed state as inherently cached.
-* `KeyValueStoreProvider` implements the simple provider contract over `IKeyValueStoreClient`.
-* `IKeyValueStoreBackend` replaces the former internal `IKeyValueStoreProvider` name so the simple provider and backend SPI cannot be confused.
+* Key/Value Storage and Application Caching are separate features. `Common.Caching`, `ICacheProvider`, existing providers, registrations, and consumers remain intact. Any later rename or migration requires a separate decision.
+* The new optional `KeyValueStoreProvider` implements the additive `IKeyValueStoreProvider` contract over `IKeyValueStoreClient`; it does not replace or adapt existing cache services.
+* `IKeyValueStoreBackend` names the new feature's internal storage SPI, distinct from its optional application-facing `IKeyValueStoreProvider` and the existing minimal `ICacheProvider`.
 * `IKeyValueStorePersistenceBackend` and `IKeyValueStoreMaintenanceBackend` consistently name lower-level storage SPIs.
 * The locally accelerated persistent store composes over `IKeyValueStorePersistenceBackend`; durable storage mechanics stay separate from local read policy.
 * Named application clients resolve through `IKeyValueStoreClientFactory`, backed by keyed DI in the same style as Blob Storage.
@@ -3529,10 +3540,10 @@ Acceptance criteria:
 * Use `SimpleNotifier` only behind the key/value observer adapter for local in-process key-change observer fan-out.
 * Do not use key-change observers for critical durable workflows.
 * Implement client behaviors as decorators around `IKeyValueStoreClient`.
-* Rename repository uses of `ICacheProvider` to `IKeyValueStoreProvider` and rename general-provider implementations plus their decorators according to the migration table.
-* Implement `KeyValueStoreProvider` over `IKeyValueStoreClient`.
-* Rename the internal storage SPI to `IKeyValueStoreBackend`, including capabilities, errors, factories, diagnostics, and tests.
-* Rename public local-acceleration options consistently, including `LocalReadTtl` and `KeyValueReadConsistency.BackendOnly`.
+* Preserve existing `ICacheProvider` uses, minimal-cache implementations, decorators, configurations, registrations, and tests. Do not redirect them to the key/value client.
+* Implement the new optional `KeyValueStoreProvider` over `IKeyValueStoreClient`, with independent registrations and options.
+* Use `IKeyValueStoreBackend` for the new feature's internal storage SPI, including capabilities, errors, factories, diagnostics, and tests.
+* Use the key/value local-acceleration names consistently, including `LocalReadTtl` and `KeyValueReadConsistency.BackendOnly`.
 * Implement `KeyValueStoreExpiryCleanupBackgroundService` over `PeriodicBackgroundService` and register it once with `TryAddEnumerable`.
 * Reuse `StorageRetentionOptions`; do not implement another timer loop or cleanup scheduler.
 * Implement `IKeyValueStoreExpiryCleanupBackend` for EF and Azure Table Storage with bounded, conditional, multi-node-safe deletion.

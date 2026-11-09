@@ -4,13 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
+    @* Keep Blazor's head content before styles that browser extensions may replace. *@
+    <HeadOutlet @rendermode="new InteractiveWebAssemblyRenderMode(false)" />
     <link href="https://fonts.googleapis.com/css2?family=Chivo+Mono:wght@400;500;800&display=swap" rel="stylesheet" />
     <link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet" />
     <link href="@Assets["BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.styles.css"]" rel="stylesheet" />
     <link href="@Assets["styles/wayfind.css"]" rel="stylesheet" />
     <ImportMap />
     <link rel="icon" type="image/png" href="favicon.ico" />
-    <HeadOutlet @rendermode="new InteractiveWebAssemblyRenderMode(false)" />
 </head>
 
 <body>

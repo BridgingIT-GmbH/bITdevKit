@@ -501,6 +501,8 @@ Negative markers are excluded from hot-value admission and proactive refresh. Cr
 
 ## 6. Loading and coordination
 
+The sequence diagrams illustrate the existing contracts for admitted work. Compare [node-local sharing](#611-node-local-sharing-with-a-central-provider), [shared-store loading](#612-shared-store-loading-across-web-nodes), and [independent loading](#613-explicit-independent-loading) before selecting collection policy. Failure, batch, refresh, and warm-up flows appear with their corresponding rules below.
+
 ### 6.1 Shared loading and independent loading
 
 Shared loading, also called single-flight or coordinated loading, is the standard read-through strategy. For concurrent misses of the same entry identity, exactly one caller owns the source work while admitted followers wait for that work to complete. The identity includes namespace, collection, contract version, and the case-insensitive key. Followers do not invoke their own loader delegate while waiting.
@@ -529,6 +531,149 @@ Coordination is bounded by maximum active loads, queued loads, followers per key
 
 Inside a cache-owned loader execution, nested cache hits are permitted. If a nested call would start or join source work, reject it with a recoverable `NestedCacheLoad` failure before ownership, queueing, or waiting. Explicit nested refresh and bypass fail by the same rule. Apply it across keys, collections, and cache handles for the execution context, including batch loading and retries. A simple execution-context marker enforces the rule; no dependency graph is maintained. Loaders can call source services or use direct cache lookup without starting nested cache source work.
 
+#### 6.1.1 Node-local sharing with a central provider
+
+Both nodes miss before either publishes. Each node coalesces its own callers, so the expensive source can run once per node for this identity. Selecting a central provider does not change the default node-local scope.
+
+```mermaid
+sequenceDiagram
+    participant A as Node A
+    participant B as Node B
+    participant Store as Central EF cache
+    participant Source as Expensive source
+
+    Note over A,B: Same identity, admitted local callers join locally
+    A->>Store: Lookup, then recheck under local ownership
+    Store-->>A: Missing
+    B->>Store: Lookup, then recheck under local ownership
+    Store-->>B: Missing
+    par Node A owns local source work
+        A->>Source: Run A's loader
+        Source-->>A: A's result
+        A->>Store: Conditional publication
+        Store-->>A: Actual storage outcome
+        A->>A: Complete local callers under normal outcome rules
+    and Node B owns local source work
+        B->>Source: Run B's loader
+        Source-->>B: B's result
+        B->>Store: Conditional publication
+        Store-->>B: Actual storage outcome
+        B->>B: Complete local callers under normal outcome rules
+    end
+    Note over A,Store: Shared publication and invalidation checks still apply
+```
+
+#### 6.1.2 Shared-store loading across web nodes
+
+The collection explicitly selects shared-store coordination. All nodes use the same namespace, collection, contract version, key, and store authority. This example uses a multi-host-capable EF profile such as SQL Server or PostgreSQL and assumes successful publication.
+
+```mermaid
+sequenceDiagram
+    participant A as Node A
+    participant B as Node B
+    participant C as Node C
+    participant Store as Central EF cache
+    participant Source as Expensive source
+
+    Note over A,C: Same identity, all initial lookups miss
+    A->>Store: Acquire authoritative ownership and fence
+    Store-->>A: Ownership confirmed
+    B->>Store: Observe existing ownership
+    Store-->>B: Another owner, wait within existing deadline
+    C->>Store: Observe existing ownership
+    Store-->>C: Another owner, wait within existing deadline
+    A->>Store: Recheck after acquiring ownership
+    Store-->>A: Still missing
+    A->>Source: Run one owned loader
+    activate Source
+    Note over A,Store: Renew ownership as needed within the execution budget
+    B->>Store: Bounded completion observation
+    Store-->>B: Pending
+    C->>Store: Bounded completion observation
+    Store-->>C: Pending
+    Note over B,C: One observer per active key per node, local callers share waiting
+    Source-->>A: Successful value
+    deactivate Source
+    A->>Store: Publish if ownership, version, and fence permit
+    Store-->>A: Publication confirmed, TTL starts
+    A->>A: Complete eligible local typed callers
+    B->>Store: Observe completion and acquire published value
+    Store-->>B: Stored version
+    B->>B: Complete local callers
+    C->>Store: Observe completion and acquire published value
+    Store-->>C: Stored version
+    C->>C: Complete local callers
+```
+
+The expensive loader executes on the owning web node. EF stores ownership, completion, and payload state; no cache-provider transaction is held across the source callback. Remote nodes obtain the published representation from the provider. This avoids duplicate source work on the healthy path, while lookup, observation, and payload reads still incur provider I/O.
+
+#### 6.1.3 Explicit independent loading
+
+Independent strategy permits two admitted calls for the same identity to run separate loaders, even on one node. This illustration uses node-local scope. Each execution still registers active work, captures publication rights, and uses normal conditional publication.
+
+```mermaid
+sequenceDiagram
+    participant A as Caller A
+    participant B as Caller B
+    participant Cache as Collection engine
+    participant Store as Selected provider
+    participant Source as Source loader
+
+    A->>Cache: GetOrLoad K with independent strategy
+    Cache->>Store: Lookup and capture publication state
+    Store-->>Cache: Missing and fence
+    Cache->>Source: Start A's admitted execution
+    activate Source
+    B->>Cache: GetOrLoad K with independent strategy
+    Cache->>Store: Lookup and capture publication state
+    Store-->>Cache: Missing and fence
+    Cache->>Source: Start B's admitted execution
+    Source-->>Cache: A's result
+    Cache->>Store: Conditionally publish A's result
+    Store-->>Cache: Storage outcome
+    Cache-->>A: A's execution outcome
+    Source-->>Cache: B's result
+    deactivate Source
+    Cache->>Store: Conditionally publish B's result
+    Store-->>Cache: Storage outcome or conflict
+    Cache-->>B: B's execution outcome
+    Note over Cache,Store: Invalidation and newer versions can reject late publication
+```
+
+#### 6.1.4 Successful typed load without retention
+
+This example starts with confirmed shared-store ownership, but the completed typed value is not retained and non-publication is known. Only eligible callers in the loading process can receive that value directly. Remote callers need a provider entry or a later authoritative ownership grant.
+
+```mermaid
+sequenceDiagram
+    participant A as Owning node A
+    participant B as Waiting node B
+    participant Store as Shared provider
+    participant Source as Expensive source
+
+    Note over A,B: A owns K, B already observes that work
+    A->>Source: Run owned typed loader
+    Source-->>A: Successful typed value
+    A->>Store: Attempt conditional publication
+    Store-->>A: Confirmed not retained
+    A->>A: Complete eligible local callers read-only
+    B->>Store: Recheck storage and request ownership
+    alt Provider confirms no entry and grants new ownership
+        Store-->>B: New ownership and fence
+        B->>Source: Run B's owned loader within remaining budgets
+        Source-->>B: Source outcome
+        B->>Store: Apply normal conditional publication rules
+        Store-->>B: Actual storage outcome
+        B->>B: Complete eligible callers under normal rules
+    else Ownership authority unavailable or uncertain
+        Store-->>B: ProviderUnavailable
+        Note over B,Source: B starts no source work
+    end
+    Note over A,Store: Indeterminate publication must reconcile before reassignment
+```
+
+No uncached-value transport or per-waiter replacement load is introduced. Existing wait deadlines and admission limits remain in force. Payload-producing binary work instead fails when publication is unconfirmed; it never delivers an uncached stream.
+
 ### 6.2 Timeouts and cancellation
 
 Queue timeout, caller wait timeout, loader execution timeout, and ownership lease lifetime have separate meanings. No timeout is infinite by accident.
@@ -551,11 +696,117 @@ Single-flight coalesces overlapping work only. A source that fails quickly can s
 
 Cancellation is cooperative. If a loader ignores cancellation, the cache cannot terminate its code. It must fence off late publication and report stuck work. Releasing a logical lease does not release an occupied execution slot or make its allocated memory disappear.
 
+#### 6.2.1 Caller departure and last-interest cancellation
+
+A departing caller ends its own wait. Other interested callers keep the owned execution alive. The second branch shows the default policy when the last interested caller also leaves; an explicitly configured background-completion policy instead retains bounded owned work.
+
+```mermaid
+sequenceDiagram
+    participant A as Caller A
+    participant B as Caller B
+    participant Load as Owned load
+    participant Source as Source loader
+    participant Store as Selected provider
+
+    A->>Load: Start or join K
+    Load->>Source: Execute in cache-owned scope
+    activate Source
+    B->>Load: Join K
+    Note over A,Load: A cancels or A's wait deadline expires
+    Load-->>A: Caller cancellation or coordination timeout
+    alt B remains interested and source succeeds
+        Source-->>Load: Successful result
+        Load->>Store: Conditional publication
+        Store-->>Load: Storage outcome
+        Load-->>B: Shared outcome
+    else B also leaves and default last-interest cancellation applies
+        Load-->>B: Caller cancellation or coordination timeout
+        Load->>Store: Fence stopped work against publication
+        Load->>Source: Request cancellation
+        Note over Load,Source: Occupied work stays charged until execution actually ends
+        Source-->>Load: Stops or returns a late result
+        Load->>Load: Reject late publication and complete cleanup
+    end
+    deactivate Source
+```
+
+#### 6.2.2 Shared failure and optional source resilience
+
+This flow shows one admitted owned execution failing. Its waiters share the final outcome. Retry/backoff and the source breaker appear only when explicitly configured through the existing source resilience extension point; otherwise the loader has one attempt.
+
+```mermaid
+sequenceDiagram
+    participant Callers as Admitted callers
+    participant Load as Owned load
+    participant Policy as Configured source policy
+    participant Source as Source loader
+
+    Callers->>Load: Start or join K
+    Load->>Policy: Execute within one owned deadline and admission budget
+    alt Explicit source breaker is open
+        Policy-->>Load: Explicit source-resilience failure
+        Note over Policy,Source: No source attempt
+    else Source execution is admitted
+        Policy->>Source: Attempt
+        Source-->>Policy: Failure
+        opt Retry configured and shared budgets remain
+            Policy->>Policy: Bounded backoff within original deadline
+            Policy->>Source: Retry the same repeatable source work
+            Source-->>Policy: Final failure
+        end
+        Policy-->>Load: Final source failure
+    end
+    Load-->>Callers: Share failure with remaining waiters
+    Note over Load,Source: No per-waiter retry or negative cache entry
+    Note over Policy: Source policy state is process-local by dependency alias
+```
+
+A source failure does not open the provider breaker. If shared-store ownership itself cannot be confirmed, the call fails with `ProviderUnavailable` before reaching this source execution flow; it never downgrades to node-local loading.
+
 ### 6.3 Batch coordination
 
 For overlapping batches, resolve hits, acquire ownership of misses without waiting, complete owned work, and only then await work owned by other callers. Never wait on another batch while holding unfinished ownership that it may need.
 
 Per-item completion releases ownership promptly. Partial failures, cancellation, and suppressed storage complete the relevant followers explicitly. Batch membership cannot create an unbounded queue of item tasks or source reads.
+
+#### 6.3.1 Overlapping batches without a wait cycle
+
+Batch A requests `[a, b]` and Batch B requests `[b, a]`. Both keys initially miss. Each batch acquires one key and registers as a follower for the other without waiting. Successful publication is assumed below.
+
+```mermaid
+sequenceDiagram
+    participant A as Batch A
+    participant B as Batch B
+    participant Coord as Load coordinator
+    participant Source as Source loader
+    participant Store as Selected provider
+
+    A->>Coord: Acquire a
+    Coord-->>A: Own a
+    B->>Coord: Acquire b
+    Coord-->>B: Own b
+    A->>Coord: Acquire or join b without waiting
+    Coord-->>A: Follow B's b
+    B->>Coord: Acquire or join a without waiting
+    Coord-->>B: Follow A's a
+    par A completes its owned miss
+        A->>Source: Load a
+        Source-->>A: Value a
+        A->>Store: Conditional publication of a
+        Store-->>A: Stored
+        A->>Coord: Complete a and release ownership
+    and B completes its owned miss
+        B->>Source: Load b
+        Source-->>B: Value b
+        B->>Store: Conditional publication of b
+        Store-->>B: Stored
+        B->>Coord: Complete b and release ownership
+    end
+    A->>Coord: Await b after owned a is complete
+    Coord-->>A: Outcome b, return ordered results for a, b
+    B->>Coord: Await a after owned b is complete
+    Coord-->>B: Outcome a, return ordered results for b, a
+```
 
 ### 6.4 Shared-load success path
 
@@ -648,6 +899,83 @@ On a source failure, retain the old version only until its original expiry. Retr
 Optional warm-up is disabled by default. The same refresh service can perform a bounded startup pass over configured seed keys or a code-registered asynchronous key source after delay/readiness. It uses ordinary `GetOrLoad` semantics, including the shared-store outage and confirmed binary publication rules, bounded batches and the same loader/lifetime/coordination limits, and disposes the key enumerator on cancellation or budget exhaustion. Disabled collections admit no warm-up or refresh work. Periodic warm-up requires an explicit interval. Configuration cannot enable arbitrary administrative loaders or make HTTP get invoke them. Warm-up and refresh never enable the hot-entry layer implicitly.
 
 Diagnostics expose readiness, last/next sweep, due/eligible/skipped counts, active refresh owners, failures/backoff, conditional publication outcomes, and last successful refresh. Metrics keep bounded labels. Benchmarks include foreground latency and allocations while refresh/maintenance runs, rather than timing only an idle cache.
+
+#### 6.5.3 Proactive refresh while a valid version remains readable
+
+The worker selects an active, due, valid version V1. This diagram shows an admitted refresh owner in shared-store scope; node-local refresh uses the same eligibility and publication rules with local ownership. The foreground read shown here occurs before V1 expires. Reads after expiry miss and may join admitted refresh work.
+
+```mermaid
+sequenceDiagram
+    participant Worker as Refresh worker
+    participant Cache as Collection engine
+    participant Store as Selected provider
+    participant Source as Registered source loader
+    participant Reader as Foreground caller
+
+    Worker->>Store: Query bounded due-refresh candidates
+    Store-->>Worker: Active, due, valid version V1
+    Worker->>Cache: Refresh selected V1
+    Cache->>Store: Recheck eligibility and acquire ownership
+    Store-->>Cache: Owned execution, expected V1, and fence
+    Cache->>Source: Load fresh source value
+    activate Source
+    Reader->>Cache: GetOrLoad K while V1 remains valid
+    Cache->>Store: Validate and acquire V1
+    Store-->>Cache: Valid V1
+    Cache-->>Reader: Return V1 without waiting for refresh
+    alt Source succeeds
+        Source-->>Cache: Fresh value
+        Cache->>Store: Publish against expected V1, ownership, and fence
+        alt Publication rights still permit replacement
+            Store-->>Cache: New version V2 stored with a new lifetime
+            Cache-->>Worker: Refresh stored
+        else Invalidation, replacement, or ownership loss wins
+            Store-->>Cache: Conflict or explicit failure
+            Cache-->>Worker: Record outcome without unconditional retry
+        end
+    else Source fails
+        Source-->>Cache: Failure
+        Cache-->>Worker: Failure, apply bounded version-scoped backoff
+        Note over Cache,Store: V1 keeps only its original validity and expiry
+    end
+    deactivate Source
+```
+
+Refresh never revives V1 by touching it. A late result cannot undo invalidation, and binary refresh still requires confirmed publication before delivering new read handles.
+
+#### 6.5.4 Background readiness and bounded warm-up
+
+Warm-up requires explicit collection opt-in and trusted seed configuration or a registered asynchronous key source. The refresh service follows startup/readiness gates before admitting normal read-through work. The separate maintenance service uses the same gating conventions for bounded cleanup, not source warm-up.
+
+```mermaid
+sequenceDiagram
+    participant Host as Application host
+    participant Worker as Refresh and warm-up worker
+    participant Ready as Named readiness gate or provider check
+    participant Seeds as Configured seed keys or registered key source
+    participant Cache as Collection engine
+
+    Host-->>Worker: ApplicationStarted
+    Worker->>Worker: Await configured startup delay
+    Worker->>Ready: Wait within readiness budget
+    alt Provider and loader dependencies are ready
+        Ready-->>Worker: Ready
+        Worker->>Seeds: Open bounded seed enumeration
+        loop While keys remain and iteration budgets allow
+            Worker->>Seeds: Read next bounded batch
+            Seeds-->>Worker: Declared keys
+            Worker->>Cache: Normal GetOrLoad for admitted keys
+            Note over Worker,Cache: Same lookup, ownership, source, publication, and capacity rules
+            Cache-->>Worker: Per-item outcomes
+        end
+        Worker->>Seeds: Dispose enumeration at completion or cancellation
+        Worker->>Worker: Record outcomes, no overlapping catch-up sweep
+    else Readiness fails or times out
+        Ready-->>Worker: Not ready
+        Worker->>Worker: Record readiness and leave work pending
+        Note over Worker,Cache: No warm-up source work until a later successful readiness check
+    end
+```
 
 ## 7. Invalidation and publication correctness
 

@@ -10,7 +10,7 @@ const vm = require('node:vm');
 const source = fs.readFileSync(path.resolve(__dirname, '../../../../src/Presentation.Web/Dashboard/Pages/_DashboardLayout.cshtml'), 'utf8');
 const factory = source.match(/window\.bdkDashboard\.createRefresher = (function\(options\) \{[\s\S]*?\n        \});/)[1];
 
-function fixture({ type = 'text/html; charset=utf-8', body = '<p>fresh</p>', status = 200, redirected = false, responseType, applyResponse } = {}) {
+function fixture({ type = 'text/html; charset=utf-8', body = '<p>fresh</p>', status = 200, redirected = false, responseType, applyResponse, interval, savedInterval } = {}) {
     const content = { innerHTML: '<p>previous</p>', querySelector: () => null, querySelectorAll: () => [] };
     const label = { textContent: 'previous status', classList: { toggle() {} } };
     const errors = [];
@@ -31,6 +31,7 @@ function fixture({ type = 'text/html; charset=utf-8', body = '<p>fresh</p>', sta
         location: { origin: 'https://example.test' },
         scrollX: 0, scrollY: 0, scrollTo() {}, setTimeout, clearTimeout,
         bdkDashboard: {
+            state: { get: (_, fallback, validate) => savedInterval != null && validate(savedInterval) ? savedInterval : fallback },
             resolveElement: value => value || null,
             showRefreshError: () => { stale = true; },
             clearRefreshError: () => { stale = false; }
@@ -42,10 +43,20 @@ function fixture({ type = 'text/html; charset=utf-8', body = '<p>fresh</p>', sta
     });
     const refresher = createRefresher({
         contentElement: content, statusElement: label, contentUrl: '/ops/data', responseType, applyResponse,
+        intervalElement: interval, storageKey: interval ? 'bdk.dashboard.test.refreshInterval' : undefined,
         onSuccess: () => { accepted++; }, onError: error => errors.push(error)
     });
-    return { refresh: () => refresher.refresh(false), content, label, errors, stale: () => stale, accepted: () => accepted };
+    return { refresh: () => refresher.refresh(false), clear: refresher.clear, content, label, errors, stale: () => stale, accepted: () => accepted };
 }
+
+test('saved refresh intervals restore only supported options', () => {
+    for (const [savedInterval, expected] of [['5000', '5000'], ['999', '0']]) {
+        const interval = { value: '0', options: [{ value: '0' }, { value: '5000' }], addEventListener() {} };
+        const sut = fixture({ interval, savedInterval });
+        sut.clear();
+        assert.equal(interval.value, expected);
+    }
+});
 
 test('JSON diagnostics responses reach their renderer and publish a successful update', async () => {
     let snapshot;

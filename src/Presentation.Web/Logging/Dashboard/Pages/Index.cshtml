@@ -447,11 +447,11 @@
         contentElement.addEventListener('change', event => {
             if (!event.target.matches('[data-dashboard-batch-size]')) return;
             const query = formQuery(); query.set('pageSize', event.target.value);
-            try { localStorage.setItem('bdk.dashboard.logentries.rowsPerLoad', event.target.value); } catch { }
+            window.bdkDashboard.state.set('bdk.dashboard.logentries.rowsPerLoad', event.target.value);
             refreshContent(query);
         });
         try {
-            const size = localStorage.getItem('bdk.dashboard.logentries.rowsPerLoad');
+            const size = window.bdkDashboard.state.get('bdk.dashboard.logentries.rowsPerLoad');
             const select = contentElement.querySelector('[data-dashboard-batch-size]');
             if (!new URL(location.href).searchParams.has('pageSize') && size && select && [...select.options].some(option => option.value === size) && select.value !== size) { const query = formQuery(); query.set('pageSize', size); refreshContent(query); }
         } catch { }

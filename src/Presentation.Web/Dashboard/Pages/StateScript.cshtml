@@ -1,0 +1,90 @@
+@inherits RazorSlice<string>
+<script data-dashboard-root="@Model">
+(() => {
+    const root = document.currentScript.dataset.dashboardRoot;
+    let resetting = false;
+    const prefixes = ['bdk.dashboard.', 'bdk.profiling.', 'bdk.documentStorage.', 'bdk.blobStorage.', 'bdk.storage.diagnostics.', 'bdk:storage:throughput-test:'];
+    const shellKeys = ['theme', 'dashboardTexture', 'sidebarCollapsed', 'dashboardSidebarGroups'];
+    const owns = key => shellKeys.includes(key) || prefixes.some(prefix => key.startsWith(prefix)) || /^bdk\..+\.view:/.test(key);
+
+    function store(name) {
+        const memory = new Map();
+        return {
+            get(key, fallback = null, validate = () => true) {
+                let value = null;
+                try {
+                    value = memory.has(key) ? memory.get(key) : window[name].getItem(key);
+                    return value !== null && validate(value) ? value : fallback;
+                } catch { return fallback; }
+            },
+            set(key, value) {
+                if (resetting) return;
+                const text = String(value);
+                try { window[name].setItem(key, text); memory.delete(key); }
+                catch { memory.set(key, text); }
+            },
+            remove(key) {
+                if (resetting) return;
+                try { window[name].removeItem(key); memory.delete(key); }
+                catch { memory.set(key, null); }
+            },
+            getJson(key, fallback = null, validate = () => true) {
+                try {
+                    const raw = this.get(key);
+                    if (raw === null) return fallback;
+                    const value = JSON.parse(raw);
+                    return validate(value) ? value : fallback;
+                } catch { return fallback; }
+            },
+            setJson(key, value) {
+                try { this.set(key, JSON.stringify(value)); } catch { }
+            },
+            clear() {
+                memory.clear();
+                try {
+                    const storage = window[name];
+                    const keys = Array.from({ length: storage.length }, (_, index) => storage.key(index)).filter(key => key !== null && owns(key));
+                    for (const key of keys) storage.removeItem(key);
+                    return true;
+                } catch { return false; }
+            }
+        };
+    }
+
+    const local = store('localStorage');
+    const session = store('sessionStorage');
+    window.bdkDashboard = window.bdkDashboard || {};
+    window.bdkDashboard.state = {
+        get: (...args) => local.get(...args),
+        set: (...args) => local.set(...args),
+        remove: (...args) => local.remove(...args),
+        getJson: (...args) => local.getJson(...args),
+        setJson: (...args) => local.setJson(...args),
+        session,
+        key: (feature, preference, route = '') => `bdk.dashboard.${feature}.${preference}:${root}:${route}`,
+        reset() {
+            // Prevent unload handlers from restoring the state during navigation.
+            resetting = true;
+            const localCleared = local.clear();
+            const sessionCleared = session.clear();
+            resetting = localCleared && sessionCleared;
+            return resetting;
+        }
+    };
+
+    document.addEventListener('click', async event => {
+        const button = event.target.closest('[data-dashboard-state-reset]');
+        if (!button || button.disabled) return;
+        button.disabled = true;
+        try {
+            if (!await window.bdkDashboard.confirmAction({
+                title: 'Reset dashboard state',
+                message: 'Reset all dashboard preferences for this site, including theme, navigation, filters and list history? The dashboard will return to its home page.',
+                confirmText: 'Reset state'
+            })) return;
+            if (window.bdkDashboard.state.reset()) window.location.assign(root);
+            else await window.bdkDashboard.showMessage({ title: 'Reset incomplete', message: 'Browser storage could not be cleared completely. Check browser storage permissions and try again.', kind: 'danger' });
+        } finally { button.disabled = false; }
+    });
+})();
+</script>

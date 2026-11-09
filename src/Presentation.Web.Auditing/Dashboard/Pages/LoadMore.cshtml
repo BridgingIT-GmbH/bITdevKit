@@ -45,11 +45,11 @@
     owner?.addEventListener('click', event => { if (event.target.closest('#audit-results-load-more-button')) request(); });
     owner?.addEventListener('change', event => {
         if (!event.target.matches('#audit-size')) return;
-        try { localStorage.setItem('bdk.dashboard.auditing.rowsPerLoad', event.target.value); } catch { }
+        window.bdkDashboard.state.set('bdk.dashboard.auditing.rowsPerLoad', event.target.value);
         request(event.target.value);
     });
     try {
-        const size = localStorage.getItem('bdk.dashboard.auditing.rowsPerLoad'), select = owner?.querySelector('#audit-size');
+        const size = window.bdkDashboard.state.get('bdk.dashboard.auditing.rowsPerLoad'), select = owner?.querySelector('#audit-size');
         if (!query.has('pageSize') && select && size && select.value !== size && [...select.options].some(option => option.value === size)) request(size);
     } catch { }
     window.addEventListener('pagehide', () => controller?.abort());

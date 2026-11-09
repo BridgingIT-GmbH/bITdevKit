@@ -116,22 +116,6 @@
         const themeValues = Object.keys(palettes);
         const legacyThemes = Object.freeze({ dark: 'matte-black', light: 'white', tokionights: 'tokyo-night', darkforest: 'osaka-jade', carbon: 'catppuccin', matrix: 'hackerman' });
 
-        const readPreference = (key, fallback) => {
-            try {
-                return window.localStorage.getItem(key) ?? fallback;
-            } catch {
-                return fallback;
-            }
-        };
-
-        const writePreference = (key, value) => {
-            try {
-                window.localStorage.setItem(key, value);
-            } catch {
-                // The selected theme still applies for this document when storage is unavailable.
-            }
-        };
-
         const rgb = hex => [1, 3, 5].map(index => parseInt(hex.slice(index, index + 2), 16));
         const mix = (start, end, amount) => '#' + rgb(start).map((value, index) => Math.round(value * (1 - amount) + rgb(end)[index] * amount).toString(16).padStart(2, '0')).join('');
         const luminance = hex => rgb(hex).map(value => value / 255).map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4).reduce((sum, value, index) => sum + value * [.2126, .7152, .0722][index], 0);
@@ -229,9 +213,9 @@
             },
 
             getCurrentTheme() {
-                const stored = readPreference('theme', defaultTheme);
+                const stored = window.bdkDashboard.state.get('theme', defaultTheme);
                 const normalized = this.normalizeTheme(stored);
-                if (stored !== normalized) writePreference('theme', normalized);
+                if (stored !== normalized) window.bdkDashboard.state.set('theme', normalized);
                 return normalized;
             },
 
@@ -245,7 +229,7 @@
                 document.documentElement.setAttribute('data-dashboard-theme', selectedTheme);
                 document.documentElement.setAttribute('data-dashboard-palette', effectiveTheme);
                 if (persist) {
-                    writePreference('theme', selectedTheme);
+                    window.bdkDashboard.state.set('theme', selectedTheme);
                 }
 
                 this.updateThemePickers(selectedTheme);
@@ -255,14 +239,14 @@
             },
 
             getCurrentTexture() {
-                return readPreference('dashboardTexture', 'false') === 'true';
+                return window.bdkDashboard.state.get('dashboardTexture', 'false') === 'true';
             },
 
             applyTexture(enabled, persist = true) {
                 const isEnabled = enabled === true;
                 document.documentElement.setAttribute('data-dashboard-texture', isEnabled ? 'on' : 'off');
                 if (persist) {
-                    writePreference('dashboardTexture', isEnabled ? 'true' : 'false');
+                    window.bdkDashboard.state.set('dashboardTexture', isEnabled ? 'true' : 'false');
                 }
 
                 document.querySelectorAll('.dashboard-texture-toggle').forEach(toggle => {

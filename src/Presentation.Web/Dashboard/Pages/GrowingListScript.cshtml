@@ -18,14 +18,14 @@ window.bdkDashboard.createGrowingLists = function(settings) {
         for (const list of lists.values()) {
             const current = region(settings.root(), list.key);
             if (!current || !rows(current).length) continue;
-            try { sessionStorage.setItem(stateKey(list), JSON.stringify({ boundary: footer(current)?.dataset.boundary, count: rows(current).length, scroll: current.querySelector('[data-dashboard-list-scroll]')?.scrollTop || 0, pageScroll: window.scrollY })); } catch { }
+            window.bdkDashboard.state.session.setJson(stateKey(list), { boundary: footer(current)?.dataset.boundary, count: rows(current).length, scroll: current.querySelector('[data-dashboard-list-scroll]')?.scrollTop || 0, pageScroll: window.scrollY });
         }
     }
     async function restore() {
         restoring = true;
         try {
             for (const list of lists.values()) {
-                let saved; try { saved = JSON.parse(sessionStorage.getItem(stateKey(list))); } catch { }
+                let saved; try { saved = window.bdkDashboard.state.session.getJson(stateKey(list)); } catch { }
                 if (!saved?.boundary || !Number.isInteger(saved.count) || saved.count < 1 || saved.count > 20000 || !region(settings.root(), list.key)) continue;
                 const url = new URL(settings.appliedUrl());
                 url.searchParams.set(list.boundary, saved.boundary);
@@ -158,7 +158,7 @@ window.bdkDashboard.createGrowingLists = function(settings) {
         const key = event.target.closest('[data-dashboard-list-footer]')?.dataset.dashboardListFooter;
         if (!lists.has(key)) return;
         cancel();
-        try { localStorage.setItem(`bdk.dashboard.${key}.rowsPerLoad`, event.target.value); } catch { }
+        window.bdkDashboard.state.set(`bdk.dashboard.${key}.rowsPerLoad`, event.target.value);
         settings.onSizeChange(lists.get(key), event.target.value);
     });
     queueMicrotask(() => {
@@ -167,7 +167,7 @@ window.bdkDashboard.createGrowingLists = function(settings) {
             if (!select) continue;
             if (new URL(location.href).searchParams.has(list.size)) continue;
             try {
-                const size = localStorage.getItem(`bdk.dashboard.${list.key}.rowsPerLoad`);
+                const size = window.bdkDashboard.state.get(`bdk.dashboard.${list.key}.rowsPerLoad`);
                 if (size && size !== select.value && [...select.options].some(option => option.value === size)) { select.value = size; settings.onSizeChange(list, size); }
             } catch { }
         }

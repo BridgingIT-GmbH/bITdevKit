@@ -644,7 +644,7 @@
             toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
             toggle.title = expanded ? 'Collapse snapshot details' : 'Expand snapshot details';
             toggle.setAttribute('aria-label', toggle.title);
-            if (persist) localStorage.setItem(storage.snapshotDetails, expanded ? 'true' : 'false');
+            if (persist) window.bdkDashboard.state.set(storage.snapshotDetails, expanded ? 'true' : 'false');
         }
 
         function setSessionsExpanded(expanded, persist = false) {
@@ -655,7 +655,7 @@
             toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
             toggle.title = expanded ? 'Collapse sessions' : 'Expand sessions';
             toggle.setAttribute('aria-label', toggle.title);
-            if (persist) localStorage.setItem(storage.sessions, expanded ? 'true' : 'false');
+            if (persist) window.bdkDashboard.state.set(storage.sessions, expanded ? 'true' : 'false');
         }
 
         async function copyText(value) {
@@ -689,8 +689,8 @@
         }
 
         async function selectContext(session, node) {
-            if (session) localStorage.setItem(storage.session, session); else localStorage.removeItem(storage.session);
-            if (node) localStorage.setItem(storage.node, node); else localStorage.removeItem(storage.node);
+            if (session) window.bdkDashboard.state.set(storage.session, session); else window.bdkDashboard.state.remove(storage.session);
+            if (node) window.bdkDashboard.state.set(storage.node, node); else window.bdkDashboard.state.remove(storage.node);
             history.replaceState({}, '', selectedContextUrl(session, node));
             state.lastObservedSnapshot = null;
             state.observationScope = null;
@@ -803,7 +803,7 @@
         }
 
         function getFilters() {
-            try { return { sessionMarkers: true, nodeMarkers: true, segments: true, ...JSON.parse(localStorage.getItem(storage.filters) || '{}') }; }
+            try { return { sessionMarkers: true, nodeMarkers: true, segments: true, ...window.bdkDashboard.state.getJson(storage.filters, {}) }; }
             catch { return { sessionMarkers: true, nodeMarkers: true, segments: true }; }
         }
 
@@ -1232,7 +1232,7 @@
                 if (active && focus) item.focus();
             });
             panels.forEach(item => { item.hidden = item.dataset.profilingTabPanel !== tab; });
-            localStorage.setItem(storage.tab, tab);
+            window.bdkDashboard.state.set(storage.tab, tab);
             if (tab === 'overview') scheduleChartRender();
         }
 
@@ -1294,15 +1294,15 @@
             state.observationScope = scope;
             state.lastObservedSnapshot = latest;
 
-            const live = localStorage.getItem(storage.live) === 'true';
+            const live = window.bdkDashboard.state.get(storage.live) === 'true';
             const liveSwitch = document.querySelector('#profiling-live-analysis');
             if (liveSwitch) liveSwitch.checked = live;
             const filters = getFilters();
             ['sessionMarkers', 'nodeMarkers', 'segments'].forEach(key => { const input = document.querySelector(`#profiling-filter-${key}`); if (input) input.checked = filters[key] !== false; });
-            setSessionsExpanded(localStorage.getItem(storage.sessions) !== 'false');
-            setSnapshotDetailsExpanded(localStorage.getItem(storage.snapshotDetails) !== 'false');
+            setSessionsExpanded(window.bdkDashboard.state.get(storage.sessions) !== 'false');
+            setSnapshotDetailsExpanded(window.bdkDashboard.state.get(storage.snapshotDetails) !== 'false');
             updateUtcSnapshotOptions();
-            activateTab(localStorage.getItem(storage.tab) || 'overview');
+            activateTab(window.bdkDashboard.state.get(storage.tab) || 'overview');
             if (state.sessionAnalysis) renderAnalysis('#profiling-session-analysis-result', state.sessionAnalysis);
             if (state.pairAnalysis) renderAnalysis('#profiling-pair-analysis', state.pairAnalysis);
             if (state.comparison) renderComparison(state.comparison);
@@ -1316,10 +1316,10 @@
                 if (event.target.matches('#profiling-session-select')) selectContext(event.target.value, null);
                 if (event.target.matches('#profiling-node-select')) selectContext(state.root?.dataset.sessionKey, event.target.value);
                 if (event.target.matches('#profiling-snapshot-select')) selectSnapshot(event.target.value);
-                if (event.target.matches('#profiling-live-analysis')) localStorage.setItem(storage.live, event.target.checked ? 'true' : 'false');
+                if (event.target.matches('#profiling-live-analysis')) window.bdkDashboard.state.set(storage.live, event.target.checked ? 'true' : 'false');
                 if (event.target.matches('.profiling-chart-filter')) {
                     const filters = { sessionMarkers: document.querySelector('#profiling-filter-sessionMarkers')?.checked !== false, nodeMarkers: document.querySelector('#profiling-filter-nodeMarkers')?.checked !== false, segments: document.querySelector('#profiling-filter-segments')?.checked !== false };
-                    localStorage.setItem(storage.filters, JSON.stringify(filters));
+                    window.bdkDashboard.state.setJson(storage.filters, filters);
                     scheduleChartRender();
                 }
             });
@@ -1445,7 +1445,7 @@
             bindEvents();
             bindActionDialog();
             const refreshSelect = document.querySelector('#profiling-refresh-interval');
-            if (refreshSelect && localStorage.getItem(storage.refresh) === null && state.root?.dataset.refreshInterval) refreshSelect.value = state.root.dataset.refreshInterval;
+            if (refreshSelect && window.bdkDashboard.state.get(storage.refresh) === null && state.root?.dataset.refreshInterval) refreshSelect.value = state.root.dataset.refreshInterval;
             state.refresher = window.bdkDashboard.createRefresher({
                 buildUrl: buildContentUrl,
                 contentSelector: '#dashboard-profiling-content',
@@ -1460,8 +1460,8 @@
 
             const current = new URL(window.location.href);
             if (!current.searchParams.has('session')) {
-                const savedSession = localStorage.getItem(storage.session);
-                const savedNode = localStorage.getItem(storage.node);
+                const savedSession = window.bdkDashboard.state.get(storage.session);
+                const savedNode = window.bdkDashboard.state.get(storage.node);
                 if (savedSession) selectContext(savedSession, savedNode);
             }
             document.addEventListener('bdk-dashboard-theme-changed', scheduleChartRender);

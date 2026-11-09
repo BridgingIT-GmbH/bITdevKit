@@ -428,6 +428,36 @@ The dashboard shell uses fixed built-in routes below the configured `GroupPath`.
 | Document storage explorer | `/_bdk/dashboard/storage/documents` |
 | Blob storage explorer | `/_bdk/dashboard/storage/blobs` |
 
+## Browser state
+
+Dashboard pages use `window.bdkDashboard.state` to save UI preferences. The shared helper is available before page scripts run. It preserves existing storage keys and formats and falls back to document-local memory when browser storage is unavailable or full.
+
+| API | Behavior |
+| --- | --- |
+| `get(key, fallback = null, validate?)` | Reads a string; returns the fallback when missing or rejected by the validator. |
+| `set(key, value)` / `remove(key)` | Writes a string or removes the preference. |
+| `getJson(key, fallback = null, validate?)` | Reads JSON; returns the fallback for missing, malformed or rejected values. |
+| `setJson(key, value)` | Serializes and saves a JSON value. |
+| `session` | Provides the same read/write methods using session storage for tab-local state. |
+| `key(feature, preference, route = '')` | Builds a key containing the feature, preference, configured dashboard root and optional view route. |
+| `reset()` | Clears dashboard preferences from local and session storage; returns whether both stores were cleared. Suppresses further writes in this document after success. |
+
+Use the helper for page preferences instead of accessing browser storage directly. Keep query parameters for shareable selections and prefer existing helpers such as `createRefresher` and `DashboardPage.RememberedViews` for their specific controls.
+
+```javascript
+const state = window.bdkDashboard.state;
+const key = state.key('orders', 'columns', '/recent');
+const columns = state.getJson(key, ['number', 'status'], value =>
+    Array.isArray(value) && value.every(column => ['number', 'status', 'total'].includes(column)));
+state.setJson(key, columns);
+```
+
+The header's **Reset dashboard state** button asks for confirmation, clears saved dashboard preferences and returns to the configured dashboard home without the current query parameters. Reset includes theme, texture, sidebar groups, remembered views, page sizes, saved filters and column choices, storage search history, refresh intervals and session list restoration. It applies to dashboards on the same browser origin, including legacy keys. Other application storage, authentication and server data remain intact. The legacy `theme` and `sidebarCollapsed` keys are shared with the general web layout, so resetting them also resets those shared preferences there.
+
+Reset recognizes the existing dashboard key families (`bdk.dashboard.`, `bdk.profiling.`, `bdk.documentStorage.`, `bdk.blobStorage.`, `bdk.storage.diagnostics.`, `bdk:storage:throughput-test:`), remembered-view keys (`bdk.<page-key>.view:<path>`) and the shell keys `theme`, `dashboardTexture`, `sidebarCollapsed` and `dashboardSidebarGroups`. Use `state.key(...)` for new preferences so reset includes them. If storage cannot be cleared completely, the dashboard displays an error and stays on the current page.
+
+This browser helper serves RazorSlice dashboard pages. Blazor applications use the separate [AppState](features-presentation-appstate.md) services for typed state, notifications and undo/redo history.
+
 ## Built-in pages
 
 ### Dashboard index

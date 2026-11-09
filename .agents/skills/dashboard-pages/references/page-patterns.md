@@ -142,6 +142,11 @@ The example uses page-owned URL, selection, modal, and initialization functions.
 - Replace application names, paths, machine and user names with fictional values (`Contoso.Orders`, `C:\src\orders-export`, `DEV-WORKSTATION`, `developer`). Documentation never shows repository example applications.
 - After changing a page's layout, search `docs/` for its screenshots. Recapture them, or list them as stale in the handback.
 
+## Browser preferences
+
+- Use `window.bdkDashboard.state` for persistent UI preferences and `.session` for tab-local restoration. Use `getJson`/`setJson` for structured values and provide validators for constrained inputs. The helper handles unavailable storage and malformed JSON.
+- Preserve legacy keys and formats when migrating a control. For new preferences, use `state.key(feature, preference, route)` to include the configured dashboard root and view scope. The shell's Reset dashboard state action clears the dashboard key families in both stores and prevents unload handlers from saving discarded values. See [StateScript](../../../../src/Presentation.Web/Dashboard/Pages/StateScript.cshtml) and the [browser-state reference](../../../../docs/features-presentation-dashboard.md#browser-state).
+
 ## Validation
 
 - Exercise populated, empty, unavailable, failed, long-name, and unsupported-capability states. Verify custom dashboard paths, disabled features, page/card grouping, saved views, exact identifiers, and safe text rendering.

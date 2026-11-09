@@ -127,7 +127,7 @@
         let logTerminal = null;
         let logFitAddon = null;
         let logStreamSubscription = null;
-        let logStreamRequested = localStorage.getItem(logsVisibleKey) === 'true';
+        let logStreamRequested = window.bdkDashboard.state.get(logsVisibleKey) === 'true';
 
         let currentLine = '';
         let cursorIndex = 0;
@@ -152,10 +152,10 @@
         setLogStreamVisible(logStreamRequested);
 
         function getSessionId() {
-            let value = sessionStorage.getItem(sessionKey);
+            let value = window.bdkDashboard.state.session.get(sessionKey);
             if (!value) {
                 value = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-                sessionStorage.setItem(sessionKey, value);
+                window.bdkDashboard.state.session.set(sessionKey, value);
             }
 
             return value;
@@ -401,7 +401,7 @@
 
         function setLogStreamVisible(isVisible) {
             logStreamRequested = isVisible;
-            localStorage.setItem(logsVisibleKey, String(isVisible));
+            window.bdkDashboard.state.set(logsVisibleKey, String(isVisible));
             logStreamPanelElement.classList.toggle('d-none', !isVisible);
             logsToggleButton.classList.toggle('active', isVisible);
             logsToggleButton.setAttribute('aria-pressed', String(isVisible));

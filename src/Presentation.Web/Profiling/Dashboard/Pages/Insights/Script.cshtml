@@ -9,7 +9,7 @@
     const stateKey = 'bdk.profiling.insights:' + root.dataset.pageUrl;
     const current = new URL(location.href);
     let saved = {}, controller = null, timer = null, segmentTrigger = null;
-    try { saved = JSON.parse(localStorage.getItem(stateKey) || '{}') || {}; } catch { }
+    try { saved = window.bdkDashboard.state.getJson(stateKey, {}) || {}; } catch { }
     const explicit = [...form.elements].some(control => control.name && current.searchParams.has(control.name));
     for (const control of form.elements) {
         if (!control.name) continue;
@@ -26,7 +26,7 @@
     const failed = value => value.outcomes?.Failed || 0;
     const rate = value => value.count ? (failed(value) / value.count * 100).toFixed(1) + '%' : '—';
     const identity = group => JSON.stringify([group.kind, group.key, group.httpMethod]);
-    function remember() { try { localStorage.setItem(stateKey, JSON.stringify({ filters: Object.fromEntries(new FormData(form)), refresh: interval.value })); } catch { } }
+    function remember() { window.bdkDashboard.state.setJson(stateKey, { filters: Object.fromEntries(new FormData(form)), refresh: interval.value }); }
     function urlFor(path, selection = applied) {
         const url = new URL(path, location.href);
         for (const [key, value] of Object.entries(selection)) if (value) url.searchParams.set(key, ['fromUtc', 'toUtc'].includes(key) ? value + 'Z' : value);

@@ -31,6 +31,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@dashboardTitle - @pageTitle</title>
     <base href="/" />
+    @(await RenderPartialAsync<StateScript, string>(dashboardHomePath))
     <script>
         window.bdkDashboard = window.bdkDashboard || {};
         window.bdkDashboard.refreshErrors = window.bdkDashboard.refreshErrors || new Set();
@@ -397,13 +398,13 @@
             }
 
             if (selectElement && settings.storageKey) {
-                const savedInterval = localStorage.getItem(settings.storageKey);
+                const savedInterval = window.bdkDashboard.state.get(settings.storageKey, null, value => [...selectElement.options].some(option => option.value === value));
                 if (savedInterval !== null) {
                     selectElement.value = savedInterval;
                 }
 
                 selectElement.addEventListener('change', () => {
-                    localStorage.setItem(settings.storageKey, selectElement.value);
+                    window.bdkDashboard.state.set(settings.storageKey, selectElement.value);
 
                     cancel();
                     scheduleNextRefresh();
@@ -1641,6 +1642,9 @@
                 <button class="btn dashboard-header-action dashboard-window-toggle" type="button" aria-label="Open current dashboard page in a new window" title="Open in new window">
                     <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                 </button>
+                <button class="btn dashboard-header-action" type="button" data-dashboard-state-reset aria-label="Reset dashboard state" title="Reset dashboard state">
+                    <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                </button>
                 @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Pages._DashboardThemePicker>())
                 <button class="btn dashboard-header-action dashboard-texture-toggle" type="button" aria-label="Toggle terminal texture" aria-pressed="false" title="Toggle terminal texture">
                     <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i>
@@ -1717,7 +1721,7 @@
 
             const icon = toggle.querySelector('i');
 
-            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            const isCollapsed = window.bdkDashboard.state.get('sidebarCollapsed') === 'true';
             if (isCollapsed) {
                 sidebar.classList.add('sidebar-collapsed');
                 mainContent.classList.add('expanded');
@@ -1732,7 +1736,7 @@
                 mainContent.classList.toggle('expanded');
                 toggle.classList.toggle('sidebar-toggle-collapsed');
                 const isNowCollapsed = sidebar.classList.contains('sidebar-collapsed');
-                localStorage.setItem('sidebarCollapsed', isNowCollapsed);
+                window.bdkDashboard.state.set('sidebarCollapsed', isNowCollapsed);
 
                 if (isNowCollapsed) {
                     icon.classList.replace('bi-layout-sidebar', 'bi-layout-sidebar-inset');
@@ -1746,15 +1750,11 @@
         }
 
         function getSidebarGroupState() {
-            try {
-                return JSON.parse(localStorage.getItem('dashboardSidebarGroups') || '{}') || {};
-            } catch {
-                return {};
-            }
+            return window.bdkDashboard.state.getJson('dashboardSidebarGroups', {}, value => value !== null && typeof value === 'object' && !Array.isArray(value));
         }
 
         function setSidebarGroupState(state) {
-            localStorage.setItem('dashboardSidebarGroups', JSON.stringify(state || {}));
+            window.bdkDashboard.state.setJson('dashboardSidebarGroups', state || {});
         }
 
         function applySidebarGroupState() {

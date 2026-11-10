@@ -52,10 +52,11 @@ public static class TimeOnlyExtensions
         /// <param name="direction">Whether the range extends into the past or future.</param>
         /// <param name="inclusive">Whether now and the calculated boundary are included.</param>
         /// <returns><see langword="true"/> when the time lies in the same-day range.</returns>
+        /// <remarks>The current local time is obtained from <see cref="TimeProviderAccessor.Current"/>.</remarks>
         [DebuggerStepThrough]
         public bool IsInRelativeRange(TimeUnit unit, int amount, DateTimeDirection direction, bool inclusive = true)
         {
-            var now = TimeOnly.FromDateTime(DateTime.Now);
+            var now = TimeOnly.FromDateTime(TimeProviderAccessor.Current.GetLocalNow().DateTime);
             return time.IsInRelativeRange(now, unit, amount, direction, inclusive);
         }
 

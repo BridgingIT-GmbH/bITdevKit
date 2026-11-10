@@ -574,12 +574,39 @@ public class DateTimeExtensionsTests
     public void TimeOnly_IsWithinRelativeRange_ShouldReturnTrueForFutureTime()
     {
         // Arrange
-        var now = TimeOnly.FromDateTime(DateTime.Now);
+        var now = new TimeOnly(10, 0);
         var future = now.Add(TimeUnit.Minute, 3);
 
         // Act & Assert
-        future.IsInRelativeRange(TimeUnit.Minute, 3, DateTimeDirection.Future, inclusive: true).ShouldBeTrue();
-        future.IsInRelativeRange(TimeUnit.Minute, 1, DateTimeDirection.Future, inclusive: true).ShouldBeFalse();
+        future.IsInRelativeRange(now, TimeUnit.Minute, 3, DateTimeDirection.Future, inclusive: true).ShouldBeTrue();
+        future.IsInRelativeRange(now, TimeUnit.Minute, 1, DateTimeDirection.Future, inclusive: true).ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData(10, 0, 0, DateTimeDirection.Future, true, true)]
+    [InlineData(10, 0, 0, DateTimeDirection.Future, false, false)]
+    [InlineData(10, 0, 3, DateTimeDirection.Future, true, true)]
+    [InlineData(10, 0, 3, DateTimeDirection.Future, false, false)]
+    [InlineData(10, 0, 4, DateTimeDirection.Future, true, false)]
+    [InlineData(10, 0, 0, DateTimeDirection.Past, true, true)]
+    [InlineData(10, 0, 0, DateTimeDirection.Past, false, false)]
+    [InlineData(10, 0, -3, DateTimeDirection.Past, true, true)]
+    [InlineData(10, 0, -3, DateTimeDirection.Past, false, false)]
+    [InlineData(10, 0, -4, DateTimeDirection.Past, true, false)]
+    [InlineData(23, 58, 3, DateTimeDirection.Future, true, false)]
+    [InlineData(0, 2, -3, DateTimeDirection.Past, true, false)]
+    public void TimeOnly_IsInRelativeRange_WithExplicitReference_ShouldRespectSameDayBoundaries(
+        int hour, int minute, int offset, DateTimeDirection direction, bool inclusive, bool expected)
+    {
+        // Arrange
+        var reference = new TimeOnly(hour, minute);
+        var sut = reference.Add(TimeUnit.Minute, offset);
+
+        // Act
+        var result = sut.IsInRelativeRange(reference, TimeUnit.Minute, 3, direction, inclusive);
+
+        // Assert
+        result.ShouldBe(expected);
     }
 
     [Theory]

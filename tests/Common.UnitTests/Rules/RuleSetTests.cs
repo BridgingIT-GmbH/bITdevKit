@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Rules;
 
 using Common;
+using Microsoft.Extensions.Time.Testing;
 using Shouldly;
 using Xunit;
 
@@ -769,12 +770,23 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     [Fact]
     public void IsInRelativeRange_WithTimeOnly_WhenWithinRange_ShouldReturnSuccess()
     {
-        var now = TimeOnly.FromDateTime(DateTime.Now);
-        var value = now.Add(TimeUnit.Minute, 3);
-        var rule = RuleSet.IsInRelativeRange(value, TimeUnit.Minute, 5, DateTimeDirection.Future);
+        var original = TimeProviderAccessor.Current;
+        var timeProvider = new FakeTimeProvider(new DateTimeOffset(2026, 1, 10, 10, 0, 0, TimeSpan.Zero));
+        timeProvider.SetLocalTimeZone(TimeZoneInfo.Utc);
 
-        var result = Rule.Check(rule);
-        result.ShouldBeSuccess();
+        try
+        {
+            TimeProviderAccessor.Current = timeProvider;
+            var value = new TimeOnly(10, 3);
+            var sut = RuleSet.IsInRelativeRange(value, TimeUnit.Minute, 5, DateTimeDirection.Future);
+
+            var result = Rule.Check(sut);
+            result.ShouldBeSuccess();
+        }
+        finally
+        {
+            TimeProviderAccessor.Current = original;
+        }
     }
 
     // Collection Rule Tests

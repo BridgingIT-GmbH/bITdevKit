@@ -2,6 +2,14 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.123] - 2026-11-10
+
+- Updated the .NET SDK baseline to 10.0.403 and the ASP.NET Core, EF Core, Microsoft.Extensions, and System servicing packages to 10.0.15. Projects continue to target .NET 10.
+- Updated Azure.Core to 1.65.0, Azure.Monitor.OpenTelemetry.Exporter to 1.10.0, Microsoft.ApplicationInsights.AspNetCore to 3.2.0, and OpenAI to 2.15.0, keeping Azure telemetry and AI dependencies compatible during build-time OpenAPI generation.
+- Changed notification email integration to MailKit and MimeKit 5.0.0. Breaking change: `FakeSmtpClient.MaxSize` now returns `long` instead of `uint`, and `Capabilities` uses MailKit 5's capability collection instead of enum flags.
+- Added `FakeSmtpClient.Send(ISendRequest, ...)` and `SendAsync(ISendRequest, ...)` overloads returning `SendResult`, with request lifecycle callbacks, cancellation checks, accepted-recipient results, and `DisposeAsync()`. Existing `MimeMessage` convenience overloads retain their string response results.
+- Updated Azure Cosmos to 3.64.0, Scalar.AspNetCore to 2.20.0, Microsoft.OpenApi to 2.13.0, and the ASP.NET Core, HTTP, and SQL Client OpenTelemetry instrumentation packages to 1.20.2.
+
 ## [10.0.122] - 2026-11-10
 
 - Added the shared `window.bdkDashboard.state` browser helper for dashboard UI preferences, with validated string and JSON reads, session storage, feature-scoped keys, and an in-memory fallback when browser storage is unavailable. Existing dashboard pages now use it and keep their storage keys.

@@ -2,6 +2,15 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.122] - 2026-11-10
+
+- Added the shared `window.bdkDashboard.state` browser helper for dashboard UI preferences, with validated string and JSON reads, session storage, feature-scoped keys, and an in-memory fallback when browser storage is unavailable. Existing dashboard pages now use it and keep their storage keys.
+- Added a **Reset dashboard state** header action that clears saved dashboard preferences (theme, sidebar groups, remembered views, page sizes, filters, columns, refresh intervals, storage search history) after confirmation. The shared `theme` and `sidebarCollapsed` keys are also reset for the general web layout.
+- Fixed `WithFilterSchema()` OpenAPI generation for endpoints without other parameters, and replaced existing `filter` query parameters instead of adding duplicates.
+- Fixed `TimeOnly.IsInRelativeRange(unit, amount, direction)` to read the current time from `TimeProviderAccessor.Current` instead of `DateTime.Now`, so a configured `TimeProvider` applies.
+- Added the `Presentation.Web.Auditing` package icon.
+- Updated Mapster to 10.0.14 and SharpCompress to 0.50.8.
+
 ## [10.0.121] - 2026-11-03
 
 - Added automatic development-instance isolation for DevKit web hosts in linked Git worktrees in `Development`, with separate HTTP/HTTPS ports, SQL Server/PostgreSQL/SQLite databases, cookie names, data-protection keys, and authentication origins. Customize it with `AddDevAppInstance(...)` or disable it with `DevAppInstance:Mode=Disabled`. Isolation failures log a warning and fall back to the configured ports and databases.

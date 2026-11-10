@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -3147,6 +3147,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-dashboard-entities/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="entities" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="22" height="24" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /><path d="M10 21h12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entities Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-console-commands/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="console-commands" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /><path d="m8 12 4 4-4 4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 12h6M18 16h4M18 20h6" /></g></svg></span>
         
   
@@ -5349,11 +5377,13 @@
 <p>A successful request returns HTTP 202. The in-process consumer then writes <code>Processing queued order ...</code> to the application log. Enqueue validation and cancellation exceptions flow to the application's standard exception handling instead of being reported as accepted.</p>
 <h2 id="dashboard-guide">Dashboard guide<a class="headerlink" href="#dashboard-guide" title="Permanent link">&para;</a></h2>
 <p>Open Queueing at <code>/_bdk/dashboard/queueing</code> to inspect work items, subscriptions and processing pressure. Reference <code>Presentation.Web.Queueing</code>, register queueing with a broker, and enable the <a href="../features-presentation-dashboard/">Dashboard</a>. The page queries <code>IQueueBrokerService</code> in process.</p>
-<p>Filter by status, archive state, queue and message type, then select Apply. Use All under Archive to include retained completed work. The summary separates pending, waiting-for-handler, processing and failed messages, and reports open circuits. Subscription controls can pause an entire queue, pause a message type, or reset that type's circuit.</p>
-<p><a href="../../assets/dashboard/11-queueing-queueing.png"><img alt="Queueing dashboard with retained work items, processing counters and queue subscriptions" src="../../assets/dashboard/11-queueing-queueing.png" /></a></p>
-<p>Select the information button on a work item to inspect its queue, attempt count, expiration, lease, last error, properties and payload. Its correlation ID links to Logs and can be copied. Retry and archive controls appear for eligible items. Their availability and retained history depend on the configured broker.</p>
+<p>Overview shows broker counts and registered queue subscriptions without message filters. Select Messages (<code>/_bdk/dashboard/queueing/messages</code>) to filter by status, archive state, queue and message type, then select Apply. Use All under Archive to include retained completed work. The summary separates pending, waiting-for-handler, processing and failed messages, and reports open circuits. Overview subscription controls can pause an entire queue, pause a message type, or reset that type's circuit. Messages also includes a waiting-for-handler preview for all messages, independent of the filters.</p>
+<p>This illustration predates the separate Overview and Messages tabs.</p>
+<p><a href="../../assets/dashboard/11-queueing-queueing.png"><img alt="Earlier Queueing dashboard with retained work items, processing counters and queue subscriptions" src="../../assets/dashboard/11-queueing-queueing.png" /></a></p>
+<p>Select the information button on a work item to open its details. Status stays visible above four tabs: Overview, Processing, Properties and Payload. Overview shows identity and expiration; Processing shows the handler, lease and last error. Each message opens on Overview. Its correlation ID links to Logs and can be copied. Retry and archive controls appear for eligible items. Their availability and retained history depend on the configured broker.</p>
 <p><a href="../../assets/dashboard/queueing/message-details.png"><img alt="Queue message details with processing metadata and propagated correlation ID" src="../../assets/dashboard/queueing/message-details.png" /></a></p>
-<p>Use the refresh button for a current snapshot or select an automatic interval. Queue Pressure shows samples collected during this browser session. The alive-message action is available when queueing alive support is enabled.</p>
+<p>Use the refresh button for a current snapshot or select an automatic interval. The Diagnostics view at <code>/_bdk/dashboard/queueing/diagnostics</code> shows enqueue rates, handler-call rates, failure rates and mean enqueue/handler latency. Messages retains its applied filters and loaded history when returning. Load more and Rows per load share the footer below the work items. The alive-message action is available when queueing alive support is enabled.</p>
+<p>Diagnostics collects completed one-second intervals from the application process and retains up to fifteen minutes, independently of polling or viewer count. Register <code>IMetricsService</code> through <code>AddMetrics()</code> and the existing <code>MetricsQueueEnqueuerBehavior</code> and <code>MetricsQueueHandlerBehavior</code> behaviors. Successful-completion counters use the <code>.completed</code> suffix after the aggregate or typed series name; existing attempt and failure counters retain their names. A successful enqueue means the corresponding pipeline returned normally. Handler counts represent metric-behavior pipeline calls, including fan-out; they are not unique-message counts. Behavior ordering determines retry coverage. Duration averages include measured attempts and remain gaps when no timing was observed. Metrics-disabled hosts keep the chart frames with unavailable values.</p>
 <h2 id="operational-endpoints">Operational endpoints<a class="headerlink" href="#operational-endpoints" title="Permanent link">&para;</a></h2>
 <p>The retained-message operational surface lives in <a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Presentation.Web.Queueing/QueueingEndpoints.cs">src/Presentation.Web.Queueing/QueueingEndpoints.cs</a>.</p>
 <p>When you reference <code>Presentation.Web.Queueing</code>, you can register it directly from the fluent queueing builder:</p>
@@ -5743,7 +5773,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

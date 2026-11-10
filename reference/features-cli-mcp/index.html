@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -3218,6 +3218,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-dashboard-entities/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="entities" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="22" height="24" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /><path d="M10 21h12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entities Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-console-commands/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="console-commands" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /><path d="m8 12 4 4-4 4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 12h6M18 16h4M18 20h6" /></g></svg></span>
         
   
@@ -5838,11 +5866,19 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--host<span class="w"> </s
 </code></pre></div>
 <p>A query about profiling a job or pipeline combines profiling guidance with the matching feature guides. The guide does not require exact invocation-order capture. Use <a href="#inspect-operation-and-request-recordings">the profiling runtime tools</a> later to check what the running application actually retained.</p>
 <h2 id="dashboard-inspection">Dashboard inspection<a class="headerlink" href="#dashboard-inspection" title="Permanent link">&para;</a></h2>
-<p>Open MCP from the robot icon in the dashboard header bar, or at <code>/_bdk/dashboard/mcp</code>, with the host MCP runtime and <a href="../features-presentation-dashboard/">Dashboard</a> registered. The page is not listed in the sidebar. The icon stays muted while no <code>bdk mcp</code> server is connected to the runtime and uses the theme accent colour with an accent border when one is; it updates every 10 seconds without a page reload. The page lists handler registrations and their operation counts, toolsets and features. Its Operations table shows each capability's owner, category, handler and description.</p>
+<p>Open MCP from the robot icon in the dashboard header bar, or at <code>/_bdk/dashboard/mcp</code>, with the host MCP runtime and <a href="../features-presentation-dashboard/">Dashboard</a> registered. The page is not listed in the sidebar. The icon stays muted while no <code>bdk mcp</code> server is connected to the runtime and uses the theme accent colour with an accent border when one is; it updates every 10 seconds without a page reload. The page has four tabs:</p>
+<ul>
+<li><strong>Overview</strong>: registration counts, server status, target runtime, and operation counts by toolset and feature.</li>
+<li><strong>Connections</strong>: host bridge details and MCP server sessions.</li>
+<li><strong>Handlers</strong>: registered handler types, operation counts, and exposed features.</li>
+<li><strong>Operations</strong>: capability names, owners, categories, handlers, descriptions, and argument schemas.</li>
+</ul>
+<p>Each tab has its own route and refreshes independently. The dashboard remembers the selected tab.</p>
 <p><a href="../../assets/dashboard/16-mcp-mcp.png"><img alt="MCP dashboard inventory of registered handlers and their exposed features" src="../../assets/dashboard/16-mcp-mcp.png" /></a></p>
 <p>The operation inventory helps identify the capability to call before inspecting its input schema. Use the braces button to see the arguments accepted by its handler.</p>
 <p><a href="../../assets/dashboard/mcp/operations.png"><img alt="MCP operation inventory with capability names, categories and argument-schema buttons" src="../../assets/dashboard/mcp/operations.png" /></a></p>
-<p>The host bridge and MCP server are separate parts of the connection. Registered handlers show what the host can expose. The server-session panel reports heartbeats from running <code>bdk mcp</code> processes and their selected runtime. An Offline server with registered handlers means no active server session is publishing a heartbeat; it does not mean the capability registrations are missing. Use the toolbar refresh controls to watch connection changes.</p>
+<p>These figures predate the separate MCP tabs and common dialog spacing; their fields and workflow remain representative.</p>
+<p>The host bridge and MCP server are separate parts of the connection. Registered handlers show what the host can expose. The Connections tab reports heartbeats from running <code>bdk mcp</code> processes and their selected runtime. An Offline server with registered handlers means no active server session is publishing a heartbeat; it does not mean the capability registrations are missing. Use the toolbar refresh controls to watch connection changes.</p>
 <h2 id="documentation-aware-development">Documentation-aware development<a class="headerlink" href="#documentation-aware-development" title="Permanent link">&para;</a></h2>
 <p><code>bdk_docs_search</code>, <code>bdk_docs_get</code>, <code>bdk_api_search</code> and <code>bdk_api_get</code> let an agent consult official DevKit documentation and API reference metadata while it works in a consuming project. This is intentionally owned by the CLI MCP server rather than the selected runtime, so docs and API lookup work even when the app is not running yet.</p>
 <p>Use this when the agent is implementing or refactoring DevKit-specific code:</p>
@@ -6087,7 +6123,7 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--host<span class="w"> </s
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

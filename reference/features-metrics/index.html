@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -3002,6 +3002,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-dashboard-entities/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="entities" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="22" height="24" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /><path d="M10 21h12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entities Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-console-commands/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="console-commands" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /><path d="m8 12 4 4-4 4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 12h6M18 16h4M18 20h6" /></g></svg></span>
         
   
@@ -5000,6 +5028,7 @@
 <h2 id="dashboard-guide">Dashboard guide<a class="headerlink" href="#dashboard-guide" title="Permanent link">&para;</a></h2>
 <p>Open Metrics at <code>/_bdk/dashboard/metrics</code> with both metrics and the <a href="../features-presentation-dashboard/">Dashboard</a> enabled. Registering the dashboard alone does not start metric collection. Feature metrics require their recording behaviors; HTTP route measurements require <code>UseRequestMetrics()</code>.</p>
 <p>The App tab summarizes devkit feature successes, failures, current work and duration series. It lists the busiest and slowest recorded series beside the feature overview. The .NET tab shows process, memory, GC and thread-pool values. ASP.NET summarizes HTTP traffic.</p>
+<p>Duration histograms recorded in seconds, milliseconds, microseconds or nanoseconds are normalized to milliseconds in snapshot <code>Durations</code> and latency highlights. Other histograms retain their original units in snapshot <code>Histograms</code> and the App tab's Other measurements table. A transfer-rate histogram such as bytes per second is not a latency measurement. Discovery descriptors retain each histogram's unit and distinguish <code>duration</code> from <code>histogram</code>.</p>
 <p><a href="../../assets/dashboard/04-metrics-metrics.png"><img alt="Metrics App tab with feature counters, current work and recorded duration series" src="../../assets/dashboard/04-metrics-metrics.png" /></a></p>
 <p>Select Routes to compare request counts, failures and average latency per HTTP method and route. These are aggregate measurements. Use <a href="../features-profiling/#dashboard">Request Profiling</a> when you need one execution's segment breakdown.</p>
 <p><a href="../../assets/dashboard/metrics/routes.png"><img alt="Metrics Routes tab with HTTP request counts and average route latency" src="../../assets/dashboard/metrics/routes.png" /></a></p>
@@ -5121,7 +5150,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

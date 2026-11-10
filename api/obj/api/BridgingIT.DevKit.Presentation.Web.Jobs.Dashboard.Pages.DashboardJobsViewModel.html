@@ -329,7 +329,7 @@ Class DashboardJobsViewModel
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the UTC timestamp when this model was captured.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the UTC time of the successful model read.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -489,7 +489,7 @@ Class DashboardJobsViewModel
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the paged list of registered jobs.</p>
+  <div class="markdown level1 summary"><p>Gets or sets all registered jobs matching the filters.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -568,6 +568,166 @@ Class DashboardJobsViewModel
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerOccurrenceModel.html">JobSchedulerOccurrenceModel</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Jobs_Dashboard_Pages_DashboardJobsViewModel_OccurrencesBatchSize_" data-uid="BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages.DashboardJobsViewModel.OccurrencesBatchSize*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Jobs_Dashboard_Pages_DashboardJobsViewModel_OccurrencesBatchSize" data-uid="BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages.DashboardJobsViewModel.OccurrencesBatchSize">
+  OccurrencesBatchSize
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the supported occurrences batch size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int OccurrencesBatchSize { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Jobs_Dashboard_Pages_DashboardJobsViewModel_OccurrencesBoundary_" data-uid="BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages.DashboardJobsViewModel.OccurrencesBoundary*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Jobs_Dashboard_Pages_DashboardJobsViewModel_OccurrencesBoundary" data-uid="BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages.DashboardJobsViewModel.OccurrencesBoundary">
+  OccurrencesBoundary
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the initial occurrences browsing boundary.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string OccurrencesBoundary { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Jobs_Dashboard_Pages_DashboardJobsViewModel_OccurrencesHasMore_" data-uid="BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages.DashboardJobsViewModel.OccurrencesHasMore*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Jobs_Dashboard_Pages_DashboardJobsViewModel_OccurrencesHasMore" data-uid="BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages.DashboardJobsViewModel.OccurrencesHasMore">
+  OccurrencesHasMore
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets whether more occurrences remain.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool OccurrencesHasMore { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Jobs_Dashboard_Pages_DashboardJobsViewModel_OccurrencesMatchingCount_" data-uid="BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages.DashboardJobsViewModel.OccurrencesMatchingCount*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Jobs_Dashboard_Pages_DashboardJobsViewModel_OccurrencesMatchingCount" data-uid="BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages.DashboardJobsViewModel.OccurrencesMatchingCount">
+  OccurrencesMatchingCount
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the last observed matching occurrences count.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long OccurrencesMatchingCount { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Jobs_Dashboard_Pages_DashboardJobsViewModel_OccurrencesNextCursor_" data-uid="BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages.DashboardJobsViewModel.OccurrencesNextCursor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Jobs_Dashboard_Pages_DashboardJobsViewModel_OccurrencesNextCursor" data-uid="BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages.DashboardJobsViewModel.OccurrencesNextCursor">
+  OccurrencesNextCursor
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the immutable occurrences continuation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string OccurrencesNextCursor { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
     <dd></dd>
   </dl>
 

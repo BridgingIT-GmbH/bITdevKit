@@ -16,14 +16,14 @@
         <link rel="prev" href="../features-cli-mcp-clients/">
       
       
-        <link rel="next" href="../features-presentation-console-commands/">
+        <link rel="next" href="../features-presentation-dashboard-entities/">
       
       
         
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -3021,6 +3021,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#browser-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Browser state
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#built-in-pages" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3307,10 +3318,49 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#consistent-page-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consistent page controls
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-dashboard-entities/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="entities" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="22" height="24" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /><path d="M10 21h12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entities Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -5089,6 +5139,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#browser-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Browser state
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#built-in-pages" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5375,6 +5436,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#consistent-page-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consistent page controls
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -5506,6 +5578,7 @@
 <li><a href="#built-in-routes">Built-in routes</a></li>
 </ul>
 </li>
+<li><a href="#browser-state">Browser state</a></li>
 <li><a href="#built-in-pages">Built-in pages</a><ul>
 <li><a href="#dashboard-index">Dashboard index</a></li>
 <li><a href="#quick-datetime-ranges">Quick date/time ranges</a></li>
@@ -5535,6 +5608,7 @@
 <li><a href="#external-plugin-assemblies">External plugin assemblies</a></li>
 <li><a href="#troubleshooting">Troubleshooting</a></li>
 <li><a href="#appendix-a-minimal-plugin">Appendix A: minimal plugin</a></li>
+<li><a href="#consistent-page-controls">Consistent page controls</a></li>
 </ul>
 </li>
 </ul>
@@ -6040,6 +6114,56 @@
 </tr>
 </tbody>
 </table>
+<h2 id="browser-state">Browser state<a class="headerlink" href="#browser-state" title="Permanent link">&para;</a></h2>
+<p>Dashboard pages use <code>window.bdkDashboard.state</code> to save UI preferences. The shared helper is available before page scripts run. It preserves existing storage keys and formats and falls back to document-local memory when browser storage is unavailable or full.</p>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>get(key, fallback = null, validate?)</code></td>
+<td>Reads a string; returns the fallback when missing or rejected by the validator.</td>
+</tr>
+<tr>
+<td><code>set(key, value)</code> / <code>remove(key)</code></td>
+<td>Writes a string or removes the preference.</td>
+</tr>
+<tr>
+<td><code>getJson(key, fallback = null, validate?)</code></td>
+<td>Reads JSON; returns the fallback for missing, malformed or rejected values.</td>
+</tr>
+<tr>
+<td><code>setJson(key, value)</code></td>
+<td>Serializes and saves a JSON value.</td>
+</tr>
+<tr>
+<td><code>session</code></td>
+<td>Provides the same read/write methods using session storage for tab-local state.</td>
+</tr>
+<tr>
+<td><code>key(feature, preference, route = '')</code></td>
+<td>Builds a key containing the feature, preference, configured dashboard root and optional view route.</td>
+</tr>
+<tr>
+<td><code>reset()</code></td>
+<td>Clears dashboard preferences from local and session storage; returns whether both stores were cleared. Suppresses further writes in this document after success.</td>
+</tr>
+</tbody>
+</table>
+<p>Use the helper for page preferences instead of accessing browser storage directly. Keep query parameters for shareable selections and prefer existing helpers such as <code>createRefresher</code> and <code>DashboardPage.RememberedViews</code> for their specific controls.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">window</span><span class="p">.</span><span class="nx">bdkDashboard</span><span class="p">.</span><span class="nx">state</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">state</span><span class="p">.</span><span class="nx">key</span><span class="p">(</span><span class="s1">'orders'</span><span class="p">,</span><span class="w"> </span><span class="s1">'columns'</span><span class="p">,</span><span class="w"> </span><span class="s1">'/recent'</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">columns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">state</span><span class="p">.</span><span class="nx">getJson</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s1">'number'</span><span class="p">,</span><span class="w"> </span><span class="s1">'status'</span><span class="p">],</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="p">=&gt;</span>
+<span class="w">    </span><span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">value</span><span class="p">.</span><span class="nx">every</span><span class="p">(</span><span class="nx">column</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">[</span><span class="s1">'number'</span><span class="p">,</span><span class="w"> </span><span class="s1">'status'</span><span class="p">,</span><span class="w"> </span><span class="s1">'total'</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="nx">column</span><span class="p">)));</span>
+<span class="nx">state</span><span class="p">.</span><span class="nx">setJson</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span><span class="w"> </span><span class="nx">columns</span><span class="p">);</span>
+</code></pre></div>
+<p>The header's <strong>Reset dashboard state</strong> button asks for confirmation, clears saved dashboard preferences and returns to the configured dashboard home without the current query parameters. Reset includes theme, texture, sidebar groups, remembered views, page sizes, saved filters and column choices, storage search history, refresh intervals and session list restoration. It applies to dashboards on the same browser origin, including legacy keys. Other application storage, authentication and server data remain intact. The legacy <code>theme</code> and <code>sidebarCollapsed</code> keys are shared with the general web layout, so resetting them also resets those shared preferences there.</p>
+<p>Reset recognizes the existing dashboard key families (<code>bdk.dashboard.</code>, <code>bdk.profiling.</code>, <code>bdk.documentStorage.</code>, <code>bdk.blobStorage.</code>, <code>bdk.storage.diagnostics.</code>, <code>bdk:storage:throughput-test:</code>), remembered-view keys (<code>bdk.&lt;page-key&gt;.view:&lt;path&gt;</code>) and the shell keys <code>theme</code>, <code>dashboardTexture</code>, <code>sidebarCollapsed</code> and <code>dashboardSidebarGroups</code>. Use <code>state.key(...)</code> for new preferences so reset includes them. If storage cannot be cleared completely, the dashboard displays an error and stays on the current page.</p>
+<p>This browser helper serves RazorSlice dashboard pages. Blazor applications use the separate <a href="../features-presentation-appstate/">AppState</a> services for typed state, notifications and undo/redo history.</p>
 <h2 id="built-in-pages">Built-in pages<a class="headerlink" href="#built-in-pages" title="Permanent link">&para;</a></h2>
 <h3 id="dashboard-index">Dashboard index<a class="headerlink" href="#dashboard-index" title="Permanent link">&para;</a></h3>
 <p>The dashboard index shows cards contributed by dashboard page providers. It includes a refresh interval dropdown with fixed intervals:</p>
@@ -6060,7 +6184,8 @@
 <p>Logs, Errors, Change History, Operations and Requests offer a <strong>Quick range</strong> clock icon immediately before the From UTC input. Open its menu to choose a preset. Choose Last minute, Last 5 or 15 minutes, Last hour, Last 6 hours, Last day, Last week or Last 30 days. The control fills <strong>From UTC</strong> with the selected interval before now and clears <strong>To UTC</strong>. An empty end includes new records on refresh. From UTC remains fixed until you edit it or choose a preset again. The pickers show only hours and minutes, with seconds defaulting to <code>00</code>; recorded timestamps and timings retain their precision. Select <strong>Apply</strong> to use the range. Day and week mean the previous 24 hours and 7 days, including across daylight-saving changes.</p>
 <p>Comparison dialogs have a separate picker for each side; select <strong>Compare</strong> after choosing their ranges. An empty comparison end resolves to one shared current UTC instant when you select Compare. Saved profiling filters retain the fixed start and empty end when you return. To move the start forward, select the preset again.</p>
 <h3 id="system"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="system" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="26" height="19" rx="2" /><path d="M16 23v6M10 29h12" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17h4l3-6 4 8 3-5h4" /></g></svg></span> System<a class="headerlink" href="#system" title="Permanent link">&para;</a></h3>
-<p>System at <code>/_bdk/dashboard/system</code> shows process CPU, memory, traffic, thread-pool and GC observations. Its trend charts collect recent samples, while route and database sections provide the current operational context. Refresh manually or choose an interval to watch changes. These process snapshots complement <a href="../features-profiling/">Profiling</a>; they do not attribute resource usage to one operation. The <strong>Process</strong> tab lists application, runtime, server and process details such as versions, OS, architecture and memory. The <strong>Environment</strong> tab shows environment checks, environment variables and the worktree instance when one applies.</p>
+<p>System at <code>/_bdk/dashboard/system</code> shows process CPU, memory, traffic, thread-pool and GC observations. Overview keeps the current summaries, routes and database context. The <strong>Diagnostics</strong> tab shows four charts with the shared workload layout: process CPU and its five-sample mean; working set, private, managed and GC heap memory; started/completed/failed requests per second; and interval versus process-lifetime mean request latency. Server sampling retains up to fifteen minutes independently of browser visits. Rates use actual elapsed sampling time, and idle intervals leave latency gaps. Runtime and HTTP sources can be unavailable independently. Refresh manually or choose an interval to watch changes. These process snapshots complement <a href="../features-profiling/">Profiling</a>; they do not attribute resource usage to one operation. The <strong>Process</strong> tab lists application, runtime, server and process details such as versions, OS, architecture and memory. The <strong>Environment</strong> tab shows environment checks, environment variables and the worktree instance when one applies.</p>
+<p>The System overview illustration below predates moving the charts to Diagnostics.</p>
 <p><a href="../../assets/dashboard/03-system-system.png"><img alt="System dashboard with process pressure, traffic and runtime trend charts" src="../../assets/dashboard/03-system-system.png" /></a></p>
 <p><a href="../../assets/dashboard/system/process.png"><img alt="System Process tab with application, runtime, server and process details" src="../../assets/dashboard/system/process.png" /></a></p>
 <p><a href="../../assets/dashboard/system/environment.png"><img alt="System Environment tab with environment checks, the Worktree card and filtered environment variables" src="../../assets/dashboard/system/environment.png" /></a></p>
@@ -6215,6 +6340,7 @@ Modules/
     public override string PageTitle =&gt; "Catalog";
 }
 </code></pre></div>
+<p><code>createRefresher</code> expects an HTML fragment by default. For a JSON data endpoint, set <code>responseType: 'json'</code> and provide an <code>applyResponse(contentElement, responseText)</code> callback that parses the JSON and updates the page. The helper checks the expected response format and preserves the current display on a failed or redirected request. HTML query-error markers are checked only for HTML responses.</p>
 <h3 id="page-descriptor-guidance">Page descriptor guidance<a class="headerlink" href="#page-descriptor-guidance" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>.Title(...)</code>: Display name in sidebar and default card title.</li>
@@ -6333,6 +6459,11 @@ Modules/
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">WithPluginAssemblyContaining</span><span class="o">&lt;</span><span class="n">HealthDashboard</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="p">});</span>
 </code></pre></div>
+<h2 id="consistent-page-controls">Consistent page controls<a class="headerlink" href="#consistent-page-controls" title="Permanent link">&para;</a></h2>
+<p>The breadcrumb provides the page title. Equivalent pages place their compact refresh toolbar first, routed view pills second, then context and filters, results, and continuation controls. Filter forms use a text Apply action and a circled-X Reset action (<code>bi-x-circle</code>, with the accessible name Reset filters) beside the final criteria on desktop. The pair wraps together on narrow screens. Editing a criterion creates a draft; refresh, export and continuation use the last successful selection. Reset preserves context, row-size and refresh preferences while clearing investigation criteria.</p>
+<p>Growing lists keep Load more below the results beside Rows per load and show the cumulative number of items loaded. Exhausted lists retain a disabled button and an enabled selector. Changing the batch size loads a fresh first batch without applying other draft criteria. Jobs and broker lists preserve loaded history across Diagnostics navigation by replaying bounded requests; browser storage contains query boundaries, counts and scroll positions rather than row payloads. Restoration is limited to 100 batches and 20,000 rows.</p>
+<p>Jobs has Jobs, Occurrences and Diagnostics views. Messaging and Queueing have Operations and Diagnostics. Graphs load and poll only inside Diagnostics. Diagnostic session statistics retain their own scope and do not imply the operational filters have been applied to them.</p>
+<p>Editors keep unsaved values after failures. Escape, Cancel and the close button offer a discard decision in the existing dialog; clicking the backdrop leaves a dirty editor open. Read-only dialogs provide Close. Refresh status uses an explicit UTC time.</p>
 
 
 
@@ -6414,7 +6545,7 @@ Modules/
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

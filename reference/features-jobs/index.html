@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -2779,6 +2779,34 @@
     
   
     Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-dashboard-entities/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="entities" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="22" height="24" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /><path d="M10 21h12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entities Dashboard
   
 
     
@@ -7451,12 +7479,14 @@
 <span class="w">        </span><span class="p">.</span><span class="n">AddTrigger</span><span class="p">(</span><span class="s">"manual"</span><span class="p">,</span><span class="w"> </span><span class="n">trigger</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">trigger</span><span class="p">.</span><span class="n">Manual</span><span class="p">()));</span>
 </code></pre></div>
 <h2 id="dashboard-guide">Dashboard guide<a class="headerlink" href="#dashboard-guide" title="Permanent link">&para;</a></h2>
-<p>Open Jobs at <code>/_bdk/dashboard/jobs</code> after registering the scheduler and <a href="../features-presentation-dashboard/">Dashboard</a>, with <code>Presentation.Web.Jobs</code> referenced. The page uses <code>IJobSchedulerQueryService</code> to show registered jobs and recent occurrences.</p>
-<p>The job table distinguishes definition state from execution state. A job can be active while having no running occurrences. Check trigger counts, next execution and last execution beside the running and failed counts. The adjacent occurrence table shows the outcome, trigger, creation time and duration of individual runs.</p>
-<p><a href="../../assets/dashboard/06-jobs-jobs.png"><img alt="Jobs dashboard with registered definitions and completed scheduler occurrences" src="../../assets/dashboard/06-jobs-jobs.png" /></a></p>
+<p>Open Jobs at <code>/_bdk/dashboard/jobs</code> after registering the scheduler and <a href="../features-presentation-dashboard/">Dashboard</a>, with <code>Presentation.Web.Jobs</code> referenced. The page uses <code>IJobSchedulerQueryService</code> to show registered jobs, retained occurrences and diagnostics in separate routed views.</p>
+<p>Filter Jobs by name, group, enabled state and paused state, then select Apply. Reset clears these criteria while retaining the batch size. Refresh and continuation use the applied selection and preserve draft edits.</p>
+<p>The job table distinguishes definition state from execution state. A job can be active while having no running occurrences. Check trigger counts, next execution and last execution beside the running and failed counts. Filter Occurrences by job, trigger, status and correlation ID, then select Apply. Its Reset preserves the occurrence batch size, and refresh and continuation use its applied selection.</p>
+<p>The Occurrences view shows the outcome, trigger, creation time and duration of individual runs.</p>
+<p><a href="../../assets/dashboard/06-jobs-jobs.png"><img alt="Jobs dashboard with registered definitions and routed Occurrences and Diagnostics views" src="../../assets/dashboard/06-jobs-jobs.png" /></a></p>
 <p>Select an occurrence's information button to inspect its context, correlation ID, messages and latest execution details. Follow the correlation ID to Logs or copy it for a support lookup.</p>
 <p><a href="../../assets/dashboard/jobs/occurrence-details.png"><img alt="Job occurrence context and execution information in a dashboard dialog" src="../../assets/dashboard/jobs/occurrence-details.png" /></a></p>
-<p>Dispatch, pause and disable actions operate on job definitions. Occurrences expose cancel, interrupt or retry actions when their current state permits them. Realtime Graph samples the current browser session; History Graph queries retained scheduler history. Use the toolbar refresh button or interval selector to update the projections.</p>
+<p>Dispatch, pause and disable actions operate on job definitions. Occurrences expose cancel, interrupt or retry actions when their current state permits them. Diagnostics shows four process-local runtime charts: started/completed executions per second, outcome rates per second including successful completions, mean execution duration, and mean scheduling delay after the due time. Measurements use completed one-second intervals with up to fifteen minutes of history. The collapsed Retained job history panel queries retained scheduler occurrences separately; retention and archival can change those historical counts. Jobs shows every registration matching its filters in a full-width table. Occurrences shows each complete Occurrence ID beside the job name, with a copy button. It keeps its Load more / Rows per load footer, loaded history and scroll restoration when returning from Diagnostics. Use the toolbar refresh button or interval selector to update the projections. Runtime collection continues independently of browser polling. Missing duration observations appear as gaps; metrics-disabled hosts keep the chart frames with unavailable values.</p>
 <h2 id="operational-notes">Operational notes<a class="headerlink" href="#operational-notes" title="Permanent link">&para;</a></h2>
 <h3 id="endpoint-surface">Endpoint surface<a class="headerlink" href="#endpoint-surface" title="Permanent link">&para;</a></h3>
 <p><code>Presentation.Web.Jobs</code> exposes the same scheduler/query/maintenance surface over HTTP. The default route group is <code>/_bdk/api/jobs</code>.</p>
@@ -7593,6 +7623,7 @@
 </tbody>
 </table>
 <h4 id="dashboard-endpoints">Dashboard endpoints<a class="headerlink" href="#dashboard-endpoints" title="Permanent link">&para;</a></h4>
+<p>The dashboard also exposes <code>/_bdk/dashboard/jobs/occurrences</code> and <code>/_bdk/dashboard/jobs/diagnostics</code>. They inherit the configured dashboard root and access rules.</p>
 <table>
 <thead>
 <tr>
@@ -7999,7 +8030,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

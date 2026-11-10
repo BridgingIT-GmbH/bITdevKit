@@ -774,7 +774,7 @@ Includes a LogKey in each log message.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public uint MaxSize { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public long MaxSize { get; }</code></pre>
   </div>
 
 
@@ -783,7 +783,7 @@ Includes a LogKey in each log message.</p>
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">uint</span></dt>
+    <dt><span class="xref">long</span></dt>
     <dd></dd>
   </dl>
 
@@ -2233,6 +2233,37 @@ Includes a LogKey in each log message.</p>
 
 
 
+  <a id="BridgingIT_DevKit_Application_Notifications_FakeSmtpClient_DisposeAsync_" data-uid="BridgingIT.DevKit.Application.Notifications.FakeSmtpClient.DisposeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Notifications_FakeSmtpClient_DisposeAsync" data-uid="BridgingIT.DevKit.Application.Notifications.FakeSmtpClient.DisposeAsync">
+  DisposeAsync()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask DisposeAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Application_Notifications_FakeSmtpClient_Expand_" data-uid="BridgingIT.DevKit.Application.Notifications.FakeSmtpClient.Expand*"></a>
 
   <h3 id="BridgingIT_DevKit_Application_Notifications_FakeSmtpClient_Expand_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Notifications.FakeSmtpClient.Expand(System.String,System.Threading.CancellationToken)">
@@ -2377,6 +2408,84 @@ Includes a LogKey in each log message.</p>
     <dt><span class="xref">Task</span></dt>
     <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Notifications_FakeSmtpClient_Send_" data-uid="BridgingIT.DevKit.Application.Notifications.FakeSmtpClient.Send*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Notifications_FakeSmtpClient_Send_MailKit_ISendRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Notifications.FakeSmtpClient.Send(MailKit.ISendRequest,System.Threading.CancellationToken)">
+  Send(ISendRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SendResult Send(ISendRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <span class="xref">ISendRequest</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">SendResult</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Notifications_FakeSmtpClient_Send_" data-uid="BridgingIT.DevKit.Application.Notifications.FakeSmtpClient.Send*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Notifications_FakeSmtpClient_Send_MimeKit_FormatOptions_MailKit_ISendRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Notifications.FakeSmtpClient.Send(MimeKit.FormatOptions,MailKit.ISendRequest,System.Threading.CancellationToken)">
+  Send(FormatOptions, ISendRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SendResult Send(FormatOptions options, ISendRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <span class="xref">FormatOptions</span></dt>
+    <dd></dd>
+    <dt><code>request</code> <span class="xref">ISendRequest</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">SendResult</span></dt>
+    <dd></dd>
   </dl>
 
 
@@ -2575,6 +2684,84 @@ Includes a LogKey in each log message.</p>
     <dt><span class="xref">string</span></dt>
     <dd><p>The result of the operation.</p>
 </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Notifications_FakeSmtpClient_SendAsync_" data-uid="BridgingIT.DevKit.Application.Notifications.FakeSmtpClient.SendAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Notifications_FakeSmtpClient_SendAsync_MailKit_ISendRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Notifications.FakeSmtpClient.SendAsync(MailKit.ISendRequest,System.Threading.CancellationToken)">
+  SendAsync(ISendRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SendResult&gt; SendAsync(ISendRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <span class="xref">ISendRequest</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">SendResult</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Notifications_FakeSmtpClient_SendAsync_" data-uid="BridgingIT.DevKit.Application.Notifications.FakeSmtpClient.SendAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Notifications_FakeSmtpClient_SendAsync_MimeKit_FormatOptions_MailKit_ISendRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Notifications.FakeSmtpClient.SendAsync(MimeKit.FormatOptions,MailKit.ISendRequest,System.Threading.CancellationToken)">
+  SendAsync(FormatOptions, ISendRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SendResult&gt; SendAsync(FormatOptions options, ISendRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <span class="xref">FormatOptions</span></dt>
+    <dd></dd>
+    <dt><code>request</code> <span class="xref">ISendRequest</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">SendResult</span>&gt;</dt>
+    <dd></dd>
   </dl>
 
 

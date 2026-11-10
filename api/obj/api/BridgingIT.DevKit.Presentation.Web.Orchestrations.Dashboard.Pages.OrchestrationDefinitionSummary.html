@@ -259,8 +259,8 @@ Class OrchestrationDefinitionSummary
 
   <a id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary__ctor_" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary__ctor_System_String_System_Int64_" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.#ctor(System.String,System.Int64)">
-  OrchestrationDefinitionSummary(string, long)
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary__ctor_System_String_System_String_" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.#ctor(System.String,System.String)">
+  OrchestrationDefinitionSummary(string, string)
   
   </h3>
 
@@ -269,7 +269,7 @@ Class OrchestrationDefinitionSummary
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public OrchestrationDefinitionSummary(string Name, long Count)</code></pre>
+    <pre><code class="lang-csharp hljs">public OrchestrationDefinitionSummary(string Name, string TypeName)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -277,8 +277,8 @@ Class OrchestrationDefinitionSummary
     <dt><code>Name</code> <span class="xref">string</span></dt>
     <dd><p>The name of the value.</p>
 </dd>
-    <dt><code>Count</code> <span class="xref">long</span></dt>
-    <dd><p>The number of values to process.</p>
+    <dt><code>TypeName</code> <span class="xref">string</span></dt>
+    <dd><p>The registered orchestration type.</p>
 </dd>
   </dl>
 
@@ -297,19 +297,19 @@ Class OrchestrationDefinitionSummary
 </h2>
 
 
-  <a id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_Count_" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.Count*"></a>
+  <a id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_DataTypeLabel_" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.DataTypeLabel*"></a>
 
-  <h3 id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_Count" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.Count">
-  Count
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_DataTypeLabel" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.DataTypeLabel">
+  DataTypeLabel
   
   </h3>
 
-  <div class="markdown level1 summary"><p>The number of values to process.</p>
+  <div class="markdown level1 summary"><p>Gets the readable data type label.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public long Count { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string DataTypeLabel { get; init; }</code></pre>
   </div>
 
 
@@ -318,7 +318,103 @@ Class OrchestrationDefinitionSummary
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">long</span></dt>
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_DataTypeName_" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.DataTypeName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_DataTypeName" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.DataTypeName">
+  DataTypeName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the definition data type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string DataTypeName { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_Error_" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.Error*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_Error" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.Error">
+  Error
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a readable metadata error without removing the catalog entry.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Error { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_InitialState_" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.InitialState*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_InitialState" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.InitialState">
+  InitialState
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the initial state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string InitialState { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
     <dd></dd>
   </dl>
 
@@ -361,14 +457,110 @@ Class OrchestrationDefinitionSummary
 
 
 
+  <a id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_States_" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.States*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_States" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.States">
+  States
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the authored states and their activities.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;OrchestrationDefinitionState&gt; States { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionState.html">OrchestrationDefinitionState</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_TypeLabel_" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.TypeLabel*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_TypeLabel" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.TypeLabel">
+  TypeLabel
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the readable orchestration type label.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string TypeLabel { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_TypeName_" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.TypeName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_TypeName" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.TypeName">
+  TypeName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The registered orchestration type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string TypeName { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <h2 class="section" id="methods">Methods
 </h2>
 
 
   <a id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_Deconstruct_" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.Deconstruct*"></a>
 
-  <h3 id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_Deconstruct_System_String__System_Int64__" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.Deconstruct(System.String@,System.Int64@)">
-  Deconstruct(out string, out long)
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Orchestrations_Dashboard_Pages_OrchestrationDefinitionSummary_Deconstruct_System_String__System_String__" data-uid="BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.OrchestrationDefinitionSummary.Deconstruct(System.String@,System.String@)">
+  Deconstruct(out string, out string)
   
   </h3>
 
@@ -376,14 +568,14 @@ Class OrchestrationDefinitionSummary
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Deconstruct(out string Name, out long Count)</code></pre>
+    <pre><code class="lang-csharp hljs">public void Deconstruct(out string Name, out string TypeName)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>Name</code> <span class="xref">string</span></dt>
     <dd></dd>
-    <dt><code>Count</code> <span class="xref">long</span></dt>
+    <dt><code>TypeName</code> <span class="xref">string</span></dt>
     <dd></dd>
   </dl>
 

@@ -98,7 +98,7 @@ Class DashboardIndex
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class DashboardIndex : IRazorSliceProxy</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class DashboardIndex : IRazorSliceProxy&lt;DashboardIndexModel&gt;</code></pre>
   </div>
 
 
@@ -115,7 +115,7 @@ Class DashboardIndex
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
-      <div><span class="xref">IRazorSliceProxy</span></div>
+      <div><span class="xref">IRazorSliceProxy</span>&lt;<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardIndexModel.html">DashboardIndexModel</a>&gt;</div>
     </dd>
   </dl>
 
@@ -298,23 +298,28 @@ Class DashboardIndex
 
   <a id="BridgingIT_DevKit_Presentation_Web_Dashboard_Pages_DashboardIndex_Create_" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardIndex.Create*"></a>
 
-  <h3 id="BridgingIT_DevKit_Presentation_Web_Dashboard_Pages_DashboardIndex_Create" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardIndex.Create">
-  Create()
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Dashboard_Pages_DashboardIndex_Create_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardIndexModel_" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardIndex.Create(BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardIndexModel)">
+  Create(DashboardIndexModel)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Creates a new instance of the Razor Slice defined in <code>Dashboard/Pages/DashboardIndex.cshtml</code>.</p>
+  <div class="markdown level1 summary"><p>Creates a new instance of the Razor Slice defined in <code>Dashboard/Pages/DashboardIndex.cshtml</code> with the given model.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static RazorSlice Create()</code></pre>
+    <pre><code class="lang-csharp hljs">public static RazorSlice&lt;DashboardIndexModel&gt; Create(DashboardIndexModel model)</code></pre>
   </div>
 
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>model</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardIndexModel.html">DashboardIndexModel</a></dt>
+    <dd></dd>
+  </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">RazorSlice</span></dt>
+    <dt><span class="xref">RazorSlice</span>&lt;<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardIndexModel.html">DashboardIndexModel</a>&gt;</dt>
     <dd></dd>
   </dl>
 

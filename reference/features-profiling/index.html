@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -3357,6 +3357,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-dashboard-entities/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="entities" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="22" height="24" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /><path d="M10 21h12" /></g></svg></span>
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entities Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-console-commands/" class="md-nav__link"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="console-commands" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /><path d="m8 12 4 4-4 4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 12h6M18 16h4M18 20h6" /></g></svg></span>
         
   
@@ -5936,6 +5964,7 @@
 <p>Use workload dimensions such as status, attempt, cache state or item count for grouping and comparisons. Built-in orchestration instance/correlation IDs and job/pipeline execution IDs are excluded from dimension choices and saved grouping selections, including older profiles. Their legacy metadata remains readable in execution details. Application-defined business identifiers remain available as dimensions.</p>
 <p>Choose <strong>Group by operation dimension</strong> to split each operation key and kind into value groups. Each group shows the retained count, median, p95, and partial captures. Operations without the selected dimension are excluded before paging, counts and timing analysis. Empty strings remain valid values. Advanced selectors can group by up to four dimensions; an operation must contain every selected dimension. Clear grouping to include operations without those dimensions, or use an explicit <strong>Missing</strong> condition to find them. The grouped list keeps complete counts when exact duration analysis exceeds its bound and asks you to narrow the selection.</p>
 <p><a href="../../assets/dashboard/profiling/operation-dimensions.png"><img alt="One service operation grouped by a numeric workload dimension, with counts, median and p95 timings for each group" src="../../assets/dashboard/profiling/operation-dimensions.png" /></a></p>
+<p>This detail figure predates the common dialog spacing; its fields and workflow remain representative.</p>
 <p>Use a group's comparison action to set the baseline conditions. Choose another <strong>Recorded group</strong> of the same operation in the comparison dialog, or edit the conditions independently. Group conditions appear as removable chips. Dates, node, and application version remain independent on each side. This supports questions such as cache hits versus misses for the same workload, with segment timings showing where duration differs.</p>
 <p>Execution details provide dimension actions to filter the list, group by an operation dimension, or use a condition for either comparison side. Segment conditions require a <strong>Segment filter path</strong>, including every parent. They never match a similarly named sibling or an operation dimension. Mixed and partial segment values stay visible; equality suggestions include only complete, uniform values. Segment discovery counts executions owning that path, not repeated invocations.</p>
 <p>Discovery reads the selected retained data through <code>IOperationProfilingQueryService.DiscoverDimensionsAsync</code>, independently of the visible row limit. Names and values follow the selected key, kind, UTC range, node, and other conditions. Editing a dimension reveals alternatives to its own predicate. Suggestions show counts and support name and value searches. <code>MaximumDimensionNames</code> defaults to 32 and <code>MaximumDimensionValues</code> to 20 per name; both accept 1–512. Values are ranked by count, then exact type and scalar. Searches cover the bounded selection rather than only the returned suggestions. A selection above <code>MaximumAnalysisRecords</code> returns a limit error instead of misleading partial suggestions. Discovery shares admission, cancellation, and timeout limits with other dashboard queries and never flushes queued captures.</p>
@@ -6044,6 +6073,7 @@
 <p><a href="../../assets/dashboard/profiling/runtime-overview.png"><img alt="Runtime Overview with memory and GC-pressure charts, session markers, and a measured workload segment" src="../../assets/dashboard/profiling/runtime-overview.png" /></a></p>
 <p>The Overview charts align memory, CPU, allocation and GC observations on a UTC timeline. Markers identify workload transitions; the shaded range identifies a measured Runtime segment. Collapse Sessions and Current Snapshot to give the charts more space.</p>
 <p><a href="../../assets/dashboard/profiling/runtime-analysis.png"><img alt="Runtime Analysis with evidence-backed allocation, heap-growth, retention, and GC-pressure signals" src="../../assets/dashboard/profiling/runtime-analysis.png" /></a></p>
+<p>This detail figure predates the common dialog spacing; its fields and workflow remain representative.</p>
 <p>Analysis shows each signal's confidence, supporting measurements and suggested next step. Byte values use readable units; information icons retain the recorded value and explain each metric. Read the sampling-quality summary alongside the signals before deciding what to investigate.</p>
 <p>Returning to Profiling from the dashboard menu or overview card opens your last selected <strong>Runtime</strong>, <strong>Operations</strong>, <strong>Requests</strong>, <strong>Timeline</strong>, or <strong>Insights</strong> view. The selection is saved in browser storage for each dashboard path. Explicit view links still open their named view.</p>
 <p>The dashboard overview also has separate <strong>Operations</strong> and <strong>Requests</strong> cards. They show retained executions from the last 15 minutes, across all outcomes, plus matching groups and contributing nodes. Operations includes all kinds; Requests includes HTTP captures. Each card opens its named view and refreshes with the other overview cards. Counts reflect retained captures and any request sampling, rather than total application traffic.</p>
@@ -6095,6 +6125,7 @@
 <p>Results remain inside the dialog. The table shows retained execution counts, median, p95, mean and partial counts, with duration differences in milliseconds or seconds and percentages relative to the baseline. Empty selections and unavailable timings are explicit. A zero baseline has no percentage difference. Closing the dialog cancels a pending read; later responses cannot replace a newer selection.</p>
 <p>The segment table matches full, case-insensitive paths, including parent segments. Choose mean total or self duration per observed execution, or mean total or self duration per invocation. Each side shows invocation and execution counts so different coverage is visible. A path absent from one side is marked <strong>Not recorded</strong>, rather than treated as zero. Total durations can overlap through nesting or parallelism; self duration excludes observed child work.</p>
 <p><a href="../../assets/dashboard/profiling/operation-comparison.png"><img alt="Comparing executions of the same operation under independently selected conditions in a dashboard dialog" src="../../assets/dashboard/profiling/operation-comparison.png" /></a></p>
+<p>This detail figure predates the common dialog spacing; its fields and workflow remain representative.</p>
 <p><a href="../../assets/dashboard/profiling/operations.png"><img alt="Recent handler and orchestration executions with readable group names, information buttons and single-line rows" src="../../assets/dashboard/profiling/operations.png" /></a></p>
 <p>Rows show the execution's start timestamp in UTC, executing node, root outcome, duration and a duration breakdown. Hover or focus a bar bucket to see its duration and percentage. A completed root can contain failed segments; the list flags those separately. The summary cards show matching executions, groups, queued records and dropped records. The <strong>Capture health</strong> toolbar icon opens persistence and sampling details in a dialog.</p>
 <p>Use the <strong>From UTC</strong> and <strong>To UTC</strong> date/time pickers to bound the selection. Their values always represent UTC, regardless of the browser's timezone. Rows show the node name on one line; hover it for the node identity and version. Correlation IDs link to filtered logs; the adjacent copy action copies the complete ID.</p>
@@ -6103,15 +6134,18 @@
 <p><a href="../../assets/dashboard/profiling/requests.png"><img alt="Recent HTTP requests with compact rows, status and segment duration breakdowns" src="../../assets/dashboard/profiling/requests.png" /></a></p>
 <p>Request details separate application correlation from the transport request ID. Expand <strong>Request metadata</strong> for the recorded URL, query arguments, route template, protocol and content types.</p>
 <p><a href="../../assets/dashboard/profiling/request-metadata.png"><img alt="Request detail modal with application correlation, route and transport metadata" src="../../assets/dashboard/profiling/request-metadata.png" /></a></p>
+<p>This detail figure predates the common dialog spacing; its fields and workflow remain representative.</p>
 <p>The top toolbar provides manual <strong>Refresh</strong> and a <strong>Tail</strong> switch in Recent view. Tail prepends newly persisted recordings while keeping older loaded rows and open groups. Refresh replaces the list with the latest page. Pending records appear after the periodic writer persists them; neither action forces a flush.</p>
 <h4 id="repeated-and-nested-segments">Repeated and nested segments<a class="headerlink" href="#repeated-and-nested-segments" title="Permanent link">&para;</a></h4>
 <p>Operation details combine typed dimensions and measurements with the aggregated segment tree. Repeated invocations share a row at the same complete path. Nested paths keep parent and child work distinct, with invocation counts, outcomes, total and self durations, weighted means, and minimum and maximum durations.</p>
 <p><strong>Total</strong> sums every invocation's elapsed time, including child work. <strong>Self</strong> excludes the time covered by its children, subtracting overlapping child intervals once. Nested or parallel totals can exceed the operation's duration; the duration breakdown shows the exclusive shares instead. Indented rows show segment names, with the full path in a tooltip. Hover or focus the information icons for timing definitions, and expand <strong>Metadata</strong> or a segment's <strong>Details</strong> for measurements and failure information.</p>
 <p>The <strong>Duration / %</strong> control beside <strong>Segments</strong> switches all timing columns, including minimum, maximum and self mean, between elapsed time and percentage of the operation duration. Tooltips retain both values. Percentages can exceed 100% for repeated or parallel work; a zero-duration operation has no percentage denominator. The browser preserves this choice across refreshes and navigation.</p>
 <p><a href="../../assets/dashboard/profiling/operation-details.png"><img alt="Operation detail modal with typed metadata and repeated, nested segment statistics, including successful and failed invocations" src="../../assets/dashboard/profiling/operation-details.png" /></a></p>
+<p>This detail figure predates the common dialog spacing; its fields and workflow remain representative.</p>
 <h4 id="runtime-context-around-one-operation">Runtime context around one operation<a class="headerlink" href="#runtime-context-around-one-operation" title="Permanent link">&para;</a></h4>
 <p>The <strong>Runtime overlay</strong> section shows matching process snapshots around the operation's observed UTC interval. The shaded interval identifies the operation; surrounding samples, collection windows and gaps remain visible. Select <strong>Open Runtime</strong> to inspect the wider session for the same node and interval. Expand <strong>Sample coverage</strong> for sampling gaps and collection windows.</p>
 <p><a href="../../assets/dashboard/profiling/runtime-overlay.png"><img alt="Runtime overlay with process CPU, memory, allocation, and GC observations around a selected operation interval" src="../../assets/dashboard/profiling/runtime-overlay.png" /></a></p>
+<p>This detail figure predates the common dialog spacing; its fields and workflow remain representative.</p>
 <p>These counters describe the whole process. They provide context for the operation's segment timings without assigning process CPU, memory or GC activity to that operation.</p>
 <h2 id="mcp-diagnostics">MCP diagnostics<a class="headerlink" href="#mcp-diagnostics" title="Permanent link">&para;</a></h2>
 <p>For coding help, call <code>bdk_guidance_get</code> with <code>topic="profiling"</code> or a query about recordings and segments. This CLI-owned guide works without a running app and includes operation ownership, recording lifecycles, safe helper usage, result classification, correlation metadata, dimensions and C# examples. It links to this guide and the concrete profiling APIs. See <a href="../features-cli-mcp/#operation-profiling-guidance">operation profiling guidance</a>.</p>
@@ -6449,7 +6483,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

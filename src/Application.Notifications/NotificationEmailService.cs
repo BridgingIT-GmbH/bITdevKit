@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Common.Utilities;
+using MailKit;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using MimeKit;
@@ -212,7 +213,7 @@ public class NotificationEmailService(
                                     this.options.SmtpSettings.Username, this.options.SmtpSettings.Password, ct);
                             }
 
-                            await this.smtpClient.SendAsync(mimeMessage, ct);
+                            await this.smtpClient.SendAsync(new SendRequest(mimeMessage), ct);
                             operation.SmtpAccepted = true;
                             admission.SmtpAccepted = true;
                             await this.smtpClient.DisconnectAsync(true, ct);

@@ -62,7 +62,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <summary>
     /// Gets or sets the capabilities.
     /// </summary>
-    public SmtpCapabilities Capabilities { get; private set; } = SmtpCapabilities.Authentication | SmtpCapabilities.BinaryMime | SmtpCapabilities.UTF8 | SmtpCapabilities.Size;
+    public SmtpCapabilities Capabilities { get; private set; } = new([SmtpCapability.Authentication, SmtpCapability.BinaryMime, SmtpCapability.UTF8, SmtpCapability.Size], []);
 
     /// <summary>
     /// Stores the local domain.
@@ -80,7 +80,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <summary>
     /// Gets or sets the max size.
     /// </summary>
-    public uint MaxSize { get; private set; } = checked((uint)ByteSize.Megabytes(50));
+    public long MaxSize { get; private set; } = ByteSize.Megabytes(50);
 
     /// <summary>
     /// Stores the require tls.
@@ -798,13 +798,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <returns>The result of the operation.</returns>
     public string Send(MimeMessage message, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("[{LogKey}] fakesmtpclient - Send mail message. Subject: {Subject}", Constants.LogKey, message.Subject);
-        if (!this.isConnected) this.logger.LogWarning("[{LogKey}] fakesmtpclient - Attempted to send email while not connected.", Constants.LogKey);
-        if (!this.isAuthenticated && this.AuthenticationMechanisms.Count != 0) this.logger.LogWarning("[{LogKey}] fakesmtpclient - Attempted to send email while not authenticated (and auth is available).", Constants.LogKey);
-
-        this.LogMessageDetails(message);
-        this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (sync)"));
-        return "250 2.0.0 OK: Logged (sync)";
+        return this.Send(new SendRequest(message) { TransferProgress = progress }, cancellationToken).ResponseText;
     }
 
     /// <summary>
@@ -814,14 +808,10 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     /// <param name="progress">The progress used by the operation.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public Task<string> SendAsync(MimeMessage message, CancellationToken cancellationToken = default, ITransferProgress progress = null)
+    public async Task<string> SendAsync(MimeMessage message, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("[{LogKey}] fakesmtpclient - SendAsync mail message. Subject: {Subject}", Constants.LogKey, message.Subject);
-        if (!this.isConnected) this.logger.LogWarning("[{LogKey}] fakesmtpclient - Attempted to send email while not connected.", Constants.LogKey);
-
-        this.LogMessageDetails(message);
-        this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (async)"));
-        return Task.FromResult("250 2.0.0 OK: Logged (async)");
+        var result = await this.SendAsync(new SendRequest(message) { TransferProgress = progress }, cancellationToken).ConfigureAwait(false);
+        return result.ResponseText;
     }
 
     /// <summary>
@@ -835,10 +825,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <returns>The result of the operation.</returns>
     public string Send(MimeMessage message, MailboxAddress sender, IEnumerable<MailboxAddress> recipients, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("[{LogKey}] fakesmtpclient - Send mail message. Sender: {Sender}, Recipients: {Recipients}. Subject: {Subject}", Constants.LogKey, sender, string.Join(";", recipients), message.Subject);
-        this.LogMessageDetails(message, sender, recipients);
-        this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (sync, with sender/recipients)"));
-        return "250 2.0.0 OK: Logged (sync, with sender/recipients)";
+        return this.Send(new SendRequest(message, sender, recipients) { TransferProgress = progress }, cancellationToken).ResponseText;
     }
 
     /// <summary>
@@ -850,12 +837,10 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     /// <param name="progress">The progress used by the operation.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public Task<string> SendAsync(MimeMessage message, MailboxAddress sender, IEnumerable<MailboxAddress> recipients, CancellationToken cancellationToken = default, ITransferProgress progress = null)
+    public async Task<string> SendAsync(MimeMessage message, MailboxAddress sender, IEnumerable<MailboxAddress> recipients, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("[{LogKey}] fakesmtpclient - SendAsync mail message. Sender: {Sender}, Recipients: {Recipients}. Subject: {Subject}", Constants.LogKey, sender, string.Join(";", recipients), message.Subject);
-        this.LogMessageDetails(message, sender, recipients);
-        this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (async, with sender/recipients)"));
-        return Task.FromResult("250 2.0.0 OK: Logged (async, with sender/recipients)");
+        var result = await this.SendAsync(new SendRequest(message, sender, recipients) { TransferProgress = progress }, cancellationToken).ConfigureAwait(false);
+        return result.ResponseText;
     }
 
     /// <summary>
@@ -868,10 +853,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <returns>The result of the operation.</returns>
     public string Send(FormatOptions options, MimeMessage message, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("[{LogKey}] fakesmtpclient - Send mail message. Options International: {International}. Subject: {Subject}", Constants.LogKey, options.International, message.Subject);
-        this.LogMessageDetails(message);
-        this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (sync, with FormatOptions)"));
-        return "250 2.0.0 OK: Logged (sync, with FormatOptions)";
+        return this.Send(options, new SendRequest(message) { TransferProgress = progress }, cancellationToken).ResponseText;
     }
 
     /// <summary>
@@ -882,12 +864,10 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     /// <param name="progress">The progress used by the operation.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public Task<string> SendAsync(FormatOptions options, MimeMessage message, CancellationToken cancellationToken = default, ITransferProgress progress = null)
+    public async Task<string> SendAsync(FormatOptions options, MimeMessage message, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("[{LogKey}] fakesmtpclient - SendAsync mail message. Options International: {International}. Subject: {Subject}", Constants.LogKey, options.International, message.Subject);
-        this.LogMessageDetails(message);
-        this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (async, with FormatOptions)"));
-        return Task.FromResult("250 2.0.0 OK: Logged (async, with FormatOptions)");
+        var result = await this.SendAsync(options, new SendRequest(message) { TransferProgress = progress }, cancellationToken).ConfigureAwait(false);
+        return result.ResponseText;
     }
 
     /// <summary>
@@ -902,10 +882,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <returns>The result of the operation.</returns>
     public string Send(FormatOptions options, MimeMessage message, MailboxAddress sender, IEnumerable<MailboxAddress> recipients, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("[{LogKey}] fakesmtpclient - Send mail message. Options International: {International}. Sender: {Sender}, Recipients: {Recipients}. Subject: {Subject}", Constants.LogKey, options.International, sender, string.Join(";", recipients), message.Subject);
-        this.LogMessageDetails(message, sender, recipients);
-        this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (sync, with FormatOptions, sender/recipients)"));
-        return "250 2.0.0 OK: Logged (sync, with FormatOptions, sender/recipients)";
+        return this.Send(options, new SendRequest(message, sender, recipients) { TransferProgress = progress }, cancellationToken).ResponseText;
     }
 
     /// <summary>
@@ -918,12 +895,48 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     /// <param name="progress">The progress used by the operation.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public Task<string> SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IEnumerable<MailboxAddress> recipients, CancellationToken cancellationToken = default, ITransferProgress progress = null)
+    public async Task<string> SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IEnumerable<MailboxAddress> recipients, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("[{LogKey}] fakesmtpclient - SendAsync mail message. Options International: {International}. Sender: {Sender}, Recipients: {Recipients}. Subject: {Subject}", Constants.LogKey, options.International, sender, string.Join(";", recipients), message.Subject);
-        this.LogMessageDetails(message, sender, recipients);
-        this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (async, with FormatOptions, sender/recipients)"));
-        return Task.FromResult("250 2.0.0 OK: Logged (async, with FormatOptions, sender/recipients)");
+        var result = await this.SendAsync(options, new SendRequest(message, sender, recipients) { TransferProgress = progress }, cancellationToken).ConfigureAwait(false);
+        return result.ResponseText;
+    }
+
+    /// <inheritdoc />
+    public SendResult Send(ISendRequest request, CancellationToken cancellationToken = default)
+    {
+        return this.Send(FormatOptions.Default, request, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public Task<SendResult> SendAsync(ISendRequest request, CancellationToken cancellationToken = default)
+    {
+        return this.SendAsync(FormatOptions.Default, request, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public SendResult Send(FormatOptions options, ISendRequest request, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        this.logger.LogInformation("[{LogKey}] fakesmtpclient - Send mail message. Subject: {Subject}", Constants.LogKey, request.Message.Subject);
+        if (!this.isConnected) this.logger.LogWarning("[{LogKey}] fakesmtpclient - Attempted to send email while not connected.", Constants.LogKey);
+        if (!this.isAuthenticated && this.AuthenticationMechanisms.Count != 0) this.logger.LogWarning("[{LogKey}] fakesmtpclient - Attempted to send email while not authenticated (and auth is available).", Constants.LogKey);
+
+        var recipients = request.Recipients ?? request.Message.To.Mailboxes.Concat(request.Message.Cc.Mailboxes).Concat(request.Message.Bcc.Mailboxes);
+        request.OnStarted(this);
+        this.LogMessageDetails(request.Message, request.Sender, recipients);
+        var result = new SendResult("250 2.0.0 OK: Logged", recipients.ToArray(), []);
+        request.OnCompleted(this, result);
+        this.MessageSent?.Invoke(this, new MessageSentEventArgs(request, result));
+        return result;
+    }
+
+    /// <inheritdoc />
+    public Task<SendResult> SendAsync(FormatOptions options, ISendRequest request, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(this.Send(options, request, cancellationToken));
     }
 
     /// <summary>
@@ -931,6 +944,13 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// </summary>
     public void Dispose()
     {
+    }
+
+    /// <inheritdoc />
+    public ValueTask DisposeAsync()
+    {
+        this.Dispose();
+        return ValueTask.CompletedTask;
     }
 }
 #pragma warning restore SYSLIB0058 // Type or member is obsolete

@@ -103,6 +103,8 @@ Good to know:
 
 ### Environment
 
+NuGet API key rotation and the prerequisites for a future GHE.com Trusted Publishing migration are defined in the [NuGet Publishing from GHE specification](../../docs/specs/spec-ci-nuget-publishing-ghe.md). The current workflow continues to use `NUGET_API_KEY`.
+
 - `Build_Configuration=Debug`
 - Release is not used because assembly signing currently depends on a missing `.snk` file.
 - `MinVerDefaultPreReleaseIdentifiers=preview.0`

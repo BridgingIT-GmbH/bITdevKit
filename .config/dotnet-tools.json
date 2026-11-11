@@ -10,7 +10,7 @@
       "rollForward": false
     },
     "microsoft.dotnet-openapi": {
-      "version": "10.0.14",
+      "version": "10.0.15",
       "commands": [
         "dotnet-openapi"
       ],
@@ -38,14 +38,14 @@
       "rollForward": false
     },
     "dotnet-ef": {
-      "version": "10.0.14",
+      "version": "10.0.15",
       "commands": [
         "dotnet-ef"
       ],
       "rollForward": false
     },
     "dotnet-outdated-tool": {
-      "version": "4.8.1",
+      "version": "4.9.0",
       "commands": [
         "dotnet-outdated"
       ],

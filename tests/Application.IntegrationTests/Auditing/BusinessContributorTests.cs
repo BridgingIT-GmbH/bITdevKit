@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MimeKit;
 
 public sealed class BusinessContributorTests
 {
@@ -35,7 +34,7 @@ public sealed class BusinessContributorTests
         Status(record).ShouldBe("Ignored");
         record.Kind.ShouldBe("EmailQueue");
         record.Actions.ShouldBeEmpty();
-        await smtp.DidNotReceive().SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>(), Arg.Any<ITransferProgress>());
+        await smtp.DidNotReceive().SendAsync(Arg.Any<ISendRequest>(), Arg.Any<CancellationToken>());
         Safe(record);
     }
 
@@ -45,8 +44,8 @@ public sealed class BusinessContributorTests
         var services = Services();
         var smtp = Smtp();
         var attempts = 0;
-        smtp.SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>(), Arg.Any<ITransferProgress>()).Returns(_ =>
-            ++attempts == 1 ? Task.FromException<string>(new InvalidOperationException("private-smtp-error")) : Task.FromResult("accepted"));
+        smtp.SendAsync(Arg.Any<ISendRequest>(), Arg.Any<CancellationToken>()).Returns(_ =>
+            ++attempts == 1 ? Task.FromException<SendResult>(new InvalidOperationException("private-smtp-error")) : Task.FromResult(new SendResult("accepted", [], [])));
         services.AddNotificationService<EmailMessage>(configure: builder => builder.WithAuditing());
         services.AddSingleton(smtp);
         await using var host = services.BuildServiceProvider();
@@ -426,7 +425,7 @@ public sealed class BusinessContributorTests
         var record = (await Records(host)).ShouldHaveSingleItem();
         Status(record).ShouldBe(success ? "NotSent" : "Failed");
         record.Actions.ShouldBeEmpty();
-        await smtp.DidNotReceive().SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>(), Arg.Any<ITransferProgress>());
+        await smtp.DidNotReceive().SendAsync(Arg.Any<ISendRequest>(), Arg.Any<CancellationToken>());
         Safe(record);
     }
 
@@ -498,7 +497,7 @@ public sealed class BusinessContributorTests
     private static ISmtpClient Smtp()
     {
         var smtp = Substitute.For<ISmtpClient>();
-        smtp.SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>(), Arg.Any<ITransferProgress>()).Returns(Task.FromResult("accepted"));
+        smtp.SendAsync(Arg.Any<ISendRequest>(), Arg.Any<CancellationToken>()).Returns(Task.FromResult(new SendResult("accepted", [], [])));
         return smtp;
     }
     private static EmailMessage Email() => new() { Id = Guid.NewGuid(), From = new() { Address = "private-sender@example.com" }, To = ["private-recipient@example.com"], Subject = "private-subject", Body = "private-body" };

@@ -181,6 +181,15 @@ public static class RouteHandlerExtensions
                 }
                 else
                 {
+                    // Parameters is null for endpoints without other parameters. Any existing filter query parameter
+                    // (a bound handler argument or an earlier WithFilterSchema call) is replaced to keep name+location unique.
+                    operation.Parameters ??= [];
+                    foreach (var existing in operation.Parameters
+                        .Where(p => p.In == ParameterLocation.Query && string.Equals(p.Name, "filter", StringComparison.OrdinalIgnoreCase)).ToList())
+                    {
+                        operation.Parameters.Remove(existing);
+                    }
+
                     operation.Parameters.Add(new OpenApiParameter
                     {
                         Name = "filter",

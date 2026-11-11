@@ -94,7 +94,9 @@ flowchart TD
     Views["MudBlazor layouts and renderers"]
     Data["Optional data components"]
     Features["Optional application features"]
-    APIs["Application APIs"]
+    Access["Feature access contracts"]
+    Requests["Server Application Requester"]
+    APIs["Browser HTTP APIs"]
     Backend["bITdevKit backend capabilities"]
     Host --> Modules
     Host --> Core
@@ -103,12 +105,15 @@ flowchart TD
     Views -->|"Consumes"| Core
     Modules --> Data
     Modules --> Features
-    Data --> APIs
-    Features --> APIs
+    Data --> Access
+    Features --> Access
+    Access --> Requests
+    Access --> APIs
+    Requests --> Backend
     APIs --> Backend
 ```
 
-Presentation modules declare contributions; the shell composes and resolves them; default or custom renderers display the result. Higher-level modules build on these contracts. Backend repositories and domain entities remain behind application APIs.
+Presentation modules declare contributions; the shell composes and resolves them; default or custom renderers display the result. Higher-level modules build on these contracts. Runtime-specific feature adapters reach the same application use cases. Backend repositories and domain entities remain behind those use cases.
 
 ### Reuse of existing bITdevKit capabilities
 
@@ -118,7 +123,7 @@ Use ordinary .NET DI and existing bITdevKit utilities where their semantics fit.
 | --- | --- | --- |
 | ModuleBase and WebModuleBase | Reuse server identity, naming, enablement and registration conventions. | [Common.Modules](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/src/Common.Modules/Common.Modules.csproj) references Microsoft.AspNetCore.App, and the base contracts expose server hosting types. Keep them server-side; portable presentation definitions preserve logical identity without importing server setup. |
 | Common.Utilities.Composition | Use service registration, concrete decorators, adapters, composites and strategy selection where useful. | [Composition builders](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/src/Common.Utilities/Composition/Composition.cs) do not supply shell contribution IDs, attachment/cardinality validation, deterministic contextual composition or live bindings. Focused presentation builders still own those semantics. |
-| AppState | Reuse state change events, transition metadata and applicable persistence providers. | [AppState](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/src/Presentation.Web.Client/AppState/AppState.cs) needs presentation subscription conveniences for selectors, renderer dispatch, disposal and stale-result checks; component-local state remains valid. |
+| AppState | Refactor existing state, registration, manager and provider APIs as needed for the presentation framework. | [AppState](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/src/Presentation.Web.Client/AppState/AppState.cs) reuse includes correcting lifetimes, state instance isolation and persistence behavior, plus selector subscriptions, renderer dispatch, disposal and stale-result checks. Component-local state remains valid. |
 | Requester and Notifier | Optional typed frontend dispatch and explicit local invalidation/change notifications; reuse registration information for diagnostics where useful. | [Requester](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/src/Common.Utilities/Requester/Requester.cs) and [Notifier](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/src/Common.Utilities/Requester/Notifier.cs) keep their own contracts. Browser-safe handlers only; direct callbacks remain supported, and local mediation does not become durable or cross-runtime messaging. |
 | Result, Result<T> and ResultPaged<T> | Reuse application outcomes and paged query responses, with presentation feedback adapters. | A confirmed business result remains distinct from transport uncertainty and later refresh failure. [Result operation scopes](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/src/Common.Results/Result{T}OperationScope.cs) are not UI action/component scopes or transactions across APIs. |
 | FilterModel and its typed builder | Reuse query contracts in optional grid/filter adapters. | [FilterModelBuilder](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/src/Common.Abstractions/Filtering/FilterModelBuilder.cs) does not infer UI columns, supported backend fields/operators or authorization. Feature/API contracts define those mappings. |
@@ -224,6 +229,26 @@ An editor captures the submitted values and edit revision before dispatch. Confi
 
 Scaffolding means reusable composition patterns and starter code. It does not require metadata-driven runtime generation, direct repository access from the browser or a universal CRUD endpoint.
 
+### Selection ownership and defaults
+
+Selection policy belongs to the optional data adapters and the feature view using them. AppState can hold the state and supply notifications where useful; component-local state also works. The core shell consumes the view's typed action context and enforces binding, confirmation and execution rules. It does not manage grid paging or define which records a filter matches.
+
+The initial selection adapter tracks explicitly selected stable record IDs. Its defaults apply to both grid and handwritten views:
+
+| Change | Selection behavior |
+| --- | --- |
+| Paging | Retain selection across pages by default. A view can explicitly enable clearing selection on paging. |
+| Filter or search criteria | Clear selection because the query represents a different working set. |
+| Sorting | Preserve selected IDs. |
+| Data refresh | Preserve selected IDs, update available record data and versions, and reevaluate action eligibility. Remove only confirmed deleted or inaccessible records. Absence from the loaded page does not establish either condition. |
+| Relevant target change during confirmation | Invalidate the pending confirmation and require a fresh decision under the action invocation rules. |
+| Change after dispatch | Keep the accepted execution's captured inputs. Selection changes do not retarget dispatched work. |
+| Identity or workspace change | Invalidate old-context selection under the normal privacy and context-transition rules. |
+
+When selected records can be outside the visible page, show the total selected count and a clear-selection control. Feature adapters supply the target data and versions needed by an action, with authorized reads where required. Selection alone does not establish current eligibility or grant access.
+
+The first release selects explicit IDs across pages. Query-wide selection of records never loaded is deferred until a concrete feature defines backend consistency, authorization and batch-outcome semantics. An explicit Export all matching action can capture query intent independently of row selection.
+
 ## Optional application features
 
 | Feature | Direction and scope |
@@ -292,6 +317,21 @@ This profile assumes reliable connectivity and acceptable server round-trip late
 
 Choose WebAssembly when browser-side execution, deployment requirements or interaction characteristics justify its startup and API-integration costs. Choose Auto deliberately when the same feature and its dependencies have been validated in both runtimes; Auto adds runtime coverage rather than removing that work. Static SSR remains appropriate for static-compatible public content. Prerendering is an independent opt-in decision for a legal boundary, not a consequence of selecting Server or Auto. [Blazor render modes](https://learn.microsoft.com/en-us/aspnet/core/blazor/components/render-modes?view=aspnetcore-10.0)
 
+### Reference application access paths
+
+DoFiesta uses different application access paths for Server and browser execution. Shared portable components consume narrow feature-owned service contracts. Hosts register the appropriate implementation in each executing runtime. Existing suitable service contracts can be reused; the shell does not require a universal application-service wrapper.
+
+| Executing runtime | Reference path |
+| --- | --- |
+| Interactive Server | Dispatch commands and queries in-process through Application Requester. The reference workflow does not call its own HTTP API. |
+| Interactive WebAssembly or standalone WASM | Use typed HTTP clients. Server endpoints dispatch to the same application commands and queries. Backend handlers and their dependencies remain outside the browser assembly graph. |
+| Interactive Auto | Use the Server implementation while executing on Server and the HTTP implementation while executing in the browser. Select the implementation through runtime registration; active instances and work do not migrate. |
+| Explicit prerendering | Resolve suitable server-side feature services for approved read-only initialization. Apply the prerender request's identity and lifetime rules, then reconstruct live services and bindings on activation. |
+
+The Server adapter obtains the current user and application context from the originating circuit. Application handlers or their behaviors enforce validation and permissions for both entry paths, including checks otherwise performed only by HTTP endpoint filters. Backend authorization remains authoritative. A direct Requester call must not bypass required policy or entity checks.
+
+Resolve operation dependencies with lifetimes appropriate to each use case. A long-lived circuit or UI binding must not retain an operation-owned DbContext or repository beyond that operation. The presentation adapter handles access and mapping; application use cases continue to own business orchestration. Feature results, field errors, conflicts and unknown outcomes map to the same presentation feedback contract in both paths.
+
 ### Prerendering policy and activation
 
 Framework interactive hosting profiles explicitly disable prerendering by default, including Server, WebAssembly and Auto. This reduces duplicated initialization, browser-service and state-handoff complexity for ordinary business applications. Hosts can opt in for a particular legal interactive boundary where initial server-produced content is useful. Choosing Static SSR does not enable prerendering for unrelated interactive areas.
@@ -339,6 +379,16 @@ Modules can contribute page/component assemblies, frontend services and API clie
 Validation must identify duplicate contribution identities, route conflicts, missing required dependencies, dependency cycles and contributions targeting unavailable required regions. Typed extension points additionally validate attachment compatibility, required/optional participation, cardinality and unresolved competing replacements as defined in Extension contracts and host authority. Optional dependencies and attachments follow their documented fallbacks. Diagnostics identify the source module, point, target and effective composition.
 
 A pinned name identifies the same logical module across the server and browser compositions. Qualified public extension and contribution IDs retain their published values. For example, a module initially named orders can rename its CLR type and keep the pinned orders name and its exported attachment IDs. Startup validation reports duplicate module identities and conflicting declarations where both are visible. Changing a published identity follows the compatibility and migration policy.
+
+### Page ownership and route availability
+
+A module can declare default ownership of its registered page assembly. Explicit page-type mappings override that default where multiple modules share an assembly. Composition resolves one effective owner for each framework-managed destination and reports ambiguous or missing ownership. A host-owned page can explicitly belong to the host composition. Ordinary pages in an unambiguous module assembly need no repeated module annotation.
+
+Blazor `@page` declarations remain the source of URLs. Ownership metadata associates the page type and its routes with the stable module identity. The owning module supplies declared capability and availability defaults; page requirements and host destination overrides contribute to the effective requirements. Navigation visibility is evaluated separately. Namespace or URL naming alone does not establish ownership.
+
+Host adapters use that resolved metadata for both initial server endpoint processing and interactive route activation. Configure Blazor's server and interactive page-assembly discovery from the effective composition. A disabled module's pages remain unavailable even when another enabled module requires the same assembly. Gate activation before constructing the feature page or running its protected reads and initialization.
+
+Initial server requests use applicable ASP.NET Core endpoint authorization and availability handling. Interactive navigation uses the corresponding Blazor route integration. Both paths provide the declared denied or unavailable behavior and safe return destination. A client route view alone cannot supply server-request enforcement. These adapters extend normal Blazor routing and do not introduce a replacement router.
 
 ## Destinations, availability and deep links
 
@@ -574,7 +624,7 @@ sequenceDiagram
     participant Scope as Action scope
     participant Bar as External toolbar
     participant Confirm as Confirmation
-    participant API as Orders API
+    participant UseCase as Orders use case
     A->>Scope: Bind selection 1042 and 1043
     Scope-->>Bar: Approve 2, Edit disabled
     Bar->>Scope: Invoke original binding and revision
@@ -589,8 +639,8 @@ sequenceDiagram
             Scope-->>Bar: Stop and require a fresh decision
         else Still applicable
             Scope->>A: Await handler with captured targets
-            A->>API: Approve 1042 and 1043
-            API-->>A: Operation result
+            A->>UseCase: Approve 1042 and 1043
+            UseCase-->>A: Operation result
             A->>Scope: Update owned state and complete execution
             Scope-->>Bar: Refresh actions and execution status
         end
@@ -895,6 +945,14 @@ Persisted values do not grant authorization. Sensitive business data and credent
 
 Context changes are accepted by the context owner, invalidate affected state and signal consumers. Results from an old context or identity must not overwrite current state. Disposal, cancellation and renderer dispatch must be handled safely.
 
+### AppState adaptation
+
+Existing AppState types, registration, managers and persistence providers can be changed and refactored to satisfy these requirements. Reuse does not require preserving unsafe lifetime or storage behavior. API design identifies any consumer migration required by those changes.
+
+Managers and diagnostic state inventories belong to the user's runtime or Server circuit. They must distinguish live state instances and release registrations with their owner. A process-wide manager must not retain user state, expose another circuit's inventory or reset another circuit's stores. Reset and persistence operations use the originating owner's services rather than an unrelated service scope. Disposing a registration does not dispose a DI-owned shared service.
+
+Persistence keys include the declared application, module, view or state instance, identity, workspace and schema dimensions. Anonymous context identity remains stable for its declared lifetime, including repeated provider calls and reloads when persistence is enabled. Sign-in, sign-out and workspace transitions apply the declared partitioning and cleanup policy. Two circuits using the same state type and two component instances within one circuit must retain their declared independent ownership.
+
 ### State change subscriptions
 
 AppState changes are an event source for components, pages and navigation, independently of whether state is persisted. Existing bITdevKit AppState documentation provides StateChanged and StateChangeWithMetadata events; the metadata event describes the transition with state identity, operation, old/new values, reason and timestamp. Reuse this foundation. [AppState reference](https://bridgingit-gmbh.github.io/bITdevKit/reference/features-presentation-appstate/)
@@ -1181,7 +1239,7 @@ Public examples must show both the default application and substantial customiza
 
 ### DoFiesta reference application
 
-DoFiesta is the reference application for the bITdevKit Blazor presentation framework. Every capability delivered by the framework and shell must have a runnable DoFiesta scenario that consumes it through the same public contracts, registrations and assets available to other applications. Surface user-facing capabilities in ordinary workflows. Demonstrate configuration, extension contracts and diagnostic integrations through documented example code and runnable profiles. Record where to find each capability, how to enable it, and what observable behavior proves that it is in use.
+DoFiesta is the migration target and reference application for the bITdevKit Blazor presentation framework. Its references and migration walkthroughs remain part of this specification. Every capability delivered by the framework and shell must have a runnable DoFiesta scenario that consumes it through the same public contracts, registrations and assets available to other applications. Surface user-facing capabilities in ordinary workflows. Demonstrate configuration, extension contracts and diagnostic integrations through documented example code and runnable profiles. Record where to find each capability, how to enable it, and what observable behavior proves that it is in use.
 
 DoFiesta can evolve its pages, domain and APIs to supply those workflows. The first task-list workflow proves the core integration. Subsequent workflows and profiles cover the rest of the delivered surface. Exercise optional packages in the profiles that enable them. When an optional feature ships, add or update its DoFiesta scenario with that delivery. The framework's release scope determines which capabilities need coverage.
 
@@ -1209,15 +1267,15 @@ The first DoFiesta POC proves hosting portability, presentation module compositi
 
 Reuse DoFiesta's existing Todo domain/API, .NET 10 Server/Client arrangement and MudBlazor assets while moving its application composition, layout, navigation and contextual actions onto the new shell. Its current App configures Interactive WebAssembly with prerendering disabled; Server and Auto therefore require additional host/service arrangements. Add documented hosting and validation profiles within the DoFiesta example. Any minimal companion host needed for standalone WASM belongs to that same example and consumes the same feature code. Use the POC build and dependency checks to determine exact assembly and package placement. [DoFiesta client project](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/examples/DoFiesta/DoFiesta.Presentation.Web.Client/DoFiesta.Presentation.Web.Client.csproj) · [Current host component](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/examples/DoFiesta/DoFiesta.Presentation.Web.Server/Components/App.razor)
 
-Build on the existing Todo workflow with named task lists, task detail deep links, and Edit, Save, Move and Complete actions. Two simultaneous component instances have independent selection, context and pending state. A toolbar outside the owning component explicitly observes the selected scope. Host adapters supply the appropriate API clients and runtime services to the shared portable feature code. Backend module startup, repositories and server-only registrations stay on the server.
+Build on the existing Todo workflow with named task lists, task detail deep links, and Edit, Save, Move and Complete actions. Two simultaneous component instances have independent selection, context and pending state. A toolbar outside the owning component explicitly observes the selected scope. Host adapters supply direct Application Requester access on Server and typed HTTP clients in WASM through the portable feature's service contracts. Backend module startup, repositories and server-only registrations stay on the server.
 
 The task-list walkthrough below defines the first extension to DoFiesta's frontend and backend and the shell contracts it exercises.
 
 | POC arrangement | Required evidence |
 | --- | --- |
-| Interactive Server baseline | Full interactive shell, prerendering off, correct circuit-scoped services and reconnect/unknown-outcome behavior. |
+| Interactive Server baseline | Full interactive shell, prerendering off, direct Application Requester dispatch, equivalent application authorization, correct circuit-scoped services and reconnect/unknown-outcome behavior. |
 | Interactive WebAssembly | The same portable feature executes in the browser through a real typed HTTP client; no server-only dependency leaks. |
-| Interactive Auto | Controlled cold and warm activations exercise Server and browser execution. Record the actual selected renderer; no live instance or action migration is expected. |
+| Interactive Auto | Controlled cold and warm activations exercise Server and browser execution with their respective Requester and HTTP implementations. Record the actual selected renderer; no live instance or action migration is expected. |
 | Different modes on different pages | Direct links, refresh and back/forward reconstruct the intended page/context, using full navigation where required. |
 | Independent Server and WASM areas | Legal sibling boundaries coexist; each external toolbar remains with its owner runtime. One explicit invalidation integration demonstrates coordination without remote component callbacks. |
 | Plain Razor renderer | A minimal DoFiesta host builds without direct or transitive MudBlazor references and runs navigation plus a contextual action through a plain Razor layout. |
@@ -1235,6 +1293,23 @@ Development diagnostics expose the selected renderer, activation phase, module/c
 Completion requires repeatable run instructions, the shared feature and minimal host arrangements, and recorded pass/fail evidence for the POC arrangement table and workflow checks in this section. Focused browser checks cover deep-link reloads, two independent toolbar scopes, selection/context changes during confirmation, stale asynchronous results, disposal, duplicate invocation prevention, unknown mutation outcomes and save-revision safety. Prerendered cases demonstrate no browser interop before activation, no unintended duplicate mutation/subscription, and no second initialization query for the read explicitly transferred. Auto results identify both actual runtimes. Fault injection and test data remain example-owned.
 
 The POC validates the existing shell model. It does not add an operations registry, scheduler, edit-session coordinator, search/command discovery, generic cross-runtime action transport or offline synchronization engine. Findings can refine contracts and host profiles before public API stabilization.
+
+### Delivery gates and evidence
+
+A gate is a working checkpoint with recorded checks. A preview contract is a public registration API, typed context, component parameter or behavior agreement being tried before stable release. For example, the first gate proves that the external toolbar invokes the selected component's binding and rejects a stale confirmation.
+
+Deliver the reference application in the following order. Gates G1 through G3 stage the POC evidence; G4 completes the production and stable-release evidence. The arrangement table and applicable acceptance scenarios remain required.
+
+| Gate | Runnable DoFiesta evidence | Preview contracts validated |
+| --- | --- | --- |
+| G1: Interactive Server foundation | Migrate the core shell and task workflow with prerendering off and direct command/query dispatch. Exercise two independent task scopes, an external toolbar, stale confirmation, disposal, protected direct links and AppState isolation. | Module registration, page ownership and route availability, Server feature access, state ownership, typed action context, scope attachment and invocation lifecycle. |
+| G2: Portable consumers and adapters | Run the shared feature in Web App WASM and standalone WASM through real HTTP clients. Run navigation and an action in the MudBlazor-free Razor host. Verify the optional grid and handwritten-view selection policies. | Browser module registration and dependencies, runtime-specific feature access, headless renderer contracts, FilterModel and selection adapters. |
+| G3: Hosting and activation | Run cold and warm Auto visits, mixed pages and sibling roots, Static SSR and explicit prerender cases. Exercise context changes, data handoff, explicit invalidation and diagnostics attributed to the originating runtime. | Runtime and root ownership, prerender activation and transfer, context/invalidation integration and diagnostic source attribution. |
+| G4: Production and stable release | Run scaled proxy/reconnect and rollout profiles, authorized diagnostics including popout and browser facade, operational telemetry, accessibility checks and a consuming-app upgrade. | Session and recovery integrations, diagnostic access and schemas, telemetry, accessible renderer behavior, configuration, assets and upgrade compatibility. |
+
+Each gate records its runnable profile, setup and execution commands, tested build, actual results and the concrete preview APIs and behavior contracts exercised. Automate repeatable core checks such as composition validation, route denial, scope isolation, selection transitions and stale-result rejection. Use browser checks for the relevant interaction flows. Record manual keyboard and screen-reader checks where human assessment is required. Keep application-specific execution records with the example or task outputs outside the documentation tree.
+
+A failed or unavailable required check leaves the gate open. Record the limitation and rerun the check when its prerequisite is available. A later gate can refine a preview contract; rerun affected earlier checks after that change. Publish stable contracts after all applicable release evidence passes.
 
 ### Task lists in DoFiesta
 
@@ -1263,7 +1338,7 @@ Keep `/todos` as **All tasks**, use `/todos/lists/{listId}` for a list and use `
 | Move Todo | Task ID, expected task version, expected source list ID and destination list ID. An explicit null source means unassigned. An explicit null destination unassigns the task. | Updated task summary and version, previous and resulting list IDs, and whether membership changed. Preserve status and other edits. |
 | Complete Todo | Task ID, expected task version and expected current list ID. An explicit null list means unassigned. | Updated task summary and version, current list ID and whether status changed. Preserve list membership and other edits. |
 
-Expose these through typed DoFiesta clients and targeted action endpoints, such as `POST /api/core/todoitems/{id}/actions/move` and `POST /api/core/todoitems/{id}/actions/complete`. Back them with DoFiesta commands dispatched through Requester. The backend checks task write access and list access, validates that a destination is in the permitted ownership scope, and enforces the expected membership and concurrency version when committing the update. A stale version or membership returns a conflict and leaves the task unchanged. Missing or inaccessible data follows the existing DoFiesta access policy. An already satisfied request with valid preconditions returns a successful no-op without advancing the version or publishing a change.
+For browser execution, expose these through typed DoFiesta clients and targeted action endpoints, such as `POST /api/core/todoitems/{id}/actions/move` and `POST /api/core/todoitems/{id}/actions/complete`. The endpoints dispatch DoFiesta commands through Requester. Interactive Server dispatches those commands directly. Application authorization and validation apply to both paths. The backend checks task write access and list access, validates that a destination is in the permitted ownership scope, and enforces the expected membership and concurrency version when committing the update. A stale version or membership returns a conflict and leaves the task unchanged. Missing or inaccessible data follows the existing DoFiesta access policy. An already satisfied request with valid preconditions returns a successful no-op without advancing the version or publishing a change.
 
 On a confirmed Move, refresh the affected source and destination views and badges. On a confirmed Complete, refresh the task and its list badge. Refresh All tasks only when the change affects its active query or projection. Use targeted feature invalidation after the commit. If a mutation response is lost, record an unknown outcome and reread the task before offering another attempt. A read can establish current state even when it cannot attribute that state to the original request.
 
@@ -1288,7 +1363,7 @@ Complete applies to one eligible task. The shell captures its target and context
 sequenceDiagram
     participant H as Header toolbar
     participant S as Todo action scope
-    participant A as Todo API
+    participant A as Todo use case
     participant N as List badge
     H->>S: Invoke Complete
     S->>S: Capture target and confirm
@@ -1321,7 +1396,7 @@ The sidebar selects Release prep, the header shows the current list and task anc
 | Task | Developer supplies | Framework handles |
 | --- | --- | --- |
 | Add a presentation module | A module implementation and its contributions. | Type-derived default module name, source provenance and composition validation. |
-| Add a page | An ordinary Razor component, route and optional navigation contribution. | Page/assembly integration through the registered module, layout integration and deep-link behavior. |
+| Add a page | An ordinary Razor component, route and optional navigation contribution. Explicit ownership mapping is needed when the page assembly's default is insufficient. | Resolve module ownership, integrate server and interactive page discovery, apply route availability, and preserve normal layout and deep-link behavior. |
 | Add contextual actions | Typed context, callbacks and applicable availability rules. | Live binding identity, shared pending/busy state, invocation checks and lifecycle cleanup. |
 | Show actions outside a component | Explicit attachment to the intended scope/outlet; active-source selection where needed. | Rendering and observation of the original bindings. |
 | React to state changes | Relevant dependencies or explicit invalidation. | Subscription ownership, targeted reevaluation and stale-result rejection. |
@@ -1367,7 +1442,7 @@ The two presentation paths execute in their respective runtime/container; the di
 | Orders presentation contribution | Declare pages, navigation, frontend services and resource references once per applicable composition. |
 | Orders.razor | Display/query the list and own its local filter/selection behavior. |
 | OrderDetails.razor | Load the route-selected order and own its detail context and actions. |
-| Existing typed Orders client and DTOs | Query and mutate through application contracts; no frontend repository access or new wrapper solely for shell participation. |
+| Orders feature access and DTOs | Reuse suitable feature service contracts with direct Requester access on Server and typed HTTP access in WASM. Keep repositories behind application use cases; add no wrapper solely for shell participation. |
 
 ### Orders list screen
 
@@ -1392,7 +1467,7 @@ sequenceDiagram
     participant Owner as Orders component
     participant Binding as Live action binding
     participant Toolbar as Page header toolbar
-    participant Client as Orders client
+    participant Client as Orders feature service
     Owner->>Binding: Update selected IDs and relevant revision
     Binding-->>Toolbar: Resolved Approve and Edit state
     Toolbar->>Binding: Invoke original binding
@@ -1441,6 +1516,7 @@ The DoFiesta column identifies the runnable reference scenario for each acceptan
 | --- | --- | --- |
 | Minimal application | The shell starts with a single presentation module, no auth integration and no higher-level packages. | Anonymous / core-only profile |
 | Module composition | Registering an enabled module exposes its pages, routes, resources and contributions; suppression removes the intended capability with clear diagnostics. | Shell and extension profile |
+| Page ownership and route enforcement | An assembly default and explicit page mappings resolve ownership without duplicate URL declarations. Reject ambiguous ownership. Disabling one module in a shared assembly makes its destinations unavailable on full loads and interactive navigation before page initialization or protected reads. | Shell and extension profile, Hosting profiles and developer validation |
 | Existing server module | A backend presentation module adds UI capabilities without duplicating module identity or executing server setup in WASM. | Server and WASM profiles |
 | Composition validation | Duplicate identities/routes, missing required dependencies and cycles produce actionable startup diagnostics; optional dependencies follow declared fallbacks. | Developer validation profiles |
 | Deep linking | Bookmarking, refresh and back/forward reconstruct record pages and route-backed tabs without previous navigation clicks. | Lists and Task detail |
@@ -1455,7 +1531,8 @@ The DoFiesta column identifies the runnable reference scenario for each acceptan
 | Context and privacy | User/context changes invalidate old bindings, request cancellation/supersede stale work, partition private state/preferences and reject previous-context completion. No backend rollback is implied. | Identity profiles · two-user transition |
 | Localization | App, module and component resources coexist; culture changes update contribution text and formatting with documented fallback. | Preferences and Lists |
 | Styling and packaging | The reference theme, a host-added theme and utility styling coexist; a consuming application uses compiled assets without a mandatory JS build. | MudBlazor consumer and Preferences for assets and themes, Plain Razor profile for dependencies |
-| Data composition | A MudBlazor grid and handwritten view share FilterModel query and selection adapters and drive the same contextual actions. DoFiesta demonstrates typed-client editing and validation. | All tasks |
+| Data composition | A MudBlazor grid and handwritten view share FilterModel query and selection adapters and drive the same contextual actions. DoFiesta demonstrates editing and validation through runtime-specific feature access. | All tasks |
+| Selection adapter defaults | Selection survives paging by default and clears when the view enables clear-on-paging. Filters or search clear selection. Sorting preserves it. Refresh updates selected target data and eligibility, removing only confirmed deleted or inaccessible records. A selected count and clear control expose off-page selection. Query-wide select-all remains deferred. | All tasks and Compare lists |
 | Mutation and refresh | A confirmed save remains successful if refresh or a local subscriber fails; input survives a concurrency conflict. | Task detail and developer validation |
 | Coordination | Requester/Notifier use correct lifetimes, execution semantics and targeted invalidation within the owning runtime. | Lists and Task detail |
 | Failure containment | A failed optional contribution or initialization leaves unrelated features usable; recovery does not duplicate mutations. | Lists and developer validation |
@@ -1504,6 +1581,8 @@ The DoFiesta column identifies the runnable reference scenario for each acceptan
 | Targeted contribution replacement | Replacing one stable contribution ID preserves unrelated contributors using the same service contract; generic service-type replacement cannot silently remove them. | Shell and extension profile · Show overdue |
 | Snapshot safety independent of AppState | Captured selection/submitted inputs remain independent when AppState is disabled or its snapshot implementation returns a live object; later mutation cannot change an accepted invocation. | Lists and Compare lists |
 | Host and presentation initialization boundary | Server host startup tasks remain host-owned; shell attempts are owned by their runtime/circuit generation. Browser presentation composition does not import Common.Modules server hosting dependencies. | Server and WASM profiles |
+| Runtime-specific feature access | Server dispatches application commands and queries in-process and WASM calls the typed HTTP API. Both paths enforce equivalent validation, identity and permissions. Auto uses its actual runtime's implementation, and browser publishing excludes backend handlers and services. | Server, WASM and Auto profiles |
+| AppState runtime and instance isolation | Two Server circuits cannot inspect or reset each other's state inventories. Independent component instances retain their own declared state ownership, disposed registrations disappear, and anonymous persisted preferences restore under stable keys. | Preferences, Compare lists and identity profiles |
 | Utility-backed lifecycle and portability | Debounced work is disposed with its owner, observed and dispatched safely, with obsolete completion rejected. Scoped adapters retain correct service lifetimes; any dynamic interception used passes the declared publishing/runtime checks. | Lists |
 | Prerendering default | Framework Server, WebAssembly and Auto interactive profiles disable prerendering unless the host explicitly opts in at an effective boundary. Static SSR remains independently selectable. | Prerendering profiles |
 | Prerender data handoff and isolation | Approved initial DTOs restore under the correct view/instance/context keys without transferring live bindings or callbacks; two Orders instances remain independent and obsolete context data is rejected. | Prerendering profiles and Compare lists |
@@ -1520,6 +1599,7 @@ The DoFiesta column identifies the runnable reference scenario for each acceptan
 | Accessibility baseline | Complete reference flows exercise the WCAG 2.2 AA target with automated and manual checks for keyboard, screen reader, focus, reflow and feedback behavior. | Lists, Task detail, Compare lists and Preferences |
 | Consumer upgrade | A consuming app upgrades within the documented compatibility range. Its typed contribution, host configuration, saved preference, direct link, theme override and supported diagnostics query still work. An explicitly breaking upgrade follows the documented migration. | Upgrade validation profile |
 | Published module identity | Rename a module's CLR type while retaining its pinned logical name. Server and browser report the same identity, and its exported attachments, configuration references and saved preferences continue to resolve. | Upgrade validation profile |
+| Delivery gate evidence | Each gate supplies a runnable profile, repeatable core checks, recorded results and the preview contracts validated. Required failures or unavailable checks leave it open. Contract changes trigger affected earlier checks again. | Gates G1 through G4 |
 
 ## Implementation details to validate in DoFiesta
 

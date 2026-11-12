@@ -18,6 +18,33 @@ The shell handles composition, deep links, action placement, and common lifecycl
 
 Developers can add a feature using ordinary Razor components and a presentation module registration. An enabled module makes its declared contributions available to the host, which can use the defaults or customize them through published contracts.
 
+The framework targets multiple applications using DevKit. Its purpose is to reuse presentation patterns, application foundations and packaged features across projects. Teams should spend less effort assembling navigation, layouts, contextual interactions and failure handling, and carry that knowledge into the next application. Features retain their business workflows, application contracts and backend authorization.
+
+Consuming applications start as greenfield projects. DoFiesta is the reference migration used to validate the framework. General adoption into existing applications, legacy-shell compatibility layers and migration tooling for those applications are outside the release scope.
+
+Reusable modules can supply pages, navigation, contextual actions, resources and documented customization points. Consuming applications select and adapt those capabilities through public contracts. Shared fixes and improvements reach those applications through supported package upgrades. The framework owns the compatibility, accessibility and lifecycle behavior it promises; consuming applications remain responsible for their complete user experience.
+
+These benefits must be demonstrated in consumers. A comprehensive shell or a successful reference migration alone does not establish lower development effort or reuse across applications.
+
+### Low friction and native platform mechanisms
+
+Low friction for application developers is a design requirement. The ordinary path uses familiar .NET and Blazor code with small, focused integration points. Advanced composition concepts become necessary when a developer publishes reusable extensions, coordinates multiple live owners or changes the default behavior.
+
+Use native mechanisms and existing DevKit capabilities where they fit:
+
+| Concern | Default foundation | Framework responsibility |
+| --- | --- | --- |
+| Services and configuration | .NET DI, options, configuration and validation. | Register feature contributions and validate their composition. |
+| Pages and navigation | Razor components, `@page`, Blazor routing, layouts and `NavigationManager`. | Associate module ownership and availability, discover contributed pages and compose navigation. |
+| Component interaction | Parameters, `EventCallback`, typed callbacks, `RenderFragment`, cascading values and normal component lifecycle. | Add explicit owner-bound action placement, invocation safety and cleanup where those behaviors are needed. |
+| Forms and validation | Blazor `EditForm` and `EditContext`, or the selected component library's existing forms. | Adapt application outcomes and field errors where shared feedback requires it. |
+| Resources and assets | .NET localization, Razor class libraries, static web assets, CSS isolation and supported JavaScript interop. | Preserve contribution ownership and supply documented packaging and customization conventions. |
+| Diagnostics | .NET logging, `ActivitySource`, `Meter` and supported Blazor instrumentation. | Attribute composition and live behavior to their owners through the shared diagnostic model. |
+
+Add a public abstraction when it owns required behavior or removes repeated integration work that these foundations do not already provide. State the problem and the existing mechanisms considered. Wrapping another abstraction solely to rename it or route calls through an additional layer is insufficient. Avoid parallel service locators, routing engines, mandatory event buses and universal execution or form systems.
+
+Ordinary pages can use native components and MudBlazor controls directly. Their local callbacks and state remain local unless a shared behavior requires participation. Custom layouts and specialized pages can use the applicable shell services without adopting every page pattern or optional adapter. Developer convenience must preserve the declared authorization, ownership and lifecycle rules.
+
 ## Vocabulary and ownership
 
 | Term | Meaning |
@@ -916,6 +943,16 @@ The first release supplies one reference theme with light, dark and system appea
 
 Semantic customization precedence is framework defaults, selected theme, host-wide choices, layout choices and explicit component choices. The actual CSS cascade must implement this predictably through documented layers and specificity. User preferences select only the choices exposed by the host.
 
+### Module assets and JavaScript ownership
+
+Module-owned styles and scripts use native Razor class library packaging, static web assets, CSS isolation and supported JavaScript module imports. Ordinary module installation handles those assets through package conventions, documented registration and component initialization. It must not require adding script or style tags to the host page for every module. Shared global dependencies, such as the selected renderer's MudBlazor assets, remain explicit and configured once. Document any exception and its setup in the module's consuming instructions.
+
+Each module documents its public asset entry points, shared dependencies and applicable hosting arrangements. Prefer native asset resolution and imports over another asset manifest or resource manager. Any helper must solve demonstrated repeated setup and preserve ownership, ordering and failure attribution.
+
+A component owns the JavaScript integration it creates, including listeners, observers, timers and interop references. An intentionally longer-lived integration has an explicit longer-lived owner. Initialize browser work only when the relevant interactive lifecycle is available. Release owned resources and reject late callbacks when the owner is disposed or its context becomes obsolete. Repeated mounting must not accumulate listeners or timers. Sharing module code or assets does not implicitly share mutable state or handlers between component instances.
+
+Follow native Blazor interop and disposal patterns. DOM-dependent cleanup uses supported browser-side patterns, such as observing DOM removal, rather than relying on interop during .NET component disposal. Releasing interop references must account for a disconnected Server circuit. A central shell resource manager is not required; extract optional cleanup helpers only when repeated use justifies them.
+
 ## Optional authentication and authorization
 
 Authentication is optional throughout the core shell. An anonymous application must work without an authentication provider, identity endpoints, fake user or authentication service registration. Public pages, mixed public/protected applications and protected-by-default applications are supported configurations.
@@ -1036,6 +1073,14 @@ Use the operation outcomes and recovery contract in Enterprise readiness for bIT
 Feedback ownership must prevent duplicate notifications when a page, handler and shared adapter observe the same operation. Success notifications are opt-in. Loading is local to the affected region by default; a whole-application overlay is explicit.
 
 Error output can include a safe correlation identifier. Technical exception details and sensitive response payloads must not appear in user-facing messages. Feature code owns conflict resolution and business recovery decisions.
+
+### Field validation and submitted revisions
+
+Map application validation errors to matching edit-model property paths by default, including nested paths such as `Address.City`. Reuse the property information already carried by DevKit validation errors and the corresponding HTTP error representation. Features can declare explicit mappings when application DTO and form property names differ. Unmatched paths and model-level errors appear in the form summary rather than being dropped or assigned to a guessed field.
+
+Provide thin integrations with native Blazor form validation and existing MudBlazor validation mechanisms. Keep form models, validation rules and submission behavior feature-owned. These adapters do not introduce another form engine, mandatory form base class or universal error envelope.
+
+Associate returned validation feedback with the captured submission and edit revision. Apply field errors only while that submitted revision is still current. When the user has edited the form again, preserve the newer input and present the earlier save rejection in the form summary instead of marking current field values invalid. An older response must not replace feedback from a newer submission. Apply the same policy to direct Server Requester results and browser HTTP responses.
 
 ## Minimal unsaved-change support
 
@@ -1237,6 +1282,38 @@ Consumer-facing shell contracts remain in preview while the POC and applicable f
 
 Public examples must show both the default application and substantial customization using supported contracts. A developer must be able to identify the owner of a page, navigation item or service registration through diagnostics.
 
+### Out-of-the-box greenfield starter
+
+Deliver the starter through the standard .NET template workflow, building on the existing DevKit templates. After the documented SDK and package prerequisites, a newly generated application runs without a database, identity provider or other external application service. Its default profile is Interactive Server with prerendering disabled. It includes the shell and one small demonstration module using local demo data. Database and authentication integrations are explicit additions with documented setup.
+
+The demonstration module uses ordinary Razor components and public framework APIs to show a page, navigation and contextual actions. Include a few focused tests demonstrating module registration and action behavior, runnable through normal `dotnet test`. Developers can extend the module and its tests as they build their application. The starter must not require a separate command runner or testing system.
+
+Document the complete path from a generated application to adding a page, binding local and external actions, and creating a distributable module. Record the actual template names, options, commands and expected results once validated. Do not assume new switches exist in the current DevKit templates. A clean first-run check and the included tests form part of starter acceptance. Demonstration data and optional protected profiles remain separate from existing protected backend endpoints.
+
+### Independent module tests
+
+Module authors can test composition and action behavior without running DoFiesta or provisioning backend infrastructure. Start with existing xUnit, Shouldly, NSubstitute and .NET DI patterns, focused examples and a minimal test host using public framework APIs. Fake feature services can supply data and outcomes while the tests exercise real registration, ownership and action binding behavior.
+
+Keep the test host limited to the composition or component behavior under test. Full browser and application checks continue to verify the relevant integration flows. Extract optional shared fixtures or helpers only when real module tests demonstrate repeated setup. A dedicated module-testing package, custom testing DSL and mandatory alternative testing framework are not requirements of the first release.
+
+### Publishing and consuming a module
+
+A distributable module documents its public registration entry point and stable identity, required and optional dependencies, supported runtimes, exposed options, resources and asset setup. Published extension handles and customization points identify the contracts consumers can use. Reuse project and NuGet metadata plus the typed registration contracts; a separate manifest system is not required.
+
+Before a module is ready to publish, validate its actual packed `.nupkg` in a clean consuming application. Use a local package source and ordinary `dotnet pack`, restore, build, test and publish commands as applicable. The consumer uses public APIs and packaged assets, with no source-project reference to the module or access to its internals.
+
+Verify registration, page discovery, resources, asset delivery and the module's declared hosting profiles. Include the applicable browser publishing and trimming checks. Source-project tests remain useful but do not replace this package check. Record the package version, tested host/profile and observed results so a module author can reproduce the failure or pass.
+
+### Reuse and developer-experience evidence
+
+DoFiesta supplies the primary migration evidence. A second, independently composed greenfield application proves reuse with a different workflow and host layout. It consumes the same packaged presentation module and published framework APIs, using its own feature services, configuration and branding. Changing hosting mode or rendering the same DoFiesta pages in another profile does not by itself satisfy this evidence.
+
+The shared module must work in both applications without copying its source or editing framework internals. Exercise host customization and a shared package correction or upgrade in both consumers. Keep the second application small and focused on the assumptions that a single reference application cannot expose.
+
+A developer unfamiliar with the framework internals must be able to follow the public documentation to add an ordinary page, bind a local action, place that action in an external toolbar and consume a reusable module. Record the required files, registrations, framework-specific concepts and any need for undocumented knowledge. Compare the integration effort with the corresponding ordinary Blazor workflow, accounting for the behavior the framework supplies. Use the findings to simplify preview APIs before stabilization; do not claim unmeasured productivity gains.
+
+The developer workflow retains normal .NET build, test and debugging tools and the supported Blazor development loop. Existing DevKit tooling may offer conveniences. Creating an application, authoring a local page and diagnosing a registration error must not require a framework-specific command runner or inspection of internal registries.
+
 ### DoFiesta reference application
 
 DoFiesta is the migration target and reference application for the bITdevKit Blazor presentation framework. Its references and migration walkthroughs remain part of this specification. Every capability delivered by the framework and shell must have a runnable DoFiesta scenario that consumes it through the same public contracts, registrations and assets available to other applications. Surface user-facing capabilities in ordinary workflows. Demonstrate configuration, extension contracts and diagnostic integrations through documented example code and runnable profiles. Record where to find each capability, how to enable it, and what observable behavior proves that it is in use.
@@ -1300,10 +1377,10 @@ A gate is a working checkpoint with recorded checks. A preview contract is a pub
 
 Deliver the reference application in the following order. Gates G1 through G3 stage the POC evidence; G4 completes the production and stable-release evidence. The arrangement table and applicable acceptance scenarios remain required.
 
-| Gate | Runnable DoFiesta evidence | Preview contracts validated |
+| Gate | Runnable application evidence | Preview contracts validated |
 | --- | --- | --- |
-| G1: Interactive Server foundation | Migrate the core shell and task workflow with prerendering off and direct command/query dispatch. Exercise two independent task scopes, an external toolbar, stale confirmation, disposal, protected direct links and AppState isolation. | Module registration, page ownership and route availability, Server feature access, state ownership, typed action context, scope attachment and invocation lifecycle. |
-| G2: Portable consumers and adapters | Run the shared feature in Web App WASM and standalone WASM through real HTTP clients. Run navigation and an action in the MudBlazor-free Razor host. Verify the optional grid and handwritten-view selection policies. | Browser module registration and dependencies, runtime-specific feature access, headless renderer contracts, FilterModel and selection adapters. |
+| G1: Interactive Server foundation | Migrate the core shell and task workflow with prerendering off and direct command/query dispatch. Exercise two independent task scopes, an external toolbar, stale confirmation, disposal, protected direct links and AppState isolation. Run the greenfield starter with local demo data and its included tests without external services. | Module registration, page ownership and route availability, Server feature access, state ownership, typed action context, scope attachment, invocation lifecycle and starter integration. |
+| G2: Portable consumers and adapters | Run the shared feature in Web App WASM and standalone WASM through real HTTP clients. Run navigation and an action in the MudBlazor-free Razor host. Verify the optional grid and handwritten-view selection policies, form error mapping and revision safety. An independently composed second application installs the actual packed module through NuGet with its own workflow, services and layout. Verify module assets and JavaScript cleanup. | Browser module registration and dependencies, runtime-specific feature access, headless renderer contracts, FilterModel and selection adapters, validation feedback, asset ownership and reuse through public package contracts. |
 | G3: Hosting and activation | Run cold and warm Auto visits, mixed pages and sibling roots, Static SSR and explicit prerender cases. Exercise context changes, data handoff, explicit invalidation and diagnostics attributed to the originating runtime. | Runtime and root ownership, prerender activation and transfer, context/invalidation integration and diagnostic source attribution. |
 | G4: Production and stable release | Run scaled proxy/reconnect and rollout profiles, authorized diagnostics including popout and browser facade, operational telemetry, accessibility checks and a consuming-app upgrade. | Session and recovery integrations, diagnostic access and schemas, telemetry, accessible renderer behavior, configuration, assets and upgrade compatibility. |
 
@@ -1515,6 +1592,8 @@ The DoFiesta column identifies the runnable reference scenario for each acceptan
 | Scenario | Observable acceptance | DoFiesta screen or profile |
 | --- | --- | --- |
 | Minimal application | The shell starts with a single presentation module, no auth integration and no higher-level packages. | Anonymous / core-only profile |
+| Out-of-the-box starter | Generate the documented starter and run it with local demo data, no database or identity provider, and no other external application service. Interactive Server uses prerendering off. Included registration and action tests pass through normal `dotnet test`. | Generated starter and G1 |
+| Independent module testing | A module author uses the supplied examples and minimal host with standard .NET test tools to verify public composition and action behavior independently of DoFiesta and backend infrastructure. Shared helpers remain optional and evidence-driven. | Module test examples and G1 |
 | Module composition | Registering an enabled module exposes its pages, routes, resources and contributions; suppression removes the intended capability with clear diagnostics. | Shell and extension profile |
 | Page ownership and route enforcement | An assembly default and explicit page mappings resolve ownership without duplicate URL declarations. Reject ambiguous ownership. Disabling one module in a shared assembly makes its destinations unavailable on full loads and interactive navigation before page initialization or protected reads. | Shell and extension profile, Hosting profiles and developer validation |
 | Existing server module | A backend presentation module adds UI capabilities without duplicating module identity or executing server setup in WASM. | Server and WASM profiles |
@@ -1531,9 +1610,13 @@ The DoFiesta column identifies the runnable reference scenario for each acceptan
 | Context and privacy | User/context changes invalidate old bindings, request cancellation/supersede stale work, partition private state/preferences and reject previous-context completion. No backend rollback is implied. | Identity profiles · two-user transition |
 | Localization | App, module and component resources coexist; culture changes update contribution text and formatting with documented fallback. | Preferences and Lists |
 | Styling and packaging | The reference theme, a host-added theme and utility styling coexist; a consuming application uses compiled assets without a mandatory JS build. | MudBlazor consumer and Preferences for assets and themes, Plain Razor profile for dependencies |
+| Module asset setup | Installing a module supplies its own styles and scripts through native packaging and imports without per-module host-page edits. Global renderer dependencies are explicit and configured once. A clean package consumer resolves the declared assets. | Packaged module consumer and G2 |
+| JavaScript owner cleanup | Repeated mounting and disposal leave only current listeners, observers, timers and interop references. Late callbacks cannot update disposed owners. Two component instances retain separate mutable context, and cleanup follows native patterns even when Server interop is disconnected. | Developer validation profiles and G2 |
 | Data composition | A MudBlazor grid and handwritten view share FilterModel query and selection adapters and drive the same contextual actions. DoFiesta demonstrates editing and validation through runtime-specific feature access. | All tasks |
 | Selection adapter defaults | Selection survives paging by default and clears when the view enables clear-on-paging. Filters or search clear selection. Sorting preserves it. Refresh updates selected target data and eligibility, removing only confirmed deleted or inaccessible records. A selected count and clear control expose off-page selection. Query-wide select-all remains deferred. | All tasks and Compare lists |
 | Mutation and refresh | A confirmed save remains successful if refresh or a local subscriber fails; input survives a concurrency conflict. | Task detail and developer validation |
+| Form field error mapping | Matching property paths map validation errors to fields, explicit aliases handle different names, and unmatched or model-level errors appear in the summary. Native Blazor and MudBlazor integrations apply the same behavior to Server and HTTP outcomes. | Task detail and developer validation |
+| Validation revision safety | Reject an earlier submission after the user changes its values. Preserve current input and show the earlier rejection in the summary, with no stale field errors on the current revision. An older response cannot replace newer submission feedback. | Task detail and developer validation |
 | Coordination | Requester/Notifier use correct lifetimes, execution semantics and targeted invalidation within the owning runtime. | Lists and Task detail |
 | Failure containment | A failed optional contribution or initialization leaves unrelated features usable; recovery does not duplicate mutations. | Lists and developer validation |
 | Unsaved changes | An opted-in page prompts on supported navigation paths without requiring global draft/save orchestration. | Task detail |
@@ -1573,6 +1656,8 @@ The DoFiesta column identifies the runnable reference scenario for each acceptan
 | Mixed page action ownership | A WASM Orders area renders its external toolbar and component together beside an independent Server area; selections, execution and diagnostics retain their originating identities without implicit shared state. | Mixed sibling profile · WASM task view and Server list summary |
 | Static public composition | SSR-compatible public Razor/HTML and ordinary links render without authentication; no fully functional static-only MudBlazor shell is assumed. Live actions/providers/subscriptions activate inside compatible interactive areas. | Static SSR Help profile |
 | Ordinary developer workflow | An ordinary Razor page contributes local or explicitly exported typed callbacks without a framework page base, mandatory provider/mediator class or manually assigned runtime IDs; binding conveniences handle cleanup and preserve DI ownership. | All tasks |
+| Native platform and low-friction integration | A developer follows public documentation to add a page and local/external action using normal Blazor components and .NET tooling. Record integration effort and remove unnecessary framework-specific registrations or layers. Specialized pages can use applicable shell services and native controls directly. | All tasks and developer-experience evidence |
+| Reuse across applications | DoFiesta and an independently composed application with a different workflow and layout consume the same packaged module. Host customization and a shared correction or upgrade work in both without source copies or framework-internal changes. | DoFiesta, second consumer and G2 |
 | Minimal Orders walkthrough | One module supplies an ordinary list/detail and typed Approve callback, with local/external toolbar placement, direct detail URLs and independent component scopes; illustrative screens/diagrams correspond to the declared behavior without mandatory CRUD or mediator infrastructure. | Lists and Task detail |
 | Resolved contribution isolation | Resolving a shared definition for one culture, user or component context leaves the source definition and other contexts unchanged, including visibility, badges and generated children. | Identity profiles and Compare lists |
 | Temporary contribution cleanup | Repeatedly mounting/disposing page, layout and region owners leaves only current runtime controls/subscriptions; later events do not invoke disposed observers. Presenter detachment preserves independently owned execution. | Compare lists and developer validation |
@@ -1598,6 +1683,7 @@ The DoFiesta column identifies the runnable reference scenario for each acceptan
 | Operational telemetry | With development inspection disabled, a failed provider or action is attributable to an authorized trace and emits bounded redacted metrics. Optional feature failures stay local. The host can use shell composition and required shared initialization status for its readiness probe. | Production telemetry profile |
 | Accessibility baseline | Complete reference flows exercise the WCAG 2.2 AA target with automated and manual checks for keyboard, screen reader, focus, reflow and feedback behavior. | Lists, Task detail, Compare lists and Preferences |
 | Consumer upgrade | A consuming app upgrades within the documented compatibility range. Its typed contribution, host configuration, saved preference, direct link, theme override and supported diagnostics query still work. An explicitly breaking upgrade follows the documented migration. | Upgrade validation profile |
+| Distributable module package | A clean application installs the actual locally packed NuGet artifact and verifies public registration, pages, resources, assets and declared hosting profiles. Applicable publish/trimming checks pass with no source-project access to the module. | Clean package consumer and G2 |
 | Published module identity | Rename a module's CLR type while retaining its pinned logical name. Server and browser report the same identity, and its exported attachments, configuration references and saved preferences continue to resolve. | Upgrade validation profile |
 | Delivery gate evidence | Each gate supplies a runnable profile, repeatable core checks, recorded results and the preview contracts validated. Required failures or unavailable checks leave it open. Contract changes trigger affected earlier checks again. | Gates G1 through G4 |
 
@@ -1608,6 +1694,9 @@ The POC exercises the defined package boundaries, typed attachment model, initia
 | Area | Detail to validate |
 | --- | --- |
 | Packaging | Choose assembly and NuGet names and placement from the Server, Client and plain Razor dependency checks. |
+| Starter and test examples | Validate the standard template workflow, first run with local data, included focused tests and the minimal host for independent module tests. |
+| Form feedback | Validate property-path and alias mapping through native form mechanisms, summary fallback and submission-revision handling for direct and HTTP outcomes. |
+| Assets and interop | Validate native packaged asset resolution, explicit shared dependencies and owner cleanup across repeated mounting and circuit loss. |
 | Extension contracts | Sketch focused input and output types and registration signatures for dynamic navigation and the external toolbar using published typed handles. |
 | Data adapters | Validate typed field and operator mappings, grid event translation, selection and URL or preference behavior in the Todo workflow. |
 | Diagnostics | Validate session and runtime attribution, popout linkage, version discovery, redaction and capture limits. |
@@ -1628,6 +1717,12 @@ Inbox details, edit-session coordination, search/command discovery, general shor
 - [bITdevKit AppState](https://bridgingit-gmbh.github.io/bITdevKit/reference/features-presentation-appstate/)
 
 - [Blazor routing](https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/routing?view=aspnetcore-10.0)
+
+- [Blazor Razor class libraries and packaged assets](https://learn.microsoft.com/en-us/aspnet/core/blazor/components/class-libraries?view=aspnetcore-10.0)
+
+- [Blazor native forms and validation](https://learn.microsoft.com/en-us/aspnet/core/blazor/forms/validation?view=aspnetcore-10.0)
+
+- [Blazor JavaScript interop and component cleanup](https://learn.microsoft.com/en-us/aspnet/core/blazor/javascript-interoperability/?view=aspnetcore-10.0)
 
 - [Blazor render modes](https://learn.microsoft.com/en-us/aspnet/core/blazor/components/render-modes?view=aspnetcore-10.0)
 

@@ -20,6 +20,8 @@ Developers can add a feature using ordinary Razor components and a presentation 
 
 The framework targets multiple applications using DevKit. Its purpose is to reuse presentation patterns, application foundations and packaged features across projects. Teams should spend less effort assembling navigation, layouts, contextual interactions and failure handling, and carry that knowledge into the next application. Features retain their business workflows, application contracts and backend authorization.
 
+The guiding architecture is a modular monolith across backend and frontend. Logical feature boundaries continue into presentation, where modules own their pages, state and contributions and integrate through published contracts. One application host selects and composes the modules into a coherent application. The same framework and module packages can be reused by other independently composed applications. Supported render modes retain their runtime boundaries within this application model, and a scaled deployment can run multiple instances of the same configured host.
+
 Consuming applications start as greenfield projects. DoFiesta is the reference migration used to validate the framework. General adoption into existing applications, legacy-shell compatibility layers and migration tooling for those applications are outside the release scope.
 
 Reusable modules can supply pages, navigation, contextual actions, resources and documented customization points. Consuming applications select and adapt those capabilities through public contracts. Shared fixes and improvements reach those applications through supported package upgrades. The framework owns the compatibility, accessibility and lifecycle behavior it promises; consuming applications remain responsible for their complete user experience.
@@ -45,6 +47,22 @@ Add a public abstraction when it owns required behavior or removes repeated inte
 
 Ordinary pages can use native components and MudBlazor controls directly. Their local callbacks and state remain local unless a shared behavior requires participation. Custom layouts and specialized pages can use the applicable shell services without adopting every page pattern or optional adapter. Developer convenience must preserve the declared authorization, ownership and lifecycle rules.
 
+### Fluent setup, conventions and discovery
+
+Design the public API around a short ordinary path, with fluent builders for related setup and explicit configuration where an application differs from the defaults. Prefer existing DevKit builder conventions and native .NET options over another configuration language. Builders collect registrations and validate composition. They must not hide network calls, start business operations or resolve live scoped services during startup.
+
+| Mechanism | Design requirement |
+| --- | --- |
+| Fluent builders | Group module capabilities and action configuration through focused, typed methods. Keep ordinary DI registrations and native Razor parameters usable directly. Avoid a chain of builders that merely forwards the same options. |
+| Convention over configuration | Infer local module names, page ownership within a declared assembly, routine contribution keys and live binding identities where unambiguous. Declare an assembly once rather than annotate every page. Pin public identities when publishing contracts, as required by the module identity policy. |
+| Discovery | Discover presentation capabilities from the host's selected modules and pages from their declared assemblies. Discovery respects enablement and declared dependencies. It does not install modules merely because their assemblies happen to be loaded. Ambiguity produces a source-attributed configuration error. |
+| Explicit configuration | Allow a focused override for shared-assembly ownership, dependencies, placement and other departures from convention. Host overrides apply after module defaults, whether those defaults were explicit, discovered or generated. Diagnostics show the effective result and its source. |
+| Source generators | Consider generators for repeated registration, typed destination helpers and composition diagnostics when they reduce demonstrated developer work or enable supported trimming. Generated code uses the same contracts and validation rules as explicit registration. It must be inspectable, produce actionable diagnostics and preserve the host's final authority. |
+
+Source generation is an implementation option, not a requirement for each ordinary page or callback. Reuse existing DevKit generator patterns where suitable. A generator must not create another module system, service locator or source of route truth. Build-time discovery cannot establish runtime permissions, backend availability or live component ownership. Supported browser publishing must use a validated discovery strategy, such as explicit or generated registrations, rather than assume unrestricted reflection survives trimming.
+
+The API appendix proposes the ordinary usage first. G1 and G2 must compare the required declarations and setup effort before deciding which additional conventions or generated conveniences belong in the stable API.
+
 ## Vocabulary and ownership
 
 | Term | Meaning |
@@ -52,7 +70,7 @@ Ordinary pages can use native components and MudBlazor controls directly. Their 
 | Application host | The application that selects modules, integrations, configuration and final UI composition. |
 | Core shell (headless shell) | Browser-safe composition infrastructure, contracts and shared application behavior. |
 | Default renderer | Separately referenced MudBlazor implementation of layouts, chrome and controls using the headless shell contracts. |
-| Presentation module | A feature's presentation contributions and frontend service registrations. |
+| Presentation module | The frontend part of a logical feature module, owning its presentation contributions and frontend service registrations. A module can also provide presentation-only capabilities. |
 | Page or destination | A navigable feature entry with a stable URL and declared availability requirements. |
 | Extension point | A deliberately published, typed contract accepting contributions at a declared place in the shell or a presentation module. |
 | Attachment target | The specific menu item, page, region or other owner instance to which a compatible contribution attaches. |
@@ -141,6 +159,14 @@ flowchart TD
 ```
 
 Presentation modules declare contributions; the shell composes and resolves them; default or custom renderers display the result. Higher-level modules build on these contracts. Runtime-specific feature adapters reach the same application use cases. Backend repositories and domain entities remain behind those use cases.
+
+### Modular monolith across backend and frontend
+
+Extend the module boundaries in [ADR-0003: Modular Monolith Architecture](../adr/0003-modular-monolith-architecture.md) into the frontend. A logical feature module owns its applicable backend use cases and presentation behavior. Its pages, components, local state and assets follow that ownership. Presentation extending an existing backend module retains its logical identity. A module can provide backend capabilities, presentation capabilities or both, without requiring a separate project for every layer or capability.
+
+The host is the application composition root. It selects modules and shared integrations, validates their dependencies and composes their contributions through the shell. Modules can be developed, tested and packaged independently. The consuming application builds and releases its selected module versions and assets together. Separate Server and browser execution does not change those logical boundaries. Distributed module discovery, remote module loading and independent frontend deployment are outside the core model.
+
+Cross-module frontend integration uses published destinations, typed extension points and public service or notification contracts where needed. A consuming module does not reach into another module's private components, state or implementation services. Shared workflows remain owned by feature or Application code. The shell supplies common composition and interaction behavior, and the host connects modules through their declared contracts. Ordinary Razor components, .NET DI and the existing registration conventions remain the implementation foundation.
 
 ### Reuse of existing bITdevKit capabilities
 
@@ -436,6 +462,28 @@ Availability has separate inputs:
 Hiding a navigation item alone must not disable its route. Conversely, a callback must not make an unavailable or unauthorized destination usable. A denied or unavailable direct link receives a consistent, customizable page with a safe recovery path. Authentication redirects preserve the intended authorized destination.
 
 Cross-module links use stable destination contracts and normal Blazor routing. The shell must not create a competing router. Local component tabs may remain local; tabs representing a navigable page subsection require a deep-link strategy.
+
+### Destination contracts and link generation
+
+Modules publish stable destination identities and `@page` route patterns. Small typed destination helpers supply the required route parameters and supported query values for cross-module links. Generated links use correct URI encoding and respect the application's configured base path. Ordinary local links remain valid and need no extra registration merely to participate in the shell.
+
+The first release preserves the module's published route patterns. Arbitrary host remapping of module pages to different URL patterns is deferred until a concrete application requirement justifies it. Destination helpers describe and generate links to the existing Blazor routes rather than maintaining a second routing engine.
+
+Destination dependencies use the existing module and contribution composition metadata. A missing required module or destination fails startup validation with its source and target identified. Links to absent optional modules are hidden by default. A feature can explicitly show a disabled link with an availability reason instead. Runtime policy and capability checks remain authoritative after composition. Direct visits receive the established denied or unavailable behavior, independently of whether a link was rendered.
+
+### Host-supplied feature availability
+
+Feature availability uses the host's module composition, configuration and existing application services through the same availability model. Keep module installation, feature enablement, required backend capability and user permission as distinct inputs. An installed module does not establish that every feature is enabled or that the current user may invoke it.
+
+Known module and configuration values resolve directly. An asynchronous check is needed only when a declared input requires it. The shell does not require a separate capability-discovery service, standardized discovery endpoint, distributed registry or feature-management engine. Server execution can resolve the relevant application services directly. Browser execution can consume a safe projection from the same application's backend where a feature requires it. That projection supplies declared availability information rather than secrets or arbitrary server configuration.
+
+| Required availability | Default behavior |
+| --- | --- |
+| Established and available | Allow the dependent route or action when its other readiness and authorization requirements also pass. |
+| Unknown or a required check cannot complete | Keep affected actions pending or unavailable with a reason and bounded retry. Dependent activation waits for its declared requirements. Unrelated features remain usable. |
+| Established and unavailable | Apply the destination or contribution's declared hidden, disabled or unavailable presentation. An absent optional module follows the link defaults above. |
+
+Scope results to the applicable host and runtime, backend, identity and workspace context. Reject results from obsolete context revisions, and invalidate affected consumers through the existing state and refresh rules. A previous enabled answer must not silently permit dispatch while its required availability is unknown. Backend services still enforce authorization and business rules independently.
 
 ## Headless behavior and opinionated defaults
 
@@ -1183,6 +1231,16 @@ The shell emits bounded dimensions such as render mode, operation kind and outco
 
 The shell publishes its own composition and required shared initialization status. The host decides how those signals affect deployment readiness and owns its health and readiness endpoints. Optional provider and page failures stay local and observable. Browser or circuit activation is reported separately from host readiness.
 
+### Performance baselines and release acceptance
+
+Use repeatable G1 and G2 measurements to establish reference workloads, baselines and realistic performance limits. Extend the evidence to the remaining supported profiles as they become runnable. Set limits from observed results before stabilization, rather than inventing universal latency or memory promises at specification time.
+
+Cover startup and interactivity, navigation and action evaluation, browser download size, Server circuit resource use and diagnostics overhead where applicable. Measure with interactive diagnostics disabled and with the relevant inspection or capture capability enabled. Attribute measurements to their source and coverage, and distinguish framework overhead from feature/backend work. Reuse native .NET and Blazor instrumentation where it supplies the required evidence.
+
+Record the build, runtime and browser versions, workload, host configuration, environment, sample count and measurement variability. Compare equivalent workloads and distinguish cold and warm behavior where relevant. A noisy single sample is insufficient to establish a regression.
+
+Reproducible regressions beyond the documented limits block stable release. Investigate or correct the regression and rerun the applicable checks. An intentional baseline or limit change records its reason and supporting evidence rather than silently accepting slower behavior. The delivery gates retain the recorded performance results and their applicable limits alongside functional acceptance.
+
 ### Accessibility acceptance
 
 Target WCAG 2.2 AA for the shipped shell renderers as exercised in complete reference pages and flows. Validate keyboard access, focus visibility and restoration, landmarks and accessible labels, contrast, zoom and reflow, and announcements for loading, errors and action feedback. Exercise navigation, dialogs and toolbar overflow with keyboard and screen reader checks in addition to automation. Describe the renderer responsibilities for custom layouts and the consuming application's responsibility for conformance of its complete pages and workflows. [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
@@ -1365,7 +1423,7 @@ Profile selection is a host/startup or route-boundary concern. A demonstration c
 
 The example contributes at least one static navigation item, bounded asynchronous children, a runtime badge and route-backed detail tabs. A second small consumer contribution attaches a contextual action or navigation provider and demonstrates explicit override/disable behavior. Application-, module- and component-owned translations coexist. The baseline runs without an identity provider; a separate opt-in identity profile demonstrates protected capabilities and backend enforcement. Existing protected DoFiesta endpoints are not made anonymous to satisfy the baseline; use isolated POC data/endpoints with deliberate access rules.
 
-Development diagnostics expose the selected renderer, activation phase, module/contribution provenance, live scope attachment, evaluation counts and failures through the drawer and the read-oriented JavaScript facade. Browser checks verify that the separately enabled facade returns source-attributed diagnostics for the originating tab and its reachable runtimes with the drawer closed. Measure startup/interactivity timing, initial transfer size and initialization/query/action counts as observations for comparison; do not set unmeasured performance promises.
+Development diagnostics expose the selected renderer, activation phase, module/contribution provenance, live scope attachment, evaluation counts and failures through the drawer and the read-oriented JavaScript facade. Browser checks verify that the separately enabled facade returns source-attributed diagnostics for the originating tab and its reachable runtimes with the drawer closed. Measure startup/interactivity timing, initial transfer size and initialization/query/action counts as observations for comparison; do not set unmeasured performance promises. Use those observations to establish the limits required by Performance baselines and release acceptance before stabilization.
 
 Completion requires repeatable run instructions, the shared feature and minimal host arrangements, and recorded pass/fail evidence for the POC arrangement table and workflow checks in this section. Focused browser checks cover deep-link reloads, two independent toolbar scopes, selection/context changes during confirmation, stale asynchronous results, disposal, duplicate invocation prevention, unknown mutation outcomes and save-revision safety. Prerendered cases demonstrate no browser interop before activation, no unintended duplicate mutation/subscription, and no second initialization query for the read explicitly transferred. Auto results identify both actual runtimes. Fault injection and test data remain example-owned.
 
@@ -1379,10 +1437,10 @@ Deliver the reference application in the following order. Gates G1 through G3 st
 
 | Gate | Runnable application evidence | Preview contracts validated |
 | --- | --- | --- |
-| G1: Interactive Server foundation | Migrate the core shell and task workflow with prerendering off and direct command/query dispatch. Exercise two independent task scopes, an external toolbar, stale confirmation, disposal, protected direct links and AppState isolation. Run the greenfield starter with local demo data and its included tests without external services. | Module registration, page ownership and route availability, Server feature access, state ownership, typed action context, scope attachment, invocation lifecycle and starter integration. |
-| G2: Portable consumers and adapters | Run the shared feature in Web App WASM and standalone WASM through real HTTP clients. Run navigation and an action in the MudBlazor-free Razor host. Verify the optional grid and handwritten-view selection policies, form error mapping and revision safety. An independently composed second application installs the actual packed module through NuGet with its own workflow, services and layout. Verify module assets and JavaScript cleanup. | Browser module registration and dependencies, runtime-specific feature access, headless renderer contracts, FilterModel and selection adapters, validation feedback, asset ownership and reuse through public package contracts. |
+| G1: Interactive Server foundation | Migrate the core shell and task workflow with prerendering off and direct command/query dispatch. Exercise two independent task scopes, an external toolbar, stale confirmation, disposal, protected direct links and AppState isolation. Run the greenfield starter with local demo data and its included tests without external services. Verify host-composed availability and generated links, and capture the initial Server performance baseline. | Module registration, page ownership and route availability, Server feature access, state ownership, typed action context, scope attachment, invocation lifecycle, starter integration and initial performance evidence. |
+| G2: Portable consumers and adapters | Run the shared feature in Web App WASM and standalone WASM through real HTTP clients. Run navigation and an action in the MudBlazor-free Razor host. Verify the optional grid and handwritten-view selection policies, form error mapping and revision safety. An independently composed second application installs the actual packed module through NuGet with its own workflow, services and layout. Compose two feature modules through published contracts. Verify module assets, JavaScript cleanup, base-path links and any required browser availability projection. Capture the browser performance baseline. | Browser module registration and dependencies, frontend module boundaries, runtime-specific feature access, headless renderer contracts, FilterModel and selection adapters, validation feedback, asset ownership, destination contracts, availability and reuse through public package contracts. |
 | G3: Hosting and activation | Run cold and warm Auto visits, mixed pages and sibling roots, Static SSR and explicit prerender cases. Exercise context changes, data handoff, explicit invalidation and diagnostics attributed to the originating runtime. | Runtime and root ownership, prerender activation and transfer, context/invalidation integration and diagnostic source attribution. |
-| G4: Production and stable release | Run scaled proxy/reconnect and rollout profiles, authorized diagnostics including popout and browser facade, operational telemetry, accessibility checks and a consuming-app upgrade. | Session and recovery integrations, diagnostic access and schemas, telemetry, accessible renderer behavior, configuration, assets and upgrade compatibility. |
+| G4: Production and stable release | Run scaled proxy/reconnect and rollout profiles, authorized diagnostics including popout and browser facade, operational telemetry, accessibility checks and a consuming-app upgrade. Verify supported profiles against their evidence-based performance limits. | Session and recovery integrations, diagnostic access and schemas, telemetry, accessible renderer behavior, configuration, assets, upgrade compatibility and performance acceptance. |
 
 Each gate records its runnable profile, setup and execution commands, tested build, actual results and the concrete preview APIs and behavior contracts exercised. Automate repeatable core checks such as composition validation, route denial, scope isolation, selection transitions and stale-result rejection. Use browser checks for the relevant interaction flows. Record manual keyboard and screen-reader checks where human assessment is required. Keep application-specific execution records with the example or task outputs outside the documentation tree.
 
@@ -1491,6 +1549,8 @@ Examples must demonstrate a default local toolbar and an externally placed toolb
 
 This developer-experience example combines an ordinary Orders list and detail destination with an Approve extension. The read-only list/detail path works without CRUD packages, authentication integration or a mandatory framework page base. Approval is feature-supplied behavior. The screens are illustrative mockups, not an implemented application or finalized visual design; file names and routes illustrate ownership rather than public API signatures.
 
+[Appendix A](#appendix-a-proposed-api-example-and-execution-contract) proposes the corresponding public API usage and the checks needed to make that example executable during implementation.
+
 ### Module contribution and runtime registration
 
 The host selects Orders once per applicable runtime composition. Its presentation contribution declares the page assembly, an Orders navigation entry, browser-safe frontend services and applicable resources. On Server it extends the existing module; WASM consumes the portable presentation definition without executing backend setup. Adapters preserve one logical module identity and do not require a second identity constant.
@@ -1595,10 +1655,15 @@ The DoFiesta column identifies the runnable reference scenario for each acceptan
 | Out-of-the-box starter | Generate the documented starter and run it with local demo data, no database or identity provider, and no other external application service. Interactive Server uses prerendering off. Included registration and action tests pass through normal `dotnet test`. | Generated starter and G1 |
 | Independent module testing | A module author uses the supplied examples and minimal host with standard .NET test tools to verify public composition and action behavior independently of DoFiesta and backend infrastructure. Shared helpers remain optional and evidence-driven. | Module test examples and G1 |
 | Module composition | Registering an enabled module exposes its pages, routes, resources and contributions; suppression removes the intended capability with clear diagnostics. | Shell and extension profile |
+| Single-host composition | One application host composes frontend and backend capabilities along the same logical module boundaries. Two feature modules integrate through published contracts without accessing each other's private state or implementation. Feature availability uses that host's configuration and existing services, with a safe browser projection only where needed. | Server and WASM profiles |
 | Page ownership and route enforcement | An assembly default and explicit page mappings resolve ownership without duplicate URL declarations. Reject ambiguous ownership. Disabling one module in a shared assembly makes its destinations unavailable on full loads and interactive navigation before page initialization or protected reads. | Shell and extension profile, Hosting profiles and developer validation |
 | Existing server module | A backend presentation module adds UI capabilities without duplicating module identity or executing server setup in WASM. | Server and WASM profiles |
 | Composition validation | Duplicate identities/routes, missing required dependencies and cycles produce actionable startup diagnostics; optional dependencies follow declared fallbacks. | Developer validation profiles |
+| Conventions and discovery | Selected modules and declared page assemblies supply unambiguous defaults without repeated per-page registration. Unselected modules remain absent. Explicit overrides take precedence and diagnostics identify each registration's source. | Starter and developer validation profiles |
+| Generated registration, when supplied | Generated and explicit declarations follow the same composition rules without duplicate contributions. Host overrides remain effective, diagnostics are actionable and browser output passes the supported publishing checks without backend dependencies. | Applicable generator and WASM profiles |
 | Deep linking | Bookmarking, refresh and back/forward reconstruct record pages and route-backed tabs without previous navigation clicks. | Lists and Task detail |
+| Cross-module destination links | Typed destination helpers generate correctly encoded route and query values under the configured application base path while preserving published module routes. Absent optional targets are hidden by default or explicitly disabled with a reason. Missing required targets fail startup validation. | Lists, Task detail and developer validation |
+| Required feature availability | Known configuration resolves directly. A delayed or failed required check keeps only dependent activation and actions pending or unavailable with bounded recovery. Unrelated features remain usable, obsolete identity or workspace results are rejected, and backend authorization remains authoritative. | Identity profiles and developer validation |
 | Navigation customization | One hierarchy appears across sidebar, header and page tabs; replacing a renderer preserves availability and action behavior. | Lists, task-detail header and tabs, and Plain Razor profile |
 | Dynamic navigation | Callbacks generate order/category children with contextual parent, route and state inputs; static and dynamic children coexist with stable identities, bounded loading and isolated failures. | Lists |
 | Relevant state subscriptions | A selected state value change refreshes subscribed components/pages/navigation; unrelated changes do not, subscriptions dispose safely and stale work is discarded. | Lists |
@@ -1681,6 +1746,7 @@ The DoFiesta column identifies the runnable reference scenario for each acceptan
 | Consistent outcome presentation | The same Result or client outcome maps to one feedback owner and consistent recovery choices. Confirmed success remains visible after a failed refresh, accepted submission remains distinct from completion, and partial or unknown outcomes remain explicit. | Task detail, Compare lists and Backend export validation profile |
 | Production rollout | The documented scaled Server topology serves direct links and recovers from instance replacement. Exercise compatible, unreachable and known incompatible backends. Only a confirmed incompatibility triggers Update required. Affected dispatch pauses and reload respects the feature recovery policy. | Production hosting profiles |
 | Operational telemetry | With development inspection disabled, a failed provider or action is attributable to an authorized trace and emits bounded redacted metrics. Optional feature failures stay local. The host can use shell composition and required shared initialization status for its readiness probe. | Production telemetry profile |
+| Performance release acceptance | Repeatable workloads establish G1 and G2 baselines and documented limits for supported profiles. Results identify framework and backend coverage, diagnostics state and variability. A reproducible regression beyond those limits blocks stable release. | G1, G2 and production validation in G4 |
 | Accessibility baseline | Complete reference flows exercise the WCAG 2.2 AA target with automated and manual checks for keyboard, screen reader, focus, reflow and feedback behavior. | Lists, Task detail, Compare lists and Preferences |
 | Consumer upgrade | A consuming app upgrades within the documented compatibility range. Its typed contribution, host configuration, saved preference, direct link, theme override and supported diagnostics query still work. An explicitly breaking upgrade follows the documented migration. | Upgrade validation profile |
 | Distributable module package | A clean application installs the actual locally packed NuGet artifact and verifies public registration, pages, resources, assets and declared hosting profiles. Applicable publish/trimming checks pass with no source-project access to the module. | Clean package consumer and G2 |
@@ -1694,15 +1760,508 @@ The POC exercises the defined package boundaries, typed attachment model, initia
 | Area | Detail to validate |
 | --- | --- |
 | Packaging | Choose assembly and NuGet names and placement from the Server, Client and plain Razor dependency checks. |
+| Frontend module boundaries | Compose two feature modules through published destinations and extension contracts, preserve ownership across runtime adapters, and validate dependencies without accessing another module's private state or implementation. |
 | Starter and test examples | Validate the standard template workflow, first run with local data, included focused tests and the minimal host for independent module tests. |
 | Form feedback | Validate property-path and alias mapping through native form mechanisms, summary fallback and submission-revision handling for direct and HTTP outcomes. |
 | Assets and interop | Validate native packaged asset resolution, explicit shared dependencies and owner cleanup across repeated mounting and circuit loss. |
 | Extension contracts | Sketch focused input and output types and registration signatures for dynamic navigation and the external toolbar using published typed handles. |
+| Destinations and availability | Validate link helpers over native routes, base paths, required and optional destination dependencies, and host-supplied feature availability with stale-context rejection. |
+| Performance acceptance | Establish repeatable workloads and evidence-based limits from the reference profiles, then validate regression detection before stabilization. |
 | Data adapters | Validate typed field and operator mappings, grid event translation, selection and URL or preference behavior in the Todo workflow. |
 | Diagnostics | Validate session and runtime attribution, popout linkage, version discovery, redaction and capture limits. |
 | Renderer defaults | Validate semantic token mapping, keyboard and focus behavior, toolbar display modes and overflow at supported widths. |
 
-Inbox details, edit-session coordination, search/command discovery, general shortcut routing, and generic cross-runtime business-action transport remain deferred to separate feature design. A broader operations panel/application-owned workflow capability is not required by the core action-observation contract. Exact public interface names, generic types, registration methods and handler signatures remain for public API design.
+Inbox details, edit-session coordination, search/command discovery, general shortcut routing, and generic cross-runtime business-action transport remain deferred to separate feature design. A broader operations panel/application-owned workflow capability is not required by the core action-observation contract. Appendix A proposes initial public API names and usage. These are design proposals to validate through the delivery gates, not implemented or stable contracts.
+
+## Appendix A: Proposed API example and execution contract
+
+This appendix specifies a small Orders and Shipping application for the future executable API example. It remains specification work. The proposed presentation APIs below do not yet exist, and these excerpts have not been compiled or run. Implementation must turn the scenario into runnable G1 and G2 evidence before claiming that the API works.
+
+The application is one modular monolith. Orders owns its pages, selection and approval workflow. Shipping contributes an action through an Orders-owned public contract. The host selects both modules and a renderer. A page header observes one explicitly attached Orders instance while a second instance remains independent.
+
+The excerpts show presentation-relevant setup and usage. Ordinary application handlers, table markup, resource files, imports and standard host configuration are omitted. This is an API design review, not a copy-and-run tutorial or a new framework implementation.
+
+The reused wireframes are conceptual views with fictional data. They show the surrounding user experience, including controls beyond the excerpts, such as Edit and Refresh. Their captions connect visible parts to the proposed API. They are not screenshots of an implemented example.
+
+The Mermaid diagrams distinguish startup composition, live component ownership, invocation and runtime access. They explain the example's proposed contracts without claiming implementation evidence.
+
+The main specification defines the required behavior. Each subsection below links to the requirements it illustrates. Proposed API names may evolve during validation, while those requirements continue to apply.
+
+### A.1 Existing foundations and proposed contracts
+
+Spec references: [Vocabulary and ownership](#vocabulary-and-ownership), [Reuse of existing bITdevKit capabilities](#reuse-of-existing-bitdevkit-capabilities), and [Compatibility and upgrades](#compatibility-and-upgrades).
+
+`WebModuleBase`, `AddModules`, `WithModule`, `UseModules`, `MapModules`, Requester, `Result<T>` and the native Blazor hosting APIs are existing foundations. Names in the following table are proposed presentation contracts. Exact signatures may change when implementation exposes a simpler design.
+
+| Proposed API | Responsibility and boundary |
+| --- | --- |
+| `IPresentationModule.RegisterPresentation(PresentationModuleBuilder)` | Optional capability on an existing module. Supplies presentation declarations under that module's identity without another backend registration. |
+| `WithPresentation()` | Integrates selected modules with the headless shell, collects their presentation declarations and arranges startup validation. Does not discover or enable unselected modules. |
+| `PresentationModuleBuilder` | Focused registration builder for pages, destinations, resources, navigation and exported action targets. Uses ordinary DI and existing module metadata. |
+| `AddPresentationMudBlazor()` | Registers the separately referenced default renderer and its shared services. Headless contracts retain no MudBlazor dependency. |
+| `WithPresentationRoutes()` | Integrates the effective page assemblies and initial-request availability requirements with native Razor component endpoints. |
+| `IPresentationCatalog` and `PresentationRouteView` | Expose effective page assemblies to the native router and gate interactive activation using the same ownership and availability metadata. Authorization integration uses the native mechanisms when configured. |
+| `Destination<TParameters>` | Published destination handle over an existing page route. Parameter matching, constraints, encoding and base paths follow native routing. No second route pattern is authored in registration. |
+| `ActionTarget<TContext>` | Published attachment target specifying the context accepted from a live owner. The target below accepts multiple action contributions. |
+| `IActionScopes` and `ActionScope<TContext>` | Create and own live bindings, immutable context snapshots, revisions, dispatcher integration and execution state. Runtime identities are derived. Dispose with the component owner. |
+| `ActionToolbar` | Default renderer component observing an explicitly supplied scope. Placement does not create another binding or execution owner. |
+| `IActionContributor<TContext>` | Optional reusable contributor, resolved for a live target scope through DI. Local callbacks do not require a contributor class. |
+
+Shared composition metadata contains no component instances, selected records or scoped service instances. Live contributors and callbacks belong to the scope in which they are bound. Disposing a scope releases its bindings and subscriptions without disposing services owned by DI.
+
+### A.2 One host selects the application modules
+
+Spec references: [Modular monolith across backend and frontend](#modular-monolith-across-backend-and-frontend), [Presentation module composition](#presentation-module-composition), [Extension contracts and host authority](#extension-contracts-and-host-authority), and [Recommended business application profile](#recommended-business-application-profile).
+
+![Conceptual host layout combining shared application chrome and Orders feature content](assets/backoffice-shell.png)
+
+*Figure A.1. The host composes the header, sidebar and page frame. Modules contribute navigation and feature content through the selected composition. The Orders page keeps its workflow and action behavior; registering it does not require editing the shared layout.*
+
+The proposed Server setup extends the existing module builder. It does not repeat a list of presentation modules in a second registry.
+
+```mermaid
+flowchart TD
+    Host["Host selects application modules"]
+    Orders["OrdersModule: pages, navigation and public action target"]
+    Shipping["ShippingModule: action contribution"]
+    Declarations["Presentation declarations: explicit, discovered or generated"]
+    Overrides["Apply explicit host overrides"]
+    Validate["Validate ownership, dependencies and conflicts"]
+    Catalog["Effective presentation composition"]
+    Endpoints["Native endpoint integration"]
+    Router["Native router and PresentationRouteView"]
+    Renderer["Selected layout and renderers"]
+    Host --> Orders
+    Host --> Shipping
+    Shipping -.->|"Requires Orders public target"| Orders
+    Orders --> Declarations
+    Shipping --> Declarations
+    Declarations --> Overrides
+    Overrides --> Validate
+    Validate --> Catalog
+    Catalog --> Endpoints
+    Catalog --> Router
+    Catalog --> Renderer
+```
+
+This is configuration-time composition. Discovery and optional generated registrations supply declarations under the same rules, without duplicating explicit registrations. Host overrides apply before validation. Live components, selection and scoped feature services are created later.
+
+```csharp
+builder.Services.AddModules(builder.Configuration, builder.Environment)
+	.WithModule<OrdersModule>()
+	.WithModule<ShippingModule>()
+	.WithPresentation();
+
+builder.Services.AddRazorComponents()
+	.AddInteractiveServerComponents();
+builder.Services.AddPresentationMudBlazor();
+builder.Services.AddRequester().AddHandlers();
+
+var app = builder.Build();
+app.UseModules();
+app.UseAntiforgery();
+app.MapStaticAssets();
+app.MapModules();
+app.MapRazorComponents<App>()
+	.AddInteractiveServerRenderMode()
+	.WithPresentationRoutes();
+app.Run();
+```
+
+Application-specific Requester behaviors, authentication, logging and middleware retain their normal host setup. The default renderer documents its shared MudBlazor providers and asset references once. Modules use native packaged assets without per-module edits to the host document.
+
+In `App.razor`, the initial profile disables prerendering at the native boundary. The ordinary HTML document, asset references and framework script surround these components.
+
+```razor
+<HeadOutlet @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+<Routes @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+```
+
+`Routes.razor` retains the native router. The proposed catalog supplies effective module assemblies, and the route view applies ownership and availability before constructing a feature page. `WithPresentationRoutes()` supplies the corresponding initial-request integration. Both paths are required.
+
+```razor
+@inject IPresentationCatalog Presentation
+
+<Router AppAssembly="typeof(App).Assembly"
+        AdditionalAssemblies="this.Presentation.PageAssemblies">
+	<Found Context="routeData">
+		<PresentationRouteView RouteData="routeData"
+                               DefaultLayout="typeof(PresentationLayout)" />
+		<FocusOnNavigate RouteData="routeData" Selector="h1" />
+	</Found>
+</Router>
+```
+
+`PresentationLayout` is the default renderer's layout in this proposal. A host can substitute an ordinary layout and its own renderers. The completed example must include the normal not-found and unavailable presentations and must verify focus behavior when activation is denied.
+
+### A.3 Declare the Orders presentation once
+
+Spec references: [Page ownership and route availability](#page-ownership-and-route-availability), [Destination contracts and link generation](#destination-contracts-and-link-generation), and [Module assets and JavaScript ownership](#module-assets-and-javascript-ownership).
+
+The portable presentation definition pins one public module identity, declares a page assembly once and publishes only the contracts needed by other modules. `OrdersPage` and `OrderDetails` are ordinary Razor pages in that assembly. `OrderDetails` declares `@page "/orders/{OrderId:guid}"`.
+
+```csharp
+public static class OrdersUi
+{
+	public const string Name = "orders";
+
+	public static ActionTarget<OrdersSelection> SelectionActions { get; } =
+		new("orders.selection-actions");
+
+	public static Destination<OrderRoute> Details { get; } =
+		Destination.ForPage<OrderDetails, OrderRoute>("orders.details");
+}
+
+public sealed record OrderRoute(Guid OrderId);
+
+public static class OrdersPresentation
+{
+	public static void Configure(PresentationModuleBuilder module)
+	{
+		module.Pages.FromAssembly<OrdersPage>();
+		module.Resources.Use<OrdersResources>();
+		module.Destinations.Add(OrdersUi.Details);
+		module.Actions.Export(OrdersUi.SelectionActions);
+		module.Navigation.Add("orders", href: "orders", labelKey: "Orders");
+	}
+}
+```
+
+`Resources.Use<T>()` selects the module's native localization resource base. It does not introduce another localization engine. The page assembly supplies default ownership, so each ordinary page needs only its normal route declaration. Shared assemblies use explicit ownership overrides instead of ambiguous inference.
+
+The existing server module adds the optional presentation capability. Its ordinary `Register`, `Use` and `Map` implementations remain responsible for backend setup and are not reproduced here.
+
+```csharp
+public partial class OrdersModule : WebModuleBase, IPresentationModule
+{
+	public OrdersModule() : base(OrdersUi.Name) { }
+
+	public void RegisterPresentation(PresentationModuleBuilder module) =>
+		OrdersPresentation.Configure(module);
+}
+```
+
+The pinned identity is shared with the backend module. Local, unpublished modules can retain the existing type-name convention. The separate definition exists here because browser execution must reuse it without referencing or executing the server module.
+
+`OrdersUi.Details.Uri(navigationManager, new OrderRoute(orderId))` illustrates a small typed link helper. It uses the published page route and the current base URI. Required destination dependencies are validated at composition. An absent optional destination follows the established hidden-link default. Local links need no exported handle unless another module needs that public contract.
+
+![Conceptual Order detail page loaded from a direct URL with its own actions](assets/order-detail-deep-link.png)
+
+*Figure A.2. The route identifies the detail page's record, and that page owns its action context independently of earlier list selection. `Destination<OrderRoute>` generates the link; native routing and module ownership govern activation. The wireframe shows a short order reference and an overview-tab URL. The API excerpt above uses a GUID detail route; routed tabs follow the feature's declared route policy.*
+
+### A.4 Bind local behavior to a component-owned scope
+
+Spec references: [Action definition, placement, binding and execution](#action-definition-placement-binding-and-execution), [Safe invocation and lifetime](#safe-invocation-and-lifetime), [Operation outcomes and recovery](#operation-outcomes-and-recovery), and [Automatic refresh and explicit invalidation](#automatic-refresh-and-explicit-invalidation).
+
+![Conceptual Orders list whose selected rows supply the external Approve action](assets/orders-list-toolbar.png)
+
+*Figure A.3. The selected rows supply `OrdersSelection.Targets` and approval eligibility. `UpdateContext` publishes that snapshot to the component's scope, and `Bind("approve", ...)` connects it to the feature callback. The toolbar displays the binding's state while the list retains ownership of selection. The visible Edit and Refresh controls illustrate additional feature actions beyond the Approve excerpt.*
+
+Use an immutable feature-owned context. The targets carry the versions needed by the example's Application concurrency checks. Their contents come from the component's selected rows, not from a global current-selection service.
+
+```csharp
+public sealed record OrderTarget(Guid Id, long Version);
+
+public sealed record OrdersSelection(
+	ImmutableArray<OrderTarget> Targets,
+	bool AllApprovable)
+{
+	public static OrdersSelection Empty { get; } = new([], false);
+}
+```
+
+In this proposed `OrdersList.razor` excerpt, the component owns the scope. `EnabledWhen` evaluates the declared snapshot without a backend request. Labels and disabled reasons use the module's resource keys. The confirmation callback receives captured inputs. `ReloadAsync` is an ordinary feature-owned read using `IOrdersFeature`, not a shell query abstraction.
+
+```razor
+@implements IDisposable
+@inject IActionScopes ActionScopes
+@inject IOrdersFeature Orders
+@inject IStringLocalizer<OrdersResources> Text
+
+@if (this.ShowLocalToolbar && this.actions is not null)
+{
+	<ActionToolbar Scope="this.actions" />
+}
+
+@code {
+	[Parameter]
+	public bool ShowLocalToolbar { get; set; } = true;
+
+	[Parameter]
+	public EventCallback<ActionScope<OrdersSelection>> ActionsReady { get; set; }
+
+	private ActionScope<OrdersSelection> actions;
+
+	protected override async Task OnInitializedAsync()
+	{
+		this.actions = this.ActionScopes.CreateScope(
+			owner: this,
+			target: OrdersUi.SelectionActions,
+			context: OrdersSelection.Empty);
+		this.actions.Bind("approve", action => action
+			.LabelKey("Approve")
+			.EnabledWhen(
+				context => !context.Targets.IsEmpty && context.AllApprovable,
+				disabledReasonKey: "SelectApprovableOrders")
+			.ConfirmWith(context =>
+				this.Text["ConfirmApproval", context.Targets.Length])
+			.ExecuteAsync((snapshot, cancellationToken) =>
+				this.Orders.ApproveAsync(snapshot.Targets, cancellationToken))
+			.OnConfirmedSuccess((_, cancellationToken) =>
+				this.ReloadAsync(cancellationToken)));
+		await this.ActionsReady.InvokeAsync(this.actions);
+	}
+
+	private void SelectionChanged(ImmutableArray<OrderRow> selected) =>
+		this.actions.UpdateContext(new OrdersSelection(
+			selected.Select(row => new OrderTarget(row.Id, row.Version))
+				.ToImmutableArray(),
+			selected.All(row => row.CanApprove)));
+
+	public void Dispose() => this.actions?.Dispose();
+}
+```
+
+The local key `approve` derives its definition identity from the module and target. Scope, binding and execution identities are inferred for each live instance. Publicly exporting the action definition is necessary only when consumers need to reference that definition independently of the target.
+
+`Bind` accepts the existing feature's `Result<T>` response without requiring a new business-result hierarchy. The completed API must preserve reported partial or unknown outcomes where the feature has them. A transport interruption after dispatch is not a confirmed rejection or cancellation. The framework must not retry a mutation merely because its completion was uncertain.
+
+`OnConfirmedSuccess` is separate from the business callback. It runs only for an eligible live owner in the originating context. A failed reload reports a refresh failure while the confirmed approval remains successful. Reloading rejects obsolete read results and updates the owned context explicitly. Under [Selection ownership and defaults](#selection-ownership-and-defaults), selection retains across paging by default. The optional clear-on-paging policy belongs to the selection adapter or feature, not to this toolbar API.
+
+`CreateScope` associates callbacks and change delivery with the owner's Blazor dispatcher. Updating context advances relevant evaluation revisions. Pending confirmation reserves the binding, captures immutable targets and rechecks the original owner, context and eligibility before dispatch. A relevant change requires a fresh decision. After dispatch, later selection changes never alter the captured targets.
+
+Disposal invalidates bindings and pending confirmations, removes subscriptions, requests cancellation of scope-owned work and rejects late UI updates. The example's table markup, initial query and `ReloadAsync` implementation must demonstrate those rules when the example becomes runnable. Declaring a callback alone does not prove them.
+
+The invocation sequence connects those responsibilities to the proposed API. The original binding owns preparation and execution state, while the component callback owns feature behavior.
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Toolbar as ActionToolbar
+    participant Binding as Orders A binding
+    participant Confirm as Confirmation
+    participant Owner as Orders A component
+    participant Feature as IOrdersFeature
+    Owner->>Binding: UpdateContext with immutable targets and versions
+    Binding-->>Toolbar: Availability and execution state
+    User->>Toolbar: Approve
+    Toolbar->>Binding: Invoke original binding
+    Binding->>Binding: Validate, reserve pending state and capture inputs
+    Binding->>Confirm: Confirm captured targets
+    User->>Confirm: Confirm or decline
+    Confirm-->>Binding: User decision
+    alt Declined or preparation cancelled
+        Binding-->>Toolbar: Release pending state without dispatch
+    else Confirmed
+        Binding->>Binding: Recheck owner, context and current eligibility
+        alt Owner disposed or relevant context changed or action unavailable
+            Binding-->>Toolbar: Reject stale invocation without dispatch
+        else Still eligible
+            Binding->>Owner: ExecuteAsync with captured snapshot
+            Owner->>Feature: ApproveAsync with captured targets
+            Note over Binding,Feature: Later selection changes cannot retarget this invocation
+            Feature-->>Owner: Reported result or uncertain completion
+            Owner-->>Binding: Business outcome
+            Binding->>Binding: Record outcome and notify only live observers
+            opt Confirmed success and live owner in the originating context
+                Binding->>Owner: OnConfirmedSuccess
+                Owner->>Feature: FindAsync for feature-owned reload
+                Feature-->>Owner: Read result or reload failure
+                Note over Owner,Binding: Reload failure does not change confirmed approval
+            end
+        end
+    end
+```
+
+Pending state suppresses duplicate invocation of this binding, including through another presenter. An uncertain completion follows the existing unknown-outcome recovery rules. It does not trigger automatic replay. Disposed owners and obsolete contexts cannot receive late UI updates, even when underlying work ignores cancellation.
+
+### A.5 Place the same bindings in a page header
+
+Spec references: [Typed scopes and explicit placement](#typed-scopes-and-explicit-placement) and [External toolbar and component-owned behavior](#external-toolbar-and-component-owned-behavior).
+
+![Conceptual page with Orders A attached to the header and Orders B retaining a local toolbar](assets/typed-scopes-and-placement.png)
+
+*Figure A.4. Orders A supplies the header's explicit source. Orders B retains its own selection and local actions. The page-owned Refresh action illustrates a separate group that a host can deliberately include; it is not automatically collected from either component.*
+
+| Visible part | Proposed API relationship |
+| --- | --- |
+| Header source: Orders A | The first component's `ActionsReady` callback assigns `primaryActions`, which is passed to the external `ActionToolbar`. |
+| Orders A selection | Its own `ActionScope<OrdersSelection>` receives `UpdateContext` and supplies the original bindings. |
+| Orders B local toolbar | A separate component creates a separate scope and uses the default local toolbar. Its selection does not change the header's targets. |
+| Page-level Refresh group | An additional page-owned scope can be explicitly included through the established placement policy. The minimal excerpt below only attaches Orders A. |
+
+```mermaid
+flowchart TD
+    Header["Header ActionToolbar: Scope = primaryActions"]
+    subgraph A["Orders A component"]
+        ListA["Selected rows A"]
+        ScopeA["Scope A: context and original action bindings"]
+        ListA -->|"UpdateContext"| ScopeA
+    end
+    subgraph B["Orders B component"]
+        ListB["Selected rows B"]
+        ScopeB["Scope B: context and original action bindings"]
+        LocalB["Local ActionToolbar"]
+        ListB -->|"UpdateContext"| ScopeB
+        LocalB -->|"Invoke"| ScopeB
+        ScopeB -.->|"State updates"| LocalB
+    end
+    ScopeA -->|"ActionsReady assigns primaryActions"| Header
+    Header -->|"Invoke original A binding"| ScopeA
+    ScopeA -.->|"State updates"| Header
+```
+
+Each component owns and disposes its scope. The page's callback selects A for the header, and B has no binding to that header. Adding a local toolbar for A would observe the same A bindings and busy state. Changing toolbar placement does not transfer ownership or merge the two contexts.
+
+The page explicitly attaches the first Orders instance to the external toolbar. The second instance uses its local toolbar. No component lookup, global active-grid setting or repeated host registration is needed.
+
+```razor
+@page "/orders"
+
+<PageTitle>Orders</PageTitle>
+<h1>Orders</h1>
+<ActionToolbar Scope="this.primaryActions" />
+
+<OrdersList ShowLocalToolbar="false"
+            ActionsReady="scope => this.primaryActions = scope" />
+<OrdersList />
+
+@code {
+	private ActionScope<OrdersSelection> primaryActions;
+}
+```
+
+A missing or disposed scope presents no invokable actions. The toolbar observes changes and detaches its subscriptions when its source changes or it is disposed. Enabling the first component's local toolbar presents the same binding in two places, sharing confirmation and busy state. Moving focus into either toolbar does not switch the source.
+
+### A.6 Add a contribution from another module
+
+Spec references: [Published typed contracts](#published-typed-contracts), [Predictable attachment and customization](#predictable-attachment-and-customization), [Composition and contextual execution](#composition-and-contextual-execution), and [Host-supplied feature availability](#host-supplied-feature-availability).
+
+Shipping's `RegisterPresentation` uses the public Orders target. Its module identity and resources remain Shipping-owned. The contribution declares a required target in this example, so selecting Shipping without Orders fails composition with the source and target identified.
+
+```csharp
+module.Resources.Use<ShippingResources>();
+module.Actions.Contribute<PrepareShipmentActions>(
+	OrdersUi.SelectionActions,
+	contributionId: "shipping.orders-actions",
+	required: true);
+```
+
+The optional reusable contributor binds behavior to each live target through the same fluent API as local callbacks.
+
+```csharp
+public sealed class PrepareShipmentActions(IShippingFeature shipping)
+	: IActionContributor<OrdersSelection>
+{
+	public void Bind(ActionScope<OrdersSelection> scope) =>
+		scope.Bind("prepare-shipment", action => action
+			.LabelKey("PrepareShipment")
+			.EnabledWhen(
+				context => !context.Targets.IsEmpty,
+				disabledReasonKey: "SelectOrders")
+			.ExecuteAsync((snapshot, cancellationToken) =>
+				shipping.PrepareAsync(snapshot.Targets, cancellationToken)));
+}
+```
+
+The registration infers the contributor's service registration, module provenance and local action identities. It does not instantiate or retain the contributor in shared composition metadata. Module resource resolution remains attached to the contributor's provenance even though Orders owns the target. Shipping consumes only the published context and its own feature services. It does not read Orders component fields or dispatch against Orders private implementation types. Its normal module registration supplies `IShippingFeature` and any declared backend capability requirements. Unknown required availability gates invocation independently of the selection predicate. Backend orchestration and authorization follow the existing module boundaries.
+
+### A.7 Keep feature access independent of the shell
+
+Spec references: [Reference application access paths](#reference-application-access-paths), [Hosting and render-mode interoperability](#hosting-and-render-mode-interoperability), and [Frontend coordination with Requester and Notifier](#frontend-coordination-with-requester-and-notifier).
+
+`IOrdersFeature` is a narrow, feature-owned contract for sharing these components between Server and browser execution. Reuse an existing suitable contract when available. A Server-only handwritten page may inject Requester directly and does not need this interface solely to participate in the shell.
+
+```mermaid
+flowchart LR
+    subgraph Host["One composed application host"]
+        ServerPage["Orders component: Server instance"]
+        Direct["ServerOrdersFeature"]
+        Endpoint["Orders HTTP endpoints"]
+        Requester["Application Requester"]
+        Handlers["Orders command and query handlers"]
+        ServerPage --> Direct
+        Direct -->|"In-process dispatch"| Requester
+        Endpoint --> Requester
+        Requester --> Handlers
+    end
+    subgraph Browser["Browser runtime"]
+        BrowserPage["Orders component: browser instance"]
+        Client["Typed HTTP implementation of IOrdersFeature"]
+        BrowserPage --> Client
+    end
+    Client -->|"HTTP"| Endpoint
+```
+
+The component code uses the same feature contract in both runtimes. Server execution dispatches directly, and browser execution crosses the HTTP boundary. Both paths reach the same Application use cases and rules with their appropriate identity and lifetime context. Only portable contracts and the HTTP implementation belong in the browser dependency graph. Auto selects the implementation for the executing runtime and does not move an active instance or its work between runtimes.
+
+```csharp
+public interface IOrdersFeature
+{
+	Task<Result<ImmutableArray<OrderRow>>> FindAsync(
+		CancellationToken cancellationToken = default);
+
+	Task<Result<ApprovalReceipt>> ApproveAsync(
+		ImmutableArray<OrderTarget> targets,
+		CancellationToken cancellationToken = default);
+}
+
+public sealed class ServerOrdersFeature(IRequester requester) : IOrdersFeature
+{
+	public Task<Result<ImmutableArray<OrderRow>>> FindAsync(
+		CancellationToken cancellationToken = default) =>
+		requester.SendAsync(new OrdersFindQuery(),
+			cancellationToken: cancellationToken);
+
+	public Task<Result<ApprovalReceipt>> ApproveAsync(
+		ImmutableArray<OrderTarget> targets,
+		CancellationToken cancellationToken = default) =>
+		requester.SendAsync(new OrdersApproveCommand(targets),
+			cancellationToken: cancellationToken);
+}
+```
+
+`OrderRow`, `ApprovalReceipt`, the query and command are fictional feature contracts. The query returns row identities, versions and approval eligibility. The command returns the confirmed approval receipt or a known rejection. Application handlers enforce access and concurrency; presentation eligibility does not replace those checks. Use the current named `cancellationToken` argument because Requester's preceding optional parameter is `SendOptions`.
+
+| Runtime registration | Access and ownership |
+| --- | --- |
+| Server module `Register` adds `IOrdersFeature` with `ServerOrdersFeature` as scoped. | Calls Requester in-process using the circuit's current identity and appropriate Application service lifetimes. Does not call the host's HTTP API. |
+| Browser composition registers a typed HTTP implementation of `IOrdersFeature`. | Uses the same application's endpoints, which dispatch the same use cases. The browser graph contains no backend module, handler, repository or server-only behavior. |
+| Auto configures both runtime-specific implementations. | Each activated instance uses its executing runtime's registration. It does not swap service instances or move in-flight operations between runtimes. |
+
+For WASM, the proposed `AddPresentation().WithModule(OrdersUi.Name, OrdersPresentation.Configure)` registers the portable definition in the browser container. A corresponding Shipping definition is selected by that same application composition when required. It does not execute either server module's `Register`, `Use` or `Map`. Presentation declarations are authored once, while each executing container still requires its appropriate adapter and feature services.
+
+### A.8 Conventions, discovery and generated conveniences
+
+Spec references: [Fluent setup, conventions and discovery](#fluent-setup-conventions-and-discovery) and [Low friction and native platform mechanisms](#low-friction-and-native-platform-mechanisms).
+
+Each module requires one host selection, one portable presentation declaration where portability is needed, normal routed pages and its local action declarations. The ordinary path does not require an application-specific manifest, a page base class, a contributor class for every button or manually assigned runtime identities.
+
+Presentation capability discovery follows the selected module list. Page discovery follows the declared assembly and native route metadata. Destination helpers infer the route parameter mapping when names and types match. Shared-assembly ownership and ambiguous parameter mapping require explicit configuration or an actionable diagnostic.
+
+A source generator may emit the same page registrations, typed destination helpers or shared Server and browser registration calls to remove demonstrated duplication. It must respect the selected composition and emit browser-safe output for browser consumers. Generated code cannot pull backend modules into the client graph or register a second copy of contributions already supplied explicitly. Explicit host overrides remain effective and diagnostics identify generated registrations as such.
+
+The future executable example should first validate this ordinary API. Add generator-specific validation only when generated convenience is actually included. Do not make a new generator or mandatory build step a prerequisite for evaluating the basic component and callback path.
+
+### A.9 Evidence required before calling this example executable
+
+Spec references: [Delivery gates and evidence](#delivery-gates-and-evidence), [Acceptance scenarios](#acceptance-scenarios), [Independent module tests](#independent-module-tests), and [Reuse and developer-experience evidence](#reuse-and-developer-experience-evidence).
+
+| Check | Expected evidence | Gate |
+| --- | --- | --- |
+| Ordinary setup | A developer builds and starts the application with normal .NET commands, supplied assets and documented registrations. No internal registry edits or external service are required for local demo data. | G1 |
+| Module ownership | Orders pages inherit ownership from the declared assembly. Shared-assembly overrides work. Ambiguous ownership, duplicate identities and missing required Shipping targets fail with useful diagnostics. | G1 |
+| Direct routes | The detail URL loads without the list. Initial requests and interactive navigation apply the same ownership and availability rules. Typed links work under a non-root base path. | G1 and G2 |
+| Direct Server access | Approve reaches the Application handler through Requester with the current circuit context. Instrumentation or a focused check confirms that the Server path issues no call to its own HTTP API. | G1 |
+| Two live owners | The header acts only on the first Orders instance. The second instance keeps independent selection and execution state. Local and external presenters can observe one shared binding. | G1 |
+| Safe confirmation | Duplicate clicks open one confirmation. A relevant context change rejects the old decision. An accepted invocation retains its captured IDs and versions after later selection changes. | G1 |
+| Disposal and recovery | Removal during confirmation or execution invalidates observation and rejects late UI updates. A confirmed save remains successful when its reload fails. Unknown completion is not replayed or reported as confirmed cancellation. | G1 |
+| Cross-module extension | Shipping contributes through the public target in both live instances, with its own provenance, resources and feature access. It depends on no Orders private implementation or state. | G2 |
+| Portable reuse | The same feature contract and portable presentation definition work in browser execution through a real typed HTTP client and in a consumer of the actual packed module. No server-only dependency leaks. | G2 |
+| Headless rendering | Replace the MudBlazor toolbar and layout with plain Razor consumers of the same bindings and catalog. The consumer has no transitive MudBlazor dependency. | G2 |
+| Convention and override | Compare required files and declarations with ordinary Blazor. Explicit host overrides produce the same effective composition for explicit, discovered and any generated registrations. | G1 and G2 |
+
+Record the actual build and run commands, profiles, results and concrete preview signatures exercised when implementation begins. This appendix defines that evidence; it does not claim a passed gate, an executable artifact or measured developer-effort savings.
 
 ## References
 

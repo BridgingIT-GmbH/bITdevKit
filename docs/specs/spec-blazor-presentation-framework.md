@@ -22,7 +22,7 @@ The framework targets multiple applications using DevKit. Its purpose is to reus
 
 The guiding architecture is a modular monolith across backend and frontend. Logical feature boundaries continue into presentation, where modules own their pages, state and contributions and integrate through published contracts. One application host selects and composes the modules into a coherent application. The same framework and module packages can be reused by other independently composed applications. Supported render modes retain their runtime boundaries within this application model, and a scaled deployment can run multiple instances of the same configured host.
 
-Consuming applications start as greenfield projects. DoFiesta is the reference migration used to validate the framework. General adoption into existing applications, legacy-shell compatibility layers and migration tooling for those applications are outside the release scope.
+Consuming applications start as greenfield projects. TaskFiesta is the new application developed alongside the framework to validate it. DoFiesta remains unchanged: this feature does not migrate its shell, refactor its AppState integration or add workflows, dependencies or validation profiles to that application. Its existing visual design and module naming are reference material only. General adoption into existing applications, legacy-shell compatibility layers and migration tooling are outside scope.
 
 Public website hosting and fast first content are reusable framework responsibilities. The framework supplies the [public website profile](#recommended-public-website-profile) and [shared hosting/startup integration](#reusable-hosting-and-startup-support), including SSR-compatible shell rendering, selective interactivity, prerender handoff, native forms, asset defaults and diagnostics. Applications consume these through public APIs and package upgrades. TaskFiesta validates this capability together with an independent consumer.
 
@@ -30,7 +30,7 @@ TaskFiesta is the compact validation application developed alongside the complet
 
 Reusable modules can supply pages, navigation, contextual actions, resources and documented customization points. Consuming applications select and adapt those capabilities through public contracts. Shared fixes and improvements reach those applications through supported package upgrades. The framework owns the compatibility, accessibility and lifecycle behavior it promises; consuming applications remain responsible for their complete user experience.
 
-These benefits must be demonstrated in consumers. A comprehensive shell or a successful reference migration alone does not establish lower development effort or reuse across applications.
+These benefits must be demonstrated in TaskFiesta and an independent packaged consumer. A comprehensive shell or multiple hosting profiles of one application alone do not establish lower development effort or reuse across applications.
 
 ### Low friction and native platform mechanisms
 
@@ -109,11 +109,11 @@ The framework is not a UI component library. MudBlazor and native Blazor supply 
 
 The complete feature includes the browser-safe headless shell, the separately referenced MudBlazor renderer, and the initial FilterModel query and selection adapters as optional dependencies. It includes the documented hosting arrangements, anonymous and protected configurations, and the enterprise requirements for session handling, recovery, production hosting, observability, accessibility and upgrades.
 
-The public website profile is part of that scope, including its SSR-compatible chrome defaults, native navigation/forms, declared contribution compatibility and selective interactive composition. It uses the same module/headless contracts and semantic styling tokens rather than another shell. TaskFiesta supplies complete framework/public-site validation, an independent consumer proves reuse, and DoFiesta retains real-application migration evidence.
+The public website profile is part of that scope, including its SSR-compatible chrome defaults, native navigation/forms, declared contribution compatibility and selective interactive composition. It uses the same module/headless contracts and semantic styling tokens rather than another shell. TaskFiesta supplies complete framework/public-site validation, the separate technical harness supplies cross-module evidence, and an independent consumer proves package reuse. DoFiesta is not a validation or migration dependency.
 
-Interactive diagnostics include the drawer, attached popout, bounded capture and separately enabled browser facade. Hosts may opt into authorized production inspection. Interactive inspection is off by default outside development. The feature also includes host starters, extension/upgrade documentation and complete TaskFiesta evidence, with the applicable DoFiesta migration checks retained.
+Interactive diagnostics include the drawer, attached popout, bounded capture and separately enabled browser facade. Hosts may opt into authorized production inspection. Interactive inspection is off by default outside development. The feature also includes host starters, extension/upgrade documentation and complete TaskFiesta and technical-host evidence.
 
-Higher-level modules such as the notification center and inbox, administration and reusable CRUD screens are separate feature designs. The bdk MCP and CLI adapter is a separate integration. These scope boundaries are not later implementation phases of this specification. Optional packages that are included here have enabled/removed-configuration evidence in TaskFiesta and applicable migration checks in DoFiesta.
+Higher-level modules such as the notification center and inbox, administration and reusable CRUD screens are separate feature designs. The bdk MCP and CLI adapter is a separate integration. These scope boundaries are not later implementation phases of this specification. Optional packages included here have enabled/removed-configuration evidence in TaskFiesta and its technical hosts. Out-of-scope packages are not prerequisites for those checks.
 
 ### Capability boundaries and status
 
@@ -121,11 +121,11 @@ Higher-level modules such as the notification center and inbox, administration a
 | --- | --- | --- |
 | Public website hosting and startup | Framework host integration and SSR-compatible shell renderers. | Deliver reusable profile setup, native SSR/prerender/interactive composition, lifecycle/handoff support and asset/readiness defaults. A starter and independent packaged consumer must prove reuse. Feature content, business actions and app-specific performance budgets remain application-owned. |
 | Shared contextual UI actions | Headless shell behavior, default renderer presentation and feature-owned business handlers. | One definition/placement/binding model supports toolbars and context menus with scoped availability and execution. UI actions can call APIs or Requester without becoming backend commands. |
-| Interaction scopes and explicit target binding | Core shell. | Reuse the existing action-scope ownership model for page/component instances; separate shared composition metadata from live context and registrations. |
+| Interaction scopes and explicit target binding | New core shell contract specified here. | One shared ownership model supports page/component instances and scoped action bindings. Define owner identity, context revision, typed publication, attachment/detachment and disposal. Reuse native lifecycle/DI primitives, not an assumed existing DevKit UI-scope implementation. |
 | Edit-session coordinator | Deferred optional editing capability. | Keep the current page-owned unsaved-change helper. Global participant coordination, nested-editor save orchestration and Save All are not requirements of the current core shell. |
 | Restorable view state | Core AppState/preferences conventions with optional view/data adapters. | Declare per-view URL/transient/preference policy, identity/version/defaults and stale-value recovery. Editable drafts are separately owned feature data. |
 | Asynchronous operation observation | Per-binding execution state in core; broader operations panel and application-owned workflows are separate optional design work. | Expose execution identity/outcome/cancellation/progress where available. Navigation survival requires an explicit longer-lived owner; restart durability belongs to backend capabilities. |
-| Reusable business-page components | Separate application/data feature designs beyond the initial adapters. | DoFiesta demonstrates handwritten list, detail and edit workflows using existing controls. Extract a workflow component only when another consumer demonstrates repeated application behavior; generic control wrappers remain outside this framework. |
+| Reusable business-page components | Separate application/data feature designs beyond the initial adapters. | TaskFiesta demonstrates handwritten list, detail and edit workflows using existing controls. Extract a workflow component only when another consumer demonstrates repeated application behavior; generic control wrappers remain outside this framework. |
 | Search and command discovery | Deferred optional application capability. | No global search surface, command palette, federated provider model or shortcut-discovery catalog is required now. Local page/grid filtering remains available. |
 | General shortcut routing | Deferred optional interaction capability. | Keep accessible toolbar navigation and explicit local shortcuts. Hierarchical scope routing, fallback and ambiguity resolution require separate justified design. |
 | Semantic inspection and testing | Existing core diagnostics, with separately enabled adapters for any programmatic business-action invocation. | Inspect stable page/scope/action/binding/execution identities and reasons through the shared read model. Normal UI invocation remains the default execution path. |
@@ -270,24 +270,22 @@ A package can publish a supported contract and attachment target that multiple a
 
 Separate typed contracts preserve the needs of navigation, actions, settings and diagnostic panels. Common composition metadata gives them consistent identity, attachment, ordering, override provenance and diagnostics. Focused registration builders and existing .NET DI provide the integration convenience; detailed rules are defined in Extension contracts and host authority.
 
-## Reusable data components and CRUD scaffolding
+## Query and selection adapters
 
-The initial data offering ships optional FilterModel query and selection adapters. Typed field and operator mapping, paging, sorting, filtering and the selection context work independently of the grid renderer. A thin MudBlazor adapter translates grid columns and events. A handwritten Razor view can use the same query mapping, selection context and contextual actions. DoFiesta owns its Todo editor, validation and business operations.
+The feature ships optional FilterModel query and selection adapters. Typed field and operator mapping, paging, sorting, filtering and selection context work independently of the grid renderer. A focused MudBlazor adapter translates existing grid events and supported field mappings. A handwritten Razor view can use the same query mapping, selection context and contextual actions. TaskFiesta owns its forms, validation and business operations.
 
-The table describes the broader data-component design. Shared list, detail and editor components follow evidence of reuse across workflows.
+The table defines adapter behavior within this feature. It does not require framework grids, CRUD screens, editors, lookup controls or a form engine. Broader reusable business workflows require separate feature designs and evidence of repeated application behavior.
 
 | Capability | Target behavior |
 | --- | --- |
-| Data grids | Paging, sorting, selection, loading, empty and error states; custom cell templates and row actions. |
+| Existing grids and handwritten views | Translate query/selection inputs and expose resolved state to feature-owned controls without replacing their rendering, cell templates or local callbacks. |
 | FilterModel integration | Typed filter definitions, supported operator selection, query construction and integration with backend FilterModel APIs. |
-| CRUD composition | Reusable list, detail and editing patterns with page, dialog or drawer presentation. |
-| Forms and lookups | Validation, asynchronous lookups, custom field templates and explicit edit models. |
-| Operations | Result feedback, field errors, cancellation, safe duplicate-submit prevention and explicit refresh behavior. |
+| Feature operations | Connect explicitly selected query/selection state to the existing action and feedback contracts. Feature code owns commands, forms, lookup queries and business recovery. |
 | View state | Configurable filters, sorting, paging and column preferences, with URL and persistence rules. |
-| Toolbar integration | Reuse core contextual actions/outlets; provide optional grid-selection and CRUD action adapters while feature code supplies business operations. |
-| Customization | Replaceable sections and actions; custom commands such as Approve, Archive or Recalculate alongside conventional CRUD. |
+| Toolbar integration | Expose grid selection to core contextual actions/outlets. Existing MudBlazor or native controls present actions and filters through ordinary typed parameters/callbacks. |
+| Customization | Use explicit field/operator mappings, selection policy and target attachment. No generated CRUD controls or mandatory framework page inheritance. |
 
-Create, edit and delete are capabilities, not mandatory operations. A read-only grid or an archive-only workflow must be natural. Generic components must allow handwritten pages and custom MudBlazor controls to participate without requiring inheritance from a framework page class.
+Create, edit and delete remain feature-owned operations. A read-only grid or an archive-only workflow can use only the query/selection adapters it needs. Handwritten pages and existing controls participate without a framework page class.
 
 Backend filtering and authorization remain authoritative. Field and operator mappings must be explicit enough to prevent unsupported queries. Concurrency conflicts must preserve user input and provide a feature-owned recovery choice. A confirmed save remains successful if a subsequent refresh fails.
 
@@ -413,9 +411,9 @@ Composition diagnostics identify effective render mode, prerender/static capabil
 
 ### Reusable hosting and startup support
 
-The public website profile must be a packaged framework capability with runnable starter/consumer evidence, not a checklist that every application reimplements. Ship reusable integration for the repeated host, rendering and lifecycle work. Keep the configuration on the existing presentation host builder and reuse native Blazor/.NET mechanisms underneath it.
+The public website profile must be a packaged framework capability with runnable starter/consumer evidence, not a checklist that every application reimplements. Ship reusable integration for the repeated host, rendering and lifecycle work. Add the proposed presentation configuration to the existing DevKit host builder and reuse native Blazor/.NET mechanisms underneath it. No presentation-specific builder/profile API is claimed to exist today.
 
-The proposed ordinary entry is `WithPresentation(options => options.UsePublicWebsite())`, followed by the application's normal module selection, branding/layout choices and native page/component declarations. `UsePublicWebsite` is a proposed convenience name to validate, not an implemented API. It selects the documented SSR/public defaults and the compatible shared services/renderers. It does not make every component interactive, infer business actions or replace native render-mode precedence. Ordinary connected applications retain their existing default profile. Exact public signatures are settled through Behavior/Reuse evidence.
+The proposed ordinary entry is `WithPresentation(options => options.UsePublicWebsite())` on the DevKit host builder. Both `WithPresentation` and `UsePublicWebsite` are proposed names, not implemented APIs. Presentation setup sits alongside the existing `AddModules`/`WithModules` registration, whose callback uses `WithModule<CoreModule>()` to select modules once. It consumes that same host module catalog; it does not select modules a second time or create a parallel registry. The profile selects SSR/public defaults and compatible services/renderers while the application supplies branding/layout choices and native pages. It does not make every component interactive, infer business actions or replace native render-mode precedence. Ordinary connected applications retain their default profile. Exact signatures and supported registration ordering are validated through the starter and independent-consumer evidence.
 
 | Reusable framework deliverable | What the consuming application supplies |
 | --- | --- |
@@ -439,7 +437,7 @@ Framework fixes to these shared renderers, conventions and host services must re
 
 ### Reference application access paths
 
-DoFiesta uses different application access paths for Server and browser execution. Shared portable components consume narrow feature-owned service contracts. Hosts register the appropriate implementation in each executing runtime. Existing suitable service contracts can be reused; the shell does not require a universal application-service wrapper.
+TaskFiesta uses different application access paths for Server and browser execution. Shared portable components consume narrow feature-owned service contracts. Hosts register the appropriate implementation in each executing runtime. Existing suitable service contracts can be reused; the shell does not require a universal application-service wrapper.
 
 | Executing runtime | Reference path |
 | --- | --- |
@@ -449,6 +447,10 @@ DoFiesta uses different application access paths for Server and browser executio
 | Explicit prerendering | Resolve suitable server-side feature services for approved read-only initialization. Apply the prerender request's identity and lifetime rules, then reconstruct live services and bindings on activation. |
 
 The Server adapter obtains the current user and application context from the originating circuit. Application handlers or their behaviors enforce validation and permissions for both entry paths, including checks otherwise performed only by HTTP endpoint filters. Backend authorization remains authoritative. A direct Requester call must not bypass required policy or entity checks.
+
+The Server profile supplies a circuit-aware implementation of the existing `ICurrentUserAccessor`. Its principal comes from native `AuthenticationStateProvider`/circuit lifecycle integration and follows authentication-state changes. A live circuit must not use the HTTP-only `HttpCurrentUserAccessor` as its identity source: `IHttpContextAccessor` may be absent or retain an earlier principal. SSR/prerender and HTTP endpoints retain their request-owned identity handling. Browser-supplied identity is not authoritative for Application authorization. [Blazor HttpContext guidance](https://learn.microsoft.com/en-us/aspnet/core/blazor/components/httpcontext?view=aspnetcore-10.0), [circuit user capture](https://learn.microsoft.com/en-us/aspnet/core/blazor/security/additional-scenarios?view=aspnetcore-10.0#circuit-handler-to-capture-users-for-custom-services).
+
+Before each in-process dispatch, obtain the authenticated circuit principal and permitted application context for that invocation. If a use case opens a short-lived DI scope, its `ICurrentUserAccessor` must receive that principal/context explicitly rather than resolve an anonymous HTTP accessor or a different circuit's state. Clear pending eligibility and invalidate affected bindings when identity changes; checks resumed after confirmation use the current identity. Unknown/failed identity resolution cannot grant a protected action. Do not cache the initial principal for the circuit lifetime, share mutable user state between circuits or retain a circuit/provider reference in a longer-lived background operation. The application boundary continues to enforce policy/entity checks, with operation-appropriate authorization context for accepted backend-owned work.
 
 Resolve operation dependencies with lifetimes appropriate to each use case. A long-lived circuit or UI binding must not retain an operation-owned DbContext or repository beyond that operation. The presentation adapter handles access and mapping; application use cases continue to own business orchestration. Feature results, field errors, conflicts and unknown outcomes map to the same presentation feedback contract in both paths.
 
@@ -581,7 +583,7 @@ The default Backoffice layout provides a header, sidebar, content region and foo
 
 Layouts expose documented regions for branding, account controls, header actions, navigation, footer content and page content. Hosts can contribute additional named regions. Contributions can use templates or components within legal rendering boundaries.
 
-Page composition supports optional titles, breadcrumbs, actions, sections, loading states, empty states and error panels. A page can opt into these patterns or provide a completely custom body. A page frame or shell region can render contextual actions outside the component that supplies their behavior, using the scoped binding model in Contextual toolbars and action scopes.
+Page composition supports optional titles, breadcrumbs, actions and sections, with slots or native `RenderFragment`s for loading, empty and error presentation. Features fill those slots with native markup or existing MudBlazor controls; this does not require a shipped catalog of state-panel components. A page can opt into these patterns or provide a completely custom body. A page frame or shell region can render contextual actions outside the component that supplies their behavior, using the scoped binding model in Contextual toolbars and action scopes.
 
 Responsive behavior must preserve usable navigation, actions and focus order. Default renderers must support keyboard operation, meaningful focus after navigation, accessible labels and error announcements. Custom renderers inherit documented accessibility responsibilities.
 
@@ -638,6 +640,8 @@ Each public extension point documents its input context, accepted result/compone
 | Toolbar controls | The declared typed toolbar scope and its relevant state. | Typed templates/components for search, filters, view selectors or custom controls. |
 | Settings sections | Declared settings scope and relevant preference contracts. | Section descriptors or typed components. |
 | Diagnostic panels | Supported diagnostic read model and inspection context. | Diagnostic panel components/templates. |
+
+Toolbar control contributions place feature-owned native/MudBlazor components in an explicitly published, typed outlet. They can coordinate filters or view selectors with that owner without becoming action definitions. A plain local control needs no contribution registration. The framework does not discover/register controls globally, create control schemas or mirror component parameters into a widget registry.
 
 The shell and presentation modules can publish additional typed points through shared contract assemblies or Razor class libraries. Feature-owned points remain defined by their owning module; a customer package can contribute to an Orders toolbar or navigation parent by referencing its public contracts. Framework core must not require changes for every new feature-specific point.
 
@@ -800,9 +804,37 @@ sequenceDiagram
 
 ### Typed scopes and explicit placement
 
-An interaction scope is a runtime owner of typed context and contribution bindings. The existing action-scope model provides this ownership for actions; introducing the term does not create a second scope registry or force unrelated capabilities into one execution contract.
+An interaction scope is a runtime owner of typed context and contribution bindings. This is a new framework contract specified here. Action scopes use that same ownership model; the wider term must not lead to a second registry or force unrelated capabilities into one execution contract. It is not an existing AppState or Result operation-scope API.
 
 A live scope identifies a particular page/component instance and its relevant context revision. It is distinct from the shared module registration and the reusable action definition. Two instances of the same grid or Order component have separate scope/binding identities, even when they use the same definition. Context snapshots must not retain mutable selection collections that can change an already prepared invocation.
+
+The public scope contract must define these operations, independently of final API names:
+
+| Operation | Minimum contract |
+| --- | --- |
+| Create or explicitly join | Create one typed live owner with an inferred instance identity. Joining requires an explicit compatible scope reference and must not transfer ownership or use whichever selection happens to be active globally. |
+| Publish context | Supply an immutable/captured typed value and relevant revision; invalidate only dependent availability/presentation. The feature defines which changes make a prepared invocation obsolete. |
+| Bind actions | Bind local typed callbacks or a reusable provider in that owner. Shared definitions must not retain live components, mutable targets or scoped services. |
+| Attach and observe | Explicitly attach an outlet to the intended scope and expose its resolved actions/pending state. Return an owner-bound disposable attachment; moving a presenter does not replace the execution owner. |
+| Detach and dispose | Detach releases only the attachment. Owner disposal removes its live bindings/subscriptions, requests cancellation of owner-bound work and rejects late results. DI-owned services remain DI-owned. |
+
+The following is an illustrative authoring sketch, not shipped or stable API. An ordinary Razor component can use these operations from native initialization/context-change/disposal hooks without a framework page base or provider class. The header outlet is passed explicitly; the sketch does not introduce global toolbar discovery. Complete and confirmation callbacks are feature-owned.
+
+```csharp
+// Component initialization: create, bind and attach to an explicit outlet.
+scope = actions.CreateScope(this, TaskSelection.Empty);
+scope.Bind(CompleteAsync, confirm: ConfirmCompleteAsync);
+headerAttachment = headerToolbar.Observe(scope);
+
+// Relevant selection/context change: publish an independent snapshot.
+scope.Publish(selectionSnapshot, revision: selectionRevision);
+
+// Component disposal: remove the attachment and release this live owner.
+headerAttachment.Dispose();
+await scope.DisposeAsync();
+```
+
+An illustrative confirmation delegate is `ValueTask<bool> ConfirmAction<TContext>(TContext capturedContext, CancellationToken cancellationToken)`. The owning live binding resolves it with the captured input, never through shared registration metadata. Acceptance returns true; cancellation or rejection prevents dispatch. The invocation pipeline supplies an owner/execution-linked cancellation token and checks cancellation, current identity, owner lifetime, relevant revision and eligibility again before dispatch. If the underlying dialog cannot cancel promptly, its late answer cannot revive the invalidated invocation. The pending reservation is released on every pre-dispatch exit, including callback failure. Features can await MudBlazor directly inside this callback; no framework dialog API is required.
 
 A page can own a page scope and components can own child scopes. Nested scopes can cover sections, grids, selections, detail views, dialogs or drawers. The application explicitly associates a toolbar outlet with its intended scope and chooses which ancestor action groups, if any, it includes.
 
@@ -842,7 +874,7 @@ flowchart TD
     L -->|invoke original B binding| BB
 ```
 
-Both grids can implement the same published typed context contract while retaining distinct scope IDs, bindings, context revisions and selections. Each source evaluates its own context; the toolbar renders resolved actions and invokes their original bindings. The arrows describe ownership, attachment and invocation relationships within the existing action-scope model.
+Both grids can implement the same published typed context contract while retaining distinct scope IDs, bindings, context revisions and selections. Each source evaluates its own context; the toolbar renders resolved actions and invokes their original bindings. The arrows describe ownership, attachment and invocation relationships within the single scope model specified here.
 
 ### Action and control contribution requirements
 
@@ -1057,7 +1089,7 @@ MudBlazor is the default component and interaction library. Tailwind CSS is the 
 
 A shared semantic design vocabulary covers colors, typography, spacing and breakpoints. MudTheme remains the primary component-theme mechanism; utility styling must align with it. Theme identity and appearance mode are separate choices: a named theme can support light, dark and system appearance.
 
-The feature supplies one reference theme with light, dark and system appearance modes. Hosts can add themes and restrict user choices. DoFiesta demonstrates a host theme whose semantic tokens are shared by MudBlazor and utility styles.
+The feature supplies one reference theme with light, dark and system appearance modes. Hosts can add themes and restrict user choices. TaskFiesta demonstrates a host theme whose semantic tokens are shared by MudBlazor and utility styles, using DoFiesta's existing visual design as reference without modifying that application.
 
 | Area | Requirement |
 | --- | --- |
@@ -1110,7 +1142,7 @@ Context changes are accepted by the context owner, invalidate affected state and
 
 ### AppState adaptation
 
-Existing AppState types, registration, managers and persistence providers can be changed and refactored to satisfy these requirements. Reuse does not require preserving unsafe lifetime or storage behavior. API design identifies any consumer migration required by those changes.
+Existing AppState types, registration, managers and persistence providers can be changed and refactored to satisfy these requirements. Reuse does not require preserving unsafe lifetime or storage behavior. Keep the checked-in DoFiesta source and its build usable without migration edits; new framework integration and any required registration changes are demonstrated in TaskFiesta and the independent consumer. Choose compatible internal refactoring or focused new entry points rather than make DoFiesta migration part of this feature.
 
 Managers and diagnostic state inventories belong to the user's runtime or Server circuit. They must distinguish live state instances and release registrations with their owner. A process-wide manager must not retain user state, expose another circuit's inventory or reset another circuit's stores. Reset and persistence operations use the originating owner's services rather than an unrelated service scope. Disposing a registration does not dispose a DI-owned shared service.
 
@@ -1327,7 +1359,7 @@ Reproducible regressions beyond the documented limits block stable release. Inve
 
 ### Accessibility acceptance
 
-Target WCAG 2.2 AA for the shipped shell renderers as exercised in complete reference pages and flows. Validate keyboard access, focus visibility and restoration, landmarks and accessible labels, contrast, zoom and reflow, and announcements for loading, errors and action feedback. Exercise navigation, dialogs and toolbar overflow with keyboard and screen reader checks in addition to automation. Describe the renderer responsibilities for custom layouts and the consuming application's responsibility for conformance of its complete pages and workflows. [WCAG 2.2](https://www.w3.org/TR/WCAReuse2/)
+Target WCAG 2.2 AA for the shipped shell renderers as exercised in complete reference pages and flows. Validate keyboard access, focus visibility and restoration, landmarks and accessible labels, contrast, zoom and reflow, and announcements for loading, errors and action feedback. Exercise navigation, dialogs and toolbar overflow with keyboard and screen reader checks in addition to automation. Describe the renderer responsibilities for custom layouts and the consuming application's responsibility for conformance of its complete pages and workflows. [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
 
 ### Compatibility and upgrades
 
@@ -1438,7 +1470,7 @@ Document the complete path from a generated application to adding a page, bindin
 
 ### Independent module tests
 
-Module authors can test composition and action behavior without running DoFiesta or provisioning backend infrastructure. Start with existing xUnit, Shouldly, NSubstitute and .NET DI patterns, focused examples and a minimal test host using public framework APIs. Fake feature services can supply data and outcomes while the tests exercise real registration, ownership and action binding behavior.
+Module authors can test composition and action behavior without running TaskFiesta or provisioning backend infrastructure. Start with existing xUnit, Shouldly, NSubstitute and .NET DI patterns, focused examples and a minimal test host using public framework APIs. Fake feature services can supply data and outcomes while the tests exercise real registration, ownership and action binding behavior.
 
 Keep the test host limited to the composition or component behavior under test. Full browser and application checks continue to verify the relevant integration flows. Extract optional shared fixtures or helpers only when real module tests demonstrate repeated setup. A dedicated module-testing package, custom testing DSL and mandatory alternative testing framework are not requirements of this feature.
 
@@ -1452,7 +1484,7 @@ Verify registration, page discovery, resources, asset delivery and the module's 
 
 ### Reuse and developer-experience evidence
 
-TaskFiesta and its small technical test/consumer hosts supply complete framework validation. The application itself has one `CoreModule`. A clean, independently composed consumer installs its actual packed portable presentation-module artifact with different branding/layout and feature-service registration. Both consumers exercise customization and a package upgrade without source copies. Cross-module checks use a tiny external fixture module only in the dedicated test host. DoFiesta remains the migration target; ShopFiesta is implemented after framework readiness.
+TaskFiesta and its small technical test/consumer hosts supply complete framework validation. The application itself has one `CoreModule`. A clean, independently composed consumer installs its actual packed portable presentation-module artifact with different branding/layout and feature-service registration. Both consumers exercise customization and a package upgrade without source copies. Cross-module checks use a tiny external fixture module only in the dedicated test host. DoFiesta remains unchanged; ShopFiesta is implemented after framework readiness.
 
 The shared module must work in TaskFiesta and the clean consumer without editing framework internals. Record public setup, required files, host overrides and the actual package version. Changing hosting mode inside the same application does not establish independent-consumer reuse.
 
@@ -1460,68 +1492,24 @@ A developer unfamiliar with the framework internals must be able to follow the p
 
 The developer workflow retains normal .NET build, test and debugging tools and the supported Blazor development loop. Existing DevKit tooling may offer conveniences. Creating an application, authoring a local page and diagnosing a registration error must not require a framework-specific command runner or inspection of internal registries.
 
-### DoFiesta reference application
+### TaskFiesta validation application
 
-DoFiesta remains the migration target and real-application reference. Its migration walkthroughs and task/list requirements remain part of this specification. They exercise applicable contracts through existing workflows. TaskFiesta is the primary complete framework validation application, including capabilities that do not need to be added to DoFiesta solely to duplicate that coverage.
+TaskFiesta is the new reference application developed alongside the framework. Its one `CoreModule` owns tasks, lists, sharing and application settings. [Appendix A](#appendix-a-taskfiesta-validation-application) defines the data, native routes, wireframes and complete requirement-to-case map. Its domain remains small while the runnable profiles cover the whole feature.
 
-DoFiesta can evolve its pages, domain and APIs to support the migration workflows below. Its hosting and extension profiles remain useful migration checks. [Appendix A](#appendix-a-taskfiesta-validation-application) maps the whole framework feature to TaskFiesta; this DoFiesta section does not prescribe an implementation phase or require ShopFiesta.
-
-| DoFiesta screen or profile | Capabilities demonstrated |
+| Evidence owner | Responsibility |
 | --- | --- |
-| All tasks · `/todos` | Typed FilterModel query, paging, sorting and filtering, URL-backed view state, selection adapters and local controls. The grid and handwritten view reuse the same query and action contracts. |
-| Lists · `/todos/lists` and `/todos/lists/{listId}` | Create and rename lists, bounded dynamic sidebar children, stable links, active path and open-count badges. Move and Complete refresh the affected views and badges. The external toolbar follows the active task view. |
-| Task detail · `/todos/tasks/{todoId}` | Canonical detail links, route-backed tabs, field validation, Edit and Save, dirty-state prompts and save revision safety. A task detail link stays valid after a move. |
-| Compare lists · `/todos/compare` | Two independent task views, an explicit active-view selector, a shared header toolbar and a local action menu. Move selected demonstrates partial batch outcomes. Exercise independent bindings, confirmation, shared pending state, stale clicks, disposal and keyboard focus. |
-| Preferences · `/preferences` | Shell and contributed settings, reference and host themes, light/dark/system mode, culture, localized app/module/component resources, and scoped display preferences. |
-| Shell and extension profile | A companion module contributes navigation, Show overdue and chrome or settings content through published handles. Host configuration demonstrates ordering, customization, replacement and disablement, with the resolved contributions visible in diagnostics. |
-| Plain Razor profile | A MudBlazor-free host renders task navigation and a contextual action using the same portable shell contracts. The MudBlazor consumer demonstrates packaged CSS and host theming alongside responsive chrome, icon and text modes, tooltips, keyboard access and overflow. |
-| Hosting profiles | Run the hosting matrix for Interactive Server, WASM, Auto, standalone WASM, mixed pages and sibling areas, and explicit prerendering. The mixed sibling profile pairs the WASM task view with a Server list summary. The public Help page demonstrates static SSR and ordinary deep links. |
-| Identity profiles | Anonymous startup and protected task and list workflows. Exercise denied actions and identity changes with scoped state, preferences and backend permission enforcement. |
-| Developer diagnostics | Drawer, attached popout and separately enabled browser facade on the same app tab. Show provenance, runtime, active scope, disabled reasons, captures and redaction. The non-development profile demonstrates default-off behavior and an explicit authorized production inspection session. |
-| Developer validation profiles | Repeatable cases for invalid composition, initialization, slow or failing providers, subscription cleanup, conflict, lost responses, batch outcomes and backend-owned work. Document each case at the app surface it exercises. |
-| Backend export validation profile | All tasks exposes a backend-owned export. The export interaction shows the operation reference and distinguishes accepted submission from completion, including after leaving the view. |
-| Optional feature profiles | As each feature ships, demonstrate its real integration, configuration and degraded behavior. A profile with optional packages removed validates the core-only path. |
-| Production hosting and telemetry profiles | Reverse proxy, reconnect and runtime replacement, rolling deployment behavior, version compatibility and operator telemetry with developer inspection disabled. |
-| Upgrade validation profile | Verify a consuming app upgrade with a published contribution, stored preferences, a bookmarked destination and a theme override. |
+| TaskFiesta | Public and connected task/list flows, state, forms, actions, diagnostics, identity, runtime and operational behavior. |
+| Dedicated technical composition host | Cross-module contracts, disabled/invalid composition and optional-package isolation using CoreModule and a tiny external fixture module. |
+| Headless technical host | Core shell packages with a plain Razor renderer, no direct/transitive MudBlazor dependency, working navigation/action invocation and renderer replacement. |
+| Clean independent package consumer | Actual packed portable module and framework packages, own composition/branding/services, native asset delivery and a supported upgrade without source copies. |
 
-### ShopFiesta greenfield showcase application
+Every acceptance result names its evidence owner and actual runtime/profile. None of these hosts adds a second business module to normal TaskFiesta. Shared portable application contracts may use only the dependencies declared for the tested host; a MudBlazor-dependent feature UI package is not part of the headless fixture.
 
-ShopFiesta is the separate follow-on application planned under `examples/ShopFiesta`. Build it after the complete presentation framework has been implemented and validated with TaskFiesta and its independent consumer. Its [application specification](spec-shopfiesta.md) and backend roadmap preserve the intended commerce/showcase design. No ShopFiesta page, commerce module, backend provider or application acceptance case is required to complete the framework.
+DoFiesta is unchanged and supplies no framework acceptance evidence. Its existing naming and visual design remain references. No implementation task, API migration, new route, package consumption check or new test profile in this specification applies to DoFiesta.
 
-ShopFiesta consumes the resulting public framework APIs and packages. Its later application tests can reveal improvements or regressions, but they are not a substitute for the complete framework validation appendix. DoFiesta remains the existing migration target.
+### Deferred ShopFiesta consumer
 
-### DoFiesta migration validation application
-
-The DoFiesta migration checks hosting portability, presentation module composition and contextual interactions against its task/list workflow and the profile matrix below. This is a real-application counterpart to TaskFiesta validation, not a phased subset of the specified framework.
-
-Reuse DoFiesta's existing Todo domain/API, .NET 10 Server/Client arrangement and MudBlazor assets while moving its application composition, layout, navigation and contextual actions onto the new shell. Its current App configures Interactive WebAssembly with prerendering disabled; Server and Auto therefore require additional host/service arrangements. Add documented hosting and validation profiles within the DoFiesta example. Any minimal companion host needed for standalone WASM belongs to that same example and consumes the same feature code. Use the migration validation build and dependency checks to determine exact assembly and package placement. [DoFiesta client project](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/examples/DoFiesta/DoFiesta.Presentation.Web.Client/DoFiesta.Presentation.Web.Client.csproj) · [Current host component](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/examples/DoFiesta/DoFiesta.Presentation.Web.Server/Components/App.razor)
-
-Build on the existing Todo workflow with named task lists, task detail deep links, and Edit, Save, Move and Complete actions. Two simultaneous component instances have independent selection, context and pending state. A toolbar outside the owning component explicitly observes the selected scope. Host adapters supply direct Application Requester access on Server and typed HTTP clients in WASM through the portable feature's service contracts. Backend module startup, repositories and server-only registrations stay on the server.
-
-The task-list walkthrough below defines the proposed DoFiesta frontend/backend migration behavior and the shell contracts it exercises.
-
-| DoFiesta profile | Required evidence |
-| --- | --- |
-| Interactive Server baseline | Full interactive shell, prerendering off, direct Application Requester dispatch, equivalent application authorization, correct circuit-scoped services and reconnect/unknown-outcome behavior. |
-| Interactive WebAssembly | The same portable feature executes in the browser through a real typed HTTP client; no server-only dependency leaks. |
-| Interactive Auto | Controlled cold and warm activations exercise Server and browser execution with their respective Requester and HTTP implementations. Record the actual selected renderer; no live instance or action migration is expected. |
-| Different modes on different pages | Direct links, refresh and back/forward reconstruct the intended page/context, using full navigation where required. |
-| Independent Server and WASM areas | Legal sibling boundaries coexist; each external toolbar remains with its owner runtime. One explicit invalidation integration demonstrates coordination without remote component callbacks. |
-| Plain Razor renderer | A minimal DoFiesta host builds without direct or transitive MudBlazor references and runs navigation plus a contextual action through a plain Razor layout. |
-| Grid and handwritten view | Both views use the same FilterModel query mapping and typed selection context to drive contextual actions. |
-| Static SSR public surface | Ordinary links and SSR-compatible content work without interactive activation; no full static MudBlazor-shell promise. |
-| Standalone WebAssembly host | A minimal browser-only startup consumes the same shared feature through an API. This is distinct from a Web App using Interactive WebAssembly. |
-| Explicit prerendering opt-in | Dedicated Server, WASM and Auto cases exercise full-load prerendering, approved data transfer and fresh live bindings. Interactive navigation is tested separately. |
-
-Profile selection is a host/startup or route-boundary concern. A demonstration control may navigate to another profile, but must not imply that changing a dropdown migrates live components or operations between runtimes. MudBlazor providers belong inside the compatible interactive compositions that use them.
-
-The example contributes at least one static navigation item, bounded asynchronous children, a runtime badge and route-backed detail tabs. A second small consumer contribution attaches a contextual action or navigation provider and demonstrates explicit override/disable behavior. Application-, module- and component-owned translations coexist. The baseline runs without an identity provider; a separate opt-in identity profile demonstrates protected capabilities and backend enforcement. Existing protected DoFiesta endpoints are not made anonymous to satisfy the baseline; use isolated validation data/endpoints with deliberate access rules.
-
-Development diagnostics expose the selected renderer, activation phase, module/contribution provenance, live scope attachment, evaluation counts and failures through the drawer and the read-oriented JavaScript facade. Browser checks verify that the separately enabled facade returns source-attributed diagnostics for the originating tab and its reachable runtimes with the drawer closed. Measure startup/interactivity timing, initial transfer size and initialization/query/action counts as observations for comparison; do not set unmeasured performance promises. Use those observations to establish the limits required by Performance baselines and release acceptance before stabilization.
-
-Completion requires repeatable run instructions, the shared feature and minimal host arrangements, and recorded pass/fail evidence for the DoFiesta profile table and workflow checks in this section. Focused browser checks cover deep-link reloads, two independent toolbar scopes, selection/context changes during confirmation, stale asynchronous results, disposal, duplicate invocation prevention, unknown mutation outcomes and save-revision safety. Prerendered cases demonstrate no browser interop before activation, no unintended duplicate mutation/subscription, and no second initialization query for the read explicitly transferred. Auto results identify both actual runtimes. Fault injection and test data remain example-owned.
-
-The migration validation exercises the specified shell model. It does not add an operations registry, scheduler, edit-session coordinator, search/command discovery, generic cross-runtime action transport or offline synchronization engine. Findings can refine contracts and host profiles before public API stabilization.
+ShopFiesta is implemented only after the complete framework has been validated with TaskFiesta and the technical/package-consumer hosts. Its single [application specification](spec-shopfiesta.md) defines the complete customer/staff experience and backend commerce/showcase design. ShopFiesta consumes the resulting public APIs and packages; no commerce page, module or provider is required for framework completion.
 
 ### Validation and evidence requirements
 
@@ -1538,85 +1526,13 @@ TaskFiesta is the compact executable validation app developed alongside the fram
 
 Each case records the actual runnable profile, commands, tested build, result and concrete public API/behavior contracts exercised. Automate repeatable composition, route, scope, selection and stale-result checks; use browser checks for interaction and recorded human checks where appropriate. Keep execution records outside this specification. Missing/unavailable evidence remains unresolved, and a changed contract requires rechecking affected evidence. Images and diagrams do not establish a runtime pass.
 
-### Task lists in DoFiesta
+### TaskFiesta task/list evidence
 
-A user creates a **Release prep** list, moves an existing task into it, opens the list from the sidebar, and completes the selected task from the page header. DoFiesta reuses its existing Todo search, detail read and application request path. It adds list reads and writes, task membership, and targeted Move and Complete commands. The existing bulk Complete operation retains its separate scope. [Todo page](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/examples/DoFiesta/DoFiesta.Presentation.Web.Client/Pages/TodoItemIndex.razor) · [Todo endpoints](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/examples/DoFiesta/DoFiesta.Presentation.Web.Server/Modules/Core/Endpoints/CoreTodoItemEndpoints.cs)
+Use the [task/list and sharing workflows](#a3-lists-tasks-and-public-sharing) and [runnable arrangements](#a5-composition-rendering-and-controlled-outcomes) in Appendix A instead of adding task-list features to DoFiesta. TaskFiesta's native `/tasks`, `/lists`, comparison, detail and preferences routes are the named reference surfaces in acceptance scenarios.
 
-#### Task list screen
+TF-02/TF-04 prove bounded dynamic list navigation, stable task URLs after a move and targeted membership/count invalidation. TF-08/TF-09 prove two independent task-view scopes, explicitly attached external actions and guarded invocation. TF-03/TF-10/TF-11 prove save revisions, partial outcomes and refresh failure after a confirmed mutation. TF-12 observes controlled backend-owned work without claiming real Queueing or durable job execution.
 
-![DoFiesta task list with external toolbar](assets/dofiesta-task-list.png)
-
-The page header hosts Edit, Move and Complete above the task view. The selected row belongs to the task view and supplies the context for those actions. The sidebar lists are dynamic destinations and their badges count readable unfinished tasks across each list. In this wireframe the Open filter includes tasks in progress. On narrow screens the same action bindings can appear as icons or in overflow.
-
-#### Task list model and routes
-
-| Model | Fields and rules |
-| --- | --- |
-| TaskList | Stable typed ID, name, owner and concurrency version. The server determines ownership. The initial operations are create, rename and read. Renaming preserves identity and links. |
-| TodoItem | Add a nullable TaskListId. A task belongs to at most one list. Existing tasks remain unassigned and still appear in All tasks. A move preserves task identity and other task fields. |
-| Task list summary | List ID, display name and open task count for tasks the caller can read. Count across the list's authorized tasks, independently of the current filter or loaded page. |
-
-Keep `/todos` as **All tasks**, use `/todos/lists/{listId}` for a list and use `/todos/tasks/{todoId}` for the canonical task detail. The detail URL survives a move. Each route resolves its own IDs through an authorized read. The list view applies its list constraint together with supported FilterModel filters, ordering and paging. Supply a bounded, deterministically ordered list-summary query for navigation, with continuation where needed.
-
-#### Move and Complete commands
-
-| Command | Input | Successful result |
-| --- | --- | --- |
-| Move Todo | Task ID, expected task version, expected source list ID and destination list ID. An explicit null source means unassigned. An explicit null destination unassigns the task. | Updated task summary and version, previous and resulting list IDs, and whether membership changed. Preserve status and other edits. |
-| Complete Todo | Task ID, expected task version and expected current list ID. An explicit null list means unassigned. | Updated task summary and version, current list ID and whether status changed. Preserve list membership and other edits. |
-
-For browser execution, expose these through typed DoFiesta clients and targeted action endpoints, such as `POST /api/core/todoitems/{id}/actions/move` and `POST /api/core/todoitems/{id}/actions/complete`. The endpoints dispatch DoFiesta commands through Requester. Interactive Server dispatches those commands directly. Application authorization and validation apply to both paths. The backend checks task write access and list access, validates that a destination is in the permitted ownership scope, and enforces the expected membership and concurrency version when committing the update. A stale version or membership returns a conflict and leaves the task unchanged. Missing or inaccessible data follows the existing DoFiesta access policy. An already satisfied request with valid preconditions returns a successful no-op without advancing the version or publishing a change.
-
-On a confirmed Move, refresh the affected source and destination views and badges. On a confirmed Complete, refresh the task and its list badge. Refresh All tasks only when the change affects its active query or projection. Use targeted feature invalidation after the commit. If a mutation response is lost, record an unknown outcome and reread the task before offering another attempt. A read can establish current state even when it cannot attribute that state to the original request.
-
-#### Dynamic navigation and the external Complete action
-
-The Todo presentation module publishes a typed navigation-children handle for the **Lists** parent. Its provider accepts the parent, relevant route and application context, paging input and cancellation. It queries the authorized list summaries through an injected client and returns bounded descriptors with stable identities and list destinations. The shell owns loading, retry, active path and stale-result handling. Creating or renaming a list invalidates the Lists children. Changes to open task counts invalidate the affected badges.
-
-The module also publishes a typed Todo selection action handle. Each mounted list view exposes a live scope with an immutable selection snapshot. For a single selected task, Complete reads the task ID, list membership, version and relevant eligibility data from that snapshot. The page explicitly binds its header to the active view. The published handle identifies the contribution contract and the live scope reference identifies the component instance. The same action can render locally, in the header or in overflow while sharing its binding and pending state.
-
-The following names illustrate the preview API shape.
-
-```csharp
-module.Navigation.AddChildren<TaskListChildrenProvider>(TodoPoints.ListChildren);
-module.Actions.Add<CompleteTodoAction>(TodoPoints.SelectionActions);
-
-headerToolbar.Observe(activeTodoViewScope);
-```
-
-Complete applies to one eligible task. The shell captures its target and context revision, reserves the binding, and rechecks applicability after confirmation. A selection or list change that invalidates the captured binding prevents dispatch. Once dispatched, the command keeps the captured task, list and version. The feature owns the command and subsequent refresh while the toolbar observes its binding.
-
-```mermaid
-sequenceDiagram
-    participant H as Header toolbar
-    participant S as Todo action scope
-    participant A as Todo use case
-    participant N as List badge
-    H->>S: Invoke Complete
-    S->>S: Capture target and confirm
-    alt Captured binding still applies
-        S->>A: Complete captured task
-        A-->>S: Confirm committed result
-        S->>N: Invalidate affected list
-    else Binding changed
-        S-->>H: Report stale invocation
-    end
-```
-
-Run the same navigation provider and Complete binding through the MudBlazor and plain Razor hosts. The MudBlazor grid and handwritten task view use the same query and selection adapters. A second module contribution can attach an action through the published handle to demonstrate cross-module use.
-
-### Additional DoFiesta reference workflows
-
-| Scenario | Workflow and observable behavior |
-| --- | --- |
-| Batch move | In Compare lists, select two tasks and use Move selected. A concurrent edit makes one task stale. Show the successful move and the other task's conflict separately. Refresh the affected lists and offer recovery for the conflicted task. The existing Complete action targets a single task. |
-| Backend-owned export | Submit an export of the filtered All tasks view, show the operation reference, leave the page and use the reference to observe completion. On lost acknowledgement, reconcile submission using its original correlation where supported. Keep an unresolved submission marked unknown and require a new user decision for any further submission. |
-| Mixed runtime | Place the task view and its external toolbar in a WASM area beside an independent Server list summary. A confirmed Complete action refreshes the summary through explicit application invalidation. Diagnostics attribute action execution and summary refresh to their respective runtimes. |
-| Save and leave | Edit Verify release notes and choose Save and leave. A validation error, version conflict or unknown response keeps the editor active and preserves the draft. Saving an earlier revision preserves later edits and prevents automatic navigation while those edits are dirty. |
-| Identity change | Give two demo users different lists and preferences. Sign out during a delayed list read and sign in as the second user in the same tab. The old read must not populate the second user's sidebar, selection or diagnostics. |
-| Cross-package customization | A companion module contributes Show overdue through the list's published toolbar handle. The host replaces that contribution by stable ID. Adjacent actions continue to work and diagnostics show the effective source. |
-
-The sidebar selects Release prep, the header shows the current list and task ancestry, and the task detail tabs preserve the active route. The same resolved destinations and action behavior are available in the plain Razor renderer. Use the MudBlazor consumer to demonstrate packaged CSS and host theming, and the plain Razor host to verify the MudBlazor-free dependency boundary.
+Cross-module attachment and replacement run only in the dedicated composition harness under TF-14. The separate headless host and actual NuGet consumer supply TF-15/TF-22 evidence. Public SSR, read-only sharing and native forms use TF-05/TF-06/TF-16. These links identify executable obligations, not passing results.
 
 ### Ordinary developer workflow
 
@@ -1733,7 +1649,7 @@ The same scenario must demonstrate local and external toolbar placement, direct 
 
 ## Acceptance scenarios
 
-TaskFiesta covers every requirement in the [appendix coverage table](#a7-complete-framework-feature-coverage). The reference-workflow column below retains corresponding DoFiesta migration examples and other illustrative consumers. The Orders walkthrough illustrates the same contracts in another domain; these references do not make ShopFiesta a dependency.
+TaskFiesta and its explicitly named technical/package-consumer hosts cover every requirement in the [appendix coverage table](#a7-complete-framework-feature-coverage). The reference column names TaskFiesta surfaces and runnable arrangements; it never assigns work to DoFiesta. The fictional Orders walkthrough illustrates the same contracts in another domain and does not make ShopFiesta a dependency.
 
 | Validation category | Required evidence |
 | --- | --- |
@@ -1741,13 +1657,13 @@ TaskFiesta covers every requirement in the [appendix coverage table](#a7-complet
 | Complete feature evidence | Verify every applicable acceptance requirement, including enterprise behavior, accessibility, public hosting, diagnostics, packaging and consumer upgrades. Record actual contract coverage and unresolved limitations. |
 | Optional configurations | Verify enabled optional packages and their removed/disabled fallback or isolation. Optional installation is a configuration choice, not an implementation phase. Features outside this specification retain their explicit scope boundary. |
 
-| Scenario | Observable acceptance | Reference workflow or validation profile |
+| Scenario | Observable acceptance | TaskFiesta surface or technical evidence owner |
 | --- | --- | --- |
 | Minimal application | The shell starts with a single presentation module, no auth integration and no higher-level packages. | Anonymous / core-only profile |
 | Out-of-the-box starter | Generate the documented starter and run it with local demo data, no database or identity provider, and no other external application service. Interactive Server uses prerendering off. Included registration and action tests pass through normal `dotnet test`. | Generated starter and Behavior |
-| Independent module testing | A module author uses the supplied examples and minimal host with standard .NET test tools to verify public composition and action behavior independently of DoFiesta and backend infrastructure. Shared helpers remain optional and evidence-driven. | Module test examples and Behavior |
+| Independent module testing | A module author uses the supplied examples and minimal host with standard .NET test tools to verify public composition and action behavior independently of TaskFiesta and backend infrastructure. Shared helpers remain optional and evidence-driven. | Module test examples and Behavior |
 | Module composition | Registering an enabled module exposes its pages, routes, resources and contributions; suppression removes the intended capability with clear diagnostics. | Shell and extension profile |
-| Single-host composition | One application host composes frontend and backend capabilities along the same logical module boundaries. Two feature modules integrate through published contracts without accessing each other's private state or implementation. Feature availability uses that host's configuration and existing services, with a safe browser projection only where needed. | Server and WASM profiles |
+| Single-host composition | One application host composes frontend and backend capabilities along the same logical module boundaries. Two feature modules integrate through published contracts without accessing each other's private state or implementation. Feature availability uses that host's configuration and existing services, with a safe browser projection only where needed. | Technical composition harness, Server and WASM profiles |
 | Page ownership and route enforcement | An assembly default and explicit page mappings resolve ownership without duplicate URL declarations. Reject ambiguous ownership. Disabling one module in a shared assembly makes its destinations unavailable on full loads and interactive navigation before page initialization or protected reads. | Shell and extension profile, Hosting profiles and developer validation |
 | Existing server module | A backend presentation module adds UI capabilities without duplicating module identity or executing server setup in WASM. | Server and WASM profiles |
 | Composition validation | Duplicate identities/routes, missing required dependencies and cycles produce actionable startup diagnostics; optional dependencies follow declared fallbacks. | Developer validation profiles |
@@ -1760,7 +1676,7 @@ TaskFiesta covers every requirement in the [appendix coverage table](#a7-complet
 | Dynamic navigation | Callbacks generate order/category children with contextual parent, route and state inputs; static and dynamic children coexist with stable identities, bounded loading and isolated failures. | Lists |
 | Relevant state subscriptions | A selected state value change refreshes subscribed components/pages/navigation; unrelated changes do not, subscriptions dispose safely and stale work is discarded. | Lists |
 | Dynamic deep links | Opening a generated order/category URL resolves directly without first loading or expanding the navigation tree. | Lists and Task detail |
-| Headless composition | A minimal DoFiesta host without direct or transitive MudBlazor dependencies runs navigation and a contextual action with a plain Razor renderer. | Plain Razor profile |
+| Headless composition | A dedicated core-only technical host builds/publishes without direct or transitive MudBlazor packages or assemblies. A plain Razor renderer runs navigation and one framework-bound action; replacing its navigation/action presenter preserves availability and guarded invocation. Record package-graph and publish-artifact checks, not only source imports. | Headless technical host, TF-15 |
 | Mixed hosting | Standalone WASM, Interactive Server, Web App WASM/Auto, mixed pages and independent mixed-mode areas satisfy the hosting matrix, with correct service placement and explicit coordination. | Hosting profiles |
 | Prerendering | Explicitly opted-in full loads avoid unintended duplicate writes/queries/subscriptions, restore approved data and activate browser services safely; cold/warm Auto and interactive routing are tested separately. | Prerendering profiles |
 | Optional identity | Anonymous, mixed and protected applications behave correctly; missing auth never grants protected capabilities. | Identity profiles |
@@ -1769,7 +1685,7 @@ TaskFiesta covers every requirement in the [appendix coverage table](#a7-complet
 | Styling and packaging | The reference theme, a host-added theme and utility styling coexist; a consuming application uses compiled assets without a mandatory JS build. | MudBlazor consumer and Preferences for assets and themes, Plain Razor profile for dependencies |
 | Module asset setup | Installing a module supplies its own styles and scripts through native packaging and imports without per-module host-page edits. Global renderer dependencies are explicit and configured once. A clean package consumer resolves the declared assets. | Packaged module consumer and Reuse |
 | JavaScript owner cleanup | Repeated mounting and disposal leave only current listeners, observers, timers and interop references. Late callbacks cannot update disposed owners. Two component instances retain separate mutable context, and cleanup follows native patterns even when Server interop is disconnected. | Developer validation profiles and Reuse |
-| Data composition | A MudBlazor grid and handwritten view share FilterModel query and selection adapters and drive the same contextual actions. DoFiesta demonstrates editing and validation through runtime-specific feature access. | All tasks |
+| Data composition | A MudBlazor grid and handwritten view share FilterModel query and selection adapters and drive the same contextual actions. TaskFiesta demonstrates editing and validation through runtime-specific feature access. | All tasks |
 | Selection adapter defaults | Selection survives paging by default and clears when the view enables clear-on-paging. Filters or search clear selection. Sorting preserves it. Refresh updates selected target data and eligibility, removing only confirmed deleted or inaccessible records. A selected count and clear control expose off-page selection. Query-wide select-all remains deferred. | All tasks and Compare lists |
 | Mutation and refresh | A confirmed save remains successful if refresh or a local subscriber fails; input survives a concurrency conflict. | Task detail and developer validation |
 | Form field error mapping | Matching property paths map validation errors to fields, explicit aliases handle different names, and unmatched or model-level errors appear in the summary. Native Blazor and MudBlazor integrations apply the same behavior to Server and HTTP outcomes. | Task detail and developer validation |
@@ -1781,7 +1697,7 @@ TaskFiesta covers every requirement in the [appendix coverage table](#a7-complet
 | Agent discovery | With the facade explicitly enabled and the drawer closed, an attached browser adapter retrieves source-attributed page and feature diagnostics for the originating tab. Drawer-only configuration leaves the facade disabled. | Developer diagnostics |
 | Non-development behavior | Interactive inspection, capture and bridges are disabled by default. Explicit production opt-in allows authorized investigation within the selected session and capabilities. Unapproved sessions and revoked access are denied. The facade requires separate enablement, and returned data is bounded and redacted. | Non-development profile |
 | Accessibility and responsiveness | Default layouts remain usable by keyboard at supported widths. Icon-only, text-only and combined action placements preserve accessible names and observe the same binding in the toolbar and overflow. | Lists and Compare lists |
-| Optional features | Removing inbox, admin or data packages leaves the core shell valid; missing optional backends affect only their declared features. | Optional feature profiles |
+| Optional features | Removing the included optional query/selection adapters or omitting the separate MudBlazor renderer leaves a valid configured core host with an explicit native renderer. Required missing renderers fail composition clearly. Optional fixture providers fail only within their declared region; inbox/admin packages outside this specification are not required. | TaskFiesta core-only profile and technical hosts, TF-01/TF-14/TF-15 |
 | Orders navigation walkthrough | Expanding Orders produces stable data-derived children; a confirmed mutation updates relevant membership/counts, while direct detail links and unrelated state changes behave independently. | Lists and Plain Razor profile |
 | Refresh policy | Declared dependencies trigger targeted reactions; unchanged selectors, persistence completion and diagnostics cause no business reload. Inactive views become stale, explicit invalidation is coalesced and unsaved edits remain page-owned. | Lists |
 | Cross-package typed contribution | A customer module contributes navigation children or toolbar actions through another module's published contract/target, with source ownership inferred and no shell-source edits. | Shell and extension profile · Show overdue |
@@ -1811,10 +1727,10 @@ TaskFiesta covers every requirement in the [appendix coverage table](#a7-complet
 | Defaults and registration ceremony | A local typed callback receives scope identity, shared busy state and safe invocation defaults without manually registering every diagnostic identity or adding a provider class. | All tasks |
 | Logical scope versus DI lifetime | Two component action scopes remain distinct even when they share a longer-lived injected service; disposing a binding does not manually dispose a DI-owned shared service. | Lists and Compare lists |
 | Mixed page action ownership | A WASM Orders area renders its external toolbar and component together beside an independent Server area; selections, execution and diagnostics retain their originating identities without implicit shared state. | Mixed sibling profile · WASM task view and Server list summary |
-| Static public composition | SSR-compatible public Razor/HTML and ordinary links render without authentication; no fully functional static-only MudBlazor shell is assumed. Live actions/providers/subscriptions activate inside compatible interactive areas. | Static SSR Help profile |
+| Static public composition | SSR-compatible public Razor/HTML and ordinary links render without authentication; no fully functional static-only MudBlazor shell is assumed. Live actions/providers/subscriptions activate inside compatible interactive areas. | TaskFiesta public home, board and shared-list profiles |
 | Ordinary developer workflow | An ordinary Razor page contributes local or explicitly exported typed callbacks without a framework page base, mandatory provider/mediator class or manually assigned runtime IDs; binding conveniences handle cleanup and preserve DI ownership. | All tasks |
 | Native platform and low-friction integration | A developer follows public documentation to add a page, local/external action, ordinary editor dialog and local menu/toolbar using normal Blazor components, MudBlazor services and .NET tooling. Ordinary controls, dialogs, menus and toolbars need no framework wrapper, registry, base class or action scope. Record integration effort and remove unnecessary registrations or layers. Specialized pages can use applicable shell services directly. | All tasks and developer-experience evidence |
-| Reuse across applications | TaskFiesta and a clean independent host consume the same packed module with different composition/layouts. Host customization and a shared package upgrade work without source copies or framework-internal changes. DoFiesta migration and the later ShopFiesta application remain separate consumers. | TaskFiesta and independent consumer |
+| Reuse across applications | TaskFiesta and a clean independent host consume the same packed module with different composition/layouts. Host customization and a shared package upgrade work without source copies or framework-internal changes. DoFiesta remains unchanged and ShopFiesta is a later consumer, not a prerequisite. | TaskFiesta and independent consumer |
 | Minimal Orders walkthrough | One module supplies an ordinary list/detail and typed Approve callback, with local/external toolbar placement, direct detail URLs and independent component scopes; illustrative screens/diagrams correspond to the declared behavior without mandatory CRUD or mediator infrastructure. | Lists and Task detail |
 | Resolved contribution isolation | Resolving a shared definition for one culture, user or component context leaves the source definition and other contexts unchanged, including visibility, badges and generated children. | Identity profiles and Compare lists |
 | Temporary contribution cleanup | Repeatedly mounting/disposing page, layout and region owners leaves only current runtime controls/subscriptions; later events do not invoke disposed observers. Presenter detachment preserves independently owned execution. | Compare lists and developer validation |
@@ -1831,14 +1747,14 @@ TaskFiesta covers every requirement in the [appendix coverage table](#a7-complet
 | Prerender capability activation | Browser-only services/JS never execute during prerendering; action previews remain inert and live scopes/providers are rebuilt within the correct interactive area. Missing server dependencies produce actionable configuration errors. | Prerendering profiles and Compare lists |
 | Prerender lifecycle attribution | Full reload and interactive route tests distinguish owners, readiness and measurement sources. Optional badge/navigation work cannot indefinitely block initial content; browser diagnostics reports not-ready before activation. | Prerendering profiles |
 | Auto versus mixed-mode placement | Auto runtime choice is tested independently of mixed pages/sibling areas. No test assumes a running Server component, execution or live state migrates to WASM, and illegal nested modes are rejected. | Hosting profiles |
-| Complete reference coverage | Every framework acceptance requirement maps to a documented TaskFiesta case and profile that consumes public APIs and records observable evidence. DoFiesta retains its corresponding migration workflows. | TaskFiesta appendix coverage table |
+| Complete reference coverage | Every framework acceptance requirement maps to a documented TaskFiesta case and profile that consumes public APIs and records observable evidence. Each assertion names TaskFiesta, the technical composition/headless host or the independent package consumer as its evidence owner. | TaskFiesta appendix coverage table |
 | Task list deep links and mutations | List links survive rename and task detail links survive a move. A confirmed Move refreshes the source and destination, and Complete refreshes the affected list. A stale membership or version is rejected without mutation. | Lists and Task detail |
 | Enterprise session transitions | An identity-only destination activates without workspace resolution. Workspace-scoped destinations wait for an authorized workspace. Reauthentication, permission changes, sign-out and workspace transitions pause affected bindings and reject stale work. Public capabilities retain independent readiness. | Identity profiles · protected task and list views |
 | Reconnect and operation recovery | Interrupt a dispatched Save, then exercise a surviving circuit and a new runtime. The shell distinguishes reconnect from restart, preserves recoverable edits under their feature policy, and offers reconciliation before further submission. | Production hosting profile and Task detail |
 | Consistent outcome presentation | The same Result or client outcome maps to one feedback owner and consistent recovery choices. Confirmed success remains visible after a failed refresh, accepted submission remains distinct from completion, and partial or unknown outcomes remain explicit. | Task detail, Compare lists and Backend export validation profile |
 | Production rollout | The documented scaled Server topology serves direct links and recovers from instance replacement. Exercise compatible, unreachable and known incompatible backends. Only a confirmed incompatibility triggers Update required. Affected dispatch pauses and reload respects the feature recovery policy. | Production hosting profiles |
 | Operational telemetry | With development inspection disabled, a failed provider or action is attributable to an authorized trace and emits bounded redacted metrics. Optional feature failures stay local. The host can use shell composition and required shared initialization status for its readiness probe. | Production telemetry profile |
-| Performance release acceptance | Repeatable workloads establish Behavior and Reuse baselines and documented limits for supported profiles. Results identify framework and backend coverage, diagnostics state and variability. A reproducible regression beyond those limits blocks stable release. | Behavior, Reuse and production validation in Quality |
+| Performance release acceptance | Repeatable TaskFiesta and independent-consumer workloads establish measured baselines and documented limits for supported profiles. Results identify framework and backend coverage, diagnostics state and variability. A reproducible regression beyond those limits blocks stable release. | Behavior, Reuse and production validation in Quality |
 | Accessibility baseline | Complete reference flows exercise the WCAG 2.2 AA target with automated and manual checks for keyboard, screen reader, focus, reflow and feedback behavior. | Lists, Task detail, Compare lists and Preferences |
 | Consumer upgrade | A consuming app upgrades within the documented compatibility range. Its typed contribution, host configuration, saved preference, direct link, theme override and supported diagnostics query still work. An explicitly breaking upgrade follows the documented migration. | Upgrade validation profile |
 | Distributable module package | A clean application installs the actual locally packed NuGet artifact and verifies public registration, pages, resources, assets and declared hosting profiles. Applicable publish/trimming checks pass with no source-project access to the module. | Clean package consumer and Reuse |
@@ -1860,7 +1776,7 @@ The public profile is a reusable framework capability validated by TaskFiesta's 
 
 ## Contract details requiring executable validation
 
-TaskFiesta exercises the complete package boundaries, typed attachment model, state/query behavior, diagnostics, hosting and rendering defaults. Use executable validation and the corresponding DoFiesta migration examples to settle these contract details. This table is a validation checklist, not an implementation plan.
+TaskFiesta exercises the complete package boundaries, typed attachment model, state/query behavior, diagnostics, hosting and rendering defaults. Use its mapped cases and the technical/package-consumer hosts to settle these contract details without changing DoFiesta. This table is a validation checklist, not an implementation plan.
 
 | Area | Detail to validate |
 | --- | --- |
@@ -1872,7 +1788,7 @@ TaskFiesta exercises the complete package boundaries, typed attachment model, st
 | Extension contracts | Sketch focused input and output types and registration signatures for dynamic navigation and the external toolbar using published typed handles. |
 | Destinations and availability | Validate link helpers over native routes, base paths, required and optional destination dependencies, and host-supplied feature availability with stale-context rejection. |
 | Performance acceptance | Establish repeatable workloads and evidence-based limits from the reference profiles, then validate regression detection before stabilization. |
-| Data adapters | Validate typed field and operator mappings, grid event translation, selection and URL or preference behavior in the Todo workflow. |
+| Data adapters | Validate typed field and operator mappings, grid event translation, selection and URL or preference behavior in the TaskFiesta task/list workflow. |
 | Diagnostics | Validate session and runtime attribution, popout linkage, version discovery, redaction and capture limits. |
 | Renderer defaults | Validate semantic token mapping, keyboard and focus behavior, toolbar display modes and overflow at supported widths. |
 
@@ -1884,7 +1800,7 @@ Inbox details, edit-session coordination, search/command discovery, general shor
 
 TaskFiesta is a small task/to-do application planned under `examples/TaskFiesta` and developed alongside the complete presentation framework. It is the framework's executable validation consumer. MVP means minimal domain complexity with complete framework-feature coverage. It does not mean an implementation phase, reduced contract scope or permission to leave supported hosting/quality requirements untested.
 
-This appendix specifies the intended application, not an implemented sample. All images are conceptual wireframes. A later implementation plan defines phases, steps and tasks. ShopFiesta starts after the framework satisfies the complete validation requirements; it is not needed to build or validate TaskFiesta. DoFiesta remains the existing migration target described elsewhere in this specification.
+This appendix specifies the intended application, not an implemented sample. All images are conceptual wireframes. A later implementation plan defines phases, steps and tasks. ShopFiesta starts after the framework satisfies the complete validation requirements; it is not needed to build or validate TaskFiesta. DoFiesta remains unchanged and is not migrated or used for framework acceptance.
 
 TaskFiesta's tone is playful: polish an invisible trophy, teach a rubber duck to take minutes and water the office cactus politely. The real purpose is to expose framework behavior with a small, understandable domain. No commerce, payment, warehouse, notification-delivery, messaging broker, database or business scheduler is required.
 
@@ -1986,7 +1902,7 @@ The figures describe UI intent only. Their desktop sketch layout does not establ
 
 #### Visual direction from DoFiesta
 
-TaskFiesta's implemented visual design follows the existing DoFiesta Wayfind design language. The monochrome figures remain structural wireframes; their paper palette is not the final application theme. Primary application navigation follows DoFiesta's horizontal top bar with a temporary narrow-screen menu. Any list navigation in the workbench is subordinate content navigation.
+TaskFiesta's intended visual design follows the existing DoFiesta Wayfind design language. The monochrome figures remain structural wireframes; their paper palette is not the final application theme. Primary application navigation follows DoFiesta's horizontal top bar with a temporary narrow-screen menu. Any list navigation in the workbench is subordinate content navigation.
 
 | Visual concern | TaskFiesta direction |
 | --- | --- |
@@ -2034,7 +1950,7 @@ The public profile serves home, boards and shared lists through Static SSR with 
 | Auto | Record actual Server/browser execution on cold/warm visits. Existing instances, pending actions and state do not migrate because a runtime becomes available. |
 | Mixed pages and sibling roots | Keep each toolbar with the task owner it invokes. Cross-root coordination is explicit; no callback/RenderFragment or scoped service crosses an incompatible serialization/runtime boundary. |
 | Public/static and explicit prerender | Useful initial HTML, native forms, delayed/blocked JS, safe read-state handoff, source attribution and no duplicated initial query/write/subscription. |
-| Plain Razor and MudBlazor | Equivalent headless navigation/action behavior in a build with no MudBlazor dependency, plus the default interactive renderer, public static shell and host styling. |
+| Plain Razor and MudBlazor | A dedicated core-only technical host with a tiny native fixture module builds/publishes without MudBlazor and runs navigation plus a guarded action. Replace its renderer and preserve behavior. TaskFiesta separately exercises the default MudBlazor renderer, public static shell and host styling through the same headless contracts. The headless host does not load TaskFiesta's MudBlazor-dependent feature UI. |
 | Identity, faults and operational arrangements | Use controlled identities/workspaces, slow/failing sources, proxy/reconnect/rollout and explicit diagnostic-access settings to validate actual supported behavior. A fixture cannot establish independent-host or production field results. |
 
 The default app requires no external infrastructure. Where an operational arrangement needs multiple hosts, shared technical state/keys or a proxy, provide the appropriate existing test-provider/host configuration and record it explicitly. A process-local fixture pass cannot establish shared-state or restart behavior. These arrangements exercise framework requirements without expanding the task/list business domain.
@@ -2064,30 +1980,42 @@ Case IDs are evidence references, not phases, milestones or implementation tasks
 
 | Case | TaskFiesta surface/profile | Observable evidence |
 | --- | --- | --- |
-| TF-01 Composition and first run | Single-module TaskFiesta, starter and separate valid/invalid composition hosts. | Native pages/resources/routes and clear duplicate/missing/cyclic registration errors; ownership conventions/overrides and single-host module correspondence. Multi-module assertions run in the fixture host. Disabled pages never initialize protected reads. |
-| TF-02 Navigation and destinations | Task/list navigation, detail tabs/direct URLs and the external fixture's optional destination. | Bounded children/counts, encoded base-path links, unavailable/deleted targets, native history and no unrelated query reload from cosmetic state. Cross-module links run in the composition harness. |
-| TF-03 Task editing | Task detail and Overview/History routes. | Create/edit/complete/delete, required title, typed server field aliases/summary fallback, dirty-state prompts, correct save revision and late-result rejection. |
+| TF-01 Composition and first run | Single-module TaskFiesta, starter and separate valid/invalid composition hosts. | Native pages/resources/routes and clear duplicate/missing/cyclic registration errors; ownership conventions/overrides and single-host module correspondence. Remove optional query/selection adapters in TaskFiesta. The core-only technical host omits the MudBlazor renderer and configures native outlets; required missing outlets/renderers fail composition clearly. Multi-module assertions run in the fixture host. Disabled pages never initialize protected reads. |
+| TF-02 Navigation and destinations | Task/list navigation, sidebar/header/detail tabs/direct URLs and the external fixture's optional destination. | One resolved hierarchy drives placements; bounded children/counts, encoded base-path links, unavailable/deleted targets, native history and no unrelated query reload from cosmetic state. Direct task URLs work without opening a list first. Cross-module links run in the composition harness; TF-15 proves renderer replacement. |
+| TF-03 Task editing | Task detail and Overview/History routes. | Create/edit/complete/delete, required title, typed server field aliases/summary fallback, dirty-state prompts, correct save revision and late-result rejection. A concurrency rejection preserves current input; feature-owned recovery does not overwrite newer edits. |
 | TF-04 Multiple lists | Lists page, list-bound task view and Move action. | Create/rename/delete empty lists, reject non-empty/concurrent deletion, add tasks to a chosen list, partial/conflicting move outcomes, stable task detail links and targeted count/membership updates. |
 | TF-05 Read-only sharing | Owner Share controls and anonymous shared-list links. | Copy/revoke/replace link, no-account read, correct membership/projection, no mutation authority, revoked/deleted access denial and no private/token cache or diagnostic leak. |
 | TF-06 Public website | Home/public board/shared page with JS delayed/disabled and native Suggest form. | Useful initial HTML/head metadata, native links/GET/POST validation and antiforgery, stable mutation intent, no browser .NET baseline and optional-source isolation. |
 | TF-07 Query and selection | Default grid and handwritten task view. | Typed FilterModel fields/operators, search/filter/sort/page URLs, selection retained on paging, explicit clearing, independent headers and distinction between selected IDs and matching-query export. |
 | TF-08 Contextual presenters | Compare tasks, active-view selector, default action outlet and handwritten MudBlazor toolbar/menu presenting the same live binding. | Equivalent availability, shared pending state and guarded invocation through the original binding without generic control wrappers. Verify independent sibling selection, explicit toolbar/control placement, overflow and presenter disposal without owner reassignment. |
 | TF-09 Invocation and confirmation | Delayed Complete/Move, delete-list/task confirmation through MudBlazor and local keyboard/modal actions. | Direct MudBlazor dialogs without framework wrappers/registration; local editors need no action scope. Framework-bound confirmations preserve captured targets/versions, cancel without mutation, reject stale context/disposed owners and suppress duplicate prompts/dispatch. Explicit execution conflict/serialization policy, captured snapshots even with AppState off and no global shortcuts remain covered. |
-| TF-10 Save and navigation | Delayed/failed/unknown saves and dirty edit transitions. | Matching submitted field feedback, no overwrite of newer edits, accurate partial/failed/unknown outcomes and no automatic replay when a user navigates or reconnects. |
+| TF-10 Save and navigation | Delayed/failed/unknown saves, refresh/subscriber failures after a confirmed save and dirty edit transitions. | Matching submitted field feedback, preserved input on concurrency rejection, no overwrite of newer edits, accurate partial/failed/unknown outcomes and no automatic replay when a user navigates or reconnects. A confirmed save stays successful when refresh or a local subscriber subsequently fails; retry refresh without replaying the mutation. |
 | TF-11 Batch and result mapping | TF-101 success and TF-102 conflict fixture. | Per-target facts survive aggregate feedback/refresh failure; selected/captured identities stay independent of mutable state and repeated observations do not repeat successes. |
 | TF-12 Backend-owned operation | Export matching and operation status deep link. | Acceptance differs from completion; leave/revisit, authorize status/artifact reads, unknown acknowledgement and source progress without page-owned execution. |
 | TF-13 State, preferences and culture | The `CoreModule` preferences page with reusable framework components and task-display/query settings. | Instance/runtime/identity/workspace isolation, URL precedence, schema/corrupt/storage-failure fallback, targeted AppState/Notifier invalidation, language/theme and independent section saves without another application module. |
-| TF-14 Published extensions | Separate composition harness: TaskFiesta's `CoreModule` plus external fixture/default/replaced/suppressed contributions. | Public cross-package context/callback attachment, order/cardinality validation, original/effective provenance, targeted replacement and no retained live state in static registration. The normal application remains single-module. |
-| TF-15 Runtime access and ownership | Server/WASM/standalone/Auto/mixed arrangements. | Actual in-process Requester versus real HTTP, browser-safe dependency graph, legal runtime/root boundaries, explicit coordination and context-source attribution. |
-| TF-16 Prerender and activation | Static/prerender/interactive profiles with two task views. | Correct default/opt-in behavior, safe distinct handoff keys, no browser interop before activation, no second transferred-read query and reconstruction/cleanup of live owners. |
-| TF-17 Identity and workspace | Anonymous, owner/editor/viewer and two-workspace arrangements. | Direct-route/action authorization on both transports, safe pending availability, forced revocation/sign-out transitions, private-state partition and no identity-only dependency on workspace readiness. |
+| TF-14 Published extensions | Separate composition harness: TaskFiesta's `CoreModule` plus external fixture/default/replaced/suppressed contributions. | Public cross-package context/callback attachment, required/optional target resolution, order/cardinality validation, original/effective provenance, targeted replacement and no retained live state in static registration. Remove the optional fixture contribution/provider or make its declared optional source unavailable; unrelated routes/outlets remain usable. The normal application remains single-module. |
+| TF-15 Runtime access and ownership | Server/WASM/standalone/Auto/mixed arrangements and a separate core-only headless host. | Real Requester versus HTTP, circuit-aware Application identity/policy enforcement including short-lived DI scopes, browser-safe graphs and legal runtime boundaries. The headless host proves no direct/transitive/published MudBlazor dependency, working native navigation/action invocation and renderer replacement. Record each applicable assertion below. |
+| TF-16 Prerender and activation | Static/prerender/interactive profiles with two task views. | Correct default/opt-in behavior, safe distinct handoff keys, no browser interop before activation, no second transferred-read query and reconstruction/cleanup of live owners. Interactive-only contributions use their declared static alternative/unavailable state or produce an actionable configuration failure; composition never silently escalates the whole public route to interactivity. |
+| TF-17 Identity and workspace | Anonymous, owner/editor/viewer, two concurrent circuits and two-workspace arrangements. | Direct-route/action authorization on both transports, safe pending availability, forced revocation/sign-out transitions, private-state partition and no identity-only dependency on workspace readiness. A circuit identity change invalidates pending confirmations and old results; the next Requester dispatch and operation-scope accessor use the updated permitted principal without another circuit's identity. |
 | TF-18 Initialization and faults | Slow/failing optional provider, retry/reset and disposal controls. | Owner/generation-specific initialization and cancellation, known/unknown capability states, renderer-safe notification, unrelated content survival and no invented query success. |
-| TF-19 Diagnostics and discovery | Drawer, attached popout and separately enabled browser facade. | Same-session/runtime/scope provenance, versioned read schema, disabled reasons, redaction, bounded opt-in capture, production default-off/authorized access and no action invocation from inspection. |
+| TF-19 Diagnostics and discovery | Drawer, attached popout and separately enabled browser facade. | Same-session/runtime/scope provenance, versioned read schema, the UI's current disabled reason for the intended binding, and correlated execution outcomes. Inspection never invokes a business action. Verify redaction, bounded opt-in capture and production default-off/authorized access. |
 | TF-20 Packaged assets and cleanup | RCL resources/styles/JS and repeated mount/navigation. | Base-path-aware assets without per-module host tags; listeners/timers/observers/interop dispose correctly; independent instances and optional-package removal remain correct. |
-| TF-21 Native developer path | Starter, handwritten page, direct MudBlazor dialog/editor and local menu/toolbar, explicit/discovered registrations and optional generated equivalent. | Normal build/test/debug workflow, few measured declarations, native routing/forms and actionable failures. Ordinary dialogs, menus, toolbars and controls use local callbacks without framework wrappers, registration, base classes or action scopes. Applicable generated/trimming/publish cases use the same public contracts. |
-| TF-22 Independent package consumer | Clean host with the actual portable TaskFiesta module NuGet artifact, no source-project references. | Public module resources/actions/settings and compatible hosting, host overrides and a package upgrade with own branding/services. Runtime variants alone do not count as another application. |
+| TF-21 Native developer path | Starter, handwritten page, isolated module composition/action tests, direct MudBlazor dialog/editor and local menu/toolbar, explicit/discovered registrations and optional generated equivalent. | Normal build/test/debug workflow and minimal independent test hosts using standard .NET tools, few measured declarations, native routing/forms and actionable failures. Ordinary dialogs, menus, toolbars and controls use local callbacks without framework wrappers, registration, base classes or action scopes. Applicable generated/trimming/publish cases use the same public contracts. |
+| TF-22 Independent package consumer | Clean host with the actual portable TaskFiesta module NuGet artifact, no source-project references. | Public module resources/actions/settings and compatible hosting, host overrides and a package upgrade with own branding/services. A rebuilt module fixture renames its CLR type while retaining the pinned logical identity; server/browser ownership, exported attachments, configuration and saved preferences still resolve. Runtime variants alone do not count as another application. |
 | TF-23 Visual/accessibility behavior | DoFiesta-inspired public/connected styling at wide/narrow/zoom layouts. | Wayfind-aligned semantic/host themes, light/dark/system, localization, keyboard/focus, labels/landmarks, validation announcements, dialog/menu behavior and screen-reader checks under the specified accessibility target. |
-| TF-24 Operational quality | Controlled proxy/reconnect, compatible/incompatible deployment and measured workloads. | Real recovery/unknown-outcome behavior, version/config compatibility, telemetry and cold/warm mobile resource/content/interaction/circuit measures. Record provider/environment/sample limitations; no fake production pass. |
+| TF-24 Operational quality | Controlled proxy/reconnect, compatible/incompatible deployment, measured workloads and the complete evidence report. | Real recovery/unknown-outcome behavior, version/config compatibility, telemetry and cold/warm mobile resource/content/interaction/circuit measures. Audit assertion-level report entries for evidence owners, commands, versions, outcomes and unresolved limitations; missing required evidence prevents completion. No fake production pass. |
+
+#### TF-15 runtime, identity and headless assertions
+
+Record a separate result for each applicable arrangement and assertion. The headless fixture uses only core shell packages, ordinary Razor/HTML and a tiny native fixture module; it does not require TaskFiesta's default feature UI to become renderer-independent.
+
+| Assertion | Runnable evidence required |
+| --- | --- |
+| TF-15.1 Runtime dispatch | Server invokes the real Application handler through Requester without an HTTP round trip to its own API. WASM uses the real typed HTTP client and authorized endpoint. Auto reports the actual runtime on cold/warm activations. |
+| TF-15.2 Circuit identity | With no usable HTTP context, invoke Requester from two authenticated circuits with distinct users. Each handler and policy/entity check sees only its circuit's principal. Repeat with a deliberately stale HTTP principal and with a newly created operation DI scope; neither may replace the originating circuit identity. |
+| TF-15.3 Authorization parity | A denied role/policy/entity operation is rejected by the Application boundary for Server Requester and HTTP entry paths. Repeat after authentication changes and during confirmation under TF-17. No stale UI eligibility or endpoint-only filter grants permission. |
+| TF-15.4 Headless package boundary | Restore/build/publish the core-only native host and inspect its resolved package graph and published assemblies for direct/transitive MudBlazor dependencies. Run a native destination and one framework-bound action through its real binding; source-import checks alone are insufficient. |
+| TF-15.5 Renderer replacement | Replace the headless fixture's navigation/action presenter with another native renderer using the same resolved hierarchy and binding. Availability, pending state, captured targets, confirmation cancellation, duplicate suppression and stale-owner rejection remain effective. No business-handler shortcut is used. |
 
 ### A.7 Complete framework feature coverage
 
@@ -2095,7 +2023,7 @@ This table maps every named framework acceptance requirement and public-website 
 
 The normal TaskFiesta app is single-module. Cases needing a second module use the explicitly separate composition harness, and package-reuse cases use the independent consumer identified in A.6. Those technical hosts preserve complete framework coverage without turning the MVP into a multi-module business application.
 
-Check the coverage inventory against the current acceptance/section headings when this specification changes. Flag both unmapped new requirements and obsolete entries; a broad case-family label alone cannot silently absorb a new requirement without explicit assertions/evidence.
+Check the coverage inventory against the current acceptance/section headings when this specification changes. Flag both unmapped new requirements and obsolete entries. Each mapped case must state the requirement's observable assertion in its evidence column or its linked detailed assertions. Split a compound requirement across explicit cases when needed. Matching names/counts or a broad case-family label establishes only inventory completeness, not semantic coverage or a passing result. Record an assertion-level result and evidence owner before closing each requirement.
 
 #### Framework acceptance requirements
 
@@ -2112,13 +2040,13 @@ Check the coverage inventory against the current acceptance/section headings whe
 | Conventions and discovery | TF-01 | Composition and first run |
 | Generated registration, when supplied | TF-21, TF-22 | Native developer path; Independent package consumer |
 | Deep linking | TF-02, TF-04 | Navigation and destinations; Multiple lists |
-| Cross-module destination links | TF-02, TF-04 | Navigation and destinations; Multiple lists |
+| Cross-module destination links | TF-02, TF-14 | Destination resolution in the technical composition harness; Required/optional cross-package targets |
 | Required feature availability | TF-17, TF-18 | Identity and workspace; Initialization and faults |
-| Navigation customization | TF-02, TF-04 | Navigation and destinations; Multiple lists |
+| Navigation customization | TF-02, TF-15 | Shared navigation hierarchy; Headless renderer replacement |
 | Dynamic navigation | TF-02, TF-04 | Navigation and destinations; Multiple lists |
 | Relevant state subscriptions | TF-13, TF-02 | State, preferences and culture; Navigation and destinations |
 | Dynamic deep links | TF-02, TF-04 | Navigation and destinations; Multiple lists |
-| Headless composition | TF-15, TF-22 | Runtime access and ownership; Independent package consumer |
+| Headless composition | TF-15 | Core-only technical host: package/publish graph, native behavior and renderer replacement |
 | Mixed hosting | TF-15, TF-22 | Runtime access and ownership; Independent package consumer |
 | Prerendering | TF-16 | Prerender and activation |
 | Optional identity | TF-17, TF-18 | Identity and workspace; Initialization and faults |
@@ -2129,7 +2057,7 @@ Check the coverage inventory against the current acceptance/section headings whe
 | JavaScript owner cleanup | TF-20, TF-22 | Packaged assets and cleanup; Independent package consumer |
 | Data composition | TF-07, TF-08 | Query and selection; Contextual presenters |
 | Selection adapter defaults | TF-07, TF-08 | Query and selection; Contextual presenters |
-| Mutation and refresh | TF-13, TF-02 | State, preferences and culture; Navigation and destinations |
+| Mutation and refresh | TF-03, TF-10 | Concurrency rejection preserves edits; Confirmed save survives refresh/subscriber failure |
 | Form field error mapping | TF-03, TF-10 | Task editing; Save and navigation |
 | Validation revision safety | TF-03, TF-10 | Task editing; Save and navigation |
 | Coordination | TF-13, TF-02 | State, preferences and culture; Navigation and destinations |
@@ -2139,7 +2067,7 @@ Check the coverage inventory against the current acceptance/section headings whe
 | Agent discovery | TF-19 | Diagnostics and discovery |
 | Non-development behavior | TF-19 | Diagnostics and discovery |
 | Accessibility and responsiveness | TF-23, TF-24 | Visual/accessibility behavior; Operational quality |
-| Optional features | TF-14, TF-01 | Published extensions; Composition and first run |
+| Optional features | TF-01, TF-14, TF-15 | Included optional-package removal; Fixture-provider isolation; Core-only native host |
 | Orders navigation walkthrough | TF-02, TF-04 | Navigation and destinations; Multiple lists |
 | Refresh policy | TF-13, TF-02 | State, preferences and culture; Navigation and destinations |
 | Cross-package typed contribution | TF-14, TF-01 | Published extensions; Composition and first run |
@@ -2160,7 +2088,7 @@ Check the coverage inventory against the current acceptance/section headings whe
 | Failed or uncertain save and navigation | TF-03, TF-10 | Task editing; Save and navigation |
 | Restorable view precedence | TF-13, TF-02 | State, preferences and culture; Navigation and destinations |
 | Navigation during action work | TF-10, TF-12 | Save and navigation; Backend-owned operation |
-| Semantic disabled reasons and outcomes | TF-10, TF-11 | Save and navigation; Batch and result mapping |
+| Semantic disabled reasons and outcomes | TF-19 | Read-only inspection of the intended binding, current UI reason and correlated outcome |
 | Save revision safety | TF-03, TF-10 | Task editing; Save and navigation |
 | Batch action outcomes | TF-10, TF-11 | Save and navigation; Batch and result mapping |
 | Unknown mutation outcome | TF-10, TF-12 | Save and navigation; Backend-owned operation |
@@ -2173,7 +2101,7 @@ Check the coverage inventory against the current acceptance/section headings whe
 | Ordinary developer workflow | TF-21, TF-22 | Native developer path; Independent package consumer |
 | Native platform and low-friction integration | TF-21, TF-22 | Native developer path; Independent package consumer |
 | Reuse across applications | TF-22 | Independent package consumer |
-| Minimal Orders walkthrough | TF-08 | Contextual presenters |
+| Minimal Orders walkthrough | TF-02, TF-08 | Direct detail loading; Local/external presenters and independent component bindings |
 | Resolved contribution isolation | TF-14, TF-01 | Published extensions; Composition and first run |
 | Temporary contribution cleanup | TF-14, TF-20 | Published extensions; Packaged assets and cleanup |
 | Initialization attempt ownership | TF-18 | Initialization and faults |
@@ -2208,7 +2136,7 @@ Check the coverage inventory against the current acceptance/section headings whe
 | Framework requirement | TaskFiesta cases | Where the evidence is exercised |
 | --- | --- | --- |
 | Useful SSR baseline | TF-06, TF-05 | Public website; Read-only sharing |
-| Compatible module rendering | TF-14, TF-16 | Published extensions; Prerender and activation |
+| Compatible module rendering | TF-01, TF-14, TF-16 | Module enablement/composition; Typed contributions; Static alternatives and compatible activation |
 | Reusable host setup | TF-21, TF-22 | Native developer path; Independent package consumer |
 | Interactive enhancement | TF-16, TF-15 | Prerender and activation; Runtime access and ownership |
 | Performance and delivery | TF-24, TF-06 | Operational quality; Public website |
@@ -2230,12 +2158,12 @@ Every main specification section is indexed below as an additional completeness 
 | [Product boundaries](#product-boundaries) | TF-01, TF-21 |
 | [Architecture and bITdevKit synergy](#architecture-and-bitdevkit-synergy) | TF-01, TF-21 |
 | [Typed extension points as a design foundation](#typed-extension-points-as-a-design-foundation) | TF-14, TF-01 |
-| [Reusable data components and CRUD scaffolding](#reusable-data-components-and-crud-scaffolding) | TF-07, TF-03 |
+| [Query and selection adapters](#query-and-selection-adapters) | TF-07, TF-03 |
 | [Optional application features](#optional-application-features) | TF-01, TF-14 |
 | [Hosting and render-mode interoperability](#hosting-and-render-mode-interoperability) | TF-06, TF-15, TF-16 |
 | [Presentation module composition](#presentation-module-composition) | TF-14, TF-01 |
 | [Destinations, availability and deep links](#destinations-availability-and-deep-links) | TF-02, TF-05 |
-| [Headless behavior and opinionated defaults](#headless-behavior-and-opinionated-defaults) | TF-22, TF-23 |
+| [Headless behavior and opinionated defaults](#headless-behavior-and-opinionated-defaults) | TF-15, TF-22 |
 | [Shell layouts and application chrome](#shell-layouts-and-application-chrome) | TF-22, TF-23 |
 | [Conceptual layout wireframes](#conceptual-layout-wireframes) | TF-22, TF-23 |
 | [Extension contracts and host authority](#extension-contracts-and-host-authority) | TF-14, TF-01 |
@@ -2264,7 +2192,7 @@ The task/list-specific create/delete/move and link-sharing behavior is additiona
 
 TaskFiesta validates the whole specified feature alongside its development. Completion requires actual runnable evidence for the full acceptance/coverage matrix, independent module and package-consumer verification, supported render/hosting profiles and applicable operational/accessibility/performance checks. Record unresolved or unavailable results honestly. Static wireframes, method names and diagrams cannot close a requirement.
 
-The framework is ready for the subsequent ShopFiesta implementation when those complete requirements and documented public contracts/package compatibility are satisfied. Keep TaskFiesta as a small regression/reference application afterward. DoFiesta remains the migration consumer; ShopFiesta becomes a separate later commerce/showcase consumer. Implementation phases, task breakdown and scheduling belong in a future implementation plan, not this specification.
+The framework is ready for the subsequent ShopFiesta implementation when those complete requirements and documented public contracts/package compatibility are satisfied. Keep TaskFiesta as a small regression/reference application afterward. DoFiesta remains unchanged; ShopFiesta becomes a separate later commerce/showcase consumer. Implementation phases, task breakdown and scheduling belong in a future implementation plan, not this specification.
 
 ## References
 

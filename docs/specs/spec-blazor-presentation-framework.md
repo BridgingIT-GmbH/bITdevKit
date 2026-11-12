@@ -24,7 +24,9 @@ The guiding architecture is a modular monolith across backend and frontend. Logi
 
 Consuming applications start as greenfield projects. DoFiesta is the reference migration used to validate the framework. General adoption into existing applications, legacy-shell compatibility layers and migration tooling for those applications are outside the release scope.
 
-ShopFiesta is the planned new greenfield example application alongside that DoFiesta migration. Its first slice demonstrates the application framework and shell; its longer-term purpose is a broad DevKit showcase. Backend breadth can grow after the presentation contracts have been proved, as described in the ShopFiesta showcase section and Appendix A.
+Public website hosting and fast first content are reusable framework responsibilities. The framework supplies the [public website profile](#recommended-public-website-profile) and [shared hosting/startup integration](#reusable-hosting-and-startup-support), including SSR-compatible shell rendering, selective interactivity, prerender handoff, native forms, asset defaults and diagnostics. Applications consume these through public APIs and package upgrades. TaskFiesta validates this capability together with an independent consumer.
+
+TaskFiesta is the compact validation application developed alongside the complete framework. [Appendix A](#appendix-a-taskfiesta-validation-application) specifies its task/list domain, public website and connected profiles, wireframes and requirement-to-evidence map. ShopFiesta is a separate follow-on application, implemented only after the framework meets its complete validation requirements. Its [application specification](spec-shopfiesta.md) remains a future consumer design, not a prerequisite or validation vehicle for framework completion.
 
 Reusable modules can supply pages, navigation, contextual actions, resources and documented customization points. Consuming applications select and adapt those capabilities through public contracts. Shared fixes and improvements reach those applications through supported package upgrades. The framework owns the compatibility, accessibility and lifecycle behavior it promises; consuming applications remain responsible for their complete user experience.
 
@@ -41,6 +43,8 @@ Use native mechanisms and existing DevKit capabilities where they fit:
 | Services and configuration | .NET DI, options, configuration and validation. | Register feature contributions and validate their composition. |
 | Pages and navigation | Razor components, `@page`, Blazor routing, layouts and `NavigationManager`. | Associate module ownership and availability, discover contributed pages and compose navigation. |
 | Component interaction | Parameters, `EventCallback`, typed callbacks, `RenderFragment`, cascading values and normal component lifecycle. | Add explicit owner-bound action placement, invocation safety and cleanup where those behaviors are needed. |
+| Dialogs and controls | MudBlazor services/components and native Blazor controls, used directly by features. | Compose required providers in compatible interactive roots and enforce action safeguards around feature-supplied confirmation callbacks. |
+| Menus and toolbars | MudBlazor menus, toolbars and buttons, or native Razor/HTML and local callbacks. | Compose contributed navigation and scoped actions where needed. Ordinary local menus/toolbars require no framework registration, wrapper or action scope. |
 | Forms and validation | Blazor `EditForm` and `EditContext`, or the selected component library's existing forms. | Adapt application outcomes and field errors where shared feedback requires it. |
 | Resources and assets | .NET localization, Razor class libraries, static web assets, CSS isolation and supported JavaScript interop. | Preserve contribution ownership and supply documented packaging and customization conventions. |
 | Diagnostics | .NET logging, `ActivitySource`, `Meter` and supported Blazor instrumentation. | Attribute composition and live behavior to their owners through the shared diagnostic model. |
@@ -63,7 +67,7 @@ Design the public API around a short ordinary path, with fluent builders for rel
 
 Source generation is an implementation option, not a requirement for each ordinary page or callback. Reuse existing DevKit generator patterns where suitable. A generator must not create another module system, service locator or source of route truth. Build-time discovery cannot establish runtime permissions, backend availability or live component ownership. Supported browser publishing must use a validated discovery strategy, such as explicit or generated registrations, rather than assume unrestricted reflection survives trimming.
 
-The API appendix proposes the ordinary usage first. G1 and G2 must compare the required declarations and setup effort before deciding which additional conventions or generated conveniences belong in the stable API.
+The [TaskFiesta validation appendix](#appendix-a-taskfiesta-validation-application) supplies the ordinary consumer journey. Compare required declarations/setup with native Blazor and use executable results to refine conventions and optional generation. The complete feature is specified here; implementation sequencing belongs in a separate future plan.
 
 ## Vocabulary and ownership
 
@@ -71,7 +75,7 @@ The API appendix proposes the ordinary usage first. G1 and G2 must compare the r
 | --- | --- |
 | Application host | The application that selects modules, integrations, configuration and final UI composition. |
 | Core shell (headless shell) | Browser-safe composition infrastructure, contracts and shared application behavior. |
-| Default renderer | Separately referenced MudBlazor implementation of layouts, chrome and controls using the headless shell contracts. |
+| Default renderer | Separately referenced MudBlazor implementation of shell layouts, chrome and contribution outlets using the headless shell contracts. |
 | Presentation module | The frontend part of a logical feature module, owning its presentation contributions and frontend service registrations. A module can also provide presentation-only capabilities. |
 | Page or destination | A navigable feature entry with a stable URL and declared availability requirements. |
 | Extension point | A deliberately published, typed contract accepting contributions at a declared place in the shell or a presentation module. |
@@ -89,34 +93,39 @@ The host has final authority over composition and customization. Modules own the
 
 ## Product boundaries
 
-The framework separates the core shell, reusable data components and optional application features. Applications can adopt each without acquiring unrelated capabilities.
+The framework separates the core shell, focused data adapters and optional application features. Applications can adopt each without acquiring unrelated capabilities.
+
+The framework is not a UI component library. MudBlazor and native Blazor supply general-purpose controls, menus, toolbars, dialogs and forms. Framework components render shell-owned behavior such as contributed navigation, contribution regions, contextual actions and diagnostics. A reusable integration must add application coordination or composition behavior; a wrapper that only forwards another control's parameters or service calls is outside scope.
 
 | Layer | Delivered responsibilities | Boundary |
 | --- | --- | --- |
-| Headless shell | Module composition, routing integration, navigation, scoped contextual actions, toolbar contracts, extension regions, localization, optional identity integration, preferences, shared interactions, fault containment and developer diagnostics. | Browser-safe contracts and behavior with no direct or transitive MudBlazor dependency. |
-| Default MudBlazor renderer | App layouts, navigation, toolbars, dialogs and the default visual experience. | Separately referenced. It consumes the headless shell contracts and can be replaced by host renderers. |
-| Data components | The first release provides FilterModel query and selection adapters. Reusable grids, CRUD views, editing and lookups belong to the broader data offering. | Optional. Adapters consume application contracts and typed clients. |
+| Headless shell | Module composition, routing integration, navigation, scoped contextual actions, toolbar contracts, extension regions, localization, optional identity integration, preferences, action invocation and feedback coordination, fault containment and developer diagnostics. | Browser-safe contracts and behavior with no direct or transitive MudBlazor dependency. |
+| Default MudBlazor renderer | App layouts, contributed navigation, scoped action outlets, diagnostics UI and integrations for action confirmation and feedback. | Separately referenced. It uses MudBlazor controls directly, consumes the headless shell contracts and can be replaced by host renderers. Its menu/toolbar presenters render composed application behavior; they are not general-purpose control wrappers. |
+| Data adapters | FilterModel query and selection adapters connect existing grids and handwritten views to application contracts and scoped actions. | Optional. They do not introduce replacement grids, form controls or a CRUD component library. Broader business-page workflows require separate feature designs. |
 | Application features | Notification center and inbox integration, administration and other reusable application capabilities. | Optional modules with explicit backend requirements. |
 | Starters and examples | Ready-to-run hosts, module examples, common page patterns and customization guidance. | Examples demonstrate composition through the public contracts. |
 
-### First stable release scope
+### Complete feature scope
 
-The first stable release delivers the browser-safe headless shell, the separately referenced MudBlazor renderer, and the initial FilterModel query and selection adapters as optional dependencies. It includes the documented hosting arrangements, anonymous and protected configurations, and the enterprise requirements for session handling, recovery, production hosting, observability, accessibility and upgrades.
+The complete feature includes the browser-safe headless shell, the separately referenced MudBlazor renderer, and the initial FilterModel query and selection adapters as optional dependencies. It includes the documented hosting arrangements, anonymous and protected configurations, and the enterprise requirements for session handling, recovery, production hosting, observability, accessibility and upgrades.
 
-Interactive diagnostics include the drawer, attached popout, bounded capture and separately enabled browser facade. Hosts may opt into authorized production inspection. Interactive inspection is off by default outside development. The release also delivers host starters, extension and upgrade documentation, and DoFiesta evidence for each delivered capability and hosting profile.
+The public website profile is part of that scope, including its SSR-compatible chrome defaults, native navigation/forms, declared contribution compatibility and selective interactive composition. It uses the same module/headless contracts and semantic styling tokens rather than another shell. TaskFiesta supplies complete framework/public-site validation, an independent consumer proves reuse, and DoFiesta retains real-application migration evidence.
 
-Higher-level modules such as the notification center and inbox, administration, and reusable CRUD screens have separate delivery decisions. The bdk MCP and CLI adapter is a separate integration. Each optional capability is exercised in DoFiesta when it ships.
+Interactive diagnostics include the drawer, attached popout, bounded capture and separately enabled browser facade. Hosts may opt into authorized production inspection. Interactive inspection is off by default outside development. The feature also includes host starters, extension/upgrade documentation and complete TaskFiesta evidence, with the applicable DoFiesta migration checks retained.
+
+Higher-level modules such as the notification center and inbox, administration and reusable CRUD screens are separate feature designs. The bdk MCP and CLI adapter is a separate integration. These scope boundaries are not later implementation phases of this specification. Optional packages that are included here have enabled/removed-configuration evidence in TaskFiesta and applicable migration checks in DoFiesta.
 
 ### Capability boundaries and status
 
 | Capability | Placement | Defined scope or decision |
 | --- | --- | --- |
+| Public website hosting and startup | Framework host integration and SSR-compatible shell renderers. | Deliver reusable profile setup, native SSR/prerender/interactive composition, lifecycle/handoff support and asset/readiness defaults. A starter and independent packaged consumer must prove reuse. Feature content, business actions and app-specific performance budgets remain application-owned. |
 | Shared contextual UI actions | Headless shell behavior, default renderer presentation and feature-owned business handlers. | One definition/placement/binding model supports toolbars and context menus with scoped availability and execution. UI actions can call APIs or Requester without becoming backend commands. |
 | Interaction scopes and explicit target binding | Core shell. | Reuse the existing action-scope ownership model for page/component instances; separate shared composition metadata from live context and registrations. |
 | Edit-session coordinator | Deferred optional editing capability. | Keep the current page-owned unsaved-change helper. Global participant coordination, nested-editor save orchestration and Save All are not requirements of the current core shell. |
 | Restorable view state | Core AppState/preferences conventions with optional view/data adapters. | Declare per-view URL/transient/preference policy, identity/version/defaults and stale-value recovery. Editable drafts are separately owned feature data. |
 | Asynchronous operation observation | Per-binding execution state in core; broader operations panel and application-owned workflows are separate optional design work. | Expose execution identity/outcome/cancellation/progress where available. Navigation survival requires an explicit longer-lived owner; restart durability belongs to backend capabilities. |
-| Reusable business-page components | Optional presentation/data offering beyond the initial adapters. | DoFiesta demonstrates handwritten list, detail and edit workflows. Extract shared components once another workflow demonstrates reuse. |
+| Reusable business-page components | Separate application/data feature designs beyond the initial adapters. | DoFiesta demonstrates handwritten list, detail and edit workflows using existing controls. Extract a workflow component only when another consumer demonstrates repeated application behavior; generic control wrappers remain outside this framework. |
 | Search and command discovery | Deferred optional application capability. | No global search surface, command palette, federated provider model or shortcut-discovery catalog is required now. Local page/grid filtering remains available. |
 | General shortcut routing | Deferred optional interaction capability. | Keep accessible toolbar navigation and explicit local shortcuts. Hierarchical scope routing, fallback and ambiguity resolution require separate justified design. |
 | Semantic inspection and testing | Existing core diagnostics, with separately enabled adapters for any programmatic business-action invocation. | Inspect stable page/scope/action/binding/execution identities and reasons through the shared read model. Normal UI invocation remains the default execution path. |
@@ -125,7 +134,7 @@ Common composition metadata supplies identity, ownership, attachment, ordering a
 
 The core shell must run with no authentication integration and no higher-level modules. It must also support protected business applications. Removing an optional feature must leave the core application composition valid.
 
-The framework does not provide a CMS, runtime page designer, automatic domain-entity screen generator, replacement Blazor router or abstraction over every MudBlazor control. Runtime installation and unloading of modules is outside scope. Developers can use ordinary Razor components, MudBlazor controls, callbacks and typed API clients directly.
+The framework does not provide a UI component library, generic dialog platform, CMS, runtime page designer, automatic domain-entity screen generator or replacement Blazor router. General-purpose wrappers for native or MudBlazor controls are outside scope. Runtime installation and unloading of modules is outside scope. Developers use ordinary Razor components, MudBlazor controls/services, callbacks and typed API clients directly.
 
 ## Architecture and bITdevKit synergy
 
@@ -166,7 +175,7 @@ Presentation modules declare contributions; the shell composes and resolves them
 
 Extend the module boundaries in [ADR-0003: Modular Monolith Architecture](../adr/0003-modular-monolith-architecture.md) into the frontend. A logical feature module owns its applicable backend use cases and presentation behavior. Its pages, components, local state and assets follow that ownership. Presentation extending an existing backend module retains its logical identity. A module can provide backend capabilities, presentation capabilities or both, without requiring a separate project for every layer or capability.
 
-Application feature modules in ShopFiesta correspond across frontend and backend. Catalog owns product data and SKU definitions; Stock owns live availability and sellability for those same SKUs. Basket, Checkout and Marketing keep their identities, and customer/staff order views belong to Orders. Different assemblies, runtime adapters or audience-specific views do not create a second set of logical modules. The first backend implementations can be minimal or mocked while preserving those identities, contracts and dependency boundaries.
+TaskFiesta has one application module, `CoreModule` with identity `core`, owning its task/list state, public sharing, settings and public/connected pages across frontend and backend. Cross-module composition is exercised in a separate minimal framework test host, not by splitting the MVP's domain. The later ShopFiesta application uses the same modular-monolith concept for its commerce domains; it is not required to validate this framework.
 
 The host is the application composition root. It selects modules and shared integrations, validates their dependencies and composes their contributions through the shell. Modules can be developed, tested and packaged independently. The consuming application builds and releases its selected module versions and assets together. Separate Server and browser execution does not change those logical boundaries. Distributed module discovery, remote module loading and independent frontend deployment are outside the core model.
 
@@ -304,7 +313,7 @@ The initial selection adapter tracks explicitly selected stable record IDs. Its 
 
 When selected records can be outside the visible page, show the total selected count and a clear-selection control. Feature adapters supply the target data and versions needed by an action, with authorized reads where required. Selection alone does not establish current eligibility or grant access.
 
-The first release selects explicit IDs across pages. Query-wide selection of records never loaded is deferred until a concrete feature defines backend consistency, authorization and batch-outcome semantics. An explicit Export all matching action can capture query intent independently of row selection.
+Selection uses explicit IDs across pages. Query-wide selection of records never loaded is deferred until a concrete feature defines backend consistency, authorization and batch-outcome semantics. An explicit Export all matching action can capture query intent independently of row selection.
 
 ## Optional application features
 
@@ -358,7 +367,7 @@ The support boundary follows Blazor's legal component hierarchy and parameter ru
 | Server and WASM areas on the same page | Supported as independent interactive areas. | Each area owns its state and direct interactions. Shared context/invalidation requires explicit coordination. |
 | Separate roots sharing a compatible runtime/circuit | Supported through a documented in-process coordination arrangement. | Explicit scope association, owner lifetime and renderer-safe dispatch; no automatic cascading context between roots or assumption of one DI scope per root. |
 | Server presenter directly invoking a WASM component, or the reverse | Generic cross-runtime action transport is deferred. | Keep the presenter with its owner or supply an explicit application integration; no implicit remote component invocation. |
-| Static public pages and chrome | Supported for static-compatible content and ordinary links. | Use SSR-compatible Razor/HTML and styling; the full interactive MudBlazor shell is not guaranteed in static-only mode. Dynamic interactions require explicit interactive areas; no live action subscriptions exist in static output. |
+| Public website profile | Supported as a reusable profile. | Static SSR pages/chrome, native navigation/forms and explicitly selected interactive boundaries. Use SSR-compatible Razor/HTML and styling; the full interactive MudBlazor shell is not guaranteed in static-only mode. No live action subscriptions exist in static output. |
 
 The ordinary application pattern places shell interaction, contextual toolbar and feature content within one compatible interactive composition. Mixed applications use an outer host composition containing independent interactive areas; each area contains the presenters and owners requiring direct interaction. A WASM Orders area can therefore contain a page header, external Approve toolbar and Orders component while a Server navigation/reporting area coexists beside it.
 
@@ -373,6 +382,60 @@ The recommended starting profile for connected bITdevKit business applications i
 This profile assumes reliable connectivity and acceptable server round-trip latency. Capacity planning includes per-circuit resources, connection handling and reconnect behavior. A lost circuit does not establish whether an already dispatched business operation succeeded; the normal unknown-outcome and recovery rules still apply. [Blazor hosting characteristics](https://learn.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-10.0)
 
 Choose WebAssembly when browser-side execution, deployment requirements or interaction characteristics justify its startup and API-integration costs. Choose Auto deliberately when the same feature and its dependencies have been validated in both runtimes; Auto adds runtime coverage rather than removing that work. Static SSR remains appropriate for static-compatible public content. Prerendering is an independent opt-in decision for a legal boundary, not a consequence of selecting Server or Auto. [Blazor render modes](https://learn.microsoft.com/en-us/aspnet/core/blazor/components/render-modes?view=aspnetcore-10.0)
+
+### Recommended public website profile
+
+Public-facing applications need useful initial HTML and responsive navigation without requiring a browser .NET runtime before visitors can read or use basic content. Supply a reusable public website profile alongside the connected business-application profile. TaskFiesta is its reference consumer; the same profile applies to other catalog, content and public-service applications. This is native Blazor Web App composition, not a new rendering engine or router. [Blazor static SSR and component-library compatibility](https://learn.microsoft.com/en-us/aspnet/core/blazor/components/class-libraries-and-static-server-side-rendering?view=aspnetcore-10.0)
+
+| Concern | Public website requirement |
+| --- | --- |
+| Initial document | Static SSR produces the real page heading, navigation, primary content and head metadata. An empty application mount, spinner or client bootstrap is not an acceptable substitute for that content. |
+| Native baseline | Ordinary links and GET forms support browsing, search, filtering, paging and back/forward. A feature can supply an authorized native POST form for an action that must work without interactivity. Server form handling uses its ordinary Application boundary. |
+| Progressive enhancement | Use Blazor's native enhanced navigation/forms where the target supports them. Without JavaScript, the declared baseline still works through full requests and normal form feedback. Ordinary links/forms do not depend on a live action binding. |
+| Interactive boundaries | Add Interactive Server only to the controls/pages needing live state, or choose another explicitly validated mode for a measured requirement. Prerender compatible public interactive areas so their useful initial content does not wait for connection. Selection of a boundary is not an automatic viewport/on-demand activation mechanism. |
+| Browser payload | Public baseline browsing does not require WebAssembly, the browser .NET runtime, the whole business UI or developer tooling. Do not choose Auto by default for this profile because it also downloads the browser runtime/bundle for future browser execution. |
+| Static styling | Provide the supported public chrome/navigation/content defaults using ordinary Razor/HTML and shared semantic tokens. Use interactive MudBlazor components within compatible interactive compositions. Static defaults need no MudBlazor live providers or event system. |
+| Module contributions | Ownership, resources, published destinations and host replacement/suppression remain effective in SSR and interactive composition. A contribution requiring interactivity declares that requirement and a static view, native-form alternative or explicit unavailable presentation where the target requires one. |
+
+The host keeps public static routes outside an unconditional global interactive `Routes` boundary. Select legal native route/page/component modes and matching head rendering. Use Blazor's normal document navigation/full reload when changing an incompatible route/root arrangement. Native static SSR, prerendering an interactive component and later interactive activation are separate phases with separate owners. [Render-mode composition](https://learn.microsoft.com/en-us/aspnet/core/blazor/components/render-modes?view=aspnetcore-10.0)
+
+Render/form alternatives are feature-owned ordinary Razor components, not a universal conversion of contextual actions to HTTP calls. A form names its target/input and stable mutation intent, supplies antiforgery protection, and reauthorizes/revalidates on the server. Rendering a form does not execute the action. A later enhancement cannot redispatch a previously accepted or uncertain POST. The framework does not serialize a live scope, callback or component reference into form fields or across an interactive boundary. [Native forms across render modes](https://learn.microsoft.com/en-us/aspnet/core/blazor/components/class-libraries-and-static-server-side-rendering?view=aspnetcore-10.0#using-forms-across-render-modes)
+
+Resolve read-only SSR/prerender data through server-capable feature services. For a prerendered interactive area, use native `PersistentComponentState` or applicable `PersistentState` support for explicitly safe data so activation need not duplicate the initial query or replace content with a loading flash. Revalidate freshness/context before actions. Rebuild live scopes/subscriptions; never transfer live bindings or operation owners. Static SSR form feedback is request-owned, while live field feedback follows its interactive owner. Existing field-error/revision rules apply in both cases.
+
+Public first content must not wait on optional navigation children, personalization, a badge, diagnostics or an optional recommendation query. Bound required reads and use native streaming/deferred noncritical regions where appropriate. Keep unavailable optional content truthful and reserve space where needed. Streaming and prerendering do not make a slow mandatory source fast; record server time-to-first-byte separately from browser download/activation.
+
+Apply normal web delivery practices: appropriately sized images with dimensions, prioritized primary imagery, deferred off-screen media, bounded CSS/JavaScript/fonts and versioned static assets. Use native HTTP/output caching or owning-module data caches only with complete culture/query/access keys and safe invalidation. Shared public output cannot contain personal data, basket content, antiforgery tokens or mutation-intent IDs. The upcoming Application.Caching feature is not a prerequisite for server rendering or native HTTP asset caching.
+
+Measure both initial content and actual interaction. Interactive Server removes the browser .NET download but still has connection/per-event network costs. Prefer native browser behavior for basic input/navigation and avoid a server round trip for every unnecessary keystroke. A browser/WASM area is a deliberate alternative when measured interaction requirements justify its extra payload and runtime coverage. No single render mode is declared universally fastest.
+
+Composition diagnostics identify effective render mode, prerender/static capability, deferred/unavailable contributions and request versus interactive owner. Startup validation rejects incompatible required arrangements rather than silently making the entire public page interactive. The framework's ordinary interactive profile still defaults to prerendering off; this explicitly selected public profile supplies its own static/prerender policy.
+
+### Reusable hosting and startup support
+
+The public website profile must be a packaged framework capability with runnable starter/consumer evidence, not a checklist that every application reimplements. Ship reusable integration for the repeated host, rendering and lifecycle work. Keep the configuration on the existing presentation host builder and reuse native Blazor/.NET mechanisms underneath it.
+
+The proposed ordinary entry is `WithPresentation(options => options.UsePublicWebsite())`, followed by the application's normal module selection, branding/layout choices and native page/component declarations. `UsePublicWebsite` is a proposed convenience name to validate, not an implemented API. It selects the documented SSR/public defaults and the compatible shared services/renderers. It does not make every component interactive, infer business actions or replace native render-mode precedence. Ordinary connected applications retain their existing default profile. Exact public signatures are settled through Behavior/Reuse evidence.
+
+| Reusable framework deliverable | What the consuming application supplies |
+| --- | --- |
+| Host registration and starter wiring | The framework supplies the profile registration, suitable native Blazor service/endpoint integration and an inspectable starter with the appropriate `App`, `Routes` and head composition. The app selects modules, explicit profile overrides and application middleware/authentication. A hand-authored host uses the same public integration points. |
+| Static-compatible public shell | Shared public header/navigation/breadcrumb/region renderers use the headless contribution catalog, semantic tokens and ordinary Razor/HTML. The app supplies branding, layouts where needed and feature content. Static support does not require copying the shell into each app. |
+| Render compatibility validation | The framework evaluates declared module/contribution capabilities, host overrides and known native boundaries before activation where possible. The app declares any required interactivity or static/form alternative. Diagnostics identify the source/target and effective policy for incompatible or deferred contributions. |
+| Request and interactive context integration | Shared hosting support distinguishes SSR/prerender request ownership from live circuit ownership using native context/lifecycle facilities and suitable existing identity APIs. The app registers its feature services and authorization. Browser-safe core contracts do not expose `HttpContext`, server services or provider types. |
+| Read initialization and handoff conventions | Supply documented opt-in key/lifetime conventions and only evidence-backed helpers around native `PersistentComponentState`/`PersistentState`, including cleanup and stale-context rejection. The feature selects transferable DTOs, identity/context keys, freshness and permissions. No automatic AppState serialization or second hydration store is introduced. |
+| Native forms and feedback integration | Reuse ordinary `EditForm`/HTML forms, native form names/binding, antiforgery and the existing Result-to-field/summary mapping. The feature supplies its form/model and server use case, including authorization and mutation identity. A reusable module can share a compatible native form across modes without a mandatory framework form base. |
+| Critical-content readiness | Framework chrome/contribution composition can render ready static content while optional contributions are deferred or unavailable, with request/live phase attribution. The app identifies genuinely required source reads and feature fallbacks. No global all-modules-ready spinner, warmup barrier or replacement job scheduler is required. |
+| Assets and delivery defaults | Reuse RCL/static-web-asset packaging, selected-renderer assets and native HTTP/static-asset facilities. The profile avoids requiring the WASM/staff/debug payload for baseline public routes. The app provides media/content sizes, optional output/data-cache policy and any additional declared asset dependencies. This does not create a bundler or promise arbitrary component-level code splitting. |
+| Diagnostics and performance evidence | Shared diagnostics expose effective profile, native mode, SSR/prerender/activation phase, contribution readiness and applicable resource/timing attribution. Provide repeatable sample workloads using ordinary tools. The app supplies its workload and budgets; actual backend/host/network costs stay visible. |
+
+Shared support belongs in the appropriate framework host/renderer packages. Native server registration, request adaptation and protected handoff implementation remain outside the browser-safe headless core. Domain-specific handlers, public POST endpoints, data-query batching and business cache/invalidation policy remain in their owning application modules.
+
+The profile may choose safe defaults, but it must not discover and persist arbitrary user state, silently move an active instance between runtimes or override a legal explicit native mode without an actionable conflict. SSR is read-only initialization; live observers and action bindings are rebuilt on activation. Feature-owned POST processing is a separate explicit request, never a prerender side effect.
+
+Prefer short native configuration to a new wrapper. A helper is justified when the actual starter and independent consumers demonstrate the same repeated lifecycle/error-prone work. It must remove setup without requiring new base classes, a service locator, another initialization graph or a parallel event/persistence system. Optional generation can emit the same inspectable native host declarations and metadata; generated and handwritten hosts use the same public contracts and validation.
+
+Framework fixes to these shared renderers, conventions and host services must reach consumers through package upgrades. Profile defaults and their supported overrides are documented compatibility commitments. Applications still choose their page modes and content behavior; selecting the profile does not guarantee a latency number or repair a slow feature query automatically.
 
 ### Reference application access paths
 
@@ -471,7 +534,7 @@ Cross-module links use stable destination contracts and normal Blazor routing. T
 
 Modules publish stable destination identities and `@page` route patterns. Small typed destination helpers supply the required route parameters and supported query values for cross-module links. Generated links use correct URI encoding and respect the application's configured base path. Ordinary local links remain valid and need no extra registration merely to participate in the shell.
 
-The first release preserves the module's published route patterns. Arbitrary host remapping of module pages to different URL patterns is deferred until a concrete application requirement justifies it. Destination helpers describe and generate links to the existing Blazor routes rather than maintaining a second routing engine.
+The feature preserves the module's published route patterns. Arbitrary host remapping of module pages to different URL patterns is deferred until a concrete application requirement justifies it. Destination helpers describe and generate links to the existing Blazor routes rather than maintaining a second routing engine.
 
 Destination dependencies use the existing module and contribution composition metadata. A missing required module or destination fails startup validation with its source and target identified. Links to absent optional modules are hidden by default. A feature can explicitly show a disabled link with an availability reason instead. Runtime policy and capability checks remain authoritative after composition. Direct visits receive the established denied or unavailable behavior, independently of whether a link was rendered.
 
@@ -510,7 +573,7 @@ flowchart TD
 
 This headless separation is a customization seam within a Blazor framework. It does not require framework-independent UI code, a new library of unstyled controls or a mandatory controller for every component. Backend business logic remains independent of UI and routing.
 
-The browser-safe shell contracts and behavior have no direct or transitive dependency on MudBlazor. Applications reference the default MudBlazor layouts, navigation, toolbars, dialogs and page patterns separately. Their live provider and interaction behavior requires the compatible interactive composition described in Hosting and render-mode interoperability. Static-only content uses SSR-compatible rendering.
+The browser-safe shell contracts and behavior have no direct or transitive dependency on MudBlazor. Applications reference the default MudBlazor shell renderer separately. Feature UI packages may use MudBlazor directly; headless shell contracts do not require every feature control to be renderer-independent. The shell composes the required MudBlazor providers in the compatible interactive composition described in Hosting and render-mode interoperability. Static-only content uses SSR-compatible rendering.
 
 ## Shell layouts and application chrome
 
@@ -623,6 +686,7 @@ Shared registration metadata feeds the shell's composition validation and diagno
 | Ordering and customization | Records declared order, supported host configuration and explicit decoration/replacement/disable decisions. |
 | Action references | Definitions and placements have stable composition references; live scope/binding/execution IDs are recorded in scoped runtime diagnostics, without storing user state in shared registration metadata. |
 | Declared runtime dependencies | Describes refresh dependencies and lifecycle policy without retaining current user-specific values or subscriptions in shared metadata. |
+| Rendering capabilities | Describes static/prerender compatibility, required interactivity and declared native-form/static alternatives where relevant. The host remains responsible for legal native render boundaries; this metadata does not create another renderer. |
 
 Registration builders infer module ownership and ordinary identity defaults where possible. The owner exports typed handles for cross-module extension points and attachment targets with stable IDs under its published module identity. The handle expresses compatibility in C# and supplies its stable ID for configuration and diagnostics. Startup validation checks whether the target is installed and compatible. Local page and component hooks can use ordinary Razor and callbacks.
 
@@ -662,6 +726,12 @@ A contextual toolbar renders actions and controls for what a page or component i
 
 Contextual toolbar contracts and binding behavior belong to the headless shell. The separately referenced MudBlazor renderer supplies the default toolbar component. Optional data adapters expose grid selection through the same contracts. Features own the business behavior behind actions such as Approve, Edit, Save and Archive.
 
+These contracts apply when a feature needs contributed actions, shared invocation safeguards or explicit placement outside the owning component. Ordinary local menus, toolbars and buttons use MudBlazor or native Razor/HTML directly with local callbacks. They require no action definition, provider, framework registration or scope. A developer does not have to turn every click handler into a framework action.
+
+The default action outlet is a focused presenter of resolved bindings. It uses existing MudBlazor menu, toolbar and button components for rendering and interaction. The framework owns contribution ordering/grouping, explicit target association, shared execution state and action overflow placement. It does not introduce a generic menu/toolbar widget API, parallel control options or a new popup, focus or keyboard engine. Renderer integration still verifies accessible focus and keyboard behavior in the composed flow.
+
+A feature can render an existing binding through its own MudBlazor toolbar/menu or ordinary Razor controls. That presenter observes the same availability/pending state and invokes the original binding through the same safeguards. Replacing presentation must not call the business handler directly or reconstruct a target from the current selection.
+
 ### Action definition, placement, binding and execution
 
 UI actions define behavior independently of the control presenting it. Toolbar buttons and context-menu entries can invoke the same live action binding through the same applicability, confirmation and execution path. UI handlers can call existing APIs or Requester; they are not a second backend CQRS model.
@@ -693,9 +763,11 @@ The page frame owns the toolbar shown above two independent Orders components. I
 
 ![External toolbar bound to one of two Orders components](assets/external-toolbar-binding.png)
 
-Opening the toolbar menu or a confirmation preserves the originating binding. A modal editor would have its own scope and local actions; it must not inherit a grid's selected rows implicitly.
+Opening the toolbar menu or a confirmation preserves the originating binding. A modal editor using scoped framework actions creates its own scope and local bindings; it must not inherit a grid's selected rows implicitly. An ordinary feature-owned dialog using local callbacks needs no action scope or framework registration.
 
 ### Confirmation and invocation flow
+
+Feature code supplies an awaitable confirmation callback when an action needs confirmation. The default renderer may offer an opt-in MudBlazor confirmation integration through that same callback. Resolve the callback in the owning live scope; shared action metadata must not capture component instances or scoped services. Before awaiting confirmation, the invocation pipeline captures the targets/revision and reserves the binding. After acceptance, the pipeline rechecks owner lifetime, relevant context revision and eligibility before dispatch. Cancellation or a failed confirmation performs no mutation and releases the pending invocation. This integration does not require a general-purpose dialog service or renderer-neutral copies of dialog parameters/results.
 
 ```mermaid
 sequenceDiagram
@@ -742,7 +814,7 @@ A page can opt into showing page actions plus one explicitly active child scope.
 
 A toolbar stays attached to its explicitly selected scope. Default toolbar keyboard navigation and explicit local shortcuts preserve text-input/native control behavior and modal isolation; moving focus must not retarget the toolbar. General hierarchical shortcut routing, fallback/ambiguity resolution and command discovery are deferred. Local keyboard support does not require a global command-routing service.
 
-Dialogs and drawers keep their actions local by default. A host can configure other placement deliberately. Navigation, component removal or scope deactivation removes the corresponding bindings from active outlets and invalidates stale evaluations.
+Dialogs and drawers that participate in scoped actions keep those actions local by default. A host can configure other placement deliberately. Opening a dialog does not automatically create a framework scope. Navigation, component removal or scope deactivation removes the corresponding bindings from active outlets and invalidates stale evaluations.
 
 Mounting a page/component creates runtime bindings for installed providers or page-local callbacks; disposal removes those bindings. This does not install/unload modules or mutate application DI registrations.
 
@@ -781,7 +853,7 @@ Both grids can implement the same published typed context contract while retaini
 | Contextual availability | Typed synchronous/asynchronous visible/enabled evaluation with an optional disabled reason and declared refresh dependencies. |
 | Invocation | Awaitable binding to the intended owner and captured target context; applicability is checked at dispatch and again after confirmation. |
 | Execution status | Shared per-binding pending/busy state and per-invocation identity/outcome, reported progress where available, duplicate-invocation prevention and cancellation/disposal handling. |
-| Custom controls | Typed templates/components for quick search, filters, view selection, column tools or other feature controls; values update their owned state. |
+| Custom controls | Feature-owned native or MudBlazor components/templates for quick search, filters, view selection and column tools; values update their owned state through normal typed parameters/callbacks. Contribution placement does not require framework versions of these controls. |
 | Responsive interaction | Feature priorities keep the current primary action visible when space permits. Secondary actions move into keyboard-accessible overflow in predictable order. Each presentation observes the same binding, including availability and pending state. An empty toolbar can collapse. |
 
 An action can represent navigation through an ordinary destination or execute an asynchronous operation. Rendering/evaluating availability must never execute it. Feature code supplies confirmation meaning/content and business prerequisites; the action invocation contract enforces the checks around any confirmation. Backend services enforce authorization, concurrency and mutation rules independently. Authentication integration remains optional.
@@ -801,11 +873,11 @@ State dependencies, context updates and explicit invalidation re-evaluate the af
 | Refresh | React to declared dependencies without inferred backend reloads. | Which state/query/record changes invalidate which consumers. |
 | Identity | Derive live scope/binding/execution identities and routine local keys. | Stable published definition/attachment identities when other packages must reference or override them. |
 
-A local action can bind an ordinary typed callback without a separate provider class or manual registration of every diagnostic identity. Builders and runtime bindings infer owner/provenance and routine identities; developers publish explicit stable identities where cross-package attachment, replacement or compatibility requires them.
+A framework-bound local action can bind an ordinary typed callback without a separate provider class or manual registration of every diagnostic identity. Builders and runtime bindings infer owner/provenance and routine identities; developers publish explicit stable identities where cross-package attachment, replacement or compatibility requires them. Local callbacks outside this action model remain ordinary component behavior.
 
 ### Safe invocation and lifetime
 
-Invocation follows one path regardless of its toolbar/menu placement:
+Framework-bound action invocation follows one path regardless of its toolbar/menu placement:
 
 1. Resolve the requested original binding and validate that its owner/target remain eligible.
 
@@ -917,6 +989,8 @@ flowchart TD
 
 Main, Account and Footer menus are available defaults, and hosts can define additional menus and outlets. Groups, links and executable actions support nested composition. Active states and breadcrumbs derive from the resolved route and context.
 
+These names identify logical navigation contribution locations, not new menu control types. Their renderers consume the resolved hierarchy through existing MudBlazor controls or native Razor links. Feature-local dropdowns and context menus need no navigation registration or participation in the shell hierarchy. When a menu intentionally presents a framework-bound action, it invokes that original binding and retains its ownership and execution safeguards.
+
 Navigation items must support synchronous or asynchronous runtime evaluation of visibility, enabled state, text, icon, tooltip, badge/count, styling and custom rendering. A developer can, for example, hide an item based on application context or display an unread count supplied by a service.
 
 Menus and subtrees must also support code-defined generation of items and children at runtime. For example, an Orders parent can contain a child link for each returned order; a Catalog parent can contain categories derived from products. A dynamic child can itself provide further dynamic children and ordinary item hooks. Simple cases use callbacks; reusable cases use contribution providers.
@@ -983,7 +1057,7 @@ MudBlazor is the default component and interaction library. Tailwind CSS is the 
 
 A shared semantic design vocabulary covers colors, typography, spacing and breakpoints. MudTheme remains the primary component-theme mechanism; utility styling must align with it. Theme identity and appearance mode are separate choices: a named theme can support light, dark and system appearance.
 
-The first release supplies one reference theme with light, dark and system appearance modes. Hosts can add themes and restrict user choices. DoFiesta demonstrates a host theme whose semantic tokens are shared by MudBlazor and utility styles.
+The feature supplies one reference theme with light, dark and system appearance modes. Hosts can add themes and restrict user choices. DoFiesta demonstrates a host theme whose semantic tokens are shared by MudBlazor and utility styles.
 
 | Area | Requirement |
 | --- | --- |
@@ -1118,7 +1192,11 @@ A controlled reload is acceptable for an initial culture-switch implementation i
 
 ## Shared interactions and operation feedback
 
-The shell supplies consistent dialogs, confirmations, notifications, loading indicators, empty states and failure presentation. Ordinary MudBlazor dialogs and snackbars remain usable directly.
+The framework coordinates operation outcomes, feedback ownership and guarded action confirmation. The selected renderer and feature components present the resulting state using MudBlazor or native Blazor directly. Shared feedback behavior does not introduce a catalog of dialog, snackbar, loading, empty-state or error controls.
+
+Features use MudBlazor's `IDialogService`, dialog components, parameters, options and results directly. MudBlazor owns dialog rendering and interaction mechanics. Features own modal contents, edit models, validation, localized wording and the meaning of the result. The default shell configures the required providers in compatible interactive roots. There is no framework modal service, dialog registry, mandatory dialog base class or parallel dialog parameter/result model.
+
+For framework-bound actions, a confirmation callback participates in the [confirmation and invocation flow](#confirmation-and-invocation-flow). It preserves captured target identity, cancellation, duplicate-invocation suppression and stale-context checks without changing the feature's dialog API. Static public workflows use native forms and review/confirmation pages where needed; essential public behavior must not depend on an interactive dialog.
 
 Use the operation outcomes and recovery contract in Enterprise readiness for bITdevKit Result values and application-client errors. Render field validation, business rejections and recovery choices through the same feedback model independently of the HTTP client.
 
@@ -1237,21 +1315,23 @@ The shell publishes its own composition and required shared initialization statu
 
 ### Performance baselines and release acceptance
 
-Use repeatable G1 and G2 measurements to establish reference workloads, baselines and realistic performance limits. Extend the evidence to the remaining supported profiles as they become runnable. Set limits from observed results before stabilization, rather than inventing universal latency or memory promises at specification time.
+Use repeatable measurements across the complete supported profile matrix to establish reference workloads, baselines and realistic performance limits. Set limits from observed results before stabilization, rather than inventing universal latency or memory promises at specification time.
 
 Cover startup and interactivity, navigation and action evaluation, browser download size, Server circuit resource use and diagnostics overhead where applicable. Measure with interactive diagnostics disabled and with the relevant inspection or capture capability enabled. Attribute measurements to their source and coverage, and distinguish framework overhead from feature/backend work. Reuse native .NET and Blazor instrumentation where it supplies the required evidence.
 
+For the public website profile, record initial HTML usefulness, server time-to-first-byte, content paint, transferred resources, layout stability, navigation/form response and interactive readiness separately. Exercise mobile network/CPU constraints, cold and warm caches, a cold host where relevant, delayed/blocked JavaScript and optional-source failure. Use current Core Web Vitals guidance as a reference, with workload-specific limits established by the gates; lab measurements are not production field-percentile evidence. [Core Web Vitals and field/lab measurement](https://web.dev/articles/vitals)
+
 Record the build, runtime and browser versions, workload, host configuration, environment, sample count and measurement variability. Compare equivalent workloads and distinguish cold and warm behavior where relevant. A noisy single sample is insufficient to establish a regression.
 
-Reproducible regressions beyond the documented limits block stable release. Investigate or correct the regression and rerun the applicable checks. An intentional baseline or limit change records its reason and supporting evidence rather than silently accepting slower behavior. The delivery gates retain the recorded performance results and their applicable limits alongside functional acceptance.
+Reproducible regressions beyond the documented limits block stable release. Investigate or correct the regression and rerun the applicable checks. An intentional baseline or limit change records its reason and supporting evidence rather than silently accepting slower behavior. The evidence requirements retain the recorded performance results and their applicable limits alongside functional acceptance.
 
 ### Accessibility acceptance
 
-Target WCAG 2.2 AA for the shipped shell renderers as exercised in complete reference pages and flows. Validate keyboard access, focus visibility and restoration, landmarks and accessible labels, contrast, zoom and reflow, and announcements for loading, errors and action feedback. Exercise navigation, dialogs and toolbar overflow with keyboard and screen reader checks in addition to automation. Describe the renderer responsibilities for custom layouts and the consuming application's responsibility for conformance of its complete pages and workflows. [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
+Target WCAG 2.2 AA for the shipped shell renderers as exercised in complete reference pages and flows. Validate keyboard access, focus visibility and restoration, landmarks and accessible labels, contrast, zoom and reflow, and announcements for loading, errors and action feedback. Exercise navigation, dialogs and toolbar overflow with keyboard and screen reader checks in addition to automation. Describe the renderer responsibilities for custom layouts and the consuming application's responsibility for conformance of its complete pages and workflows. [WCAG 2.2](https://www.w3.org/TR/WCAReuse2/)
 
 ### Compatibility and upgrades
 
-Publish the stable surface after the first stable release evidence in Acceptance scenarios is complete. The compatibility guarantee covers explicitly documented contracts within their supported package, platform and hosting combinations. The release documentation identifies the concrete names, keys, IDs and schema versions that form that surface.
+Publish the stable surface after the complete feature evidence in Acceptance scenarios is complete. The compatibility guarantee covers explicitly documented contracts within their supported package, platform and hosting combinations. The release documentation identifies the concrete names, keys, IDs and schema versions that form that surface.
 
 | Compatibility surface | What consumers can rely on |
 | --- | --- |
@@ -1291,7 +1371,7 @@ Reuse standard .NET/Blazor diagnostic sources, Activity and Meter facilities and
 
 Snapshots and recordings must apply redaction and limits before exposure. Do not automatically dump credentials, arbitrary object graphs or all request bodies. Core inspection is read-oriented; business replay, time travel and automatic code modification are outside scope.
 
-The attached popout is part of the first stable release. It inspects the originating session and reachable runtime or roots under the same access and redaction policy as the drawer. The in-page drawer remains available as the fallback when popout attachment fails.
+The attached popout is part of the complete feature. It inspects the originating session and reachable runtime or roots under the same access and redaction policy as the drawer. The in-page drawer remains available as the fallback when popout attachment fails.
 
 ## Agent-accessible diagnostics and discovery
 
@@ -1328,7 +1408,7 @@ Semantic inspection identifies a particular action binding in its live scope and
 
 For WASM it queries the attached browser runtime; for Interactive Server it uses an explicit connection to the originating circuit/session. Mixed pages identify and expose reachable interactive roots separately, with capabilities and measurements attributed to their source. An unavailable or disconnected root is reported rather than replaced with another session's data.
 
-The first release delivers and validates the browser facade with an attached browser adapter. A bdk MCP or CLI integration can use that adapter to query the selected page and is a separate deliverable. The browser adapter must support script execution in the attached page.
+The feature includes and validates the browser facade with an attached browser adapter. A bdk MCP or CLI integration can use that adapter to query the selected page and is a separate deliverable. The browser adapter must support script execution in the attached page.
 
 Diagnostic queries retain host and session access rules, bounded execution and redaction. The host can enable the drawer independently of the browser facade. Read-only inspection and optional capture controls remain separate from business actions.
 
@@ -1340,13 +1420,17 @@ Outside development, interactive inspection, capture and agent access start disa
 
 Deliver starters for the supported hosting arrangements, examples of ordinary modules and deep links, customization recipes, data-component examples and diagnostic instrumentation examples. The default path should minimize repeated registrations and naming ceremony.
 
-Consumer-facing shell contracts remain in preview while the POC and applicable first-stable-release requirements are validated. The POC provides evidence for refining the contracts. Acceptance scenarios defines the release evidence, and Enterprise readiness defines the published compatibility surface.
+Consumer-facing shell contracts remain proposed/preview until the complete applicable evidence is available. TaskFiesta provides executable evidence for refining those contracts. Acceptance scenarios defines the release evidence, and Enterprise readiness defines the published compatibility surface.
 
 Public examples must show both the default application and substantial customization using supported contracts. A developer must be able to identify the owner of a page, navigation item or service registration through diagnostics.
 
 ### Out-of-the-box greenfield starter
 
 Deliver the starter through the standard .NET template workflow, building on the existing DevKit templates. After the documented SDK and package prerequisites, a newly generated application runs without a database, identity provider or other external application service. Its default profile is Interactive Server with prerendering disabled. It includes the shell and one small demonstration module using local demo data. Database and authentication integrations are explicit additions with documented setup.
+
+Also supply an explicitly selectable public website starter/profile using the same public composition APIs and module packaging. It demonstrates a server-rendered public page, native navigation/form behavior and a bounded prerendered Interactive Server area using local data. The profile documents which contributions are static-compatible and requires no bespoke host rendering infrastructure. The template's exact selection syntax follows the ordinary DevKit template design rather than being invented here.
+
+The public starter consumes the [reusable hosting and startup support](#reusable-hosting-and-startup-support) through its ordinary profile entry. It emits the small inspectable native root wiring an app must own, while packaged framework services/renderers own the shared behavior. Do not put the only working lifecycle/handoff implementation into generated app source or require applications to copy it from TaskFiesta.
 
 The demonstration module uses ordinary Razor components and public framework APIs to show a page, navigation and contextual actions. Include a few focused tests demonstrating module registration and action behavior, runnable through normal `dotnet test`. Developers can extend the module and its tests as they build their application. The starter must not require a separate command runner or testing system.
 
@@ -1356,7 +1440,7 @@ Document the complete path from a generated application to adding a page, bindin
 
 Module authors can test composition and action behavior without running DoFiesta or provisioning backend infrastructure. Start with existing xUnit, Shouldly, NSubstitute and .NET DI patterns, focused examples and a minimal test host using public framework APIs. Fake feature services can supply data and outcomes while the tests exercise real registration, ownership and action binding behavior.
 
-Keep the test host limited to the composition or component behavior under test. Full browser and application checks continue to verify the relevant integration flows. Extract optional shared fixtures or helpers only when real module tests demonstrate repeated setup. A dedicated module-testing package, custom testing DSL and mandatory alternative testing framework are not requirements of the first release.
+Keep the test host limited to the composition or component behavior under test. Full browser and application checks continue to verify the relevant integration flows. Extract optional shared fixtures or helpers only when real module tests demonstrate repeated setup. A dedicated module-testing package, custom testing DSL and mandatory alternative testing framework are not requirements of this feature.
 
 ### Publishing and consuming a module
 
@@ -1368,9 +1452,9 @@ Verify registration, page discovery, resources, asset delivery and the module's 
 
 ### Reuse and developer-experience evidence
 
-DoFiesta supplies the primary migration evidence. ShopFiesta is the second, independently composed greenfield example that proves reuse with a different workflow and host layout. Both consume the shared packaged preferences module and published framework APIs, using their own feature services, configuration and branding. The appearance/culture settings scenario in Appendix A supplies that concrete domain-neutral package-reuse case. Changing hosting mode or rendering the same DoFiesta pages in another profile does not by itself satisfy this evidence.
+TaskFiesta and its small technical test/consumer hosts supply complete framework validation. The application itself has one `CoreModule`. A clean, independently composed consumer installs its actual packed portable presentation-module artifact with different branding/layout and feature-service registration. Both consumers exercise customization and a package upgrade without source copies. Cross-module checks use a tiny external fixture module only in the dedicated test host. DoFiesta remains the migration target; ShopFiesta is implemented after framework readiness.
 
-The shared module must work in both applications without copying its source or editing framework internals. Exercise host customization and a shared package correction or upgrade in both consumers. Keep ShopFiesta's initial presentation slice focused on the assumptions that a single reference application cannot expose. Its intended long-term showcase is substantially broader than this first slice.
+The shared module must work in TaskFiesta and the clean consumer without editing framework internals. Record public setup, required files, host overrides and the actual package version. Changing hosting mode inside the same application does not establish independent-consumer reuse.
 
 A developer unfamiliar with the framework internals must be able to follow the public documentation to add an ordinary page, bind a local action, place that action in an external toolbar and consume a reusable module. Record the required files, registrations, framework-specific concepts and any need for undocumented knowledge. Compare the integration effort with the corresponding ordinary Blazor workflow, accounting for the behavior the framework supplies. Use the findings to simplify preview APIs before stabilization; do not claim unmeasured productivity gains.
 
@@ -1378,9 +1462,9 @@ The developer workflow retains normal .NET build, test and debugging tools and t
 
 ### DoFiesta reference application
 
-DoFiesta is the migration target and reference application for the bITdevKit Blazor presentation framework. Its references and migration walkthroughs remain part of this specification. Every capability delivered by the framework and shell must have a runnable DoFiesta scenario that consumes it through the same public contracts, registrations and assets available to other applications. Surface user-facing capabilities in ordinary workflows. Demonstrate configuration, extension contracts and diagnostic integrations through documented example code and runnable profiles. Record where to find each capability, how to enable it, and what observable behavior proves that it is in use.
+DoFiesta remains the migration target and real-application reference. Its migration walkthroughs and task/list requirements remain part of this specification. They exercise applicable contracts through existing workflows. TaskFiesta is the primary complete framework validation application, including capabilities that do not need to be added to DoFiesta solely to duplicate that coverage.
 
-DoFiesta can evolve its pages, domain and APIs to supply those workflows. The first task-list workflow proves the core integration. Subsequent workflows and profiles cover the rest of the delivered surface. Exercise optional packages in the profiles that enable them. When an optional feature ships, add or update its DoFiesta scenario with that delivery. The framework's release scope determines which capabilities need coverage.
+DoFiesta can evolve its pages, domain and APIs to support the migration workflows below. Its hosting and extension profiles remain useful migration checks. [Appendix A](#appendix-a-taskfiesta-validation-application) maps the whole framework feature to TaskFiesta; this DoFiesta section does not prescribe an implementation phase or require ShopFiesta.
 
 | DoFiesta screen or profile | Capabilities demonstrated |
 | --- | --- |
@@ -1391,7 +1475,7 @@ DoFiesta can evolve its pages, domain and APIs to supply those workflows. The fi
 | Preferences · `/preferences` | Shell and contributed settings, reference and host themes, light/dark/system mode, culture, localized app/module/component resources, and scoped display preferences. |
 | Shell and extension profile | A companion module contributes navigation, Show overdue and chrome or settings content through published handles. Host configuration demonstrates ordering, customization, replacement and disablement, with the resolved contributions visible in diagnostics. |
 | Plain Razor profile | A MudBlazor-free host renders task navigation and a contextual action using the same portable shell contracts. The MudBlazor consumer demonstrates packaged CSS and host theming alongside responsive chrome, icon and text modes, tooltips, keyboard access and overflow. |
-| Hosting profiles | Run the POC matrix for Interactive Server, WASM, Auto, standalone WASM, mixed pages and sibling areas, and explicit prerendering. The mixed sibling profile pairs the WASM task view with a Server list summary. The public Help page demonstrates static SSR and ordinary deep links. |
+| Hosting profiles | Run the hosting matrix for Interactive Server, WASM, Auto, standalone WASM, mixed pages and sibling areas, and explicit prerendering. The mixed sibling profile pairs the WASM task view with a Server list summary. The public Help page demonstrates static SSR and ordinary deep links. |
 | Identity profiles | Anonymous startup and protected task and list workflows. Exercise denied actions and identity changes with scoped state, preferences and backend permission enforcement. |
 | Developer diagnostics | Drawer, attached popout and separately enabled browser facade on the same app tab. Show provenance, runtime, active scope, disabled reasons, captures and redaction. The non-development profile demonstrates default-off behavior and an explicit authorized production inspection session. |
 | Developer validation profiles | Repeatable cases for invalid composition, initialization, slow or failing providers, subscription cleanup, conflict, lost responses, batch outcomes and backend-owned work. Document each case at the app surface it exercises. |
@@ -1402,39 +1486,21 @@ DoFiesta can evolve its pages, domain and APIs to supply those workflows. The fi
 
 ### ShopFiesta greenfield showcase application
 
-ShopFiesta is a planned new application under `examples/ShopFiesta`. This specification focuses first on its frontend design and architecture: module-owned pages, layouts, navigation, component contributions, state, forms, feedback, access and runtime-specific feature contracts. The appendix is a design walkthrough, not an implemented application. DoFiesta remains the reference migration and retains its own requirements and workflows.
+ShopFiesta is the separate follow-on application planned under `examples/ShopFiesta`. Build it after the complete presentation framework has been implemented and validated with TaskFiesta and its independent consumer. Its [application specification](spec-shopfiesta.md) and backend roadmap preserve the intended commerce/showcase design. No ShopFiesta page, commerce module, backend provider or application acceptance case is required to complete the framework.
 
-The initial catalog contains road/race and gravel bicycle components, including manufacturer model designations. It excludes clothing, complete bicycles and general-purpose/computer hardware. Product types, categories, brands, attributes, facets and media remain Catalog data. The shop and presentation framework stay product-agnostic.
+ShopFiesta consumes the resulting public framework APIs and packages. Its later application tests can reveal improvements or regressions, but they are not a substitute for the complete framework validation appendix. DoFiesta remains the existing migration target.
 
-The six logical modules Catalog, Stock, Basket, Checkout, Marketing and Orders correspond across frontend and backend. Catalog defines products, variants and identifiers. Stock uses the same merchant SKUs and owns live availability, ordering policies and staff stock management. Orders owns customer history and protected staff operations. Marketing owns recommendations, their staff editor and the complete reporting overview. Its contract supplies all metric values, product-selection metadata and freshness. The overview does not query the other modules to assemble its data.
+### DoFiesta migration validation application
 
-ShopFiesta will later become a broad DevKit showcase. Its [backend roadmap](spec-shopfiesta-backend-showcase.md) preserves the agreed direction:
+The DoFiesta migration checks hosting portability, presentation module composition and contextual interactions against its task/list workflow and the profile matrix below. This is a real-application counterpart to TaskFiesta validation, not a phased subset of the specified framework.
 
-| Backend concern | Agreed owner/direction | What the first frontend slice consumes |
-| --- | --- | --- |
-| Reporting and Messaging | Marketing captures source-module integration messages and stores its reporting projections. | Marketing-owned overview DTOs with capture time, revision and coverage, supplied by a small fixture handler initially. |
-| Stock | Stock owns quantity, availability, sellability and per-SKU ordering policies using Catalog's SKU definitions. | SKU-based availability decisions, live updates, freshness and a protected native management page, initially fixture-backed. |
-| Queueing | Orders schedules and handles order processing in the backend. | Accepted references, current status and recoverable outcomes; leaving a page only detaches observation. |
-| Blob Storage | Catalog's product images come from blobs. | Image URLs, alt text, revision and local missing/failure presentation. |
-| File Storage | Catalog's product manuals come from files. | Download links and document metadata/applicability. |
-| Jobs | Modules own recurring backend tasks, including Marketing's daily summaries. | Returned calculation time and freshness; no page-owned scheduling. |
-| Application Caching | Upcoming backend performance feature, pending merge. | The same feature contracts and truthful result freshness, with no frontend cache dependency. |
-
-The first presentation slice can use minimal, fixture-backed or mocked backend behavior while preserving those owners and contracts. Server access evidence still dispatches real Requester calls to small handlers; WASM evidence uses real HTTP to those handlers. A component mock does not establish either transport path. Conversely, frontend fixtures do not prove backend queue, message, storage, scheduler or cache integration. Those later profiles have separate evidence in the roadmap.
-
-No database, external broker, scheduler, storage provider, identity provider or payment system is required to design or validate the presentation contracts. Keep ordinary .NET/Blazor mechanisms and low setup friction. Backend implementation detail belongs to its own showcase work, not the presentation framework's API or the first frontend acceptance gate.
-
-### DoFiesta proof of concept example application
-
-The first DoFiesta POC proves hosting portability, presentation module composition and contextual interactions before the public APIs are finalized. It starts with the task-list workflow and the hosting and renderer checks below. The reference application expands its coverage as framework capabilities are delivered.
-
-Reuse DoFiesta's existing Todo domain/API, .NET 10 Server/Client arrangement and MudBlazor assets while moving its application composition, layout, navigation and contextual actions onto the new shell. Its current App configures Interactive WebAssembly with prerendering disabled; Server and Auto therefore require additional host/service arrangements. Add documented hosting and validation profiles within the DoFiesta example. Any minimal companion host needed for standalone WASM belongs to that same example and consumes the same feature code. Use the POC build and dependency checks to determine exact assembly and package placement. [DoFiesta client project](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/examples/DoFiesta/DoFiesta.Presentation.Web.Client/DoFiesta.Presentation.Web.Client.csproj) · [Current host component](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/examples/DoFiesta/DoFiesta.Presentation.Web.Server/Components/App.razor)
+Reuse DoFiesta's existing Todo domain/API, .NET 10 Server/Client arrangement and MudBlazor assets while moving its application composition, layout, navigation and contextual actions onto the new shell. Its current App configures Interactive WebAssembly with prerendering disabled; Server and Auto therefore require additional host/service arrangements. Add documented hosting and validation profiles within the DoFiesta example. Any minimal companion host needed for standalone WASM belongs to that same example and consumes the same feature code. Use the migration validation build and dependency checks to determine exact assembly and package placement. [DoFiesta client project](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/examples/DoFiesta/DoFiesta.Presentation.Web.Client/DoFiesta.Presentation.Web.Client.csproj) · [Current host component](https://github.com/BridgingIT-GmbH/bITdevKit/blob/b41782cbd1a2ae220027544fe34f2deefc6c0946/examples/DoFiesta/DoFiesta.Presentation.Web.Server/Components/App.razor)
 
 Build on the existing Todo workflow with named task lists, task detail deep links, and Edit, Save, Move and Complete actions. Two simultaneous component instances have independent selection, context and pending state. A toolbar outside the owning component explicitly observes the selected scope. Host adapters supply direct Application Requester access on Server and typed HTTP clients in WASM through the portable feature's service contracts. Backend module startup, repositories and server-only registrations stay on the server.
 
-The task-list walkthrough below defines the first extension to DoFiesta's frontend and backend and the shell contracts it exercises.
+The task-list walkthrough below defines the proposed DoFiesta frontend/backend migration behavior and the shell contracts it exercises.
 
-| POC arrangement | Required evidence |
+| DoFiesta profile | Required evidence |
 | --- | --- |
 | Interactive Server baseline | Full interactive shell, prerendering off, direct Application Requester dispatch, equivalent application authorization, correct circuit-scoped services and reconnect/unknown-outcome behavior. |
 | Interactive WebAssembly | The same portable feature executes in the browser through a real typed HTTP client; no server-only dependency leaks. |
@@ -1449,30 +1515,28 @@ The task-list walkthrough below defines the first extension to DoFiesta's fronte
 
 Profile selection is a host/startup or route-boundary concern. A demonstration control may navigate to another profile, but must not imply that changing a dropdown migrates live components or operations between runtimes. MudBlazor providers belong inside the compatible interactive compositions that use them.
 
-The example contributes at least one static navigation item, bounded asynchronous children, a runtime badge and route-backed detail tabs. A second small consumer contribution attaches a contextual action or navigation provider and demonstrates explicit override/disable behavior. Application-, module- and component-owned translations coexist. The baseline runs without an identity provider; a separate opt-in identity profile demonstrates protected capabilities and backend enforcement. Existing protected DoFiesta endpoints are not made anonymous to satisfy the baseline; use isolated POC data/endpoints with deliberate access rules.
+The example contributes at least one static navigation item, bounded asynchronous children, a runtime badge and route-backed detail tabs. A second small consumer contribution attaches a contextual action or navigation provider and demonstrates explicit override/disable behavior. Application-, module- and component-owned translations coexist. The baseline runs without an identity provider; a separate opt-in identity profile demonstrates protected capabilities and backend enforcement. Existing protected DoFiesta endpoints are not made anonymous to satisfy the baseline; use isolated validation data/endpoints with deliberate access rules.
 
 Development diagnostics expose the selected renderer, activation phase, module/contribution provenance, live scope attachment, evaluation counts and failures through the drawer and the read-oriented JavaScript facade. Browser checks verify that the separately enabled facade returns source-attributed diagnostics for the originating tab and its reachable runtimes with the drawer closed. Measure startup/interactivity timing, initial transfer size and initialization/query/action counts as observations for comparison; do not set unmeasured performance promises. Use those observations to establish the limits required by Performance baselines and release acceptance before stabilization.
 
-Completion requires repeatable run instructions, the shared feature and minimal host arrangements, and recorded pass/fail evidence for the POC arrangement table and workflow checks in this section. Focused browser checks cover deep-link reloads, two independent toolbar scopes, selection/context changes during confirmation, stale asynchronous results, disposal, duplicate invocation prevention, unknown mutation outcomes and save-revision safety. Prerendered cases demonstrate no browser interop before activation, no unintended duplicate mutation/subscription, and no second initialization query for the read explicitly transferred. Auto results identify both actual runtimes. Fault injection and test data remain example-owned.
+Completion requires repeatable run instructions, the shared feature and minimal host arrangements, and recorded pass/fail evidence for the DoFiesta profile table and workflow checks in this section. Focused browser checks cover deep-link reloads, two independent toolbar scopes, selection/context changes during confirmation, stale asynchronous results, disposal, duplicate invocation prevention, unknown mutation outcomes and save-revision safety. Prerendered cases demonstrate no browser interop before activation, no unintended duplicate mutation/subscription, and no second initialization query for the read explicitly transferred. Auto results identify both actual runtimes. Fault injection and test data remain example-owned.
 
-The POC validates the existing shell model. It does not add an operations registry, scheduler, edit-session coordinator, search/command discovery, generic cross-runtime action transport or offline synchronization engine. Findings can refine contracts and host profiles before public API stabilization.
+The migration validation exercises the specified shell model. It does not add an operations registry, scheduler, edit-session coordinator, search/command discovery, generic cross-runtime action transport or offline synchronization engine. Findings can refine contracts and host profiles before public API stabilization.
 
-### Delivery gates and evidence
+### Validation and evidence requirements
 
-A gate is a working checkpoint with recorded checks. A preview contract is a public registration API, typed context, component parameter or behavior agreement being tried before stable release. For example, the first gate proves that the external toolbar invokes the selected component's binding and rejects a stale confirmation.
+This is one specification for the complete presentation framework feature. It does not define delivery phases, staged subsets, task order or implementation milestones. A later implementation plan can choose phases and tasks without reducing these requirements. Runtime lifecycle phases and alternative hosting/test profiles describe behavior, not delivery sequencing.
 
-Deliver the reference application in the following order. Gates G1 through G3 stage the POC evidence; G4 completes the production and stable-release evidence. The arrangement table and applicable acceptance scenarios remain required.
+TaskFiesta is the compact executable validation app developed alongside the framework. Its minimal domain must cover the complete feature. The coverage areas below are unordered labels for organizing evidence, not stages or gates. Every applicable requirement must pass before the framework is considered ready; ShopFiesta starts afterward.
 
-| Gate | Runnable application evidence | Preview contracts validated |
+| Coverage area | Runnable evidence | Contracts validated |
 | --- | --- | --- |
-| G1: Interactive Server foundation | Migrate the core shell and task workflow with prerendering off and direct command/query dispatch. Exercise two independent task scopes, an external toolbar, stale confirmation, disposal, protected direct links and AppState isolation. Run the greenfield starter with local demo data and its included tests without external services. Verify host-composed availability and generated links, and capture the initial Server performance baseline. | Module registration, page ownership and route availability, Server feature access, state ownership, typed action context, scope attachment, invocation lifecycle, starter integration and initial performance evidence. |
-| G2: Portable consumers and adapters | Run the shared feature in Web App WASM and standalone WASM through real HTTP clients. Run navigation and an action in the MudBlazor-free Razor host. Verify the optional grid and handwritten-view selection policies, form error mapping and revision safety. ShopFiesta's focused greenfield slice installs the actual shared packed module through NuGet with its own workflow, services and layout. Compose its corresponding frontend/backend feature modules, including customer order history and protected operations views. Verify module assets, JavaScript cleanup, base-path links and any required browser availability projection. Capture the browser performance baseline. | Browser module registration and dependencies, frontend/backend module correspondence, runtime-specific feature access, headless renderer contracts, FilterModel and selection adapters, validation feedback, asset ownership, destination contracts, availability and reuse through public package contracts. |
-| G3: Hosting and activation | Run cold and warm Auto visits, mixed pages and sibling roots, Static SSR and explicit prerender cases. Exercise context changes, data handoff, explicit invalidation and diagnostics attributed to the originating runtime. | Runtime and root ownership, prerender activation and transfer, context/invalidation integration and diagnostic source attribution. |
-| G4: Production and stable release | Run scaled proxy/reconnect and rollout profiles, authorized diagnostics including popout and browser facade, operational telemetry, accessibility checks and a consuming-app upgrade. Verify supported profiles against their evidence-based performance limits. | Session and recovery integrations, diagnostic access and schemas, telemetry, accessible renderer behavior, configuration, assets, upgrade compatibility and performance acceptance. |
+| Behavior | TaskFiesta's task/list CRUD, two independent task views, external toolbar, confirmations, state, validation, dirty edits, partial/unknown outcomes and backend-owned work observation. Real Server feature clients dispatch Requester to bounded fixture Application handlers. | Composition, ownership/routes, actions/scopes, data adapters, state, forms, feedback, navigation and cleanup. |
+| Reuse | Independent module tests, ordinary starter use, actual packed module consumption in TaskFiesta and a clean host, plain Razor and MudBlazor renderers, supported browser publication and a package upgrade. | Public registration/components/resources/assets, headless boundaries, conventions/discovery/generation, native integration and developer setup. |
+| Hosting | Server, Web App WASM, standalone WASM, Auto, mixed pages/roots, Static SSR/public forms and explicit prerender/handoff arrangements. Browser modes use real HTTP clients, Server uses Requester directly. | Runtime-specific access, legal boundaries, context/lifetime, native form fallback, transfer isolation and phase-attributed diagnostics. |
+| Quality | Identity/workspace transitions, denied routes/actions, proxy/reconnect/rollout, diagnostic drawer/popout/facade, redaction, telemetry, localization, accessibility, performance and consumer compatibility. | Complete operational, security, recovery, styling, publishing and quality requirements for all supported combinations. |
 
-Each gate records its runnable profile, setup and execution commands, tested build, actual results and the concrete preview APIs and behavior contracts exercised. Automate repeatable core checks such as composition validation, route denial, scope isolation, selection transitions and stale-result rejection. Use browser checks for the relevant interaction flows. Record manual keyboard and screen-reader checks where human assessment is required. Keep application-specific execution records with the example or task outputs outside the documentation tree.
-
-A failed or unavailable required check leaves the gate open. Record the limitation and rerun the check when its prerequisite is available. A later gate can refine a preview contract; rerun affected earlier checks after that change. Publish stable contracts after all applicable release evidence passes.
+Each case records the actual runnable profile, commands, tested build, result and concrete public API/behavior contracts exercised. Automate repeatable composition, route, scope, selection and stale-result checks; use browser checks for interaction and recorded human checks where appropriate. Keep execution records outside this specification. Missing/unavailable evidence remains unresolved, and a changed contract requires rechecking affected evidence. Images and diagrams do not establish a runtime pass.
 
 ### Task lists in DoFiesta
 
@@ -1577,7 +1641,7 @@ Examples must demonstrate a default local toolbar and an externally placed toolb
 
 This developer-experience example combines an ordinary Orders list and detail destination with an Approve extension. The read-only list/detail path works without CRUD packages, authentication integration or a mandatory framework page base. Approval is feature-supplied behavior. The screens are illustrative mockups, not an implemented application or finalized visual design; file names and routes illustrate ownership rather than public API signatures.
 
-[Appendix A](#appendix-a-proposed-api-example-and-execution-contract) expands these contracts into a customer-facing e-commerce shop with a protected order-operations area, proposed public API usage and future executable checks.
+[The later ShopFiesta application specification](spec-shopfiesta.md) expands these contracts into a customer-facing e-commerce shop with a protected order-operations area, proposed public API usage and future executable checks.
 
 ### Module contribution and runtime registration
 
@@ -1669,19 +1733,19 @@ The same scenario must demonstrate local and external toolbar placement, direct 
 
 ## Acceptance scenarios
 
-The DoFiesta column identifies the runnable reference scenario for each acceptance requirement. The Orders walkthrough illustrates the same contracts in a different domain. DoFiesta exercises them through Todo workflows.
+TaskFiesta covers every requirement in the [appendix coverage table](#a7-complete-framework-feature-coverage). The reference-workflow column below retains corresponding DoFiesta migration examples and other illustrative consumers. The Orders walkthrough illustrates the same contracts in another domain; these references do not make ShopFiesta a dependency.
 
 | Validation category | Required evidence |
 | --- | --- |
-| POC evidence | Pass the arrangement table and workflow checks in the DoFiesta proof of concept section. Use the results to refine preview contracts and hosting arrangements. |
-| First stable release evidence | Verify the acceptance scenarios applicable to every capability and hosting profile in First stable release scope. Include enterprise, accessibility, production diagnostics and consumer upgrade evidence. Relevant POC results can count toward this evidence. |
-| Optional capability delivery | Verify applicable scenarios when the optional capability ships, with DoFiesta showing the enabled behavior and its declared fallback or isolation. An optional capability delivered in the first stable release is covered by that release's evidence. |
+| Framework MVP evidence | Verify the complete TaskFiesta coverage map and all supported arrangements through actual public contracts. The small app domain does not reduce framework scope. |
+| Complete feature evidence | Verify every applicable acceptance requirement, including enterprise behavior, accessibility, public hosting, diagnostics, packaging and consumer upgrades. Record actual contract coverage and unresolved limitations. |
+| Optional configurations | Verify enabled optional packages and their removed/disabled fallback or isolation. Optional installation is a configuration choice, not an implementation phase. Features outside this specification retain their explicit scope boundary. |
 
-| Scenario | Observable acceptance | DoFiesta screen or profile |
+| Scenario | Observable acceptance | Reference workflow or validation profile |
 | --- | --- | --- |
 | Minimal application | The shell starts with a single presentation module, no auth integration and no higher-level packages. | Anonymous / core-only profile |
-| Out-of-the-box starter | Generate the documented starter and run it with local demo data, no database or identity provider, and no other external application service. Interactive Server uses prerendering off. Included registration and action tests pass through normal `dotnet test`. | Generated starter and G1 |
-| Independent module testing | A module author uses the supplied examples and minimal host with standard .NET test tools to verify public composition and action behavior independently of DoFiesta and backend infrastructure. Shared helpers remain optional and evidence-driven. | Module test examples and G1 |
+| Out-of-the-box starter | Generate the documented starter and run it with local demo data, no database or identity provider, and no other external application service. Interactive Server uses prerendering off. Included registration and action tests pass through normal `dotnet test`. | Generated starter and Behavior |
+| Independent module testing | A module author uses the supplied examples and minimal host with standard .NET test tools to verify public composition and action behavior independently of DoFiesta and backend infrastructure. Shared helpers remain optional and evidence-driven. | Module test examples and Behavior |
 | Module composition | Registering an enabled module exposes its pages, routes, resources and contributions; suppression removes the intended capability with clear diagnostics. | Shell and extension profile |
 | Single-host composition | One application host composes frontend and backend capabilities along the same logical module boundaries. Two feature modules integrate through published contracts without accessing each other's private state or implementation. Feature availability uses that host's configuration and existing services, with a safe browser projection only where needed. | Server and WASM profiles |
 | Page ownership and route enforcement | An assembly default and explicit page mappings resolve ownership without duplicate URL declarations. Reject ambiguous ownership. Disabling one module in a shared assembly makes its destinations unavailable on full loads and interactive navigation before page initialization or protected reads. | Shell and extension profile, Hosting profiles and developer validation |
@@ -1703,8 +1767,8 @@ The DoFiesta column identifies the runnable reference scenario for each acceptan
 | Context and privacy | User/context changes invalidate old bindings, request cancellation/supersede stale work, partition private state/preferences and reject previous-context completion. No backend rollback is implied. | Identity profiles · two-user transition |
 | Localization | App, module and component resources coexist; culture changes update contribution text and formatting with documented fallback. | Preferences and Lists |
 | Styling and packaging | The reference theme, a host-added theme and utility styling coexist; a consuming application uses compiled assets without a mandatory JS build. | MudBlazor consumer and Preferences for assets and themes, Plain Razor profile for dependencies |
-| Module asset setup | Installing a module supplies its own styles and scripts through native packaging and imports without per-module host-page edits. Global renderer dependencies are explicit and configured once. A clean package consumer resolves the declared assets. | Packaged module consumer and G2 |
-| JavaScript owner cleanup | Repeated mounting and disposal leave only current listeners, observers, timers and interop references. Late callbacks cannot update disposed owners. Two component instances retain separate mutable context, and cleanup follows native patterns even when Server interop is disconnected. | Developer validation profiles and G2 |
+| Module asset setup | Installing a module supplies its own styles and scripts through native packaging and imports without per-module host-page edits. Global renderer dependencies are explicit and configured once. A clean package consumer resolves the declared assets. | Packaged module consumer and Reuse |
+| JavaScript owner cleanup | Repeated mounting and disposal leave only current listeners, observers, timers and interop references. Late callbacks cannot update disposed owners. Two component instances retain separate mutable context, and cleanup follows native patterns even when Server interop is disconnected. | Developer validation profiles and Reuse |
 | Data composition | A MudBlazor grid and handwritten view share FilterModel query and selection adapters and drive the same contextual actions. DoFiesta demonstrates editing and validation through runtime-specific feature access. | All tasks |
 | Selection adapter defaults | Selection survives paging by default and clears when the view enables clear-on-paging. Filters or search clear selection. Sorting preserves it. Refresh updates selected target data and eligibility, removing only confirmed deleted or inaccessible records. A selected count and clear control expose off-page selection. Query-wide select-all remains deferred. | All tasks and Compare lists |
 | Mutation and refresh | A confirmed save remains successful if refresh or a local subscriber fails; input survives a concurrency conflict. | Task detail and developer validation |
@@ -1729,12 +1793,12 @@ The DoFiesta column identifies the runnable reference scenario for each acceptan
 | Multiple contextual components | Two grids/detail instances retain separate live contexts; explicit activation controls exported actions and moving focus to the toolbar does not lose the source scope. | Lists and Compare lists |
 | Toolbar lifecycle and stale clicks | Navigation/disposal removes bindings; obsolete clicks cannot target a newly selected order, and late results cannot update another scope. | Lists and Compare lists |
 | Shared action surfaces | A toolbar and menu intentionally using the same binding share busy state, duplicate-invocation prevention and feedback ownership. | Lists and Compare lists |
-| Core versus data toolbar behavior | A handwritten component uses the core toolbar without CRUD packages; optional grids/CRUD adapters contribute through the same contracts. | All tasks |
+| Core versus data toolbar behavior | A handwritten component uses the scoped action outlet without CRUD packages. A custom MudBlazor toolbar/menu presents the same binding and preserves availability, pending state and guarded invocation without framework control wrappers. Optional data adapters contribute through the same contracts. | All tasks and Compare lists |
 | Toolbar rendering boundaries | A presenter and owner work in their compatible composition or documented in-process arrangement. Generic Server/WASM component invocation is not assumed; unsupported attachment is diagnosed, while application integrations retain invocation safeguards. | Hosting profiles |
 | Definition versus binding state | Two Orders components share an action definition but retain independent selection, availability and execution state. A toolbar/menu sharing one binding observes the same execution. | Lists and Compare lists |
 | Confirmation target revision | Changing relevant selection, scope or application context during confirmation prevents stale execution and requires a fresh decision; cancelling confirmation performs no mutation. | Lists and Compare lists |
 | Pending invocation conflict | Repeated invocation of one binding while confirmation or execution is pending cannot open duplicate prompts or dispatch duplicate operations. Separate bindings follow their own policy and backend concurrency rules. | Lists and Compare lists |
-| Modal and local keyboard behavior | An editor modal has its own scope; toolbar/menu focus preserves target binding, accessible keyboard navigation and explicit local shortcuts respect modal/text-input behavior without a general routing service. | Task detail |
+| Modal and local keyboard behavior | An ordinary feature editor uses MudBlazor directly without framework dialog registration or a mandatory action scope. A modal using framework-bound actions owns its local scope. Confirmation callbacks preserve cancellation, captured targets and stale-owner checks; toolbar/menu focus and local shortcuts respect modal/text-input behavior. | Task detail and Compare lists |
 | Failed or uncertain save and navigation | Validation/failure/unknown outcome preserves edits and keeps the page active during save-and-leave. Newer edits also prevent automatic leave unless the user explicitly resolves/discards them. | Task detail · Save and leave |
 | Restorable view precedence | URL, navigation/scope state, preferences and defaults follow the view's declared precedence; explicit empty filters, data changes and invalid page/tab values recover predictably. | All tasks |
 | Navigation during action work | Owner disposal requests cancellation of scope-owned work and rejects stale UI completion without claiming backend rollback. Longer-lived work uses independent services/inputs and its declared recovery policy. | Task detail and Compare lists |
@@ -1749,8 +1813,8 @@ The DoFiesta column identifies the runnable reference scenario for each acceptan
 | Mixed page action ownership | A WASM Orders area renders its external toolbar and component together beside an independent Server area; selections, execution and diagnostics retain their originating identities without implicit shared state. | Mixed sibling profile · WASM task view and Server list summary |
 | Static public composition | SSR-compatible public Razor/HTML and ordinary links render without authentication; no fully functional static-only MudBlazor shell is assumed. Live actions/providers/subscriptions activate inside compatible interactive areas. | Static SSR Help profile |
 | Ordinary developer workflow | An ordinary Razor page contributes local or explicitly exported typed callbacks without a framework page base, mandatory provider/mediator class or manually assigned runtime IDs; binding conveniences handle cleanup and preserve DI ownership. | All tasks |
-| Native platform and low-friction integration | A developer follows public documentation to add a page and local/external action using normal Blazor components and .NET tooling. Record integration effort and remove unnecessary framework-specific registrations or layers. Specialized pages can use applicable shell services and native controls directly. | All tasks and developer-experience evidence |
-| Reuse across applications | DoFiesta and ShopFiesta consume the same packaged module with different workflows/layouts. Host customization and a shared correction or upgrade work in both without source copies or framework-internal changes. ShopFiesta's presentation slice can use minimal/mocked backend behavior while retaining its logical module boundaries. | DoFiesta, ShopFiesta and G2 |
+| Native platform and low-friction integration | A developer follows public documentation to add a page, local/external action, ordinary editor dialog and local menu/toolbar using normal Blazor components, MudBlazor services and .NET tooling. Ordinary controls, dialogs, menus and toolbars need no framework wrapper, registry, base class or action scope. Record integration effort and remove unnecessary registrations or layers. Specialized pages can use applicable shell services directly. | All tasks and developer-experience evidence |
+| Reuse across applications | TaskFiesta and a clean independent host consume the same packed module with different composition/layouts. Host customization and a shared package upgrade work without source copies or framework-internal changes. DoFiesta migration and the later ShopFiesta application remain separate consumers. | TaskFiesta and independent consumer |
 | Minimal Orders walkthrough | One module supplies an ordinary list/detail and typed Approve callback, with local/external toolbar placement, direct detail URLs and independent component scopes; illustrative screens/diagrams correspond to the declared behavior without mandatory CRUD or mediator infrastructure. | Lists and Task detail |
 | Resolved contribution isolation | Resolving a shared definition for one culture, user or component context leaves the source definition and other contexts unchanged, including visibility, badges and generated children. | Identity profiles and Compare lists |
 | Temporary contribution cleanup | Repeatedly mounting/disposing page, layout and region owners leaves only current runtime controls/subscriptions; later events do not invoke disposed observers. Presenter detachment preserves independently owned execution. | Compare lists and developer validation |
@@ -1767,23 +1831,36 @@ The DoFiesta column identifies the runnable reference scenario for each acceptan
 | Prerender capability activation | Browser-only services/JS never execute during prerendering; action previews remain inert and live scopes/providers are rebuilt within the correct interactive area. Missing server dependencies produce actionable configuration errors. | Prerendering profiles and Compare lists |
 | Prerender lifecycle attribution | Full reload and interactive route tests distinguish owners, readiness and measurement sources. Optional badge/navigation work cannot indefinitely block initial content; browser diagnostics reports not-ready before activation. | Prerendering profiles |
 | Auto versus mixed-mode placement | Auto runtime choice is tested independently of mixed pages/sibling areas. No test assumes a running Server component, execution or live state migrates to WASM, and illegal nested modes are rejected. | Hosting profiles |
-| DoFiesta reference coverage | Each delivered framework capability has a documented, runnable DoFiesta scenario or profile that consumes it through public contracts and produces observable evidence. | Reference application coverage map |
+| Complete reference coverage | Every framework acceptance requirement maps to a documented TaskFiesta case and profile that consumes public APIs and records observable evidence. DoFiesta retains its corresponding migration workflows. | TaskFiesta appendix coverage table |
 | Task list deep links and mutations | List links survive rename and task detail links survive a move. A confirmed Move refreshes the source and destination, and Complete refreshes the affected list. A stale membership or version is rejected without mutation. | Lists and Task detail |
 | Enterprise session transitions | An identity-only destination activates without workspace resolution. Workspace-scoped destinations wait for an authorized workspace. Reauthentication, permission changes, sign-out and workspace transitions pause affected bindings and reject stale work. Public capabilities retain independent readiness. | Identity profiles · protected task and list views |
 | Reconnect and operation recovery | Interrupt a dispatched Save, then exercise a surviving circuit and a new runtime. The shell distinguishes reconnect from restart, preserves recoverable edits under their feature policy, and offers reconciliation before further submission. | Production hosting profile and Task detail |
 | Consistent outcome presentation | The same Result or client outcome maps to one feedback owner and consistent recovery choices. Confirmed success remains visible after a failed refresh, accepted submission remains distinct from completion, and partial or unknown outcomes remain explicit. | Task detail, Compare lists and Backend export validation profile |
 | Production rollout | The documented scaled Server topology serves direct links and recovers from instance replacement. Exercise compatible, unreachable and known incompatible backends. Only a confirmed incompatibility triggers Update required. Affected dispatch pauses and reload respects the feature recovery policy. | Production hosting profiles |
 | Operational telemetry | With development inspection disabled, a failed provider or action is attributable to an authorized trace and emits bounded redacted metrics. Optional feature failures stay local. The host can use shell composition and required shared initialization status for its readiness probe. | Production telemetry profile |
-| Performance release acceptance | Repeatable workloads establish G1 and G2 baselines and documented limits for supported profiles. Results identify framework and backend coverage, diagnostics state and variability. A reproducible regression beyond those limits blocks stable release. | G1, G2 and production validation in G4 |
+| Performance release acceptance | Repeatable workloads establish Behavior and Reuse baselines and documented limits for supported profiles. Results identify framework and backend coverage, diagnostics state and variability. A reproducible regression beyond those limits blocks stable release. | Behavior, Reuse and production validation in Quality |
 | Accessibility baseline | Complete reference flows exercise the WCAG 2.2 AA target with automated and manual checks for keyboard, screen reader, focus, reflow and feedback behavior. | Lists, Task detail, Compare lists and Preferences |
 | Consumer upgrade | A consuming app upgrades within the documented compatibility range. Its typed contribution, host configuration, saved preference, direct link, theme override and supported diagnostics query still work. An explicitly breaking upgrade follows the documented migration. | Upgrade validation profile |
-| Distributable module package | A clean application installs the actual locally packed NuGet artifact and verifies public registration, pages, resources, assets and declared hosting profiles. Applicable publish/trimming checks pass with no source-project access to the module. | Clean package consumer and G2 |
+| Distributable module package | A clean application installs the actual locally packed NuGet artifact and verifies public registration, pages, resources, assets and declared hosting profiles. Applicable publish/trimming checks pass with no source-project access to the module. | Clean package consumer and Reuse |
 | Published module identity | Rename a module's CLR type while retaining its pinned logical name. Server and browser report the same identity, and its exported attachments, configuration references and saved preferences continue to resolve. | Upgrade validation profile |
-| Delivery gate evidence | Each gate supplies a runnable profile, repeatable core checks, recorded results and the preview contracts validated. Required failures or unavailable checks leave it open. Contract changes trigger affected earlier checks again. | Gates G1 through G4 |
+| Complete validation evidence | Every required case supplies a runnable profile, repeatable checks, results and the concrete contracts validated. Missing evidence prevents a complete validation claim; contract changes trigger the affected checks again. | All coverage areas |
 
-## Implementation details to validate in DoFiesta
+### Public website acceptance
 
-The POC exercises the defined package boundaries, typed attachment model, initial data scope, diagnostics policy and visual defaults. Use its results to settle these implementation details before stabilizing the public contracts.
+The public profile is a reusable framework capability validated by TaskFiesta's public board/shared lists and a clean independent consumer. These cases apply to the whole feature; they are not an implementation phase. ShopFiesta will consume the profile after framework readiness.
+
+| Scenario | Required evidence | Coverage |
+| --- | --- | --- |
+| Useful SSR baseline | With JavaScript delayed/disabled, inspect actual initial HTML, head metadata and static navigation/content. Exercise native links, GET forms and a declared feature-owned POST without live scopes or browser .NET startup. Verify ownership, disabled-module access and native validation/antiforgery behavior. | Behavior and Reuse |
+| Compatible module rendering | Compose the same packaged module in public/static and connected profiles. Required interactive-only contributions have a declared alternative/unavailable state or actionable configuration failure. Host overrides and source attribution remain effective without silently making all routes interactive. | Behavior and Reuse |
+| Reusable host setup | Start a clean independent consumer using the public profile entry, selected packaged modules and the documented native host wiring. Exercise static chrome, compatible forms, read handoff, phase/context handling and optional contribution failure without copied TaskFiesta startup/lifecycle code. Apply a framework package upgrade and verify the shared behavior is still consumed. Record declarations/files needed versus ordinary Blazor and any evidence justifying helpers. | Behavior, Reuse and Quality |
+| Interactive enhancement | Exercise legal static/Server boundaries, read-only prerender handoff, delayed activation, route/context switches and cleanup. No callbacks/live owners cross serialization boundaries and no mutation repeats on activation, enhanced-form response or reconnect. | Behavior, Reuse and Hosting |
+| Performance and delivery | Record cold/warm mobile workloads, initial-content timing, transferred resources, layout/interaction measures and server/circuit costs. Public baseline requires no WASM runtime, staff bundle or debugger. Optional failures and streaming do not block all useful content. | Behavior, Reuse, Hosting and Quality |
+| Public output safety and reuse | Test personal/token-bearing versus shared-public content, cache keys/invalidation, two users and a clean packaged public-profile consumer. Preserve access and context; no private/token output is shared or packaged sample internals copied into the consumer. | Reuse, Hosting and Quality |
+
+## Contract details requiring executable validation
+
+TaskFiesta exercises the complete package boundaries, typed attachment model, state/query behavior, diagnostics, hosting and rendering defaults. Use executable validation and the corresponding DoFiesta migration examples to settle these contract details. This table is a validation checklist, not an implementation plan.
 
 | Area | Detail to validate |
 | --- | --- |
@@ -1799,1814 +1876,395 @@ The POC exercises the defined package boundaries, typed attachment model, initia
 | Diagnostics | Validate session and runtime attribution, popout linkage, version discovery, redaction and capture limits. |
 | Renderer defaults | Validate semantic token mapping, keyboard and focus behavior, toolbar display modes and overflow at supported widths. |
 
-Inbox details, edit-session coordination, search/command discovery, general shortcut routing, and generic cross-runtime business-action transport remain deferred to separate feature design. A broader operations panel/application-owned workflow capability is not required by the core action-observation contract. Appendix A proposes initial public API names and usage. These are design proposals to validate through the delivery gates, not implemented or stable contracts.
+Inbox details, edit-session coordination, search/command discovery, general shortcut routing, and generic cross-runtime business-action transport remain deferred to separate feature design. A broader operations panel/application-owned workflow capability is not required by the core action-observation contract. The [TaskFiesta appendix](#appendix-a-taskfiesta-validation-application) defines the compact full-feature validation application. The separate [ShopFiesta application specification](spec-shopfiesta.md) preserves the later commerce design. These are design proposals to validate through the evidence requirements, not implemented or stable contracts.
 
-## Appendix A: Proposed API example and execution contract
+## Appendix A: TaskFiesta validation application
 
-This appendix designs **ShopFiesta**, the planned new DevKit e-commerce example, from browsing a catalog to placing an order, viewing past orders and operating fulfillment. Catalog, Stock, Basket, Checkout, Marketing and Orders are the same logical modules in frontend and backend. ShopFiesta will grow into a broad DevKit showcase; this first slice concentrates on the application framework and shell with minimal or mocked backend implementations.
+### A.1 Purpose and scope
 
-This remains a specification. The presentation API names and signatures below are proposals, not implemented or stable contracts. Excerpts omit ordinary imports, handlers, DTO members and markup where those details do not explain integration. The wireframes contain fictional products and prices. The diagrams describe required behavior, not execution evidence. Implementation must turn the example into runnable evidence through the delivery gates.
+TaskFiesta is a small task/to-do application planned under `examples/TaskFiesta` and developed alongside the complete presentation framework. It is the framework's executable validation consumer. MVP means minimal domain complexity with complete framework-feature coverage. It does not mean an implementation phase, reduced contract scope or permission to leave supported hosting/quality requirements untested.
 
-The main specification defines the requirements. Each section links to the requirements it illustrates. This appendix focuses on frontend composition and behavior, using narrow backend contracts and fixture implementations where needed. Queueing, Messaging, Jobs, storage and caching remain backend showcase directions in the [separate roadmap](spec-shopfiesta-backend-showcase.md). They are not prerequisites for the first presentation slice. DoFiesta remains the reference migration.
+This appendix specifies the intended application, not an implemented sample. All images are conceptual wireframes. A later implementation plan defines phases, steps and tasks. ShopFiesta starts after the framework satisfies the complete validation requirements; it is not needed to build or validate TaskFiesta. DoFiesta remains the existing migration target described elsewhere in this specification.
 
-Read the walkthrough as a developer building the UI: select modules, declare native pages/destinations, compose layouts, bind live component context, handle forms/state and consume feature results. Backend context appears only where it explains those contracts.
+TaskFiesta's tone is playful: polish an invisible trophy, teach a rubber duck to take minutes and water the office cactus politely. The real purpose is to expose framework behavior with a small, understandable domain. No commerce, payment, warehouse, notification-delivery, messaging broker, database or business scheduler is required.
 
-### A.0 Meet ShopFiesta
+Use a bounded module-owned in-memory fixture backend and real Application commands/queries. Server clients call Requester directly. Browser profiles use real typed HTTP clients to endpoints dispatching those same use cases. Isolated component mocks cannot establish those paths. Read-only requests, diagnostics and fixture polling never advance work or invoke mutations.
 
-Spec references: [Purpose and developer promise](#purpose-and-developer-promise), [Low friction and native platform mechanisms](#low-friction-and-native-platform-mechanisms), [Modular monolith across backend and frontend](#modular-monolith-across-backend-and-frontend), and [ShopFiesta greenfield showcase application](#shopfiesta-greenfield-showcase-application).
+### A.2 Single module, data and ownership
 
-ShopFiesta is a traditional online shop with a customer storefront and a protected staff workspace. Its first catalog contains road/race and gravel bicycle components. Customers shop by category, compare products, check availability, place an order and return to their order history. Staff manage recommendations and stock policies, handle orders and read commerce metrics.
-
-The example makes the framework visible through ordinary application work. A product page combines contributions from Catalog, Stock, Basket and Marketing. The staff workspace uses the same module model for a different audience and layout. Product-specific rules stay in those modules, so another catalog can replace the bicycle components without changing the shell.
-
-This introduction presents the intended experience. The existing wireframes are design concepts, and all amounts are fictional. The sections after it specify the proposed contracts and the evidence that an implementation must produce.
-
-#### A.0.1 A customer buys components and follows an order
-
-![ShopFiesta catalog with category navigation, filters and bicycle-component product cards with technical model designations](assets/shop/catalog.png)
-
-The customer starts in Brakes and filters by brand, price and availability. Product names include their technical model designation, such as `Gravel Brake Rotor (RT-G800)`. The selected filters, sort and page are represented in the URL, so a bookmarked view and a return from product detail describe the same query.
-
-```mermaid
-flowchart LR
-    Browse["Browse and filter"] --> Product["Choose a product and variant"]
-    Product --> Basket["Review the basket"]
-    Basket --> Checkout["Enter details and submit"]
-    Checkout --> Receipt["Observe the order outcome"]
-    Receipt --> History["Return to My orders"]
-```
-
-| Stop | What the customer sees | What the presentation design exercises |
+| Module | Owned behavior | Public integration |
 | --- | --- | --- |
-| [Catalog](#a4-browse-filter-and-return-to-the-same-catalog-view) | Categories, breadcrumbs, filters, model codes and independently actionable product cards. | URL-owned queries, native navigation and a purchase context per card. |
-| [Product detail](#a5-open-a-product-with-a-local-purchase-context) | Aster's rotor, its 160 mm center-lock variant, merchant SKU, manual, availability and related components. | Catalog content, Stock availability, Basket's purchase contribution and Marketing's optional region on one page. |
-| [Basket](#a8-keep-the-basket-page-and-header-summary-consistent) | Two rotors and one lockring, editable quantities and a matching header badge of three units. | One confirmed Basket snapshot across the page and shell summary. |
-| [Checkout](#a9-use-native-checkout-forms-and-an-explicit-order-attempt) | Contact/delivery fields, validation, an order review and a recoverable submission outcome. | Native Blazor forms, submitted revisions and an attempt identity that prevents blind replay. |
-| [My orders and order detail](#a101-customer-history-and-order-detail) | The signed-in customer's past orders, purchased product details and fulfillment status. | Authorized deep links, customer-owned data and historical product/price snapshots. |
+| `CoreModule`, identity `core` | All TaskFiesta task/list data, membership, sharing, public boards, workbench/detail/edit/compare views, settings, encouragement content and operation status. | Task/list destinations, reusable task cards/views, typed action/region targets, native forms, framework appearance/culture components and portable feature contracts. |
 
-![ShopFiesta basket containing two Gravel Brake Rotors RT-G800 and one Rotor Lockring LR-150 with a total of EUR 180](assets/shop/basket.png)
+TaskFiesta registers exactly one application module in its ordinary public and connected profiles. Tasks, lists, sharing and preferences are features of that module, not separate modules. Encouragement is an ordinary local component. Framework-provided settings components/services can be reused without registering another application module. List membership/deletion checks can be atomic in the minimal backend; layout and audience do not create another identity.
 
-The basket totals EUR 175 in components and EUR 5 in delivery, for EUR 180. Checkout carries that review into a native form. An accepted submission provides an order reference; payment and fulfillment remain separate outcomes. The customer can later open that same order through My orders.
+Use `CoreModule`, matching DoFiesta's module-class convention, and register it through the ordinary `WithModule<CoreModule>()` API. Its default logical name is `core`; use that same identity in server and portable presentation definitions, resources, ownership and diagnostics. Task/list/settings labels are feature names, not additional module identities. The name does not introduce a special framework module type.
 
-Availability follows the selected SKU and requested quantity. Stock can allow a preorder, reject an order below a configured threshold or allow ordering when quantity is unknown. A `null` quantity means unknown, and the per-SKU policy decides sellability. A Stock service failure is a separate unavailable state. The framework keeps the relevant component scope and updates current; Stock owns the ordering decision.
+To validate requirements that inherently need multiple modules, a dedicated technical composition host registers the packaged TaskFiesta module plus a tiny `fixture-extension` test module. That fixture has a dummy destination and typed contribution/assets, no business domain. It exercises cross-module links, ownership, required/optional dependencies, replacement and isolation through public contracts. It is not part of the normal TaskFiesta application. Invalid-composition hosts and the clean package consumer are likewise test infrastructure. The coverage report identifies these locations explicitly.
 
-#### A.0.2 Staff run the same shop through a different layout
+| Record | Minimum data and rules |
+| --- | --- |
+| Task item | Stable ID, readable number, title, optional notes/due date, priority, Proposed/Ready/Done status, list ID, owner/workspace context and revision. Title is required. Mutation commands carry the relevant expected revision. |
+| Task list | Stable ID, name, slug where public links use it, owner/workspace, revision and explicitly configured public-demo status. Every task belongs to one list. Public demo publication and private link sharing have distinct policies. |
+| List share | List ID, opaque read-only link identity/token, owner, revision and enabled/revoked state. Normal share tokens are unguessable; deterministic test fixtures are clearly identified. The server stores/compares them under an explicit policy and does not expose raw tokens through diagnostics. |
+| Operation | Stable request/operation reference, authorized owner/query/context, reported Accepted/Running/Completed/Failed/Unknown state, optional progress and result-artifact reference. This is example-owned state, not a new framework operation registry. |
 
-The operations layout provides a protected workspace for the same logical modules. Permissions remain specific to reporting, recommendations, stock management and order actions. Access to one staff page does not grant every operational capability.
+Seed TF-101 `Polish the invisible trophy` and TF-102 `Teach the rubber duck to take minutes` in Office mysteries, TF-103 `Water the office cactus politely` in Tiny victories, and TF-201/TF-202 as Proposed tasks in Inbox. Weekend nonsense is an empty list for deletion tests. Office mysteries and Tiny victories have explicitly public demonstration projections; Inbox remains private. Record IDs are stable GUID fixtures; readable numbers are labels, not route identities.
 
-![ShopFiesta staff overview with Marketing-owned sales, checkout and product-funnel metrics](assets/shop/commerce-overview.png)
-
-Marketing owns this complete overview. Its reporting result supplies the sales totals, checkout outcomes, product selector and funnel stages together with freshness and coverage. The example shows 20 product-view journeys, eight basket journeys, six submitted checkouts and three paid purchases. The page reads Marketing only. In the later backend showcase, Marketing captures inter-module messages into its reporting data.
-
-| Staff screen | What staff do | What the presentation design exercises |
-| --- | --- | --- |
-| [Commerce overview](#a105-compose-staff-business-metrics-and-a-product-funnel) | Read order/sales metrics, checkout outcomes and a product funnel. | One Marketing-owned query snapshot across ordinary Razor components, with honest stale, partial and unavailable states. |
-| [Recommendation management](#a7-let-marketing-fill-an-optional-product-region) | Choose an ordered set of related components for a source product and preview it. | A module-owned editor, inert previews, draft preservation and host authority over the public region. |
-| [Stock management](#a52-compose-stock-availability-and-manage-ordering-policy) | Inspect SKU availability and edit thresholds, preorder/backorder rules and the unknown-quantity policy. | A protected native form, versioned saves and live updates that target the matching SKU and quantity. |
-| [Order operations](#a102-staff-queues-and-safe-batch-actions) | Inspect Ready and Review queues and release selected orders. | Independent selection scopes, retained selection on paging, an external toolbar and explicit partial outcomes. |
-| [Order export](#a104-distinguish-partial-release-from-backend-owned-export) | Start an export of a captured query and revisit its progress. | Observation of backend-owned work that survives page navigation without resubmission. |
-| [Preferences](#a121-compose-settings-sections-and-restore-their-owned-preferences) | Change appearance, language and Orders display settings. | A shared packaged module plus independent feature-owned settings sections and persistence. |
-
-#### A.0.3 One modular monolith, with a frontend developers can follow
-
-Six commerce modules retain the same logical identities in the frontend and backend. The host selects their presentation contributions and maps native pages to the storefront or operations layout. A separate shared Preferences module supplies the reusable appearance/culture scenario.
-
-| Logical module | Customer and staff presentation | Corresponding backend responsibility |
-| --- | --- | --- |
-| Catalog | Browsing, product content, filters, cards and breadcrumbs. | Products, variants, identifiers and content metadata. |
-| Stock | Availability and stock-policy management. | SKU quantities and ordering decisions. |
-| Basket | Purchase actions, basket editing and the header summary. | Current basket mutations and confirmed snapshots. |
-| Checkout | Native checkout form, review, receipt and recovery. | Submission attempts and acceptance outcomes. |
-| Marketing | Related products, recommendation management and the complete commerce overview. | Recommendation sets and captured reporting projections. |
-| Orders | Customer history/detail, staff queues and operation status. | Order ownership, processing and fulfillment state. |
-
-For a developer, the framework supplies the repeated application work: module composition, layouts, navigation contributions, typed extension points, action scopes, shared feedback and diagnostics. Pages still use ordinary Blazor routing, DI, parameters, callbacks and forms. MudBlazor supplies the default renderer. Fluent setup and conventions reduce declarations; discovery and optional generation must preserve the same explicit contracts. Business modules own product, stock, basket and order rules.
-
-The [first validation slice](#a151-first-interactive-server-validation-slice) uses Interactive Server with prerendering off. Feature services call Requester directly in process, with small Application fixture handlers. A later WASM profile uses typed HTTP over the same feature contracts. AppState coordinates scoped presentation snapshots and preferences; it does not become an inventory authority or a reporting database.
-
-ShopFiesta can later demonstrate queued order processing, inter-module Messaging, recurring Jobs, Blob Storage images, File Storage manuals and backend Application Caching after that feature is merged. Those integrations have their own [backend roadmap](spec-shopfiesta-backend-showcase.md). The frontend design and its first validation do not depend on them. DoFiesta remains the separate reference migration.
-
-Continue with [module ownership and product identifiers](#a1-follow-one-shop-across-its-business-modules), then [host composition](#a2-compose-one-application-with-ordinary-host-setup). The remaining appendix follows the same screens into their proposed APIs, lifetime rules and validation cases.
-
-### A.1 Follow one shop across its business modules
-
-Spec references: [Modular monolith across backend and frontend](#modular-monolith-across-backend-and-frontend), [Vocabulary and ownership](#vocabulary-and-ownership), and [Product boundaries](#product-boundaries).
-
-The customer browses Brakes, filters by brand and price, opens Gravel Brake Rotor, adds it to the basket and completes checkout. Marketing supplies related products on the detail page and manages their saved selection through its own protected staff pages. Signed-in customers can revisit their own order history and order details. Staff use a separate operations layout to inspect and release orders, read business metrics and examine a product's view-to-basket-to-purchase funnel. These are feature workflows within one composed application, with separate public, customer and staff access requirements.
-
-The initial product data contains only road/race and gravel bicycle components. The application is not tied to those products. Product identity, category hierarchy, variant/attribute metadata, allowed facets and media belong to Catalog. Bike-specific values such as rotor diameter are data for this initial catalog, not shell types, hard-coded route branches or dependencies in Basket, Checkout, Marketing and Orders. Clothing, complete bicycles and general-purpose/computer hardware are outside the initial sample catalog.
-
-Components also have manufacturer model designations alongside their customer-readable names. Shimano's naming illustrates the distinction: its technical catalog lists `FD-R8000-F` and `FD-R8000-B` front derailleurs, and `RT-CL800` disc brake rotors. These are naming references, not ShopFiesta fixture products, prices or compatibility claims. [Shimano front-derailleur designations](https://productinfo.shimano.com/index.html/spec/road-front-derailleur) and [Shimano rotor designations](https://productinfo.shimano.com/index.html/spec/general-rotor-center-lock).
-
-The fictional Aster fixtures use the following codes without changing their existing names, routes or prices:
-
-| Display name | Brand | Model designation | Illustrative price |
-| --- | --- | --- | --- |
-| Road Brake Rotor | Aster | `RT-R600` | EUR 60 |
-| Gravel Brake Rotor | Aster | `RT-G800` | EUR 80 |
-| Road Brake Caliper | Aster | `BR-R950` | EUR 95 |
-| Rotor Lockring | Aster | `LR-150` | EUR 15 |
-| Brake Adapter | Aster | `AD-200` | EUR 20 |
-
-Catalog's public product summaries expose the display name, brand and optional `ModelDesignation`. A code can describe several variants, such as 140 mm and 160 mm rotors; the selected variant retains its own identity, attributes and merchant SKU. The example 160 mm center-lock `RT-G800` variant can use the fictional merchant SKU `AST-RTG800-160-CL`. A manufacturer model designation and a merchant SKU have separate meanings. Neither replaces `ProductId` or `VariantId`, and model codes need not be globally unique across manufacturers.
-
-Whenever a product has a technical model designation, show it together with the product name. For example, render `Gravel Brake Rotor (RT-G800)` and `Rotor Lockring (LR-150)`. A narrow card or row can put `Model: RT-G800` directly beneath the name. Apply this to catalog/search cards, product headings/breadcrumbs, basket lines, checkout summaries, purchased order lines, recommendation selectors/editors/previews and reporting product selectors. Keep both parts readable and available to assistive technology; a tooltip alone does not satisfy the display rule.
-
-Catalog search and Marketing lookup accept model designations as well as names and show brand/model/variant details to distinguish results. Basket/checkout DTOs include the applicable designation, and historical order lines use their recorded designation rather than a changed Catalog label. Keep the manufacturer's spelling and punctuation for display; search normalization belongs to Catalog. Use ordinary feature-owned Razor markup/templates for the combined label. No shell contract parses prefixes such as `FD`, requires a product-label abstraction or assumes every future catalog has a model code. When the optional value is absent, show the name without an empty suffix. Compact wireframes must retain available model designations too.
-
-| Module | Frontend ownership | Published presentation integration | Service boundary |
-| --- | --- | --- | --- |
-| Catalog | Categories, filters, product details/cards, breadcrumbs and image/manual presentation. | Product/category destinations, public summaries, purchase-action target and related-products region. | Catalog owns product reads and content metadata. |
-| Stock | Live SKU availability presentation, stock updates and protected stock/policy management. | Public SKU availability component/client and Stock-owned staff page. | Stock owns quantities and ordering decisions; Catalog supplies the SKU identity and public product labels. |
-| Basket | Purchase contribution, header summary and basket editor. | Actions over Catalog's typed purchase target and confirmed basket snapshots. | Basket owns mutations, revisions and current-session scope. |
-| Checkout | Native form, review, submission attempt, receipt and recovery presentation. | Checkout/receipt destinations and a narrow checkout feature contract. | The backend owns acceptance and subsequent processing; no worker runs in a component. |
-| Marketing | Related products, staff recommendation editor and the full reporting overview. | Catalog region contribution, management destination and Marketing-only reporting contract. | Its backend owns recommendations and captured reporting data. |
-| Orders | Customer history/detail and staff queues/details/actions under one identity. | Audience-specific destinations, read/action contracts and backend-owned operation status. | Orders owns order state and per-record access. |
+The pagination test variant adds bounded records for the second page shown in Figure T.2. Figure T.3 uses the small base fixture with counts 2/1/2/0. Its Sharing column describes owner-issued link access; the separately declared public demonstration projection is not inferred from that column or enabled for other private lists.
 
 ```mermaid
 flowchart TD
-    Host["Host: selected modules, storefront and operations layouts"]
-    Catalog["Catalog pages and public product components"]
-    Stock["Stock: SKU availability and staff management"]
-    Basket["Basket actions, summary and page"]
-    Checkout["Checkout form and receipt"]
-    Marketing["Marketing related region, editor and overview"]
-    Orders["Orders customer and staff pages"]
-    Preferences["Shared packaged preferences module"]
-    Host --> Catalog
-    Host --> Stock
-    Host --> Basket
-    Host --> Checkout
-    Host --> Marketing
-    Host --> Orders
-    Host --> Preferences
-    Basket -->|"Typed purchase contribution"| Catalog
-    Marketing -->|"Public region and product cards"| Catalog
-    Catalog -->|"Public SKU availability contract/component"| Stock
-    Checkout -->|"Public customer-order destination"| Orders
+    Framework["Packaged framework: hosting, shell and headless contracts"]
+    Host["One TaskFiesta host: public layout and connected workbench"]
+    Core["CoreModule: tasks, lists, sharing and settings"]
+    Handlers["Small module-owned Application handlers and bounded fixture state"]
+    Consumer["Clean independent consumer: actual packed module, own composition"]
+    Harness["Separate technical composition test host"]
+    Fixture["Tiny external fixture-extension module"]
+    Framework --> Host
+    Host --> Core
+    Core --> Handlers
+    Framework --> Consumer
+    Core -->|"Actual portable module package"| Consumer
+    Framework --> Harness
+    Harness --> Core
+    Harness --> Fixture
+    Fixture -->|"Public cross-module contracts under test"| Core
 ```
 
-The module boundaries match the backend's logical ownership. Presentation integrates through public destinations, components and feature contracts, without private component-state access or another module's handlers/repositories. A Checkout link to customer history does not require the staff Orders assembly. Backend delivery and storage mechanics are deferred to the roadmap.
+### A.3 Lists, tasks and public sharing
 
-Public module identities are pinned once as `catalog`, `stock`, `basket`, `checkout`, `marketing` and `orders`. The corresponding `CatalogUi.Name`, `StockUi.Name`, `BasketUi.Name`, `CheckoutUi.Name`, `MarketingUi.Name` and `OrdersUi.Name` constants are shared by backend modules and portable presentation definitions. They are not separate frontend/backend identities. Customer and operations views are facets of Orders, not separately named modules.
+List creation, rename and deletion are real backend commands. A create/rename conflict or validation failure retains the correct draft. Delete only an empty authorized list; a non-empty list returns a clear explanation to move its tasks first. Validate this atomically with membership changes so an arriving task cannot disappear in a delete race. The MVP does not cascade-delete tasks silently.
 
-The preferences scenario also selects a shared `PreferencesModule` under the stable identity `preferences`, using its corresponding server/portable registration and native preference providers. It is the reusable packaged module consumed by DoFiesta and ShopFiesta. It is a cross-cutting capability alongside the six commerce modules; its default local/scoped persistence does not require another business domain or an external service.
+Tasks support create, edit, complete and delete through captured IDs/revisions and the applicable authorization. Destructive confirmation belongs to the original owner/context. A confirmed deletion removes only the known task and updates its declared list/count consumers; a failed or unknown outcome is not retried automatically and does not clear another task view's selection.
 
-| Logical module | Minimal fixture-backed contract for frontend validation |
+Create a task inside a chosen list, or choose its list in the task form. Move one or several selected tasks through the public Tasks use case. Capture task IDs/versions and destination list ID/revision. Return per-task results if some moves conflict. The task's own detail URL remains stable, while list counts, membership queries and dynamic navigation invalidate only their declared dependencies. A deleted/denied destination cannot receive an old confirmation.
+
+Owners can create/copy a read-only list link, revoke it and issue a replacement. A shared link opens without an account and exposes only the explicitly allowed task/list projection. It grants no editing, completion, moving, export of private data or task/workspace ownership. Public task links retain their list/share context; a task moved out of that list is no longer readable through its old share URL.
+
+| Surface | Native route and expected behavior |
 | --- | --- |
-| Catalog | Product/category/facet/ancestry DTOs, model designations and working fixture content URLs. |
-| Stock | Shared-SKU availability snapshots/updates, explicit ordering decisions and versioned stock/policy edit outcomes. |
-| Basket | Current-session snapshots and deterministic versioned add/change/remove outcomes. |
-| Checkout | Review, accepted/rejected/unknown attempt outcomes and status recovery. |
-| Marketing | Versioned recommendation sets and authorized overview DTOs with revision, capture time and coverage states. |
-| Orders | Own-customer history, separate staff projections, partial action outcomes and simulated backend-owned operation status. |
+| Public home and board | `/` and `/boards/{Slug}` use the public website profile. Render meaningful headings, list/task content, filter/sort/page links and a native Suggest a task form. Suggestions enter the private Inbox as Proposed tasks, not the public board automatically. |
+| Shared list | `/shared/lists/{ShareToken}` and an optional task-detail route beneath it render an unlisted read-only projection with server-enforced scope and `noindex` metadata. Revoked/deleted/mismatched links return the declared unavailable response. |
+| Lists | `/lists` and `/lists/{ListId:guid}` provide create/rename/delete, add-task, list-bound query state and owner-only sharing controls. The share URL remains selectable/copyable even without a clipboard enhancement. |
+| Tasks | `/tasks` and `/tasks/{TaskId:guid}/{View}` provide bounded queries, task detail and route-backed Overview/History views. Edit uses native forms, field feedback, dirty-state prompts and captured revisions. |
+| Compare | `/tasks/compare` mounts Ready and Needs review views with independent filter, page, selection and lifetime. An explicit active-view selector binds the external toolbar to one view. |
+| Preferences | `/preferences` is owned by `CoreModule` and combines reusable framework appearance/language components and task-display settings with independent saves. |
+| Operation status | `/tasks/exports/{OperationId:guid}` observes a submitted matching-query export after leaving the initiating task view. |
 
-Fixture handlers keep those boundaries and access/concurrency rules. They do not merge module state or masquerade as real queue, message, storage or scheduler integration. Reads observe fixture state; they do not advance work. Test-owned controls can change it independently to exercise delayed results and transitions.
+The anonymous public baseline and configured identity/workspace profiles are separate runnable configurations. Protected cases use at least two local test identities and two workspace contexts with distinct data. No external identity service or registration flow is required. Authoritative access checks run in both Requester and HTTP paths, including direct links and mutation/status requests.
 
-Marketing is optional. Without it, Catalog omits the related-products section and Marketing staff pages. Catalog can run alone as read-only browsing without a Stock client/component. The purchasing profile selects Stock and Basket; buying requires a current Stock decision, while Basket attaches through Catalog's public target. Checkout requires the declared Basket/Orders/Stock capabilities. Recommendation-only Marketing does not make the whole commerce backend mandatory. Missing availability/coverage is not a successful zero.
-
-Checkout requires Orders business services, not its staff UI. A host can suppress the operations presentation while retaining Orders backend capabilities and customer history. Customer history and operations declare their respective identity/access requirements. The immediate receipt page remains Checkout-owned and can link to Orders' authorized customer detail; neither exposes staff-only data.
-
-| Journey | What the reader should see | Concepts demonstrated |
-| --- | --- | --- |
-| [Browse Brakes](#a4-browse-filter-and-return-to-the-same-catalog-view) | Public top navigation, breadcrumbs, product filters, applied filters, sorting and paging. | Module ownership, native routing, dynamic navigation, query state and view restoration. |
-| [Open Gravel Brake Rotor](#a5-open-a-product-with-a-local-purchase-context) | A direct product URL, quantity input, purchase action and related products. | Typed destinations, component-owned context, optional component regions and cross-module contributions. |
-| [Follow live SKU availability](#a52-compose-stock-availability-and-manage-ordering-policy) | Stock changes for the selected SKU update its status and ordering decision without changing another card. Staff manage quantity and policy in Stock's own page. | Shared identifiers, public module components, live-context revisions, native forms and precise unknown/disabled states. |
-| [Read product content](#a51-present-product-images-and-manuals) | Product image, alt text and a native Installation manual link. | Public content metadata, base-path-aware URLs, accessibility and local missing/failure states. |
-| [Add from either product area](#a6-let-basket-contribute-purchasing-without-coupling-catalog-to-it) | The correct product and quantity are added, and the header basket summary changes. | Independent action scopes, immutable invocation inputs, confirmed-result updates and targeted invalidation. |
-| [Manage related products](#a71-manage-recommendations-in-the-marketing-module) | Marketing staff choose, order and save recommendations for a source product, with an inert draft preview. | Native editors, module-owned management, concurrency, targeted invalidation and host authority. |
-| [Review the basket](#a8-keep-the-basket-page-and-header-summary-consistent) | Quantity controls, removal, current totals and a checkout link. | Feature-owned shared state, backend authority, local feedback and optional destination availability. |
-| [Submit checkout](#a9-use-native-checkout-forms-and-an-explicit-order-attempt) | Native form validation, a stable order attempt and an accurate result or recovery choice. | Submitted revisions, duplicate suppression, idempotency owned by the application and uncertain-outcome handling. |
-| [Observe the accepted order](#a91-observe-backend-owned-order-processing) | Leave/revisit a receipt and observe the backend-owned status. | Acceptance versus completion, page lifetime, safe observation and recovery. |
-| [Revisit my orders](#a101-customer-history-and-order-detail) | Own past purchases, bounded history and directly loadable read-only order details. | Same-module customer/backend ownership, per-record authorization, private state partitioning and durable order snapshots. |
-| [Work operational orders](#a102-staff-queues-and-safe-batch-actions) | Protected list/detail routes, two independent queues and an external batch toolbar. | Authorization, explicit scope attachment, selection policy, safe confirmation and disposal. |
-| [Use external queue controls](#a103-bind-typed-query-controls-to-the-same-queue) | Change the Ready queue's status/search from its external toolbar without changing Review. | Typed control parameters/callbacks, original-owner dispatch and targeted query invalidation. |
-| [Review mixed outcomes and exports](#a104-distinguish-partial-release-from-backend-owned-export) | See one released order and one conflict; leave and revisit a submitted export. | Per-target outcomes, accepted versus completed work, backend ownership and scoped observation. |
-| [Read business metrics and a product funnel](#a105-compose-staff-business-metrics-and-a-product-funnel) | Marketing supplies one overview result with sales, checkout, funnel and freshness data. | Module-owned page/query, native component composition, query revisions and truthful stale/partial presentation. |
-| [Restore preferences](#a121-compose-settings-sections-and-restore-their-owned-preferences) | Save appearance/culture and Orders display settings, reload and switch identities. | Shared/module-owned settings sections, scoped persistence, schema fallback and native localization. |
-| [Inspect host customization](#a131-replace-a-contribution-and-inspect-the-effective-result) | Compare default, replaced and suppressed recommendation profiles through read-only diagnostics. | Host authority, compatible replacement, provenance and safe inspection. |
-
-#### A.1.1 Give products and sellable variants explicit identifiers
-
-Spec references: [Product boundaries](#product-boundaries), [Modular monolith across backend and frontend](#modular-monolith-across-backend-and-frontend), [Published typed contracts](#published-typed-contracts), and [Low friction and native platform mechanisms](#low-friction-and-native-platform-mechanisms).
-
-A product groups its description, brand/model, categories, media and selectable variants. Every sellable variant has a merchant SKU; a simple product has one default variant/SKU. Stock recognizes those same SKU strings within the same store/catalog namespace. A manufacturer model such as RT-G800 can cover several variants and is not the SKU or global trade identifier.
-
-| Identifier | Placement and meaning |
-| --- | --- |
-| `ProductId` | Stable internal product identity for routes/relationships and product-level recommendations. |
-| `VariantId` | Stable internal identity for the specific selectable sellable variant. |
-| `Sku` | Required merchant-owned string per sellable variant, unique within the declared store/catalog namespace. Catalog defines it; Stock, Basket, Checkout and Orders use the same value. Do not change case/punctuation independently in each module or derive it from the display name. |
-| `ModelDesignation` | Manufacturer's technical model/family label, normally displayed with the product name. It may be shared by several SKUs. |
-| `ManufacturerPartNumber` | Optional manufacturer article/part number for the specific variant or supplied package. It can differ from both model designation and merchant SKU. |
-| `Gtin` | Optional GS1 Global Trade Item Number for the relevant trade item/package, stored as a string. EAN/UPC are common GTIN formats; they do not replace the merchant SKU. |
-| Supplier references | Optional supplier-scoped item/article numbers represented with their supplier identity. They are not another globally unique product key. |
-
-Use `Gtin` for the trade-item identifier intended by the shorthand TIN. GTINs can have 8, 12, 13 or 14 digits. Keep leading zeros and validate supplied values at the Catalog boundary. Identifier editors use text inputs; do not parse SKU/MPN/GTIN values as numbers. Barcode artwork/symbology is a representation of an identifier rather than a separate SKU. Fixtures leave unassigned GTINs empty; do not manufacture apparently allocated GS1 numbers. [GS1 GTIN formats](https://support.gs1.org/support/solutions/articles/43000734124-what-is-the-difference-between-a-gs1-gtin-a-barcode-an-ean-and-a-upc-) and [GS1 product-identification overview](https://www.gs1us.org/upcs-barcodes-prefixes/what-is-a-gtin).
-
-The ordinary product fields also have explicit homes:
-
-| Product/variant data | Presentation contract |
-| --- | --- |
-| Product description | Display name, brand, manufacturer, technical model, short/full descriptions, publication state, categories, tags and typed/configured attributes. These remain Catalog data. |
-| Sellable variant | Internal variant ID, SKU, manufacturer part number, optional GTIN, option values and sale unit/package quantity. A different saleable pack can have its own SKU/GTIN. |
-| Purchase terms | Current display price/currency and the stated tax-display convention, minimum order quantity, quantity increment and optional maximum. Backend pricing/review remains authoritative. |
-| Content and logistics | Product images/alt text and manual metadata; optional shipping weight/dimensions carry explicit units. Rich fulfillment data can be added later behind Catalog's boundary. |
-| Stock | Separate Stock response by SKU, with availability, quantity if known, requested-quantity ordering decision, revision and freshness. Do not put a second mutable inventory count on the Catalog product object. |
-
-These identifier-focused DTO excerpts illustrate the object shape. The full product view also contains the categories/content fields described above. They are ordinary feature contracts, not framework entities or a new generic product base class:
-
-```csharp
-public sealed record ProductView(
-	Guid ProductId,
-	string Slug,
-	string DisplayName,
-	string Brand,
-	string Manufacturer,
-	string ModelDesignation,
-	string Description,
-	ImmutableArray<ProductVariantView> Variants);
-
-public sealed record ProductVariantView(
-	Guid VariantId,
-	string Sku,
-	string ManufacturerPartNumber,
-	string Gtin,
-	ImmutableArray<SupplierItemReference> SupplierReferences,
-	ImmutableDictionary<string, string> Options,
-	decimal DisplayPrice,
-	string Currency,
-	string SaleUnit,
-	int PackQuantity,
-	int MinimumOrderQuantity,
-	int OrderQuantityStep,
-	int? MaximumOrderQuantity);
-
-public sealed record SupplierItemReference(string SupplierId, string ItemNumber);
-```
-
-The initial component catalog sells whole units with `SaleUnit = EA`, pack quantity 1, minimum 1 and increment 1. Those are sample rules, not shell assumptions. For the selected 160 mm center-lock rotor, SKU is `AST-RTG800-160-CL`, model is `RT-G800`, fictional manufacturer part number is `RT-G800-160-CL`, and GTIN is unassigned. The SKU map used by Stock's fixtures is:
-
-| Product label | Merchant SKU | Selected variant |
-| --- | --- | --- |
-| Road Brake Rotor (RT-R600) | `AST-RTR600-160-CL` | 160 mm, center-lock |
-| Gravel Brake Rotor (RT-G800) | `AST-RTG800-160-CL` | 160 mm, center-lock |
-| Road Brake Caliper (BR-R950) | `AST-BRR950-FRONT` | Front |
-| Rotor Lockring (LR-150) | `AST-LR150-EA` | Single unit |
-| Brake Adapter (AD-200) | `AST-AD200-EA` | Single unit |
-
-SKU changes require an explicit cross-module remapping/alias policy; editing a model label never changes the SKU. Basket/checkout/order-line DTOs retain the selected SKU, part number and GTIN where supplied. Historical order lines retain their purchased identifier/description snapshot even if the live catalog changes. Technical model labels remain visible with names; secondary identifiers can appear in a normal product-details section and staff lookup without cluttering every card.
-
-```mermaid
-flowchart LR
-    Product["Catalog product: name, brand/model, descriptions and content"] --> Variants["Sellable variants: internal IDs, SKU, MPN and optional GTIN"]
-    Variants -->|"Same store and SKU"| Stock["Stock availability and ordering decision"]
-    Variants -->|"Captured identifiers"| Basket["Basket and checkout lines"]
-    Basket --> History["Orders: purchased identifier snapshot"]
-```
-
-### A.2 Compose one application with ordinary host setup
-
-Spec references: [Low friction and native platform mechanisms](#low-friction-and-native-platform-mechanisms), [Presentation module composition](#presentation-module-composition), [Extension contracts and host authority](#extension-contracts-and-host-authority), and [Recommended business application profile](#recommended-business-application-profile).
-
-`WebModuleBase`, `AddModules`, `WithModule`, `UseModules`, `MapModules`, Requester, `Result<T>` and the native Blazor hosting APIs already exist. The following presentation contracts are proposed additions. They extend these foundations rather than replacing them.
-
-| Proposed contract | Role in the shop |
-| --- | --- |
-| `IPresentationModule.RegisterPresentation(PresentationModuleBuilder)` | Optional presentation capability on an existing backend module, preserving its logical identity. |
-| `WithPresentation(...)` | Collects presentation declarations from selected modules, applies host options and arranges composition validation. |
-| `PresentationModuleBuilder` | Focused fluent registration for page assemblies, destinations, navigation, resources, action targets and component regions. |
-| `AddPresentationMudBlazor()` | Selects the separately referenced default renderer and its shared services. |
-| `IPresentationCatalog`, `PresentationRouteView`, `WithPresentationRoutes()` | Integrate effective ownership, assemblies and availability with native routing and initial endpoint processing. |
-| `Destination<TParameters>` | A public typed link contract over an ordinary page route. |
-| `ActionTarget<TContext>`, `IActionScopes`, `ActionScope<TContext>` | Publish a place for actions and bind them to a live component's immutable context and lifetime. |
-| `IActionContributor<TContext>` | Optional reusable action contribution resolved through DI for a live target scope. Local feature callbacks can bind directly. |
-| `RegionTarget<TContext>`, `ExtensionRegion` | Publish and render a typed component extension, such as related products, with normal Razor parameters. |
-| `ActionToolbar` | Default renderer observing an explicitly supplied scope. It can appear as a compact purchase-action row or an operations toolbar. |
-| `BindControl<TComponent, TValue>` | Bind normal typed Razor control parameters/callbacks to the same live owner used by an external toolbar. |
-| `MapOutcome`, `OnConfirmedOutcome` | Map actual feature responses into the specified execution outcomes and apply confirmed receipts separately from refresh feedback. They do not replace feature result contracts. |
-| `Settings.Add<TComponent>`, `SettingsSections` | Compose module-owned native settings components through the shared settings-section contract. |
-| `PageLayouts` | Map ordinary page types to native layouts without changing module ownership. |
-
-```csharp
-builder.Services.AddModules(builder.Configuration, builder.Environment)
-	.WithModule<CatalogModule>()
-	.WithModule<StockModule>()
-	.WithModule<BasketModule>()
-	.WithModule<CheckoutModule>()
-	.WithModule<MarketingModule>()
-	.WithModule<OrdersModule>()
-	.WithModule<PreferencesModule>()
-	.WithPresentation(options =>
-	{
-		options.DefaultLayout = typeof(StorefrontLayout);
-		options.PageLayouts[typeof(OperationsOverview)] = typeof(OperationsLayout);
-		options.PageLayouts[typeof(StockManagement)] = typeof(OperationsLayout);
-		options.PageLayouts[typeof(OperationsOrders)] = typeof(OperationsLayout);
-		options.PageLayouts[typeof(OperationsOrderDetails)] = typeof(OperationsLayout);
-		options.PageLayouts[typeof(OrderExportStatus)] = typeof(OperationsLayout);
-		options.PageLayouts[typeof(RecommendationManagement)] = typeof(OperationsLayout);
-		options.PageLayouts[typeof(RecommendationEditor)] = typeof(OperationsLayout);
-	});
-
-builder.Services.AddRazorComponents()
-	.AddInteractiveServerComponents();
-builder.Services.AddPresentationMudBlazor();
-builder.Services.AddRequester().AddHandlers();
-
-var app = builder.Build();
-app.UseModules();
-app.UseAntiforgery();
-app.MapStaticAssets();
-app.MapModules();
-app.MapRazorComponents<App>()
-	.AddInteractiveServerRenderMode()
-	.WithPresentationRoutes();
-app.Run();
-```
-
-The layout types are ordinary application-owned Blazor layouts. Orders customer history/detail use the default `StorefrontLayout`; explicitly mapped staff pages use `OperationsLayout`. Marketing registers `OperationsOverview` alongside its management pages under the same module identity. Module pages retain their module owner regardless of layout. Default shell renderers consume contributions in either layout. A custom storefront can replace chrome without copying module workflows.
-
-The excerpt omits normal authentication, authorization, logging and Application pipeline setup. For the first slice, register small fixture-backed feature handlers. The public catalog needs no identity provider. Customer/history and staff pages require their declared access policies; named local test identities can supply them without an external service. Messaging, queue, scheduler, cache and storage registrations belong to the [later backend showcase](spec-shopfiesta-backend-showcase.md), not this presentation setup.
-
-```mermaid
-flowchart TD
-    Select["Select commerce and shared modules once in the host"]
-    Collect["Collect presentation declarations from selected modules"]
-    Override["Apply host layouts, suppression and supported replacements"]
-    Validate["Validate identity, ownership, dependencies and attachment contracts"]
-    Effective["Effective composition metadata"]
-    Routing["Native endpoints and interactive route integration"]
-    Chrome["Storefront and operations layouts render contributions"]
-    Select --> Collect --> Override --> Validate --> Effective
-    Effective --> Routing
-    Effective --> Chrome
-```
-
-Discovery and optional generated registrations feed the same composition rules. Startup metadata holds no selected products, basket contents, component instances or scoped feature clients. Each live component creates its own runtime bindings later.
-
-The initial connected profile is Interactive Server with prerendering off. `App.razor` uses the native boundary:
-
-```razor
-<HeadOutlet @rendermode="new InteractiveServerRenderMode(prerender: false)" />
-<Routes @rendermode="new InteractiveServerRenderMode(prerender: false)" />
-```
-
-`Routes.razor` keeps Blazor's native router. The catalog supplies effective assemblies; the proposed route view applies the resolved ownership, availability, authorization integration and host layout options before constructing the page.
-
-```razor
-@inject IPresentationCatalog Presentation
-
-<Router AppAssembly="typeof(App).Assembly"
-        AdditionalAssemblies="this.Presentation.PageAssemblies">
-	<Found Context="routeData">
-		<PresentationRouteView RouteData="routeData" />
-		<FocusOnNavigate RouteData="routeData" Selector="h1" />
-	</Found>
-</Router>
-```
-
-The normal host supplies not-found, denied and unavailable presentations. `WithPresentationRoutes()` applies the corresponding metadata and checks to initial server endpoint processing; the client route view alone is insufficient. Module-specific layouts are ordinary native layouts selected through the effective host options.
-
-A public shop may also need server-rendered catalog content for its publishing requirements. That is a separate declared Static SSR or explicit prerender profile to validate, not a promise obtained by renaming the connected profile. An interactive purchase area, header badge and basket presenter share state only within their supported composition and runtime scope. Separate islands must declare their coordination path.
-
-### A.3 Let routes and breadcrumbs describe the customer's location
-
-Spec references: [Page ownership and route availability](#page-ownership-and-route-availability), [Destinations, availability and deep links](#destinations-availability-and-deep-links), [Destination contracts and link generation](#destination-contracts-and-link-generation), and [Navigation and page composition](#navigation-and-page-composition).
-
-| Owner | Native route | Purpose and access |
-| --- | --- | --- |
-| Catalog | `/catalog` | Public catalog landing page. |
-| Catalog | `/catalog/{CategorySlug}` | Public category listing with shareable filter, sort and page query values. |
-| Catalog | `/products/{Slug}` | Public product detail, directly loadable without visiting a listing. |
-| Basket | `/basket` | Current visitor's basket, resolved by the backend from the current session. |
-| Checkout | `/checkout` | Review the current basket and enter contact/delivery details. |
-| Checkout | `/checkout/complete/{OrderId:guid}` | Confirmed customer receipt, subject to access checks for that order. |
-| Preferences | `/preferences` | Shared appearance/culture settings and eligible module-owned settings sections. Private sections apply their own identity requirements. |
-| Orders | `/account/orders` | Signed-in current customer's bounded order history. |
-| Orders | `/account/orders/{OrderId:guid}` | Read-only customer detail for an order owned by the current customer. |
-| Orders | `/operations/orders` | Staff-only queue, filter state and batch actions. |
-| Orders | `/operations/orders/{OrderId:guid}/{View}` | Staff-only order details with allowed route-backed views such as overview and history. |
-| Orders | `/operations/exports/{OperationId:guid}` | Staff-only observation of a previously submitted export, including after navigation. |
-| Marketing | `/operations/overview` | Staff business reporting over Marketing's stored projections under `Shop.Operations.ViewMetrics`, with period, currency and product query state. |
-| Stock | `/operations/stock` | Stock-owned availability/policy management under `Shop.Stock.Manage`; an optional native `sku` query parameter restores the selected SKU. |
-| Marketing | `/operations/marketing/recommendations` | Product selection and recommendation-set overview under `Shop.Marketing.ManageRecommendations`. |
-| Marketing | `/operations/marketing/recommendations/{ProductId:guid}` | Directly loadable recommendation editor for the source product under the same management policy. |
-
-Product display names, manufacturer model designations, merchant SKUs, slugs and IDs have different jobs. `RT-G800` is the Aster rotor's model designation, and `gravel-brake-rotor` is its public slug; a backend-issued product/variant ID identifies the mutation target. Renaming a product or correcting its model label does not retarget an existing action, recommendation or funnel record. The order number `SF-1042` is a display reference; the order route uses its actual GUID. No wireframe substitutes a display number for a declared route parameter.
-
-```csharp
-public static class CatalogUi
-{
-	public const string Name = "catalog";
-
-	public static Destination<CategoryRoute> Category { get; } =
-		Destination.ForPage<CategoryProducts, CategoryRoute>("catalog.category");
-
-	public static Destination<ProductRoute> Product { get; } =
-		Destination.ForPage<ProductDetails, ProductRoute>("catalog.product");
-
-	public static ActionTarget<ProductPurchaseContext> PurchaseActions { get; } =
-		new("catalog.product.purchase-actions");
-
-	public static RegionTarget<ProductContext> RelatedProducts { get; } =
-		new("catalog.product.related-products");
-}
-
-public sealed record CategoryRoute(string CategorySlug);
-
-public sealed record ProductRoute(string Slug);
-```
-
-`CategoryProducts.razor` owns `@page "/catalog/{CategorySlug}"`; `ProductDetails.razor` owns `@page "/products/{Slug}"`. Registration does not repeat those patterns. `CatalogUi.Product.Uri(navigationManager, new ProductRoute(product.Slug))` supplies an encoded link under the configured application base path. The host does not arbitrarily remap the module's route patterns.
-
-`Home > Brakes > Gravel Brake Rotor (RT-G800)` comes from the current product's category ancestry and destination contracts. A direct visit queries that ancestry when needed; it does not reconstruct the breadcrumb from a previously expanded menu or split the URL into guessed labels. Category navigation uses the same published category destinations, with native active-link behavior and the shell's resolved path. The hierarchy and product labels change with the Catalog data rather than application/framework code.
+Revocation stops subsequent reads and live updates; previously delivered HTML cannot be recalled. Shared pages do not use a stale shared-output cache that bypasses revocation. Share tokens, notes, hidden task fields and private identity/workspace data stay out of diagnostic capture. Explicit public-demo content may use the declared safe public cache policy; owner forms and token-bearing/private output do not become shared public output.
 
 ```mermaid
 sequenceDiagram
+    actor Owner
+    participant Form as Tasks list sharing form
+    participant Feature as Tasks public feature boundary
+    participant Backend as Tasks Application and fixture store
     actor Visitor
-    participant Route as Native routing integration
-    participant Gate as Ownership and availability checks
-    participant Page as ProductDetails
-    participant Catalog as ICatalogFeature
-    Visitor->>Route: Open /products/gravel-brake-rotor directly
-    Route->>Gate: Resolve owning Catalog module and requirements
-    alt Module or access requirement unavailable
-        Gate-->>Visitor: Unavailable or denied page with recovery
-    else Destination available
-        Gate->>Page: Activate with Slug
-        Page->>Catalog: Read product and category ancestry
-        Catalog-->>Page: Public product data and breadcrumb path
-        Page-->>Visitor: Product, breadcrumbs and eligible contributions
-    end
+    participant SSR as Native static SSR shared-list page
+    Owner->>Form: Create or replace read-only link
+    Form->>Feature: Authorized list revision and stable request
+    Feature->>Backend: Establish share under owner/workspace
+    Backend-->>Form: Owner-only copyable URL
+    Visitor->>SSR: Open shared URL without an account
+    SSR->>Backend: Validate token, current list and allowed projection
+    Backend-->>SSR: Read-only list/task values
+    SSR-->>Visitor: Useful HTML with native navigation
+    Owner->>Backend: Revoke share with current revision
+    Visitor->>SSR: Read again with old URL
+    SSR->>Backend: Revalidate share
+    Backend-->>SSR: Unavailable
+    Note over SSR,Backend: Read never grants mutation or advances work
 ```
 
-Apply the checks to initial server requests and interactive navigation before protected page construction and reads. A hidden operations link does not protect its route. Product-not-found, a failed product read and an unavailable module are different states with different recovery messages.
+### A.4 Conceptual wireframes
 
-### A.4 Browse, filter and return to the same catalog view
+The figures describe UI intent only. Their desktop sketch layout does not establish keyboard, screen-reader, narrow-screen, hosting or performance acceptance. Those require runnable cases below. Exact prompts are retained in [the wireframe prompt log](assets/taskfiesta/wireframes.prompt.md).
 
-Spec references: [Reusable data components and CRUD scaffolding](#reusable-data-components-and-crud-scaffolding), [Navigation hook context](#navigation-hook-context), [Dynamic hierarchy lifecycle](#dynamic-hierarchy-lifecycle), and [View restoration policy](#view-restoration-policy).
+#### Visual direction from DoFiesta
 
-![Conceptual customer catalog with category breadcrumbs, product filters and product cards](assets/shop/catalog.png)
+TaskFiesta's implemented visual design follows the existing DoFiesta Wayfind design language. The monochrome figures remain structural wireframes; their paper palette is not the final application theme. Primary application navigation follows DoFiesta's horizontal top bar with a temporary narrow-screen menu. Any list navigation in the workbench is subordinate content navigation.
 
-*Figure A.1. Catalog owns the category query, filters, product cards and breadcrumbs. Each product card exposes its own purchase context. Basket contributes the Add to basket action; the shop header displays Basket's summary contribution.*
-
-The view `/catalog/brakes?brand=aster&min=50&max=100&stock=in&sort=price-asc&page=1` illustrates a familiar browsing state. Its selected filters are shareable query values. The wireframe shows fictional in-stock products between EUR 50 and EUR 100, ordered by price. The sample prices explain the UI; they are not authoritative values submitted at checkout.
-
-```razor
-@page "/catalog/{CategorySlug}"
-@inject ICatalogFeature Catalog
-
-@code {
-	[Parameter]
-	public string CategorySlug { get; set; }
-
-	[SupplyParameterFromQuery(Name = "brand")]
-	public string Brand { get; set; }
-
-	[SupplyParameterFromQuery(Name = "min")]
-	public decimal? MinPrice { get; set; }
-
-	[SupplyParameterFromQuery(Name = "max")]
-	public decimal? MaxPrice { get; set; }
-
-	[SupplyParameterFromQuery(Name = "stock")]
-	public string Stock { get; set; }
-
-	[SupplyParameterFromQuery(Name = "sort")]
-	public string Sort { get; set; }
-
-	[SupplyParameterFromQuery(Name = "page")]
-	public int? Page { get; set; }
-}
-```
-
-These are native route/query parameters. Catalog validates allowed filters, sort keys and page bounds and translates them into its feature query. Optional FilterModel adapters can translate the same meaning for a reusable grid or handwritten list. They must not invent a second search language or require a generic CRUD page to display products.
-
-The header search is a Catalog-owned product-search contribution using that same query meaning. It is not a universal shell search or command-discovery system.
-
-| Interaction | Owned behavior |
+| Visual concern | TaskFiesta direction |
 | --- | --- |
-| Change brand or price range | Update shareable query state, reset the page as the feature declares, supersede the previous read and retain the controls' focus. |
-| Type product search | Debounce when appropriate, cancel obsolete reads and accept only the latest applicable query/context result. Cancellation alone is insufficient if a provider returns late. |
-| Change sorting or page | Navigate using native query values and reload the declared query. A pending Add to basket invocation keeps its original captured product and quantity. |
-| Open a product and use Back | Restore the category, filters, sorting and page from the URL. Scroll restoration follows the feature's explicit policy; temporary purchase state is not inferred from browser history. |
-| Expand category navigation | A bounded navigation provider receives parent/path, culture, paging and cancellation context and returns category descriptors through the published target. |
-| Change category membership | Invalidate the affected category branch and query explicitly. Do not refresh the entire shop for an unrelated badge change. |
-| No matching products | Show a successful empty result with clear filter-reset controls. A failed or unavailable query must not appear as zero products. |
+| Surfaces and rules | Use the current DoFiesta blue-black canvas `#181d27`, secondary surface `#242c39`, deep plate `#0d121a`, light text `#e7edf7`, muted text `#acb7c8` and neutral rules `#465267` as the reference dark palette. Square controls/surfaces, clear hierarchy and restrained separators; avoid decorative gradients or card shadows. |
+| Actions and emphasis | Cobalt `#315bf0` for primary actions, amber `#f4c34c` for focused/due-date/numeric emphasis, and semantic feedback colors. Keep focus and status recognizable without relying only on color. |
+| Typography and spacing | Chivo Mono with a local/system monospace fallback, compact readable tables/forms, consistent spacing and a desktop content cap around DoFiesta's 1216 px. Responsive reflow and readable zoom take precedence over a fixed desktop arrangement. |
+| Interactive renderer | Style MudBlazor through the specified semantic theme/renderer contracts to match this language. Keep native component behavior, forms and accessibility. TaskFiesta branding replaces the DoFiesta wordmark. |
+| Public/SSR renderer | Use ordinary Razor/HTML with the same semantic colors, type and spacing. The visual reference does not require an interactive MudBlazor provider, browser .NET startup or a blocking font request for first public content. |
+| Theme validation | The reference dark appearance establishes the design direction. Light/system modes, a host theme override and contrast/focus behavior remain required framework tests. Do not copy DoFiesta's hard-coded dark-mode host behavior as a restriction on the framework. |
 
-Product cards use normal Razor parameters and templates. A customer does not need operational row-selection checkboxes to shop. The operations example later demonstrates the separate selection adapter and its retained-on-paging default.
+Current source references are [DoFiesta tokens](../../examples/DoFiesta/DoFiesta.Presentation.Web.Client/wwwroot/styles/tokens.css), [Wayfind component styling](../../examples/DoFiesta/DoFiesta.Presentation.Web.Client/wwwroot/styles/wayfind.css), [MudBlazor theme mapping](../../examples/DoFiesta/DoFiesta.Presentation.Web.Client/Layout/Themes.cs) and [navigation/layout](../../examples/DoFiesta/DoFiesta.Presentation.Web.Client/Layout/MainLayout.razor). Map the selected values into the framework's public semantic tokens and packaged styling. TaskFiesta must not depend on the DoFiesta application project or require copied app-internal runtime code.
 
-### A.5 Open a product with a local purchase context
+![TaskFiesta public task board with native filters, task cards and suggestion form](assets/taskfiesta/public-board.png)
 
-Spec references: [Published typed contracts](#published-typed-contracts), [Action definition, placement, binding and execution](#action-definition-placement-binding-and-execution), and [Typed scopes and explicit placement](#typed-scopes-and-explicit-placement).
+*Figure T.1. The public board presents real task content before interactivity. Its links and native form exercise the reusable public website profile without a required browser .NET runtime.*
 
-![Conceptual product detail with quantity, Add to basket and Marketing-related product cards](assets/shop/product.png)
+![TaskFiesta task comparison with independent Ready and Needs review selection and an external toolbar](assets/taskfiesta/task-workbench.png)
 
-*Figure A.2. The main Gravel Brake Rotor (RT-G800) and each related card are independent live owners. The selected variant also shows its SKU, manufacturer part number and unassigned GTIN in secondary details. Catalog supplies content/identifiers; Stock supplies the availability decision. Selecting quantity two on the rotor does not change another card's target. Marketing supplies the related-products region.*
+*Figure T.2. Ready has two selected tasks and Needs review has one. Complete (2) targets Ready alone. Each view retains its own query, page, selection, binding and lifetime.*
 
-```csharp
-public sealed record ProductContext(
-	Guid ProductId,
-	string Slug,
-	string CategorySlug,
-	long Version);
+![TaskFiesta list management with create, rename, guarded deletion and read-only sharing](assets/taskfiesta/lists-sharing-v2.png)
 
-public sealed record ProductPurchaseContext(
-	Guid ProductId,
-	Guid? VariantId,
-	string Sku,
-	int Quantity,
-	long ProductVersion,
-	long? StockRevision,
-	bool CanPurchase);
-```
+*Figure T.3. Multiple lists have independent identities and counts. A non-empty list requires moving its tasks before deletion. Owner-only controls create/revoke a public read-only link; the shared view has no edit actions.*
 
-The context is a small immutable public contract, not an entity or a reference to the component's mutable fields. It contains the product/variant and quantity needed to prepare an invocation. Backend services still check stock, access, current price and quantity constraints. Client-supplied totals never establish the amount to charge.
+![TaskFiesta task editor with a required-title error, local actions and local encouragement content](assets/taskfiesta/task-detail.png)
 
-Names, brands and model designations remain display data. SKU is the public cross-module key for the selected sellable variant; it accompanies internal IDs and the observed Stock revision. `StockRevision` is absent before a valid Stock decision, which disables buying. An explicit valid decision may permit ordering with a null numeric quantity. No variant selected means no SKU to buy. The backend checks that the supplied SKU belongs to the submitted product/variant and revalidates Stock; a revision is not a reservation or a stock guarantee.
+*Figure T.4. An empty title receives native field and summary feedback. The last saved snapshot is separate from the current draft. Encouragement is a local `CoreModule` component, not another application module.*
 
-The portable Catalog declaration is authored once:
+![TaskFiesta independent settings sections beside a read-only presentation diagnostics drawer identifying CoreModule](assets/taskfiesta/preferences-diagnostics-v3.png)
 
-```csharp
-public static class CatalogPresentation
-{
-	public static void Configure(PresentationModuleBuilder module)
-	{
-		module.Pages.FromAssembly<CategoryProducts>();
-		module.Resources.Use<CatalogResources>();
-		module.Destinations.Add(CatalogUi.Category);
-		module.Destinations.Add(CatalogUi.Product);
-		module.Navigation.Add("catalog", href: "catalog", labelKey: "Shop");
-		module.Actions.Export(CatalogUi.PurchaseActions);
-		module.Regions.Export(CatalogUi.RelatedProducts,
-			required: false, maxContributions: 1);
-	}
-}
+*Figure T.5. Shared settings and Tasks settings save independently. Diagnostics identifies the actual runtime, owner, contribution and effective provider without invoking a task action.*
 
-public partial class CatalogModule : WebModuleBase, IPresentationModule
-{
-	public CatalogModule() : base(CatalogUi.Name) { }
+### A.5 Composition, rendering and controlled outcomes
 
-	public void RegisterPresentation(PresentationModuleBuilder module) =>
-		CatalogPresentation.Configure(module);
-}
-```
+TaskFiesta consumes the ordinary public hosting/profile registration and the specified module/action APIs. Reuse native routes, layouts, forms, DI, parameters and callbacks. No MVP-specific framework shortcut, private registry hook, extra global store or general HTTP command relay is permitted. Public website and connected workbench behavior must come from the packaged framework integrations being validated.
 
-The existing server module's `Register`, `Use` and `Map` methods are omitted. They keep their normal backend responsibilities. Its pinned public identity is shared with the portable definition. Local unpublished modules can use the existing type-name convention.
+The public profile serves home, boards and shared lists through Static SSR with native navigation/GET filters/POST suggestion handling. It uses approved read-only data, real head metadata, safe cache boundaries and selective prerender-compatible Server enhancements. Essential public reading/sharing works with JavaScript disabled. A shared read-only page does not need a live action scope or a circuit. Connected task editing, grids, dialogs and external toolbar composition use compatible interactive roots.
 
-`Pages.FromAssembly` supplies default module ownership for all routed pages in that assembly. Ordinary pages need no repeated ownership annotation. Shared assemblies use explicit page mappings, and ambiguous ownership is rejected. `Resources.Use<T>()` selects a native localization resource base; it is not another localization engine.
+| Runnable arrangement | Evidence required without imposing an implementation order |
+| --- | --- |
+| Minimal/core-only and generated starter | One `CoreModule`, local data and no auth/external service. Also run the ordinary generated starter/tests. Remove optional renderer/data packages without breaking core navigation/actions. |
+| External module composition harness | A separate test host combines TaskFiesta's portable `CoreModule` and a tiny fixture module to validate cross-module contracts. This does not add a module to normal TaskFiesta profiles. |
+| Interactive Server | Prerender off in the connected profile. Real feature implementations dispatch Requester in process with current circuit identity and operation-appropriate lifetimes. |
+| Web App WASM and standalone WASM | Real typed HTTP clients/authorized endpoints for the same Task/list use cases. Browser packages contain no server handler, repository or host-only dependency. |
+| Auto | Record actual Server/browser execution on cold/warm visits. Existing instances, pending actions and state do not migrate because a runtime becomes available. |
+| Mixed pages and sibling roots | Keep each toolbar with the task owner it invokes. Cross-root coordination is explicit; no callback/RenderFragment or scoped service crosses an incompatible serialization/runtime boundary. |
+| Public/static and explicit prerender | Useful initial HTML, native forms, delayed/blocked JS, safe read-state handoff, source attribution and no duplicated initial query/write/subscription. |
+| Plain Razor and MudBlazor | Equivalent headless navigation/action behavior in a build with no MudBlazor dependency, plus the default interactive renderer, public static shell and host styling. |
+| Identity, faults and operational arrangements | Use controlled identities/workspaces, slow/failing sources, proxy/reconnect/rollout and explicit diagnostic-access settings to validate actual supported behavior. A fixture cannot establish independent-host or production field results. |
 
-A product component creates one scope and disposes it with its own lifetime. The same pattern works in a product card and in the main product purchase area:
+The default app requires no external infrastructure. Where an operational arrangement needs multiple hosts, shared technical state/keys or a proxy, provide the appropriate existing test-provider/host configuration and record it explicitly. A process-local fixture pass cannot establish shared-state or restart behavior. These arrangements exercise framework requirements without expanding the task/list business domain.
 
-```razor
-@implements IDisposable
-@inject IActionScopes ActionScopes
+Example-owned fault controls can hold/release a query, return field errors, advance a revision, deny/revoke access, lose an acknowledgement or dispose an owner during work. Their state changes require explicit test/control operations. Do not hide them in status reads, wall-clock UI timers or diagnostic inspection. They are not additional end-user features or framework orchestration APIs.
 
-<ActionToolbar Scope="this.purchaseActions" />
+For batch Complete/Move, TF-101 can succeed while TF-102 conflicts. A repeated delivery/response cannot repeat the successful mutation. Save feedback belongs to the submitted edit revision. Opening another task during a delayed response cannot update that new task. Selection remains across paging by default with an explicit clear-on-paging option, and query-wide Export matching is separate from selected IDs.
 
-@code {
-	[Parameter]
-	public ProductPurchaseContext Purchase { get; set; }
-
-	private ActionScope<ProductPurchaseContext> purchaseActions;
-
-	protected override void OnInitialized() =>
-		this.purchaseActions = this.ActionScopes.CreateScope(
-			owner: this,
-			target: CatalogUi.PurchaseActions,
-			context: this.Purchase);
-
-	protected override void OnParametersSet() =>
-		this.purchaseActions?.UpdateContext(this.Purchase);
-
-	public void Dispose() => this.purchaseActions?.Dispose();
-}
-```
-
-Quantity and variant controls remain normal feature-owned Razor controls. They replace `Purchase` with a new snapshot. The binding factory associates callbacks/change delivery with the owner's Blazor dispatcher, derives runtime identities and attaches eligible contributors for that target. It does not register a global current product.
-
-An action scope is a live ownership object, not another DI container. Feature services retain the executing runtime's normal DI lifetimes. Disposing this scope releases its own bindings and subscriptions without disposing DI-owned shared services.
-
-`ActionToolbar` is a proposed default presenter, not a requirement that a shopping button look like an administrative toolbar. The host may supply a compact purchase renderer or ordinary Razor buttons consuming the same bindings. It must preserve availability, duplicate suppression, invocation and accessible feedback behavior.
-
-#### A.5.1 Present product images and manuals
-
-Spec references: [Product boundaries](#product-boundaries), [Module assets and JavaScript ownership](#module-assets-and-javascript-ownership), [Initialization, failures and recovery](#initialization-failures-and-recovery), and [Accessibility acceptance](#accessibility-acceptance).
-
-Catalog's product DTO supplies a safe image URL, alt text and revision, plus manuals with title, language, revision, applicability and download URL. The page uses ordinary markup:
-
-```razor
-<img src="@this.product.MainImage.Url"
-     alt="@this.product.MainImage.AltText" loading="lazy" />
-
-@foreach (var manual in this.product.Manuals)
-{
-	<a @key="manual.Id" href="@manual.DownloadUrl">@manual.Label</a>
-}
-```
-
-The excerpt assumes available content. An absent image uses an accessible placeholder; a failed image/manual read stays local and does not disable purchasing. Manual labels identify the language/revision where useful. Catalog decides applicability to the selected product/model/variant. A late product DTO cannot attach the previous product's document to the new page context.
-
-URLs respect the app base path and content revision. Native image/download requests are normal browser HTTP, including in Interactive Server. They do not change the rule that Server business feature commands/queries use Requester directly. The frontend sees no storage factory, credential, provider key or raw filesystem path. Content delivery enforces its declared publication/access policy independently of displaying a link.
+The export fixture establishes a stable operation reference and source-reported progress, with a small controlled CSV artifact. Navigation detaches observation; it does not cancel/restart accepted work. Unknown acknowledgement reconciles the original request. This validates presentation ownership and recovery, not real Queueing, DataPorter or durable job execution.
 
 ```mermaid
 flowchart LR
-    DTO["Catalog product DTO: image and manual metadata"] --> Page["Product page and public cards"]
-    Page --> Image["Native image with alt text or local fallback"]
-    Page --> Manual["Native manual download link"]
-    Image --> Delivery["Catalog-owned content URL"]
-    Manual --> Delivery
+    Definition["Published task action definition"] --> Binding["Ready view binding and captured context"]
+    Binding --> Header["External Complete toolbar"]
+    Binding --> Menu["Ready local menu"]
+    Other["Needs review: independent binding and selection"] --> OtherMenu["Review local menu"]
+    Header --> Confirm["Confirm captured IDs and revisions"]
+    Confirm --> Validate["Revalidate owner and relevant context"]
+    Validate --> Dispatch["Requester or typed HTTP to Tasks Application"]
+    Dispatch --> Receipt["Confirmed per-target facts or unknown outcome"]
+    Receipt --> Feedback["Original-owner feedback and targeted refresh"]
 ```
 
-The agreed backend target is Blob Storage for images and File Storage for manuals. The first frontend slice can use tiny Catalog-owned fixture content endpoints. That validates URLs, markup, access and failure presentation, not provider integration. Provider setup and stream handling remain in the [backend roadmap](spec-shopfiesta-backend-showcase.md#product-images-and-manuals). Module CSS/JS/resources retain their native RCL/static-web-asset packaging.
+### A.6 Validation cases and observable evidence
 
-#### A.5.2 Compose Stock availability and manage ordering policy
+Case IDs are evidence references, not phases, milestones or implementation tasks. Every case can have multiple assertions/profiles and must report their individual results. The one-to-one acceptance map in A.7 identifies which cases are responsible for each requirement. Use actual public APIs, handlers, HTTP, files and browser behavior where specified.
 
-Spec references: [Modular monolith across backend and frontend](#modular-monolith-across-backend-and-frontend), [Automatic refresh and explicit invalidation](#automatic-refresh-and-explicit-invalidation), [Typed scopes and explicit placement](#typed-scopes-and-explicit-placement), [Safe invocation and lifetime](#safe-invocation-and-lifetime), and [Field validation and submitted revisions](#field-validation-and-submitted-revisions).
-
-Stock is a separate logical module under `stock`, with corresponding backend ownership and browser-safe presentation contracts. It recognizes Catalog's exact SKU within the authorized store context. Catalog owns descriptions/identifiers and the product page; Stock owns quantity, availability and the ordering decision for that SKU. Basket and Checkout revalidate through backend contracts. Neither product labels, GTINs nor client-side quantity arithmetic substitute for the shared SKU.
-
-The proposed read/observation contract is ordinary feature code:
-
-```csharp
-public sealed record StockRequest(string Sku, int RequestedQuantity);
-
-public sealed record SkuAvailabilityView(
-	string Sku,
-	int RequestedQuantity,
-	int? AvailableQuantity,
-	string StatusCode,
-	bool CanOrder,
-	string ReasonCode,
-	DateTimeOffset? ExpectedAvailableAtUtc,
-	long Revision,
-	DateTimeOffset ObservedAtUtc);
-
-public interface IStockFeature
-{
-	Task<Result<SkuAvailabilityView>> GetAsync(
-		StockRequest request,
-		CancellationToken cancellationToken = default);
-
-	Task<Result<ImmutableArray<SkuAvailabilityView>>> GetManyAsync(
-		ImmutableArray<StockRequest> requests,
-		CancellationToken cancellationToken = default);
-
-	IAsyncEnumerable<SkuAvailabilityView> ObserveAsync(
-		StockRequest request,
-		CancellationToken cancellationToken = default);
-}
-```
-
-`StatusCode`/`ReasonCode` have Stock-defined meanings and resources. The response is an ordering decision for its exact SKU and requested quantity, not a promise that any quantity can be ordered. A listing uses `GetManyAsync` for its bounded page and passes the returned values to ordinary Stock presenters; shared adapters can coalesce observations instead of sending one HTTP request per card/render. The observation adapter supplies live updates for currently observed requests. Server and WASM adapters follow their respective in-process/HTTP and explicitly supported notification paths; local AppState/Notifier is not a cross-circuit transport. The frontend slice can use controlled fixture snapshots/streams without implementing the eventual notification infrastructure.
-
-For the full shop profile, Catalog can consume Stock's public component through ordinary Razor:
-
-```razor
-@if (this.stockEnabled && this.selectedVariant is not null)
-{
-	<SkuAvailability Sku="this.selectedVariant.Sku"
-	                 Quantity="this.quantity"
-	                 AvailabilityChanged="this.ApplyAvailabilityAsync" />
-}
-```
-
-`SkuAvailability` belongs to Stock, uses native parameters and a typed `EventCallback<SkuAvailabilityView>`, and presents Stock's label/reason. Catalog's callback combines the current product/variant, SKU, requested quantity and returned Stock revision into its live `ProductPurchaseContext`. `CanPurchase` requires an eligible Catalog variant and a usable current Stock decision whose `CanOrder` is true for that quantity. The read-only Catalog profile omits this capability and buying; it does not construct a Stock component without its registered services. Reference public contracts/components through the appropriate browser-safe packages, not another module's private implementation or a new framework inventory abstraction.
-
-| Stock response/situation | Frontend behavior |
-| --- | --- |
-| In stock | Show the supplied status and allow the captured quantity only when `CanOrder` is true. |
-| Low stock | Show Stock's low-stock label/optional public quantity. A display threshold does not itself prohibit ordering; respect the returned decision. |
-| Zero or below a configured sale threshold | Show Sold out or Stock's supplied reason. Disable purchase unless Stock explicitly permits the requested backorder/preorder or another configured policy. |
-| Coming soon | Show the supplied expected date/window. A date alone does not enable purchase; `CanOrder` reflects whether preordering is allowed. |
-| Null numeric quantity with ordering allowed | No known number is available, but the SKU's explicit policy permits the requested quantity. Show Available to order or a truthful unknown-quantity explanation; do not label it physically In stock or invent an unlimited count. |
-| Null numeric quantity with ordering denied | Show the supplied availability/reason and disable purchase. Null is not converted to zero and does not grant permission implicitly. |
-| Stock read/connection unavailable | Treat the current decision as unavailable, rather than invoking the null-quantity policy. Mark any retained value as last-known/stale and keep affected buying unavailable until the feature re-establishes a usable decision. |
-
-The default unknown-quantity policy denies ordering until explicitly enabled for that SKU. Quantity, availability label and `CanOrder` remain separate values. A known response with `AvailableQuantity = null` can therefore be sellable; an absent/failed response cannot. This is a Stock business policy, not the shell's permission/availability rule or a global `null > 0` shortcut.
-
-On SKU/variant/quantity/store change, supersede the old request/observation. Match incoming SKU, requested quantity and context before accepting it; reject older revisions even if an initial read arrives after a newer update. Apply updates through the owning component's Blazor dispatcher. A live change updates only interested SKU consumers and the affected purchase scope, not a global current product. If it invalidates a pending confirmation, reevaluate/reject that decision. Already dispatched work keeps its captured identifiers/revisions and actual backend outcome. Dispose owned observations with the component without disposing its DI-owned shared feature service; share/coalesce backend feeds where useful without sharing product-card action ownership.
-
-The existing `stock=in` Catalog filter means physically in-stock/low-stock results, not every backorderable or unknown-quantity SKU. An explicit orderable filter can use Stock's broader decision. Apply stock-dependent filtering/counting before paging through the feature query contract; the page must not remove sold-out rows after fetching a Catalog page and report a false count. A relevant stock update invalidates the affected query as well as its visible badge. The query can preserve its existing filters/sort/page policy; no backend query/join mechanism is prescribed here.
-
-```mermaid
-flowchart LR
-    Variant["Catalog-selected variant and SKU"] --> Request["SKU plus requested quantity"]
-    Request --> Stock["Stock feature read and live observation"]
-    Stock --> View["Stock-owned availability component"]
-    View -->|"Typed callback with current revision"| Owner["Catalog component's immutable purchase context"]
-    Owner --> Basket["Basket action for that captured SKU and quantity"]
-    Stock --> Admin["Stock-owned staff editor and policy result"]
-```
-
-Stock also owns `/operations/stock`, mapped by the host to `OperationsLayout` and protected by `Shop.Stock.Manage` on direct routes, interactive activation and backend commands. Its SKU search/selection uses native URL query state. A separate `IStockManagementFeature` supplies authorized editor reads/commands; the public `IStockFeature` remains read/observation-only. Catalog's lookup supplies product names/model labels and SKU definitions; Stock manages quantity/policy against that existing identity. Staff cannot create an unrelated SKU by changing a text label, and read-only reporting access grants no stock-management permission.
-
-![Conceptual Stock management by shared SKU with availability, ordering decisions and an unknown-quantity policy editor](assets/shop/stock.png)
-
-*Figure A.3. A separate stock-change fixture demonstrates normal, low, sold-out, preorder and null-quantity outcomes. Brake Adapter (AD-200) has no known quantity but explicitly permits ordering. The earlier Catalog wireframe is its all-in-stock browsing fixture before these scenario changes.*
-
-| Native editor field | Stock-owned meaning |
-| --- | --- |
-| Reported quantity | Optional numeric input for the selected SKU's fixture quantity/adjustment. Empty remains null. The backend derives any reserved/available calculation; the page does not overwrite another module's counter. |
-| Sales enabled | Master business switch, distinct from staff authorization and numeric quantity. |
-| Minimum available to sell | The configured sale threshold used by Stock's ordering policy. |
-| Low-stock threshold | Presentation/alert threshold, independent of the permission to sell. |
-| Allow backorders / preorders | Explicit policy for insufficient current stock and future availability, with an expected date/window where applicable. |
-| Allow orders when quantity is unknown | Explicit permission to order despite a null numeric quantity; false by default in the demo policy. |
-
-Use `EditForm`/`EditContext`, normal inputs and the existing validation/revision feedback. Save captures the selected SKU, expected Stock revision and immutable edit values. A confirmed save returns the resulting revision and invalidates that SKU's observation; even a policy-only change can alter sellability. Preserve the draft on validation/conflict and reconcile an unknown outcome instead of replaying automatically. A late save/load cannot update another selected SKU. Other circuits update only through the explicitly implemented notification adapter. The fixture can simulate those events for frontend evidence; actual stock storage, reservations and broadcast delivery remain backend roadmap work.
-
-### A.6 Let Basket contribute purchasing without coupling Catalog to it
-
-Spec references: [Typed extension points as a design foundation](#typed-extension-points-as-a-design-foundation), [Predictable attachment and customization](#predictable-attachment-and-customization), [Composition and contextual execution](#composition-and-contextual-execution), and [Safe invocation and lifetime](#safe-invocation-and-lifetime).
-
-Basket's presentation declaration attaches an action contributor to the public Catalog target. Catalog does not need to reference `IBasketFeature` or know how baskets are stored.
-
-```csharp
-module.Resources.Use<BasketResources>();
-module.Actions.Contribute<AddToBasketActions>(
-	CatalogUi.PurchaseActions,
-	contributionId: "basket.catalog-purchase",
-	required: true);
-```
-
-```csharp
-public sealed class AddToBasketActions(IBasketFeature basket)
-	: IActionContributor<ProductPurchaseContext>
-{
-	public void Bind(ActionScope<ProductPurchaseContext> scope) =>
-		scope.Bind("add-to-basket", action => action
-			.LabelKey("AddToBasket")
-			.EnabledWhen(
-				context => context.CanPurchase && context.Quantity > 0,
-				disabledReasonKey: "ProductUnavailable")
-			.ExecuteAsync((snapshot, cancellationToken) =>
-				basket.AddAsync(new AddBasketItem(
-					snapshot.ProductId,
-					snapshot.VariantId,
-					snapshot.Sku,
-					snapshot.Quantity,
-					snapshot.ProductVersion,
-					snapshot.StockRevision), cancellationToken)));
-}
-```
-
-`IBasketFeature`, `AddBasketItem`, the receipt and `BasketUiState` are feature-owned contracts/helpers. The presentation-side feature implementation accepts confirmed receipts into the current basket/session summary and invalidates relevant consumers as described below. `BasketUiState` uses existing scoped AppState and notification mechanisms. It is not another framework state store or a wrapper every feature must implement.
-
-The contributor is resolved through normal DI for the live scope. Registration infers its service registration, module provenance and local identities. Its resource keys remain Basket-owned even though Catalog owns the target. Shared metadata does not retain the contributor, scoped basket client or component.
-
-```mermaid
-flowchart TD
-    Registration["Basket contributor registered once against Catalog target"]
-    Main["Main product: Gravel Brake Rotor (RT-G800), quantity 2"]
-    Lockring["Related product card: Rotor Lockring (LR-150), quantity 1"]
-    MainScope["Purchase scope A: captured rotor context"]
-    LockringScope["Purchase scope B: captured lockring context"]
-    MainButton["Main Add to basket presenter"]
-    LockringButton["Related card Add to basket presenter"]
-    Basket["IBasketFeature"]
-    Registration -.->|"Binds for this live owner"| MainScope
-    Registration -.->|"Binds for this live owner"| LockringScope
-    Main -->|"Owns and updates"| MainScope
-    Lockring -->|"Owns and updates"| LockringScope
-    MainButton -->|"Invokes A"| MainScope
-    LockringButton -->|"Invokes B"| LockringScope
-    MainScope -->|"Captured rotor inputs"| Basket
-    LockringScope -->|"Captured lockring inputs"| Basket
-```
-
-No confirmation is needed for the example's ordinary Add operation. Invocation still checks the owner and current required availability, reserves that binding's pending state and captures immutable inputs before dispatch. A quantity change after dispatch cannot retarget the accepted command. Duplicate clicks on the same binding are suppressed; independent cards are not serialized through a circuit-wide gate.
-
-Backend basket concurrency/idempotency handles overlapping requests where required. UI suppression is not a transaction or a guarantee that two independent bindings can never affect the same product. An uncertain mutation result is not automatically retried. Disposal requests cancellation and prevents late UI updates without claiming to reverse an already committed basket change.
-
-The same action binding can appear in a product's local purchase area and an explicitly attached sticky purchase bar. They share pending/busy state and feedback ownership. The sticky bar must retain its source when focus moves into it and must not silently select another product card.
-
-### A.7 Let Marketing fill an optional product region
-
-Spec references: [Published typed contracts](#published-typed-contracts), [Common composition metadata](#common-composition-metadata), [Host-supplied feature availability](#host-supplied-feature-availability), and [Initialization, failures and recovery](#initialization-failures-and-recovery).
-
-Catalog publishes an optional, single-contribution region below the product details. Normal Razor supplies the typed context:
-
-```razor
-<ProductPurchase Purchase="this.currentPurchase" />
-
-<ExtensionRegion Target="CatalogUi.RelatedProducts"
-                 Context="this.productContext" />
-```
-
-Marketing registers a compatible component through that region:
-
-```csharp
-module.Regions.Contribute<RelatedProducts>(
-	CatalogUi.RelatedProducts,
-	contributionId: "marketing.related-products",
-	required: true);
-```
-
-`RelatedProducts.razor` uses an ordinary `[Parameter] ProductContext Context` and an injected `IMarketingFeature`. Builder validation, and a generator diagnostic if supplied, checks the component's declared context parameter. No framework component base is required. C# generic handles do not by themselves prove every Razor parameter convention; composition must validate the remaining facts.
-
-The feature queries recommendations for the current product and renders public Catalog `ProductCard` components from public product summaries. Each card creates its own purchase scope, so Basket's contributor works there without a Marketing-to-Basket dependency. `ProductCard` does not render the related-products region recursively; that region belongs to the product detail page.
-
-| Situation | Visible and lifecycle behavior |
-| --- | --- |
-| Marketing not selected | The region collapses. Catalog browsing and purchasing remain usable. |
-| One valid Marketing contribution | Render related products for the supplied product context, with Marketing provenance/resources. |
-| Two competing replacements | Apply an explicit host replacement or reject the unresolved single-region conflict at composition. |
-| Recommendation capability unavailable | Use the declared optional fallback. Do not block Add to basket or checkout. |
-| Successful query with no recommendations | Collapse or show the feature's deliberate empty state. Do not label it a service failure. |
-| Recommendation query fails | Contain failure to the region; show a local recovery affordance if the feature provides one. Do not turn failure into a successful zero result. |
-| Navigate to another product during the read | Cancel/supersede the old read and reject its late result using the new product/context revision. |
-
-The host can suppress or replace `marketing.related-products` through its published contribution ID. Ordinary integration does not require editing Catalog's source. Query evaluation does not start a purchase, subscribe to undeclared global state or enable personalization implicitly.
-
-#### A.7.1 Manage recommendations in the Marketing module
-
-Spec references: [Page ownership and route availability](#page-ownership-and-route-availability), [Field validation and submitted revisions](#field-validation-and-submitted-revisions), [Minimal unsaved-change support](#minimal-unsaved-change-support), [Automatic refresh and explicit invalidation](#automatic-refresh-and-explicit-invalidation), and [Extension contracts and host authority](#extension-contracts-and-host-authority).
-
-Marketing staff manage the related-products data at `/operations/marketing/recommendations`. Selecting a source product opens `/operations/marketing/recommendations/{ProductId:guid}`. Both pages belong to the same Marketing module as the storefront contribution. They use `OperationsLayout` and the native `Shop.Marketing.ManageRecommendations` authorization policy. Hiding their navigation entries is only a presentation decision; initial requests, interactive activation and backend reads/writes enforce access independently. Permission to manage recommendations does not imply permission to release orders or view business reports.
-
-![Conceptual staff editor for ordered product recommendations with source selection, Catalog lookup, enabled flag, draft preview and Save](assets/shop/marketing-recommendations.png)
-
-*Figure A.4. Marketing manages the Gravel Brake Rotor's ordered recommendations: Rotor Lockring and Brake Adapter. Catalog supplies product lookup and public summaries. The preview displays the local draft without live purchase actions; only a confirmed save changes the published recommendation set.*
-
-The first slice uses manually curated, bounded sets. Marketing owns the source product ID, enabled flag, ordered recommended product IDs and version. Catalog owns product identity and current public product data. The editor uses Catalog's public lookup contract rather than private queries or repositories. Staff can find `RT-G800` by its model designation and verify the Aster brand and variant metadata, while the saved recommendation still references the stable product ID. Nothing in these contracts depends on bike components. This workflow needs neither a recommendation algorithm nor a generic administration framework.
-
-```csharp
-public static class MarketingUi
-{
-	public const string Name = "marketing";
-
-	public static Destination<RecommendationRoute> RecommendationEditor { get; } =
-		Destination.ForPage<RecommendationEditor, RecommendationRoute>(
-			"marketing.recommendations.edit");
-}
-
-public sealed record RecommendationRoute(Guid ProductId);
-
-public sealed record RecommendationSet(
-	Guid ProductId,
-	long Version,
-	bool Enabled,
-	ImmutableArray<Guid> RecommendedProductIds);
-
-public sealed record RecommendationUpdate(
-	Guid SaveId,
-	Guid ProductId,
-	long ExpectedVersion,
-	bool Enabled,
-	ImmutableArray<Guid> RecommendedProductIds);
-
-public interface IMarketingManagementFeature
-{
-	Task<Result<RecommendationSet>> LoadAsync(
-		Guid productId,
-		CancellationToken cancellationToken = default);
-
-	Task<Result<RecommendationSet>> SaveAsync(
-		RecommendationUpdate update,
-		CancellationToken cancellationToken = default);
-}
-```
-
-These proposed DTOs illustrate feature ownership, not new shell primitives. `SaveId` identifies the submitted mutation for backend reconciliation; it is distinct from the live action binding. The feature also provides a bounded status lookup by that reference when a save's acknowledgement is lost. The tiny backend can simulate this contract in memory and must identify that process-lifetime limitation.
-
-Marketing's presentation registration includes its page assembly, management destination and staff navigation entry through the same builders used elsewhere. Native `@page` declarations define the URLs. Ordinary module-assembly ownership avoids annotations on each page; if the staff facet uses a separate assembly, Marketing registers that assembly under the same identity. Customer-facing service contracts expose published recommendation reads only. Staff drafts and management endpoints remain authorized even when their assembly is browser-downloadable.
-
-| Editor interaction | Required behavior |
-| --- | --- |
-| Open a source product | Load its saved set and current Catalog summaries. Cancel/supersede older reads; a late load cannot replace another product's draft. Missing/deleted source products receive an explicit unavailable result. |
-| Add, remove or reorder | Update a page-owned draft with stable product keys. Allow at most six distinct recommendations, exclude the source itself and validate current store/catalog membership through backend contracts. A deleted/unavailable recommended product is marked for correction; it does not silently become another product. |
-| Preview | Render names, media and prices through read-only Catalog presentation. Do not create purchase scopes, record customer views or invoke Add to basket from an administrative preview. |
-| Save | Use native `EditForm`/`EditContext` and the existing validation adapter. Capture an immutable update with the source ID, expected version and save reference. Disable draft editing while this save is pending. Backend validation and authorization remain authoritative. |
-| Confirmed save | Establish the returned version as the baseline and invalidate the declared recommendation read for that source product. Reordering preserves item identity. The next eligible storefront read uses the saved enabled set and current public product summaries. |
-| Version conflict | Preserve the draft, show the conflict and offer reload/review of the current saved version. Do not overwrite another editor's changes or silently retry with its version. |
-| Unknown save outcome | Keep the submitted reference and reconcile its backend status. Loading a newer version alone does not establish which editor saved it. Do not blindly replay the mutation or show success. |
-| Leave, change source or switch identity | Use the feature's native dirty-navigation policy for voluntary navigation. Revoke access immediately on forced identity change. A late save/result cannot establish another product's or user's baseline. |
-
-```mermaid
-flowchart LR
-    Lookup["Catalog public product lookup"] --> Editor["Marketing editor: local draft and preview"]
-    Editor -->|"Authorized versioned save"| Save["Marketing backend"]
-    Save --> Set["Saved enabled set and version"]
-    Set -->|"Invalidate this source product read"| Read["Marketing public recommendation read"]
-    Catalog["Catalog public summaries"] --> Read
-    Read --> Effective["Host effective region selection"]
-    Effective -->|"Default Marketing contribution"| Cards["Catalog product cards with independent purchase scopes"]
-```
-
-The save signal affects the source product's declared recommendation query, not every Catalog query, basket summary or checkout review. Local state/Notifier delivery reaches only its supported runtime/circuit. Other customers see the saved backend version on their next read or explicit refresh; automatic cross-circuit delivery requires a separately implemented backend broadcast path.
-
-The host profiles in [A.13.1](#a131-replace-a-contribution-and-inspect-the-effective-result) remain authoritative. Under `featured-related` or `no-related`, saving Marketing data does not restore or replace the host-selected presentation. The editor can explain that this set is not currently shown by the shop configuration, and authorized diagnostics identifies the effective provider. The default profile demonstrates the saved set appearing in the public region. Disabling the set produces a successful empty recommendation result, not a failed query.
-
-### A.8 Keep the basket page and header summary consistent
-
-Spec references: [State, preferences and application context](#state-preferences-and-application-context), [AppState adaptation](#appstate-adaptation), [State change subscriptions](#state-change-subscriptions), and [Automatic refresh and explicit invalidation](#automatic-refresh-and-explicit-invalidation).
-
-![Conceptual basket with quantities, line totals, delivery estimate and checkout destination](assets/shop/basket.png)
-
-*Figure A.5. Two brakes at EUR 80 and one lockring at EUR 15 produce three units and a EUR 175 subtotal. Illustrative delivery is EUR 5 and the displayed total is EUR 180. Basket owns quantity/removal behavior and its confirmed summary; Checkout revalidates the payable review independently.*
-
-The basket is backend-owned business state, including for an anonymous visitor. The backend resolves the current basket from the authenticated or guest session; the browser cannot establish ownership by supplying an arbitrary basket ID. A frontend AppState snapshot is a current presentation view, not the durable basket database.
-
-Basket supplies the header badge through the shell's public header region, alongside its own `/basket` destination. The badge observes a narrow summary selector: unit count, display total, basket revision and load/availability status. It does not fetch on every render or subscribe to unrelated product filters.
-
-The proposed registration targets a shell-owned region. Catalog can independently contribute its search component to the same multi-contribution region, with documented ordering.
-
-```csharp
-module.Regions.Contribute<BasketBadge>(
-	ShellUi.HeaderEnd,
-	contributionId: "basket.header-summary",
-	required: true,
-	order: 200);
-```
-
-`ShellUi.HeaderEnd` is a proposed public `RegionTarget<ShellContext>` exported by the headless shell. `BasketBadge` accepts the native context parameter and injects Basket's state. `StorefrontLayout` renders that region through `ExtensionRegion`; the operations layout can choose different chrome. Header placement does not change the badge's state owner or grant access to a basket.
-
-```mermaid
-sequenceDiagram
-    participant Product as Product purchase binding
-    participant Feature as Basket feature implementation
-    participant Backend as Basket Application use case
-    participant State as Basket scoped AppState and notifications
-    participant Badge as Header BasketBadge
-    participant Page as Basket page consumer
-    Product->>Feature: AddAsync with captured product, variant and quantity
-    Feature->>Backend: Dispatch basket mutation
-    Backend-->>Feature: Confirmed receipt with basket identity and revision
-    Feature->>State: Accept confirmed summary for current session
-    Feature-->>Product: Confirmed business result
-    State-->>Badge: Selected summary fields changed
-    State-->>Page: Relevant basket detail revision invalidated
-    opt Basket page is active and detail needs refresh
-        Page->>Backend: Read current basket once for coalesced invalidation
-        Backend-->>Page: Current basket detail
-    end
-    Note over Product,Page: A refresh failure does not undo the confirmed Add
-```
-
-`BasketUiState.AcceptAsync` rejects an older summary for the same basket/session rather than letting out-of-order responses rewind the badge. The summary has explicit client/circuit ownership, independent of a product component. A known result can update that same-session summary after the product component disappears, while no callback updates the disposed component. Results for a previous identity/basket context are rejected. If completion remains unknown, recovery reads the original basket rather than replaying Add.
-
-Confirmed mutation outcome and subscriber/read feedback are separate. A notification or refresh failure must not replace the returned success with a failed Add. Inactive detail consumers become stale and load on activation; unrelated catalog and Marketing reads do not restart.
-
-| State | Owner and restoration policy |
-| --- | --- |
-| Category, filters, sort and page | Catalog query/URL. Shareable values remain in the URL. |
-| Product quantity and variant being chosen | The live product component, transient unless the feature explicitly chooses otherwise. |
-| Basket contents and revision | Backend Basket module, with a current scoped frontend snapshot. |
-| Header basket count | A derived selector over Basket's confirmed summary. An unknown count is not displayed as zero. |
-| Checkout form draft | Checkout page owner, private and transient by default. Contact/delivery data is not automatically persisted in browser preferences. |
-| Customer history/detail snapshots | Orders presentation state scoped to the current customer, route/query and runtime context. Backend access checks remain authoritative. |
-| Staff order selection | Each order-queue component instance. It is not shared with customer history, storefront state or another queue. |
-| Theme, culture and benign view preferences | Explicitly scoped preferences using the framework's documented persistence policy. |
-
-Refresh and state propagation use declared dependencies. Existing Notifier and AppState can carry typed local invalidation signals. Neither automatically crosses circuits, tabs, devices or a Server/browser boundary. Cross-device basket updates need an explicit backend notification or subsequent read; the example does not invent a global event bus.
-
-Quantity and removal mutations keep their own captured line identities and versions. A backend price/stock change is presented as a current business result, not patched away by trusting the old summary. The checkout destination is hidden when its optional module is absent, or explicitly disabled with a reason where that presentation is chosen. A required but unknown checkout capability keeps that action unavailable until established.
-
-### A.9 Use native checkout forms and an explicit order attempt
-
-Spec references: [Shared interactions and operation feedback](#shared-interactions-and-operation-feedback), [Field validation and submitted revisions](#field-validation-and-submitted-revisions), [Minimal unsaved-change support](#minimal-unsaved-change-support), [Operation outcomes and recovery](#operation-outcomes-and-recovery), and [Session and workspace transitions](#session-and-workspace-transitions).
-
-![Conceptual checkout with delivery validation and a read-only order review](assets/shop/checkout.png)
-
-*Figure A.6. Checkout owns the form and its submission revision. The current postcode error appears beside the field and in a summary. The order review contains server-established values; the disabled Place order button does not imply that a payment or order has already succeeded.*
-
-Checkout uses ordinary `EditForm`, `EditContext`, validation controls and injected services. It does not need a framework form base or an action registration for each field. A shared result-to-field adapter supplies the specified feedback behavior where needed.
-
-```razor
-<EditForm EditContext="this.editContext" OnValidSubmit="this.SubmitAsync">
-	<DataAnnotationsValidator />
-	<ValidationSummary />
-	<InputText @bind-Value="this.draft.Shipping.Postcode" />
-	<ValidationMessage For="() => this.draft.Shipping.Postcode" />
-	<button type="submit" disabled="@this.submitting">Place order</button>
-</EditForm>
-```
-
-The feature owns the omitted fields, submission method and current review. Field-level validation is usability feedback; Application validation and authorization still run for direct Server and HTTP execution.
-
-| Checkout step | Contract and ownership |
-| --- | --- |
-| Load review | Read the current basket, stock/pricing/delivery decision and a versioned review through `ICheckoutFeature`. Display its actual availability and totals. |
-| Edit contact and delivery | Native `EditContext` tracks fields. Checkout tracks the submitted edit revision and immutable values. Benign view preferences do not absorb personal draft data. |
-| Prepare submission | Validate, reserve this form's pending state and capture the draft, basket/review versions and feature-owned attempt key. Prevent duplicate submits while preparation/dispatch is pending. |
-| Place order | Checkout invokes its backend feature contract against the captured basket/review. The backend establishes acceptance and owns payment/processing. The UI consumes the outcome and does not run a worker or wait for fulfillment. |
-| Map known rejection | Map matching property paths, such as `Shipping.Postcode`, to the current submitted fields. Use explicit aliases for different names. Unmatched/model errors go to the summary. |
-| Reject old feedback | A rejection for an older edit revision does not mark newer field values invalid or overwrite a newer submission's feedback. The summary may explain that an earlier submission was rejected. |
-| Confirmed success | An established order/receipt confirms acceptance, not completed payment or fulfillment. Navigate to its authorized receipt and invalidate relevant basket/order views. Later queue/processing or badge-refresh failure does not erase the order or resubmit checkout. |
-| Price, stock or review changed | Present the new review and require the feature's fresh decision. Do not silently accept a higher amount or substitute a different basket. |
-| Completion uncertain | Retain the original attempt reference and show a status/recovery path. Query the backend before any deliberate retry. Do not label a disconnected UI as a rejected or cancelled order. |
-
-The application supplies a durable attempt/idempotency contract for order placement where required. Its key identifies the same business attempt, not every click or every retry. UI duplicate suppression cannot replace that backend contract. No real payment provider or card collection is required for the local demo; a deterministic fake can produce known success, rejection and uncertain-completion scenarios.
-
-```mermaid
-sequenceDiagram
-    actor Customer
-    participant Form as Checkout page
-    participant Feature as ICheckoutFeature
-    participant UseCase as Checkout Application use case
-    participant Orders as Orders public backend contract
-    Customer->>Form: Submit current validated review
-    Form->>Form: Reserve pending and capture draft revision and attempt
-    Form->>Feature: PlaceAsync with immutable submission
-    Feature->>UseCase: Runtime-specific access
-    UseCase->>UseCase: Validate access, basket version and current review
-    alt Known validation or review rejection
-        UseCase-->>Feature: Confirmed rejection and property/model errors
-        Feature-->>Form: Result for the captured submission
-        Form->>Form: Apply only to applicable submitted revision
-    else Valid submission
-        UseCase->>Orders: Place using the same business attempt
-        alt Confirmed order
-            Orders-->>UseCase: Receipt and affected basket/order references
-            UseCase-->>Feature: Confirmed feature outcome
-            Feature-->>Form: Receipt for the captured submission
-            Form-->>Customer: Authorized confirmation destination
-        else Completion not established
-            UseCase-->>Feature: Business completion not established
-            Feature-->>Form: Pending or uncertain completion
-            Form-->>Customer: Pending or unknown outcome with recovery
-            Customer->>Form: Check order status
-            Form->>Feature: Find original attempt status
-            Feature->>UseCase: Read attempt status without replaying placement
-        end
-    end
-```
-
-The checkout use case owns orchestration through the public backend contracts. The shell supplies feedback, lifetime and context rules without turning the workflow into a generic frontend command bus.
-
-An unsaved-change helper can guard ordinary navigation away from a dirty draft. Forced sign-out or access revocation takes precedence. Disposing the page requests cancellation and rejects late UI updates, but cannot reverse a committed order. Recovery uses the backend attempt, not a recreated local component's guess.
-
-#### A.9.1 Observe backend-owned order processing
-
-Spec references: [Execution state and observation](#execution-state-and-observation), [Operation outcomes and recovery](#operation-outcomes-and-recovery), and [Safe invocation and lifetime](#safe-invocation-and-lifetime).
-
-An accepted receipt confirms an established order, not completed payment or fulfillment. Checkout supplies its attempt/receipt reference; Orders supplies authorized customer/staff status. The frontend renders those outcomes and recovery choices through the existing feature contracts. The backend owns subsequent processing through Queueing in the full showcase.
-
-| Frontend situation | Required presentation behavior |
-| --- | --- |
-| Order accepted | Display the established order/reference and its actual returned status. Do not infer Paid from successful submission. |
-| Processing still pending | Show the feature's pending/processing state. Status reads observe it without advancing work or inventing progress. |
-| Leave and revisit | Dispose the page's reads/subscriptions and reconstruct observation from the original authorized reference. Page disposal does not cancel accepted backend work. |
-| Lost acknowledgement | Retain the submitted attempt/reference and use the feature's reconciliation path. Do not blindly repeat Checkout or Release. |
-| Staff Release succeeds | Show the confirmed release/scheduling outcome, not shipment/delivery. Partial outcomes still belong to their captured targets. |
-
-```mermaid
-sequenceDiagram
-    participant Page as Checkout or Orders page
-    participant Feature as Runtime-specific feature service
-    participant Backend as Owning backend contract or fixture handler
-    Page->>Feature: Submit captured attempt or action
-    Feature->>Backend: Direct Requester on Server or HTTP in WASM
-    Backend-->>Feature: Accepted reference and actual outcome
-    Feature-->>Page: Typed feature result
-    Note over Page,Backend: Backend work outlives the originating page
-    Page->>Feature: Read original authorized reference after revisit
-    Feature->>Backend: Observe current status without replay
-    Backend-->>Feature: Current status
-    Feature-->>Page: Typed status result
-```
-
-The first slice uses deterministic backend-owned fixture transitions, advanced by test control rather than page reads/timers. Queue contracts, workers, retry and durable handoff are preserved in the [backend roadmap](spec-shopfiesta-backend-showcase.md#orders-queue-processing). The Ready/Review lists below remain independent UI scopes, not infrastructure queues.
-
-### A.10 Show customer order history and protect staff operations
-
-Spec references: [Optional authentication and authorization](#optional-authentication-and-authorization), [Selection ownership and defaults](#selection-ownership-and-defaults), [External toolbar and component-owned behavior](#external-toolbar-and-component-owned-behavior), [Typed scopes and explicit placement](#typed-scopes-and-explicit-placement), and [Safe invocation and lifetime](#safe-invocation-and-lifetime).
-
-Orders owns both customer and operational views over its backend business state. Audience-specific routes, DTOs, policies and layouts keep the capabilities distinct. They do not split the logical module or duplicate the source of truth.
-
-#### A.10.1 Customer history and order detail
-
-![Conceptual ShopFiesta customer account showing only the signed-in customer's past orders](assets/shop/customer-orders.png)
-
-*Figure A.7. My orders lists the current customer's purchases with their order date, customer-visible status and total. The customer can open an order; operational selection and Release actions do not appear in this view.*
-
-```razor
-@page "/account/orders"
-@attribute [Authorize(Policy = "Shop.Customer.Orders")]
-@inject ICustomerOrdersFeature Orders
-```
-
-```csharp
-public interface ICustomerOrdersFeature
-{
-	Task<Result<CustomerOrderPage>> FindAsync(
-		int page,
-		int pageSize,
-		CancellationToken cancellationToken = default);
-
-	Task<Result<CustomerOrderDetailsModel>> FindOneAsync(
-		Guid orderId,
-		CancellationToken cancellationToken = default);
-}
-
-public static class OrdersUi
-{
-	public const string Name = "orders";
-
-	public static Destination<CustomerOrderRoute> CustomerOrder { get; } =
-		Destination.ForPage<CustomerOrderDetails, CustomerOrderRoute>(
-			"orders.customer-detail");
-}
-
-public sealed record CustomerOrderRoute(Guid OrderId);
-```
-
-`CustomerOrderDetails.razor` declares `@page "/account/orders/{OrderId:guid}"` and the same customer policy. The query derives the customer identity from the authenticated backend context; the browser does not choose a trusted customer ID. A guessed order ID cannot return another customer's record. The Application use case enforces current-owner access for in-process and HTTP calls independently of navigation visibility.
-
-![Conceptual ShopFiesta read-only customer detail for order SF-1042 with purchased component lines and a customer-visible progress state](assets/shop/customer-order-detail.png)
-
-*Figure A.8. The customer detail shows the order snapshot: two Gravel Brake Rotors, one Rotor Lockring, delivery and the EUR 180 total. The customer-visible Processing status belongs to Orders. No staff queue state, internal review data or fulfillment action is exposed.*
-
-The customer-facing fulfillment status and the staff queue's payment-readiness filter are different projections of the same order. The sample SF-1042 can be Processing for the customer and Paid in the staff queue. Neither page maintains a separate business status or order copy.
-
-| Customer interaction | Required behavior |
-| --- | --- |
-| Open My orders | Read a bounded page belonging to the current customer. Preserve the feature's page/filter policy in native query state where appropriate. |
-| Open a bookmarked detail | Resolve Orders ownership and customer policy, then fetch that customer's order without first mounting history. Build breadcrumbs from the authorized order result and public destinations. |
-| Finish checkout | The immediate Checkout receipt can link through `OrdersUi.CustomerOrder` when customer history is available and authorized. Orders remains the owner of the later history/detail view. |
-| Revisit after catalog changes | Display the purchased names, brands, model designations, selected variant/SKU, amounts and other order-line snapshots owned by Orders. Missing optional metadata in older fixtures remains absent. Do not rewrite a past purchase using current catalog labels, prices or categories. |
-| Product removed or catalog replaced | Keep the historical line readable. An optional current-product link can be omitted or shown unavailable without losing the order history. |
-| Sign out or switch customer | Invalidate private reads/state and reject old-customer completions. An AppState snapshot or a stale browser cache does not authorize later access. |
-| View as a customer | Use customer-specific projections. The backend does not return staff-only review/fulfillment data and rely on the page to hide it. |
-| Guest purchase | Preserve the feature's authorized immediate receipt. Attaching a verified guest purchase to a later account requires an explicit application policy; matching an email or retaining a local ID alone does not grant history access. |
-
-```mermaid
-flowchart LR
-    CustomerUI["Orders customer pages: storefront layout"]
-    StaffUI["Orders staff pages: operations layout"]
-    subgraph OrdersBackend["One Orders backend module"]
-        CustomerRead["Current-customer query and customer projection"]
-        StaffUseCase["Staff-authorized query and fulfillment commands"]
-        State["Order business state and historical snapshots"]
-        CustomerRead --> State
-        StaffUseCase --> State
-    end
-    CustomerUI -->|"Customer identity and owner checks"| CustomerRead
-    StaffUI -->|"Staff policy and business checks"| StaffUseCase
-```
-
-Orders can place customer and operations presentation in separate assemblies when runtime/dependency boundaries need it. The same module registers their assemblies/capabilities under `orders`; the browser customer profile includes only its declared portable customer presentation. This is not a second module registration or a reason to ship operational DTOs into the customer read path.
-
-#### A.10.2 Staff queues and safe batch actions
-
-![Conceptual staff order workspace with two independently selected queues and one explicit external batch toolbar](assets/shop/operations.png)
-
-*Figure A.9. The header releases the two selected orders in Ready for fulfillment. The selected order in Needs review belongs to a different component and is excluded. Customer history and the public shop do not expose these controls or grant their permissions.*
-
-The operations page uses native authorization metadata and its selected module layout. Backend handlers independently enforce the same relevant access and business rules.
-
-```razor
-@page "/operations/orders"
-@attribute [Authorize(Policy = "Shop.Orders.Operate")]
-
-<ActionToolbar Scope="this.readyActions" />
-<OrderQueue Kind="OrderQueueKind.Ready"
-            ShowLocalToolbar="false"
-            ActionsReady="scope => this.readyActions = scope" />
-<OrderQueue Kind="OrderQueueKind.Review" />
-
-@code {
-	private ActionScope<OrderQueueContext> readyActions;
-}
-```
-
-The callback is an ordinary `EventCallback` from the first component. Each `OrderQueue` creates and disposes its own `ActionScope<OrderQueueContext>`. A missing or disposed scope exposes no invokable actions. No global current-grid state or component lookup is required.
-
-```csharp
-public sealed record OrderTarget(Guid OrderId, long Version);
-
-public sealed record OrderQueueContext(
-	ImmutableArray<OrderTarget> Targets,
-	bool AllReleasable,
-	OrderQueueQuery Query);
-
-public sealed record OrderQueueQuery(string Status, string SearchText, string Sort);
-```
-
-The Ready queue binds its local callback through the same action API used for product purchasing, with a different typed context and business behavior:
-
-```csharp
-this.actions.Bind("release", action => action
-	.LabelKey("ReleaseSelected")
-	.EnabledWhen(
-		context => !context.Targets.IsEmpty && context.AllReleasable,
-		disabledReasonKey: "SelectReleasableOrders")
-	.ConfirmWith(context => this.Text["ConfirmRelease", context.Targets.Length])
-	.ExecuteAsync((snapshot, cancellationToken) =>
-		this.Orders.ReleaseAsync(snapshot.Targets, cancellationToken))
-	.MapOutcome(ReleaseFeedback.FromResult)
-	.OnConfirmedOutcome((receipt, cancellationToken) =>
-		this.ApplyReleaseReceiptAsync(receipt, cancellationToken)));
-```
-
-No contributor class is necessary for this feature-local callback. The module publishes a stable target or definition only when another package needs to attach or reference it. Routine definition, scope, binding and execution identities are inferred with module/owner provenance.
-
-```mermaid
-sequenceDiagram
-    actor Staff
-    participant Toolbar as Header ActionToolbar
-    participant Scope as Ready queue binding
-    participant Confirm as Confirmation
-    participant Feature as Orders feature
-    Staff->>Toolbar: Release selected
-    Toolbar->>Scope: Invoke original Ready binding
-    Scope->>Scope: Validate and reserve pending state
-    Scope->>Confirm: Capture selected IDs and versions for confirmation
-    Staff->>Confirm: Confirm or decline
-    Confirm-->>Scope: Decision
-    alt Declined or preparation cancelled
-        Scope-->>Toolbar: End without dispatch
-    else Confirmed
-        Scope->>Scope: Recheck owner, target revision, availability and access
-        alt Relevant context changed or owner invalid
-            Scope-->>Toolbar: Require a fresh decision without dispatch
-        else Still eligible
-            Scope->>Feature: ReleaseAsync with captured Ready targets
-            Note over Scope,Feature: Review queue selection and later paging cannot retarget this execution
-            Feature-->>Scope: Actual outcome or uncertain completion
-            Scope-->>Toolbar: Notify only current live observers
-            opt Confirmed full or partial outcome and valid owner context
-                Scope->>Feature: Feature-owned read or targeted invalidation
-            end
-        end
-    end
-```
-
-| Selection or lifecycle change | Required result |
-| --- | --- |
-| Page forward or back | Keep selected IDs by default. An explicit selection-adapter option can clear on paging. |
-| Change search or filters | Clear the applicable selection under the established defaults. Sorting retains it. |
-| Refresh the visible page | Refresh versions/eligibility for available records. An off-page absence is not proof of deletion. Remove only confirmed deleted or inaccessible targets. |
-| Relevant target changes during confirmation | Invalidate the old decision. Do not replace the targets with current selection silently. |
-| Selection changes after dispatch | Keep the accepted invocation's captured IDs and versions. Do not restart or automatically cancel it merely because selection changed. |
-| Present the same binding locally and externally | Share pending/busy state, outcome observation and one feedback owner. |
-| Switch the explicitly active queue | Change future header attachment. Already accepted work keeps its original owner and captured inputs. |
-| Dispose the owner or lose access | Remove bindings, invalidate pending confirmation, request supported cancellation and prevent stale UI updates. Backend effects retain their actual outcome. |
-
-Batch selection is explicit selected IDs, not an implicit select-all-matching query. Exporting all matching orders is a separate declared feature operation. Operational reads and actions can use optional FilterModel/data adapters without forcing the customer product listing into the same presentation.
-
-#### A.10.3 Bind typed query controls to the same queue
-
-Spec references: [Published typed contracts](#published-typed-contracts), [Action and control contribution requirements](#action-and-control-contribution-requirements), [Typed scopes and explicit placement](#typed-scopes-and-explicit-placement), and [Automatic refresh and explicit invalidation](#automatic-refresh-and-explicit-invalidation).
-
-The Status and Search controls in Figure A.9 belong to the Ready queue's external toolbar. They are controls supplied by that live queue, not header-owned copies of its query. The header observes actions and controls from the same explicit `readyActions` source. Review retains its independent query and selection.
-
-The proposed binding convenience uses an ordinary Razor control component with a typed `Value` and `EventCallback<T>`:
-
-```csharp
-this.actions.BindControl<OrderQueueFilterControls, OrderQueueQuery>(
-	"filters",
-	control => control
-		.Value(context => context.Query)
-		.ValueChanged(this.ApplyQueryAsync));
-```
-
-```csharp
-[Parameter]
-public OrderQueueQuery Value { get; set; }
-
-[Parameter]
-public EventCallback<OrderQueueQuery> ValueChanged { get; set; }
-```
-
-`OrderQueueFilterControls` renders normal input/select controls and emits a new immutable query, preserving unchanged values such as sorting. It requires no framework component base or service lookup. The binding convenience validates its parameter contract, supplies the live value and dispatches callbacks through the original owner's Blazor dispatcher. A local toolbar can use the same Razor component directly when external placement is unnecessary.
-
-`ApplyQueryAsync` is an ordinary Ready-queue callback. It validates allowed query values, updates that queue's native URL/view state, applies the established filter-selection policy, advances the relevant context revision and coalesces/cancels obsolete reads. It does not execute Release. Ready URL keys such as `readyStatus`, `readySearch`, `readySort` and `readyPage` distinguish this instance from any independently restorable Review view.
-
-```mermaid
-flowchart TD
-    Header["External header toolbar: explicit Ready source"]
-    Input["Status and Search controls"]
-    Ready["Ready queue live scope: query, selection and bindings"]
-    Read["Ready query consumer"]
-    Review["Review queue: independent query and selection"]
-    ReviewRead["Review query consumer"]
-    Header -->|"Presents the same scope"| Input
-    Ready -.->|"Current query and availability"| Input
-    Input -->|"Typed ValueChanged to original owner"| Ready
-    Header -->|"Release with captured selection"| Ready
-    Ready -->|"Declared query invalidation"| Read
-    Review -->|"Its own local controls and invalidation"| ReviewRead
-```
-
-| Control interaction | Observable result |
-| --- | --- |
-| Change Ready status or search | Only Ready's declared query reloads. Its filter change clears the applicable selection; Review remains unchanged. |
-| Change sorting | Reorder the Ready result using its query contract while retaining selected IDs under the established default. |
-| Enter the toolbar or an overflow menu | Keep the Ready source. Native text editing and keyboard behavior do not activate another queue. |
-| Switch the explicitly attached source | Future controls display the newly selected scope. An older delayed callback is rejected or remains with its eligible originating owner; it can never mutate the new source. |
-| Remove the Ready component | Detach control subscriptions and reject later callbacks/results for its disposed owner. Do not retain the component in shared metadata. |
-| Change filters during Release confirmation | Invalidate the relevant selection/context and require a fresh decision. A Release already dispatched keeps its original captured targets. |
-
-`BindControl` participates in the existing interaction scope; it does not introduce another control registry or a new CQRS request for each input. Published control contributions use the same compatibility, ordering and host-override rules when reuse across packages warrants registration.
-
-#### A.10.4 Distinguish partial release from backend-owned export
-
-Spec references: [Execution state and observation](#execution-state-and-observation), [Approve Save and Export walkthroughs](#approve-save-and-export-walkthroughs), [Operation outcomes and recovery](#operation-outcomes-and-recovery), and [Selection ownership and defaults](#selection-ownership-and-defaults).
-
-Use two deterministic outcome cases in the minimal Orders backend. They expose presentation contracts without requiring a real broker, queue or file store.
-
-**Partial release.** The submitted batch captures SF-1042 and SF-1043 with their versions. The first is released; the second conflicts with a newer backend version. The feature returns per-target facts rather than treating the entire batch as an atomic success or failure.
-
-| Captured target | Reported result | Presentation and recovery |
+| Case | TaskFiesta surface/profile | Observable evidence |
 | --- | --- | --- |
-| SF-1042 | Confirmed released. | Preserve that success and update its known state/eligibility by ID. Do not release it again because another target failed. |
-| SF-1043 | Confirmed concurrency conflict. | Show the conflict for that target and reload/review its current state. Any further release requires a fresh explicit selection/decision and current version. |
-| Batch | Confirmed partial outcome. | Show one released and one requiring review. Do not retry the original batch automatically or show a generic all-or-nothing message. |
-
-`ReleaseFeedback.FromResult` in the preceding action declaration is a pure feature-supplied mapping into the specified action outcome model. The proposed `MapOutcome` callback distinguishes confirmed full success, partial success and rejection from the actual response. It does not dispatch work or introduce a new business-result base class. A successful outer `Result<ReleaseReceipt>` can mean the batch was processed while the receipt still contains mixed per-target results. A missing authoritative response remains unknown, not a guessed partial result.
-
-The proposed `OnConfirmedOutcome` callback receives the confirmed receipt only while its original owner/context can safely apply it. `ApplyReleaseReceiptAsync` applies known facts to the captured IDs, then refreshes/invalidates declared consumers as a separate feedback phase. A failed refresh cannot erase SF-1042's release or trigger another mutation. Selection follows its documented policy; reloading alone must not invent a new selection-clear rule. Single-target or all-success actions can continue to use `OnConfirmedSuccess`.
-
-**Export matching orders.** The Export matching action in Figure A.9 captures Ready's filter/sort intent and the feature's query options. It exports all records matching that authorized query, independently of the two explicitly selected release targets. It does not turn row selection into query-wide select-all. Backend validation and the feature's declared dataset-consistency policy determine the actual export set; capturing a query alone does not promise a frozen database snapshot.
-
-| Boundary | Owner and response |
-| --- | --- |
-| Submission | The initiating binding calls the Orders export-start use case through the runtime-specific feature service. Duplicate submission is suppressed while that binding is pending. |
-| Accepted response | The backend returns an operation reference. Feedback says the export was accepted, not completed. The local submission execution and the longer-lived backend operation are distinct observations. |
-| Backend operation | The example-owned operation source reports actual accepted/running/completed/failed states and any progress it supports. A later real queue/job adapter can implement the same feature contract. |
-| Navigation | Disposing the order page detaches its observation and subscriptions. It does not cancel or restart an already accepted backend operation. |
-| Return/status link | `/operations/exports/{OperationId:guid}` loads status by the returned reference, with current staff/object access checks. It does not require the original queue component to remain mounted. |
-| Result artifact | A completed operation exposes an authorized download only when its result is available. An expired or failed artifact read is distinct from the operation's confirmed completion. |
-| Lost submission acknowledgement | Preserve the feature's original request/correlation reference and reconcile acceptance before any deliberate further submission. No generic automatic replay is allowed. |
-| Cancellation | Show a backend Cancel action only when that feature actually supports it. Leaving the page or stopping observation is not confirmed cancellation. |
-
-![Conceptual staff order-export status page observing a running operation after navigation](assets/shop/order-export.png)
-
-*Figure A.10. The status page observes EX-1042 independently of the initiating queue. Two of three records prepared is progress reported by the example source. Download remains unavailable while the operation is Running.*
-
-```mermaid
-sequenceDiagram
-    actor Staff
-    participant Page as Ready queue page
-    participant Feature as Orders export feature
-    participant Operation as Example backend operation source
-    participant Status as OrderExportStatus page
-    Staff->>Page: Export matching Ready query
-    Page->>Feature: Start with captured query and request reference
-    Feature->>Operation: Submit validated export
-    Operation-->>Feature: Accepted operation reference
-    Feature-->>Page: Accepted operation reference
-    Page-->>Staff: Export accepted and status link
-    Staff->>Page: Navigate away
-    Page->>Page: Dispose local bindings and detach observation
-    Operation->>Operation: Continue under backend ownership
-    Staff->>Status: Open operation status link
-    Status->>Feature: Read referenced operation under current access
-    Feature->>Operation: Get status
-    Operation-->>Feature: Reported progress and state
-    Feature-->>Status: Current authorized status result
-    Note over Page,Status: No retained queue component or automatic resubmission
-```
-
-The first Server slice uses a clearly identified simulated export source with deterministic states and an optional fixture CSV artifact. Order-processing status likewise follows the observation contract in [A.9.1](#a91-observe-backend-owned-order-processing). It proves page/operation ownership and response semantics, not durable export execution or survival of a backend process restart. Progress comes from that source, not elapsed UI time. Example-owned backend/test control advances the export fixture; status/diagnostic reads only observe it. No notification center, generic job scheduler or additional framework execution registry is required. Observation uses the existing feature access, scoped state and diagnostics contracts.
-
-#### A.10.5 Compose staff business metrics and a product funnel
-
-Spec references: [Modular monolith across backend and frontend](#modular-monolith-across-backend-and-frontend), [Page ownership and route availability](#page-ownership-and-route-availability), [Low friction and native platform mechanisms](#low-friction-and-native-platform-mechanisms), [Automatic refresh and explicit invalidation](#automatic-refresh-and-explicit-invalidation), [Session and workspace transitions](#session-and-workspace-transitions), and [Production observability](#production-observability).
-
-Staff open `/operations/overview` to read order/sales summaries, checkout outcomes and a product funnel. Marketing owns `OperationsOverview` and its reporting contract; its backend owns captured metrics. The agreed backend captures source-module messages into Marketing projections. The first frontend slice can use a Marketing fixture handler with the same response contract. The page obtains every reporting value from Marketing's backend read models. Neither the page nor its reporting query fans out to source-module services, components or databases.
-
-Marketing registers the native route and page ownership normally. The host maps it to `OperationsLayout`; the `Shop.Operations.ViewMetrics` policy protects initial activation, interactive navigation and backend reporting reads. A read-only reporting identity need not have recommendation-management or order-release access. The Catalog-only profile omits Marketing and this page. The staff-reporting facet declares its reporting capability separately from Marketing's optional related-products contribution.
-
-![Conceptual staff commerce overview with order and sales totals, checkout outcomes and a per-product view-to-basket-to-paid funnel](assets/shop/commerce-overview.png)
-
-*Figure A.11. Marketing supplies fictional overview data for 12 November 2026, 00:00 to 12:00 UTC: five placed orders, EUR 335 across three paid orders and seven submitted checkout attempts. Its product funnel shows 20/8/6/3 journeys. Every panel consumes Marketing's result, including its as-of/coverage metadata. A fixture handler can supply these values for frontend validation; the image does not establish backend message capture.*
-
-Marketing uses ordinary Razor composition. Its page owns the period, currency, product selection, explicit refresh intent, reporting client and query lifetime. Its child components render the returned immutable report values; they have no Catalog, Basket, Checkout or Orders reporting clients. This needs no framework metrics registry, dashboard engine or additional state store.
-
-```razor
-@page "/operations/overview"
-@attribute [Authorize(Policy = "Shop.Operations.ViewMetrics")]
-@inject IMarketingReportingFeature Reporting
-
-<SalesMetrics Value="this.snapshot.Sales" />
-<CheckoutMetrics Value="this.snapshot.Checkout" />
-<ProductFunnel Value="this.snapshot.ProductFunnel" />
-```
-
-`SalesMetrics`, `CheckoutMetrics` and `ProductFunnel` all belong to Marketing. The excerpt shows rendering after a successful read and omits ordinary loading/error markup. One narrow feature contract returns Marketing's stored overview snapshot:
-
-```csharp
-public sealed record MarketingOverviewQuery(
-	DateTimeOffset FromUtc,
-	DateTimeOffset ToUtc,
-	string Currency,
-	Guid? ProductId);
-
-public interface IMarketingReportingFeature
-{
-	Task<Result<CommerceOverviewSnapshot>> ReadOverviewAsync(
-		MarketingOverviewQuery query,
-		CancellationToken cancellationToken = default);
-}
-```
-
-The proposed `CommerceOverviewSnapshot` contains Marketing-owned sales, checkout and funnel DTOs, the applied query, projection revision, generation time and each stream's known freshness/coverage. Marketing also supplies bounded product-selection results from its stored product dimensions. Even the reporting selector's names, brands and model designations come from Marketing. Recommendation editing can still use Catalog's public product lookup; that separate management workflow does not change the reporting path.
-
-The native query parameters `from`, `to`, `currency` and `product` describe shareable page state. A filter change or explicit Refresh advances the applicable query revision and asks Marketing for a new snapshot. An unrelated rerender does not reload it. All panels from that response describe the same returned projection revision. A read never triggers event publication, message consumption, projection rebuilding or source-module queries.
-
-The frontend needs the response contract, not the message-processing algorithm:
-
-| Returned data | Frontend responsibility |
-| --- | --- |
-| Applied period, currency and product | Keep controls/URL aligned with the result actually being shown. Supersede old reads when the query changes. |
-| Projection revision and capture/calculation time | Display truthful freshness. A newer HTTP response does not imply newer captured facts. |
-| Sales, checkout and funnel slices | Compose Marketing-owned native components. Show supplied measures with their labels/units/cohort scope; do not join Catalog, Basket or Orders data in the page. |
-| Product-selection summaries | Render Marketing's product IDs, names, brands and model designations. Missing metadata gets an explicit unknown label instead of a Catalog lookup. |
-| Coverage/warnings and unavailable ratios | Distinguish an empty result, still-maturing cohort, partial/stale data and failed read. Unknown stages are not zero; zero denominators do not fabricate percentages. |
-
-The illustrative fixture shows EUR 335 across three paid orders, a EUR 111.67 average, and checkout success of 5/7 or 71.4%. Its product funnel is 20 viewing journeys, eight adding, six submitting and three buying, with 40% view-to-basket and 15% view-to-bought. Bought means a confirmed paid outcome. Those are Marketing-owned values/definitions supplied to the frontend, not counts inferred from UI clicks. Detailed cohorts, message payloads and calculation policies live in the [backend roadmap](spec-shopfiesta-backend-showcase.md#marketing-capture-and-reporting).
-
-```mermaid
-flowchart LR
-    Route["Marketing route, policy and query parameters"] --> Page["OperationsOverview: query lifetime and revision"]
-    Page --> Feature["IMarketingReportingFeature"]
-    Feature --> Backend["Marketing backend query or fixture handler"]
-    Backend --> Snapshot["Marketing snapshot, product choices and freshness"]
-    Snapshot --> Sales["SalesMetrics"]
-    Snapshot --> Checkout["CheckoutMetrics"]
-    Snapshot --> Funnel["ProductFunnel"]
-```
-
-The page owns cancellation, loading/error state and the current query revision. Late results for another period/product/identity cannot replace it. All panels render the same returned snapshot revision. A refresh failure can leave the last-good snapshot explicitly stale, with its original filter/time labels. An unavailable slice retains its supplied warning without hiding other usable slices. Marketing query failure never falls back to source-module reads.
-
-Opening, rendering, refreshing or inspecting the overview does not publish business events, start a job or advance backend processing. Fixture responses can exercise freshness/coverage transitions independently of a real messaging pipeline. AppState/Notifier can carry explicitly supported local invalidation, but imply no automatic cross-circuit delivery. This section validates native composition, module ownership, access and read lifecycle; backend capture and analytics have separate evidence.
-
-### A.11 Keep Server and browser access honest
-
-Spec references: [Reference application access paths](#reference-application-access-paths), [Hosting and render-mode interoperability](#hosting-and-render-mode-interoperability), [Prerendering policy and activation](#prerendering-policy-and-activation), and [Frontend coordination with Requester and Notifier](#frontend-coordination-with-requester-and-notifier).
-
-Portable components consume narrow feature-owned contracts such as `ICatalogFeature`, `IStockFeature`, `IBasketFeature`, `ICheckoutFeature`, `IMarketingFeature`, `ICustomerOrdersFeature` and `IOperationsOrdersFeature`. The last two are audience-specific contracts of the same Orders module, not separate business modules. Reuse existing suitable contracts. A Server-only handwritten page may call Requester directly; participation in the shell does not require a new wrapper interface.
-
-The same rule applies to `IMarketingManagementFeature` and `IMarketingReportingFeature`. On Server, the overview dispatches Marketing's reporting query directly through Requester to Marketing's store; WASM uses Marketing's typed HTTP reporting endpoint over that same read model. Reporting follows no query path to Catalog, Basket, Checkout or Orders. Backend event publication and Marketing consumers remain separate from these UI reads and from local AppState/Notifier. The browser cannot manufacture a paid stage, choose an unauthorized reporting context or bypass management authorization by supplying IDs.
-
-```csharp
-public interface ICheckoutFeature
-{
-	Task<Result<CheckoutReview>> ReviewAsync(
-		CancellationToken cancellationToken = default);
-
-	Task<Result<CheckoutOutcome>> PlaceAsync(
-		CheckoutSubmission submission,
-		CancellationToken cancellationToken = default);
-
-	Task<Result<CheckoutAttemptStatus>> FindAttemptAsync(
-		Guid attemptId,
-		CancellationToken cancellationToken = default);
-}
-
-public sealed class ServerCheckoutFeature(IRequester requester) : ICheckoutFeature
-{
-	public Task<Result<CheckoutReview>> ReviewAsync(
-		CancellationToken cancellationToken = default) =>
-		requester.SendAsync(new CheckoutReviewQuery(),
-			cancellationToken: cancellationToken);
-
-	public Task<Result<CheckoutOutcome>> PlaceAsync(
-		CheckoutSubmission submission,
-		CancellationToken cancellationToken = default) =>
-		requester.SendAsync(new CheckoutPlaceCommand(submission),
-			cancellationToken: cancellationToken);
-
-	public Task<Result<CheckoutAttemptStatus>> FindAttemptAsync(
-		Guid attemptId,
-		CancellationToken cancellationToken = default) =>
-		requester.SendAsync(new CheckoutAttemptQuery(attemptId),
-			cancellationToken: cancellationToken);
-}
-```
-
-The query/command/outcome records are fictional Application contracts, not new shell result types. `CheckoutOutcome` carries the feature's reported business state where needed. Transport loss may still leave that state unknown. Use the named cancellation argument because Requester's preceding optional parameter is `SendOptions`.
-
-```mermaid
-flowchart LR
-    subgraph Host["One composed application host"]
-        ServerUI["Shop component: Server instance"]
-        Direct["Server feature implementation"]
-        Endpoint["Feature HTTP endpoint"]
-        Requester["Application Requester"]
-        UseCase["Module use case and public backend orchestration"]
-        ServerUI --> Direct
-        Direct -->|"In-process"| Requester
-        Endpoint --> Requester --> UseCase
-    end
-    subgraph Browser["Browser runtime"]
-        BrowserUI["Same portable component code"]
-        Client["Typed HTTP feature client"]
-        BrowserUI --> Client
-    end
-    Client -->|"HTTP"| Endpoint
-```
-
-| Runtime | Registration and boundary |
-| --- | --- |
-| Interactive Server | Register scoped Server feature implementations in the server modules. Dispatch commands/queries directly; do not call the host's own HTTP API. Current user/session services must follow the circuit's actual context rather than a stale startup request. |
-| Web App WASM or standalone WASM | Register browser-safe typed HTTP feature clients. Endpoints dispatch the same Application use cases. No handler, repository, server module or transaction behavior enters the browser graph. |
-| Auto | Supply both registrations and validate cold Server and warm browser visits. Each live instance uses its executing runtime; services and in-flight operations do not migrate. |
-| Explicit prerender | Permit only the declared read initialization and safe transfer payload. Reconstruct live scopes/subscriptions on activation. Do not duplicate writes or transfer private scoped services. |
-| Mixed roots | Keep owners and presenters requiring direct interaction in a compatible interactive area. Declare any integration between roots/runtimes; local AppState or Notifier does not imply a bridge. |
-
-For browser composition, the proposed `AddPresentation().WithModule(CatalogUi.Name, CatalogPresentation.Configure)` reuses Catalog's portable definition under the same identity. Equivalent selected definitions and the proper clients are registered for other browser features. A generator may derive these registrations from the shared selected composition, but must not execute server `Register`, `Use` or `Map` code in the browser.
-
-Only browser-executed presentation capabilities enter that client composition. Customer order-history components use Orders' customer contracts; Checkout can depend on safe Orders backend availability. Neither needs to download or reference the staff operations UI. The application host still composes those facets under the same Orders module identity and backend ownership.
-
-Backend Queueing, Messaging, Jobs, storage and the upcoming Application.Caching feature remain behind these service/content contracts. They add no provider or scheduler dependency to a page. The [backend roadmap](spec-shopfiesta-backend-showcase.md) retains their design. AppState remains scoped presentation state; the pending cache integration remains a backend concern.
-
-### A.12 Make the two layouts consistent, accessible and replaceable
-
-Spec references: [Headless behavior and opinionated defaults](#headless-behavior-and-opinionated-defaults), [Shell layouts and application chrome](#shell-layouts-and-application-chrome), [Visual consistency and styling](#visual-consistency-and-styling), [Module assets and JavaScript ownership](#module-assets-and-javascript-ownership), [Localization and culture](#localization-and-culture), and [Accessibility acceptance](#accessibility-acceptance).
-
-`StorefrontLayout` uses the shop header, category navigation, search, account access, Basket's summary and a compact footer. `OperationsLayout` uses staff navigation, breadcrumbs and contextual toolbars, including Overview, Orders and Marketing links when their capabilities and policies allow them. Both consume the same headless composition/availability contracts. Neither owns product pricing, basket persistence or fulfillment decisions.
-
-The storefront layout renders the published header region rather than hard-coding Basket into shared shell source. This proposed excerpt uses the normal shell context supplied through a native cascading value by route integration:
-
-```razor
-@inherits LayoutComponentBase
-
-<header>
-	<a href="catalog">ShopFiesta</a>
-	<ShellNavigation Menu="Main" />
-	<ExtensionRegion Target="ShellUi.HeaderEnd" Context="this.ShellContext" />
-</header>
-<main>@Body</main>
-
-@code {
-	[CascadingParameter]
-	public ShellContext ShellContext { get; set; }
-}
-```
-
-`ShellNavigation` is a proposed default navigation renderer. `ShellContext` is a browser-safe presentation context for this runtime/owner, not a global container for business state. Catalog search and Basket's badge can occupy the header through their own registered contributions. Installing Marketing adds its product region without changing this layout.
-
-| Concern | Shop example |
-| --- | --- |
-| Native component use | Handwritten product cards, `EditForm`, ordinary parameters, `EventCallback` and layouts remain valid. Optional framework adapters supply repeated behavior only where needed. |
-| Renderer replacement | Run the same purchase binding, related region and operational batch binding with plain Razor presenters. The headless consumer has no transitive MudBlazor dependency. |
-| Shared look | Use the published design tokens and module-scoped CSS. The host can brand the storefront while operational pages retain consistent focus, spacing and feedback behavior. |
-| Localization | Catalog, Basket, Marketing, Checkout and Orders own their resource keys. A Marketing contribution keeps its own resources in a Catalog region. Culture changes refresh declared presentation dependencies; actual currency/pricing choices remain feature/backend decisions. |
-| Narrow screens | Product grids collapse, filters use an accessible compact presentation, basket lines remain readable and the operations toolbar uses predictable overflow. Retain the originating scope while opening menus or drawers. |
-| Keyboard and focus | Labels and controls have accessible names. Filter changes, validation summaries, dialogs and navigation have explicit focus behavior. Opening an overflow menu never retargets a purchase or selected orders. |
-| Feedback | Announce adding, successful basket changes, validation and unavailable states without duplicating feedback across presenters. A failed optional recommendation region does not seize focus from checkout. |
-| Assets | Module resources/CSS/JS ship through RCL static web assets, CSS isolation and supported JS imports. Shared MudBlazor setup is documented once. A shop host does not edit its HTML for each newly installed module. |
-| JavaScript lifetime | A filter drawer observer or sticky purchase-bar listener belongs to its live component. Dispose subscriptions/interop references and use browser-side DOM cleanup where required. Handle disconnected Server circuits without leaking owners. |
-
-The wireframes show ownership and layout concepts, not completed responsive or accessibility evidence. Implementation must exercise narrow views, keyboard interaction, zoom/reflow and screen-reader behavior in the actual rendered flows.
-
-#### A.12.1 Compose settings sections and restore their owned preferences
-
-Spec references: [Public core extension points and defaults](#public-core-extension-points-and-defaults), [State, preferences and application context](#state-preferences-and-application-context), [View restoration policy](#view-restoration-policy), [Localization and culture](#localization-and-culture), and [Compatibility and upgrades](#compatibility-and-upgrades).
-
-The shared `PreferencesModule` supplies the native `/preferences` page, appearance/culture section and the integration with existing preference/AppState providers. Orders contributes its display section. Both sections use normal forms/components; the shell supplies the settings-section contract, composition, localization and state ownership rather than a generated form language.
-
-The shared appearance/culture package uses browser-safe contracts and ordinary Razor controls. Renderer-specific styling/adapters remain separate, so consuming the shared module does not force a MudBlazor dependency into the headless consumer.
-
-```csharp
-module.Settings.Add<OrderDisplaySettings>(
-	"orders.display-settings",
-	labelKey: "OrderDisplay",
-	order: 200);
-```
-
-```razor
-@page "/preferences"
-
-<PageTitle>Preferences</PageTitle>
-<h1>Preferences</h1>
-<SettingsSections />
-```
-
-`SettingsSections` and `Settings.Add<TComponent>` are proposed conveniences over the published settings contract and native Razor components. They render the shell-owned settings-sections point with a browser-safe `SettingsContext`: the applicable owner, opaque identity/context partition, culture and context revision. A section uses the documented normal `[Parameter] SettingsContext Context` contract and constructor/injected services; composition validates that parameter contract. It does not receive a universal service/state dictionary.
-
-`OrderDisplaySettings` uses its injected feature preferences and `EditForm` or the selected library's existing form. Each section owns its draft, save callback and feedback. Save appearance and Save order display are independent operations; composing the sections does not add a page-wide Save All, cross-module transaction or edit-session coordinator. Composition retains section identity, source module, resource base, order and availability without another settings store or a provider class for each control.
-
-![Conceptual ShopFiesta preferences page composing appearance/language and Orders display settings](assets/shop/preferences.png)
-
-*Figure A.12. The shared module supplies Theme and Language; Orders supplies Orders per page and Compact rows. Each section saves and reports its own result while retaining module/resource and persistence ownership.*
-
-| Preference | Owner, scope and observable effect |
-| --- | --- |
-| Theme: light, dark or system | Shared preferences. Store an allowed choice, not arbitrary CSS. Apply through the selected renderer's theme integration. A system-theme listener belongs to its live component. |
-| Culture: supported values such as `en-GB` and `nl-NL` | Shared preferences plus the host's native localization integration. Update labels and formatting, including module resources. Culture selection alone does not change the basket's currency or pricing market. |
-| Customer orders per page: default 25 | Orders, partitioned by application, identity, customer-history view and schema version. Supported values are 10, 25 and 50 in the fixture. An explicit valid URL value takes precedence. |
-| Compact customer rows | Orders-owned benign display preference. Update that declared presentation consumer without refetching unrelated Catalog, Basket or Marketing data. |
-| Staff queue display choices | Orders-owned operations-view keys, separate from customer history and from the other live queue's transient selection/query context. |
-
-Anonymous visitors can use available appearance/culture settings. Private Orders sections require their declared identity context. The local sample uses the configured browser/scoped preference provider and a minimal Orders preference adapter where needed; no external preference server is required. Keys use stable module/view identities, opaque identity/context partitions and schema versions. They do not use incidental component-instance names or store contact/delivery drafts, basket credentials or authorization decisions.
-
-The first Server profile applies culture through the host's supported native culture provider and a deliberate reload when required to establish the new circuit culture. It preserves only declared safe view state, reconstructs scopes and does not replay mutations. User-specific choices must not change another Server circuit's culture. Browser/prerender profiles follow their own validated native activation rules.
-
-A culture-triggered reload follows any active section's declared unsaved-change policy. It does not save or silently discard another section's draft. Each section still owns its result when another section saves or fails.
-
-```mermaid
-sequenceDiagram
-    actor User
-    participant Page as Composed preferences page
-    participant State as Existing scoped preferences and AppState
-    participant Store as Configured preference provider
-    participant View as Declared theme, culture or Orders consumer
-    User->>Page: Change and save owned preference fields
-    Page->>State: Validate values under current owner and context
-    State->>Store: Persist allowed values and schema version
-    Store-->>State: Saved or persistence failure
-    State-->>View: Notify only relevant selectors
-    View-->>User: Apply presentation or supported culture reload
-    Note over State,View: Persistence completion itself does not reload business queries
-```
-
-| Restoration case | Expected evidence |
-| --- | --- |
-| Save and reload | Theme/culture and applicable Orders values restore using their declared keys/defaults. Route query values still take precedence over saved view defaults. |
-| Switch between two test customers | Each private Orders preference partition restores its own values. A late previous-user save/read cannot overwrite the new user's state. |
-| Optional storage unavailable | Keep the documented in-memory/default behavior and report that persistence failed. Do not prevent the shop from starting or pretend that values were durably saved. |
-| Old or corrupt optional payload | Apply the declared migration or safe defaults. For example, an unsupported historical page size falls back to 25 with an attributable diagnostic. Preserve unrelated module preferences. |
-| Change culture | Shared, Catalog, Basket, Orders and Marketing resources follow the new culture, with supported native reload/activation behavior. Only explicitly culture-dependent queries rerun. |
-| Reuse the package | DoFiesta and ShopFiesta consume the same packed Preferences module and its assets through public APIs, while Orders contributes its ShopFiesta-specific section separately. |
-
-### A.13 Keep availability, identity and diagnostics out of the wrong scope
-
-Spec references: [Host-supplied feature availability](#host-supplied-feature-availability), [Optional authentication and authorization](#optional-authentication-and-authorization), [Session and workspace transitions](#session-and-workspace-transitions), [Production hosting and rollout](#production-hosting-and-rollout), [Developer diagnostics](#developer-diagnostics), and [Agent-accessible diagnostics and discovery](#agent-accessible-diagnostics-and-discovery).
-
-| Event | Required behavior in ShopFiesta |
-| --- | --- |
-| Catalog available, Marketing absent | Browse and buy normally with the related region omitted. Installation and user permission remain distinct inputs. |
-| Checkout's required capability unknown | Keep only dependent submission/activation pending or unavailable with a reason and bounded retry. Do not infer readiness from a previously enabled button. |
-| Basket service fails | Show its actual unavailable/error state. Do not claim the basket is empty or silently discard known items. Unrelated product reads can remain usable. |
-| Guest signs in | Apply the application's explicit guest-basket ownership/merge policy. Invalidate old-context reads and rebind private state to the new session. The shell does not invent the merge policy. |
-| Sign-out or access revocation | Invalidate private bindings and pending confirmations, clear or partition basket/customer-order/draft snapshots and reject late old-context results. Dirty checkout state cannot block forced revocation. |
-| Staff loses the operations policy | Deny further route activation and invocations, invalidate stale confirmations and preserve accurate already-dispatched outcomes. Backend checks remain authoritative. |
-| Culture or store context changes | Update declared localized presentation and re-query pricing only if that context affects the query. Partition sensitive state where the application's store/workspace model requires it. |
-| Circuit or network disappears during placement | Present recovery based on the original order attempt. Reconnect does not prove success, failure or cancellation. Never replay a purchase as a generic recovery action. |
-| A deployment changes client/server compatibility | Use the declared compatibility/readiness integration. Unrelated compatible features remain usable. In-flight checkout uses its business recovery contract. |
-| Optional region throws | Contain the region error, retain page/owner attribution and keep independent basket/checkout interactions available. |
-
-Authorized developer diagnostics can explain why Add to basket is disabled, which product scope the sticky bar observes, why Marketing was omitted and which module supplied Release. A useful record includes stable contribution identity, live owner/binding/execution references, relevant context revision, availability reason and originating runtime. It does not need contact addresses, basket secrets or payment data.
-
-The diagnostic overlay, popout and agent-readable facade use the existing specified discovery/query model. A read does not execute a purchase, enable capture or bypass staff authorization. Capture remains explicit, bounded and redacted. A browser view of Server-origin execution labels that origin rather than pretending all work ran in WASM.
-
-Operational telemetry and performance baselines cover public route activation, category/read latency, action evaluation, basket mutation observation, per-circuit resources, browser download cost and diagnostic overhead where applicable. Framework overhead is distinguished from Catalog/Checkout backend work. This appendix supplies scenarios, not invented performance numbers.
-
-#### A.13.1 Replace a contribution and inspect the effective result
-
-Spec references: [Extension contracts and host authority](#extension-contracts-and-host-authority), [Predictable attachment and customization](#predictable-attachment-and-customization), [Developer diagnostics](#developer-diagnostics), and [Agent-accessible diagnostics and discovery](#agent-accessible-diagnostics-and-discovery).
-
-Use three named startup profiles to make host authority visible. They are ordinary application configuration profiles, not a new runtime feature-management service or an end-user provider switcher.
-
-| ShopFiesta presentation profile | Effective recommendation region |
-| --- | --- |
-| `default` | Marketing supplies `marketing.related-products` using the public Catalog context. |
-| `featured-related` | Host-owned `FeaturedComponents` replaces that identified contribution while retaining its public target/identity and single-region cardinality. |
-| `no-related` | The host suppresses the optional contribution; the region collapses and product purchasing remains usable. |
-
-The proposed host override methods operate in the existing `WithPresentation` configuration callback:
-
-```csharp
-// featured-related profile
-options.ReplaceContribution<FeaturedComponents>("marketing.related-products");
-
-// Alternative no-related profile
-options.DisableContribution("marketing.related-products");
-```
-
-These are alternative profiles. `FeaturedComponents` is an ordinary compatible Razor component with `[Parameter] ProductContext Context`, host-owned resources and a fixture-backed feature service. It renders public Catalog product cards and therefore retains their independent Basket purchase bindings. It references no Marketing private component, state or backend handler.
-
-Replacement preserves the identified attachment instead of adding a second competing contribution. Effective provenance records the original Marketing registration and the host replacement. Host configuration is applied before compatibility/cardinality validation. An incompatible context parameter or an unresolved required override target produces a source-attributed composition error. Overrides cannot grant execution permission or bypass backend authorization.
-
-The effective replacement keeps point-required availability/access rules and declares the dependencies its own provider actually uses. Diagnostics distinguish target requirements, provider requirements and the host decision rather than assuming a replacement uses Marketing's private services.
-
-```mermaid
-flowchart TD
-    Target["Catalog related-products target: ProductContext, optional single region"]
-    Default["Marketing default contribution"]
-    Override["Host startup profile: replace or suppress identified contribution"]
-    Validate["Validate effective context, dependencies and cardinality"]
-    Render["Render one compatible contribution or collapse optional region"]
-    Inspect["Read-only diagnostics: original source and effective host decision"]
-    Target --> Default --> Override --> Validate --> Render
-    Validate -.-> Inspect
-    Render -.->|"Current availability and runtime attribution"| Inspect
-```
-
-Walk through the following observations using the same product URL and the appropriate authorized development identity:
-
-1. In `default`, inspect the region's published target, Marketing source, effective order and availability. Opening inspection does not reload recommendations or execute a purchase.
-2. In `featured-related`, inspect the same contribution/target identity and its replacement provenance. The visible component changes while Catalog and Basket contracts remain unchanged.
-3. In `no-related`, inspect the explicit host suppression reason and optional-region fallback. Its absence is distinguishable from a failed recommendation read.
-4. Inspect the main product and a recommended card as two live purchase scopes. Their owner, binding/context revision and source runtime differ even though both use Basket's action definition.
-5. Use an example fault profile to make the required purchase availability unknown or the product ineligible. Inspect the actual disabled reason without invoking Add to basket. The diagnostic query must not establish eligibility by dispatching the action.
-6. Attach the diagnostic popout and inspect the same originating session. Failed attachment leaves the drawer usable. With the browser facade separately enabled, perform a read-only discovery/query with the drawer closed; drawer-only configuration leaves the facade disabled.
-
-These observations use the existing specified diagnostic model, not a second registry or a new schema invented for ShopFiesta. Record composition/owner references, effective source and reason, evaluation status and runtime attribution. Capture is a separate explicit, bounded choice. Sign-out/revocation invalidates private inspection and attached views; no contact details, payment data, basket secrets or other customers' order payloads are needed. Non-development inspection remains off unless explicitly enabled and authorized.
-
-### A.14 Use conventions, builders and generators to reduce actual setup
-
-Spec references: [Fluent setup, conventions and discovery](#fluent-setup-conventions-and-discovery), [Low friction and native platform mechanisms](#low-friction-and-native-platform-mechanisms), [Publishing and consuming a module](#publishing-and-consuming-a-module), [Reuse and developer-experience evidence](#reuse-and-developer-experience-evidence), and [Compatibility and upgrades](#compatibility-and-upgrades).
-
-| Ordinary path | Explicit departure or published contract |
-| --- | --- |
-| Select a module once with the existing host builder. | Supply its supported options or host overrides; do not select the same module again in a parallel shell registry. |
-| Infer a local module identity from its type. | Pin a public identity once before publishing destinations, persistence namespaces or extension targets. Share it between runtime adapters. |
-| Declare a page assembly once and discover native routes. | Map page owners explicitly in a shared assembly or report ambiguity. Never infer ownership from URL naming alone. |
-| Bind a local action with a semantic local key and ordinary callback. | Publish stable action/attachment identities when another package must reference them. Runtime IDs remain derived. |
-| Use native Razor parameters and component lifetimes. | Publish a typed region/context when cross-module composition requires it. Do not wrap every child component in an extension abstraction. |
-| Use feature services and existing AppState/Notifier. | Declare shared dependencies and invalidation targets where independent consumers need them. Do not introduce another state container or mandatory event bus. |
-| Consume shipped assets through the standard RCL pipeline. | Document exceptional shared prerequisites once, such as renderer services/providers. |
-
-Fluent builders group related declarations and preserve compile-time context types. They do not perform remote reads, invoke business operations or resolve live scoped clients at startup. Discovery is bounded to selected modules and their declared assemblies; a loaded assembly is not permission to install its module.
-
-Generators may emit typed destination helpers, explicit page/contribution registrations, browser-safe selected definitions or actionable diagnostics for repeated conventions. Generated and explicit registrations use the same public contracts, validation and host-override precedence. Generated output must be inspectable and must not duplicate already registered contributions, invent a second router or leak server dependencies into WASM.
-
-A generator cannot establish the current basket owner, staff permission, stock availability or a live component's context revision. Supported trimming must validate the actual registration strategy. A new mandatory generator/build tool is not a prerequisite for an ordinary handwritten page or callback.
-
-Before claiming reuse, pack the shared Preferences module and consume the actual `.nupkg` from a local source in DoFiesta and ShopFiesta with their different branding/layouts and feature services. Do not copy its source. Its appearance/culture settings supply the concrete reuse case without coupling their business domains; Orders adds its own section in ShopFiesta. A plain Razor or browser profile of ShopFiesta alone does not establish independent application reuse. DoFiesta remains the reference migration; ShopFiesta is the new greenfield showcase whose first presentation slice grows into the broader DevKit application later.
-
-### A.15 Turn the complete journey into runnable evidence later
-
-Spec references: [Delivery gates and evidence](#delivery-gates-and-evidence), [Acceptance scenarios](#acceptance-scenarios), [Independent module tests](#independent-module-tests), [Performance baselines and release acceptance](#performance-baselines-and-release-acceptance), and [Accessibility acceptance](#accessibility-acceptance).
-
-The first slice validates frontend design and architecture against small feature handlers and fixture content. Use ordinary .NET tools and deterministic data. It needs no real message broker, work queue, scheduler, blob/file provider or application cache. Fixture outcomes must still preserve module ownership, access, revisions and truthful loading/failure/recovery behavior. Backend integration proof belongs to the [separate roadmap](spec-shopfiesta-backend-showcase.md#deferred-backend-integration-evidence).
-
-| Scenario | Observable proof | Gate |
+| TF-01 Composition and first run | Single-module TaskFiesta, starter and separate valid/invalid composition hosts. | Native pages/resources/routes and clear duplicate/missing/cyclic registration errors; ownership conventions/overrides and single-host module correspondence. Multi-module assertions run in the fixture host. Disabled pages never initialize protected reads. |
+| TF-02 Navigation and destinations | Task/list navigation, detail tabs/direct URLs and the external fixture's optional destination. | Bounded children/counts, encoded base-path links, unavailable/deleted targets, native history and no unrelated query reload from cosmetic state. Cross-module links run in the composition harness. |
+| TF-03 Task editing | Task detail and Overview/History routes. | Create/edit/complete/delete, required title, typed server field aliases/summary fallback, dirty-state prompts, correct save revision and late-result rejection. |
+| TF-04 Multiple lists | Lists page, list-bound task view and Move action. | Create/rename/delete empty lists, reject non-empty/concurrent deletion, add tasks to a chosen list, partial/conflicting move outcomes, stable task detail links and targeted count/membership updates. |
+| TF-05 Read-only sharing | Owner Share controls and anonymous shared-list links. | Copy/revoke/replace link, no-account read, correct membership/projection, no mutation authority, revoked/deleted access denial and no private/token cache or diagnostic leak. |
+| TF-06 Public website | Home/public board/shared page with JS delayed/disabled and native Suggest form. | Useful initial HTML/head metadata, native links/GET/POST validation and antiforgery, stable mutation intent, no browser .NET baseline and optional-source isolation. |
+| TF-07 Query and selection | Default grid and handwritten task view. | Typed FilterModel fields/operators, search/filter/sort/page URLs, selection retained on paging, explicit clearing, independent headers and distinction between selected IDs and matching-query export. |
+| TF-08 Contextual presenters | Compare tasks, active-view selector, default action outlet and handwritten MudBlazor toolbar/menu presenting the same live binding. | Equivalent availability, shared pending state and guarded invocation through the original binding without generic control wrappers. Verify independent sibling selection, explicit toolbar/control placement, overflow and presenter disposal without owner reassignment. |
+| TF-09 Invocation and confirmation | Delayed Complete/Move, delete-list/task confirmation through MudBlazor and local keyboard/modal actions. | Direct MudBlazor dialogs without framework wrappers/registration; local editors need no action scope. Framework-bound confirmations preserve captured targets/versions, cancel without mutation, reject stale context/disposed owners and suppress duplicate prompts/dispatch. Explicit execution conflict/serialization policy, captured snapshots even with AppState off and no global shortcuts remain covered. |
+| TF-10 Save and navigation | Delayed/failed/unknown saves and dirty edit transitions. | Matching submitted field feedback, no overwrite of newer edits, accurate partial/failed/unknown outcomes and no automatic replay when a user navigates or reconnects. |
+| TF-11 Batch and result mapping | TF-101 success and TF-102 conflict fixture. | Per-target facts survive aggregate feedback/refresh failure; selected/captured identities stay independent of mutable state and repeated observations do not repeat successes. |
+| TF-12 Backend-owned operation | Export matching and operation status deep link. | Acceptance differs from completion; leave/revisit, authorize status/artifact reads, unknown acknowledgement and source progress without page-owned execution. |
+| TF-13 State, preferences and culture | The `CoreModule` preferences page with reusable framework components and task-display/query settings. | Instance/runtime/identity/workspace isolation, URL precedence, schema/corrupt/storage-failure fallback, targeted AppState/Notifier invalidation, language/theme and independent section saves without another application module. |
+| TF-14 Published extensions | Separate composition harness: TaskFiesta's `CoreModule` plus external fixture/default/replaced/suppressed contributions. | Public cross-package context/callback attachment, order/cardinality validation, original/effective provenance, targeted replacement and no retained live state in static registration. The normal application remains single-module. |
+| TF-15 Runtime access and ownership | Server/WASM/standalone/Auto/mixed arrangements. | Actual in-process Requester versus real HTTP, browser-safe dependency graph, legal runtime/root boundaries, explicit coordination and context-source attribution. |
+| TF-16 Prerender and activation | Static/prerender/interactive profiles with two task views. | Correct default/opt-in behavior, safe distinct handoff keys, no browser interop before activation, no second transferred-read query and reconstruction/cleanup of live owners. |
+| TF-17 Identity and workspace | Anonymous, owner/editor/viewer and two-workspace arrangements. | Direct-route/action authorization on both transports, safe pending availability, forced revocation/sign-out transitions, private-state partition and no identity-only dependency on workspace readiness. |
+| TF-18 Initialization and faults | Slow/failing optional provider, retry/reset and disposal controls. | Owner/generation-specific initialization and cancellation, known/unknown capability states, renderer-safe notification, unrelated content survival and no invented query success. |
+| TF-19 Diagnostics and discovery | Drawer, attached popout and separately enabled browser facade. | Same-session/runtime/scope provenance, versioned read schema, disabled reasons, redaction, bounded opt-in capture, production default-off/authorized access and no action invocation from inspection. |
+| TF-20 Packaged assets and cleanup | RCL resources/styles/JS and repeated mount/navigation. | Base-path-aware assets without per-module host tags; listeners/timers/observers/interop dispose correctly; independent instances and optional-package removal remain correct. |
+| TF-21 Native developer path | Starter, handwritten page, direct MudBlazor dialog/editor and local menu/toolbar, explicit/discovered registrations and optional generated equivalent. | Normal build/test/debug workflow, few measured declarations, native routing/forms and actionable failures. Ordinary dialogs, menus, toolbars and controls use local callbacks without framework wrappers, registration, base classes or action scopes. Applicable generated/trimming/publish cases use the same public contracts. |
+| TF-22 Independent package consumer | Clean host with the actual portable TaskFiesta module NuGet artifact, no source-project references. | Public module resources/actions/settings and compatible hosting, host overrides and a package upgrade with own branding/services. Runtime variants alone do not count as another application. |
+| TF-23 Visual/accessibility behavior | DoFiesta-inspired public/connected styling at wide/narrow/zoom layouts. | Wayfind-aligned semantic/host themes, light/dark/system, localization, keyboard/focus, labels/landmarks, validation announcements, dialog/menu behavior and screen-reader checks under the specified accessibility target. |
+| TF-24 Operational quality | Controlled proxy/reconnect, compatible/incompatible deployment and measured workloads. | Real recovery/unknown-outcome behavior, version/config compatibility, telemetry and cold/warm mobile resource/content/interaction/circuit measures. Record provider/environment/sample limitations; no fake production pass. |
+
+### A.7 Complete framework feature coverage
+
+This table maps every named framework acceptance requirement and public-website acceptance requirement to TaskFiesta cases. A case reference is a coverage commitment, not a passing result. The implementation report must retain one result per requirement and relevant arrangement, including evidence location, tested API/package versions, commands, actual outcome and limitations. A missing mapping or unresolved required result prevents a complete validation claim.
+
+The normal TaskFiesta app is single-module. Cases needing a second module use the explicitly separate composition harness, and package-reuse cases use the independent consumer identified in A.6. Those technical hosts preserve complete framework coverage without turning the MVP into a multi-module business application.
+
+Check the coverage inventory against the current acceptance/section headings when this specification changes. Flag both unmapped new requirements and obsolete entries; a broad case-family label alone cannot silently absorb a new requirement without explicit assertions/evidence.
+
+#### Framework acceptance requirements
+
+| Framework requirement | TaskFiesta cases | Where the evidence is exercised |
 | --- | --- | --- |
-| Minimal public shop | Catalog alone runs without auth integration or higher-level packages. Optional Basket/Marketing/Checkout absence follows the declared presentation. | G1 |
-| Frontend/backend correspondence | Each of the six business modules shares its identity, ownership and contract boundary across presentation and backend. Catalog defines the SKU and Stock uses that exact identity for its independent availability/policy state. Customer and staff Orders facets remain in the same module. | G1 and G2 |
-| Replaceable product catalog | Replace the initial road/gravel-component fixtures, categories and attribute/facet metadata with another catalog without changing shell, Basket, Checkout, Marketing or Orders business-module boundaries. Existing order snapshots remain readable. | G2 |
-| Product names and model designations | Every displayed product label includes its available designation, inline or directly beneath the name, including basket/checkout/order lines, recommendations and report selectors. Search by name or code and distinguish brands/variants using public metadata and stable IDs. Label corrections preserve action/recommendation identity; historical lines retain their recorded values. No code means no empty suffix. Verify narrow layouts and accessible names too. | G1 and G2 |
-| Modular composition | Selected modules register once. Required target/dependency failures, duplicate IDs, shared-assembly ownership and replacement conflicts identify their source. | G1 |
-| Native routes and deep links | Category, product, basket, receipt, customer-history/detail and operations URLs load directly with their declared access checks. Orders owns its customer/staff order pages; Marketing owns overview and recommendation-management pages. Customer pages use the storefront layout and mapped staff pages use the operations layout. Typed links respect a non-root base path and valid query encoding. | G1 and G2 |
-| Catalog state | Filters, search, sorting, paging, breadcrumbs and Back reconstruct the right view. Late category/product results cannot replace a newer context. | G1 |
-| Product-content presentation | Catalog fixture URLs/metadata drive native images and manual links. Verify base paths, revision identity, alt text, applicability and local missing/failure states. This proves the frontend contract, not blob/file integration. | G1 and G2 |
-| Stock composition and live updates | Catalog/Basket/Checkout use Stock's decisions for the same SKU and requested quantity. Render in-stock, low, sold-out, coming-soon and null-quantity policy states distinctly; reject stale SKU/quantity/revision updates and dispose subscriptions. Stock failure is not a null quantity or a sellable decision. | G1 and G2 |
-| Stock management | A Stock-owned protected page edits quantity/policy for an existing Catalog SKU through native forms. Revision conflicts, delayed saves, identity changes and per-SKU updates preserve the originating context. Reporting permission alone cannot manage Stock. | G1 and G2 |
-| Cross-module Add | The main product and related cards invoke Basket through the public target with the right captured product, variant, quantity and version. Catalog does not depend on Basket internals. | G1 and G2 |
-| Shared binding presentation | A local purchase button and an explicitly attached sticky presenter share one pending state, result and feedback owner. Another product scope remains independent. | G1 |
-| Marketing region | Optional absence, empty success, failed read, host replacement and stale product results behave distinctly. Public product cards work without a Marketing-to-Basket dependency. | G2 |
-| Marketing management | Authorized staff load, order, enable/disable and save a source product's recommendations using public Catalog lookup. Draft preview is inert; conflicts/unknown outcomes preserve the right draft/reference. Successful save invalidates only that source read, and host replacement/suppression remains authoritative. | G1 and G2 |
-| Basket summary | Confirmed revisions update the badge without out-of-order rewind. Targeted invalidation coalesces reads; inactive views become stale. A failed refresh does not undo a committed Add. | G1 |
-| Native form feedback | Default property paths, aliases, model errors and submitted-revision checks work with `EditContext`, including an old rejection arriving after a field edit or newer submit. | G1 and G2 |
-| Checkout outcome | One pending submit, stable backend attempt identity, changed-review handling, known rejection, confirmed receipt and unknown-status recovery are distinct. No generic automatic replay occurs. | G1 |
-| Backend-owned processing presentation | Accepted receipt, payment, processing and fulfillment remain distinct in feature DTOs. Revisit the original reference after page disposal, reject stale reads and avoid replay/progress side effects. Fixture transitions stand in for backend execution. | G1 and G2 |
-| Customer past orders | Two customer fixtures expose different bounded histories. A bookmarked or guessed ID cannot read another customer's order through either transport. Detail uses purchased snapshots, shows only customer projections and rejects late results after a customer switch. | G1 and G2 |
-| Protected operations | Anonymous/customer access cannot activate protected pages or invoke Release. Current circuit identity and backend authorization agree. Revocation invalidates pending work. | G1 and G3 |
-| Two queue scopes | Header targets only Ready selection. Review selection is independent. Paging retains selected IDs by default, explicit clear-on-paging works and off-page absence does not imply deletion. | G1 and G2 |
-| Safe batch confirmation | Duplicate invocation is suppressed, relevant changes reject stale decisions and dispatch retains original IDs/versions. Disposal or late completion cannot update another owner. | G1 |
-| Typed external toolbar controls | Status/search controls render from the same Ready scope as its actions, dispatch native typed callbacks to that owner, and invalidate only its declared query. Review and a later retargeted header cannot receive the old control event. | G1 and G2 |
-| Partial release | The fixture releases SF-1042 and returns a version conflict for SF-1043. Feedback preserves each known result, classifies the aggregate as partial and never retries the original batch automatically. | G1 |
-| Backend export observation | Export matching captures query intent, distinguishes acceptance from completion and survives page navigation under the example backend owner. The status link reauthorizes reads, reports source progress and exposes download only when ready; lost acknowledgement does not cause replay. | G1 and G2 |
-| Staff reporting presentation | Marketing owns the page and every reporting read, including product choices. Fixture snapshots exercise filters, freshness/coverage, authorization, stale-result rejection and one response across panels. No source-module query fan-out. | G1 and G2 |
-| Product funnel presentation | Render Marketing-provided stages, ratios and cohort/coverage labels. Unavailable or still-maturing data is distinct from zero. UI rendering and refresh neither create stages nor calculate cross-module analytics. | G1 and G2 |
-| Honest runtime access | Server reaches Requester in-process; WASM uses real typed HTTP clients; Auto/mixed/prerender profiles preserve their declared boundaries and transfer rules. | G1 through G3 |
-| Session transitions | Guest/sign-in/store-context changes apply the feature's basket policy and partition private state. Forced revocation takes precedence over dirty-state prompts. | G3 and G4 |
-| Replaceable rendering | Product actions, typed regions, navigation and operational actions work in a MudBlazor-free consumer using the same headless contracts. | G2 |
-| Assets, culture and cleanup | Packaged CSS/resources/JS resolve without per-module host edits. Culture changes are targeted, and repeated mounting/disposal or circuit loss leaks no owned subscriptions/interop. | G2 through G4 |
-| Composed settings and restoration | Shared appearance/culture settings and Orders display settings retain their source/resource/key ownership. Reload, per-user restoration, URL precedence, unsupported schema/value fallback and persistence failure preserve the declared behavior without unrelated query reloads. | G1 and G2 |
-| Host customization profiles | Default, host-replaced and suppressed Marketing profiles preserve typed target/cardinality rules. The drawer/popout/facade explains original/effective provenance and availability without invoking actions or implicitly enabling capture. | G1 through G4 |
-| Publishing and reuse | DoFiesta and ShopFiesta consume the same actual packed reusable presentation module through public APIs and ordinary tools, apply host customization and validate a shared package upgrade. ShopFiesta can keep its first backend minimal/mocked. | G2 and G4 |
-| Conventions and optional generation | Measure declarations/files against ordinary Blazor. Explicit/discovered/generated paths preserve effective composition, host authority and supported trimming. | G1 and G2 |
-| Authorized diagnostics | Inspect source, availability, scope and outcome without exposing private checkout data. Popout/agent reads retain access rules, source attribution and bounded capture. | G3 and G4 |
-| Accessibility and performance | Exercise customer and staff flows on narrow screens, keyboard and screen reader. Record comparable baselines/limits and diagnose reproducible regressions before stable release. | G1 through G4 |
+| Minimal application | TF-01 | Composition and first run |
+| Out-of-the-box starter | TF-21, TF-22 | Native developer path; Independent package consumer |
+| Independent module testing | TF-21, TF-22 | Native developer path; Independent package consumer |
+| Module composition | TF-01 | Composition and first run |
+| Single-host composition | TF-01 | Composition and first run |
+| Page ownership and route enforcement | TF-01 | Composition and first run |
+| Existing server module | TF-01 | Composition and first run |
+| Composition validation | TF-01 | Composition and first run |
+| Conventions and discovery | TF-01 | Composition and first run |
+| Generated registration, when supplied | TF-21, TF-22 | Native developer path; Independent package consumer |
+| Deep linking | TF-02, TF-04 | Navigation and destinations; Multiple lists |
+| Cross-module destination links | TF-02, TF-04 | Navigation and destinations; Multiple lists |
+| Required feature availability | TF-17, TF-18 | Identity and workspace; Initialization and faults |
+| Navigation customization | TF-02, TF-04 | Navigation and destinations; Multiple lists |
+| Dynamic navigation | TF-02, TF-04 | Navigation and destinations; Multiple lists |
+| Relevant state subscriptions | TF-13, TF-02 | State, preferences and culture; Navigation and destinations |
+| Dynamic deep links | TF-02, TF-04 | Navigation and destinations; Multiple lists |
+| Headless composition | TF-15, TF-22 | Runtime access and ownership; Independent package consumer |
+| Mixed hosting | TF-15, TF-22 | Runtime access and ownership; Independent package consumer |
+| Prerendering | TF-16 | Prerender and activation |
+| Optional identity | TF-17, TF-18 | Identity and workspace; Initialization and faults |
+| Context and privacy | TF-17, TF-18 | Identity and workspace; Initialization and faults |
+| Localization | TF-13, TF-23 | State, preferences and culture; Visual/accessibility behavior |
+| Styling and packaging | TF-13, TF-23 | State, preferences and culture; Visual/accessibility behavior |
+| Module asset setup | TF-20, TF-22 | Packaged assets and cleanup; Independent package consumer |
+| JavaScript owner cleanup | TF-20, TF-22 | Packaged assets and cleanup; Independent package consumer |
+| Data composition | TF-07, TF-08 | Query and selection; Contextual presenters |
+| Selection adapter defaults | TF-07, TF-08 | Query and selection; Contextual presenters |
+| Mutation and refresh | TF-13, TF-02 | State, preferences and culture; Navigation and destinations |
+| Form field error mapping | TF-03, TF-10 | Task editing; Save and navigation |
+| Validation revision safety | TF-03, TF-10 | Task editing; Save and navigation |
+| Coordination | TF-13, TF-02 | State, preferences and culture; Navigation and destinations |
+| Failure containment | TF-18 | Initialization and faults |
+| Unsaved changes | TF-03, TF-10 | Task editing; Save and navigation |
+| Diagnostics | TF-19 | Diagnostics and discovery |
+| Agent discovery | TF-19 | Diagnostics and discovery |
+| Non-development behavior | TF-19 | Diagnostics and discovery |
+| Accessibility and responsiveness | TF-23, TF-24 | Visual/accessibility behavior; Operational quality |
+| Optional features | TF-14, TF-01 | Published extensions; Composition and first run |
+| Orders navigation walkthrough | TF-02, TF-04 | Navigation and destinations; Multiple lists |
+| Refresh policy | TF-13, TF-02 | State, preferences and culture; Navigation and destinations |
+| Cross-package typed contribution | TF-14, TF-01 | Published extensions; Composition and first run |
+| Contract and attachment validation | TF-01 | Composition and first run |
+| Predictable customization | TF-14, TF-01 | Published extensions; Composition and first run |
+| Scoped contribution lifecycle | TF-14, TF-20 | Published extensions; Packaged assets and cleanup |
+| Consistent contribution diagnostics | TF-19 | Diagnostics and discovery |
+| External contextual toolbar | TF-08 | Contextual presenters |
+| Multiple contextual components | TF-08 | Contextual presenters |
+| Toolbar lifecycle and stale clicks | TF-09, TF-08 | Invocation and confirmation; Contextual presenters |
+| Shared action surfaces | TF-08 | Contextual presenters |
+| Core versus data toolbar behavior | TF-07, TF-08 | Query and selection; Contextual presenters |
+| Toolbar rendering boundaries | TF-08 | Contextual presenters |
+| Definition versus binding state | TF-08 | Contextual presenters |
+| Confirmation target revision | TF-09, TF-08 | Invocation and confirmation; Contextual presenters |
+| Pending invocation conflict | TF-09, TF-08 | Invocation and confirmation; Contextual presenters |
+| Modal and local keyboard behavior | TF-09, TF-08 | Invocation and confirmation; Contextual presenters |
+| Failed or uncertain save and navigation | TF-03, TF-10 | Task editing; Save and navigation |
+| Restorable view precedence | TF-13, TF-02 | State, preferences and culture; Navigation and destinations |
+| Navigation during action work | TF-10, TF-12 | Save and navigation; Backend-owned operation |
+| Semantic disabled reasons and outcomes | TF-10, TF-11 | Save and navigation; Batch and result mapping |
+| Save revision safety | TF-03, TF-10 | Task editing; Save and navigation |
+| Batch action outcomes | TF-10, TF-11 | Save and navigation; Batch and result mapping |
+| Unknown mutation outcome | TF-10, TF-12 | Save and navigation; Backend-owned operation |
+| Presenter lifetime | TF-08 | Contextual presenters |
+| Backend export ownership | TF-12 | Backend-owned operation |
+| Defaults and registration ceremony | TF-21, TF-22 | Native developer path; Independent package consumer |
+| Logical scope versus DI lifetime | TF-15, TF-22 | Runtime access and ownership; Independent package consumer |
+| Mixed page action ownership | TF-15, TF-22 | Runtime access and ownership; Independent package consumer |
+| Static public composition | TF-06, TF-05 | Public website; Read-only sharing |
+| Ordinary developer workflow | TF-21, TF-22 | Native developer path; Independent package consumer |
+| Native platform and low-friction integration | TF-21, TF-22 | Native developer path; Independent package consumer |
+| Reuse across applications | TF-22 | Independent package consumer |
+| Minimal Orders walkthrough | TF-08 | Contextual presenters |
+| Resolved contribution isolation | TF-14, TF-01 | Published extensions; Composition and first run |
+| Temporary contribution cleanup | TF-14, TF-20 | Published extensions; Packaged assets and cleanup |
+| Initialization attempt ownership | TF-18 | Initialization and faults |
+| Execution policy distinction | TF-09, TF-08 | Invocation and confirmation; Contextual presenters |
+| Targeted contribution replacement | TF-14, TF-01 | Published extensions; Composition and first run |
+| Snapshot safety independent of AppState | TF-09, TF-08 | Invocation and confirmation; Contextual presenters |
+| Host and presentation initialization boundary | TF-18 | Initialization and faults |
+| Runtime-specific feature access | TF-15, TF-22 | Runtime access and ownership; Independent package consumer |
+| AppState runtime and instance isolation | TF-13, TF-02 | State, preferences and culture; Navigation and destinations |
+| Utility-backed lifecycle and portability | TF-18 | Initialization and faults |
+| Prerendering default | TF-16 | Prerender and activation |
+| Prerender data handoff and isolation | TF-16 | Prerender and activation |
+| Prerender capability activation | TF-16 | Prerender and activation |
+| Prerender lifecycle attribution | TF-16 | Prerender and activation |
+| Auto versus mixed-mode placement | TF-15, TF-22 | Runtime access and ownership; Independent package consumer |
+| Complete reference coverage | TF-01, TF-22, TF-24 | Composition and first run; Independent package consumer; Operational quality |
+| Task list deep links and mutations | TF-02, TF-04 | Navigation and destinations; Multiple lists |
+| Enterprise session transitions | TF-17, TF-18 | Identity and workspace; Initialization and faults |
+| Reconnect and operation recovery | TF-24, TF-12 | Operational quality; Backend-owned operation |
+| Consistent outcome presentation | TF-10, TF-11 | Save and navigation; Batch and result mapping |
+| Production rollout | TF-24 | Operational quality |
+| Operational telemetry | TF-24 | Operational quality |
+| Performance release acceptance | TF-24 | Operational quality |
+| Accessibility baseline | TF-23, TF-24 | Visual/accessibility behavior; Operational quality |
+| Consumer upgrade | TF-22 | Independent package consumer |
+| Distributable module package | TF-22 | Independent package consumer |
+| Published module identity | TF-22 | Independent package consumer |
+| Complete validation evidence | TF-01, TF-22, TF-24 | Composition and first run; Independent package consumer; Operational quality |
 
-Each check records its real commands, profile, build, result and exact preview signatures exercised. Missing or failing required evidence leaves its gate open. The shop images, snippets and Mermaid diagrams explain what implementation must prove; they do not substitute for that proof.
+#### Public website requirements
 
-#### A.15.1 First Interactive Server validation slice
-
-Spec references: [Recommended business application profile](#recommended-business-application-profile), [Delivery gates and evidence](#delivery-gates-and-evidence), [Out-of-the-box greenfield starter](#out-of-the-box-greenfield-starter), [Independent module tests](#independent-module-tests), and [Performance baselines and release acceptance](#performance-baselines-and-release-acceptance).
-
-Use one ShopFiesta host, Interactive Server with prerendering off, the six commerce modules plus shared Preferences, two customer test identities and scoped staff identities. Small fixture handlers supply catalog identifiers/content, Stock snapshots/live transitions/policy edits, basket state, checkout outcomes, Marketing recommendations/reports and Orders projections/status. Keep metrics, recommendation, stock-management and order-operation permissions distinct. No real inventory, reservation or broadcast backend is required for this frontend slice.
-
-The actual composition, route/access handling and Requester path are the subjects under test. Server feature services call Requester directly to the fixture Application handlers. Isolated component mocks do not establish that dispatch path. Fixtures can simulate processing/coverage and allow test control to advance outcomes independently of reads; they do not establish real Messaging, Queueing, Jobs, blob/file storage or caching. Those integrations remain deferred to the roadmap and must not be reported as passed by this slice.
-
-Normal browser navigation, asset/download requests and native culture selection remain valid HTTP. Business feature commands/queries stay in process on Server. Later WASM evidence uses real typed HTTP clients over the same feature contracts. No backend showcase capability or pending cache merge is required to validate this first frontend slice.
-
-| Case | Exercise | Expected result and preview contracts validated |
+| Framework requirement | TaskFiesta cases | Where the evidence is exercised |
 | --- | --- | --- |
-| SV-01 Composition and startup | Build/start the documented local profile, then run missing-target, duplicate-ID and incompatible-component fixtures. | Ordinary public setup works; invalid composition identifies its source. Validate module identity, page ownership, native asset setup and parameter/cardinality validation. |
-| SV-02 Direct feature access | Trace a product read, Add to basket, checkout submission and order read to small Application handlers. | Correct current context reaches Requester; no Server feature self-HTTP call occurs. Validate feature contracts, cancellation and normal DI lifetimes. |
-| SV-03 Routes and access | Open product, customer detail and staff detail URLs directly and through interactive navigation, including a non-root base path and another customer's order ID. | Both activation paths enforce ownership/access; customer and operations layouts remain distinct. Validate destinations, initial endpoints, native router integration and current-owner reads. |
-| SV-04 Catalog restoration | Change filters/sorting/page, find RT-G800 by model designation, open a product and go Back. Deliver an old response after a new query, correct fixture metadata and include same-code products from different brands and a product without a designation. | Restore the represented view and reject obsolete data. Labels do not replace stable action/recommendation identity. Marketing shows its own supplied metadata revision, and historical order snapshots remain unchanged. Validate public DTOs, URL precedence, breadcrumbs and state restoration. |
-| SV-05 Independent purchases | Add from the main product and a related card; double-click one binding; change quantity or dispose the originating component during work. | Captured inputs remain stable, duplicate suppression is per binding and summary updates respect current basket/session ownership. Validate live scopes, dispatcher delivery and AppState selectors. |
-| SV-06 Preferences | Save/reload theme/culture and Orders display values; switch customers; supply corrupt/old values and a failing optional persistence provider. | Restore only the appropriate partition/defaults with accurate feedback. Validate settings composition, native culture activation, persistence/schema policy and targeted state changes. |
-| SV-07 Host authority and inspection | Run `default`, `featured-related` and `no-related`; inspect effective contributions and a disabled purchase reason. Query the separately enabled facade with the drawer closed. | Observe exact replacement/suppression and live provenance without dispatching business work or enabling capture. Validate host overrides and read-only diagnostic discovery; include attachment/access negatives for the popout when that capability is present. |
-| SV-08 External query controls | Type/change Ready filters while Review is independently selected; move focus into the header; retarget or remove the source during a delayed callback. | Only the originating eligible queue changes. Filter changes apply its selection policy and invalidate pending confirmation where relevant. Validate `BindControl`, typed callbacks and explicit outlet ownership. |
-| SV-09 Batch invocation and partial result | Confirm two Ready targets, change a relevant revision before dispatch in one run, and return the one-success/one-conflict receipt in another. | Reject the stale decision; preserve actual per-target/aggregate outcomes and never retry the original batch implicitly. Validate confirmation, `MapOutcome`, receipt application and separate refresh feedback. |
-| SV-10 Checkout revisions and recovery | Return a field rejection after editing that field/newer submission; exercise known success, changed review and lost completion acknowledgement. | No stale invalid markers or replay. Receipt/recovery uses the original submission/attempt. Validate native form feedback, captured draft revisions and unknown-outcome handling. |
-| SV-11 Export ownership | Submit Export matching, navigate away, open its status reference and advance the example backend fixture independently of reads. Exercise lost acknowledgement and unavailable result artifact. | Submission is not completion; page disposal does not cancel the backend operation; reads only observe and reauthorize. Validate operation-reference observation and artifact/outcome separation. |
-| SV-12 Lifecycle and identity | Repeatedly mount/remove purchase, region, control and diagnostic consumers; revoke or switch identity with reads/confirmations pending. | Bindings/subscriptions detach and obsolete callbacks cannot update another owner/context. Validate cleanup and declared state/inspection isolation. |
-| SV-13 Public developer path | Have an engineer unfamiliar with internals add a local action and consume the settings/contribution examples using public documentation. | Record actual declarations/files and undocumented knowledge. Simplify preview APIs when ordinary setup needs excess ceremony; do not claim productivity from the diagrams alone. |
-| SV-14 Interaction and baseline | Exercise keyboard/narrow layouts for the slice and record repeatable startup, action-evaluation, circuit and diagnostic-overhead measurements where applicable. | Capture real accessibility observations and an initial comparable Server baseline. Validate renderer responsibilities and source-attributed measurements without inventing limits or broader hosting passes. |
-| SV-15 Marketing metrics reads | Open the overview with authorized/unauthorized test identities. Return the fixture snapshot, change filters during a delayed read, and fail the next Marketing query. | All panels and product choices use Marketing alone. Preserve query/revision/time labels, reject stale results and distinguish failure from zero. Read-only access cannot release orders or save recommendations. Validate page ownership, the reporting feature contract, native composition and read lifecycle. |
-| SV-16 Recommendation management | Use Catalog lookup to edit/save/reorder a set, conflict two editors and lose one save acknowledgement. Navigate to another source during delayed work, preview unsaved changes, then compare the default/replaced/suppressed host profiles. | Only authorized writes publish the correct versioned source set. Draft preview has no purchase/view side effects; no overwrite or blind replay. Only that source read becomes stale, and host configuration stays authoritative. Validate native forms, submitted context, management access, typed destinations and targeted invalidation. |
-| SV-17 Report freshness and funnel presentation | Return the 20/8/6/3 fixture, then still-maturing, partial, stale, unavailable-ratio and failed-read responses. Render and refresh repeatedly. | Show supplied stages, 40%/15% and scope/freshness accurately without inferring purchases or joining source modules. Reads create no business work. Validate Marketing DTO presentation and feedback; this does not prove backend event correlation. |
-| SV-18 Product-content presentation | Open fixture image/manual URLs from product details/cards under a non-root base path. Switch product during a delayed metadata read and exercise missing content, failure and access denial. | Preserve correct alt text, document labels/applicability, native link behavior and local failure feedback without changing a purchase target. Validate Catalog DTO/content boundaries and lifecycle; provider-backed delivery is deferred. |
-| SV-19 Live Stock decisions | Deliver SKU/quantity-specific stock changes while the main product and cards are independently active. Include zero, low, coming-soon, null quantity allowed/denied, lost connection, and an old update after a SKU/quantity/store change. | Only the matching current scope changes. Explicit sellability drives buying; null never becomes zero/unlimited, and service failure does not invoke the unknown-quantity allowance. Pending decisions are reevaluated, dispatched targets remain captured and observations detach. Validate Stock's public contracts, native callbacks, AppState selectors and live revision handling. |
-| SV-20 Stock management | Directly open the staff page with authorized/unauthorized identities, select a known SKU, edit quantity/policy, conflict two saves and switch selection during delayed work. | Only Stock management permission can save. Preserve correct SKU/revision/draft and field feedback, reconcile unknown outcomes and update only interested SKU consumers. Validate module ownership, layout/policy, native forms and targeted invalidation using fixture transitions. |
-| SV-21 Product identifiers | Round-trip a multi-variant product with distinct SKUs/MPNs, optional GTIN, a leading-zero GTIN fixture and supplier-scoped references. Select another variant and exercise duplicate model labels across brands. | Stable IDs and the exact SKU remain consistent across Catalog, Stock, Basket and Checkout; MPN/model/GTIN are not substituted as SKU. Strings retain leading zeros and missing identifiers stay absent. Historical order lines keep their captured identifiers. Validate the product-view contract and propagation, not GS1 allocation or a full inventory backend. |
+| Useful SSR baseline | TF-06, TF-05 | Public website; Read-only sharing |
+| Compatible module rendering | TF-14, TF-16 | Published extensions; Prerender and activation |
+| Reusable host setup | TF-21, TF-22 | Native developer path; Independent package consumer |
+| Interactive enhancement | TF-16, TF-15 | Prerender and activation; Runtime access and ownership |
+| Performance and delivery | TF-24, TF-06 | Operational quality; Public website |
+| Public output safety and reuse | TF-05, TF-17, TF-22 | Read-only sharing; Identity and workspace; Independent package consumer |
 
-Run normal .NET build/test commands and focused browser checks against the real implementation when it exists. Record the actual project/run commands, fixture/profile names, tested signatures, results and limitations outside the documentation tree with the application/task evidence. Do not publish fabricated commands or mark this checklist passed from a code excerpt or static image.
+Coverage inventory: 101 framework acceptance requirements and 6 public-website requirements mapped to 24 TaskFiesta case families. This is a design coverage report; runnable evidence is still pending.
 
-Passing this ShopFiesta slice validates its exercised Server preview contracts. DoFiesta's migration, starter checks and all other required gate evidence still apply. WASM/Auto, explicit prerender, mixed runtimes, clean package consumption, production inspection/reconnect and the full stable-release accessibility/performance evidence remain their own applicable gates. Until a runnable implementation exists and these checks execute, runtime validation of this slice remains pending.
+
+
+#### Specification section index
+
+Every main specification section is indexed below as an additional completeness check. The acceptance map above remains the per-requirement report. Scope exclusions are checked as exclusions; they do not become hidden implementation phases.
+
+| Specification section | TaskFiesta coverage cases |
+| --- | --- |
+| [Problem and solution](#problem-and-solution) | TF-01, TF-21 |
+| [Purpose and developer promise](#purpose-and-developer-promise) | TF-01, TF-21 |
+| [Vocabulary and ownership](#vocabulary-and-ownership) | TF-01, TF-21 |
+| [Product boundaries](#product-boundaries) | TF-01, TF-21 |
+| [Architecture and bITdevKit synergy](#architecture-and-bitdevkit-synergy) | TF-01, TF-21 |
+| [Typed extension points as a design foundation](#typed-extension-points-as-a-design-foundation) | TF-14, TF-01 |
+| [Reusable data components and CRUD scaffolding](#reusable-data-components-and-crud-scaffolding) | TF-07, TF-03 |
+| [Optional application features](#optional-application-features) | TF-01, TF-14 |
+| [Hosting and render-mode interoperability](#hosting-and-render-mode-interoperability) | TF-06, TF-15, TF-16 |
+| [Presentation module composition](#presentation-module-composition) | TF-14, TF-01 |
+| [Destinations, availability and deep links](#destinations-availability-and-deep-links) | TF-02, TF-05 |
+| [Headless behavior and opinionated defaults](#headless-behavior-and-opinionated-defaults) | TF-22, TF-23 |
+| [Shell layouts and application chrome](#shell-layouts-and-application-chrome) | TF-22, TF-23 |
+| [Conceptual layout wireframes](#conceptual-layout-wireframes) | TF-22, TF-23 |
+| [Extension contracts and host authority](#extension-contracts-and-host-authority) | TF-14, TF-01 |
+| [Contextual toolbars and action scopes](#contextual-toolbars-and-action-scopes) | TF-08, TF-09, TF-11, TF-12 |
+| [Navigation and page composition](#navigation-and-page-composition) | TF-02, TF-05 |
+| [Visual consistency and styling](#visual-consistency-and-styling) | TF-22, TF-23 |
+| [Optional authentication and authorization](#optional-authentication-and-authorization) | TF-17, TF-05 |
+| [State, preferences and application context](#state-preferences-and-application-context) | TF-13, TF-17 |
+| [Frontend coordination with Requester and Notifier](#frontend-coordination-with-requester-and-notifier) | TF-13, TF-17 |
+| [Localization and culture](#localization-and-culture) | TF-13, TF-23 |
+| [Shared interactions and operation feedback](#shared-interactions-and-operation-feedback) | TF-03, TF-10, TF-11 |
+| [Minimal unsaved-change support](#minimal-unsaved-change-support) | TF-03, TF-10, TF-11 |
+| [Initialization, failures and recovery](#initialization-failures-and-recovery) | TF-18, TF-10 |
+| [Host configuration and supported customization](#host-configuration-and-supported-customization) | TF-14, TF-01 |
+| [Enterprise readiness](#enterprise-readiness) | TF-17, TF-23, TF-24 |
+| [Developer diagnostics](#developer-diagnostics) | TF-19, TF-24 |
+| [Agent-accessible diagnostics and discovery](#agent-accessible-diagnostics-and-discovery) | TF-19, TF-24 |
+| [Developer experience and compatibility](#developer-experience-and-compatibility) | TF-21, TF-22, TF-24 |
+| [Minimal Orders module walkthrough](#minimal-orders-module-walkthrough) | TF-08, TF-02 |
+| [Acceptance scenarios](#acceptance-scenarios) | TF-01, TF-22, TF-24 |
+| [Contract details requiring executable validation](#contract-details-requiring-executable-validation) | TF-01, TF-22, TF-24 |
+
+The task/list-specific create/delete/move and link-sharing behavior is additionally explicit in TF-04 and TF-05. It supplies concrete domain behavior for framework requirements; it is not a new reusable domain module promised by the framework.
+
+### A.8 Completion and handover
+
+TaskFiesta validates the whole specified feature alongside its development. Completion requires actual runnable evidence for the full acceptance/coverage matrix, independent module and package-consumer verification, supported render/hosting profiles and applicable operational/accessibility/performance checks. Record unresolved or unavailable results honestly. Static wireframes, method names and diagrams cannot close a requirement.
+
+The framework is ready for the subsequent ShopFiesta implementation when those complete requirements and documented public contracts/package compatibility are satisfied. Keep TaskFiesta as a small regression/reference application afterward. DoFiesta remains the migration consumer; ShopFiesta becomes a separate later commerce/showcase consumer. Implementation phases, task breakdown and scheduling belong in a future implementation plan, not this specification.
 
 ## References
 

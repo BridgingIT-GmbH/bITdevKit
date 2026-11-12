@@ -1,6 +1,6 @@
 # ShopFiesta Wireframe Prompts
 
-These raster concepts accompany [the presentation framework API appendix](../../spec-blazor-presentation-framework.md#appendix-a-proposed-api-example-and-execution-contract). They were generated and revised with the built-in `image_gen` tool. They are design artifacts, not runtime screenshots or evidence that the application/framework has been implemented.
+These raster concepts accompany [the ShopFiesta application specification](../../spec-shopfiesta.md). They were generated and revised with the built-in `image_gen` tool. They are design artifacts, not runtime screenshots or evidence that the application/framework has been implemented.
 
 ## Shared direction
 
@@ -80,7 +80,7 @@ Include Refresh status, Back to orders, and a disabled Download CSV with Availab
 
 ## Commerce overview and product funnel
 
-Asset: [commerce-overview.png](commerce-overview.png). Spec: [staff reporting](../../spec-blazor-presentation-framework.md#a105-compose-staff-business-metrics-and-a-product-funnel).
+Asset: [commerce-overview.png](commerce-overview.png). Spec: [staff reporting](../../spec-shopfiesta.md#compose-staff-business-metrics-and-a-product-funnel).
 
 Use the approved Operations sketch as the style reference for a new staff Commerce overview screen. Keep ShopFiesta | Operations, Staff account, Overview active and Orders/Marketing sidebar entries. Show From 12 Nov 2026 00:00 UTC, To 12 Nov 2026 12:00 UTC, Currency EUR and Refresh. Preserve legible black outlines, white/gray panels and light hatching. Grow the canvas vertically to keep the added funnel readable.
 
@@ -94,7 +94,7 @@ Do not add a made-up time series, technical telemetry, customer personal data, r
 
 ## Marketing recommendation management
 
-Asset: [marketing-recommendations.png](marketing-recommendations.png). Spec: [Marketing management](../../spec-blazor-presentation-framework.md#a71-manage-recommendations-in-the-marketing-module).
+Asset: [marketing-recommendations.png](marketing-recommendations.png). Spec: [Marketing management](../../spec-shopfiesta.md#manage-recommendations-in-the-marketing-module).
 
 Generate a new staff editor using the approved Operations sketch for its monochrome style and staff chrome. Marketing is active in the sidebar. Breadcrumb Marketing > Product recommendations, heading Product recommendations. Source product Gravel Brake Rotor is read-only with Choose another product. Enabled for storefront is checked.
 
@@ -130,7 +130,7 @@ Order-history, operations, preferences and export-status images do not display i
 
 ## Stock management
 
-Asset: [stock.png](stock.png). Spec: [Stock presentation and management](../../spec-blazor-presentation-framework.md#a52-compose-stock-availability-and-manage-ordering-policy).
+Asset: [stock.png](stock.png). Spec: [Stock presentation and management](../../spec-shopfiesta.md#compose-stock-availability-and-manage-ordering-policy).
 
 Generate one readable monochrome staff Stock availability page with Operations > Stock, Stock active in the sidebar, a SKU/model search and a native SKU policy editor. Product names include their technical designations. Catalog owns the product identities; Stock uses the exact same SKU strings. This is a separate stock-change scenario, not a replacement of the earlier all-in-stock Catalog fixture.
 

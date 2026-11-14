@@ -167,7 +167,7 @@ public static class FileSystemDurability
                 Interlocked.Increment(ref FileSystemMetrics.WriteThroughMoves);
             }
 
-            if (!MoveFileEx(WindowsPath(source), WindowsPath(destination), (overwrite ? 1u : 0u) | (durable ? 8u : 0u)))
+            if (!MoveFileEx(FileSystemPaths.ToExtendedWindowsPath(Path.GetFullPath(source)), FileSystemPaths.ToExtendedWindowsPath(Path.GetFullPath(destination)), (overwrite ? 1u : 0u) | (durable ? 8u : 0u)))
             {
                 var error = Marshal.GetLastPInvokeError();
 
@@ -232,14 +232,14 @@ public static class FileSystemDurability
     {
         // POSIX rename keeps existing handles valid without Win32 delete-pending name races.
         // WRITE_THROUGH on the source handle requests persistence of the rename's NTFS metadata.
-        using var handle = CreateFile(WindowsPath(source), 0x40010000, 7, IntPtr.Zero, 3, durable ? 0x80000000u : 0u, IntPtr.Zero);
+        using var handle = CreateFile(FileSystemPaths.ToExtendedWindowsPath(Path.GetFullPath(source)), 0x40010000, 7, IntPtr.Zero, 3, durable ? 0x80000000u : 0u, IntPtr.Zero);
 
         if (handle.IsInvalid)
         {
             throw new FileSystemNativeIOException("open-publication-for-rename", Marshal.GetLastPInvokeError());
         }
 
-        var name = Encoding.Unicode.GetBytes(WindowsPath(destination));
+        var name = Encoding.Unicode.GetBytes(FileSystemPaths.ToExtendedWindowsPath(Path.GetFullPath(destination)));
         var rootOffset = IntPtr.Size == 8 ? 8 : 4;
         var lengthOffset = rootOffset + IntPtr.Size;
         var nameOffset = lengthOffset + 4;
@@ -335,14 +335,6 @@ public static class FileSystemDurability
         {
             Close(descriptor);
         }
-    }
-
-    private static string WindowsPath(string path)
-    {
-        var full = Path.GetFullPath(path);
-
-        return full.StartsWith(@"\\?\", StringComparison.Ordinal) ? full
-            : full.StartsWith(@"\\", StringComparison.Ordinal) ? @"\\?\UNC\" + full[2..] : @"\\?\" + full;
     }
 
     [DllImport("kernel32.dll", EntryPoint = "MoveFileExW", CharSet = CharSet.Unicode, SetLastError = true)]

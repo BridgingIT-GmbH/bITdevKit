@@ -36,6 +36,7 @@ internal static class DashboardFeatureIcons
         ["orchestrations"] = "orchestrations",
         ["messaging"] = "messaging",
         ["queueing"] = "queueing",
+        ["application.caching"] = "application-caching",
         ["storage.files"] = "storage-files",
         ["storage.documents"] = "storage-documents",
         ["storage.blobs"] = "storage-blobs",

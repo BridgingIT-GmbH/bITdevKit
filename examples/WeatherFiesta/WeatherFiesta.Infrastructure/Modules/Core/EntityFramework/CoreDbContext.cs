@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Caching;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Orchestrations;
@@ -18,10 +19,47 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 /// Entity Framework Core DbContext for the WeatherFiesta Core module.
 /// Manages city, weather, user profile, and subscription entities.
 /// </summary>
+/// <param name="options">The host-owned Core database options.</param>
 public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     ModuleDbContextBase(options),
-    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext, IMessagingContext, IQueueingContext, ILoggingContext, IFileStorageContext, IDocumentStoreContext, IBlobStoreContext, IStoragePermalinkRegistryContext, IBroadcastingContext, IAuditingDbContext
+    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext, IMessagingContext, IQueueingContext, ILoggingContext, IFileStorageContext, IDocumentStoreContext, IBlobStoreContext, IStoragePermalinkRegistryContext, IBroadcastingContext, IAuditingDbContext, IApplicationCachingContext
 {
+    /// <inheritdoc />
+    public DbSet<CacheStoreEntity> CacheStores { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<CacheCollectionEntity> CacheCollections { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<CacheContractEntity> CacheContracts { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<CacheKeyEntity> CacheKeys { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<CacheEntryEntity> CacheEntries { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<CachePayloadEntity> CachePayloads { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<CacheChunkEntity> CacheChunks { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<CacheDimensionEntity> CacheDimensions { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<CacheFenceEntity> CacheFences { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<CacheOwnershipEntity> CacheOwnerships { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<CacheReaderEntity> CacheReaders { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<CacheOperationEntity> CacheOperations { get; set; }
+
     /// <summary>Gets or sets the cities DbSet.</summary>
     public DbSet<City> Cities { get; set; }
 
@@ -46,54 +84,79 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     /// <summary>Gets or sets the outbox domain events DbSet.</summary>
     public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
 
+    /// <inheritdoc />
     public DbSet<BrokerMessage> BrokerMessages { get; set; }
 
+    /// <inheritdoc />
     public DbSet<QueueMessage> QueueMessages { get; set; }
 
+    /// <inheritdoc />
     public DbSet<OrchestrationInstance> OrchestrationInstances { get; set; }
 
+    /// <inheritdoc />
     public DbSet<OrchestrationHistory> OrchestrationHistory { get; set; }
 
+    /// <inheritdoc />
     public DbSet<OrchestrationSignal> OrchestrationSignals { get; set; }
 
+    /// <inheritdoc />
     public DbSet<OrchestrationTimer> OrchestrationTimers { get; set; }
 
+    /// <inheritdoc />
     public DbSet<JobRuntimeStateEntity> JobRuntimeStates { get; set; }
 
+    /// <inheritdoc />
     public DbSet<JobTriggerRuntimeStateEntity> JobTriggerRuntimeStates { get; set; }
 
+    /// <inheritdoc />
     public DbSet<JobOccurrenceEntity> JobOccurrences { get; set; }
 
+    /// <inheritdoc />
     public DbSet<JobOccurrenceDependencyEntity> JobOccurrenceDependencies { get; set; }
 
+    /// <inheritdoc />
     public DbSet<JobBatchEntity> JobBatches { get; set; }
 
+    /// <inheritdoc />
     public DbSet<JobBatchOccurrenceEntity> JobBatchOccurrences { get; set; }
 
+    /// <inheritdoc />
     public DbSet<JobExecutionEntity> JobExecutions { get; set; }
 
+    /// <inheritdoc />
     public DbSet<JobExecutionHistoryEntity> JobExecutionHistory { get; set; }
 
+    /// <inheritdoc />
     public DbSet<JobBatchHistoryEntity> JobBatchHistory { get; set; }
 
+    /// <inheritdoc />
     public DbSet<JobAcceptedEventEntity> JobAcceptedEvents { get; set; }
 
+    /// <inheritdoc />
     public DbSet<JobLeaseEntity> JobLeases { get; set; }
 
+    /// <inheritdoc />
     public DbSet<FileStorageFileEntity> StorageFiles { get; set; }
 
+    /// <inheritdoc />
     public DbSet<FileStorageFileContentEntity> StorageFileContents { get; set; }
 
+    /// <inheritdoc />
     public DbSet<FileStorageDirectoryEntity> StorageDirectories { get; set; }
 
+    /// <inheritdoc />
     public DbSet<StorageBlob> StorageBlobs { get; set; }
 
+    /// <inheritdoc />
     public DbSet<StorageBlobChunk> StorageBlobChunks { get; set; }
 
+    /// <inheritdoc />
     public DbSet<StorageDocument> StorageDocuments { get; set; }
 
+    /// <inheritdoc />
     public DbSet<StoragePermalink> StoragePermalinks { get; set; }
 
+    /// <inheritdoc />
     public DbSet<LogEntry> LogEntries { get; set; }
 
     /// <inheritdoc />

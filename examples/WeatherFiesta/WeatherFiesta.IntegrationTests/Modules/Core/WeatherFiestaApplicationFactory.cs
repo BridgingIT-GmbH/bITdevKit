@@ -6,9 +6,11 @@
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests;
 
 using BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
+using BridgingIT.DevKit.Application.Caching;
 using Microsoft.Data.SqlClient;
 using Testcontainers.MsSql;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Configuration;
 
 /// <summary>
 /// Custom WebApplicationFactory for WeatherFiesta integration tests.
@@ -75,6 +77,7 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
             {
                 using var scope = this.Services.CreateScope();
                 var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+                this.RequireOwnedTarget(dbContext);
                 await dbContext.Database.EnsureDeletedAsync();
             }
         }
@@ -101,6 +104,13 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
         using var scope = this.Services.CreateScope();
         ActiveEntityConfigurator.SetGlobalServiceProvider(this.Services);
         var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+        this.RequireOwnedTarget(dbContext);
+        if (!string.IsNullOrWhiteSpace(this.sqlServerConnectionString))
+        {
+            using var cached = this.Services.GetRequiredService<IDbContextFactory<CoreDbContext>>().CreateDbContext();
+            this.RequireOwnedTarget(cached);
+        }
+
         await dbContext.Database.EnsureCreatedAsync();
         this.Services.GetService<IDatabaseReadyService>()?.SetReady(nameof(CoreDbContext));
         await TestData.SeedAsync(dbContext);
@@ -116,15 +126,28 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
         using var scope = this.Services.CreateScope();
         ActiveEntityConfigurator.SetGlobalServiceProvider(this.Services);
         var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+        this.RequireOwnedTarget(dbContext);
         await dbContext.Database.EnsureDeletedAsync();
         await dbContext.Database.EnsureCreatedAsync();
         await TestData.SeedAsync(dbContext);
+        var cleared = await this.Services.GetRequiredService<IApplicationCache>()
+            .GetCollection<CitySuggestionModel[]>(CitySuggestionService.CollectionName).ClearAsync();
+        if (cleared.IsFailure) { throw new InvalidOperationException("The test geocoding collection did not clear."); }
+
         this.seeded = true;
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
+        builder.ConfigureAppConfiguration((_, configuration) => configuration
+            // Ordinary fixture tests recreate the business schema in one long-lived host.
+            // Dedicated cache tests create fresh SQL-backed child hosts after each reset.
+            .AddInMemoryCollection(new Dictionary<string, string>
+            {
+                ["Caching:Application:Providers:core:Kind"] = "InMemory",
+                ["Caching:Application:Collections:city-suggestions:Loading:CoordinationScope"] = "NodeLocal"
+            }));
 
         builder.ConfigureServices(services =>
         {
@@ -189,6 +212,8 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
             else
             {
                 services.AddDbContext<CoreDbContext>(options => options.UseSqlServer(this.sqlServerConnectionString));
+                services.Replace(ServiceDescriptor.Singleton<IDbContextFactory<CoreDbContext>>(provider => new SqlServerDbContextFactory<CoreDbContext>(provider,
+                    new DbContextOptionsBuilder<CoreDbContext>().UseSqlServer(this.sqlServerConnectionString).Options)));
             }
 
             // Register IDbContextResolver (needed by DatabaseTransactionPipelineBehavior).
@@ -220,7 +245,7 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
             ReplaceService(services, this.GeocodingClient);
 
             // Fake current user accessor
-            this.CurrentUserAccessor = CreateFakeCurrentUserAccessor();
+            this.CurrentUserAccessor ??= CreateFakeCurrentUserAccessor();
             ReplaceService(services, this.CurrentUserAccessor);
 
             // Add test authentication so [RequireAuthorization] passes
@@ -242,6 +267,19 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
                 }
             });
         });
+    }
+
+    private void RequireOwnedTarget(CoreDbContext context)
+    {
+        if (string.IsNullOrWhiteSpace(this.sqlServerConnectionString)) { return; }
+
+        var expected = new SqlConnectionStringBuilder(this.sqlServerConnectionString);
+        var actual = context.Database.GetDbConnection();
+        if (!string.Equals(actual.DataSource, expected.DataSource, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(actual.Database, expected.InitialCatalog, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException("The fixture requires its independently owned SQL Server and catalog before database access.");
+        }
     }
 
     /// <summary>

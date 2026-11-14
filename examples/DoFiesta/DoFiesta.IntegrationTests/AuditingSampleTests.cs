@@ -57,7 +57,7 @@ public sealed class AuditingSampleTests(DoFiestaApplicationFactory factory)
         using var client = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost"), AllowAutoRedirect = false });
         client.DefaultRequestHeaders.Add("X-Test-User", factory.UserId);
         using var denied = await client.GetAsync("/_bdk/dashboard/auditing");
-        denied.StatusCode.ShouldBe(HttpStatusCode.Found);
+        denied.StatusCode.ShouldBe(HttpStatusCode.Found, await denied.Content.ReadAsStringAsync());
         denied.Headers.Location.OriginalString.ShouldContain("access-denied");
         client.DefaultRequestHeaders.Add("X-Test-Admin", "true");
         using var allowed = await client.GetAsync("/_bdk/dashboard/auditing");

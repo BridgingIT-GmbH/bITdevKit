@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Application.Caching\Application.Caching.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Identity\Application.Identity.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Notifications\Application.Notifications.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Orchestrations\Application.Orchestrations.csproj" />

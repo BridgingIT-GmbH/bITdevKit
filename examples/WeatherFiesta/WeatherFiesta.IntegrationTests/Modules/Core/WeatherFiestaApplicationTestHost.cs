@@ -6,11 +6,15 @@
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests;
 
 using BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
+using BridgingIT.DevKit.Application.Caching;
 
 /// <summary>
 /// SQL Server-backed application test host for direct requester tests.
 /// It wires application services without starting ASP.NET Core or endpoint infrastructure.
 /// </summary>
+/// <param name="connectionString">The isolated test database connection.</param>
+/// <param name="output">Current test logging.</param>
+/// <example><code>await using var host = new WeatherFiestaApplicationTestHost(connectionString, output); host.Build();</code></example>
 public sealed class WeatherFiestaApplicationTestHost(string connectionString, ITestOutputHelper output) : IAsyncDisposable
 {
     private ServiceProvider serviceProvider;
@@ -73,6 +77,12 @@ public sealed class WeatherFiestaApplicationTestHost(string connectionString, IT
 
         services.AddActiveEntities();
 
+        services.AddApplicationCaching()
+            .WithValueContract<CitySuggestionModel[]>(CitySuggestionService.CollectionName)
+            .WithCollection<CitySuggestionModel[]>(CitySuggestionService.CollectionName, collection => collection
+                .UseContract(CitySuggestionService.CollectionName));
+        services.AddScoped<CitySuggestionService>();
+
         services.AddSingleton(this.WeatherAgent);
         services.AddSingleton(this.GeocodingClient);
         services.AddScoped(_ => CreateFakeCurrentUserAccessor());
@@ -90,8 +100,12 @@ public sealed class WeatherFiestaApplicationTestHost(string connectionString, IT
         await dbContext.Database.EnsureDeletedAsync();
         await dbContext.Database.EnsureCreatedAsync();
         await TestData.SeedAsync(dbContext);
+        var cleared = await this.Services.GetRequiredService<IApplicationCache>()
+            .GetCollection<CitySuggestionModel[]>(CitySuggestionService.CollectionName).ClearAsync();
+        if (cleared.IsFailure) { throw new InvalidOperationException("The test geocoding collection did not clear."); }
     }
 
+    /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
         if (this.serviceProvider is null)

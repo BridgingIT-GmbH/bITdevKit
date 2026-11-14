@@ -7,12 +7,14 @@ namespace BridgingIT.DevKit.Presentation;
 
 using System.Security.Cryptography;
 using System.Text;
+using BridgingIT.DevKit.Common;
 
 /// <summary>Matches anchored path globs with bounded state and no regular-expression backtracking.</summary>
 /// <example><code>var matcher = new RequestProfilingPathMatcher(["/health/**"]);</code></example>
 public sealed class RequestProfilingPathMatcher
 {
     private readonly string[][] patterns;
+    private readonly Dictionary<string, GlobPatternMatcher> asciiPatterns = new(StringComparer.Ordinal);
 
     /// <summary>Validates and prepares at most 128 patterns, each at most 256 characters.</summary>
     /// <example><code>var excluded = new RequestProfilingPathMatcher(["/swagger/**"]).IsMatch(path);</code></example>
@@ -38,6 +40,14 @@ public sealed class RequestProfilingPathMatcher
             if (segments.Any(segment => segment.Contains("**", StringComparison.Ordinal) && segment != "**"))
             {
                 throw new ArgumentException("Double star must occupy a complete path segment.", nameof(patterns));
+            }
+
+            foreach (var segment in segments)
+            {
+                if (segment != "**" && Ascii.IsValid(segment) && !this.asciiPatterns.ContainsKey(segment))
+                {
+                    this.asciiPatterns.Add(segment, new(segment));
+                }
             }
 
             this.patterns[i] = segments;
@@ -67,7 +77,7 @@ public sealed class RequestProfilingPathMatcher
                     if (current[state])
                     {
                         if (pattern[state] == "**") { next[state] = true; }
-                        else if (MatchSegment(pattern[state], segment)) { next[state + 1] = true; }
+                        else if (this.MatchSegment(pattern[state], segment)) { next[state + 1] = true; }
                     }
                 }
 
@@ -124,8 +134,14 @@ public sealed class RequestProfilingPathMatcher
         }
     }
 
-    private static bool MatchSegment(string pattern, ReadOnlySpan<char> value)
+    private bool MatchSegment(string pattern, ReadOnlySpan<char> value)
     {
+        if (Ascii.IsValid(value) && this.asciiPatterns.TryGetValue(pattern, out var matcher))
+        {
+            return matcher.IsMatch(value);
+        }
+
+        // Preserve the path API's established UTF-16 character comparisons for non-ASCII text.
         var p = 0;
         var v = 0;
         var star = -1;

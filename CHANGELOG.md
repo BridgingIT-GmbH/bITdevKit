@@ -2,6 +2,13 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [Unreleased]
+
+- Added `Application.Caching` for typed and binary collections, coalesced source loading, typed dimension selection, safe invalidation, expiration, streaming, compression and optional local hot entries. Providers include InMemory, Entity Framework for SQL Server/PostgreSQL/SQLite, and native filesystem storage. Consumer DbContexts own EF migrations. Common Caching provides the separate minimal caching API.
+- Added `Presentation.Web.Caching` with optional HTTP, Dashboard, Console Commands and MCP management. The Caching dashboard includes collection entry counts, entry and dimension browsing, per-entry invalidation, collection settings, invalidation previews, overview charts, expandable advanced diagnostics and contextual tooltips.
+- Added cache-backed reference lookups in the example applications, including startup-populated InMemory collections and task-title suggestions. External shared-filesystem qualification and the remaining scale/performance measurements are deferred; recorded local checks do not qualify those deployments.
+- Fixed duplicate Broadcasting node-shutdown work during concurrent disposal and upgraded the .NET SDK baseline to 10.0.404.
+
 ## [10.0.123] - 2026-11-10
 
 - Updated the .NET SDK baseline to 10.0.403 and the ASP.NET Core, EF Core, Microsoft.Extensions, and System servicing packages to 10.0.15. Projects continue to target .NET 10.

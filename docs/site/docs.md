@@ -34,6 +34,7 @@ Use the application libraries to dispatch work, return explicit outcomes, and co
 
 - [Results](reference/features-results.md) defines the success and failure model used across the kit.
 - [Application Commands and Queries](reference/features-application-commands-queries.md) defines request contracts and handlers.
+- [Application Caching](reference/features-application-caching.md) caches disposable typed and binary results with bounded source coordination and invalidation. [Common Caching](reference/common-caching.md) remains the separate minimal alternative.
 - [Requester and Notifier](reference/features-requester-notifier.md) dispatches requests and notifications through pipeline behaviors.
 - [Pipelines](reference/features-pipelines.md) coordinates observable in-process steps.
 - [Orchestrations](reference/features-orchestrations.md) handles durable workflows with signals, timers, and explicit state.

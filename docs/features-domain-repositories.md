@@ -501,6 +501,17 @@ To add PostgreSQL, SQLite, or another relational provider without modifying the 
 5. Add a derived options type only when native options are needed; derive it from `EntityBulkInsertOptions` and keep the shared options provider-neutral.
 6. Add terminal contract tests plus provider integration tests for mappings, value conversion, generated values, transactions, identities, native options, and registration.
 
+## Relational index identifiers
+
+`Infrastructure.EntityFramework.RelationalIndexName` builds deterministic index names from a physical table and ordered columns. It preserves names within the selected character limit. Longer names retain a truncated prefix and a twelve-character SHA-256 suffix of the complete ASCII identifier.
+
+```csharp
+var indexName = RelationalIndexName.Create("__Catalog_Products", "TenantId", "Code");
+var sqlServerName = RelationalIndexName.Create("__Catalog_Products", 128, "TenantId", "Code");
+```
+
+The default limit is 63 characters; an explicit limit must be at least fourteen. Supply validated ASCII identifiers and use the returned name in model configuration. The helper does not change schema conventions or existing indexes. Application Caching uses the default limit for its relational model.
+
 ## <img class="bdk-doc-icon" src="assets/features/concurrency.svg" width="24" height="24" alt=""> Appendix A: Optimistic concurrency support
 
 ### Concurrency overview

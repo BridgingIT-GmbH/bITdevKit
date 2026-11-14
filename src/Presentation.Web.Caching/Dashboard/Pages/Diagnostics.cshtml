@@ -1,0 +1,7 @@
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+@(await RenderPartialAsync<Workspace>())
+@functions {
+    /// <inheritdoc />
+    public DashboardLayoutModel LayoutModel => new() { Title = "Caching" };
+}

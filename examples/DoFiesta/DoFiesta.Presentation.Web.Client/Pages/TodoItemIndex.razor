@@ -1,6 +1,7 @@
 @page "/todos"
 @using System.Net.Http.Headers
 @using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
+@using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client.Components
 @using Microsoft.Kiota.Abstractions
 @using Microsoft.Kiota.Abstractions.Serialization
 @inject Gen.BackendApiClient Api
@@ -288,11 +289,10 @@
     <DialogContent>
         <MudGrid>
             <MudItem xs="12">
-                <MudTextField @bind-Value="createTodoModel.Title"
-                              Label="Title"
-                              Variant="Variant.Outlined"
-                              Required="true"
-                              Immediate="false" />
+                @if (showCreateTodoDialog)
+                {
+                    <TaskTitleSuggestions @key="createTodoModel" @bind-Value="createTodoModel.Title" />
+                }
             </MudItem>
             <MudItem xs="12">
                 <MudTextField @bind-Value="createTodoModel.Description"

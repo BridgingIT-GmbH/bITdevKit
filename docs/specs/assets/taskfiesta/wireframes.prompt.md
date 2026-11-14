@@ -74,4 +74,3 @@ Selected asset: [preferences-diagnostics-v3.png](preferences-diagnostics-v3.png)
 ```text
 Correct only the right-side diagnostics drawer data so it describes the currently mounted Preferences page, not disposed task views. Keep the left preference forms, every existing save button/value, header, layout, canvas, monochrome sketch style, drawer title/tabs/Open popout/close unchanged. In drawer use rows: Profile Connected; Runtime Server; Active owner Preferences page; Contribution Tasks settings; Effective provider Tasks module; State Idle; Capture Off. Replace the two lower rows that currently say Ready task view / 2 selected and Needs review / 1 selected with Live settings sections / 2 and Active task views / 0. Keep the Read-only inspection footer. All text must remain crisp, large and legible; do not add more rows or editing controls.
 ```
-

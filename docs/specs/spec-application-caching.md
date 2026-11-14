@@ -1,19 +1,19 @@
 ---
 created: 2026-11-03
-status: draft
+status: implemented
 ---
 
 # Design specification: features-application-caching
 
 ## 1. Status and intent
 
-This draft defines a universal backend application cache for large datasets and expensive reusable results. Collections, entries, retention, invalidation, codecs, compression, and interchangeable providers form the feature's core.
+This specification defines a universal backend application cache for large datasets and expensive reusable results. Collections, entries, retention, invalidation, codecs, compression, and interchangeable providers form the feature's core.
 
 Each collection selects one self-contained cache provider. That provider owns the payloads, indexed metadata, entry versions, publication fences, and physical retention in one backing store. Payloads may be raw binary, serialized through a codec, compressed, or a combination. The collection engine's hot-entry layer is optional and disabled by default for every collection. When explicitly enabled, it retains bounded binary payloads, immutable decoded values, or both in process memory. Strict authoritative validation is the default for every hot reuse; retained content never becomes a separate store authority.
 
-The agreed providers are in-memory, Entity Framework, and filesystem. The Entity Framework provider handles SQL Server, PostgreSQL, and SQLite. The filesystem provider uses `Infrastructure.FileSystem` building blocks and supports Windows and Linux. The feature must support both very high entry counts and large individual values, including persistent datasets larger than RAM with a bounded in-process working set. Optional HTTP endpoints expose cache get, set, and invalidation operations to external callers. Optional Dashboard, Console Commands, and MCP integrations provide operational inspection and management. This specification defines the complete feature. Proposed API names and implementation details describe the intended design; nothing in this document describes an implemented API unless explicitly identified as an existing building block.
+The agreed providers are in-memory, Entity Framework, and filesystem. The Entity Framework provider handles SQL Server, PostgreSQL, and SQLite. The filesystem provider uses `Infrastructure.FileSystem` building blocks and supports Windows and Linux. The feature must support both very high entry counts and large individual values, including persistent datasets larger than RAM with a bounded in-process working set. Optional HTTP endpoints expose cache get, set, and invalidation operations to external callers. Optional Dashboard, Console Commands, and MCP integrations provide operational inspection and management. This specification defines the complete feature. API sketches describe the operating contracts; the [implementation guide](../features-application-caching.md) documents the actual public API and configuration.
 
-This remains a design draft. Section 19 distinguishes accepted decisions from engineering-selected defaults and records the accepted operating contracts in D-34. Refresh ownership, finite starting budgets, provider formats/recovery, and access/completion semantics are defined. API sketches remain illustrative; actual numeric benchmark reports and provider qualification are implementation acceptance evidence, not results claimed by this document. Further user questions are reserved for material scope changes or genuinely new architectural ambiguity.
+Implementation is complete for the approved scope under [plan 1.3](../../plan/pln-feature-application-caching-1.md). Core/provider functionality, optional management, documentation and local conformance checks are implemented. The remaining performance measurements and external shared-filesystem, cross-host, reconnect and power-loss qualification were deferred by the user on 2026-11-11. Those profiles remain explicitly unmeasured or unqualified in the [measurement report](../../benchmarks/Application.Benchmarks/Caching/RESULTS.md); implementation completion does not qualify them. Section 19 distinguishes accepted decisions from engineering-selected defaults and records the accepted operating contracts in D-34. Refresh ownership, finite starting budgets, provider formats/recovery, and access/completion semantics are defined. API sketches remain illustrative; actual numeric benchmark reports and provider qualification are implementation acceptance evidence, not results claimed by this document. Further user questions are reserved for material scope changes or genuinely new architectural ambiguity.
 
 ### 1.1 Architecture at a glance
 
@@ -163,13 +163,15 @@ The features may reuse Common serialization, results, resilience, hosting, and d
 
 ## 3. Existing DevKit building blocks
 
+The cache consumes presence-aware option composition from `Common.Options`; hierarchical capacity accounting and stream wrappers from `Common.Utilities`; and value codecs and authenticated continuation protection from `Common.Serialization`. Cache-specific precedence, admission policy, cursor contents, and persisted entry formats remain owned by this feature.
+
 The repository already provides:
 
 - `ICacheProvider` in `Common.Abstractions`, a key-based contract with get, set, enumeration, prefix removal, and sliding or absolute expiration.
 - `Common.Caching`, including `InMemoryCacheProvider`, `CachingBuilderContext`, and the `AddCaching()` registration family.
 - `Application.Storage.DocumentStoreCacheProvider`, which implements the existing cache contract through document storage and `IDistributedCache`.
 - Cache behaviors for queries, commands, requester pipelines, and storage clients belonging to the existing minimal caching feature.
-- Feature-level behavior registration and forwarding decorators in DocumentStorage, and context/continuation execution behaviors in Jobs. Reuse these conventions for cache extensibility, with implementation adapted to the cache's low-allocation hot path.
+- Feature-level behavior registration and forwarding Behaviors in DocumentStorage, and context/continuation execution behaviors in Jobs. Reuse these conventions for cache extensibility, with implementation adapted to the cache's low-allocation hot path.
 - `Common.Serialization.ISerializer`, which reads and writes streams, and implementations such as `SystemTextJsonSerializer` and `CborSerializer`.
 - `CompressionSerializer`, an existing serializer decorator with a fixed Deflate representation.
 - `CompressionHelper.CreateGZipCompressionStream` and `CreateGZipDecompressionStream`, public GZip stream factories that can be reused without the serializer decorator's fixed format.
@@ -359,14 +361,21 @@ public interface ICacheCollection<T>
     ValueTask<Result<CacheWriteOutcome>> SetAsync(
         CacheItem item,
         T value,
-        CacheEntryDescriptor descriptor,
+        CacheEntryDescriptor descriptor = null,
         CancellationToken cancellationToken = default);
 
     ValueTask<Result<CacheWriteOutcome>> SetAsync(
         CacheItem item,
         T value,
-        CacheEntryDescriptor descriptor,
         CacheEntryVersion expectedVersion,
+        CacheEntryDescriptor descriptor = null,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<Result<CacheWriteOutcome>> SetAsync(
+        CacheItem item,
+        T value,
+        CacheWriteCondition condition,
+        CacheEntryDescriptor descriptor = null,
         CancellationToken cancellationToken = default);
 
     ValueTask<Result> RemoveAsync(
@@ -394,7 +403,7 @@ public readonly record struct CacheLookup<T>(
 
 public sealed record CacheLoadResult<T>(
     T Value,
-    CacheEntryDescriptor Descriptor);
+    CacheEntryDescriptor Descriptor = null);
 ```
 
 The outer `Result` reports recoverable operation failure. On success, `Found` means a payload value is available, including a permitted `null`. `IsNotFound` means confirmed source absence; a cache miss has neither flag. The flags cannot both be true. Read `Value` only when both `IsSuccess` and `Found` are true. `LookupOutcome` describes the access path, so a cached not-found marker is a `Hit` with `IsNotFound = true`, not a miss. `StorageOutcome` describes any attempt to retain newly loaded content or a marker.
@@ -414,7 +423,7 @@ This example uses the `ProductCard` contract and `product-cards` setup from sect
 ```csharp
 var products = cache.GetCollection<ProductCard>("product-cards");
 var item = new CacheItem("P-104")
-    .WithDimension("catalog", "retail");
+    .WithScalarDimension("catalog", "retail");
 
 var lookup = await products.GetOrLoadAsync(
     item,
@@ -423,14 +432,14 @@ var lookup = await products.GetOrLoadAsync(
         var catalog = context.Services.GetRequiredService<IProductCatalog>();
         var loaded = await catalog.GetCardAsync(context.Item.Key, loadToken);
 
-        return loaded.Map(card => new CacheLoadResult<ProductCard>(
-            card,
-            new CacheEntryDescriptor()));
+        return loaded.Map(card => new CacheLoadResult<ProductCard>(card));
     },
     cancellationToken);
 ```
 
 `CacheLoadContext.Item` contains the owner's item. Its `Services` resolves source dependencies from the shared load's owned scope. The static callback captures no request-scoped service, and `loadToken` belongs to the shared work. The caller's `cancellationToken` controls that caller's interest and wait. A warm hit invokes no loader and creates no source scope.
+
+For a source method returning `Task<ProductCard>` or `ValueTask<ProductCard>`, an async loader can return `new CacheLoadResult<ProductCard>(await source.GetAsync(loadToken))`. The existing implicit conversion supplies `Result<CacheLoadResult<ProductCard>>`. When the source already returns `Result<ProductCard>`, use `Map` as above to preserve its failures.
 
 With the default shared-loading strategy, concurrent calls for `P-104` and `p-104` share source work within the configured coordination scope. Different keys remain concurrent. `Map` preserves source failures; a failed source result does not become a cached value. A successful result can report `Loaded` or `Joined` with a rejected storage outcome, so the application must not infer retention from `Found` alone.
 
@@ -442,8 +451,7 @@ An application may already have a value and need no loader. Both operations reta
 var stored = await products.SetAsync(
     item,
     new ProductCard("P-104", 19.95m),
-    new CacheEntryDescriptor(),
-    cancellationToken);
+    cancellationToken: cancellationToken);
 
 if (stored.IsSuccess)
 {
@@ -454,7 +462,7 @@ if (stored.IsSuccess)
 
 An explicit write that cannot publish returns failure; it cannot report success because the application still owns the supplied value. A successful write does not guarantee a later hit if expiration, invalidation, or another write intervenes. The lowercase lookup demonstrates the same case-insensitive identity as the uppercase write.
 
-A typed lookup supplies the version for a conditional replacement through the same proposed API:
+A typed lookup supplies the version for a conditional replacement:
 
 ```csharp
 var fetched = await products.GetAsync("p-104", cancellationToken);
@@ -463,14 +471,13 @@ if (fetched.IsSuccess && fetched.Value.Found && fetched.Value.Version is { } exp
 	var replaced = await products.SetAsync(
 		item,
 		new ProductCard("P-104", 21.95m),
-		new CacheEntryDescriptor(),
 		expectedVersion,
-		cancellationToken);
+		cancellationToken: cancellationToken);
 	// Inspect replaced.IsSuccess. A version conflict does not overwrite the winner.
 }
 ```
 
-`RemoveAsync(key, expectedVersion, cancellationToken)` uses the same acquired token for conditional removal. Binary read handles expose their acquired version through metadata and use the same conditional-write/removal rules.
+The conditional `SetAsync` overloads accept the version or `CacheWriteCondition` before an optional descriptor. `RemoveAsync(key, expectedVersion, cancellationToken)` uses the same acquired token for conditional removal. Binary read handles expose their acquired version through metadata and use the same conditional-write/removal rules.
 
 ### 5.4 Bypass and explicit refresh contracts
 
@@ -1016,7 +1023,7 @@ Large invalidations process metadata and payload cleanup in bounded batches. If 
 
 Dependencies stay dimension-based. Applications attach dependency identifiers to relevant entries and explicitly invalidate the matching dimensions in the selected collections. The cache does not maintain or traverse recursive entry-to-entry graphs, infer dependencies from payload content, or automatically cascade a replacement or eviction into other entries. This dependency model is agreed.
 
-Cross-collection invalidation returns per-collection results. No cross-provider transaction is promised. Partial failures remain visible and are retryable. Reason, origin, scope, affected counts, and publication suppression are included in diagnostics.
+Cross-collection invalidation returns per-collection results. No cross-provider transaction is promised. Partial failures remain visible and are retryable. Origin, scope, affected counts, and publication suppression are included in diagnostics.
 
 ### 7.4 Multiple nodes
 
@@ -1480,7 +1487,30 @@ Global and collection disabled configuration is supported. Explicit backend-work
 
 Use provider-owned tables for collection/contract state and epochs, current entries, typed dimension values/set members/interval endpoints, immutable payload versions and chunks, source ownership/fencing, bounded reader reservations, refresh due/activity/backoff metadata, and maintenance progress. All remain in the selected database. Entry identity and dimension comparisons use common canonical representations plus identity collision checks, not database `LOWER` or the database's default collation. Store the identity/schema format version and reject incompatible metadata rather than silently reindexing another deployment's keys.
 
-The EF provider supplies its cache context/model and engine-specific migration artifacts. The host owns applying those migrations through its normal database bootstrap and marks the named database-ready gate only after the schema is usable. Requests and cache workers never create/delete databases, apply DDL, or silently upgrade a shared catalog. Default table names use a `Cache` prefix; optional schema/prefix changes are validated startup storage configuration, not a live rename. Incompatible catalog versions fail readiness while payload-reader compatibility remains independently configurable.
+The EF provider supplies annotated public entities and the cache context/model capability. A consuming application implements `IApplicationCachingContext` on its own DbContext and creates, stores, and applies that context's migrations through its normal database workflow. The infrastructure package ships no cache migration classes, model snapshot, frozen migration model, or database deployment scripts. The standalone `CacheDbContext` remains a convenience for a host that chooses a separate cache context; that host still owns its migrations. Schema-bootstrap and migration fixtures belong in tests.
+
+The host marks the named database-ready gate only after its schema is usable. Requests and cache workers never create/delete databases, apply DDL, or silently upgrade a shared catalog. Default table names use the `__Caching_` feature prefix; optional schema/prefix changes are validated startup storage configuration, not a live rename. Incompatible catalog versions fail readiness while payload-reader compatibility remains independently configurable.
+
+Keep the EF model to twelve tables. Per-flight observation interests are bounded JSON children of their ownership row; they do not require a separate table. Publication reconciliation uses the existing payload operation/generation/state fields, so no separate publication table is needed.
+
+| Default table | Persistence responsibility |
+| --- | --- |
+| `__Caching_Stores` | Root mutation authority, format identity, cursor secret, and provider quota. |
+| `__Caching_Collections` | Logical collection identity, invalidation epoch, shared quota, and publication/change counter. |
+| `__Caching_Contracts` | Retained contract declarations and fixed dimension schemas. |
+| `__Caching_Keys` | Logical-key identity and invalidation epoch across retained contracts. |
+| `__Caching_Entries` | Current metadata, indexed expiry/activity/size, and payload-generation reference. |
+| `__Caching_Dimensions` | Portable indexed scalar/set/interval selection. |
+| `__Caching_Payloads` | Immutable generation, staging/current/retired state, operation identity, and small inline payload. |
+| `__Caching_Chunks` | Ordered bounded large-payload chunks. |
+| `__Caching_Fences` | Indexed captured publication rights and deadlines. |
+| `__Caching_Ownerships` | Shared source flight and its bounded JSON observation groups. |
+| `__Caching_Readers` | Indexed exact-generation reader protection and deadlines. |
+| `__Caching_Operations` | Tracked invalidation state, execution claim, revision, and confirmed checkpoint. |
+
+Bound ownership-interest JSON to 1,024 observation groups and 256 KiB, in addition to the configured follower and storage limits. Preserve a conservative 1,536-byte metadata charge per group until its actual removal. Read bounded scalar flight headers before fetching the selected parent's JSON, bound the database projection before materialization, and reclaim children in bounded maintenance batches. Indexed reader/fence expiry, dimension filtering, and chunk streaming retain separate rows to preserve their existing access bounds.
+
+Use one immutable payload-generation identifier as the safe read/write token, including for retained negative markers. Do not duplicate it in an entry-version column or add unused root/key revisions. Keep the collection publication/change counter for fixed query/invalidation boundaries and the tracked-operation revision for atomic control and checkpoint updates. These EF simplifications preserve public snapshot tokens, hot validation, expected-version writes, and HTTP preconditions.
 
 Index exact identity; dimension name/type/value and entry reference; interval starts/ends with bounded overlap evaluation; publication/expiry; stored size; refresh due time/activity; and reader/lease deadlines. AND/OR plans intersect or union bounded candidate sets, deduplicate entry versions, and retain a residual typed predicate. Key prefixes use the canonical key index; broader globs have the common candidate/work budget. Browse/count/preview never select payload columns.
 
@@ -1510,7 +1540,7 @@ Recovery first validates root identity/profile and proves the required authority
 
 After unclean Buffered recovery with uncertain recent fences or metadata, invalidate the affected shard generations under a persisted recovery fence before serving any old data. Failure to establish that boundary keeps them unavailable. Rewarming loses disposable cache content but cannot resurrect an invalidated version. A clean verified checkpoint may retain provably valid content. Shared authority markers are not stolen after a timeout: quiescent recovery requires all participating writers stopped or independently fenced, operator proof of exclusivity, verified replay/reset, and a new recorded generation before reopening. Recovery reports its scope and any discarded data; no HTTP clear or ordinary retry can bypass this procedure.
 
-The filesystem provider deliverable includes a cache-aware offline recovery/reset procedure for this format. It identifies and validates the selected store/root, establishes quiescence, reconciles committed indexes, quota reservations, and retained versions, and verifies the recovery fence before reopening. A reset explicitly reports discarded disposable data. Do not apply a blob/document-format recovery routine to cache metadata. Validate the commit/recovery protocol early with a focused prototype in the existing filesystem test project, including concurrent publication/invalidation, quota recovery, and process failure. This is provider implementation evidence, with no additional recovery framework or acceptance harness.
+The filesystem provider deliverable includes a cache-aware offline recovery/reset procedure for this format. It identifies and validates the selected store/root, establishes quiescence, reconciles committed indexes, quota reservations, and retained versions, and verifies the recovery fence before reopening. A reset explicitly reports discarded disposable data. Do not apply a blob/document-format recovery routine to cache metadata. Validate the commit/recovery protocol early with a focused prototype in the filesystem caching folder of the existing Infrastructure.UnitTests project, including concurrent publication/invalidation, quota recovery, and process failure. This is provider implementation evidence, with no additional recovery framework or acceptance harness.
 
 ### 10.8 Filesystem qualification profiles
 
@@ -1518,11 +1548,15 @@ The implementation qualification targets are Windows local NTFS and Linux local 
 
 The Linux SMB reference mount uses `vers=3.1.1,cache=none,actimeo=0`; the NFS reference uses a hard TCP mount, `vers=4.1` or `4.2`, `lookupcache=none,actimeo=0`, and synchronous server exports. Exclude loose/offline/disconnected authoritative metadata caching and NFS soft/no-close-to-open modes from these reference profiles. Windows SMB qualification disables Offline Files for the cache root. These choices are conservative qualification settings; settings alone do not prove atomicity, server freshness, or Durable persistence. Hard-mount native calls may outlive a managed cancellation budget and remain accounted as occupied work. The [Linux NFS manual](https://man7.org/linux/man-pages/man5/nfs.5.html) and [Linux CIFS documentation](https://docs.kernel.org/admin-guide/cifs/usage.html) explain the underlying client cache and mount semantics; cache-protocol qualification is still required.
 
-Existing filesystem integration tests, extended for this cache format, verify cross-process/host contention, current-generation visibility, simultaneous publication/invalidation, pinned readers, process termination, torn writes, server disconnect/reconnect, stale owners, recovery fences, and durability failures for each profile. Native startup probes detect unsupported primitives and incompatible root/profile settings but cannot replace cross-host qualification. Unsupported or validity-uncertain combinations fail readiness explicitly; none silently fall back to unsafe writes. Run the existing `Infrastructure.FileSystem.Tests` project explicitly because the generic unit/integration task globs do not discover that project name. Use normal feature tests and documented fixture commands, not a second acceptance framework.
+Existing filesystem integration tests, extended for this cache format, verify cross-process/host contention, current-generation visibility, simultaneous publication/invalidation, pinned readers, process termination, torn writes, server disconnect/reconnect, stale owners, recovery fences, and durability failures for each profile. Native startup probes detect unsupported primitives and incompatible root/profile settings but cannot replace cross-host qualification. Unsupported or validity-uncertain combinations fail readiness explicitly; none silently fall back to unsafe writes. Filesystem caching tests live under `tests/Infrastructure.UnitTests/FileSystem/Caching/` and run through the normal solution unit-test task. Use `--filter FullyQualifiedName~Caching` for the focused cache cases. Use normal feature tests and documented fixture commands, not a second acceptance framework.
 
 ## 11. Configuration and registration
 
-Use a proposed `AddApplicationCaching()` registration to avoid changing the meaning of the existing `AddCaching()` family. Concrete extension names remain provisional.
+Use `AddApplicationCaching()` independently of the existing `AddCaching()` family. A minimal typed registration is `services.AddApplicationCaching(cache => cache.WithCollection<ProductCard>("cards"))`. It selects finite in-memory and JSON defaults without explicit provider, contract, codec, hot-retention, or compression declarations. A typed collection without an explicit compatible contract creates a JSON contract using its collection name. A unique compatible registered contract is reused; multiple matches require explicit `UseContract`. Configuration-only collections still select a code-registered contract alias.
+
+The conventional host configuration section is `Caching:Application`. Parameterless and callback registration use the host's registered `IConfiguration`. `AddApplicationCaching(rootConfiguration)` and `AddApplicationCaching(rootConfiguration, configure)` both apply the convention to that root. `AddApplicationCaching("Modules.Catalog.Caching", configure)` selects a named section with equivalent dot or colon separators. An explicitly supplied `IConfigurationSection` is used verbatim, with or without a callback.
+
+Repeated `AddApplicationCaching(section)` calls on one host service collection contribute to the same startup builder, catalog, runtime, and background workers. Modules may declare their own contracts, named providers, and collections; their aliases are globally unique within each category. Host-wide options and defaults affect all modules, while module-specific policy belongs to collection settings. Finalize and validate after all module contributions, before cache use, and reject further contributions after finalization. Apply configuration sources in registration order, with later scalar values winning and complete ordered lists replacing earlier lists; collection-specific configuration outranks all configured global defaults. Named EF provider registrations bind each provider alias to its code-approved module context factory independently.
 
 Both registration families must coexist independently. Provider selection, options binding, named services, and hosted maintenance for one feature cannot overwrite or reconfigure the other feature.
 
@@ -1538,11 +1572,13 @@ Apply precedence from lowest to highest: built-in defaults, global fluent defaul
 
 Runtime per-entry or per-call options are bounded operation choices, not a route around final configuration. They cannot raise the effective hard limits, change a collection's contract/provider, bypass namespace isolation, or undo configured safety constraints. Finalize, validate, and snapshot the combined catalog before creating collection engines, behavior chains, and provider bindings. Configuration changes require normal host reconfiguration and restart; no implicit live reload is introduced.
 
-Validation covers unknown providers and codecs, duplicate names, incompatible capabilities, invalid intervals, nonpositive timeouts, oversized batch limits, invalid retention settings, and inconsistent memory budgets. Production profiles require finite resource limits. An unlimited setting must be explicit and cannot arise from an omitted value.
+Validation covers unknown providers and codecs, duplicate names, incompatible capabilities, invalid intervals, nonpositive timeouts, oversized batch limits, invalid retention settings, and inconsistent memory budgets. Omitted collection resident, storage, and entry defaults adapt to the selected provider and process ceilings; inherited payload and inactive hot limits fit their parents. Explicit incompatible limits fail validation instead of being silently reduced. Production profiles require finite resource limits. An unlimited setting must be explicit and cannot arise from an omitted value.
 
 Secrets use existing configuration providers and are excluded from diagnostic policy snapshots. Effective settings show their scope, provider capabilities, and whether a guarantee is node-local or shared.
 
 Section 16.1.1 defines fixed finite starting defaults, including TTL, memory, concurrency, and work limits. They are tunable environment settings, not a business freshness promise or automatic percentage of host RAM. Compression remains off by default and requires an explicit algorithm and level when enabled.
+
+Use `ByteSize` from `BridgingIT.DevKit.Common` to express configuration byte counts. Its `Kilobytes`, `Megabytes`, and `Gigabytes` helpers use binary units based on 1,024, return `long`, and reject negative inputs or arithmetic overflow. `ByteSize.Bytes` validates a raw byte count without conversion. APIs that require `int` byte counts use a checked cast.
 
 ### 11.1 Merge and environment semantics
 
@@ -1558,41 +1594,47 @@ Effective settings identify whether a value came from built-in defaults, fluent 
 
 ### 11.2 Mixed setup example
 
-The following uses proposed API names to illustrate the intended merge contract. Omitted limits inherit the finite defaults in section 16.1.1; environment settings can tune them for the deployment. Code registers one reusable value contract and supplies one collection's defaults:
+Omitted limits inherit the finite defaults in section 16.1.1; environment settings can tune them for the deployment. Code registers one reusable value contract and supplies one collection's defaults:
 
 ```csharp
-services.AddApplicationCaching(configuration.GetSection("ApplicationCaching"))
+services.AddApplicationCaching(configuration, cache => cache
     .WithValueContract<ProductCard>("product-card-v1")
     .WithCollection<ProductCard>("product-cards", collection => collection
         .UseContract("product-card-v1")
         .UseProvider("memory")
-        .WithScalarDimension<string>("catalog")
-        .WithAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+        .Dimensions(d => d.Scalar<string>("catalog"))
+        .ExpireAfter(TimeSpan.FromMinutes(5))));
 
 public sealed record ProductCard(string Code, decimal Price);
 ```
+
+`ExpireAfter(ttl)` sets a fixed absolute TTL and disables sliding expiry. Use `Defaults` for host-wide collection policy. A contract can select JSON settings directly with `contract.WithJsonOptions(JsonSerializerOptions.Web)`; registration snapshots the supplied options. `WithJsonCodec` remains available for a custom factory or validator. Attach declared set and interval dependencies with `CacheItem.WithSetDimension` and `CacheItem.WithIntervalDimension`; the same helpers on `CacheEntryDescriptor` capture source-discovered dependencies.
+
+`Dimensions` configures the schema of one collection. The callback's `Scalar<T>`, `Set<T>`, and `Interval<T>` declarations append in order. Repeated grouped or individual schema calls append to the same collection schema and reject duplicate normalized names immediately, ignoring case. `Scalar<T>` and `Set<T>` allow typed nulls only with `allowNull: true`. Nullable generic types do not change that policy. `Interval<T>` accepts signed integer or `DateTimeOffset` kinds with non-null endpoints.
 
 Appsettings declares the named provider, overrides the code collection's expiration, and adds another collection using the same registered contract:
 
 ```json
 {
-  "ApplicationCaching": {
-    "Providers": {
-      "memory": {
-        "Kind": "InMemory",
-        "MaxResidentBytes": 134217728
-      }
-    },
-    "Collections": {
-      "product-cards": {
-        "Contract": "product-card-v1",
-        "Provider": "memory",
-        "Expiration": { "AbsoluteTtl": "00:15:00" }
+  "Caching": {
+    "Application": {
+      "Providers": {
+        "memory": {
+          "Kind": "InMemory",
+          "MaxResidentBytes": 134217728
+        }
       },
-      "product-cards-preview": {
-        "Contract": "product-card-v1",
-        "Provider": "memory",
-        "Expiration": { "AbsoluteTtl": "00:02:00" }
+      "Collections": {
+        "product-cards": {
+          "Contract": "product-card-v1",
+          "Provider": "memory",
+          "Expiration": { "AbsoluteTtl": "00:15:00" }
+        },
+        "product-cards-preview": {
+          "Contract": "product-card-v1",
+          "Provider": "memory",
+          "Expiration": { "AbsoluteTtl": "00:02:00" }
+        }
       }
     }
   }
@@ -1603,10 +1645,12 @@ An environment-specific appsettings file may supply only the changed field:
 
 ```json
 {
-  "ApplicationCaching": {
-    "Collections": {
-      "product-cards": {
-        "Expiration": { "AbsoluteTtl": "00:30:00" }
+  "Caching": {
+    "Application": {
+      "Collections": {
+        "product-cards": {
+          "Expiration": { "AbsoluteTtl": "00:30:00" }
+        }
       }
     }
   }
@@ -1649,25 +1693,27 @@ The resulting catalog is fixed for the host lifetime. This startup composition d
 The proposed collection-level fluent method is `WithoutEndpoints()`, supplied by `Presentation.Web.Caching`. In this alternative setup, the feature-level `WithEndpoints()` call registers the external API while the collection opts out:
 
 ```csharp
-services.AddApplicationCaching(configuration.GetSection("ApplicationCaching"))
+services.AddApplicationCaching(configuration, cache => cache
     .WithValueContract<ProductCard>("product-card-v1")
     .WithCollection<ProductCard>("product-cards", collection => collection
         .UseContract("product-card-v1")
         .UseProvider("memory")
-        .WithScalarDimension<string>("catalog")
-        .WithAbsoluteExpiration(TimeSpan.FromMinutes(5))
+        .Dimensions(d => d.Scalar<string>("catalog"))
+        .ExpireAfter(TimeSpan.FromMinutes(5))
         .WithoutEndpoints())
-    .WithEndpoints();
+    .WithEndpoints());
 ```
 
 Appsettings can also exclude a collection, including a configuration-defined collection such as `product-cards-preview` from section 11.2:
 
 ```json
 {
-  "ApplicationCaching": {
-    "Collections": {
-      "product-cards-preview": {
-        "Endpoints": { "Enabled": false }
+  "Caching": {
+    "Application": {
+      "Collections": {
+        "product-cards-preview": {
+          "Endpoints": { "Enabled": false }
+        }
       }
     }
   }
@@ -1683,12 +1729,14 @@ An authorized request such as `GET /api/caches/product-cards/entries?key=P-104` 
 Hot entries are disabled unless explicitly enabled. Within a collection setup callback, the following proposed fluent configuration opts into bounded binary retention; this is an opt-in example, not the default setup:
 
 ```csharp
+using BridgingIT.DevKit.Common;
+
 collection.WithHotEntries(hot => hot
     .WithRepresentation(CacheHotEntryRepresentation.Binary)
     .WithValidation(CacheHotEntryValidation.Strict)
-    .WithMaxResidentBytes(64L * 1024 * 1024)
+    .WithMaxResidentBytes(ByteSize.Megabytes(64))
     .WithMaxEntries(10_000)
-    .WithMaxEntryBytes(256L * 1024)
+    .WithMaxEntryBytes(ByteSize.Kilobytes(256))
     .WithMaxIdleTime(TimeSpan.FromMinutes(2)));
 ```
 
@@ -1698,24 +1746,26 @@ The equivalent configuration overlay can declare both the process budget and col
 
 ```json
 {
-  "ApplicationCaching": {
-    "HotEntryBudget": {
-      "MaxResidentBytes": 134217728
-    },
-    "Collections": {
-      "product-cards": {
-        "HotEntries": {
-          "Enabled": true,
-          "Representation": "Binary",
-          "Validation": "Strict",
-          "MaxResidentBytes": 67108864,
-          "MaxEntries": 10000,
-          "MaxEntryBytes": 262144,
-          "MaxIdleTime": "00:02:00",
-          "Admission": {
-            "MinimumAccesses": 2,
-            "ObservationWindow": "00:01:00",
-            "MaxTrackingEntries": 20000
+  "Caching": {
+    "Application": {
+      "HotEntryBudget": {
+        "MaxResidentBytes": 134217728
+      },
+      "Collections": {
+        "product-cards": {
+          "HotEntries": {
+            "Enabled": true,
+            "Representation": "Binary",
+            "Validation": "Strict",
+            "MaxResidentBytes": 67108864,
+            "MaxEntries": 10000,
+            "MaxEntryBytes": 262144,
+            "MaxIdleTime": "00:02:00",
+            "Admission": {
+              "MinimumAccesses": 2,
+              "ObservationWindow": "00:01:00",
+              "MaxTrackingEntries": 20000
+            }
           }
         }
       }
@@ -1730,41 +1780,43 @@ Typed contracts may select `Decoded` or `BinaryAndDecoded` after registering imm
 
 ### 11.6 Refresh loader and worker setup example
 
-The proposed fluent setup registers a trusted source alias and explicitly enables background refresh for a collection. `ProductCardRefreshLoader` is application code implementing the declared refresh-loader contract; its implementation is intentionally omitted:
+The fluent setup registers a trusted source alias and explicitly enables background refresh for a collection. `ProductCardRefreshLoader` is application code implementing the declared refresh-loader contract:
 
 ```csharp
-services.AddApplicationCaching(configuration.GetSection("ApplicationCaching"))
+services.AddApplicationCaching(configuration, cache => cache
     .WithValueContract<ProductCard>("product-card-v1")
     .WithRefreshLoader<ProductCard, ProductCardRefreshLoader>("product-card-source")
     .WithCollection<ProductCard>("product-cards", collection => collection
         .UseContract("product-card-v1")
         .UseProvider("memory")
-        .WithScalarDimension<string>("catalog")
-        .WithRefresh(refresh => refresh
+        .Dimensions(d => d.Scalar<string>("catalog"))
+        .Refresh(refresh => refresh
             .UseLoader("product-card-source")
-            .WithRefreshAhead(TimeSpan.FromMinutes(1))));
+            .Ahead(TimeSpan.FromMinutes(1)))));
 ```
 
-`WithRefresh(...)` enables proactive refresh for this collection, not hot entries or an HTTP loader operation. Configuration may override these code settings:
+`Refresh(...)` enables proactive refresh for this collection, not hot entries or an HTTP loader operation. Configuration may override these code settings:
 
 ```json
 {
-  "ApplicationCaching": {
-    "BackgroundServices": {
-      "StartupDelay": "00:00:15",
-      "ReadinessTimeout": "00:00:30",
-      "StopTimeout": "00:00:10",
-      "RefreshInterval": "00:00:15",
-      "MaintenanceInterval": "00:01:00"
-    },
-    "Collections": {
-      "product-cards": {
-        "Refresh": {
-          "Enabled": true,
-          "Loader": "product-card-source",
-          "RefreshAhead": "00:01:00",
-          "ActivityWindow": "00:10:00",
-          "MaxConcurrency": 2
+  "Caching": {
+    "Application": {
+      "BackgroundServices": {
+        "StartupDelay": "00:00:15",
+        "ReadinessTimeout": "00:00:30",
+        "StopTimeout": "00:00:10",
+        "RefreshInterval": "00:00:15",
+        "MaintenanceInterval": "00:01:00"
+      },
+      "Collections": {
+        "product-cards": {
+          "Refresh": {
+            "Enabled": true,
+            "Loader": "product-card-source",
+            "RefreshAhead": "00:01:00",
+            "ActivityWindow": "00:10:00",
+            "MaxConcurrency": 2
+          }
         }
       }
     }
@@ -1780,22 +1832,24 @@ The proposed policy spellings below are an overlay for an already declared persi
 
 ```json
 {
-  "ApplicationCaching": {
-    "Providers": {
-      "database": {
-        "CircuitBreaker": {
-          "Enabled": true,
-          "FailureThreshold": 5,
-          "BreakDuration": "00:00:10"
+  "Caching": {
+    "Application": {
+      "Providers": {
+        "database": {
+          "CircuitBreaker": {
+            "Enabled": true,
+            "FailureThreshold": 5,
+            "BreakDuration": "00:00:10"
+          }
         }
-      }
-    },
-    "Endpoints": { "CachePolicy": "NoStore" },
-    "Collections": {
-      "product-cards": {
-        "Expiration": { "JitterMaxRatio": 0.10 },
-        "NegativeCaching": { "Enabled": true, "Ttl": "00:00:30" },
-        "Endpoints": { "CachePolicy": "Revalidate" }
+      },
+      "Endpoints": { "CachePolicy": "NoStore" },
+      "Collections": {
+        "product-cards": {
+          "Expiration": { "JitterMaxRatio": 0.10 },
+          "NegativeCaching": { "Enabled": true, "Ttl": "00:00:30" },
+          "Endpoints": { "CachePolicy": "Revalidate" }
+        }
       }
     }
   }
@@ -1827,13 +1881,13 @@ The existing command, query, requester, repository, and storage cache behaviors 
 
 ### 12.1 Behavior-based extension model
 
-Composable behaviors are a required extension capability. Keep the collection engine focused on lookup, shared-load ownership, validity, admission, and atomic publication. Implement cross-cutting capabilities as registered behaviors or focused policy services, rather than expanding a monolithic client with logging, profiling, retry, compression, and integration branches. The same decorated collection contracts serve in-process callers and all presentation adapters.
+Composable behaviors are a required extension capability. Keep the collection engine focused on lookup, shared-load ownership, validity, admission, and atomic publication. Implement cross-cutting capabilities as registered behaviors or focused policy services, rather than expanding a monolithic client with logging, profiling, retry, compression, and integration branches. The same collection contracts with configured Behaviors serve in-process callers and all presentation adapters.
 
-Follow existing DevKit `WithBehavior<TBehavior>()` and factory-registration conventions. Support global defaults and collection-specific registration, with validated options and DI activation. Reuse the conventions of DocumentStorage forwarding decorators and Jobs execution behaviors without adding an Application.Storage dependency or creating a separate generic middleware framework.
+Follow existing DevKit `WithBehavior<TBehavior>()` and factory-registration conventions. Support global defaults and collection-specific registration, with validated options and DI activation. Reuse the conventions of DocumentStorage forwarding Behaviors and Jobs execution behaviors without adding an Application.Storage dependency or creating a separate generic middleware framework.
 
 Provide three narrow extension boundaries with strongly typed outcomes:
 
-- **Collection operations:** typed and binary collection decorators surround individual public calls. Proposed forwarding bases are `CacheCollectionBehaviorBase<T>` and `CacheBinaryCollectionBehaviorBase`; custom behaviors override only relevant operations and delegate the rest. These behaviors see caller-level hit, miss, join, rejection, and failure outcomes and preserve cancellation and stream ownership.
+- **Collection operations:** typed and binary collection Behaviors surround individual public calls. Proposed forwarding bases are `CacheCollectionBehaviorBase<T>` and `CacheBinaryCollectionBehaviorBase`; custom behaviors override only relevant operations and delegate the rest. These behaviors see caller-level hit, miss, join, rejection, and failure outcomes and preserve cancellation and stream ownership.
 - **Shared source work:** a proposed `ICacheLoadBehavior<T>` receives a load execution context and continuation inside acquired shared-load ownership. This chain runs once for the owned work, not once per follower. It supports source retry policies, additional source-attempt timeouts, work-level profiling, and application extensions while retaining the engine's overall deadline, admission accounting, and fence.
 - **Payload transformation:** a proposed `ICachePayloadBehavior` acts on bounded binary streams after typed encoding and before publication. Built-in compression uses this boundary. Custom persisted transformations declare stable identifiers, versions, ordering, and supported readers; the core records and validates the actual envelope and sizes. A transformation cannot publish directly or introduce another payload store.
 
@@ -1843,9 +1897,9 @@ These stages are distinct: a per-caller retry around the entire read-through cal
 
 Provide behavior implementations for structured logging, metrics/tracing, operation profiling, optional auditing integration, shared-source resilience, and cache-managed compression. Optional diagnostics and integrations remain selectable. Reusable codecs remain Common components. The hot-entry store, representation/admission policies, and local eviction are focused collection-engine services; authoritative validation remains a provider contract. They are not public-operation behaviors that can short-circuit required validation. Provider indexes and storage eviction retain their own responsibilities. The core exposes bounded execution facts for observers instead of owning every observer's implementation.
 
-Optional provider circuit breaking uses a focused resilience decorator at the `ICacheStoreProvider` boundary, reusing existing DevKit resilience facilities. It reports typed provider unavailability to the engine rather than short-circuiting the whole read-through call or replaying a stream. The three public behavior stages remain unchanged; no generic resilience or job framework is added.
+Optional provider circuit breaking uses a focused resilience Behavior at the `ICacheStoreProvider` boundary, reusing existing DevKit resilience facilities. It reports typed provider unavailability to the engine rather than short-circuiting the whole read-through call or replaying a stream. The three public behavior stages remain unchanged; no generic resilience or job framework is added.
 
-When composed from fluent registrations, combine global registrations before collection registrations within each stage. Explicit configuration lists replace the lower-precedence stage list as defined in section 11, before chains are built. The first effective registration is outermost, as in existing DevKit decorator chains: requests enter in order and outcomes unwind in reverse. Reject ambiguous duplicate registrations and invalid stage/type combinations at startup. Per-collection options specialize a globally selected behavior without accidentally running it twice. Effective policy inspection lists enabled behaviors, their stage, order, and configuration with secrets redacted.
+When composed from fluent registrations, combine global registrations before collection registrations within each stage. Explicit configuration lists replace the lower-precedence stage list as defined in section 11, before chains are built. The first effective registration is outermost, as in existing DevKit Behavior chains: requests enter in order and outcomes unwind in reverse. Reject ambiguous duplicate registrations and invalid stage/type combinations at startup. Per-collection options specialize a globally selected behavior without accidentally running it twice. Effective policy inspection lists enabled behaviors, their stage, order, and configuration with secrets redacted.
 
 Resolve and compose the effective chains once per collection during startup/resolution. Do not enumerate registrations, use reflection, build closure chains, create DI scopes, or allocate generic context dictionaries on each warm hit. Use typed contexts and continuations with the proposed `ValueTask<Result<T>>` fast path where appropriate, avoiding boxing successful results or converting messages/errors unnecessarily. A disabled behavior is omitted or has a measured synchronous forwarding path. Benchmark minimal, standard, and explicitly enabled detailed-diagnostics chains separately.
 
@@ -1904,7 +1958,7 @@ public interface ICacheLoadBehavior<T>
 }
 ```
 
-An observing load behavior forwards through `next(context, cancellationToken)` once and returns its outcome. A declared source-retry behavior may repeat replay-safe source work within the same ownership, execution deadline, and admission budget. Joining callers do not each execute this chain. Collection decorators use the forwarding bases from section 12.1; payload transformations use the separate stream boundary. None of these extension points can disable mandatory engine checks.
+An observing load behavior forwards through `next(context, cancellationToken)` once and returns its outcome. A declared source-retry behavior may repeat replay-safe source work within the same ownership, execution deadline, and admission budget. Joining callers do not each execute this chain. Collection Behaviors use the forwarding bases from section 12.1; payload transformations use the separate stream boundary. None of these extension points can disable mandatory engine checks.
 
 For example, the mixed setup from section 11.2 can attach an application-supplied operation observer and a shared-source observer to its collection:
 
@@ -1912,8 +1966,8 @@ For example, the mixed setup from section 11.2 can attach an application-supplie
 .WithCollection<ProductCard>("product-cards", collection => collection
     .UseContract("product-card-v1")
     .UseProvider("memory")
-    .WithScalarDimension<string>("catalog")
-    .WithAbsoluteExpiration(TimeSpan.FromMinutes(5))
+    .Dimensions(d => d.Scalar<string>("catalog"))
+    .ExpireAfter(TimeSpan.FromMinutes(5))
     .WithBehavior<ProductAccessLoggingBehavior>()
     .WithLoadBehavior<ProductLoadTimingBehavior>())
 ```
@@ -1934,7 +1988,7 @@ Detailed work and invalidation histories are optional bounded buffers with limit
 
 Operational capabilities include collection overview, effective settings, metadata paging, in-flight work, footprint summaries, invalidation preview/execution, explicit clear, configured background-work pause/resume, and tracked invalidation status/resume/cancel. Optional HTTP endpoints, Dashboard pages, Console Commands, and MCP management are agreed feature scope. Presentation integrations remain optional host dependencies of the core cache.
 
-HTTP access uses the host's default authorization policy, with optional read, write, and invalidation policy overrides in `WithEndpoints(...)`. Mutations carry a reason and identifiable origin. Expensive estimates and aggregate reports are bounded by sample count, time, concurrency, and bytes. A preview is advisory and cannot promise the same count after concurrent writes.
+HTTP access uses the host's default authorization policy, with optional read, write, and invalidation policy overrides in `WithEndpoints(...)`. Mutations carry an identifiable origin. Expensive estimates and aggregate reports are bounded by sample count, time, concurrency, and bytes. A preview is advisory and cannot promise the same count after concurrent writes.
 
 Provider readiness and dependency health are reported without automatically making an optional cache outage a host liveness failure. Operational guidance must cover cold starts, cache stampedes, capacity exhaustion, stuck loaders, persistent format changes, and failed invalidation.
 
@@ -2001,6 +2055,12 @@ The Dashboard provides collection and provider status, effective limits and scop
 
 Reuse the shared Dashboard layout, RazorSlice pages, theme tokens, paging, and accessibility conventions. Page-level tabs are server routes registered through `DashboardPage.RememberedViews`, use the standard `nav nav-pills` presentation with an accessible label and current-page indication, and sit outside the refreshed content below the refresh toolbar. Build routes with the configured Dashboard path helpers rather than a hardcoded host root. Direct links and remembered navigation preserve the selected tab, collection, filters, and paging scope.
 
+Collection Settings prominently displays the configured codec profile and compression state above the complete policy details. Enabled compression also shows its algorithm, level, threshold, and minimum saving. Entries displays disclosed dimension names and typed values, including scalar/null, set, and half-open interval forms. It distinguishes omitted dimensions from redacted values. One declared dimension predicate can combine with the key-prefix filter through conjunction; operators and typed operands must satisfy that collection's schema, and continuations bind the full filter. Invalid filters return a controlled error rather than an unfiltered list.
+
+For the Dashboard's Key prefix operation control, an empty input binds an explicit match-all pattern for the current collection contract, so Preview and Invalidate select the same entries. Nonempty prefixes are literal; an empty Exact key is invalid. Explicit Clear is independent of these fields and covers retained contract versions. The core empty-selection grammar matches nothing.
+
+Use compact info-circle buttons for explanations of memory accounting, metric scope, chart series, settings, and operation semantics. Put plain-text help in tooltips rather than inline explanatory prose. Tooltips support hover and keyboard focus, use the shared Bootstrap presentation, and are disposed before fragment replacement and reinitialized for current content. Values, statuses, and failures are visible independently of these explanations.
+
 Use `window.bdkDashboard.createRefresher` for bounded, read-only content updates. Refresh cannot reset the selected tab, replay an operation, or replace an operation form while it is being edited. Collection and global operations use the same Application commands and report actual scope, completion, and partial failures. Insights distinguish source-loader invocations, joined callers, currently waiting callers, and cache hits rather than presenting all completed requests as source work.
 
 Page refreshes do not enumerate the whole cache or load payloads for inspection. Each view identifies count accuracy, observation time, and provider degradation; unavailable data is not displayed as a successful zero. Verify direct tab links, remembered views, filtering, paging, refresh races, mutation results, and narrow layouts with the normal presentation tests and Dashboard conventions.
@@ -2009,7 +2069,7 @@ Console Commands expose the same management operations using existing discovery,
 
 MCP management handlers integrate with the existing DevKit MCP discovery and dispatch infrastructure. Inspection tools are read-only; invalidation, removal, and clear are explicitly classified as mutations. Results carry bounded metadata, declared scope, count accuracy, and completion or partial-failure information. Bulk payload transfer and arbitrary source-loader execution are outside these management tools; binary transfer uses the optional streaming HTTP API or in-process contracts.
 
-All surfaces use trusted host identity and existing authorization conventions. Read-only inspection and invalidation remain separate action categories. Mutations carry a reason and identifiable origin and obey the same namespace boundaries, contract-version scope, resource limits, and publication fences as in-process operations. Merely enabling a transport does not authorize every caller. Sensitive keys and dimensions follow the configured redaction policy in views, tool results, and logs.
+All surfaces use trusted host identity and existing authorization conventions. Read-only inspection and invalidation remain separate action categories. Mutations carry an identifiable origin and obey the same namespace boundaries, contract-version scope, resource limits, and publication fences as in-process operations. Merely enabling a transport does not authorize every caller. Sensitive keys and dimensions follow the configured redaction policy in views, tool results, and logs.
 
 ### 13.3 Dashboard concept mockup
 
@@ -2033,7 +2093,9 @@ Provide Diagnostics tabs at both cache and collection level. The cache-level vie
 
 Diagnostics distinguish positive hits, negative hits, and ordinary misses. Provider breaker transitions, pending/terminal invalidation counts, and configured-versus-paused background state are bounded observations; keys and operation identifiers are not metric labels.
 
-The standard views include:
+Show four overview charts initially: requests and lookup hit ratio; operation p95 latency; resident and transient memory; provider/source failures and wait/source timeouts. These select existing metrics from the same bounded history as the detailed families. Place the full six families in a native **Advanced diagnostics** disclosure, collapsed on initial navigation. Preserve its current open state during refresh, render advanced plots only while expanded, and use the latest loaded history when reopened without an additional query.
+
+The detailed views include:
 
 - **Traffic and efficiency:** hits, misses, and hit ratio, with requests/s distinguished from successful entries/s. Show validated hot reuse separately from provider payload reads, with binary/decoded representation and validation-call rates.
 - **Entry throughput:** successful reads, writes, and invalidated entries per second where available, with batch entry counts distinguished from method invocation counts.
@@ -2050,7 +2112,7 @@ Reuse the shared chart and refresher lifecycle so changing tabs, scope, or windo
 
 ### 13.5 Background controls and resumable invalidation
 
-Dashboard, Console Commands, and MCP can pause/resume automatic refresh and warm-up per collection on the selected node. The effective view distinguishes configured enabled state from runtime pause state. Pause stops new background source admission at the next bounded unit; already-admitted shared work retains its normal deadline/cancellation policy. Dispose scoped enumerators/cursors rather than holding an open source database cursor across a pause. Resume releases the pause only for work already enabled in startup configuration; it cannot opt in disabled capabilities, change providers, or reload settings. Pause is node-local operational state, resets on host restart, and carries the normal mutation authorization, reason, origin, and scope. Foreground cache access, expiration, invalidation, and safe cleanup continue.
+Dashboard, Console Commands, and MCP can pause/resume automatic refresh and warm-up per collection on the selected node. The effective view distinguishes configured enabled state from runtime pause state. Pause stops new background source admission at the next bounded unit; already-admitted shared work retains its normal deadline/cancellation policy. Dispose scoped enumerators/cursors rather than holding an open source database cursor across a pause. Resume releases the pause only for work already enabled in startup configuration; it cannot opt in disabled capabilities, change providers, or reload settings. Pause is node-local operational state, resets on host restart, and carries the normal mutation authorization, origin, and scope. Foreground cache access, expiration, invalidation, and safe cleanup continue.
 
 Large filter invalidations and explicit clear operations expose an opaque operation identifier and a bounded status record with operation kind, captured namespace/collection scope, selection and fixed cutoffs, continuation/progress, committed counts, cancellation request, completion, and failure details. Keep it in the selected provider's own metadata, with no extra operation database. In-memory status is process-local; EF/filesystem status survives restart under their normal durability/recovery rules. A cross-provider request returns child handles and per-collection outcomes rather than inventing an atomic durable parent transaction. Clear retains its explicit operation kind; an empty filter never becomes clear.
 
@@ -2740,7 +2802,7 @@ Numerical reports remain implementation acceptance deliverables. Design completi
 
 Use the normal `Common.UnitTests`, `Application.UnitTests`, `Infrastructure.UnitTests`, and relevant integration projects following implementation ownership. Use xUnit, Shouldly, NSubstitute where needed, deterministic synchronization for races, and `TimeProvider` for time-dependent behavior.
 
-Provider tests cover the same observable semantics, relational concurrency on SQL Server, PostgreSQL, and SQLite, and filesystem publication, indexing, reader lifetime, and recovery on Windows and Linux. Reuse the existing filesystem test projects and fixtures; run relevant `Infrastructure.FileSystem.Tests` checks explicitly because its project name does not match the ordinary unit/integration task globs. Check Docker and external-service requirements before running integrations. Keep fixtures lightweight and use normal CI rather than a separate conformance framework.
+Provider tests cover the same observable semantics, relational concurrency on SQL Server, PostgreSQL, and SQLite, and filesystem publication, indexing, reader lifetime, and recovery on Windows and Linux. Reuse the existing infrastructure unit-test project and filesystem probe fixtures. The normal unit-test task includes the filesystem caching tests, and `--filter FullyQualifiedName~Caching` selects the focused cache cases. Check Docker and external-service requirements before running integrations. Keep fixtures lightweight and use normal CI rather than a separate conformance framework.
 
 Include deterministic tests for shared-store authority outages across two instances, read-only shared typed completion, version-token conditional updates, confirmed binary publication/failure, and nested source-work rejection. Exercise the fixed dimension type/comparison matrix on every provider, including integer aliases, UTC tick precision, nullable sets, and invalid interval types. Keep the existing minimal-cache behavior suite independent; new advanced integration suites are deferred with those integrations. Validate the filesystem commit/recovery prototype and cache-aware offline procedure early in its existing test project. Report SQLite synchronous native occupancy separately from asynchronous SQL Server/PostgreSQL I/O.
 
@@ -2819,7 +2881,7 @@ Design completion requires:
 - Requirements for reproducible benchmark reports for all three providers, with operations/s, entries/s, allocations, latency, resource use, and provider-specific setup.
 - Workload targets, acceptance criteria, verification guidance, and accepted architecture decisions for the selected design.
 
-The current scope and technical contracts are resolved in this draft. Source implementation, migrations/format fixtures, normal feature tests, native/share qualification, and actual numeric benchmark reports remain implementation acceptance deliverables. They must be produced before claiming a completed working feature, but are not fabricated prerequisites for writing its design. Implementation sequencing belongs in a separate implementation plan after the feature design is agreed.
+The current scope and technical contracts are resolved in this draft. Source implementation, host-owned migration/bootstrap test fixtures, filesystem-format fixtures, normal feature tests, native/share qualification, and actual numeric benchmark reports remain implementation acceptance deliverables. The infrastructure library ships no EF migrations or SQL deployment scripts. Acceptance evidence must be produced before claiming a completed working feature, but is not a prerequisite for writing its design. Implementation sequencing belongs in the separate implementation plan.
 
 ## 18. Architecture decisions
 
@@ -3081,7 +3143,7 @@ Decision: SQLite remains a relational engine of the Entity Framework provider, a
 
 Local disks and network shares are included, with concurrent local processes and share-connected hosts. Sections 10.7 and 10.8 define the sharded index/journal/manifest format, authority/quotas, publication, mode-specific recovery, and qualification profiles. Uncertain ownership blocks affected work until safe authority is proven. Durable remains the default; Buffered recovery fences uncertain generations before serving.
 
-Decision: keep this provider architecture and validate the cache commit/recovery protocol early through a focused prototype in the existing filesystem test project. Its deliverables include the cache-aware offline recovery/reset procedure in section 10.7, with no additional recovery or acceptance framework.
+Decision: keep this provider architecture and validate the cache commit/recovery protocol early through a focused prototype in the filesystem caching folder of the existing Infrastructure.UnitTests project. Its deliverables include the cache-aware offline recovery/reset procedure in section 10.7, with no additional recovery or acceptance framework.
 
 ### D-16. Performance constraints
 
@@ -3141,7 +3203,7 @@ Decision: use collections consistently for named cache containers, including pub
 
 Status: architectural requirement accepted; contract names remain proposed.
 
-Decision: provide composable collection-operation, shared-load, and payload-transform behavior boundaries following existing DevKit registration, decorator, and execution-context conventions. Implement logging, metrics/tracing, profiling, optional auditing, shared-source resilience, and compression through these extension points. Precompose chains per collection, support custom behaviors, and retain mandatory correctness and resource guarantees inside the engine/provider boundary. Detailed contracts and capability placement are defined in section 12.
+Decision: provide composable collection-operation, shared-load, and payload-transform behavior boundaries following existing DevKit registration, forwarding Behavior, and execution-context conventions. Implement logging, metrics/tracing, profiling, optional auditing, shared-source resilience, and compression through these extension points. Precompose chains per collection, support custom behaviors, and retain mandatory correctness and resource guarantees inside the engine/provider boundary. Detailed contracts and capability placement are defined in section 12.
 
 ### D-25. Cache-independent codec capability
 

@@ -38,10 +38,14 @@ public class CityEndpoints : EndpointsBase
                     .SendAsync(new CitySuggestionQuery(search, countryCode), cancellationToken: ct))
                     .MapHttpOk())
             .WithName("Core.Cities.Suggestions")
-            .WithDescription("Searches for city suggestions using the Open-Meteo geocoding API.")
+            .WithDescription("Searches for public city suggestions using a shared, SQL-backed geocoding cache.")
             .Produces<List<CitySuggestionModel>>()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status429TooManyRequests)
+            .ProducesResultProblem(StatusCodes.Status502BadGateway)
+            .ProducesResultProblem(StatusCodes.Status503ServiceUnavailable)
+            .ProducesResultProblem(StatusCodes.Status504GatewayTimeout)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
         // POST /api/core/cities

@@ -451,20 +451,7 @@
     private static string FormatTimestamp(DateTimeOffset? value) =>
         value?.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) ?? "-";
 
-    private static string FormatSize(long value)
-    {
-        const long kiloByte = 1024;
-        const long megaByte = kiloByte * 1024;
-        const long gigaByte = megaByte * 1024;
-
-        return value switch
-        {
-            >= gigaByte => $"{value / (double)gigaByte:0.##} GB",
-            >= megaByte => $"{value / (double)megaByte:0.##} MB",
-            >= kiloByte => $"{value / (double)kiloByte:0.##} KB",
-            _ => $"{value} B"
-        };
-    }
+    private static string FormatSize(long value) => ByteSize.FormatBinary(value);
 
     private static string BuildDownloadUrl(string basePath, string storeName, string container, string name)
     {

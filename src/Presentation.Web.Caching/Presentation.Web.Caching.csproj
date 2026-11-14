@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Presentation.Web.Caching</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Presentation.Web.Caching</RootNamespace>
+    <Nullable>disable</Nullable>
+    <IsPackable>true</IsPackable>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="RazorSlices" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Application.Caching/Application.Caching.csproj" />
+    <ProjectReference Include="../Common.Extensions.Web/Common.Extensions.Web.csproj" />
+    <ProjectReference Include="../Presentation.Web/Presentation.Web.csproj" />
+  </ItemGroup>
+</Project>

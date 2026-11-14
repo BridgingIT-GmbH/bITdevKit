@@ -541,13 +541,7 @@
     private static string DisplayCount(long? value) =>
         value.HasValue ? $"{value.Value.ToString("N0", CultureInfo.InvariantCulture)} match(es)" : "count unavailable";
 
-    private static string FormatSize(long bytes) => bytes switch
-    {
-        >= ByteSize.BytesPerGigabyte => $"{bytes / (double)ByteSize.BytesPerGigabyte:0.##} GB",
-        >= ByteSize.BytesPerMegabyte => $"{bytes / (double)ByteSize.BytesPerMegabyte:0.##} MB",
-        >= ByteSize.BytesPerKilobyte => $"{bytes / (double)ByteSize.BytesPerKilobyte:0.##} KB",
-        _ => $"{bytes} B"
-    };
+    private static string FormatSize(long bytes) => ByteSize.FormatBinary(bytes);
 
     private static string FormatTimestamp(DateTimeOffset? value) =>
         value?.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) ?? "-";

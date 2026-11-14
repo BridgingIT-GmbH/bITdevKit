@@ -152,7 +152,7 @@ public sealed class BlobUploadAdmissionCoordinator : IBlobUploadAdmissionCoordin
 
         immediateLease.Dispose();
 
-        using var timeout = new CancellationTokenSource(options.QueueWaitTimeout, this.timeProvider);
+        using var timeout = new CancellationDeadline(options.QueueWaitTimeout, this.timeProvider);
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(
             cancellationToken,
             timeout.Token,

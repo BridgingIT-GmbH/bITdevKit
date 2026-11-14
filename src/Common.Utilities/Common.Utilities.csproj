@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common.Abstractions\Common.Abstractions.csproj" />
     <ProjectReference Include="..\Common.Options\Common.Options.csproj" />
+    <ProjectReference Include="..\Common.Results\Common.Results.csproj" />
     <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj" />
   </ItemGroup>
 

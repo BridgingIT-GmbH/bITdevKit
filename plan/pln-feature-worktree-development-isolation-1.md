@@ -281,7 +281,7 @@ The specification is authoritative. When this plan and the specification disagre
 - **FILE-016**: `examples/DoFiesta/DoFiesta.Presentation.Web.Server/Program.cs`, `examples/DoFiesta/DoFiesta.Presentation.Web.Client/Program.cs`, `examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/Program.cs`, `examples/*/*-REST.http`.
 - **FILE-017**: `.gitignore`, `AGENTS.md`, `.vscode/launch.json`.
 - **FILE-018**: `docs/development-worktrees-support.md` (new), docs index, `docs/features-presentation-configuration.md`, `docs/features-cli.md`, `docs/specs/spec-presentation-cli.md`, `docs/specs/spec-worktree-development-isolation.md`.
-- **FILE-019**: Tests under `tests/Common.UnitTests/DevAppInstances/`, `tests/Presentation.UnitTests/Web/DevAppInstances/`, `tests/Presentation.UnitTests/Web/Hosting/DevKitWebApplicationTests.cs`, `tests/Presentation.UnitTests/Cli/`, `tests/Presentation.UnitTests/Web/IdentityProvider/FakeIdentityProviderTests.cs`, `tests/Infrastructure.IntegrationTests/DevAppInstances/`, `tests/Infrastructure.FileSystem.Tests/`.
+- **FILE-019**: Tests under `tests/Common.UnitTests/DevAppInstances/`, `tests/Presentation.UnitTests/Web/DevAppInstances/`, `tests/Presentation.UnitTests/Web/Hosting/DevKitWebApplicationTests.cs`, `tests/Presentation.UnitTests/Cli/`, `tests/Presentation.UnitTests/Web/IdentityProvider/FakeIdentityProviderTests.cs`, `tests/Infrastructure.IntegrationTests/DevAppInstances/`, `tests/Infrastructure.UnitTests/FileSystem/`.
 
 ## 6. Testing
 

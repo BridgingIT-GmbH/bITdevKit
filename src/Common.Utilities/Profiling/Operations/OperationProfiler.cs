@@ -18,7 +18,7 @@ internal sealed class OperationProfiler : IOperationProfiler
     private readonly IOperationProfilingCompletionSink sink;
     private readonly IProfilingSafeErrorPolicy errors;
     private readonly Func<RuntimeProfilingSession> runtimeHint;
-    private long activeBytes;
+    private readonly ResourceBudget activeBudget;
 
     public OperationProfiler(
         ProfilingOptions options,
@@ -36,6 +36,7 @@ internal sealed class OperationProfiler : IOperationProfiler
         options.Validate();
         this.enabled = options.OperationEnabled;
         this.options = options.Operations.Snapshot();
+        this.activeBudget = new("profiling-active", this.options.MaxActiveBytes);
         this.node = nodes.GetNode();
         this.sink = sink;
         this.Clock = timeProvider ?? TimeProvider.System;
@@ -49,7 +50,7 @@ internal sealed class OperationProfiler : IOperationProfiler
     public OperationProfilingCaptureCounters Counters { get; } = new();
     public IProfilingOperationScope Current => this.context.Current?.Operation;
     public int ActiveCount { get { lock (this.sync) { return this.active.Count; } } }
-    public long ActiveBytes { get { lock (this.sync) { return this.activeBytes; } } }
+    public long ActiveBytes { get { lock (this.sync) { return this.activeBudget.Used; } } }
 
     public IProfilingOperationScope BeginOperation(string key, OperationProfilingKind kind = OperationProfilingKind.Custom) =>
         this.BeginOperation(new OperationProfilingStartRequest { Key = key, Kind = kind.ToString() });
@@ -83,11 +84,18 @@ internal sealed class OperationProfiler : IOperationProfiler
                     lock (this.sync)
                     {
                         if (this.active.Count < this.options.MaxActiveOperations && charge <= this.options.MaxRecordBytes
-                            && charge <= this.options.MaxActiveBytes - this.activeBytes)
+                            && this.activeBudget.TryCharge(charge))
                         {
-                            capture = new ProfilingCaptureState(this, this.options, id, request with { DisplayName = display }, this.node, started, utc, display, charge, this.active.Count + 1, truncated);
-                            this.active.Add(id, capture);
-                            this.activeBytes += charge;
+                            try
+                            {
+                                capture = new ProfilingCaptureState(this, this.options, id, request with { DisplayName = display }, this.node, started, utc, display, charge, this.active.Count + 1, truncated);
+                                this.active.Add(id, capture);
+                            }
+                            catch
+                            {
+                                this.activeBudget.Return(charge);
+                                throw;
+                            }
                         }
                     }
 
@@ -179,13 +187,14 @@ internal sealed class OperationProfiler : IOperationProfiler
     {
         lock (this.sync)
         {
-            if (!this.active.ContainsKey(capture.Id) || delta > this.options.MaxActiveBytes - this.activeBytes
-                || delta > this.options.MaxRecordBytes - capture.ChargedBytes)
+            if (!this.active.ContainsKey(capture.Id) || delta > this.options.MaxRecordBytes - capture.ChargedBytes
+                || delta < -capture.ChargedBytes || delta >= 0 && !this.activeBudget.TryCharge(delta))
             {
                 return false;
             }
 
-            this.activeBytes += delta;
+            if (delta < 0) { this.activeBudget.Return(-delta); }
+
             capture.ChargedBytes += delta;
             return true;
         }
@@ -197,7 +206,7 @@ internal sealed class OperationProfiler : IOperationProfiler
         {
             if (this.active.Remove(capture.Id))
             {
-                this.activeBytes -= capture.ChargedBytes;
+                this.activeBudget.Return(capture.ChargedBytes);
             }
         }
     }

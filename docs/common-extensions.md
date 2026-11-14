@@ -79,6 +79,29 @@ Typical use cases:
 
 If you want the conceptual guidance for these fluent patterns, start with [Extensions](./features-extensions.md). This page is the package-level map of where those helpers live.
 
+## Text pattern matching
+
+`GlobPatternMatcher` prepares a whole-text pattern once for repeated string or span matching. `*` matches zero or more Unicode scalars, and `?` matches one scalar, including a supplementary character represented by two UTF-16 code units. Both wildcards include line breaks. Backslash escapes only `*`, `?`, or backslash itself. Literals use invariant case folding by default; pass `ignoreCase: false` for exact case.
+
+```csharp
+using BridgingIT.DevKit.Common;
+
+var matcher = new GlobPatternMatcher(@"report:\?*");
+var matches = matcher.IsMatch("REPORT:?42"); // true
+var singleScalar = new GlobPatternMatcher("?").IsMatch("😀"); // true
+```
+
+The matcher has no cache-key or path policy. An empty pattern matches empty text. Patterns must contain valid UTF-16; matching rejects invalid UTF-16 when it is encountered. Each instance retains state proportional to the prepared pattern and can be shared between callers. Apply input and pattern limits at the consuming feature's boundary. Application Caching adds its nonempty, UTF-8 byte, and identifier checks before using the shared matcher.
+
+The existing `Match` and `MatchAny` extensions provide a simpler contract. Only `*` is a wildcard; `?` and backslash are literal characters. Wildcards match both carriage returns and line feeds. Ignore-case comparisons follow the current culture, and the regex end-anchor convention permits a final line feed after an otherwise exact match. Use `GlobPatternMatcher` when whole-text anchoring and portable scalar semantics are required.
+
+```csharp
+var multiline = "first\nsecond".Match("first*second"); // true
+var literalQuestionMark = "report?".Match("report?"); // true
+```
+
+Request Profiling reuses prepared glob matchers for ASCII path segments. Its path-specific `**` handling and existing UTF-16 comparisons for non-ASCII segments remain part of the request-path contract; a general text glob does not define path separators.
+
 ## Date and time helpers
 
 These extensions provide common date and time calculations and parsing helpers.

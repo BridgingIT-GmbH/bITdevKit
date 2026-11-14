@@ -12,6 +12,7 @@ using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Orchestrations;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
+using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -220,11 +221,14 @@ public sealed class ProfilingEndpointsTests(
         requests.Value.TotalCount.ShouldBe(0);
     }
 
-    /// <summary>The example's default Testing environment disables capture and dashboard mapping without changing its business endpoint.</summary>
+    /// <summary>An explicitly disabled dashboard omits profiling routes and capture without changing the business endpoint.</summary>
     [Fact]
     public async Task DisabledHost_PreservesBusinessResponseWithoutCaptureOrDashboard()
     {
-        using var client = factory.CreateClient(new() { AllowAutoRedirect = false });
+        using var disabled = factory.WithWebHostBuilder(builder => builder.ConfigureServices(services =>
+            services.AddSingleton(new DashboardEndpointsOptions { Enabled = false })));
+        disabled.Services.GetRequiredService<DashboardEndpointsOptions>().Enabled.ShouldBeFalse();
+        using var client = disabled.CreateClient(new() { AllowAutoRedirect = false });
         using var response = await client.GetAsync("/api/core/cities/alerts");
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Headers.Contains("X-Request-Profiling-Id").ShouldBeFalse();

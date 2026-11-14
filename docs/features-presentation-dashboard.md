@@ -850,6 +850,17 @@ builder.Services.AddDashboard(options =>
 
 ## Consistent page controls
 
+`Dashboard.Pages.InfoTooltip` renders a keyboard-focusable info button with an encoded description, accessible name and Bootstrap tooltip. Use it for short explanations beside cards, headers and settings:
+
+```razor
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+
+<span>Owned memory @(await RenderPartialAsync<InfoTooltip, string>(
+    "Memory retained by this process for the selected collection."))</span>
+```
+
+The shell initializes tooltips on initial load. Pages that replace fragments initialize the new controls with `bootstrap.Tooltip.getOrCreateInstance` and dispose tooltip instances before removing their owner elements. The shared control uses `data-dashboard-help`, hover and focus triggers, and text-only tooltip content. Application Caching uses this control with its fragment lifecycle.
+
 The breadcrumb provides the page title. Equivalent pages place their compact refresh toolbar first, routed view pills second, then context and filters, results, and continuation controls. Filter forms use a text Apply action and a circled-X Reset action (`bi-x-circle`, with the accessible name Reset filters) beside the final criteria on desktop. The pair wraps together on narrow screens. Editing a criterion creates a draft; refresh, export and continuation use the last successful selection. Reset preserves context, row-size and refresh preferences while clearing investigation criteria.
 
 Growing lists keep Load more below the results beside Rows per load and show the cumulative number of items loaded. Exhausted lists retain a disabled button and an enabled selector. Changing the batch size loads a fresh first batch without applying other draft criteria. Jobs and broker lists preserve loaded history across Diagnostics navigation by replaying bounded requests; browser storage contains query boundaries, counts and scroll positions rather than row payloads. Restoration is limited to 100 batches and 20,000 rows.

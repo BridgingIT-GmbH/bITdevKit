@@ -1,0 +1,92 @@
+@using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen
+@using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
+@using Microsoft.Kiota.Abstractions
+@implements IDisposable
+@inject BackendApiClient Api
+@inject ISnackbar Snackbar
+
+<MudAutocomplete T="string"
+                 Value="@this.Value"
+                 ValueChanged="this.CommitAsync"
+                 SearchFunc="this.SearchAsync"
+                 Label="Title"
+                 InputId="create-task-title"
+                 Placeholder="Search suggestions or enter a title"
+                 Variant="Variant.Outlined"
+                 Required="true"
+                 Immediate="false"
+                 CoerceValue="true"
+                 CoerceText="false"
+                 ResetValueOnEmptyText="true"
+                 SelectOnActivation="false"
+                 Clearable="true"
+                 MinCharacters="0"
+                 MaxItems="10"
+                 DebounceInterval="200" />
+
+@code {
+    private readonly CancellationTokenSource cancellation = new();
+    private IReadOnlyList<TaskLookupModel> suggestions = [];
+    private bool disposed;
+
+    /// <summary>Gets or sets the selected suggestion or a user-entered task title.</summary>
+    /// <example><code>&lt;TaskTitleSuggestions @bind-Value="model.Title" /&gt;</code></example>
+    [Parameter]
+    public string Value { get; set; } = string.Empty;
+
+    /// <summary>Notifies the form when the title is selected, cleared or committed on blur.</summary>
+    /// <example><code>&lt;TaskTitleSuggestions Value="title" ValueChanged="OnTitleChanged" /&gt;</code></example>
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    /// <inheritdoc />
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Fetch once for this dialog. SearchAsync only filters the local snapshot.
+            var result = await this.Api.Api.Core.TaskLookups.GetAsync(cancellationToken: this.cancellation.Token);
+            this.suggestions = result?.Where(entry => !string.IsNullOrWhiteSpace(entry.Title))
+                .OrderBy(entry => entry.Title, StringComparer.OrdinalIgnoreCase).ToArray() ?? [];
+        }
+        catch (Exception exception) when (exception is ApiException or HttpRequestException or OperationCanceledException)
+        {
+            if (!this.cancellation.IsCancellationRequested)
+            {
+                this.Snackbar.Add("Task suggestions could not be loaded. You can still enter a title.", Severity.Warning);
+            }
+        }
+    }
+
+    /// <summary>Cancels a pending lookup request when the dialog closes and releases its cancellation resources.</summary>
+    /// <example><code>// Blazor calls Dispose when the dialog removes this component.</code></example>
+    public void Dispose()
+    {
+        if (this.disposed)
+        {
+            return;
+        }
+
+        this.disposed = true;
+        this.cancellation.Cancel();
+        this.cancellation.Dispose();
+    }
+
+    private Task<IEnumerable<string>> SearchAsync(string text, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var query = text?.Trim();
+        var matches = this.suggestions.Where(entry => string.IsNullOrEmpty(query)
+            || entry.Title.Contains(query, StringComparison.OrdinalIgnoreCase)
+            || (entry.Category?.Contains(query, StringComparison.OrdinalIgnoreCase) ?? false)
+            || (entry.Technology?.Contains(query, StringComparison.OrdinalIgnoreCase) ?? false));
+        return Task.FromResult<IEnumerable<string>>(matches.Select(entry => entry.Title)
+            .Distinct(StringComparer.OrdinalIgnoreCase).Take(10).ToArray());
+    }
+
+    private Task CommitAsync(string value)
+    {
+        this.Value = value;
+        return this.ValueChanged.InvokeAsync(value);
+    }
+}

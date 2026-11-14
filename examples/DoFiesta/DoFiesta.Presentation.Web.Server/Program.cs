@@ -163,7 +163,8 @@ builder.Services.AddDashboard(o => o
         .UseOpenIdConnect(builder.Configuration["Authentication:Authority"])
         .RequireRole(Role.Administrators))
     .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints>()
-    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Auditing.Dashboard.DashboardEndpoints>());
+    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Auditing.Dashboard.DashboardEndpoints>()
+    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Caching.Dashboard.DashboardEndpoints>());
 builder.Services.AddEntitiesDashboard(o => o.EditRoles.Add(Role.Administrators));
 MetricsServiceCollectionExtensions.AddMetrics(
     builder.Services, o => o

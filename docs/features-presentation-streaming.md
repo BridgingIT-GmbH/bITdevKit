@@ -146,6 +146,8 @@ Configure global `NdjsonStreamingOptions` through `AddNdjsonStreaming`; override
 
 Endpoint nullable values inherit defaults. `ClearMaxDuration=true` removes an inherited duration cap. `DisableBatching=true` removes inherited batching. A duration override cannot also clear it; batching cannot also be disabled in the same override. Timer values must be positive and at most `uint.MaxValue - 1` milliseconds. Record caps must be positive and at most `int.MaxValue - 4096`.
 
+Scalar endpoint overrides use [Common Options presence-aware composition](common-options-builders.md#presence-aware-composition). An explicit `EnableCompression=false` overrides an enabled default. Supplying either batching value replaces the pair, so supply both `BatchByteLimit` and `BatchMaxDelay` together. Serializer options are captured separately to retain application converters and naming policies without serializing those runtime objects.
+
 The batch timer starts with the first staged frame and never resets on later arrivals. It flushes even while the producer is idle or continuously ready. Byte capacity also triggers flushing. Controls flush pending output immediately. A record larger than the batch capacity bypasses batching after pending output flushes.
 
 Client `NdjsonClientOptions` captures its own independent limit, JSON settings, expected mode, and clock. Envelope inactivity defaults to 45 seconds; raw inactivity defaults to disabled and can be set with `RawInactivityTimeout`. The budget covers a complete valid frame while awaiting a pull. Partial trickles do not reset it. Time spent processing a yielded record is excluded. Server headers never raise client limits.

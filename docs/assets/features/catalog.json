@@ -516,7 +516,8 @@
       "group": "Domain and application",
       "parent": "domain",
       "sources": [
-        "docs/features-domain.md"
+        "docs/features-domain.md",
+        "docs/features-presentation-dashboard-entities.md"
       ],
       "tone": "analysis"
     },
@@ -919,6 +920,17 @@
       "parent": null,
       "sources": [
         "docs/common-caching.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "application-caching",
+      "title": "Application Caching",
+      "group": "Data",
+      "parent": null,
+      "sources": [
+        "docs/features-application-caching.md",
+        "docs/specs/spec-application-caching.md"
       ],
       "tone": "primary"
     },

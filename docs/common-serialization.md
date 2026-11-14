@@ -6,7 +6,7 @@
 
 [TOC]
 
-`Common.Serialization` is the shared serialization layer used across the devkit. It provides a small serializer abstraction, several concrete serializers, Base64Url and scalar codecs, continuation-token encoding, converters for common devkit types, and the default JSON conventions for results, filtering, and metadata objects.
+`Common.Serialization` is the shared serialization layer used across the devkit. It provides a small serializer abstraction, several concrete serializers, versioned value codecs, Base64Url and scalar codecs, continuation-token encoding, converters for common devkit types, and the default JSON conventions for results, filtering, and metadata objects.
 
 This package matters because many higher-level features depend on consistent serialization behavior:
 
@@ -108,6 +108,68 @@ A decorator that wraps another serializer and adds compression. Use this when pa
 
 ## <img class="bdk-doc-icon" src="assets/features/codecs.svg" width="24" height="24" alt=""> Shared codecs
 
+### Versioned value codecs
+
+`IValueCodec<T>` encodes and decodes one declared value contract through `ValueTask<Result>` and `ValueTask<Result<T>>`. Its stable `FormatId` and positive `FormatVersion` identify persisted bytes independently of CLR type names. Both methods leave caller-owned streams open.
+
+`ValueCodecCapabilities` declares forward-only access, seek requirements, graph materialization, native asynchronous I/O, finite scratch estimates, and raw-byte seeking and ranges. Stream-shaped methods alone do not establish these properties. `SystemTextJsonValueCodec<T>` uses forward-only native asynchronous stream I/O and materializes the decoded graph. `SerializerValueCodec<T>` adapts an existing synchronous `ISerializer` with explicitly declared seek and scratch requirements. Returning a `ValueTask` does not make the underlying serializer asynchronous or interruptible.
+
+```csharp
+using BridgingIT.DevKit.Common;
+
+IValueCodec<ReportSummary> codec = new SystemTextJsonValueCodec<ReportSummary>();
+
+await using var bytes = new MemoryStream();
+var encoded = await codec.EncodeAsync(new("Quarterly report", 120), bytes);
+if (encoded.IsSuccess)
+{
+	bytes.Position = 0; // Read the bytes just written to this caller-owned stream.
+	var decoded = await codec.DecodeAsync(bytes);
+	if (decoded.IsSuccess)
+	{
+		Console.WriteLine(decoded.Value.Title); // Quarterly report
+	}
+}
+
+public sealed record ReportSummary(string Title, int Rows);
+```
+
+`IValueCodecValidator<T>` is an explicit exact-format streaming-validation contract. A validator consumes the complete input, including trailing content, without materializing an arbitrary graph. It is registered separately; ordinary decoding does not imply that capability. `ValueCodecRegistry` resolves only code-approved reader registrations by declared contract and persisted format/version.
+
+These abstractions belong to Common. They supply no provider, expiration, source ownership, or hosting policy. [Application Caching](features-application-caching.md#codecs-compression-and-hot-entries) uses them for its bounded persisted representations and owns its cache compression and envelopes. Use [Common Caching](common-caching.md) for basic in-process cache access.
+
+### Streaming payload transforms
+
+`IStreamingPayloadTransform` describes a reversible transformation over streams without choosing a storage provider, value model, or persisted envelope. `FormatId` and `FormatVersion` identify its bytes. `MaximumStateBytes` supplies a conservative per-stream workspace estimate for resource admission; input buffers, output buffers, retained data, and transfer limits are separate responsibilities.
+
+Implementations support forward-only access, create independent per-transfer streams, and do not buffer the complete value. Encoding streams must be disposed before their final output is consumed. The implementation defines whether disposal closes the supplied stream and validates its format parameters before returning logical bytes.
+
+`GZipPayloadTransform` implements version-one gzip with the BCL compression streams. It accepts no parameters, uses `CompressionLevel.Optimal` by default, and leaves the supplied stream open by default:
+
+```csharp
+using BridgingIT.DevKit.Common;
+using System.IO.Compression;
+
+IStreamingPayloadTransform transform = new GZipPayloadTransform(CompressionLevel.Fastest);
+using var source = new MemoryStream("Quarterly report"u8.ToArray());
+using var stored = new MemoryStream();
+await using (var encoder = transform.CreateEncodingStream(stored, ReadOnlyMemory<byte>.Empty))
+{
+    await source.CopyToAsync(encoder, cancellationToken);
+}
+
+stored.Position = 0;
+await using var decoder = transform.CreateDecodingStream(stored, ReadOnlyMemory<byte>.Empty);
+using var text = new StreamReader(decoder);
+Console.WriteLine(await text.ReadToEndAsync(cancellationToken)); // Quarterly report
+```
+
+Pass `leaveOpen: false` when the gzip wrapper owns the supplied stream. Its one-MiB workspace estimate is an accounting estimate, not a hard memory limit. Callers also enforce their own logical-size, stored-size, integrity, and deadline contracts.
+
+`StreamingPayloadTransformDescriptor` records a format/version and opaque encoded parameters. A consuming envelope defines parameter encoding, finite bounds, and encode order; decoding reverses that order. The descriptor does not resolve types or approve an implementation. Consumers select trusted readers for the exact persisted format/version before decoding.
+
+[Document Storage](features-storage-documents.md) uses the shared gzip factory behind its byte-array transform API. [Application Caching](features-application-caching.md) accepts shared implementations through `WithPayloadTransform` and supplies its own trusted registry, parameter bounds, resource admission, and checked envelope. `ICachePayloadTransform` implements the shared contract, and `CachePayloadTransformAdapter` exposes an existing shared implementation to code that uses the cache interface directly.
+
 ### `Base64UrlHelper`
 
 `Base64UrlHelper.Encode` produces canonical unpadded Base64Url text. `Base64UrlHelper.Decode` restores the bytes and rejects malformed, padded, or non-canonical values.
@@ -125,7 +187,29 @@ Base64Url is appropriate for opaque URL segments, continuation tokens, and strin
 
 ### `OpaqueContinuationTokenCodec`
 
-`OpaqueContinuationTokenCodec` serializes purpose-bound continuation-token payloads using Base64Url. It supports unsigned values and optional HMAC-SHA256 protection through `IContinuationTokenProtector`.
+`OpaqueContinuationTokenCodec` serializes purpose-bound continuation-token payloads using Base64Url. It supports unsigned values and optional protection through `IContinuationTokenProtector`.
+
+### Continuation token protection
+
+`HmacContinuationTokenProtector` authenticates payloads with HMAC-SHA256. `AesGcmContinuationTokenProtector` encrypts and authenticates payloads with AES-256-GCM when cursor contents also need confidentiality. Both implement the same protection contract; the reader must use the same algorithm, key, and purpose as the writer. The `p1.` prefix identifies a protected token and does not select an algorithm.
+
+```csharp
+// Load a stable 32-byte secret from host configuration or a secret provider.
+IContinuationTokenProtector protector = new AesGcmContinuationTokenProtector(secret);
+var cursor = new CatalogCursor("catalog:42");
+var token = OpaqueContinuationTokenCodec.Serialize(cursor, "catalog.cursor.v1", protector);
+var restored = OpaqueContinuationTokenCodec.Deserialize<CatalogCursor>(token, "catalog.cursor.v1", protector);
+
+Console.WriteLine(restored.LastId); // catalog:42
+
+public sealed record CatalogCursor(string LastId);
+```
+
+The AES protector accepts at most 16 KiB of plaintext and adds 29 bytes for the format, nonce, and authentication tag. Purposes are nonempty and bounded to 128 UTF-8 bytes. The constructor copies the key. `TryUnprotect` returns `false` for malformed or unauthenticated tokens; invalid purpose configuration throws an argument exception.
+
+When used with `OpaqueContinuationTokenCodec`, the plaintext limit applies to the complete serialized JSON payload. The codec reports malformed tokens, failed authentication, and protection-mode mismatches through `FormatException`. A reader configured with a protector rejects unsigned tokens.
+
+For protocols that already encode cursor bytes, static `AesGcmContinuationTokenProtector.Protect(payload, secret, purpose)` and `Unprotect(token, secret, purpose)` operate directly on the same bounded binary format. Participating nodes supply the same stable secret and purpose. Cursor structure, expiry, query binding, and secret rotation remain the consuming feature's responsibility.
 
 ## Default JSON conventions
 
@@ -260,7 +344,7 @@ Use `CompressionSerializer` when:
 
 ## Storage envelopes
 
-`ContentTransformEnvelopeCodec` encodes versioned `bdk_` metadata for ordered payload transforms. `PropertyBagScalarCodec` preserves supported scalar property types in a `bdk_v1_` Base64Url envelope, while legacy unprefixed values remain strings. `OpaqueContinuationTokenCodec` creates purpose-bound JSON token envelopes and can use `IContinuationTokenProtector` for HMAC protection.
+`ContentTransformEnvelopeCodec` encodes versioned `bdk_` metadata for ordered payload transforms. `PropertyBagScalarCodec` preserves supported scalar property types in a `bdk_v1_` Base64Url envelope, while legacy unprefixed values remain strings. `OpaqueContinuationTokenCodec` creates purpose-bound JSON token envelopes and can use `IContinuationTokenProtector` for HMAC authentication or AES-GCM encryption and authentication.
 
 Blob and Document Storage both use `PropertyBagScalarCodec` and `OpaqueContinuationTokenCodec`. Document Storage also uses `ContentTransformEnvelopeCodec` for transform metadata. `DocumentStoreClient<T>` applies payload transforms in registration order on writes and in reverse order on reads, then verifies the stored and logical SHA-256 hashes before deserialization.
 
@@ -298,8 +382,8 @@ CBOR allocated less for the small and binary DTOs. MessagePack remained faster f
 
 The current optimization work stops at the buffer adapters and bounded writer reuse. The object mapper still boxes scalar values and uses intermediate collections for some target types. Typed member codecs and direct collection construction remain candidates for a future change if application profiling shows serialization is significant. The benchmarks do not measure cold startup or first-use mapping cost.
 
-The [recorded serializer comparison](../docs/benchmarks/serialization-2026-10-20/README.md) preserves the original five-serializer baseline. The [CBOR allocation follow-up](../docs/benchmarks/serialization-2026-10-20-allocations/README.md) contains the final comparison, allocation reductions, raw reports, and reproduction command.
+The [benchmark source](https://github.com/bridgingIT/bITdevKit/blob/main/benchmarks/Common.Benchmarks/SerializationBenchmarks.cs) defines the payloads and validation. Reports generated by the command above contain measured timings, allocations, and encoded sizes.
 
 ## NDJSON record streaming
 
-`NdjsonWriter` and `NdjsonReader` support bounded asynchronous record streams independently of `ISerializer`. They expose owned encoded frames and borrowed original-byte frames for exact budgets and digests. See [Presentation Streaming](features-presentation-streaming.md) for APIs, strict framing, ownership, and limits.
+`NdjsonWriter` and `NdjsonReader` support bounded asynchronous UTF-8 JSON record streams independently of `ISerializer`. They leave caller-owned streams open. Owned encoded records and borrowed received records expose the JSON, delimiter, and complete framed bytes for exact budgets and digests. See [Presentation Streaming](features-presentation-streaming.md) for APIs, strict framing, ownership, and limits.

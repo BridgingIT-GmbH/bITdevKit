@@ -99,40 +99,47 @@ public sealed class NdjsonStreamingOptions
         var snapshot = this.Capture();
         if (options is null) { return snapshot; }
 
-        if (options.MaxRecordBytes is { } valueMaxRecordBytes) { snapshot.MaxRecordBytes = valueMaxRecordBytes; }
+        var patch = new OptionsPatch();
+        if (options.MaxRecordBytes is { } valueMaxRecordBytes) { patch.Set(nameof(this.MaxRecordBytes), valueMaxRecordBytes); }
 
-        if (options.Mode is { } valueMode) { snapshot.Mode = valueMode; }
+        if (options.Mode is { } valueMode) { patch.Set(nameof(this.Mode), valueMode); }
 
-        if (options.HeartbeatInterval is { } valueHeartbeatInterval) { snapshot.HeartbeatInterval = valueHeartbeatInterval; }
+        if (options.HeartbeatInterval is { } valueHeartbeatInterval) { patch.Set(nameof(this.HeartbeatInterval), valueHeartbeatInterval); }
 
-        if (options.WriteTimeout is { } valueWriteTimeout) { snapshot.WriteTimeout = valueWriteTimeout; }
+        if (options.WriteTimeout is { } valueWriteTimeout) { patch.Set(nameof(this.WriteTimeout), valueWriteTimeout); }
 
-        if (options.CleanupTimeout is { } valueCleanupTimeout) { snapshot.CleanupTimeout = valueCleanupTimeout; }
+        if (options.CleanupTimeout is { } valueCleanupTimeout) { patch.Set(nameof(this.CleanupTimeout), valueCleanupTimeout); }
 
-        if (options.ObserverTimeout is { } valueObserverTimeout) { snapshot.ObserverTimeout = valueObserverTimeout; }
+        if (options.ObserverTimeout is { } valueObserverTimeout) { patch.Set(nameof(this.ObserverTimeout), valueObserverTimeout); }
 
-        if (options.EnableCompression is { } valueEnableCompression) { snapshot.EnableCompression = valueEnableCompression; }
+        if (options.EnableCompression is { } valueEnableCompression) { patch.Set(nameof(this.EnableCompression), valueEnableCompression); }
 
+        // Preserve exact filename text and runtime serializer objects outside JSON snapshots.
         if (options.DownloadFileName is { } valueDownloadFileName) { snapshot.DownloadFileName = valueDownloadFileName; }
 
         if (options.JsonOptions is { } valueJsonOptions) { snapshot.JsonOptions = valueJsonOptions; }
 
         if (options.ClearMaxDuration && options.MaxDuration.HasValue) { throw new ArgumentException("Duration override and clear are mutually exclusive."); }
 
-        snapshot.MaxDuration = options.ClearMaxDuration ? null : options.MaxDuration ?? snapshot.MaxDuration;
+        if (options.ClearMaxDuration || options.MaxDuration.HasValue)
+        {
+            patch.Set(nameof(this.MaxDuration), options.ClearMaxDuration ? null : options.MaxDuration);
+        }
+
         if (options.DisableBatching)
         {
             if (options.BatchByteLimit.HasValue || options.BatchMaxDelay.HasValue) { throw new ArgumentException("Batch disable and batch settings are mutually exclusive."); }
 
-            snapshot.BatchByteLimit = null;
-            snapshot.BatchMaxDelay = null;
+            patch.Set<int?>(nameof(this.BatchByteLimit), null);
+            patch.Set<TimeSpan?>(nameof(this.BatchMaxDelay), null);
         }
         else if (options.BatchByteLimit.HasValue || options.BatchMaxDelay.HasValue)
         {
-            snapshot.BatchByteLimit = options.BatchByteLimit;
-            snapshot.BatchMaxDelay = options.BatchMaxDelay;
+            patch.Set(nameof(this.BatchByteLimit), options.BatchByteLimit);
+            patch.Set(nameof(this.BatchMaxDelay), options.BatchMaxDelay);
         }
 
+        patch.Apply(snapshot, "Endpoint", new Dictionary<string, string>());
         return snapshot.Capture();
     }
 }

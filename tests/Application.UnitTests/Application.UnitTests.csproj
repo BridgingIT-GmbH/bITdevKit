@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -64,6 +64,10 @@
     <ProjectReference Include="..\..\src\Application.Auditing\Application.Auditing.csproj" />
     <ProjectReference Include="..\..\src\Application.Notifications\Application.Notifications.csproj" />
     <ProjectReference Include="..\..\src\Application.Utilities\Application.Utilities.csproj" />
+    <ProjectReference Include="..\..\src\Application.Caching\Application.Caching.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="../Shared/Caching/*.cs" Link="Caching/Shared/%(Filename)%(Extension)" />
+  </ItemGroup>
 </Project>

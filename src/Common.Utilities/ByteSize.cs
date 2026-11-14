@@ -5,17 +5,28 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Globalization;
+
 /// <summary>
-/// Provides convenience helpers for calculating binary byte sizes.
+/// Provides helpers for calculating and displaying binary byte sizes.
 /// </summary>
+/// <remarks>
+/// Size calculation helpers return Int64 byte counts suitable for configuration properties and fluent size limits.
+/// Kilobytes, megabytes, gigabytes, and terabytes use powers of 1,024. Negative values are rejected,
+/// and conversions throw on Int64 overflow. Use a checked cast when an API requires an Int32 byte count.
+/// Display formatting accepts signed byte counts and uses invariant culture.
+/// </remarks>
 /// <example>
 /// <code>
-/// var maxValueSize = ByteSize.Megabytes(1);
-/// var chunkSize = ByteSize.Megabytes(4);
+/// var maxPayloadBytes = ByteSize.Megabytes(2);
+/// var cacheCapacity = ByteSize.Megabytes(8);
+/// var bufferSize = checked((int)ByteSize.Kilobytes(64));
 /// </code>
 /// </example>
 public static class ByteSize
 {
+    private static readonly string[] BinaryUnits = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"];
+
     /// <summary>
     /// The number of bytes in one binary kilobyte.
     /// </summary>
@@ -127,6 +138,31 @@ public static class ByteSize
     /// </code>
     /// </example>
     public static double ToMegabytes(long bytes) => EnsureNonNegative(bytes) / (double)BytesPerMegabyte;
+
+    /// <summary>
+    /// Formats a signed byte count using binary units and at most two fractional digits.
+    /// </summary>
+    /// <param name="bytes">The byte count, including negative counts used for size differences.</param>
+    /// <returns>An invariant-culture label without digit grouping, using B, KiB, MiB, GiB, TiB, PiB, or EiB.</returns>
+    /// <remarks>Unit selection uses the absolute count and powers of 1,024. Midpoints round away from zero.</remarks>
+    /// <example>
+    /// <code>
+    /// var payloadSize = ByteSize.FormatBinary(904512); // "883.31 KiB"
+    /// var sizeChange = ByteSize.FormatBinary(-1536); // "-1.5 KiB"
+    /// </code>
+    /// </example>
+    public static string FormatBinary(long bytes)
+    {
+        var value = (double)bytes;
+        var unit = 0;
+        while (Math.Abs(value) >= BytesPerKilobyte && unit < BinaryUnits.Length - 1)
+        {
+            value /= BytesPerKilobyte;
+            unit++;
+        }
+
+        return Math.Round(value, 2, MidpointRounding.AwayFromZero).ToString("0.##", CultureInfo.InvariantCulture) + " " + BinaryUnits[unit];
+    }
 
     private static long Multiply(long value, long factor)
     {

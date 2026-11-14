@@ -61,7 +61,9 @@ public sealed class BroadcastNodeLifecycleService(
 ) : BackgroundService
 {
     private static readonly DateTimeOffset ProcessStartedUtc = DateTimeOffset.UtcNow;
+    private readonly object shutdownSync = new();
     private string identity;
+    private Task shutdown;
 
     /// <inheritdoc />
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -180,7 +182,16 @@ public sealed class BroadcastNodeLifecycleService(
     }
 
     /// <inheritdoc />
-    public override async Task StopAsync(CancellationToken cancellationToken)
+    /// <remarks>Concurrent and repeated host shutdown requests share one unregistration task.</remarks>
+    public override Task StopAsync(CancellationToken cancellationToken)
+    {
+        lock (this.shutdownSync)
+        {
+            return this.shutdown ??= this.StopCoreAsync(cancellationToken);
+        }
+    }
+
+    private async Task StopCoreAsync(CancellationToken cancellationToken)
     {
         await base.StopAsync(cancellationToken).ConfigureAwait(false);
 

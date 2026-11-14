@@ -68,6 +68,7 @@
     <ProjectReference Include="..\..\src\Presentation.Configuration\Presentation.Configuration.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Cli\Presentation.Cli.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web.Auditing\Presentation.Web.Auditing.csproj" />
+    <ProjectReference Include="..\..\src\Presentation.Web.Caching\Presentation.Web.Caching.csproj" />
   </ItemGroup>
 
 </Project>

@@ -9,7 +9,10 @@
     <PackageReference Include="BenchmarkDotNet" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Testcontainers.MsSql" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Logging" />
   </ItemGroup>
@@ -18,5 +21,9 @@
     <ProjectReference Include="../../src/Infrastructure.FileSystem/Infrastructure.FileSystem.csproj" />
     <ProjectReference Include="..\..\src\Application.Orchestrations\Application.Orchestrations.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
+    <ProjectReference Include="..\..\src\Application.Caching\Application.Caching.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../tests/Infrastructure.UnitTests/EntityFramework/Caching/TestHost/*.cs" Link="Caching/Host/%(Filename)%(Extension)" />
   </ItemGroup>
 </Project>

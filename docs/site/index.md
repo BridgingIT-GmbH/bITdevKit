@@ -45,7 +45,7 @@ The template creates `./projects/SolutionName/SolutionName.slnx` with applicatio
   </a>
   <a class="capability-card" href="docs/#handle-requests-and-workflows">
     <h3><img class="bdk-doc-icon" src="assets/features/requester.svg" width="28" height="28" alt=""> Application flow</h3>
-    <p>Commands, queries, results, requester pipelines, events, and durable orchestrations.</p>
+    <p>Commands, queries, results, requester pipelines, events, caching, and durable orchestrations.</p>
   </a>
   <a class="capability-card" href="docs/#integrate-storage-and-messaging">
     <h3><img class="bdk-doc-icon" src="assets/features/storage.svg" width="28" height="28" alt=""> <img class="bdk-doc-icon" src="assets/features/messaging.svg" width="28" height="28" alt=""> Infrastructure integration</h3>

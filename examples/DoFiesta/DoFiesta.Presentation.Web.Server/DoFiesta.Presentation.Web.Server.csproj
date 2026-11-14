@@ -70,6 +70,7 @@
     <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Configuration\Presentation.Configuration.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Serilog\Presentation.Serilog.csproj" />
+    <ProjectReference Include="..\..\..\src\Presentation.Web.Caching\Presentation.Web.Caching.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.EntityFramework\Presentation.Web.EntityFramework.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.Jobs\Presentation.Web.Jobs.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.Messaging\Presentation.Web.Messaging.csproj" />

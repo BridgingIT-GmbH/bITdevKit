@@ -2,7 +2,7 @@
 
 [Open the interactive catalog](index.html).
 
-The collection contains 201 standalone SVGs across 11 families: 56 features and 145 subfeatures. The inventory covers all 62 published feature, common, and testing guides in `mkdocs.yml`. Each entry in [catalog.json](catalog.json) records its family, parent, theme role, and source guides.
+The collection contains 202 standalone SVGs across 11 families: 57 features and 145 subfeatures. The inventory covers all 62 published feature, common, and testing guides in `mkdocs.yml`. Each entry in [catalog.json](catalog.json) records its family, parent, theme role, and source guides.
 
 The approved Messaging, Jobs, Queueing, Requester, and Notifier icons retain their original geometry. Built-in dashboard navigation uses these canonical SVGs.
 

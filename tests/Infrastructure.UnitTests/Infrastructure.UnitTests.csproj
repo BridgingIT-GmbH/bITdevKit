@@ -66,6 +66,8 @@
     <Compile Include="../Infrastructure.FileSystem.Probes/ProbeWorkspace.cs" Link="FileSystem/Probes/ProbeWorkspace.cs" />
     <Compile Include="../Infrastructure.FileSystem.Probes/RemoteFileSystemProbe.cs" Link="FileSystem/Probes/RemoteFileSystemProbe.cs" />
     <ProjectReference Include="../../src/Infrastructure.FileSystem/Infrastructure.FileSystem.csproj" />
+    <ProjectReference Include="../Infrastructure.FileSystem.Probes/Infrastructure.FileSystem.Probes.csproj" />
+    <Compile Include="../Shared/Caching/*.cs" Link="Caching/Shared/%(Filename)%(Extension)" />
   </ItemGroup>
 
 </Project>

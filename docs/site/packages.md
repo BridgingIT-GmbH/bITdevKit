@@ -40,6 +40,7 @@ These packages support domain modeling and event-driven domain behavior:
 These packages shape command/query handling, messaging, queueing, notifications, and storage-facing application abstractions:
 
 - [`Application.Auditing`](reference/features-application-auditing.md)
+- [`Application.Caching`](reference/features-application-caching.md)
 - `Application.Commands`
 - `Application.Queries`
 - `Application.Messaging`
@@ -57,6 +58,7 @@ These packages shape command/query handling, messaging, queueing, notifications,
 These packages implement transport and persistence choices:
 
 - `Infrastructure.EntityFramework`
+- `Infrastructure.FileSystem`
 - `Infrastructure.EntityFramework.SqlServer`
 - `Infrastructure.EntityFramework.Sqlite`
 - `Infrastructure.EntityFramework.Postgres`
@@ -76,6 +78,7 @@ These packages expose the kit through web, configuration, logging, and feature-s
 - `Presentation.Serilog`
 - `Presentation.Web`
 - `Presentation.Web.Auditing`
+- [`Presentation.Web.Caching`](reference/features-application-caching.md#optional-management-integrations)
 - `Presentation.Web.EntityFramework`
 - `Presentation.Web.JobScheduling`
 - `Presentation.Web.Messaging`

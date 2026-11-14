@@ -29,6 +29,7 @@ nav:
               - Profiling: reference/features-profiling.md
               - Utilities: reference/features-utilities.md
           - Core Domain and Application:
+              - Application Caching: reference/features-application-caching.md
               - Domain: reference/features-domain.md
               - Domain Events: reference/features-domain-events.md
               - Domain Change History: reference/features-domain-change-history.md

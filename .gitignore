@@ -57,6 +57,12 @@ dlldata.c
 
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
+*-artifacts/
+*.trx
+*-report.csv
+*-report-full*.json
+*-report.html
+*-report-github.md
 .github/pages/
 docs/site/reference/
 docs/site/assets/dashboard/
@@ -65,7 +71,7 @@ docs/site/assets/features/
 # .NET Core
 project.lock.json
 project.fragment.lock.json
-artifacts/
+[Aa]rtifacts/
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt

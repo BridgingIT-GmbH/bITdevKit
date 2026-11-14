@@ -1,0 +1,150 @@
+@inherits RazorSlice
+@{
+    var dashboard = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+    var catalog = HttpContext.RequestServices.GetRequiredService<CacheCatalog>();
+    var access = HttpContext.RequestServices.GetRequiredService<ICacheDashboardAccessContextFactory>().Create(HttpContext, CacheAccessActions.Read);
+    var declared = await HttpContext.RequestServices.GetRequiredService<IRequester>().SendAsync(new CacheCollectionsQuery(access), cancellationToken: HttpContext.RequestAborted);
+    var collections = declared.IsSuccess ? declared.Value : [];
+    var collection = HttpContext.Request.RouteValues["collection"]?.ToString();
+    var view = CacheDashboardRoutes.View(HttpContext.Request.Path, collection);
+    var tabs = collection is null ? CacheDashboardRoutes.GlobalTabs : CacheDashboardRoutes.CollectionTabs;
+    var pagePath = collection is null ? CacheDashboardRoutes.Global(dashboard, view) : CacheDashboardRoutes.Collection(dashboard, collection, view);
+    var actions = CacheDashboardRoutes.Actions(dashboard);
+    var tokens = HttpContext.Items[typeof(CacheDashboardAuthorizationFilter)] as AntiforgeryTokenSet;
+    var token = tokens?.RequestToken;
+    var dimensionSchemas = collections.FirstOrDefault(item => item.Name.Equals(collection, StringComparison.OrdinalIgnoreCase))?.Options.Dimensions ?? [];
+    var dimensionName = HttpContext.Request.Query["dimension"].ToString();
+    var dimensionSchema = dimensionSchemas.FirstOrDefault(item => item.Name.Equals(dimensionName, StringComparison.OrdinalIgnoreCase));
+    var dimensionOperator = HttpContext.Request.Query["dimensionOperator"].ToString().ToLowerInvariant();
+    var dimensionOperators = new List<(string Value, string Label)>();
+    if (dimensionSchema is not null)
+    {
+        dimensionOperators.Add(dimensionSchema.Form switch
+        {
+            CacheDimensionForm.Set => ("contains", "Contains"),
+            CacheDimensionForm.Interval => ("overlap", "Overlaps"),
+            _ => ("equal", "Equals")
+        });
+        if (dimensionSchema.AllowNull && dimensionSchema.Form is not CacheDimensionForm.Interval)
+        {
+            dimensionOperators.Add(dimensionSchema.Form == CacheDimensionForm.Set ? ("contains-null", "Contains null") : ("null", "Is null"));
+        }
+
+        dimensionOperators.Add(("present", "Is present"));
+        dimensionOperators.Add(("absent", "Is missing"));
+        if (dimensionOperator.Length == 0) { dimensionOperator = dimensionOperators[0].Value; }
+    }
+
+    var dimensionHasValue = dimensionSchema is not null && dimensionOperator is "equal" or "contains" or "overlap";
+    var dimensionHasUpper = dimensionSchema is not null && dimensionOperator == "overlap";
+}
+<style>
+</style>
+<div id="application-caching-workspace" data-page-path="@pagePath" data-content-path="@(pagePath + "/content")" data-history-path="@CacheDashboardRoutes.History(dashboard, collection)">
+<div class="dashboard-page-toolbar">
+    <div class="d-flex flex-wrap justify-content-end align-items-center gap-2">
+        @(await RenderPartialAsync<RefreshControls, DashboardRefreshModel>(new("application-caching", "Refresh cache observations")))
+    </div>
+</div>
+@if (collection is not null)
+{
+    <div class="small text-muted mb-2"><a href="@CacheDashboardRoutes.Global(dashboard, "collections")">Collections</a> <span aria-hidden="true">/</span> <span class="text-break" title="@collection">@collection</span></div>
+}
+<nav class="nav nav-pills dashboard-view-tabs mb-2" aria-label="@(collection is null ? "Caching views" : "Cache collection views")" data-dashboard-view>
+@foreach (var tab in tabs)
+{
+    var href = collection is null ? CacheDashboardRoutes.Global(dashboard, tab.Key) : CacheDashboardRoutes.Collection(dashboard, collection, tab.Key);
+    <a class="nav-link @(view == tab.Key ? "active" : null)" href="@href@HttpContext.Request.QueryString" aria-current="@(view == tab.Key ? "page" : null)">@tab.Title</a>
+}
+</nav>
+@if (view == "entries")
+{
+    <form id="cache-entry-filters" class="dashboard-filter-panel" method="get">
+        <div class="row g-2 align-items-end">
+            <div class="col-md"><label for="cache-prefix" class="form-label small mb-1">Key starts with</label><input id="cache-prefix" class="form-control form-control-sm" name="prefix" value="@HttpContext.Request.Query["prefix"]" maxlength="4096" /></div>
+            <div class="col-sm-6 col-lg-3"><label for="cache-dimension" class="form-label small mb-1">Dimension</label>@(await RenderPartialAsync<CacheHelp, string>("Filter by one declared entry dimension. This condition is combined with the key prefix. Collections without a dimension schema have no dimension filters."))<select id="cache-dimension" name="dimension" class="form-select form-select-sm" disabled="@(dimensionSchemas.Count == 0)">
+                <option value="">@(dimensionSchemas.Count == 0 ? "No dimensions declared" : "Any")</option>
+                @foreach (var schema in dimensionSchemas)
+                {
+                    <option value="@schema.Name" data-kind="@schema.Kind" data-form="@schema.Form" data-null="@(schema.AllowNull ? "true" : "false")" selected="@(schema.Name.Equals(dimensionName, StringComparison.OrdinalIgnoreCase))">@schema.Name</option>
+                }
+            </select></div>
+            <div class="col-sm-6 col-lg-2"><label for="cache-dimension-operator" class="form-label small mb-1">Condition</label>@(await RenderPartialAsync<CacheHelp, string>("Available conditions follow the dimension's scalar, set or interval shape. Is present includes explicit null and empty sets; Is missing means the dimension was omitted."))<select id="cache-dimension-operator" name="dimensionOperator" class="form-select form-select-sm" disabled="@(dimensionSchema is null)">
+                @if (dimensionSchema is null) { <option value="">Choose a dimension</option> }
+                @foreach (var choice in dimensionOperators) { <option value="@choice.Value" selected="@(choice.Value == dimensionOperator)">@choice.Label</option> }
+            </select></div>
+            <div class="col-sm-6 col-lg" id="cache-dimension-value-field" hidden="@(!dimensionHasValue)"><label for="cache-dimension-value" id="cache-dimension-value-label" class="form-label small mb-1">@(dimensionSchema?.Kind == CacheDimensionKind.Timestamp ? "Value (UTC)" : "Value")</label><input id="cache-dimension-value" name="dimensionValue" value="@HttpContext.Request.Query["dimensionValue"]" class="form-control form-control-sm" maxlength="4096" disabled="@(!dimensionHasValue)" /></div>
+            <div class="col-sm-6 col-lg" id="cache-dimension-upper-field" hidden="@(!dimensionHasUpper)"><label for="cache-dimension-upper" id="cache-dimension-upper-label" class="form-label small mb-1">@(dimensionSchema?.Kind == CacheDimensionKind.Timestamp ? "Upper bound (UTC, exclusive)" : "Upper bound (exclusive)")</label><input id="cache-dimension-upper" name="dimensionUpper" value="@HttpContext.Request.Query["dimensionUpper"]" class="form-control form-control-sm" maxlength="4096" disabled="@(!dimensionHasUpper)" /></div>
+            <div class="col-auto ms-auto">@(await RenderPartialAsync<FilterActions, DashboardFilterActionsModel>(new(ResetId: "cache-filter-reset")))</div>
+        </div>
+    </form>
+}
+@if (view == "diagnostics")
+{
+    <form id="cache-diagnostics-filters" class="dashboard-filter-panel" method="get">
+        <div class="row g-2 align-items-end">
+            @if (collection is null)
+            {
+                <div class="col"><label for="cache-scope" class="form-label small mb-1">Collection scope</label><select id="cache-scope" name="collection" class="form-select form-select-sm"><option value="">Node aggregate</option>@foreach (var binding in collections) { <option value="@binding.Name" selected="@(binding.Name == HttpContext.Request.Query["collection"])">@binding.Name</option> }</select></div>
+            }
+            <div class="col"><label for="cache-window" class="form-label small mb-1">Displayed window</label><select id="cache-window" name="windowSeconds" class="form-select form-select-sm">
+                @foreach (var seconds in new[] { 30d, 60d, 120d, 300d, 600d, 900d, 1800d, 2700d, 3600d, catalog.Options.Diagnostics.ChartWindow.TotalSeconds }.Distinct().Where(value => value <= catalog.Options.Diagnostics.HistoryRetention.TotalSeconds).Order())
+                {
+                    var selected = double.TryParse(HttpContext.Request.Query["windowSeconds"], NumberStyles.Float, CultureInfo.InvariantCulture, out var requested) ? requested : catalog.Options.Diagnostics.ChartWindow.TotalSeconds;
+                    <option value="@seconds.ToString(CultureInfo.InvariantCulture)" selected="@(seconds == selected)">@TimeSpan.FromSeconds(seconds)</option>
+                }
+            </select></div>
+            <div class="col-auto ms-auto">@(await RenderPartialAsync<FilterActions, DashboardFilterActionsModel>(new(ResetId: "cache-filter-reset")))</div>
+        </div>
+    </form>
+}
+@if (view == "operations")
+{
+    <section class="card mb-2">
+        <div class="card-header">Invalidate entries @(await RenderPartialAsync<CacheHelp, string>("Preview reports matches without changing entries. Invalidate applies the same selection to the current contract version in the selected collections. Clear covers all retained contract versions."))</div>
+        <div class="card-body">
+            <form method="post" data-cache-operation-form>
+                <input type="hidden" name="@tokens.FormFieldName" value="@token" />
+                @if (collection is not null) { <input type="hidden" name="collections" value="@collection" /> }
+                else
+                {
+                    <label for="cache-targets" class="form-label small">Collections</label>
+                    <select id="cache-targets" name="collections" multiple size="@Math.Min(5, Math.Max(2, collections.Count))" class="form-select form-select-sm mb-2" required>
+                    @foreach (var binding in collections) { <option value="@binding.Name">@binding.Name</option> }
+                    </select>
+                }
+                <div class="row g-2">
+                    <div class="col-sm-3"><label for="cache-selection-kind" class="form-label small">Selection</label>@(await RenderPartialAsync<CacheHelp, string>("A blank key prefix selects all current entries in the selected collections. Nonempty prefixes are literal, including any * or ? characters. Exact key requires a value."))<select id="cache-selection-kind" name="selectionKind" class="form-select form-select-sm"><option value="prefix">Key prefix</option><option value="key">Exact key</option></select></div>
+                    <div class="col-sm-9"><label for="cache-selection" class="form-label small">Key or prefix</label><input id="cache-selection" name="selection" class="form-control form-control-sm" maxlength="4096" placeholder="All entries when empty" /></div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 align-items-center mt-3">
+                    <button class="btn btn-outline-primary btn-sm" formaction="@(actions + "/preview")">Preview</button>
+                    <button class="btn btn-primary btn-sm" formaction="@(actions + "/invalidate")">Invalidate</button>
+                    <button class="btn btn-outline-danger btn-sm" formaction="@(actions + "/clear")" data-cache-clear>Clear selected collections</button>
+                    <span class="ms-sm-auto"><label class="form-check-label small"><input name="background" value="true" type="checkbox" class="form-check-input me-1" /> Submit background work</label>@(await RenderPartialAsync<CacheHelp, string>("Returns an accepted operation before invalidation runs. Its tracked status reports committed progress, completion and failures; acceptance alone does not mean entries have been invalidated."))</span>
+                </div>
+            </form>
+        </div>
+    </section>
+    @if (collection is not null)
+    {
+        <div class="row g-2 mb-2">
+            <section class="col-lg-6"><div class="card h-100"><div class="card-header">Exact removal</div><form class="card-body" method="post" data-cache-operation-form action="@(actions + "/remove")"><input type="hidden" name="@tokens.FormFieldName" value="@token" /><input type="hidden" name="collections" value="@collection" /><label for="cache-remove-key" class="form-label small">Exact key</label><input id="cache-remove-key" name="key" required maxlength="4096" class="form-control form-control-sm mb-2" /><button class="btn btn-outline-danger btn-sm">Remove</button></form></div></section>
+            <section class="col-lg-6"><div class="card h-100"><div class="card-header">Background work (this node) @(await RenderPartialAsync<CacheHelp, string>("Pause stops new automatic refresh and warm-up work on this app node. Existing work finishes under its normal deadlines. Foreground cache access and cleanup continue; Resume only restores work enabled in startup settings."))</div><form class="card-body" method="post" data-cache-operation-form><input type="hidden" name="@tokens.FormFieldName" value="@token" /><input type="hidden" name="collections" value="@collection" /><div class="d-flex gap-2"><button class="btn btn-outline-secondary btn-sm" formaction="@(actions + "/pause")">Pause</button><button class="btn btn-outline-primary btn-sm" formaction="@(actions + "/resume")">Resume</button></div></form></div></section>
+        </div>
+        <section class="card mb-2"><div class="card-header">Tracked operation</div><div class="card-body"><form method="get" class="row g-2"><div class="col"><label for="cache-operation-id" class="form-label small">Operation identifier</label><input id="cache-operation-id" name="operationId" value="@HttpContext.Request.Query["operationId"]" maxlength="256" class="form-control form-control-sm" required /></div><div class="col-auto align-self-end"><button class="btn btn-outline-primary btn-sm">Read status</button></div></form><form method="post" data-cache-operation-form class="d-flex flex-wrap gap-2 mt-2"><input type="hidden" name="@tokens.FormFieldName" value="@token" /><input type="hidden" name="collections" value="@collection" /><input type="hidden" name="operationId" value="@HttpContext.Request.Query["operationId"]" /><button class="btn btn-outline-primary btn-sm" formaction="@(actions + "/operation-resume")" disabled="@(string.IsNullOrWhiteSpace(HttpContext.Request.Query["operationId"]))">Resume recorded remainder</button><button class="btn btn-outline-secondary btn-sm" formaction="@(actions + "/operation-cancel")" disabled="@(string.IsNullOrWhiteSpace(HttpContext.Request.Query["operationId"]))">Cancel remaining work</button></form></div></section>
+    }
+}
+@if (view is "operations" or "entries")
+{
+    <div id="cache-operation-result" class="alert alert-secondary py-2" role="status" hidden></div>
+}
+@if (view == "diagnostics")
+{
+    @(await RenderPartialAsync<DiagnosticCharts>())
+}
+<div id="cache-content" aria-live="polite">
+    @(await RenderPartialAsync<Content>())
+</div>
+@(await RenderPartialAsync<Script>())
+</div>

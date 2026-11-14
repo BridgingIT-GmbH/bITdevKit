@@ -40,7 +40,11 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Enumerat
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
         /// <exception cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemDetails">When receiving a 400 status code</exception>
+        /// <exception cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemDetails">When receiving a 429 status code</exception>
         /// <exception cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemDetails">When receiving a 500 status code</exception>
+        /// <exception cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemDetails">When receiving a 502 status code</exception>
+        /// <exception cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemDetails">When receiving a 503 status code</exception>
+        /// <exception cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemDetails">When receiving a 504 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public async Task<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.EnumerationModel?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
@@ -54,7 +58,11 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Enumerat
             var errorMapping = new Dictionary<string, ParsableFactory<IParsable>>
             {
                 { "400", global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemDetails.CreateFromDiscriminatorValue },
+                { "429", global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemDetails.CreateFromDiscriminatorValue },
                 { "500", global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemDetails.CreateFromDiscriminatorValue },
+                { "502", global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemDetails.CreateFromDiscriminatorValue },
+                { "503", global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemDetails.CreateFromDiscriminatorValue },
+                { "504", global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemDetails.CreateFromDiscriminatorValue },
             };
             return await RequestAdapter.SendAsync<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.EnumerationModel>(requestInfo, global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.EnumerationModel.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }

@@ -1,0 +1,150 @@
+@inherits RazorSlice
+<style>
+    .cache-diagnostics-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem; margin-bottom:.5rem; }
+    .cache-diagnostics-grid .card { min-width:0; }
+    .cache-diagnostics-plot { min-width:0; height:245px; }
+    @@media (max-width:767.98px) { .cache-diagnostics-grid { grid-template-columns:minmax(0,1fr); } }
+</style>
+<div data-cache-charts>
+    <div class="small text-muted mb-2" data-cache-history-window role="status">Current node · waiting for history</div>
+    <div class="small fw-semibold mb-2">Overview</div>
+    <div class="cache-diagnostics-grid" data-cache-overview>
+    @foreach (var family in CacheDiagnosticsCharts.OverviewFamilies)
+    {
+        <section class="card" data-cache-chart="@family.Key" data-cache-chart-level="overview" data-cache-chart-metrics="@string.Join(",", family.Metrics)">
+            <div class="card-header">@family.Title @(await RenderPartialAsync<CacheHelp, string>(family.Description)) <span class="small text-muted" data-cache-chart-unit>@(family.Unit == "bytes" ? "B" : family.Unit)</span></div>
+            <div class="small text-muted p-2" data-cache-chart-state>No history</div>
+            <div class="cache-diagnostics-plot" data-cache-chart-plot hidden></div>
+        </section>
+    }
+    </div>
+    <details class="mb-2" data-cache-advanced data-preserve-key="cache-advanced-diagnostics">
+        <summary class="small fw-semibold mb-2">Advanced diagnostics</summary>
+        <div class="cache-diagnostics-grid">
+        @foreach (var family in CacheDiagnosticsCharts.Families)
+        {
+            <section class="card" data-cache-chart="@family.Key" data-cache-chart-level="advanced" data-cache-chart-metrics="@string.Join(",", family.Metrics)">
+                <div class="card-header">@family.Title @(await RenderPartialAsync<CacheHelp, string>(family.Description)) <span class="small text-muted" data-cache-chart-unit>@(family.Unit == "bytes" ? "B" : family.Unit)</span></div>
+                <div class="small text-muted p-2" data-cache-chart-state>No history</div>
+                <div class="cache-diagnostics-plot" data-cache-chart-plot hidden></div>
+            </section>
+        }
+        </div>
+    </details>
+</div>
+<script>
+(() => {
+    const workspace = document.getElementById('application-caching-workspace');
+    const root = workspace?.querySelector('[data-cache-charts]');
+    if (!root) return;
+    window.bdkCachingCharts?.dispose();
+    const advanced = root.querySelector('[data-cache-advanced]');
+    let disposed = false, latest, version = 0, resizeFrame;
+    const availability = ['Available', 'Disabled', 'No samples', 'Capacity unavailable', 'Unavailable'];
+    const label = value => value.replace(/([a-z])([A-Z])/g, '$1 $2');
+    const byteUnits = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB'];
+    function byteUnit(value) {
+        let unit = 0;
+        while (Math.abs(value) >= 1024 && unit < byteUnits.length - 1) { value /= 1024; unit++; }
+        return unit;
+    }
+    function bytes(value) {
+        const unit = byteUnit(value);
+        return (value / 1024 ** unit).toLocaleString('en-US', { maximumFractionDigits: 2, useGrouping: false }) + ' ' + byteUnits[unit];
+    }
+    async function draw() {
+        if (!latest || disposed || document.hidden) return;
+        const current = ++version;
+        const plotly = await window.bdkDashboard.loadPlotly();
+        const theme = window.bdkDashboard.getChartTheme();
+        const colors = [theme.primary, theme.secondary, theme.success, theme.danger, theme.warning, theme.info];
+        const cards = latest.charts.flatMap(chart => Array.from(root.querySelectorAll('[data-cache-chart="' + chart.family.key + '"]'), card => ({ chart, card })));
+        for (const { chart, card } of cards) {
+            if (disposed || current !== version) return;
+            if (card.dataset.cacheChartLevel === 'advanced' && !advanced?.open) continue;
+            const metrics = card.dataset.cacheChartMetrics?.split(',');
+            const selectedSeries = metrics ? chart.series.filter(series => metrics.includes(series.descriptor.metric)) : chart.series;
+            const host = card.querySelector('[data-cache-chart-plot]');
+            const state = card.querySelector('[data-cache-chart-state]');
+            const hasValues = selectedSeries.some(series => series.points.some(point => Number.isFinite(point.value)));
+            const available = chart.availability === 0 || chart.availability === 'Available';
+            state.textContent = chart.reason || (!hasValues && available ? 'No samples' :
+                (typeof chart.availability === 'string' ? chart.availability : availability[chart.availability])) || 'Unavailable';
+            state.hidden = false;
+            host.hidden = !hasValues;
+            if (!hasValues) { if (host.classList.contains('js-plotly-plot')) plotly.purge(host); continue; }
+            state.hidden = !chart.reason && available;
+            const units = [...new Set(selectedSeries.map(series => series.descriptor.unit))];
+            const primaryUnit = chart.family.unit;
+            const secondaryUnit = units.find(unit => unit !== primaryUnit);
+            let maximumBytes = 0;
+            for (const series of selectedSeries.filter(series => series.descriptor.unit === 'bytes')) {
+                for (const point of series.points) { if (Number.isFinite(point.value)) maximumBytes = Math.max(maximumBytes, Math.abs(point.value)); }
+            }
+            const sizeUnit = byteUnit(maximumBytes);
+            const divisor = 1024 ** sizeUnit;
+            const displayUnit = unit => unit === 'bytes' ? byteUnits[sizeUnit] : unit;
+            card.querySelector('[data-cache-chart-unit]').textContent = displayUnit(primaryUnit);
+            const traces = selectedSeries.map((series, index) => {
+                const byteSeries = series.descriptor.unit === 'bytes';
+                return {
+                    x: series.points.map(point => point.at),
+                    y: series.points.map(point => Number.isFinite(point.value) ? point.value / (byteSeries ? divisor : 1) : null),
+                    name: (series.descriptor.collection ? series.descriptor.collection + ' · ' : '') + label(series.descriptor.metric), type: 'scatter', mode: 'lines', connectgaps: false,
+                    yaxis: secondaryUnit && series.descriptor.unit === secondaryUnit ? 'y2' : 'y',
+                    line: { color: colors[index % colors.length], width: 2, dash: index === 1 ? 'dash' : 'solid' },
+                    ...(byteSeries ? {
+                        customdata: series.points.map(point => Number.isFinite(point.value) ? bytes(point.value) : null),
+                        hovertemplate: '%{customdata}<extra>%{fullData.name}</extra>'
+                    } : {})
+                };
+            });
+            const layout = window.bdkDashboard.createPlotlyLayout({ showlegend: true, margin: { l: 58, r: secondaryUnit ? 65 : 16, t: 16, b: 62 } });
+            layout.width = host.clientWidth;
+            layout.xaxis.type = 'date'; layout.xaxis.nticks = innerWidth < 576 ? 3 : 6;
+            layout.xaxis.tickformat = '%H:%M:%S'; layout.yaxis.title = { text: displayUnit(primaryUnit) }; layout.yaxis.rangemode = 'tozero';
+            if (primaryUnit === 'bytes') { layout.yaxis.tickformat = sizeUnit === 0 ? ',.0f' : ',.2f'; layout.yaxis.automargin = true; }
+            if (secondaryUnit) {
+                layout.yaxis2 = { title: { text: displayUnit(secondaryUnit) }, overlaying: 'y', side: 'right', showgrid: false, rangemode: 'tozero' };
+                if (secondaryUnit === 'bytes') { layout.yaxis2.tickformat = sizeUnit === 0 ? ',.0f' : ',.2f'; layout.yaxis2.automargin = true; }
+            }
+            await plotly.react(host, traces, layout, { responsive: true, displayModeBar: false });
+        }
+    }
+    const refresher = window.bdkDashboard.createRefresher({
+        responseType: 'json', contentElement: root,
+        buildUrl: () => { const url = new URL(workspace.dataset.historyPath, location.origin); url.search = location.search; return url; },
+        statusSelector: '#application-caching-refresh-status', intervalSelector: '#application-caching-refresh-interval',
+        refreshButtonSelector: '#application-caching-refresh-now',
+        storageKey: 'bdk.dashboard.application-caching:' + workspace.dataset.pagePath,
+        shouldRefresh: () => !disposed,
+        applyResponse: async (_, text) => {
+            const payload = JSON.parse(text);
+            if (!Array.isArray(payload.charts) || payload.charts.length > 6) throw new Error('Invalid bounded cache history');
+            latest = payload;
+            const scope = payload.scope === 'NodeLocal' ? 'Current node' : payload.scope;
+            const timestamp = value => new Date(value).toISOString().slice(0, 19).replace('T', ' ');
+            root.querySelector('[data-cache-history-window]').textContent = scope + ' · ' + payload.windowMinutes + ' min · ' +
+                (payload.availableFrom && payload.availableTo ? timestamp(payload.availableFrom) + ' – ' + timestamp(payload.availableTo) + ' UTC' : 'No history');
+            await draw();
+            window.bdkCachingView?.refresh();
+        }
+    });
+    const redraw = () => draw().catch(() => { root.querySelector('[data-cache-history-window]').textContent = 'Charts unavailable'; });
+    const toggleAdvanced = () => { version++; if (advanced.open) return redraw(); };
+    advanced?.addEventListener('toggle', toggleAdvanced);
+    const observer = new ResizeObserver(() => { cancelAnimationFrame(resizeFrame); resizeFrame = requestAnimationFrame(redraw); });
+    observer.observe(root);
+    document.addEventListener('bdk-dashboard-theme-changed', redraw);
+    function dispose() {
+        disposed = true; version++; refresher.cancel(); observer.disconnect(); cancelAnimationFrame(resizeFrame);
+        advanced?.removeEventListener('toggle', toggleAdvanced);
+        document.removeEventListener('bdk-dashboard-theme-changed', redraw);
+        if (window.Plotly) root.querySelectorAll('.js-plotly-plot').forEach(host => window.Plotly.purge(host));
+    }
+    window.addEventListener('pagehide', event => { refresher.cancel(); if (!event.persisted) dispose(); });
+    window.addEventListener('pageshow', event => { if (event.persisted) refresher.refresh(); });
+    window.bdkCachingCharts = { dispose };
+    refresher.refresh();
+})();
+</script>

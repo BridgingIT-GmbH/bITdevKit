@@ -6268,7 +6268,7 @@
           "Core.Cities"
         ],
         "summary": "Core.Cities.Suggestions",
-        "description": "Searches for city suggestions using the Open-Meteo geocoding API.",
+        "description": "Searches for public city suggestions using a shared, SQL-backed geocoding cache.",
         "operationId": "Core.Cities.Suggestions",
         "parameters": [
           {
@@ -6315,6 +6315,46 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
           },
           "500": {
             "description": "Internal Server Error",

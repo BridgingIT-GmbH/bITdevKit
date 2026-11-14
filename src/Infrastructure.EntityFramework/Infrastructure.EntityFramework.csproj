@@ -38,6 +38,7 @@
     <ProjectReference Include="..\Domain.Mediator\Domain.Mediator.csproj" />
     <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj" />
     <ProjectReference Include="..\Application.Auditing\Application.Auditing.csproj" />
+    <ProjectReference Include="..\Application.Caching\Application.Caching.csproj" />
   </ItemGroup>
 
   <ItemGroup>

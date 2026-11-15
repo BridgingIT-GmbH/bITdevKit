@@ -1,51 +1,75 @@
 ---
-title: Add DevKit to an existing app
+title: Build an app with DevKit
 hide:
   - footer
 ---
 
 <!-- markdownlint-disable-file MD033 -->
 
-!!! path-b "Path B: existing app"
+# Build an app with DevKit
 
-    [**01** Basics](getting-started-existing-app.md){ aria-current="page" }
-    [**02** Add features](getting-started-existing-app-features.md)
-    <span class="switch">Starting from scratch? Use [Path A: new solution](getting-started-template.md).</span>
-    { .path-pager }
+Start with a minimal ASP.NET Core Web API and add DevKit one capability at a time. The guide builds a Customers module with its own configuration, domain model, repository, and SQL Server database. No entity, database context, or persistence setup is required at the start.
 
-# Add DevKit to an existing app
-
-Connect your agent to [bdk MCP](#step-1), then swap the host builder and add the features your app needs. The examples use a Customer API with EF Core and SQLite. Each step keeps the app working.
+Use the same approach in an existing application. Keep its working features and add only the parts you need. Each step introduces something new rather than converting an existing data model.
 
 <div class="host-stack">
-  <div class="host-stack__caption"><span>Your host, step by step</span><span>Each row links to its step</span></div>
+  <div class="host-stack__caption"><span>Build up your application</span><span>Each row links to its step</span></div>
   <ol>
-    <li class="is-base"><a href="#step-1"><span class="host-stack__n">01</span><img class="bdk-doc-icon" src="assets/features/mcp.svg" width="18" height="18" alt=""><span class="host-stack__name">bdk MCP</span><code class="host-stack__api">dotnet tool run bdk mcp</code><span class="host-stack__tag">agent tools</span></a></li>
-    <li><a href="#step-2"><span class="host-stack__n">02</span><img class="bdk-doc-icon" src="assets/features/web-host.svg" width="18" height="18" alt=""><span class="host-stack__name">DevKit host</span><code class="host-stack__api">DevKitWebApplication.CreateBuilder(args)</code><span class="host-stack__tag">1 line</span></a></li>
-    <li><a href="#step-3"><span class="host-stack__n">03</span><img class="bdk-doc-icon" src="assets/features/logging.svg" width="18" height="18" alt=""><span class="host-stack__name">Logging</span><code class="host-stack__api">.AddLogging()</code><span class="host-stack__tag">1 package</span></a></li>
-    <li><a href="#step-4"><span class="host-stack__n">04</span><img class="bdk-doc-icon" src="assets/features/correlation-ids.svg" width="18" height="18" alt=""><span class="host-stack__name">Requests</span><code class="host-stack__api">UseRequestCorrelation(), UseRequestLogging()</code><span class="host-stack__tag">no package</span></a></li>
-    <li><a href="#step-5"><span class="host-stack__n">05</span><img class="bdk-doc-icon" src="assets/features/endpoints.svg" width="18" height="18" alt=""><span class="host-stack__name">Endpoints</span><code class="host-stack__api">AddEndpoints&lt;CustomerEndpoints&gt;(), MapEndpoints()</code><span class="host-stack__tag">1 file</span></a></li>
-    <li><a href="#step-6"><span class="host-stack__n">06</span><img class="bdk-doc-icon" src="assets/features/requester.svg" width="18" height="18" alt=""><span class="host-stack__name">Handlers</span><code class="host-stack__api">AddRequester(), IRequester.SendAsync</code><span class="host-stack__tag">2 files</span></a></li>
-    <li><a href="#step-7"><span class="host-stack__n">07</span><img class="bdk-doc-icon" src="assets/features/modules.svg" width="18" height="18" alt=""><span class="host-stack__name">Module</span><code class="host-stack__api">AddModules(...), UseModules(), MapModules()</code><span class="host-stack__tag">1 file</span></a></li>
-    <li><a href="#step-8"><span class="host-stack__n">08</span><img class="bdk-doc-icon" src="assets/features/provider-entityframework.svg" width="18" height="18" alt=""><span class="host-stack__name">DbContext</span><code class="host-stack__api">AddSqliteDbContext(...).WithDatabaseMigratorService()</code><span class="host-stack__tag">1 package</span></a></li>
-    <li><a href="#step-9"><span class="host-stack__n">09</span><img class="bdk-doc-icon" src="assets/features/repositories.svg" width="18" height="18" alt=""><span class="host-stack__name">Repository</span><code class="host-stack__api">AddEntityFrameworkRepository&lt;Customer, CustomersDbContext&gt;()</code><span class="host-stack__tag">4 files</span></a></li>
-    <li><a href="#step-10"><span class="host-stack__n">10</span><img class="bdk-doc-icon" src="assets/features/domain.svg" width="18" height="18" alt=""><span class="host-stack__name">Domain</span><code class="host-stack__api">Customer.Create(...), AddNotifier().AddHandlers()</code><span class="host-stack__tag">2 files</span></a></li>
-    <li class="is-next"><a href="../getting-started-existing-app-features/"><span class="host-stack__n">+</span><span></span><span class="host-stack__name">Features</span><span class="host-stack__icons"><img class="bdk-doc-icon" src="assets/features/notifications.svg" width="16" height="16" alt=""><img class="bdk-doc-icon" src="assets/features/queueing.svg" width="16" height="16" alt=""><img class="bdk-doc-icon" src="assets/features/messaging.svg" width="16" height="16" alt=""><img class="bdk-doc-icon" src="assets/features/orchestrations.svg" width="16" height="16" alt=""><img class="bdk-doc-icon" src="assets/features/jobs.svg" width="16" height="16" alt=""><img class="bdk-doc-icon" src="assets/features/storage.svg" width="16" height="16" alt=""><img class="bdk-doc-icon" src="assets/features/dashboard.svg" width="16" height="16" alt=""></span><span class="host-stack__tag">on the next page</span></a></li>
+    <li class="is-base"><a href="#step-1"><span class="host-stack__n">01</span><img class="bdk-doc-icon" src="assets/features/host.svg" width="18" height="18" alt=""><span class="host-stack__name">Minimal API</span><code class="host-stack__api">WebApplication.CreateBuilder(args)</code><span class="host-stack__tag">start</span></a></li>
+    <li><a href="#step-2"><span class="host-stack__n">02</span><img class="bdk-doc-icon" src="assets/features/mcp.svg" width="18" height="18" alt=""><span class="host-stack__name">bdk MCP</span><code class="host-stack__api">dotnet tool run bdk mcp</code><span class="host-stack__tag">agent tools</span></a></li>
+    <li><a href="#step-3"><span class="host-stack__n">03</span><img class="bdk-doc-icon" src="assets/features/web-host.svg" width="18" height="18" alt=""><span class="host-stack__name">DevKit host</span><code class="host-stack__api">DevKitWebApplication.CreateBuilder(args)</code><span class="host-stack__tag">1 package</span></a></li>
+    <li><a href="#step-4"><span class="host-stack__n">04</span><img class="bdk-doc-icon" src="assets/features/modules.svg" width="18" height="18" alt=""><span class="host-stack__name">Module</span><code class="host-stack__api">Configure&lt;T&gt;(), AddModules(), MapModules()</code><span class="host-stack__tag">appsettings</span></a></li>
+    <li><a href="#step-5"><span class="host-stack__n">05</span><img class="bdk-doc-icon" src="assets/features/domain.svg" width="18" height="18" alt=""><span class="host-stack__name">Customer</span><code class="host-stack__api">AggregateRoot&lt;Guid&gt;, Customer.Create(...)</code><span class="host-stack__tag">1 file</span></a></li>
+    <li><a href="#step-6"><span class="host-stack__n">06</span><img class="bdk-doc-icon" src="assets/features/provider-entityframework.svg" width="18" height="18" alt=""><span class="host-stack__name">SQL Server</span><code class="host-stack__api">AddSqlServerDbContext(...), InitialCustomers</code><span class="host-stack__tag">1 package</span></a></li>
+    <li><a href="#step-7"><span class="host-stack__n">07</span><img class="bdk-doc-icon" src="assets/features/repositories.svg" width="18" height="18" alt=""><span class="host-stack__name">Repository</span><code class="host-stack__api">AddEntityFrameworkRepository&lt;Customer, CustomersDbContext&gt;()</code><span class="host-stack__tag">registration</span></a></li>
+    <li><a href="#step-8"><span class="host-stack__n">08</span><img class="bdk-doc-icon" src="assets/features/requester.svg" width="18" height="18" alt=""><span class="host-stack__name">Handlers</span><code class="host-stack__api">AddRequester(), validation, commands and queries</code><span class="host-stack__tag">2 files</span></a></li>
+    <li><a href="#step-9"><span class="host-stack__n">09</span><img class="bdk-doc-icon" src="assets/features/endpoints.svg" width="18" height="18" alt=""><span class="host-stack__name">Endpoints</span><code class="host-stack__api">AddEndpoints&lt;CustomerEndpoints&gt;(), MapEndpoints()</code><span class="host-stack__tag">1 file</span></a></li>
+    <li><a href="#step-10"><span class="host-stack__n">10</span><img class="bdk-doc-icon" src="assets/features/domain-events.svg" width="18" height="18" alt=""><span class="host-stack__name">Domain events</span><code class="host-stack__api">AddNotifier(), RepositoryDomainEventPublisherBehavior</code><span class="host-stack__tag">optional</span></a></li>
   </ol>
 </div>
 
-
-Each step ends with a copyable **AI prompt**. For the whole guide, use the [planning and apply prompts](#hand-to-an-agent).
+Each step ends with a copyable **AI prompt**. Connect bdk MCP in step 2 before using the [planning and apply prompts](#hand-to-an-agent).
 
 ---
 
-## Install bdk and connect MCP { #step-1 .tutorial-step data-step="01" data-toc-label="01 MCP" }
+## Start with a minimal Web API { #step-1 .tutorial-step data-step="01" data-toc-label="01 Web API" }
 
-<div class="step-meta">
-  <span class="is-feature"><b>Adds</b><img class="bdk-doc-icon" src="assets/features/mcp.svg" width="16" height="16" alt="">Agent docs tools</span>
-  <span><b>Tool</b><code>BridgingIT.DevKit.Cli</code></span>
-  <span><b>Touches</b>tool manifest, MCP config</span>
-</div>
+Use an existing ASP.NET Core application, or create a plain .NET 10 web project. This command uses the standard .NET template:
+
+```powershell
+dotnet new web -n Customers.Web -f net10.0
+cd Customers.Web
+```
+
+The starting app needs only a host and one route:
+
+```csharp title="Program.cs"
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+app.MapGet("/", () => "Customers API is running.");
+
+app.Run();
+```
+
+For an existing app, keep its `Program.cs` and use one of its existing routes for the first checks. No customer endpoints or database are needed yet. The examples below use `Customers.Web` as the project name and namespace.
+
+!!! verify "Check it"
+
+    Run in Development with PowerShell 7.3 or later:
+
+    ```powershell
+    $env:ASPNETCORE_ENVIRONMENT = "Development"
+    dotnet run --no-launch-profile --urls http://localhost:5199
+    ```
+
+    In a second terminal, run `Invoke-RestMethod http://localhost:5199/`. Expect `Customers API is running.` Stop the app before changing files.
+
+<!-- agent-prompt 1 source="docs/features-presentation.md" -->
+
+---
+
+## Install bdk and connect MCP { #step-2 .tutorial-step data-step="02" data-toc-label="02 MCP" }
 
 Install the local `bdk` CLI so your agent can search DevKit guides, get feature guidance, and check API signatures before changing the app. These tools work without a running DevKit host.
 
@@ -54,7 +78,9 @@ Solutions created from the [DevKit template](getting-started-template.md) alread
 Run from your app's repository root in PowerShell 7.3 or later:
 
 ```powershell
-if (-not (Test-Path .config/dotnet-tools.json)) { dotnet new tool-manifest }
+if (-not (Test-Path .config/dotnet-tools.json) -and -not (Test-Path dotnet-tools.json)) {
+    dotnet new tool-manifest
+}
 dotnet tool install BridgingIT.DevKit.Cli
 ```
 
@@ -81,302 +107,353 @@ Reload the client's MCP connection. [MCP client setup](reference/features-cli-mc
 
 The step prompts use `bdk_docs_get` to read feature guides, `bdk_guidance_get` for implementation checklists, and `bdk_api_search` with `bdk_api_get` for exact signatures.
 
-Use your existing .NET 10 ASP.NET Core app. Before changing the host, confirm its create and read routes work. These examples use `POST /api/customers` and `GET /api/customers/{id}`.
-
-Replace the port with your app's URL. With controllers, skip step 5 and omit `AddEndpoints` from the module.
-
-!!! verify "Check it"
-
-    ```powershell
-    $customer = Invoke-RestMethod http://localhost:5199/api/customers -Method Post -ContentType application/json -Body '{"firstName":"Ada","lastName":"Lovelace","email":"ada@example.test"}'
-    Invoke-RestMethod "http://localhost:5199/api/customers/$($customer.id)"
-    ```
-
-    Expect a created customer and a successful read with the same fields. Repeat this check after each step.
-
-??? example "Reference app used in the examples"
-
-    The sample already has an EF Core migration, the local `dotnet-ef` tool, and a `Customers` connection string. Use your existing setup in your app.
-
-    ```csharp title="Program.cs"
-    using Microsoft.EntityFrameworkCore;
-    using Customers.Web;
-
-    var builder = WebApplication.CreateBuilder(args);
-
-    builder.Services.AddDbContext<CustomersDbContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("Customers")));
-
-    var app = builder.Build();
-
-    app.MapGet("/api/customers/{id:guid}", async (Guid id, CustomersDbContext db, CancellationToken cancellationToken) =>
-        await db.Customers.FindAsync([id], cancellationToken) is { } customer
-            ? Results.Ok(customer)
-            : Results.NotFound());
-
-    app.MapPost("/api/customers", async (Customer customer, CustomersDbContext db, ILogger<Program> logger, CancellationToken cancellationToken) =>
-    {
-        db.Customers.Add(customer);
-        await db.SaveChangesAsync(cancellationToken);
-        logger.LogInformation("customer {CustomerId} created", customer.Id);
-
-        return Results.Created($"/api/customers/{customer.Id}", customer);
-    });
-
-    app.Run();
-    ```
-
-    ```csharp title="Customer.cs"
-    namespace Customers.Web;
-
-    public class Customer
-    {
-        public Guid Id { get; set; }
-
-        public string FirstName { get; set; } = string.Empty;
-
-        public string LastName { get; set; } = string.Empty;
-
-        public string Email { get; set; } = string.Empty;
-    }
-    ```
-
-    ```csharp title="CustomersDbContext.cs"
-    namespace Customers.Web;
-
-    using Microsoft.EntityFrameworkCore;
-
-    public class CustomersDbContext(DbContextOptions<CustomersDbContext> options) : DbContext(options)
-    {
-        public DbSet<Customer> Customers => this.Set<Customer>();
-    }
-    ```
-
-    ```json title="appsettings.json"
-    {
-      "ConnectionStrings": {
-        "Customers": "Data Source=customers.db"
-      }
-    }
-    ```
-
-
-<!-- agent-prompt 1 source="docs/features-cli-mcp-clients.md" -->
+<!-- agent-prompt 2 source="docs/features-cli-mcp-clients.md" -->
 
 ---
 
-## Swap the host builder { #step-2 .tutorial-step data-step="02" data-toc-label="02 Host" }
+## Add the DevKit application builder { #step-3 .tutorial-step data-step="03" data-toc-label="03 Host" }
 
-<div class="step-meta">
-  <span class="is-feature"><b>Adds</b><img class="bdk-doc-icon" src="assets/features/web-host.svg" width="16" height="16" alt="">DevKit host</span>
-  <span><b>Packages</b><code>BridgingIT.DevKit.Presentation.Web</code></span>
-  <span><b>Touches</b><code>Program.cs</code></span>
-</div>
-
-Install the host package and replace `WebApplication.CreateBuilder`. Keep the existing services, middleware, and routes.
+Install the host package, then replace `WebApplication.CreateBuilder` with `DevKitWebApplication.CreateBuilder`:
 
 ```powershell
 dotnet add package BridgingIT.DevKit.Presentation.Web
 ```
 
 ```csharp title="Program.cs"
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
 
 var builder = DevKitWebApplication.CreateBuilder(args);
+
+var app = builder.Build();
+
+app.MapGet("/", () => "Customers API is running.");
+
+app.Run();
 ```
 
-Keep all DevKit packages on the same version. If your app uses Central Package Management, add them to `Directory.Packages.props`.
+Keep all DevKit packages on the same version. With Central Package Management, manage those versions in `Directory.Packages.props`.
 
 !!! verify "Check it"
 
-    Restart the app and repeat the create/read check. The responses stay the same.
+    Build and run the app. The root route still responds. In Development, `dotnet tool run bdk hosts list` also finds the host.
 
-[Host reference](reference/features-presentation.md). For an API that expects `IHostApplicationBuilder`, pass `builder.WebApplicationBuilder`.
+The builder makes DevKit host integrations available. Enable [logging](reference/features-presentation-logging.md), [request correlation](reference/features-presentation-correlationid.md), or [dashboards](developer-dashboards.md) when you need them.
 
-??? note "Find the host with the bdk CLI"
-
-    ```powershell
-    dotnet tool run bdk hosts list
-    ```
-
-    In `Development`, the running host appears as `Ready`. This uses the CLI installed in step 1.
-
-<!-- agent-prompt 2 source="docs/features-presentation.md" -->
-
+<!-- agent-prompt 3 source="docs/features-presentation.md" -->
 
 ---
 
-## Add DevKit logging { #step-3 .tutorial-step data-step="03" data-toc-label="03 Logging" }
+## Add a module and its appsettings configuration { #step-4 .tutorial-step data-step="04" data-toc-label="04 Module" }
 
-<div class="step-meta">
-  <span class="is-feature"><b>Adds</b><img class="bdk-doc-icon" src="assets/features/logging.svg" width="16" height="16" alt="">Logging</span>
-  <span><b>Packages</b><code>BridgingIT.DevKit.Presentation.Serilog</code></span>
-  <span><b>Touches</b><code>Program.cs</code>, <code>appsettings.json</code></span>
-</div>
+A module owns its feature registrations and configuration. Add a Customers module before introducing any data model.
 
-Install Serilog support and chain `.AddLogging()`. Keep your existing Serilog setup if the app already has one.
+??? example "CustomersModule.cs"
 
-```powershell
-dotnet add package BridgingIT.DevKit.Presentation.Serilog
-```
-
-```csharp title="Program.cs"
-var builder = DevKitWebApplication.CreateBuilder(args)
-    .AddLogging();
-```
-
-??? note "Console logging configuration"
-
-    Add this section to `appsettings.json`. A sink such as `Console` is required.
-
-    ```json title="appsettings.json"
-    "Serilog": {
-      "MinimumLevel": {
-        "Default": "Information",
-        "Override": {
-          "Microsoft.AspNetCore": "Warning",
-          "Microsoft.EntityFrameworkCore": "Warning"
-        }
-      },
-      "WriteTo": [
-        {
-          "Name": "Console",
-          "Args": {
-            "outputTemplate": "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} cid:{CorrelationId}{NewLine}{Exception}"
-          }
-        }
-      ],
-      "Enrich": ["FromLogContext"]
-    }
-    ```
-
-!!! verify "Check it"
-
-    Restart the app and repeat the create/read check.
-
-[Logging reference](reference/features-presentation-logging.md). `.AddLogging()` leaves an already configured Serilog logger in place.
-
-<!-- agent-prompt 3 source="docs/features-presentation-logging.md" -->
-
-
----
-
-## Correlate and log requests { #step-4 .tutorial-step data-step="04" data-toc-label="04 Requests" }
-
-<div class="step-meta">
-  <span class="is-feature"><b>Adds</b><img class="bdk-doc-icon" src="assets/features/correlation-ids.svg" width="16" height="16" alt="">Request correlation</span>
-  <span><b>Packages</b>none new</span>
-  <span><b>Touches</b><code>Program.cs</code></span>
-</div>
-
-Add correlation and request logging after `builder.Build()`, before authentication and endpoints. If you use explicit `UseRouting()`, put it before request logging.
-
-```csharp title="Program.cs"
-app.UseRequestCorrelation();
-app.UseRequestLogging();
-```
-
-!!! verify "Check it"
-
-    ```powershell
-    curl.exe -i -H "CorrelationId: customers-test-1" -X POST http://localhost:5199/api/customers -H "Content-Type: application/json" -d '{"firstName":"Ada","lastName":"Lovelace","email":"ada@example.test"}'
-    ```
-
-    Expect `201 Created` and `CorrelationId: customers-test-1` in the response headers.
-
-[Correlation IDs](reference/features-presentation-correlationid.md) and [request logging](reference/features-presentation-logging.md).
-
-<!-- agent-prompt 4 source="docs/features-presentation-correlationid.md" -->
-
-
----
-
-## Move routes into an endpoints class { #step-5 .tutorial-step data-step="05" data-toc-label="05 Endpoints" }
-
-<div class="step-meta">
-  <span class="is-feature"><b>Adds</b><img class="bdk-doc-icon" src="assets/features/endpoints.svg" width="16" height="16" alt="">Endpoints</span>
-  <span><b>Packages</b>none new</span>
-  <span><b>Touches</b><code>Program.cs</code>, 1 new file</span>
-</div>
-
-Move the existing routes into `CustomerEndpoints.Map`. Register the class before `builder.Build()`, and replace the inline route mappings with `app.MapEndpoints()`.
-
-```csharp title="Program.cs"
-using Customers.Web.Modules.Customers;
-
-builder.Services.AddEndpoints<CustomerEndpoints>();
-```
-
-```csharp title="Program.cs"
-app.MapEndpoints();
-```
-
-??? example "CustomerEndpoints.cs"
-
-    ```csharp title="Modules/Customers/CustomerEndpoints.cs"
+    ```csharp title="Modules/Customers/CustomersModule.cs"
     namespace Customers.Web.Modules.Customers;
 
-    using BridgingIT.DevKit.Presentation.Web;
+    using BridgingIT.DevKit.Common;
 
-    public class CustomerEndpoints : EndpointsBase
+    public class CustomersModule : WebModuleBase
     {
-        public override void Map(IEndpointRouteBuilder app)
+        private CustomersModuleConfiguration moduleConfiguration = null!;
+
+        public override IServiceCollection Register(
+            IServiceCollection services,
+            IConfiguration? configuration = null,
+            IWebHostEnvironment? environment = null)
         {
-            var group = app.MapGroup("api/customers").WithTags("Customers");
+            this.moduleConfiguration = this.Configure<CustomersModuleConfiguration,
+                CustomersModuleConfiguration.Validator>(services, configuration);
 
-            group.MapGet("/{id:guid}", async (Guid id, CustomersDbContext db, CancellationToken cancellationToken) =>
-                await db.Customers.FindAsync([id], cancellationToken) is { } customer
-                    ? Results.Ok(customer)
-                    : Results.NotFound());
+            return services;
+        }
 
-            group.MapPost("/", async (Customer customer, CustomersDbContext db, ILogger<CustomerEndpoints> logger, CancellationToken cancellationToken) =>
+        public override IApplicationBuilder Use(
+            IApplicationBuilder app,
+            IConfiguration? configuration = null,
+            IWebHostEnvironment? environment = null) => app;
+
+        public override IEndpointRouteBuilder Map(
+            IEndpointRouteBuilder app,
+            IConfiguration? configuration = null,
+            IWebHostEnvironment? environment = null)
+        {
+            app.MapGet("/api/customers/status", () => Results.Ok(new
             {
-                db.Customers.Add(customer);
-                await db.SaveChangesAsync(cancellationToken);
-                logger.LogInformation("customer {CustomerId} created", customer.Id);
+                module = this.Name,
+                message = this.moduleConfiguration.Greeting,
+            })).WithTags("Customers");
 
-                return Results.Created($"/api/customers/{customer.Id}", customer);
-            });
+            return app;
         }
     }
     ```
 
-!!! verify "Check it"
+??? example "Typed module configuration"
 
-    Repeat the create/read check. The routes and response bodies stay the same.
+    ```csharp title="Modules/Customers/CustomersModuleConfiguration.cs"
+    namespace Customers.Web.Modules.Customers;
 
-[Endpoints reference](reference/features-presentation-endpoints.md).
+    using FluentValidation;
 
-<!-- agent-prompt 5 source="docs/features-presentation-endpoints.md" -->
+    public class CustomersModuleConfiguration
+    {
+        public string Greeting { get; set; } = string.Empty;
 
+        public class Validator : AbstractValidator<CustomersModuleConfiguration>
+        {
+            public Validator()
+            {
+                this.RuleFor(c => c.Greeting).NotEmpty();
+            }
+        }
+    }
+    ```
 
----
+Add this section to `appsettings.json`. Keep the app's other settings:
 
-## Handle requests with commands and queries { #step-6 .tutorial-step data-step="06" data-toc-label="06 Handlers" }
+```json title="appsettings.json"
+{
+  "Modules": {
+    "customers": {
+      "Enabled": true,
+      "Greeting": "Customers module is ready."
+    }
+  }
+}
+```
 
-<div class="step-meta">
-  <span class="is-feature"><b>Adds</b><img class="bdk-doc-icon" src="assets/features/requester.svg" width="16" height="16" alt="">Requester</span>
-  <span><b>Packages</b>none new</span>
-  <span><b>Touches</b><code>Program.cs</code>, <code>CustomerEndpoints.cs</code>, 2 new files</span>
-</div>
+`CustomersModule` has the module name `customers`. `Configure<T, TValidator>` binds and validates `Modules:customers`. The module registry reads `Enabled` from the same section.
 
-Add a command and query, move the route logic into their handlers, and let the endpoints dispatch through `IRequester`.
+Register the module before `builder.Build()` and run its lifecycle after the app is built:
 
 ```csharp title="Program.cs"
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Presentation.Web;
+using Customers.Web.Modules.Customers;
 
-builder.Services.AddRequester()
-    .AddHandlers()
-    .WithBehavior(typeof(ValidationPipelineBehavior<,>));
+var builder = DevKitWebApplication.CreateBuilder(args);
+
+builder.Services.AddModules(builder.Configuration, builder.Environment, modules => modules
+    .WithModule<CustomersModule>());
+
+var app = builder.Build();
+
+app.UseRequestModuleContext();
+app.UseModules();
+app.MapModules();
+
+app.MapGet("/", () => "Customers API is running.");
+
+app.Run();
 ```
 
-??? example "Command and query files"
+!!! verify "Check it"
+
+    Run `Invoke-RestMethod http://localhost:5199/api/customers/status`. Expect module `customers` and the configured greeting. Change `Greeting`, restart, and check that the response changes. An empty greeting fails configuration validation at startup.
+
+[Modules](reference/features-modules.md) covers naming, configuration, and module lifecycle behavior.
+
+<!-- agent-prompt 4 topics="modules" -->
+
+---
+
+## Add the Customer entity { #step-5 .tutorial-step data-step="05" data-toc-label="05 Entity" }
+
+Introduce the first domain type. The aggregate has an ID and a factory for creating customers. Persistence comes in the next step.
+
+```csharp title="Customer.cs"
+namespace Customers.Web;
+
+using BridgingIT.DevKit.Domain.Model;
+
+public class Customer : AggregateRoot<Guid>
+{
+    private Customer()
+    {
+    }
+
+    public string FirstName { get; private set; } = string.Empty;
+
+    public string LastName { get; private set; } = string.Empty;
+
+    public string Email { get; private set; } = string.Empty;
+
+    public static Customer Create(string firstName, string lastName, string email)
+    {
+        var customer = new Customer
+        {
+            Id = Guid.NewGuid(),
+            FirstName = firstName,
+            LastName = lastName,
+            Email = email,
+        };
+
+        return customer;
+    }
+}
+```
+
+!!! verify "Check it"
+
+    Run `dotnet build`. The app and module status route still work without a database.
+
+[Domain building blocks](reference/features-domain.md) explains entities and aggregate roots.
+
+<!-- agent-prompt 5 topics="domain" -->
+
+---
+
+## Add SQL Server persistence { #step-6 .tutorial-step data-step="06" data-toc-label="06 SQL Server" }
+
+Use a local SQL Server instance and a database dedicated to this guide. Install the provider and EF Core design tools:
+
+```powershell
+dotnet add package BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Design --version 10.*
+dotnet tool install dotnet-ef --version 10.*
+```
+
+If `dotnet-ef` is already in the local tool manifest, restore it instead. Keep its major version and the design package aligned with the installed EF Core version.
+
+```csharp title="CustomersDbContext.cs"
+namespace Customers.Web;
+
+using Microsoft.EntityFrameworkCore;
+
+public class CustomersDbContext(DbContextOptions<CustomersDbContext> options) : DbContext(options)
+{
+    public DbSet<Customer> Customers { get; set; } = null!;
+}
+```
+
+Extend `CustomersModuleConfiguration` with the connection string dictionary and its validator:
+
+??? example "Updated module configuration"
+
+    ```csharp title="Modules/Customers/CustomersModuleConfiguration.cs"
+    namespace Customers.Web.Modules.Customers;
+
+    using FluentValidation;
+
+    public class CustomersModuleConfiguration
+    {
+        public string Greeting { get; set; } = string.Empty;
+
+        public Dictionary<string, string> ConnectionStrings { get; set; } = new();
+
+        public class Validator : AbstractValidator<CustomersModuleConfiguration>
+        {
+            public Validator()
+            {
+                this.RuleFor(c => c.Greeting).NotEmpty();
+                this.RuleFor(c => c.ConnectionStrings)
+                    .Must(strings => strings is not null
+                        && strings.TryGetValue("Default", out var value)
+                        && !string.IsNullOrWhiteSpace(value))
+                    .WithMessage("Connection string 'Default' is required.");
+            }
+        }
+    }
+    ```
+
+Store the connection string under the module, alongside its other settings:
+
+```json title="appsettings.json"
+{
+  "Modules": {
+    "customers": {
+      "Enabled": true,
+      "Greeting": "Customers module is ready.",
+      "ConnectionStrings": {
+        "Default": "Server=localhost;Database=CustomersDev;Integrated Security=true;TrustServerCertificate=true"
+      }
+    }
+  }
+}
+```
+
+The example uses Windows integrated authentication. Replace the server and authentication settings for your SQL Server installation. For a SQL login, supply the full string through `Modules__customers__ConnectionStrings__Default` instead of putting a password in source control.
+
+In `CustomersModule.Register`, after `Configure<...>`, add:
+
+```csharp
+services.AddSqlServerDbContext<CustomersDbContext>(options => options
+        .UseConnectionString(this.moduleConfiguration.ConnectionStrings["Default"]))
+    .WithDatabaseMigratorService(options => options
+        .Enabled(environment?.IsDevelopment() == true)
+        .HaltOnFailure());
+```
+
+Add `using BridgingIT.DevKit.Infrastructure.EntityFramework;` to the module. The migrator applies pending EF Core migrations at startup in Development. It does not delete the database. If deployment tooling owns schema changes, apply migrations there instead.
+
+The design-time factory reads the same module configuration when EF tools run:
+
+```csharp title="CustomersDbContextFactory.cs"
+namespace Customers.Web;
+
+using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using Microsoft.EntityFrameworkCore;
+
+public class CustomersDbContextFactory : SqlServerModuleDbContextFactory<CustomersDbContext>
+{
+    public CustomersDbContextFactory()
+        : base("Modules:customers:ConnectionStrings:Default",
+            (options, connectionString) => options.UseSqlServer(connectionString))
+    {
+    }
+}
+```
+
+With the app stopped, create the first schema migration:
+
+```powershell
+dotnet ef migrations add InitialCustomers --context CustomersDbContext
+```
+
+!!! verify "Check it"
+
+    Start the app in Development. The migrator runs after the host starts. Wait for the Customers table to appear in SQL Server, then request the module status route. No customer data or previous migration was required before this step.
+
+<!-- agent-prompt 6 source="docs/features-modules.md" -->
+
+---
+
+## Register the Customer repository { #step-7 .tutorial-step data-step="07" data-toc-label="07 Repository" }
+
+The repository exposes persistence through the domain abstraction. Add this registration to `CustomersModule.Register` after the context registration:
+
+```csharp
+services.AddEntityFrameworkRepository<Customer, CustomersDbContext>()
+    .WithBehavior<RepositoryLoggingBehavior<Customer>>();
+```
+
+Add `using BridgingIT.DevKit.Domain.Repositories;` to the module. Application handlers can now depend on `IGenericRepository<Customer>`.
+
+!!! verify "Check it"
+
+    Build and start the app. The existing status routes still respond. The next steps add the use cases and HTTP routes that exercise the repository.
+
+[Repositories](reference/features-domain-repositories.md) covers querying, behaviors, and provider capabilities.
+
+<!-- agent-prompt 7 topics="repositories" -->
+
+---
+
+## Add commands, queries, and validation { #step-8 .tutorial-step data-step="08" data-toc-label="08 Handlers" }
+
+Add a command for creating customers and a query for finding one. The handlers use the repository from the start.
+
+??? example "CustomerCreateCommand.cs"
 
     ```csharp title="Modules/Customers/CustomerCreateCommand.cs"
     namespace Customers.Web.Modules.Customers;
 
     using BridgingIT.DevKit.Common;
     using FluentValidation;
+    using BridgingIT.DevKit.Domain.Repositories;
 
     public class CustomerCreateCommand : RequestBase<Customer>
     {
@@ -397,57 +474,68 @@ builder.Services.AddRequester()
         }
     }
 
-    public class CustomerCreateCommandHandler(
-        CustomersDbContext dbContext,
-        ILogger<CustomerCreateCommandHandler> logger)
+    public class CustomerCreateCommandHandler(IGenericRepository<Customer> repository)
         : RequestHandlerBase<CustomerCreateCommand, Customer>
     {
         protected override async Task<Result<Customer>> HandleAsync(
             CustomerCreateCommand request, SendOptions options, CancellationToken cancellationToken)
         {
-            var customer = new Customer
-            {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Email = request.Email,
-            };
-            dbContext.Customers.Add(customer);
-            await dbContext.SaveChangesAsync(cancellationToken);
-            logger.LogInformation("customer {CustomerId} created", customer.Id);
+            var customer = Customer.Create(request.FirstName, request.LastName, request.Email);
+            await repository.InsertAsync(customer, cancellationToken);
 
             return customer;
         }
     }
     ```
 
+??? example "CustomerFindOneQuery.cs"
+
     ```csharp title="Modules/Customers/CustomerFindOneQuery.cs"
     namespace Customers.Web.Modules.Customers;
 
     using BridgingIT.DevKit.Common;
+    using BridgingIT.DevKit.Domain.Repositories;
 
     public class CustomerFindOneQuery(Guid id) : RequestBase<Customer>
     {
         public Guid Id { get; } = id;
     }
 
-    public class CustomerFindOneQueryHandler(CustomersDbContext dbContext)
+    public class CustomerFindOneQueryHandler(IGenericRepository<Customer> repository)
         : RequestHandlerBase<CustomerFindOneQuery, Customer>
     {
         protected override async Task<Result<Customer>> HandleAsync(
             CustomerFindOneQuery request, SendOptions options, CancellationToken cancellationToken)
         {
-            var customer = await dbContext.Customers.FindAsync([request.Id], cancellationToken);
-
-            return customer is null
-                ? Result<Customer>.Failure(new NotFoundError($"customer {request.Id} not found"))
-                : Result<Customer>.Success(customer);
+            return await repository.FindOneResultAsync(
+                request.Id, cancellationToken: cancellationToken);
         }
     }
     ```
 
-The endpoint maps each result to HTTP. A successful command returns `201`, a successful query returns `200`, validation returns `400`, and a missing customer returns `404`.
+In `Program.cs`, before `builder.Build()`, register the requester and validation behavior:
 
-??? example "Updated endpoint mappings"
+```csharp
+builder.Services.AddRequester()
+    .AddHandlers()
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>));
+```
+
+!!! verify "Check it"
+
+    Run `dotnet build`. The handlers, validator, and repository registration compile together. Step 9 exposes them through the API.
+
+[Commands and queries](reference/features-application-commands-queries.md), [Requester and Notifier](reference/features-requester-notifier.md), and [Results](reference/features-results.md).
+
+<!-- agent-prompt 8 topics="commands_queries requester_notifier results" -->
+
+---
+
+## Add the Customer endpoints { #step-9 .tutorial-step data-step="09" data-toc-label="09 Endpoints" }
+
+The endpoints map HTTP requests to the handlers and their results to status codes.
+
+??? example "CustomerEndpoints.cs"
 
     ```csharp title="Modules/Customers/CustomerEndpoints.cs"
     namespace Customers.Web.Modules.Customers;
@@ -488,292 +576,32 @@ The endpoint maps each result to HTTP. A successful command returns `201`, a suc
     }
     ```
 
-!!! verify "Check it"
-
-    Repeat the create/read check. Send an empty `lastName` or an invalid `email` and expect `400`. Request an unknown customer ID and expect `404`.
-
-[Commands and queries](reference/features-application-commands-queries.md), [requester](reference/features-requester-notifier.md), and [results](reference/features-results.md).
-
-??? note "Source-generated handlers"
-
-    `[Command]` or `[Query]` on a partial class with a `[Handle]` method can generate these types. That requires `BridgingIT.DevKit.Common.Utilities.CodeGen`. See the source-generator appendix in the [requester guide](reference/features-requester-notifier.md).
-
-<!-- agent-prompt 6 topics="commands_queries requester_notifier results" -->
-
-
----
-
-## Group the feature into a module { #step-7 .tutorial-step data-step="07" data-toc-label="07 Module" }
-
-<div class="step-meta">
-  <span class="is-feature"><b>Adds</b><img class="bdk-doc-icon" src="assets/features/modules.svg" width="16" height="16" alt="">Module</span>
-  <span><b>Packages</b>none new</span>
-  <span><b>Touches</b><code>Program.cs</code>, 1 new file</span>
-</div>
-
-Move the context and endpoint registrations into `CustomersModule.Register`. Remove those two registrations from `Program.cs`, and add the module instead. Keep the shared requester in `Program.cs`.
-
-```csharp title="Program.cs"
-builder.Services.AddModules(builder.Configuration, builder.Environment, modules => modules
-    .WithModule<CustomersModule>());
-```
-
-??? example "CustomersModule.cs"
-
-    ```csharp title="Modules/Customers/CustomersModule.cs"
-    namespace Customers.Web.Modules.Customers;
-
-    using BridgingIT.DevKit.Common;
-    using Microsoft.EntityFrameworkCore;
-
-    public class CustomersModule : WebModuleBase
-    {
-        public override IServiceCollection Register(
-            IServiceCollection services,
-            IConfiguration? configuration = null,
-            IWebHostEnvironment? environment = null)
-        {
-            services.AddDbContext<CustomersDbContext>(options =>
-                options.UseSqlite(configuration?.GetConnectionString("Customers")));
-            services.AddEndpoints<CustomerEndpoints>();
-
-            return services;
-        }
-
-        public override IApplicationBuilder Use(
-            IApplicationBuilder app,
-            IConfiguration? configuration = null,
-            IWebHostEnvironment? environment = null)
-        {
-            return app;
-        }
-
-        public override IEndpointRouteBuilder Map(
-            IEndpointRouteBuilder app,
-            IConfiguration? configuration = null,
-            IWebHostEnvironment? environment = null)
-        {
-            return app;
-        }
-    }
-    ```
-
-Add module context before request logging. Keep the existing endpoint mapping:
-
-```csharp title="Program.cs"
-app.UseRequestCorrelation();
-app.UseRequestModuleContext();
-app.UseRequestLogging();
-app.UseModules();
-app.MapModules();
-app.MapEndpoints();
-```
+Add `services.AddEndpoints<CustomerEndpoints>();` in `CustomersModule.Register`. Add `app.MapEndpoints();` in `Program.cs` after `app.MapModules();`.
 
 !!! verify "Check it"
-
-    Repeat the create/read check. The response now also includes `ModuleName: customers`.
-
-??? note "Module conventions"
-
-    Keep the feature namespace under `Customers.Web.Modules.Customers` so type-based lookups can identify the module. With nullable disabled, omit the `?` annotations in the module signatures.
-
-    `Use` and `Map` are required overrides even when empty. Do not omit their host calls. Setting `Modules:customers:Enabled` to false rejects requests but still runs registration and module composition.
-
-[Modules reference](reference/features-modules.md).
-
-<!-- agent-prompt 7 topics="modules" -->
-
-
----
-
-## Register the `DbContext` with DevKit { #step-8 .tutorial-step data-step="08" data-toc-label="08 DbContext" }
-
-<div class="step-meta">
-  <span class="is-feature"><b>Adds</b><img class="bdk-doc-icon" src="assets/features/provider-entityframework.svg" width="16" height="16" alt="">DbContext</span>
-  <span><b>Packages</b><code>BridgingIT.DevKit.Infrastructure.EntityFramework.Sqlite</code></span>
-  <span><b>Touches</b><code>CustomersModule.cs</code></span>
-</div>
-
-Replace the module's `AddDbContext` registration with the DevKit registration for your database provider. The SQLite example uses:
-
-```powershell
-dotnet add package BridgingIT.DevKit.Infrastructure.EntityFramework.Sqlite
-```
-
-```csharp title="Modules/Customers/CustomersModule.cs"
-services.AddSqliteDbContext<CustomersDbContext>(
-        configuration?.GetConnectionString("Customers"))
-    .WithDatabaseMigratorService();
-```
-
-Use the connection-string overload shown here. The context and model do not change.
-
-Use a local development database while following this guide. If your deployment pipeline applies migrations, omit `WithDatabaseMigratorService()`. To stop the app after a migration failure, pass `options => options.HaltOnFailure()`.
-
-??? note "Other database providers"
 
     ```powershell
-    dotnet add package BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer
-    # Or:
-    dotnet add package BridgingIT.DevKit.Infrastructure.EntityFramework.Postgres
+    $customer = Invoke-RestMethod http://localhost:5199/api/customers -Method Post -ContentType application/json -Body '{"firstName":"Ada","lastName":"Lovelace","email":"ada@example.test"}'
+    Invoke-RestMethod "http://localhost:5199/api/customers/$($customer.id)"
     ```
 
-    Use the matching provider registration in your module. Keep the same connection string and existing migrations.
+    Expect `201` when creating a customer and `200` when reading it. Restart the app and read the same ID to confirm SQL Server persistence. An empty last name or invalid email returns `400`. A missing ID returns `404`.
 
-!!! verify "Check it"
+[Endpoints](reference/features-presentation-endpoints.md) covers endpoint discovery and result mapping.
 
-    Restart the app and repeat the create/read check. Pending migrations apply at startup if you enabled the migrator.
-
-[Persistence setup](reference/features-domain-repositories.md) and [module registration](reference/features-modules.md).
-
-<!-- agent-prompt 8 source="docs/features-modules.md" -->
-
+<!-- agent-prompt 9 source="docs/features-presentation-endpoints.md" -->
 
 ---
 
-## Read and write through a repository { #step-9 .tutorial-step data-step="09" data-toc-label="09 Repository" }
+## Publish a domain event { #step-10 .tutorial-step data-step="10" data-toc-label="10 Events" }
 
-<div class="step-meta">
-  <span class="is-feature"><b>Adds</b><img class="bdk-doc-icon" src="assets/features/repositories.svg" width="16" height="16" alt="">Repository</span>
-  <span><b>Packages</b>none new</span>
-  <span><b>Touches</b><code>Customer.cs</code>, <code>CustomersModule.cs</code>, 2 handler files</span>
-</div>
+Add this step when creating a customer should trigger a separate reaction. Register the event in `Customer.Create` before returning the new customer:
 
-Make `Customer` an `AggregateRoot<Guid>` and remove its own `Id` property. The base class supplies it. Keep the three customer properties.
-
-??? example "Customer.cs"
-
-    ```csharp title="Customer.cs"
-    namespace Customers.Web;
-
-    using BridgingIT.DevKit.Domain.Model;
-
-    public class Customer : AggregateRoot<Guid>
-    {
-        public string FirstName { get; set; } = string.Empty;
-
-        public string LastName { get; set; } = string.Empty;
-
-        public string Email { get; set; } = string.Empty;
-    }
-    ```
-
-Register the repository in the module:
-
-```csharp title="Modules/Customers/CustomersModule.cs"
-using BridgingIT.DevKit.Domain.Repositories;
-
-services.AddEntityFrameworkRepository<Customer, CustomersDbContext>()
-    .WithBehavior<RepositoryLoggingBehavior<Customer>>();
+```csharp
+customer.DomainEvents.Register(new CustomerCreatedDomainEvent(customer.Id));
 ```
 
-Replace the handlers' `CustomersDbContext` dependencies with `IGenericRepository<Customer>`. `InsertAsync` saves the customer; `FindOneResultAsync` returns a failed result when the ID is missing.
-
-??? example "Repository handler changes"
-
-    Keep each command or query definition. Replace only its handler, and add the listed `using` to the file's imports.
-
-    ```csharp title="Modules/Customers/CustomerCreateCommand.cs"
-    using BridgingIT.DevKit.Domain.Repositories;
-
-    public class CustomerCreateCommandHandler(
-        IGenericRepository<Customer> repository,
-        ILogger<CustomerCreateCommandHandler> logger)
-        : RequestHandlerBase<CustomerCreateCommand, Customer>
-    {
-        protected override async Task<Result<Customer>> HandleAsync(
-            CustomerCreateCommand request, SendOptions options, CancellationToken cancellationToken)
-        {
-            var customer = new Customer
-            {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Email = request.Email,
-            };
-            await repository.InsertAsync(customer, cancellationToken);
-            logger.LogInformation("customer {CustomerId} created", customer.Id);
-
-            return customer;
-        }
-    }
-    ```
-
-    ```csharp title="Modules/Customers/CustomerFindOneQuery.cs"
-    using BridgingIT.DevKit.Domain.Repositories;
-
-    public class CustomerFindOneQueryHandler(IGenericRepository<Customer> repository)
-        : RequestHandlerBase<CustomerFindOneQuery, Customer>
-    {
-        protected override async Task<Result<Customer>> HandleAsync(
-            CustomerFindOneQuery request, SendOptions options, CancellationToken cancellationToken)
-        {
-            return await repository.FindOneResultAsync(
-                request.Id, cancellationToken: cancellationToken);
-        }
-    }
-    ```
-
-!!! verify "Check it"
-
-    Stop the app and run:
-
-    ```powershell
-    dotnet ef migrations has-pending-model-changes
-    ```
-
-    Expect no model changes. Restart and repeat the create/read and validation checks.
-
-[Repositories](reference/features-domain-repositories.md) and [domain model](reference/features-domain.md).
-
-<!-- agent-prompt 9 topics="repositories" -->
-
-
----
-
-## Give `Customer` a domain model { #step-10 .tutorial-step data-step="10" data-toc-label="10 Domain" }
-
-<div class="step-meta">
-  <span class="is-feature"><b>Adds</b><img class="bdk-doc-icon" src="assets/features/domain.svg" width="16" height="16" alt="">Domain events</span>
-  <span><b>Packages</b>none new</span>
-  <span><b>Touches</b><code>Customer.cs</code>, <code>CustomersModule.cs</code>, <code>Program.cs</code>, the command handler, 2 new files</span>
-</div>
-
-Give `Customer` a factory that records `CustomerCreatedDomainEvent`. Keep the event beside the aggregate and handle side effects in a separate handler.
-
-??? example "Customer and domain event files"
-
-    ```csharp title="Customer.cs"
-    namespace Customers.Web;
-
-    using BridgingIT.DevKit.Domain.Model;
-
-    public class Customer : AggregateRoot<Guid>
-    {
-        private Customer()
-        {
-        }
-
-        public string FirstName { get; private set; } = string.Empty;
-
-        public string LastName { get; private set; } = string.Empty;
-
-        public string Email { get; private set; } = string.Empty;
-
-        public static Customer Create(string firstName, string lastName, string email)
-        {
-            var customer = new Customer
-            {
-                Id = Guid.NewGuid(),
-                FirstName = firstName,
-                LastName = lastName,
-                Email = email,
-            };
-            customer.DomainEvents.Register(new CustomerCreatedDomainEvent(customer.Id));
-
-            return customer;
-        }
-    }
-    ```
+??? example "Event and handler"
 
     ```csharp title="CustomerCreatedDomainEvent.cs"
     namespace Customers.Web;
@@ -805,164 +633,166 @@ Give `Customer` a factory that records `CustomerCreatedDomainEvent`. Keep the ev
     }
     ```
 
-Register the notifier in `Program.cs`, even if no event handlers are registered yet:
+Register the notifier before `builder.Build()`:
 
-```csharp title="Program.cs"
+```csharp
 builder.Services.AddNotifier()
     .AddHandlers();
 ```
 
-Extend the existing repository registration to publish events after saving:
+Extend the repository registration to publish events after saving:
 
-```csharp title="Modules/Customers/CustomersModule.cs"
+```csharp
 services.AddEntityFrameworkRepository<Customer, CustomersDbContext>()
     .WithBehavior<RepositoryLoggingBehavior<Customer>>()
     .WithBehavior<RepositoryDomainEventPublisherBehavior<Customer>>();
 ```
 
-In `CustomerCreateCommandHandler`, replace `new Customer { ... }` with the factory call. Keep the repository insert and returned result:
-
-```csharp title="Modules/Customers/CustomerCreateCommand.cs"
-var customer = Customer.Create(request.FirstName, request.LastName, request.Email);
-await repository.InsertAsync(customer, cancellationToken);
-
-return customer;
-```
-
 !!! verify "Check it"
 
-    Run `dotnet ef migrations has-pending-model-changes` and expect no model changes. Restart and repeat the create/read check. The response fields stay the same; domain events remain internal.
+    Repeat the create/read check. The customer is stored and the event handler runs after the insert. Domain events remain internal to the application. This step introduces no schema change.
 
-[Domain events](reference/features-domain-events.md) explains immediate publication and the durable outbox option.
+[Domain events](reference/features-domain-events.md) covers immediate publication. The [outbox recipe](getting-started-existing-app-features.md#domain-event-outbox) adds durable publication when needed.
 
-<!-- agent-prompt 10 topics="domain domain_events" -->
-
+<!-- agent-prompt 10 topics="domain_events requester_notifier" -->
 
 <span id="what-you-have-now"></span>
 
 ## Complete setup
 
-??? example "Final Program.cs"
+??? example "Program.cs"
 
     ```csharp title="Program.cs"
     using BridgingIT.DevKit.Common;
     using BridgingIT.DevKit.Presentation.Web;
     using Customers.Web.Modules.Customers;
 
-    var builder = DevKitWebApplication.CreateBuilder(args)
-        .AddLogging();
+    var builder = DevKitWebApplication.CreateBuilder(args);
 
-    builder.Services.AddModules(builder.Configuration, builder.Environment, m => m
+    builder.Services.AddModules(builder.Configuration, builder.Environment, modules => modules
         .WithModule<CustomersModule>());
+
     builder.Services.AddRequester()
         .AddHandlers()
         .WithBehavior(typeof(ValidationPipelineBehavior<,>));
+
     builder.Services.AddNotifier()
         .AddHandlers();
 
     var app = builder.Build();
 
-    app.UseRequestCorrelation();
     app.UseRequestModuleContext();
-    app.UseRequestLogging();
     app.UseModules();
     app.MapModules();
     app.MapEndpoints();
 
+    app.MapGet("/", () => "Customers API is running.");
+
     app.Run();
     ```
 
-??? note "When your app splits into layers"
+??? example "CustomersModule.cs"
 
-    Keep the aggregate and its events in Domain, the handlers in Application, the context and repository implementation in Infrastructure, and endpoints and module composition in Presentation. See [Architecture](architecture.md).
+    ```csharp title="Modules/Customers/CustomersModule.cs"
+    namespace Customers.Web.Modules.Customers;
+
+    using BridgingIT.DevKit.Common;
+    using BridgingIT.DevKit.Domain.Repositories;
+    using BridgingIT.DevKit.Infrastructure.EntityFramework;
+
+    public class CustomersModule : WebModuleBase
+    {
+        private CustomersModuleConfiguration moduleConfiguration = null!;
+
+        public override IServiceCollection Register(
+            IServiceCollection services,
+            IConfiguration? configuration = null,
+            IWebHostEnvironment? environment = null)
+        {
+            this.moduleConfiguration = this.Configure<CustomersModuleConfiguration,
+                CustomersModuleConfiguration.Validator>(services, configuration);
+
+            services.AddSqlServerDbContext<CustomersDbContext>(options => options
+                    .UseConnectionString(this.moduleConfiguration.ConnectionStrings["Default"]))
+                .WithDatabaseMigratorService(options => options
+                    .Enabled(environment?.IsDevelopment() == true)
+                    .HaltOnFailure());
+
+            services.AddEntityFrameworkRepository<Customer, CustomersDbContext>()
+                .WithBehavior<RepositoryLoggingBehavior<Customer>>()
+                .WithBehavior<RepositoryDomainEventPublisherBehavior<Customer>>();
+
+            services.AddEndpoints<CustomerEndpoints>();
+
+            return services;
+        }
+
+        public override IApplicationBuilder Use(
+            IApplicationBuilder app,
+            IConfiguration? configuration = null,
+            IWebHostEnvironment? environment = null) => app;
+
+        public override IEndpointRouteBuilder Map(
+            IEndpointRouteBuilder app,
+            IConfiguration? configuration = null,
+            IWebHostEnvironment? environment = null)
+        {
+            app.MapGet("/api/customers/status", () => Results.Ok(new
+            {
+                module = this.Name,
+                message = this.moduleConfiguration.Greeting,
+            })).WithTags("Customers");
+
+            return app;
+        }
+    }
+    ```
+
+Keep domain types in Domain, handlers in Application, persistence in Infrastructure, and endpoints and module composition in Presentation when you split into layer projects. The guide keeps one project so each addition is visible.
 
 ## Use an agent { #hand-to-an-agent data-toc-label="Use an agent" }
 
-Use an agent that can edit files and run `dotnet`. Connect [bdk MCP in step 1](#step-1) before planning so the agent can consult the guides. Start on a clean branch and use a local development database. Review the plan, then apply it.
+Start with the minimal API in step 1 and connect bdk MCP in step 2. Then use these prompts to plan and build the features. Keep the connection string pointed at a dedicated development SQL Server database.
 
 ??? prompt "1. Plan the change"
 
     ```text
-    Plan how to add bITdevKit to this application. Do not change any code yet.
+    Plan how to build up this Web API with bITdevKit. Do not change application code yet.
 
-    Read the guide "Add DevKit to an existing app" from start to end.
-    Use the bdk MCP connection from step 1. Call bdk_docs_get with source docs/site/getting-started-existing-app.md. If the response is truncated, read the full document from its returned URL.
-    If MCP is not connected, follow step 1 at https://bridgingit-gmbh.github.io/bITdevKit/getting-started-existing-app/#step-1 before planning.
-    Call bdk_guidance_list, then use bdk_guidance_get for the relevant topics. Use bdk_docs_search and bdk_docs_get to resolve the app's differences from the guide. Verify proposed DevKit APIs with bdk_api_search and bdk_api_get using the returned uid.
+    Read "Build an app with DevKit" with bdk_docs_get, source docs/site/getting-started-existing-app.md. If the response is truncated, read the full document from its returned URL. Use the bdk MCP connection established in step 2. Call bdk_guidance_list and bdk_guidance_get for modules, domain, repositories, commands_queries, requester_notifier, and domain_events. Verify proposed DevKit signatures with bdk_api_search and bdk_api_get.
 
-    Inspect this repository:
-    - the ASP.NET Core host project, its Program.cs, target framework and Nullable setting
-    - how logging is set up and which middleware the pipeline uses
-    - whether the routes are minimal APIs or controllers
-    - the DbContext, its database provider and connection string name
-    - whether the app uses EF Core migrations and the dotnet-ef tool, or creates its schema another way
-    - the test projects, and any CI or deployment step that applies migrations
+    Inspect the host, target framework, nullable setting, configuration files, and existing routes. Start from a minimal Web API. Do not assume an entity, DbContext, repository, database, or EF migration already exists.
 
-    Write devkit-plan.md in the repository root with five sections:
-    1. Names. A table that maps each sample name in the guide to its name in this app. Cover Customers.Web, Customer, CustomersDbContext, the Customers feature folder and its namespace, the two routes, the URL the app listens on, and the provider package with its Add...DbContext method. Record the MCP client and its configuration file.
-    2. Steps. For each of the ten steps, the files it changes and every deviation from the guide. Check at least these cases:
-       - controllers instead of minimal APIs, which skips step 5
-       - Serilog already set up before the host builds
-       - a key type other than Guid
-       - code outside the entity that sets its properties, which step 10's private setters break
-       - a schema created without migrations, or migrations applied by a pipeline, which changes step 8
-       - a database provider the guide does not cover
-    3. Checks. Each step's check, rewritten for this app's routes, names and URL.
-    4. Rules. The rules below, copied word for word.
-    5. Checklist. Steps 1 to 10 as checkboxes. Tick step 1 after checking the MCP connection and existing routes. Tick another step only if the app already contains its change.
+    Write devkit-plan.md with:
+    1. Names: the app project, namespace, module, entity, context, routes, and URL. Use the guide's Customer feature or map it to a feature I requested.
+    2. Configuration: the Modules:customers section, its typed configuration, the SQL Server instance, and a dedicated development database. Preserve unrelated configuration.
+    3. Steps: the files each of the ten steps adds or changes. Mark existing equivalent capabilities as complete. Domain events are optional.
+    4. Checks: the root route first, configured module status after step 4, SQL Server schema after step 6, and customer create/read, persistence, validation, and not-found behavior after step 9.
+    5. Rules: change one step at a time, preserve existing working features, keep DevKit packages on the same version, and stop if a required API is unavailable or a check fails. Create the InitialCustomers migration in step 6. Never delete a database or alter unrelated tables. Use environment configuration for SQL credentials. Stop application processes started for a check. Never commit devkit-plan.md.
 
-    If the app has more than one entity or feature area, pick one to start with and say why.
-    Then stop and wait for my approval. I may edit the plan before you continue.
-
-    Rules:
-    - Before application changes, the working tree must be clean apart from devkit-plan.md and the tool manifest and MCP configuration from step 1. If it is not, stop and tell me.
-    - Work on a branch made for this change, never on the default branch.
-    - Change only what the current step changes. Routes, successful responses and the DbContext model stay as they are.
-    - Install the latest stable BridgingIT.DevKit packages, all on the same version.
-    - Never add an EF Core migration. After steps 9 and 10, dotnet ef migrations has-pending-model-changes must report no changes.
-    - Run the app only against a local development database. Step 8 applies migrations at startup.
-    - If a check fails, or the app needs a change the guide does not show, stop and report. Do not work around it.
-    - If the guide names a type or method that the installed packages do not have, stop and report.
-    - Stop every process you started before you finish a step.
-    - Never commit devkit-plan.md.
+    Stop for my review of the plan before implementing the remaining steps.
     ```
 
 ??? prompt "2. Apply the steps"
 
     ```text
-    Add bITdevKit to this application, following devkit-plan.md and the guide "Add DevKit to an existing app".
-    If devkit-plan.md does not exist, stop and ask me to run the planning prompt first.
-    Read the whole plan and follow its rules in every step.
-    If you are not on a branch for this work, create one named feature/devkit-adoption.
+    Build up this Web API following devkit-plan.md and "Build an app with DevKit". If the plan is missing, run the planning prompt first and wait for my review.
 
-    Work through the unchecked steps of the checklist in order. For each step:
-    1. Use the bdk MCP connection from step 1. If it is unavailable, reconnect before editing. Read the step and its linked references with bdk_docs_get. If a response is truncated, read the full document from its returned URL.
-    2. Read the step's linked feature guides with bdk_docs_get. Call bdk_guidance_get with topics commands_queries, requester_notifier, and results for step 6, modules for step 7, repositories for step 9, and domain and domain_events for step 10. Use bdk_docs_search for other feature guides. Verify DevKit signatures with bdk_api_search followed by bdk_api_get using the returned uid.
-    3. Make the change with the names from the plan. Step 1 changes tooling configuration only.
-    4. Build the whole solution, test projects included. Fix build errors this step caused. If the fix needs a change the guide does not show, stop and report.
-    5. Start the app, run the step's check from the plan, and compare status codes, response headers and bodies with the guide. Stop the app.
-    6. Tick the step in the checklist and add a one-line result.
-    7. Commit the step on its own in this repository's commit message style. Leave out devkit-plan.md and do not push.
+    Use a branch for this work. Work through unchecked steps in order. Read each step and its references with bdk_docs_get; use bdk_docs_search for additional guides. Read the matching bdk_guidance_get topics and verify DevKit signatures with bdk_api_search and bdk_api_get. If documentation is truncated, read the full document from its returned URL.
 
-    After the last step, run the existing tests.
-    Report the steps you finished, the files each step changed, each check result, and every deviation from the guide.
+    Start from the minimal app, then add the DevKit builder, module with appsettings configuration, entity, SQL Server context, repository, handlers, endpoints, and optional domain event. Do not convert existing entities or persistence just to reproduce the sample.
+
+    Build after each step and run its check from the plan. The database first appears in step 6. Preserve unrelated routes, features, and data. Record each result and stop processes used for the check. Leave changes uncommitted for review and report the files changed, checks, and any deviations.
     ```
-
-    To commit by hand, delete item 7 before you paste the prompt.
-
-Each step above also has a prompt for that step alone.
 
 <span id="add-features"></span>
 
-## Choose the next step { data-toc-label="Next steps" }
+## Choose the next step
 
-Add only the features your app needs. [Add features](getting-started-existing-app-features.md) has independent recipes for background work, storage, and operations.
-
-Optional host configuration sources are covered in [Presentation configuration](reference/features-presentation-configuration.md).
+Add the capabilities your application needs through the independent [feature recipes](getting-started-existing-app-features.md). Logging, request correlation, background work, storage, dashboards, and AI runtime tools can be enabled separately.
 
 <nav class="next-step-strip" aria-label="Next steps">
   <a href="../getting-started-existing-app-features/"><small>one feature at a time</small>Add features</a>
-  <a href="../architecture/"><small>understand the layers</small>Architecture</a>
+  <a href="../architecture/"><small>understand the boundaries</small>Architecture</a>
   <a href="../docs/"><small>find a feature guide</small>Documentation overview</a>
-  <a href="../guides/"><small>decide between options</small>Guides</a>
 </nav>

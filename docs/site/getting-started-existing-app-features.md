@@ -6,16 +6,9 @@ hide:
 
 <!-- markdownlint-disable-file MD033 -->
 
-!!! path-b "Path B: existing app"
-
-    [**01** Basics](getting-started-existing-app.md)
-    [**02** Add features](getting-started-existing-app-features.md){ aria-current="page" }
-    <span class="switch">Starting from scratch? Use [Path A: new solution](getting-started-template.md).</span>
-    { .path-pager }
-
 # Add features
 
-Every recipe starts from the host built in [Add DevKit to an existing app](getting-started-existing-app.md). Pick the features your app needs. Recipes depend on the basics alone unless a **Needs** line says otherwise.
+Every recipe starts from the host built in [Build an app with DevKit](getting-started-existing-app.md). Pick the features your app needs. Recipes depend on the basics alone unless a **Needs** line says otherwise.
 
 <ol class="flow-strip">
   <li><b>01</b><span>Package</span><code>dotnet add package</code></li>
@@ -32,8 +25,9 @@ Use the same version for every DevKit package. Commands below run from `Customer
 
 <nav class="feature-picker" aria-label="Features on this page">
   <div>
-    <p class="feature-picker__group"><a href="#no-infrastructure-needed">No infrastructure needed</a><span>3</span></p>
+    <p class="feature-picker__group"><a href="#no-infrastructure-needed">No infrastructure needed</a><span>4</span></p>
     <ul>
+      <li><a href="#logging"><img class="bdk-doc-icon" src="assets/features/logging.svg" alt="">Logging and request diagnostics</a></li>
       <li><a href="#notifications"><img class="bdk-doc-icon" src="assets/features/notifications.svg" alt="">Notifications and more behaviors</a></li>
       <li><a href="#mapping"><img class="bdk-doc-icon" src="assets/features/mapping.svg" alt="">Mapping</a></li>
       <li><a href="#startup-tasks"><img class="bdk-doc-icon" src="assets/features/startup-tasks.svg" alt="">Startup tasks</a></li>
@@ -70,6 +64,46 @@ Use the same version for every DevKit package. Commands below run from `Customer
 
 ## <img class="bdk-doc-icon" src="assets/features/notifications.svg" width="24" height="24" alt=""> No infrastructure needed
 
+### <img class="bdk-doc-icon" src="assets/features/logging.svg" width="24" height="24" alt=""> Logging and request diagnostics { #logging .feature-recipe }
+
+Add structured logging and correlate the logs from each HTTP request.
+
+<div class="step-meta">
+  <span><b>Packages</b><code>BridgingIT.DevKit.Presentation.Serilog</code></span><span><b>Pipeline</b>correlation, request logging</span><span><b>DbContext</b>none</span><span><b>Guide</b><a href="../reference/features-presentation-logging/">Logging</a></span>
+</div>
+
+```powershell
+dotnet add package BridgingIT.DevKit.Presentation.Serilog
+```
+
+Chain `.AddLogging()` on `DevKitWebApplication.CreateBuilder(args)`. Merge this section into `appsettings.json`, keeping `Modules:customers`:
+
+```json title="appsettings.json"
+{
+  "Serilog": {
+    "Using": ["Serilog.Sinks.Console"],
+    "MinimumLevel": { "Default": "Information" },
+    "Enrich": ["FromLogContext"],
+    "WriteTo": [{ "Name": "Console" }]
+  }
+}
+```
+
+Add correlation before module context and request logging before mapped endpoints:
+
+```csharp title="Program.cs"
+app.UseRequestCorrelation();
+app.UseRequestModuleContext();
+app.UseRequestLogging();
+app.UseModules();
+app.MapModules();
+app.MapEndpoints();
+```
+
+!!! verify "Check it"
+
+    Request an existing endpoint with `curl.exe -i`. Expect the same response plus a `CorrelationId` header. See [request correlation](reference/features-presentation-correlationid.md) for propagation and header options.
+
 ### <img class="bdk-doc-icon" src="assets/features/notifications.svg" width="24" height="24" alt=""> Notifications and more behaviors { #notifications .feature-recipe }
 
 Publish an application notification after saving a customer, and add retry and timeout behaviors to the requester.
@@ -105,7 +139,14 @@ public class CustomerCreatedNotificationHandler(
 }
 ```
 
-`AddNotifier().AddHandlers()` from step 10 discovers the new handler. In `CustomerCreateCommand.cs`, replace only the handler:
+Register the notifier before `builder.Build()` if you skipped the optional domain-event step:
+
+```csharp title="Program.cs"
+builder.Services.AddNotifier()
+    .AddHandlers();
+```
+
+The notifier discovers the new handler. In `CustomerCreateCommand.cs`, replace only the handler:
 
 ===+ "After"
 
@@ -352,7 +393,7 @@ Each recipe below adds its own interface. To combine recipes, keep the interface
 
 ### <img class="bdk-doc-icon" src="assets/features/queueing.svg" width="24" height="24" alt=""> Queueing { #queueing .feature-recipe .is-worked }
 
-Run work in the background after the request returns, with messages stored in SQLite until the queue broker processes them.
+Run work in the background after the request returns, with messages stored in SQL Server until the queue broker processes them.
 
 <div class="step-meta">
   <span><b>Packages</b><code>Application.Queueing</code></span><span><b>Pipeline</b>none</span><span><b>DbContext</b><code>IQueueingContext</code></span><span><b>Guide</b><a href="../reference/features-queueing/">Queueing</a></span>
@@ -379,7 +420,7 @@ Run work in the background after the request returns, with messages stored in SQ
   <figcaption>Solid: implemented by <code>CustomersDbContext</code>. Dashed: one interface and one migration away.</figcaption>
 </figure>
 
-**1. Add the package.** The EF provider came with the basics page's Sqlite package.
+**1. Add the package.** The EF provider came with the build guide's SQL Server package.
 
 ```powershell
 dotnet add package BridgingIT.DevKit.Application.Queueing
@@ -1010,12 +1051,11 @@ using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Customers.Web;
 
-builder.Services.AddBlobStorage(options => options
-        .WithRetention(retention => retention.Enabled = false))
+builder.Services.AddBlobStorage()
     .WithEntityFrameworkClient<CustomersDbContext>("customers");
 ```
 
-This SQLite recipe disables automatic expiration sweeping. The current EF sweep compares `DateTimeOffset` values, which SQLite cannot translate without a suitable conversion. Upload and download work without expiration sweeping. For expiration, configure provider-appropriate mappings before creating the migration, or use a provider that supports the comparison.
+The SQL Server provider supports expiration sweeping. Configure retention to match the lifetime of your stored content.
 
 ```powershell
 dotnet ef migrations add AddBlobStorage
@@ -1311,7 +1351,9 @@ app.MapPost("/api/customer-broadcasts/{id:guid}", async (
 
 ### <img class="bdk-doc-icon" src="assets/features/outbox.svg" width="24" height="24" alt=""> Domain event outbox { #domain-event-outbox .feature-recipe }
 
-Store the step 10 domain event for publication by a background worker.
+Store domain events for publication by a background worker.
+
+**Needs:** the domain event and notifier from [step 10](getting-started-existing-app.md#step-10).
 
 <div class="step-meta">
   <span><b>Packages</b>none new</span><span><b>Pipeline</b>none</span><span><b>DbContext</b><code>IOutboxDomainEventContext</code></span><span><b>Guide</b><a href="../reference/features-domain-events/#outbox-publication">Domain event outbox</a></span>
@@ -1322,7 +1364,6 @@ namespace Customers.Web;
 
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 public class CustomersDbContext(DbContextOptions<CustomersDbContext> options)
     : DbContext(options), IOutboxDomainEventContext
@@ -1330,18 +1371,10 @@ public class CustomersDbContext(DbContextOptions<CustomersDbContext> options)
     public DbSet<Customer> Customers { get; set; } = null!;
 
     public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; } = null!;
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        // SQLite needs a comparable representation for the worker ordering.
-        modelBuilder.Entity<OutboxDomainEvent>()
-            .Property(e => e.CreatedDate)
-            .HasConversion<DateTimeOffsetToBinaryConverter>();
-    }
 }
 ```
 
-The conversion is for this SQLite sample. Preserve any existing model configuration and use provider-appropriate mappings in your app.
+Keep the context configuration from the build guide and add the outbox set. SQL Server stores the event timestamps without an additional value converter.
 
 ```csharp title="Program.cs"
 using BridgingIT.DevKit.Domain.Outbox;
@@ -1385,7 +1418,7 @@ Query and maintain structured log rows that a Serilog SQL Server sink already wr
   <span><b>Packages</b><code>Infrastructure.EntityFramework.SqlServer</code></span><span><b>Pipeline</b>none</span><span><b>DbContext</b><code>ILoggingContext</code></span><span><b>Guide</b><a href="../reference/features-log-entries/">Log entries</a></span>
 </div>
 
-**Needs:** SQL Server and a Serilog SQL Server sink writing the DevKit log-entry schema. This recipe does not run on the SQLite sample. Use it when your existing app already uses SQL Server.
+**Needs:** SQL Server and a Serilog SQL Server sink writing the DevKit log-entry schema. The build guide already configures SQL Server. Add a sink that writes the required schema.
 
 ```powershell
 dotnet add package BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer
@@ -1506,7 +1539,7 @@ builder.Services.AddDashboard(options => options
     .Enabled(builder.Environment.IsDevelopment()));
 ```
 
-`MapEndpoints()` from the basics maps the dashboard routes. The dashboard permits anonymous access only while the host has no authentication schemes. Once your app uses authentication, configure dashboard authorization as described in the [dashboard guide](reference/features-presentation-dashboard.md#authentication-and-authorization).
+`MapEndpoints()` from the build guide maps the dashboard routes. To include the SQL Server context in Health, chain `.WithHealthCheck()` on its `AddSqlServerDbContext` registration before `.WithDatabaseMigratorService(...)`. The dashboard permits anonymous access only while the host has no authentication schemes. Once your app uses authentication, configure dashboard authorization as described in the [dashboard guide](reference/features-presentation-dashboard.md#authentication-and-authorization).
 
 !!! verify "Check it"
 
@@ -1514,7 +1547,7 @@ builder.Services.AddDashboard(options => options
     Start-Process http://localhost:5199/_bdk/dashboard
     ```
 
-    The index opens with cards for the host's features. Open **Health** to find `CustomersDbContext`, registered through the basics page's `AddSqliteDbContext` call. **Entities** lists `Customer` and its repository.
+    The index opens with cards for the host's features. Open **Health** to find `CustomersDbContext`. **Entities** lists `Customer` and its repository.
 
 ![Dashboard overview showing host diagnostics and one registered entity](assets/images/getting-started/dashboard-overview.png)
 
@@ -1611,7 +1644,6 @@ public sealed class CustomersMcpHandler(IServiceScopeFactory scopeFactory) : IMc
 
 ```csharp title="Program.cs"
 var builder = DevKitWebApplication.CreateBuilder(args)
-    .AddLogging()
     .AddMcp(mcp => mcp.WithHandler<CustomersMcpHandler>());
 ```
 
@@ -1633,13 +1665,13 @@ The handler creates a scope for the repository because MCP handlers live beyond 
 Keep only the calls for features you have registered. The error handler and authentication calls below stand for the app's existing setup. Do not add them without registering the corresponding services.
 
 ```csharp title="Program.cs"
-app.UseRequestCorrelation();                 // Basics: enrich every later log line.
+app.UseRequestCorrelation();                 // Logging recipe: enrich every later log line.
 app.UseRequestProfiling();                   // Profiling: measure handled failures too.
 app.UseExceptionHandler();                   // The app's configured error handler, if present.
 app.UseRequestProfilingExceptionObserver();  // Profiling: observe before the handler consumes.
 app.UseRouting();                           // Keep explicit routing if the app uses it.
 app.UseRequestModuleContext();              // Basics: resolve the module before request logging.
-app.UseRequestLogging();                    // Basics: log the routed request.
+app.UseRequestLogging();                    // Logging recipe: log the routed request.
 app.UseRequestMetrics();                    // Metrics: measure the endpoint execution.
 app.UseModules();                           // Basics: each module's middleware.
 app.UseAuthentication();                    // The app's existing authentication.
@@ -1660,18 +1692,18 @@ if (app.Environment.IsDevelopment())
 
     | Feature | Package | Registration | Pipeline | DbContext interface | Where |
     | --- | --- | --- | --- | --- | --- |
-    | Host builder | `BridgingIT.DevKit.Presentation.Web` | `DevKitWebApplication.CreateBuilder` | none | none | [Basics page](getting-started-existing-app.md) |
-    | Logging | `BridgingIT.DevKit.Presentation.Serilog` | `.AddLogging()` | none | none | [Basics page](getting-started-existing-app.md) |
-    | Correlation IDs | `BridgingIT.DevKit.Presentation.Web` | none | `UseRequestCorrelation()` | none | [Basics page](getting-started-existing-app.md) |
-    | Request logging | `BridgingIT.DevKit.Presentation.Web` | none | `UseRequestLogging()` | none | [Basics page](getting-started-existing-app.md) |
-    | Endpoints | `BridgingIT.DevKit.Presentation.Web` | `AddEndpoints<T>()` | `MapEndpoints()` | none | [Basics page](getting-started-existing-app.md) |
-    | Requester | `BridgingIT.DevKit.Common.Utilities` | `AddRequester().AddHandlers()` | none | none | [Basics page](getting-started-existing-app.md) |
-    | Modules | `BridgingIT.DevKit.Presentation.Web` | `AddModules(...)` | `UseRequestModuleContext(), UseModules(), MapModules()` | none | [Basics page](getting-started-existing-app.md) |
-    | DbContext | `BridgingIT.DevKit.Infrastructure.EntityFramework.Sqlite` | `AddSqliteDbContext<T>().WithDatabaseMigratorService()` | none | none | [Basics page](getting-started-existing-app.md) |
-    | Repositories | `BridgingIT.DevKit.Infrastructure.EntityFramework` | `AddEntityFrameworkRepository<T, TContext>()` | none | none | [Basics page](getting-started-existing-app.md) |
-    | Domain model | `BridgingIT.DevKit.Domain` | `Customer.Create(...)` | none | none | [Basics page](getting-started-existing-app.md) |
-    | Domain events | `BridgingIT.DevKit.Domain` | `RepositoryDomainEventPublisherBehavior<T>` | none | none | [Basics page](getting-started-existing-app.md) |
-    | Notifier | `BridgingIT.DevKit.Common.Utilities` | `AddNotifier().AddHandlers()` | none | none | [Basics page](getting-started-existing-app.md) |
+    | Host builder | `BridgingIT.DevKit.Presentation.Web` | `DevKitWebApplication.CreateBuilder` | none | none | [Build guide](getting-started-existing-app.md) |
+    | Logging | `BridgingIT.DevKit.Presentation.Serilog` | `.AddLogging()` | none | none | [Recipe](#logging) |
+    | Correlation IDs | `BridgingIT.DevKit.Presentation.Web` | none | `UseRequestCorrelation()` | none | [Recipe](#logging) |
+    | Request logging | `BridgingIT.DevKit.Presentation.Web` | none | `UseRequestLogging()` | none | [Recipe](#logging) |
+    | Endpoints | `BridgingIT.DevKit.Presentation.Web` | `AddEndpoints<T>()` | `MapEndpoints()` | none | [Build guide](getting-started-existing-app.md) |
+    | Requester | `BridgingIT.DevKit.Common.Utilities` | `AddRequester().AddHandlers()` | none | none | [Build guide](getting-started-existing-app.md) |
+    | Modules | `BridgingIT.DevKit.Presentation.Web` | `AddModules(...)` | `UseRequestModuleContext(), UseModules(), MapModules()` | none | [Build guide](getting-started-existing-app.md) |
+    | DbContext | `BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer` | `AddSqlServerDbContext<T>().WithDatabaseMigratorService()` | none | none | [Build guide](getting-started-existing-app.md) |
+    | Repositories | `BridgingIT.DevKit.Infrastructure.EntityFramework` | `AddEntityFrameworkRepository<T, TContext>()` | none | none | [Build guide](getting-started-existing-app.md) |
+    | Domain model | `BridgingIT.DevKit.Domain` | `Customer.Create(...)` | none | none | [Build guide](getting-started-existing-app.md) |
+    | Domain events | `BridgingIT.DevKit.Domain` | `RepositoryDomainEventPublisherBehavior<T>` | none | none | [Build guide](getting-started-existing-app.md) |
+    | Notifier | `BridgingIT.DevKit.Common.Utilities` | `AddNotifier().AddHandlers()` | none | none | [Build guide](getting-started-existing-app.md) |
     | Notifications and more behaviors | `BridgingIT.DevKit.Common.Utilities` | `RetryPipelineBehavior<,>, TimeoutPipelineBehavior<,>` | none | none | [Recipe](#notifications) |
     | Mapping | `BridgingIT.DevKit.Common.Mapping` | `AddMapping().WithMapster()` | none | none | [Recipe](#mapping) |
     | Startup tasks | `BridgingIT.DevKit.Application.Utilities` | `AddStartupTasks().WithTask<T>()` | none | none | [Recipe](#startup-tasks) |

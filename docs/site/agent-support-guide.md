@@ -300,9 +300,9 @@ Use bdk_project_summary to orient on this app's modules and MCP capabilities. Th
 Use bdk_api_search for IRepository and Specification. Call bdk_api_get for the exact symbols you plan to use before editing repository code.
 ```
 
-### Add DevKit to an existing app
+### Build an app with DevKit
 
-The prompts that hand the DevKit basics to an agent live on the basics page. Copy them from [Hand the basics to an agent](getting-started-existing-app.md#hand-to-an-agent).
+Start with a minimal Web API and add capabilities one step at a time. The [planning and apply prompts](getting-started-existing-app.md#hand-to-an-agent) use bdk MCP to consult the relevant guides and APIs.
 
 ### Admin operations
 

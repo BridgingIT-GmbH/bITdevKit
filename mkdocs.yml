@@ -14,8 +14,8 @@ nav:
       - "Path A: New solution":
           - Create a solution from templates: getting-started-template.md
           - Templates reference: templates.md
-      - "Path B: Existing app":
-          - Add DevKit to an existing app: getting-started-existing-app.md
+      - "Path B: Step by step":
+          - Build an app with DevKit: getting-started-existing-app.md
           - Add features: getting-started-existing-app-features.md
   - Docs:
       - Documentation Overview: docs.md

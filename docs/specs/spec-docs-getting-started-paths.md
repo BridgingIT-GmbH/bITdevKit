@@ -11,6 +11,8 @@ status: draft
 
 The implemented walkthrough uses a `Customer` with `FirstName`, `LastName`, and `Email`, matching the template's terminology. The earlier `Parcels` names in this design and its captured output are historical. The current examples live in the two existing-app pages under `docs/site/`.
 
+The published Path B was revised on 2026-11-14 to build up a minimal Web API. It introduces module configuration in `appsettings.json`, then adds an entity, SQL Server context, initial migration, repository, handlers, and endpoints. It does not assume existing entities or persistence. Earlier SQLite walkthroughs and execution captures below describe the previous implementation.
+
 ## 1. Introduction
 
 The public site at `https://bridgingit-gmbh.github.io/bITdevKit/` has one onboarding path. Every entry point leads to `dotnet new bdksolution`:

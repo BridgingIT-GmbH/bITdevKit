@@ -10,7 +10,7 @@ hide:
 
     [**01** Walkthrough](getting-started-template.md)
     [**02** Templates reference](templates.md){ aria-current="page" }
-    <span class="switch">Have an app already? Use [Path B: existing app](getting-started-existing-app.md).</span>
+    <span class="switch">Want to choose each feature? Use [Path B: step by step](getting-started-existing-app.md).</span>
     { .path-pager }
 
 # Templates

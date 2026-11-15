@@ -58,8 +58,8 @@ FEATURE_ALIASES = {
 }
 TUTORIAL_STEP_COUNT = 10
 PROMPT_TEMPLATE = (
-    'Do step {step}, "{heading}", of the guide "Add DevKit to an existing app" in this application, and nothing else.',
-    "Use the bdk MCP connection from step 1. If it is unavailable, reconnect using step 1 before editing.",
+    'Do step {step}, "{heading}", of the guide "Build an app with DevKit" in this application, and nothing else.',
+    "Use the bdk MCP connection from step 2. If it is unavailable, reconnect using step 2 before editing.",
     "Read step {step} with bdk_docs_get and source docs/site/getting-started-existing-app.md.",
     "{guidance}",
     "Use bdk_docs_search for additional feature guides. Verify DevKit signatures with bdk_api_search, then "
@@ -67,12 +67,20 @@ PROMPT_TEMPLATE = (
     "Read devkit-plan.md for this app's names and rules. If it does not exist, run the planning prompt "
     'from the section "Use an agent" in the guide, and wait for my approval.',
     "If an earlier step is unchecked in the plan, stop and tell me.",
-    "Make the change with this app's names from the plan. Build the solution, run the step's check from the plan, "
+    "Make the change with this app's names from the plan. Build the application or solution, run the step's check from the plan, "
     "and stop the app.",
     "Tick step {step} in the plan and report the result. Leave the changes uncommitted for my review.",
 )
+MINIMAL_APP_PROMPT_TEMPLATE = (
+    'Do step {step}, "{heading}", of the guide "Build an app with DevKit".',
+    "Read https://bridgingit-gmbh.github.io/bITdevKit/getting-started-existing-app/#step-1.",
+    "Use the existing ASP.NET Core host if one is present. Otherwise create the plain .NET 10 web project "
+    "shown in the guide. Keep existing working features. Do not add an entity, DbContext, repository, or database yet.",
+    "Build the application, start it in Development, check its root route, and stop the process. "
+    "Report the project, namespace, URL, and check result. Leave changes uncommitted for review.",
+)
 MCP_SETUP_PROMPT_TEMPLATE = (
-    'Set up step {step}, "{heading}", of the guide "Add DevKit to an existing app" in this repository. Do not change application code.',
+    'Set up step {step}, "{heading}", of the guide "Build an app with DevKit" in this repository. Do not change application code.',
     "Read https://bridgingit-gmbh.github.io/bITdevKit/getting-started-existing-app/#step-{step}.",
     "Inspect the local tool manifest and MCP client configuration. Install or restore BridgingIT.DevKit.Cli "
     "and merge the bdk server into the client's configuration, preserving existing tools and servers. "
@@ -83,8 +91,8 @@ MCP_SETUP_PROMPT_TEMPLATE = (
     "with bdk_docs_get, and call bdk_guidance_list. These tools need no running DevKit host.",
     "{guidance}",
     "If documentation is truncated, read the full document from its returned URL.",
-    "Identify this app's existing create and read routes. Start it against a local development database, "
-    "run the guide's check with this app's names and URL, record the responses, and stop the app.",
+    "The starting application needs only its existing route from step 1. No database, entity, or customer "
+    "endpoints are required. Keep application code unchanged.",
     "Report the configuration files and check results. If devkit-plan.md exists, tick step {step} only after "
     "all checks pass. Leave changes uncommitted for my review. Do not apply later steps.",
 )
@@ -540,7 +548,7 @@ def agent_prompt_lines(step, heading, kind, values):
     else:
         topics = f"{', '.join(values[:-1])} and {values[-1]}"
         guidance = f"Call the bdk MCP tool bdk_guidance_get once for each of the topics {topics}."
-    template = MCP_SETUP_PROMPT_TEMPLATE if step == 1 else PROMPT_TEMPLATE
+    template = MINIMAL_APP_PROMPT_TEMPLATE if step == 1 else MCP_SETUP_PROMPT_TEMPLATE if step == 2 else PROMPT_TEMPLATE
     prompt = [line.format(step=step, heading=heading, guidance=guidance) for line in template]
     return ['??? prompt "AI prompt"', "", "    ```text", *(f"    {line}" for line in prompt), "    ```"]
 

@@ -30,7 +30,7 @@ No. Select the packages and features you need. You can begin with a small additi
 
 ### Can I add DevKit to an existing application? { data-feature-icons="false" }
 
-Yes. Introduce DevKit gradually while continuing to work on your existing application. The [existing application guide](getting-started-existing-app.md) walks through the changes, with a check and an AI prompt for each step.
+Yes. Introduce DevKit gradually while continuing to work on your existing application. The [step-by-step guide](getting-started-existing-app.md) walks through the changes, with a check and an AI prompt for each step.
 
 ### Do I have to start from a template? { data-feature-icons="false" }
 
@@ -38,7 +38,7 @@ No. The templates provide a prepared solution and an initial module for a new ap
 
 ### Do I need to reorganize my solution first? { data-feature-icons="false" }
 
-No. The existing application guide keeps the current project and introduces features within it. Separate layer projects and additional modules can follow when the application benefits from them. See the [architecture guide](architecture.md) for the intended boundaries.
+No. The step-by-step guide starts with a minimal Web API and introduces its module, entity, repository, and SQL Server context as they are needed. Existing applications can keep their current project. Separate layer projects and additional modules can follow when the application benefits from them. See the [architecture guide](architecture.md) for the intended boundaries.
 
 ### Which .NET version do I need? { data-feature-icons="false" }
 

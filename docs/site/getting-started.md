@@ -10,7 +10,7 @@ hide:
 
 # Get started
 
-Start a new solution from the templates, or add DevKit to an ASP.NET Core app you already have.
+Start with a prepared DevKit solution, or build up a Web API one feature at a time.
 
 For questions about adoption, architecture, or licensing, see the [FAQ](faq.md).
 
@@ -35,18 +35,18 @@ The templates generate a modular solution with application, domain, infrastructu
 
 <section class="path-card path-b" markdown>
 <div class="path-card__art path-card__art--stack" aria-hidden="true"><span style="width:3.2rem"></span><span style="width:4rem"></span><span style="width:4.8rem"></span><span style="width:5.6rem"></span><span style="width:6.4rem"></span></div>
-<div class="path-card__head"><span class="path-badge" aria-hidden="true">B</span><span class="path-card__kicker">Path B / existing app</span></div>
-<h3>Add DevKit to your app</h3>
+<div class="path-card__head"><span class="path-badge" aria-hidden="true">B</span><span class="path-card__kicker">Path B / step by step</span></div>
+<h3>Build your app step by step</h3>
 
-Add DevKit to a solution you already have. Choose the features you need and introduce them gradually, while continuing to build on your existing application.
+Start with a minimal web application or the solution you already have. Choose the features you need and build up the application step by step.
 
-<div class="path-card__cmd">dotnet add package BridgingIT.DevKit.Presentation.Web</div>
+<div class="path-card__cmd">dotnet new web -n Customers.Web</div>
 <ul class="path-card__fit">
-  <li>An ASP.NET Core app already in development or production</li>
+  <li>A new or existing web application</li>
   <li>You need one feature, such as queueing or jobs</li>
-  <li>You can't restructure the solution</li>
+  <li>You want to choose each feature as you go</li>
 </ul>
-[More<span aria-hidden="true">-&gt;</span>](getting-started-existing-app.md){ .cta-button .path-card__cta aria-label="More about adding DevKit to an existing app" }
+[More<span aria-hidden="true">-&gt;</span>](getting-started-existing-app.md){ .cta-button .path-card__cta aria-label="More about building an app step by step" }
 
 </section>
 
@@ -54,14 +54,14 @@ Add DevKit to a solution you already have. Choose the features you need and intr
 
 <div class="cmp" markdown>
 
-| | <span class="path-badge is-sm is-a" aria-hidden="true">A</span>New solution | <span class="path-badge is-sm is-b" aria-hidden="true">B</span>Existing app |
+| | <span class="path-badge is-sm is-a" aria-hidden="true">A</span>New solution | <span class="path-badge is-sm is-b" aria-hidden="true">B</span>Step by step |
 | --- | --- | --- |
-| Starting point | Empty directory | Running ASP.NET Core application |
-| First command | `dotnet new install BridgingIT.DevKit.Templates` | `dotnet add package BridgingIT.DevKit.Presentation.Web` |
-| Project layout | Generated module projects per layer | Unchanged |
-| Database | Generated module `DbContext` | Basics step 8 registers the application's `DbContext` through DevKit. It implements one interface per durable feature. |
-| Modules | Present from the start | Basics step 7 adds one module to the existing project |
-| Features | Preconfigured set | Added one recipe at a time, after the basics |
+| Starting point | Empty directory | Minimal or existing Web API |
+| First command | `dotnet new install BridgingIT.DevKit.Templates` | `dotnet new web` when starting a new app |
+| Project layout | Generated module projects per layer | Start with one project; add layers when useful |
+| Database | Generated module `DbContext` | Step 6 adds a SQL Server context and an initial schema. |
+| Modules | Present from the start | Step 4 adds a module with appsettings configuration |
+| Features | Preconfigured set | Added as you build the application |
 
 </div>
 

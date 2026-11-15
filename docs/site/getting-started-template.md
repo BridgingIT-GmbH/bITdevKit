@@ -6,13 +6,6 @@ hide:
 
 <!-- markdownlint-disable-file MD033 -->
 
-!!! path-a "Path A: new solution"
-
-    [**01** Walkthrough](getting-started-template.md){ aria-current="page" }
-    [**02** Templates reference](templates.md)
-    <span class="switch">Have an app already? Use [Path B: existing app](getting-started-existing-app.md).</span>
-    { .path-pager }
-
 # Create a solution from templates
 
 Create a `bITdevKit` solution, build it, and confirm that the generated projects compile.

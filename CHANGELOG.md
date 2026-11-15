@@ -2,12 +2,19 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
-## [Unreleased]
+## [10.0.124] - 2026-11-15
 
 - Added `Application.Caching` for typed and binary collections, coalesced source loading, typed dimension selection, safe invalidation, expiration, streaming, compression and optional local hot entries. Providers include InMemory, Entity Framework for SQL Server/PostgreSQL/SQLite, and native filesystem storage. Consumer DbContexts own EF migrations. Common Caching provides the separate minimal caching API.
 - Added `Presentation.Web.Caching` with optional HTTP, Dashboard, Console Commands and MCP management. The Caching dashboard includes collection entry counts, entry and dimension browsing, per-entry invalidation, collection settings, invalidation previews, overview charts, expandable advanced diagnostics and contextual tooltips.
-- Added cache-backed reference lookups in the example applications, including startup-populated InMemory collections and task-title suggestions. External shared-filesystem qualification and the remaining scale/performance measurements are deferred; recorded local checks do not qualify those deployments.
-- Fixed duplicate Broadcasting node-shutdown work during concurrent disposal and upgraded the .NET SDK baseline to 10.0.404.
+- Added `OptionsPatch`, `PatchOptionsBuilder`, and `OptionsConfigurationOverlay` for explicit option assignments, configuration overlays, and tracking which source supplied each setting. Explicit false, zero, null, and empty collections remain distinguishable from omitted settings.
+- Added typed value codecs and `ValueCodecRegistry`, streaming gzip payload transforms, and `AesGcmContinuationTokenProtector` for encrypted, authenticated continuation tokens.
+- Added shared resource budgets, admission controls, cancellation and transfer deadlines, owned task tracking, and bounded stream wrappers in `Common.Utilities`.
+- Added `BoundedTimeSeries`, `SampleStatistics.NearestRank()`, and `ByteSize.FormatBinary()`. Storage and profiling dashboards now use consistent binary size labels.
+- Added `GlobPatternMatcher` for reusable Unicode-aware glob matching without recursive backtracking. Fixed the existing string `Match()` wildcard to include line breaks.
+- Added `WithDbContextFactory()` to SQL Server context registration for independently owned contexts without request-scoped interceptors. Existing factory registrations are preserved.
+- Added `HttpRepresentationConditions` for conditional HTTP headers and single byte ranges, and `FileSystemKindProbe` for observing local, SMB, and Linux NFS filesystem types. Application Caching shared-filesystem qualification and remaining scale/performance measurements are deferred.
+- Fixed duplicate Broadcasting node-shutdown work during concurrent disposal.
+- Updated the .NET SDK baseline to 10.0.404.
 
 ## [10.0.123] - 2026-11-10
 

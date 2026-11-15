@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CacheRootQuotaState | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CacheRootQuotaState | bITdevKit API Reference ">
+      
+      <meta name="description" content="Holds conservative store-wide quota attribution and prepared-publication counters persisted in the root control ledger.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState" class="text-break">
+Class CacheRootQuotaState  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.html">FileSystem</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.html">Caching</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.FileSystem.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Holds conservative store-wide quota attribution and prepared-publication counters persisted in the root control ledger.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed record CacheRootQuotaState</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">CacheRootQuotaState</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureTableEntityConverter.html#BridgingIT_DevKit_Infrastructure_Azure_AzureTableEntityConverter_ToTableEntity__1___0_System_String_System_String_System_Text_Json_JsonSerializerOptions_BridgingIT_DevKit_Infrastructure_Azure_PropertyConverters___0__">AzureTableEntityConverter.ToTableEntity&lt;T&gt;(T, string, string, JsonSerializerOptions, PropertyConverters&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_examples">Examples</h2>
+  <pre><code class="lang-csharp">state.Validate(storeId); var snapshot = state.Snapshot(controlBytes);</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState__ctor" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.#ctor">
+  CacheRootQuotaState()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CacheRootQuotaState()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Available_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Available*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Available" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Available">
+  Available
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets remaining unreserved bytes after current, retired, metadata and dedicated control-workspace attribution, or a negative value for inconsistent counters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long Available { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_CatalogContracts_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.CatalogContracts*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_CatalogContracts" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.CatalogContracts">
+  CatalogContracts
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the retained contract count bounded by the format limit of 1,024.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CatalogContracts { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_CurrentBytes_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.CurrentBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_CurrentBytes" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.CurrentBytes">
+  CurrentBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets bytes attributed to current published payloads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long CurrentBytes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_CurrentEntries_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.CurrentEntries*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_CurrentEntries" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.CurrentEntries">
+  CurrentEntries
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the count of currently published positive and negative entries.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long CurrentEntries { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Format_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Format*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Format" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Format">
+  Format
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the durable quota-record format, currently one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Format { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_MaximumBytes_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.MaximumBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_MaximumBytes" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.MaximumBytes">
+  MaximumBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the fixed maximum physical byte attribution admitted by this quota.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long MaximumBytes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_MaximumEntries_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.MaximumEntries*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_MaximumEntries" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.MaximumEntries">
+  MaximumEntries
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the maximum total current and prepared entry count admitted by this quota.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long MaximumEntries { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_MetadataBytes_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.MetadataBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_MetadataBytes" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.MetadataBytes">
+  MetadataBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets conservative bytes attributed to checked metadata and index publications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long MetadataBytes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_OperationRecords_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.OperationRecords*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_OperationRecords" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.OperationRecords">
+  OperationRecords
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the retained tracked-operation count bounded by the configured history limit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int OperationRecords { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_PreparedEntries_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.PreparedEntries*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_PreparedEntries" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.PreparedEntries">
+  PreparedEntries
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets positive entry-count deltas reserved by publications awaiting exact confirmation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long PreparedEntries { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_PreparedOperations_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.PreparedOperations*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_PreparedOperations" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.PreparedOperations">
+  PreparedOperations
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the count of prepared publications whose final quota deltas remain unresolved.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long PreparedOperations { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_ReservedBytes_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.ReservedBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_ReservedBytes" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.ReservedBytes">
+  ReservedBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets bytes durably admitted to physical operations whose final attribution is not yet confirmed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long ReservedBytes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_RetiredBytes_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.RetiredBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_RetiredBytes" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.RetiredBytes">
+  RetiredBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets bytes attributed to retired payloads still awaiting safe physical reclamation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long RetiredBytes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_StoreId_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.StoreId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_StoreId" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.StoreId">
+  StoreId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the generated store identity owning this root quota state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string StoreId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_WorkspaceBytes_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.WorkspaceBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_WorkspaceBytes" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.WorkspaceBytes">
+  WorkspaceBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the dedicated control-ledger workspace charged before ordinary data admission.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long WorkspaceBytes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_AbortPrepared_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.AbortPrepared*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_AbortPrepared_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheQuotaChange_System_Int64_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.AbortPrepared(BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheQuotaChange,System.Int64)">
+  AbortPrepared(CacheQuotaChange, long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes prepared counters and returns reserved space for a publication proven not to have committed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CacheRootQuotaState AbortPrepared(CacheQuotaChange change, long releasedCredit)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>change</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheQuotaChange.html">CacheQuotaChange</a></dt>
+    <dd></dd>
+    <dt><code>releasedCredit</code> <span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.html">CacheRootQuotaState</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Add_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Add*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Add_System_Int64_System_Int64_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Add(System.Int64,System.Int64)">
+  Add(long, long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a checked quota delta without allowing negative counters or integer overflow.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long Add(long current, long delta)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>current</code> <span class="xref">long</span></dt>
+    <dd></dd>
+    <dt><code>delta</code> <span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Apply_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Apply*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Apply_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheQuotaChange_System_Int64_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Apply(BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheQuotaChange,System.Int64)">
+  Apply(CacheQuotaChange, long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases the supplied reservation and applies one checked quota delta, rejecting overflow or exceeded store limits.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CacheRootQuotaState Apply(CacheQuotaChange change, long releasedCredit)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>change</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheQuotaChange.html">CacheQuotaChange</a></dt>
+    <dd></dd>
+    <dt><code>releasedCredit</code> <span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.html">CacheRootQuotaState</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Confirm_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Confirm*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Confirm_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheQuotaChange_System_Int64_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Confirm(BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheQuotaChange,System.Int64)">
+  Confirm(CacheQuotaChange, long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes the prepared counters and applies the publication delta while returning its reserved credit exactly once.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CacheRootQuotaState Confirm(CacheQuotaChange change, long releasedCredit)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>change</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheQuotaChange.html">CacheQuotaChange</a></dt>
+    <dd></dd>
+    <dt><code>releasedCredit</code> <span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.html">CacheRootQuotaState</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Equals_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Equals*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Equals_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Equals(BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState)">
+  Equals(CacheRootQuotaState?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(CacheRootQuotaState? other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.html">CacheRootQuotaState</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Equals_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Equals*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Equals_System_Object_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Equals(System.Object)">
+  Equals(object?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_GetHashCode_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.GetHashCode*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_GetHashCode" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.GetHashCode">
+  GetHashCode()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Prepare_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Prepare*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Prepare_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheQuotaChange_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Prepare(BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheQuotaChange)">
+  Prepare(CacheQuotaChange)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Charges prepared entry and operation counters before publication without yet adopting the final quota delta.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CacheRootQuotaState Prepare(CacheQuotaChange change)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>change</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheQuotaChange.html">CacheQuotaChange</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.html">CacheRootQuotaState</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Release_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Release*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Release_System_Int64_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Release(System.Int64)">
+  Release(long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a state releasing at most the bytes currently reserved; inconsistent releases report Corruption.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CacheRootQuotaState Release(long bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.html">CacheRootQuotaState</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Remaining_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Remaining*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Remaining_System_Int64_System_ReadOnlySpan_System_Int64__" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Remaining(System.Int64,System.ReadOnlySpan{System.Int64})">
+  Remaining(long, ReadOnlySpan&lt;long&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Subtracts nonnegative bounded components without overflow, returning negative one for inconsistent attribution.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long Remaining(long maximum, ReadOnlySpan&lt;long&gt; parts)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>maximum</code> <span class="xref">long</span></dt>
+    <dd></dd>
+    <dt><code>parts</code> <span class="xref">ReadOnlySpan</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Reserve_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Reserve*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Reserve_System_Int64_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Reserve(System.Int64)">
+  Reserve(long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a state charging additional positive reserved bytes, or rejects capacity before attribution changes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CacheRootQuotaState Reserve(long bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.html">CacheRootQuotaState</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Snapshot_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Snapshot*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Snapshot_System_Int64_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Snapshot(System.Int64)">
+  Snapshot(long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps conservative attribution to public quota fields, separating actual control bytes from unused dedicated workspace.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CacheProviderQuota Snapshot(long workspaceActualBytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>workspaceActualBytes</code> <span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderQuota.html">CacheProviderQuota</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_ToString_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.ToString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_ToString" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.ToString">
+  ToString()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Validate_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Validate*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_Validate_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.Validate(System.String)">
+  Validate(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Rejects identity mismatches, impossible quota counters and bounded catalog or operation counts outside the format contract.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Validate(string storeId)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>storeId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_op_Equality_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.op_Equality*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_op_Equality_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.op_Equality(BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState,BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState)">
+  operator ==(CacheRootQuotaState?, CacheRootQuotaState?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(CacheRootQuotaState? left, CacheRootQuotaState? right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.html">CacheRootQuotaState</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.html">CacheRootQuotaState</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_op_Inequality_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.op_Inequality*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_op_Inequality_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaState_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.op_Inequality(BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState,BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState)">
+  operator !=(CacheRootQuotaState?, CacheRootQuotaState?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(CacheRootQuotaState? left, CacheRootQuotaState? right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.html">CacheRootQuotaState</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.html">CacheRootQuotaState</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -126,6 +126,11 @@ Classes
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.AesGcmContinuationTokenProtector.html">AesGcmContinuationTokenProtector</a></dt>
+      <dd><p>Encrypts and authenticates bounded continuation payloads without exposing their contents.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.AllRule-1.html">AllRule&lt;T&gt;</a></dt>
       <dd><p>Represents a collection of all the rules to be applied for a specific operation or validation process.</p>
 </dd>
@@ -362,6 +367,11 @@ This attribute is used to categorize and filter tests during test discovery.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BoundedTimeSeries-1.html">BoundedTimeSeries&lt;T&gt;</a></dt>
+      <dd><p>Retains a fixed number of observations and returns bounded, chronological time windows.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastContext.html">BroadcastContext</a></dt>
       <dd><p>Supplies metadata to a node-local typed handler.</p>
 </dd>
@@ -588,7 +598,7 @@ This attribute is used to categorize and filter tests during test discovery.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ByteSize.html">ByteSize</a></dt>
-      <dd><p>Provides convenience helpers for calculating binary byte sizes.</p>
+      <dd><p>Provides helpers for calculating and displaying binary byte sizes.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -614,6 +624,11 @@ This attribute is used to categorize and filter tests during test discovery.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.CamelCaseInitialPathShorteningStrategy.html">CamelCaseInitialPathShorteningStrategy</a></dt>
       <dd><p>Replaces every non-terminal segment with initials derived from its camel-case words, then left-truncates only if necessary.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.CancellationDeadline.html">CancellationDeadline</a></dt>
+      <dd><p>Owns one fixed cancellation deadline and contains faults raised by cancellation callbacks.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -1773,6 +1788,11 @@ for querying collections of data.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ForwardOnlyReadStream.html">ForwardOnlyReadStream</a></dt>
+      <dd><p>Exposes a readable stream without seeking or writing capabilities.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.FrenchRelativeTimeLanguage.html">FrenchRelativeTimeLanguage</a></dt>
       <dd><p>French relative-time language.</p>
 </dd>
@@ -1790,6 +1810,11 @@ to perform a full-text search in a given context.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.GZipPayloadTransform.html">GZipPayloadTransform</a></dt>
+      <dd><p>Encodes and decodes the version-one gzip representation using forward-only BCL streams.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.GermanRelativeTimeLanguage.html">GermanRelativeTimeLanguage</a></dt>
       <dd><p>German relative-time language.</p>
 </dd>
@@ -1802,6 +1827,11 @@ to perform a full-text search in a given context.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.GitCheckoutInfo.html">GitCheckoutInfo</a></dt>
       <dd><p>Describes the Git checkout that contains a directory.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.GlobPatternMatcher.html">GlobPatternMatcher</a></dt>
+      <dd><p>Matches whole-text globs with Unicode-scalar wildcards and no recursive backtracking.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -2170,6 +2200,11 @@ with a specified entry point.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.LessThanRule-1.html">LessThanRule&lt;T&gt;</a></dt>
       <dd><p>Represents a validation rule that checks if a value is less than a specified value.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.LimitedWriteStream.html">LimitedWriteStream</a></dt>
+      <dd><p>Counts completed writes and rejects writes exceeding a byte limit without owning the destination.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -2866,8 +2901,33 @@ contained within a specified set of disallowed values.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.OptionsConfigurationOverlay.html">OptionsConfigurationOverlay</a></dt>
+      <dd><p>Applies present configuration properties to a snapshot and replaces supplied collections in full.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.OptionsPatch.html">OptionsPatch</a></dt>
+      <dd><p>Stores explicit, case-insensitive option paths as independent JSON value snapshots.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.OwnedStream.html">OwnedStream</a></dt>
+      <dd><p>Delegates stream operations and releases an associated owner exactly once after disposing the underlying stream.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.OwnedTaskTracker.html">OwnedTaskTracker</a></dt>
+      <dd><p>Observes already admitted tasks and retains ambient resource ownership until actual task completion.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.PartialOperationError.html">PartialOperationError</a></dt>
       <dd><p>Represents an error where only a partial set of operations succeeded, such as in bulk file operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.PatchOptionsBuilder-2.html">PatchOptionsBuilder&lt;TOptions, TSelf&gt;</a></dt>
+      <dd><p>Records explicitly assigned option properties without assigning values for omitted properties.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -3588,6 +3648,11 @@ Strongly-typed keys are supported optionally via <a class="xref" href="BridgingI
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.RangeReadStream.html">RangeReadStream</a></dt>
+      <dd><p>Exposes at most a fixed number of bytes from an already positioned readable stream.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.RawKeyDisplayStrategy.html">RawKeyDisplayStrategy</a></dt>
       <dd><p>Displays keys unchanged for normal operational diagnostics.</p>
 </dd>
@@ -3699,8 +3764,38 @@ find the appropriate module based on the provided HTTP request.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ResourceAdmission.html">ResourceAdmission</a></dt>
+      <dd><p>Provides bounded hierarchical active/queue admission without occupying a parent slot while a child waits.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ResourceAdmissionLease.html">ResourceAdmissionLease</a></dt>
+      <dd><p>Owns active admission until execution or transfer actually terminates.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ResourceBudget.html">ResourceBudget</a></dt>
+      <dd><p>Charges finite owned capacity through a parent/child budget hierarchy.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ResourceCharge.html">ResourceCharge</a></dt>
+      <dd><p>Owns one atomic reservation across independent native/transient and hierarchical resident budgets.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ResourceError.html">ResourceError</a></dt>
       <dd><p>Represents a general resource availability or quota error.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ResourceLeaseContext.html">ResourceLeaseContext</a></dt>
+      <dd><p>Retains a caller-owned resource while asynchronous work outlives its bounded caller wait.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ResourceReservation.html">ResourceReservation</a></dt>
+      <dd><p>Owns one hierarchical capacity charge until the actual buffer, stream, pin, or native work stops.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -4439,6 +4534,11 @@ distributed operations without traditional two-phase commit.
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.SampleStatistics.html">SampleStatistics</a></dt>
+      <dd><p>Selects sample quantiles without interpolating or converting actual observations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.SecurityError.html">SecurityError</a></dt>
       <dd><p>Represents a general authentication or authorization error.</p>
 </dd>
@@ -4466,6 +4566,11 @@ distributed operations without traditional two-phase commit.
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.SerializerExtensions.html">SerializerExtensions</a></dt>
       <dd><p>Provides stream, byte-array, and string adapters for <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a> implementations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.SerializerValueCodec-1.html">SerializerValueCodec&lt;T&gt;</a></dt>
+      <dd><p>Adapts an existing synchronous serializer while preserving its real access requirements.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -4594,6 +4699,11 @@ distributed operations without traditional two-phase commit.
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.StreamingPayloadTransformDescriptor.html">StreamingPayloadTransformDescriptor</a></dt>
+      <dd><p>Describes one transform in encoding order; decoding applies an ordered stack in reverse.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.StringExtensions.html">StringExtensions</a></dt>
       <dd><p>Provides string-specific extension methods.</p>
 </dd>
@@ -4666,6 +4776,11 @@ distributed operations without traditional two-phase commit.
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.SystemTextJsonSerializer.html">SystemTextJsonSerializer</a></dt>
       <dd><p>Serializes values as JSON with System.Text.Json.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.SystemTextJsonValueCodec-1.html">SystemTextJsonValueCodec&lt;T&gt;</a></dt>
+      <dd><p>Encodes typed JSON with DevKit conventions using asynchronous forward-only BCL I/O.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -4795,6 +4910,11 @@ without requiring constructor injection or method parameters.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.TracingBehavior-2.html">TracingBehavior&lt;TRequest, TResponse&gt;</a></dt>
       <dd><p>Wraps every request execution in a diagnostic activity tagged with the request type.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.TransferDeadline.html">TransferDeadline</a></dt>
+      <dd><p>Tracks transfer inactivity and absolute lifetime using the configured clock.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -4993,6 +5113,31 @@ or [JsonConstructor].</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ValueCodecCapabilities.html">ValueCodecCapabilities</a></dt>
+      <dd><p>Declares codec resource/access requirements rather than inferring them from stream-shaped methods.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ValueCodecError.html">ValueCodecError</a></dt>
+      <dd><p>Reports an encoding, decoding, or codec capability failure without exposing payload content.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ValueCodecRegistration-1.html">ValueCodecRegistration&lt;T&gt;</a></dt>
+      <dd><p>Registers a typed codec using a statically selected value contract.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ValueCodecRegistry.html">ValueCodecRegistry</a></dt>
+      <dd><p>Resolves an immutable set of explicitly registered format readers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ValueCodecServiceCollectionExtensions.html">ValueCodecServiceCollectionExtensions</a></dt>
+      <dd><p>Registers trusted reusable codecs independently of application/storage features.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.Version.html">Version</a></dt>
       <dd><p>Represents a Semantic Version (SemVer) with major, minor, patch, prerelease, and build metadata components.
 Provides methods for parsing, comparing, and rendering version strings.</p>
@@ -5149,6 +5294,11 @@ This struct provides value semantics and is optimized for reference type values.
       <dt><a class="xref" href="BridgingIT.DevKit.Common.Unit.html">Unit</a></dt>
       <dd><p>Represents a type with no meaningful value, used as a placeholder in scenarios
 where a result is required but no data needs to be returned (e.g., for commands).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ValueCodecFormat.html">ValueCodecFormat</a></dt>
+      <dd><p>Identifies a persisted representation independently of application contract versions.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -5935,6 +6085,11 @@ Implementations should provide the logic of the task within the ExecuteAsync met
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IStreamingPayloadTransform.html">IStreamingPayloadTransform</a></dt>
+      <dd><p>Defines one versioned, reversible streaming transformation independently of storage and application policy.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ITextSerializer.html">ITextSerializer</a></dt>
       <dd><p>Identifies an <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a> whose serialized representation is text.</p>
 </dd>
@@ -5947,6 +6102,21 @@ Implementations should provide the logic of the task within the ExecuteAsync met
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ITransientStorageError.html">ITransientStorageError</a></dt>
       <dd><p>Exposes whether a storage failure may be retried within the configured policy budget.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IValueCodecRegistration.html">IValueCodecRegistration</a></dt>
+      <dd><p>Describes one trusted generic codec registration without loading types from persisted identifiers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IValueCodecValidator-1.html">IValueCodecValidator&lt;T&gt;</a></dt>
+      <dd><p>Validates an encoded contract in one bounded pass without materializing an arbitrary object graph.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IValueCodec-1.html">IValueCodec&lt;T&gt;</a></dt>
+      <dd><p>Encodes a declared value contract without imposing storage or application policy.</p>
 </dd>
     </dl>
     <dl class="jumplist">

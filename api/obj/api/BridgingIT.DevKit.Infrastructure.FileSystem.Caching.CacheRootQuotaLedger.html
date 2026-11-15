@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CacheRootQuotaLedger | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CacheRootQuotaLedger | bITdevKit API Reference ">
+      
+      <meta name="description" content="Serializes durable root quota, collection boundaries, publication receipts and tracked-operation checkpoints without owning application payload transfers.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger" class="text-break">
+Class CacheRootQuotaLedger  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.html">FileSystem</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.html">Caching</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.FileSystem.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Serializes durable root quota, collection boundaries, publication receipts and tracked-operation checkpoints without owning application payload transfers.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CacheRootQuotaLedger</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">CacheRootQuotaLedger</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_examples">Examples</h2>
+  <pre><code class="lang-csharp">var quota = await ledger.GetQuotaAsync(token); // Use the provider for application cache operations.</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger__ctor_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheStoreRoot_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheStoreHeader_System_Int64_BridgingIT_DevKit_Common_ResourceBudget_BridgingIT_DevKit_Common_ResourceBudget_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheIndexBlockCache_System_TimeProvider_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheStoreHeader_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.#ctor(BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheStoreRoot,BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheStoreHeader,System.Int64,BridgingIT.DevKit.Common.ResourceBudget,BridgingIT.DevKit.Common.ResourceBudget,BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexBlockCache,System.TimeProvider,BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheStoreHeader)">
+  CacheRootQuotaLedger(CacheStoreRoot, CacheStoreHeader, long, ResourceBudget, ResourceBudget, CacheIndexBlockCache, TimeProvider, CacheStoreHeader)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Binds the control ledger to one inspected root generation; the optional recovery fence is reserved for explicitly quiescent recovery.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CacheRootQuotaLedger(CacheStoreRoot root, CacheStoreHeader header, long rootHeaderBytes, ResourceBudget transient, ResourceBudget resident, CacheIndexBlockCache blocks, TimeProvider time, CacheStoreHeader recoveryFence = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>root</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheStoreRoot.html">CacheStoreRoot</a></dt>
+    <dd></dd>
+    <dt><code>header</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheStoreHeader.html">CacheStoreHeader</a></dt>
+    <dd></dd>
+    <dt><code>rootHeaderBytes</code> <span class="xref">long</span></dt>
+    <dd></dd>
+    <dt><code>transient</code> <a class="xref" href="BridgingIT.DevKit.Common.ResourceBudget.html">ResourceBudget</a></dt>
+    <dd></dd>
+    <dt><code>resident</code> <a class="xref" href="BridgingIT.DevKit.Common.ResourceBudget.html">ResourceBudget</a></dt>
+    <dd></dd>
+    <dt><code>blocks</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexBlockCache.html">CacheIndexBlockCache</a></dt>
+    <dd></dd>
+    <dt><code>time</code> <span class="xref">TimeProvider</span></dt>
+    <dd></dd>
+    <dt><code>recoveryFence</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheStoreHeader.html">CacheStoreHeader</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_AdvanceEpochAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.AdvanceEpochAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_AdvanceEpochAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.AdvanceEpochAsync(System.String,System.Threading.CancellationToken)">
+  AdvanceEpochAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Atomically advances the durable collection epoch so previously captured source rights can no longer publish.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;long&gt; AdvanceEpochAsync(string collectionIdentity, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collectionIdentity</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_AttachCommitAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.AttachCommitAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_AttachCommitAsync_System_String_System_String_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheShardCommitIdentity_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.AttachCommitAsync(System.String,System.String,BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheShardCommitIdentity,System.Threading.CancellationToken)">
+  AttachCommitAsync(string, string, CacheShardCommitIdentity, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Binds one predeclared segment and manifest generation to a caller-owned reserved mutation credit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask AttachCommitAsync(string id, string nodeId, CacheShardCommitIdentity commit, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>nodeId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>commit</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheShardCommitIdentity.html">CacheShardCommitIdentity</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_AttachCompactionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.AttachCompactionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_AttachCompactionAsync_System_String_System_String_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheNativeCompactionPlan_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.AttachCompactionAsync(System.String,System.String,BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeCompactionPlan,System.Threading.CancellationToken)">
+  AttachCompactionAsync(string, string, CacheNativeCompactionPlan, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Binds a reserved compaction credit to an immutable input plan before any compaction output is written.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask AttachCompactionAsync(string id, string nodeId, CacheNativeCompactionPlan plan, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>nodeId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>plan</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeCompactionPlan.html">CacheNativeCompactionPlan</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_BeginInvalidationAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.BeginInvalidationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_BeginInvalidationAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_System_String_System_String_System_String_System_Func_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheCollectionBoundary_BridgingIT_DevKit_Application_Caching_CacheInvalidationOutcome__System_Threading_CancellationToken_System_Boolean_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.BeginInvalidationAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,System.String,System.String,System.String,System.Func{BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheCollectionBoundary,BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome},System.Threading.CancellationToken,System.Boolean)">
+  BeginInvalidationAsync(CacheEntryIdentity, string, string, string, Func&lt;CacheCollectionBoundary, CacheInvalidationOutcome&gt;, CancellationToken, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Atomically captures the bounded collection invalidation outcome and, when requested, advances the root collection epoch before scanning shards.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheInvalidationOutcome&gt; BeginInvalidationAsync(CacheEntryIdentity scope, string fingerprint, string operationId, string nodeId, Func&lt;CacheCollectionBoundary, CacheInvalidationOutcome&gt; create, CancellationToken cancellationToken, bool advance = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>scope</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>fingerprint</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>operationId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>nodeId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>create</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheCollectionBoundary.html">CacheCollectionBoundary</a>, <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome.html">CacheInvalidationOutcome</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+    <dt><code>advance</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome.html">CacheInvalidationOutcome</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_CaptureBoundaryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.CaptureBoundaryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_CaptureBoundaryAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.CaptureBoundaryAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,System.Threading.CancellationToken)">
+  CaptureBoundaryAsync(CacheEntryIdentity, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captures the durable epoch and per-shard publication sequence bounds for one logical collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheCollectionBoundary&gt; CaptureBoundaryAsync(CacheEntryIdentity scope, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>scope</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheCollectionBoundary.html">CacheCollectionBoundary</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ConfirmPreparedAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ConfirmPreparedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ConfirmPreparedAsync_System_String_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ConfirmPreparedAsync(System.String,BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,System.String,System.String,System.Threading.CancellationToken)">
+  ConfirmPreparedAsync(string, CacheEntryIdentity, string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Confirms a prepared quota delta only for the exact identity, payload version and observed publication generation; repeated confirmations are idempotent.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheSpaceCredit&gt; ConfirmPreparedAsync(string id, CacheEntryIdentity identity, string version, string publicationGeneration, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>version</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>publicationGeneration</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheSpaceCredit.html">CacheSpaceCredit</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_CreateTrackedProgressAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.CreateTrackedProgressAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_CreateTrackedProgressAsync_System_String_System_String_System_String_System_String_BridgingIT_DevKit_Application_Caching_CacheInvalidationOutcome_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.CreateTrackedProgressAsync(System.String,System.String,System.String,System.String,BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome,System.Threading.CancellationToken)">
+  CreateTrackedProgressAsync(string, string, string, string, CacheInvalidationOutcome, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates the operation claim, fingerprint, revision and continuation before creating one proposed durable progress checkpoint.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheNativeTrackedProgress&gt; CreateTrackedProgressAsync(string id, string fingerprint, string nodeId, string continuation, CacheInvalidationOutcome outcome, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>fingerprint</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>nodeId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>continuation</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>outcome</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome.html">CacheInvalidationOutcome</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeTrackedProgress.html">CacheNativeTrackedProgress</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ForgetMetadataCreditAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ForgetMetadataCreditAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ForgetMetadataCreditAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ForgetMetadataCreditAsync(System.String,System.Threading.CancellationToken)">
+  ForgetMetadataCreditAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tombstones only released credits or committed metadata credits whose native work and any required compaction reclamation have ended.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask ForgetMetadataCreditAsync(string id, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ForgetPayloadCreditAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ForgetPayloadCreditAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ForgetPayloadCreditAsync_System_String_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ForgetPayloadCreditAsync(System.String,BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,System.String,System.Threading.CancellationToken)">
+  ForgetPayloadCreditAsync(string, CacheEntryIdentity, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Forgets an exact committed payload credit only after its caller has proven that no current, retired, receipt or physical payload ownership remains.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask ForgetPayloadCreditAsync(string id, CacheEntryIdentity identity, string version, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd><p>The generated durable payload credit identity.</p>
+</dd>
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd><p>The full identity checked under its shard authority.</p>
+</dd>
+    <dt><code>version</code> <span class="xref">string</span></dt>
+    <dd><p>The immutable payload version whose physical ownership has ended.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels the bounded control-ledger update.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ForgetPayloadCreditAsync_System_String_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await ledger.ForgetPayloadCreditAsync(credit.Id, credit.Identity, credit.Version, token);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ForgetPayloadCreditAsync_System_String_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This removes control bookkeeping only. Physical byte attribution must already have been returned by the conditional retirement transaction.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetContractAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetContractAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetContractAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetContractAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,System.Threading.CancellationToken)">
+  GetContractAsync(CacheEntryIdentity, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads and validates the exact persisted value contract, reporting NotFound when absent.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheNativeContract&gt; GetContractAsync(CacheEntryIdentity identity, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeContract.html">CacheNativeContract</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetCreditAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetCreditAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetCreditAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetCreditAsync(System.String,System.Threading.CancellationToken)">
+  GetCreditAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads and validates one exact durable space credit by generated ID.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheSpaceCredit&gt; GetCreditAsync(string id, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheSpaceCredit.html">CacheSpaceCredit</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetCreditsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetCreditsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetCreditsAsync_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheIndexKey_System_Int32_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetCreditsAsync(BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexKey,System.Int32,System.Threading.CancellationToken)">
+  GetCreditsAsync(CacheIndexKey, int, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a charged bounded page of checked credits after the exclusive continuation key; dispose the page before retaining no further records.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheNativeCreditPage&gt; GetCreditsAsync(CacheIndexKey after, int limit, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>after</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexKey.html">CacheIndexKey</a></dt>
+    <dd></dd>
+    <dt><code>limit</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeCreditPage.html">CacheNativeCreditPage</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetCursorKeyAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetCursorKeyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetCursorKeyAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetCursorKeyAsync(System.Threading.CancellationToken)">
+  GetCursorKeyAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads or durably creates the private 32-byte continuation-encryption key; callers must never log or expose this key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;byte[]&gt; GetCursorKeyAsync(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<span class="xref">byte</span>[]&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetEpochAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetEpochAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetEpochAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetEpochAsync(System.String,System.Threading.CancellationToken)">
+  GetEpochAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads the durable logical collection epoch used by source publication fences.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;long&gt; GetEpochAsync(string collectionIdentity, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collectionIdentity</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetOperationAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetOperationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetOperationAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetOperationAsync(System.String,System.Threading.CancellationToken)">
+  GetOperationAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns one checked tracked-operation record with an owned memory charge, or reports NotFound.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheMetadataDocument&lt;CacheNativeOperationRecord&gt;&gt; GetOperationAsync(string id, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataDocument-1.html">CacheMetadataDocument</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeOperationRecord.html">CacheNativeOperationRecord</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetOperationsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetOperationsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetOperationsAsync_System_Collections_Generic_IReadOnlySet_System_String__System_Int32_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetOperationsAsync(System.Collections.Generic.IReadOnlySet{System.String},System.Int32,System.Threading.CancellationToken)">
+  GetOperationsAsync(IReadOnlySet&lt;string&gt;, int, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns bounded authorized operations with active work first, followed by recent retained history, under a decoded-byte admission limit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheNativeOperationPage&gt; GetOperationsAsync(IReadOnlySet&lt;string&gt; scopes, int limit, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>scopes</code> <span class="xref">IReadOnlySet</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>limit</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeOperationPage.html">CacheNativeOperationPage</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetQuotaAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetQuotaAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetQuotaAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetQuotaAsync(System.Threading.CancellationToken)">
+  GetQuotaAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns conservative quota attribution including control workspace; retained uncertain credits make the snapshot inexact.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheProviderQuota&gt; GetQuotaAsync(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderQuota.html">CacheProviderQuota</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetReceiptAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetReceiptAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetReceiptAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_System_Int32_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetReceiptAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,System.Int32,System.Threading.CancellationToken)">
+  GetReceiptAsync(CacheEntryIdentity, int, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads the durable publication receipt for an identity's shard or an explicitly supplied shard within a logical collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheShardReceipt&gt; GetReceiptAsync(CacheEntryIdentity scope, int shard, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>scope</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>shard</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheShardReceipt.html">CacheShardReceipt</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetReceiptAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetReceiptAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetReceiptAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetReceiptAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,System.Threading.CancellationToken)">
+  GetReceiptAsync(CacheEntryIdentity, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads the durable publication receipt for an identity's shard or an explicitly supplied shard within a logical collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheShardReceipt&gt; GetReceiptAsync(CacheEntryIdentity identity, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheShardReceipt.html">CacheShardReceipt</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetRecoveryScopesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetRecoveryScopesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GetRecoveryScopesAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GetRecoveryScopesAsync(System.Threading.CancellationToken)">
+  GetRecoveryScopesAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads bounded retained catalog identities for explicit offline recovery without deriving ownership from a filesystem payload inventory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;IReadOnlyList&lt;CacheEntryIdentity&gt;&gt; GetRecoveryScopesAsync(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GrowAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GrowAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_GrowAsync_System_String_System_String_System_Int64_System_Threading_CancellationToken_System_Int64_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.GrowAsync(System.String,System.String,System.Int64,System.Threading.CancellationToken,System.Int64)">
+  GrowAsync(string, string, long, CancellationToken, long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Grows a caller-owned reserved credit by at most one configured credit increment, preferring extra headroom only when both quotas permit it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheSpaceCredit&gt; GrowAsync(string id, string nodeId, long requiredBytes, CancellationToken cancellationToken, long preferredBytes = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>nodeId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>requiredBytes</code> <span class="xref">long</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+    <dt><code>preferredBytes</code> <span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheSpaceCredit.html">CacheSpaceCredit</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_MaintainOperationsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.MaintainOperationsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_MaintainOperationsAsync_System_Int32_System_TimeSpan_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.MaintainOperationsAsync(System.Int32,System.TimeSpan,System.Threading.CancellationToken)">
+  MaintainOperationsAsync(int, TimeSpan, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reaps a bounded batch of expired terminal tracked operations without evicting active work.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask MaintainOperationsAsync(int maximumRecords, TimeSpan retention, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>maximumRecords</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>retention</code> <span class="xref">TimeSpan</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_MarkNativeEndedAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.MarkNativeEndedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_MarkNativeEndedAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.MarkNativeEndedAsync(System.String,System.String,System.Threading.CancellationToken)">
+  MarkNativeEndedAsync(string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Durably marks a matching node's native work as actually terminated; a timeout alone never authorizes this transition.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask MarkNativeEndedAsync(string id, string nodeId, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>nodeId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ObserveCancellationBoundaryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ObserveCancellationBoundaryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ObserveCancellationBoundaryAsync_System_String_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ObserveCancellationBoundaryAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+  ObserveCancellationBoundaryAsync(string, string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Observes a remote cancellation request at a proven operation boundary and durably completes cancellation only for the current execution claim.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheInvalidationOutcome&gt; ObserveCancellationBoundaryAsync(string id, string continuation, string nodeId, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>continuation</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>nodeId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome.html">CacheInvalidationOutcome</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_PublishAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.PublishAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_PublishAsync_System_String_System_String_System_Int64_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheQuotaChange_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask_System_Int64___System_Threading_CancellationToken_System_Int64_System_String_System_Nullable_System_Int64__BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheNativeTrackedProgress_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.PublishAsync(System.String,System.String,System.Int64,BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheQuotaChange,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.ValueTask{System.Int64}},System.Threading.CancellationToken,System.Int64,System.String,System.Nullable{System.Int64},BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeTrackedProgress)">
+  PublishAsync(string, string, long, CacheQuotaChange, Func&lt;CancellationToken, ValueTask&lt;long&gt;&gt;, CancellationToken, long, string, long?, CacheNativeTrackedProgress)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Prepares durable quota and the shard receipt, runs the guarded manifest publication, then confirms its quota delta and optional operation checkpoint exactly once.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;long&gt; PublishAsync(string id, string nodeId, long expectedEpoch, CacheQuotaChange change, Func&lt;CancellationToken, ValueTask&lt;long&gt;&gt; publish, CancellationToken cancellationToken, long publicationSequence = 0, string expectedPreviousGeneration = null, long? expectedPreviousSequence = null, CacheNativeTrackedProgress trackedProgress = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>nodeId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>expectedEpoch</code> <span class="xref">long</span></dt>
+    <dd></dd>
+    <dt><code>change</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheQuotaChange.html">CacheQuotaChange</a></dt>
+    <dd></dd>
+    <dt><code>publish</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">ValueTask</span>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+    <dt><code>publicationSequence</code> <span class="xref">long</span></dt>
+    <dd></dd>
+    <dt><code>expectedPreviousGeneration</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>expectedPreviousSequence</code> <span class="xref">long</span>?</dt>
+    <dd></dd>
+    <dt><code>trackedProgress</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeTrackedProgress.html">CacheNativeTrackedProgress</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_RebindRecoveryOperationsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.RebindRecoveryOperationsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_RebindRecoveryOperationsAsync_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheStoreHeader_System_Byte___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.RebindRecoveryOperationsAsync(BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheStoreHeader,System.Byte[],System.Threading.CancellationToken)">
+  RebindRecoveryOperationsAsync(CacheStoreHeader, byte[], CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reencrypts active tracked continuations for the fenced recovery generation and clears stopped execution claims while preserving their original cutoff and sequence bounds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask RebindRecoveryOperationsAsync(CacheStoreHeader fence, byte[] secret, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fence</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheStoreHeader.html">CacheStoreHeader</a></dt>
+    <dd></dd>
+    <dt><code>secret</code> <span class="xref">byte</span>[]</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ReclaimCompactionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ReclaimCompactionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ReclaimCompactionAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ReclaimCompactionAsync(System.String,System.Threading.CancellationToken)">
+  ReclaimCompactionAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the exact old metadata attribution once after the caller has physically deleted the committed compaction inputs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask ReclaimCompactionAsync(string id, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_RegisterCollectionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.RegisterCollectionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_RegisterCollectionAsync_BridgingIT_DevKit_Application_Caching_CacheProviderCollection_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.RegisterCollectionAsync(BridgingIT.DevKit.Application.Caching.CacheProviderCollection,System.Threading.CancellationToken)">
+  RegisterCollectionAsync(CacheProviderCollection, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers a logical collection's quotas or rejects changed limits for an existing durable collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask RegisterCollectionAsync(CacheProviderCollection definition, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>definition</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderCollection.html">CacheProviderCollection</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_RegisterContractAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.RegisterContractAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_RegisterContractAsync_BridgingIT_DevKit_Application_Caching_CacheProviderCollection_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.RegisterContractAsync(BridgingIT.DevKit.Application.Caching.CacheProviderCollection,System.Threading.CancellationToken)">
+  RegisterContractAsync(CacheProviderCollection, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers a bounded canonical value contract and its schema index, rejecting incompatible existing contract identities or schemas.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheNativeContract&gt; RegisterContractAsync(CacheProviderCollection definition, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>definition</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderCollection.html">CacheProviderCollection</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeContract.html">CacheNativeContract</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ReleaseReaderAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ReleaseReaderAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ReleaseReaderAsync_System_String_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ReleaseReaderAsync(System.String,BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,System.Threading.CancellationToken)">
+  ReleaseReaderAsync(string, CacheEntryIdentity, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns an exact reader-pin credit after its caller has removed all corresponding physical pin records.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask ReleaseReaderAsync(string id, CacheEntryIdentity scope, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>scope</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ReleaseUnpublishedAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ReleaseUnpublishedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ReleaseUnpublishedAsync_System_String_System_String_System_Threading_CancellationToken_System_Int64_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ReleaseUnpublishedAsync(System.String,System.String,System.Threading.CancellationToken,System.Int64)">
+  ReleaseUnpublishedAsync(string, string, CancellationToken, long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a proven unpublished reservation or aborts its prepared attribution while retaining any already-owned physical metadata charge.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask ReleaseUnpublishedAsync(string id, string nodeId, CancellationToken cancellationToken, long retainedMetadataBytes = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>nodeId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+    <dt><code>retainedMetadataBytes</code> <span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ReserveAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ReserveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ReserveAsync_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheSpaceCredit_System_Int64_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ReserveAsync(BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheSpaceCredit,System.Int64,System.Threading.CancellationToken)">
+  ReserveAsync(CacheSpaceCredit, long, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Durably admits a new bounded space credit against both store and collection limits, or returns an exactly matching existing reserved credit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheSpaceCredit&gt; ReserveAsync(CacheSpaceCredit requested, long bytes, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requested</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheSpaceCredit.html">CacheSpaceCredit</a></dt>
+    <dd></dd>
+    <dt><code>bytes</code> <span class="xref">long</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheSpaceCredit.html">CacheSpaceCredit</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_SaveOperationAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.SaveOperationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_SaveOperationAsync_BridgingIT_DevKit_Application_Caching_CacheProviderOperation_System_String_System_String_System_String_System_Int32_System_TimeSpan_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.SaveOperationAsync(BridgingIT.DevKit.Application.Caching.CacheProviderOperation,System.String,System.String,System.String,System.Int32,System.TimeSpan,System.Threading.CancellationToken)">
+  SaveOperationAsync(CacheProviderOperation, string, string, string, int, TimeSpan, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates or compare-and-swaps a tracked operation under bounded history retention, preserving execution claims during remote cancellation requests.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;CacheProviderOperation&gt; SaveOperationAsync(CacheProviderOperation requested, string fingerprint, string nodeId, string expectedRevision, int maximumRecords, TimeSpan retention, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requested</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderOperation.html">CacheProviderOperation</a></dt>
+    <dd></dd>
+    <dt><code>fingerprint</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>nodeId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>expectedRevision</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>maximumRecords</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>retention</code> <span class="xref">TimeSpan</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderOperation.html">CacheProviderOperation</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_SaveTrackedProgressAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.SaveTrackedProgressAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_SaveTrackedProgressAsync_BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheNativeTrackedProgress_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.SaveTrackedProgressAsync(BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeTrackedProgress,System.Threading.CancellationToken)">
+  SaveTrackedProgressAsync(CacheNativeTrackedProgress, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Compare-and-swaps one checked progress checkpoint without replaying its already-observed shard effects.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask SaveTrackedProgressAsync(CacheNativeTrackedProgress progress, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>progress</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeTrackedProgress.html">CacheNativeTrackedProgress</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ValidateSelectionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ValidateSelectionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheRootQuotaLedger_ValidateSelectionAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_BridgingIT_DevKit_Application_Caching_CacheSelection_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.ValidateSelectionAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,BridgingIT.DevKit.Application.Caching.CacheSelection,System.Threading.CancellationToken)">
+  ValidateSelectionAsync(CacheEntryIdentity, CacheSelection, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks a selection against every retained contract schema in the logical collection before any candidate scan begins.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;IReadOnlyList&lt;CacheDimensionSchema&gt;&gt; ValidateSelectionAsync(CacheEntryIdentity scope, CacheSelection selection, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>scope</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>selection</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheSelection.html">CacheSelection</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheDimensionSchema.html">CacheDimensionSchema</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

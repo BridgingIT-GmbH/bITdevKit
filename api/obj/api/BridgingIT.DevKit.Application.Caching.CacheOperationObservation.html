@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CacheOperationObservation | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CacheOperationObservation | bITdevKit API Reference ">
+      
+      <meta name="description" content="Observes logical public outcomes once, independently of internal provider rechecks and owned source attempts.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation" class="text-break">
+Class CacheOperationObservation  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Caching.html">Caching</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Caching.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Observes logical public outcomes once, independently of internal provider rechecks and owned source attempts.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class CacheOperationObservation</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">CacheOperationObservation</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_examples">Examples</h2>
+  <pre><code class="lang-csharp">var started = CacheOperationObservation.Begin(slot, clock);</code></pre>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_Action_" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation.Action*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_Action_System_Int64_System_Threading_Tasks_ValueTask_BridgingIT_DevKit_Common_Result__BridgingIT_DevKit_Application_Caching_CacheObservationSlot_System_TimeProvider_" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation.Action(System.Int64,System.Threading.Tasks.ValueTask{BridgingIT.DevKit.Common.Result},BridgingIT.DevKit.Application.Caching.CacheObservationSlot,System.TimeProvider)">
+  Action(long, ValueTask&lt;Result&gt;, CacheObservationSlot, TimeProvider)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Observes a result-only action while preserving its exact failure and cancellation semantics.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ValueTask&lt;Result&gt; Action(long started, ValueTask&lt;Result&gt; pending, CacheObservationSlot slot, TimeProvider clock)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>started</code> <span class="xref">long</span></dt>
+    <dd><p>The invocation start.</p>
+</dd>
+    <dt><code>pending</code> <span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>The mandatory action.</p>
+</dd>
+    <dt><code>slot</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheObservationSlot.html">CacheObservationSlot</a></dt>
+    <dd><p>The predeclared collection slot.</p>
+</dd>
+    <dt><code>clock</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The observation clock.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>The unchanged action result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_Batch_" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation.Batch*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_Batch__1_System_Int64_System_Threading_Tasks_ValueTask_BridgingIT_DevKit_Common_Result_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_Result_BridgingIT_DevKit_Application_Caching_CacheLookup___0______BridgingIT_DevKit_Application_Caching_CacheObservationSlot_System_TimeProvider_BridgingIT_DevKit_Application_Caching_CacheOperationKind_" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation.Batch``1(System.Int64,System.Threading.Tasks.ValueTask{BridgingIT.DevKit.Common.Result{System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Common.Result{BridgingIT.DevKit.Application.Caching.CacheLookup{``0}}}}},BridgingIT.DevKit.Application.Caching.CacheObservationSlot,System.TimeProvider,BridgingIT.DevKit.Application.Caching.CacheOperationKind)">
+  Batch&lt;T&gt;(long, ValueTask&lt;Result&lt;IReadOnlyList&lt;Result&lt;CacheLookup&lt;T&gt;&gt;&gt;&gt;&gt;, CacheObservationSlot, TimeProvider, CacheOperationKind)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Observes batch invocation throughput separately from successfully read entry counts.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ValueTask&lt;Result&lt;IReadOnlyList&lt;Result&lt;CacheLookup&lt;T&gt;&gt;&gt;&gt;&gt; Batch&lt;T&gt;(long started, ValueTask&lt;Result&lt;IReadOnlyList&lt;Result&lt;CacheLookup&lt;T&gt;&gt;&gt;&gt;&gt; pending, CacheObservationSlot slot, TimeProvider clock, CacheOperationKind operation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>started</code> <span class="xref">long</span></dt>
+    <dd><p>The invocation start.</p>
+</dd>
+    <dt><code>pending</code> <span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLookup-1.html">CacheLookup</a>&lt;T&gt;&gt;&gt;&gt;&gt;</dt>
+    <dd><p>The ordered actual item outcomes.</p>
+</dd>
+    <dt><code>slot</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheObservationSlot.html">CacheObservationSlot</a></dt>
+    <dd><p>The predeclared collection slot.</p>
+</dd>
+    <dt><code>clock</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The observation clock.</p>
+</dd>
+    <dt><code>operation</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheOperationKind.html">CacheOperationKind</a></dt>
+    <dd><p>The public batch category.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLookup-1.html">CacheLookup</a>&lt;T&gt;&gt;&gt;&gt;&gt;</dt>
+    <dd><p>The unchanged actual batch result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The declared value or handle type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_Begin_" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation.Begin*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_Begin_BridgingIT_DevKit_Application_Caching_CacheObservationSlot_System_TimeProvider_System_String_BridgingIT_DevKit_Application_Caching_CacheOperationKind_" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation.Begin(BridgingIT.DevKit.Application.Caching.CacheObservationSlot,System.TimeProvider,System.String,BridgingIT.DevKit.Application.Caching.CacheOperationKind)">
+  Begin(CacheObservationSlot, TimeProvider, string, CacheOperationKind)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records a public method invocation and captures its monotonic start timestamp.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long Begin(CacheObservationSlot slot, TimeProvider clock, string key = null, CacheOperationKind operation = CacheOperationKind.Get)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>slot</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheObservationSlot.html">CacheObservationSlot</a></dt>
+    <dd><p>The predeclared collection slot.</p>
+</dd>
+    <dt><code>clock</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The monotonic observation clock.</p>
+</dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd><p>An optional logical key recorded only as an explicitly enabled process-local keyed fingerprint.</p>
+</dd>
+    <dt><code>operation</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheOperationKind.html">CacheOperationKind</a></dt>
+    <dd><p>The controlled public operation category.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd><p>The invocation start timestamp.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_Invalidation_" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation.Invalidation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_Invalidation_System_Int64_System_Threading_Tasks_ValueTask_BridgingIT_DevKit_Common_Result_BridgingIT_DevKit_Application_Caching_CacheInvalidationOutcome___BridgingIT_DevKit_Application_Caching_CacheObservationSlot_System_TimeProvider_" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation.Invalidation(System.Int64,System.Threading.Tasks.ValueTask{BridgingIT.DevKit.Common.Result{BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome}},BridgingIT.DevKit.Application.Caching.CacheObservationSlot,System.TimeProvider)">
+  Invalidation(long, ValueTask&lt;Result&lt;CacheInvalidationOutcome&gt;&gt;, CacheObservationSlot, TimeProvider)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records actual committed entry counts and bounded invalidation-unit outcomes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ValueTask&lt;Result&lt;CacheInvalidationOutcome&gt;&gt; Invalidation(long started, ValueTask&lt;Result&lt;CacheInvalidationOutcome&gt;&gt; pending, CacheObservationSlot slot, TimeProvider clock)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>started</code> <span class="xref">long</span></dt>
+    <dd><p>The invocation start.</p>
+</dd>
+    <dt><code>pending</code> <span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome.html">CacheInvalidationOutcome</a>&gt;&gt;</dt>
+    <dd><p>The actual bounded invalidation result.</p>
+</dd>
+    <dt><code>slot</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheObservationSlot.html">CacheObservationSlot</a></dt>
+    <dd><p>The predeclared collection slot.</p>
+</dd>
+    <dt><code>clock</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The observation clock.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome.html">CacheInvalidationOutcome</a>&gt;&gt;</dt>
+    <dd><p>The unchanged invalidation result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_Lookup_" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation.Lookup*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_Lookup__1_System_Int64_System_Threading_Tasks_ValueTask_BridgingIT_DevKit_Common_Result_BridgingIT_DevKit_Application_Caching_CacheLookup___0____BridgingIT_DevKit_Application_Caching_CacheObservationSlot_System_TimeProvider_BridgingIT_DevKit_Application_Caching_CacheOperationKind_" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation.Lookup``1(System.Int64,System.Threading.Tasks.ValueTask{BridgingIT.DevKit.Common.Result{BridgingIT.DevKit.Application.Caching.CacheLookup{``0}}},BridgingIT.DevKit.Application.Caching.CacheObservationSlot,System.TimeProvider,BridgingIT.DevKit.Application.Caching.CacheOperationKind)">
+  Lookup&lt;T&gt;(long, ValueTask&lt;Result&lt;CacheLookup&lt;T&gt;&gt;&gt;, CacheObservationSlot, TimeProvider, CacheOperationKind)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Observes one typed/binary logical lookup without boxing its successful value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ValueTask&lt;Result&lt;CacheLookup&lt;T&gt;&gt;&gt; Lookup&lt;T&gt;(long started, ValueTask&lt;Result&lt;CacheLookup&lt;T&gt;&gt;&gt; pending, CacheObservationSlot slot, TimeProvider clock, CacheOperationKind operation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>started</code> <span class="xref">long</span></dt>
+    <dd><p>The public invocation start.</p>
+</dd>
+    <dt><code>pending</code> <span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLookup-1.html">CacheLookup</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>The actual mandatory operation.</p>
+</dd>
+    <dt><code>slot</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheObservationSlot.html">CacheObservationSlot</a></dt>
+    <dd><p>The predeclared collection slot.</p>
+</dd>
+    <dt><code>clock</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The observation clock.</p>
+</dd>
+    <dt><code>operation</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheOperationKind.html">CacheOperationKind</a></dt>
+    <dd><p>The public operation category.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLookup-1.html">CacheLookup</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>The unchanged actual operation result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The declared value or acquired handle type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_Plain_" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation.Plain*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_Plain__1_System_Int64_System_Threading_Tasks_ValueTask_BridgingIT_DevKit_Common_Result___0___BridgingIT_DevKit_Application_Caching_CacheObservationSlot_System_TimeProvider_" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation.Plain``1(System.Int64,System.Threading.Tasks.ValueTask{BridgingIT.DevKit.Common.Result{``0}},BridgingIT.DevKit.Application.Caching.CacheObservationSlot,System.TimeProvider)">
+  Plain&lt;T&gt;(long, ValueTask&lt;Result&lt;T&gt;&gt;, CacheObservationSlot, TimeProvider)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Observes a bounded non-payload result without inventing entry counts for metadata previews.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ValueTask&lt;Result&lt;T&gt;&gt; Plain&lt;T&gt;(long started, ValueTask&lt;Result&lt;T&gt;&gt; pending, CacheObservationSlot slot, TimeProvider clock)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>started</code> <span class="xref">long</span></dt>
+    <dd><p>The invocation start.</p>
+</dd>
+    <dt><code>pending</code> <span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The mandatory response.</p>
+</dd>
+    <dt><code>slot</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheObservationSlot.html">CacheObservationSlot</a></dt>
+    <dd><p>The predeclared collection slot.</p>
+</dd>
+    <dt><code>clock</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The observation clock.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The unchanged response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The actual operation response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_Write_" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation.Write*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheOperationObservation_Write_System_Int64_System_Threading_Tasks_ValueTask_BridgingIT_DevKit_Common_Result_BridgingIT_DevKit_Application_Caching_CacheWriteOutcome___BridgingIT_DevKit_Application_Caching_CacheObservationSlot_System_TimeProvider_" data-uid="BridgingIT.DevKit.Application.Caching.CacheOperationObservation.Write(System.Int64,System.Threading.Tasks.ValueTask{BridgingIT.DevKit.Common.Result{BridgingIT.DevKit.Application.Caching.CacheWriteOutcome}},BridgingIT.DevKit.Application.Caching.CacheObservationSlot,System.TimeProvider)">
+  Write(long, ValueTask&lt;Result&lt;CacheWriteOutcome&gt;&gt;, CacheObservationSlot, TimeProvider)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records confirmed entry publication separately from method invocation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ValueTask&lt;Result&lt;CacheWriteOutcome&gt;&gt; Write(long started, ValueTask&lt;Result&lt;CacheWriteOutcome&gt;&gt; pending, CacheObservationSlot slot, TimeProvider clock)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>started</code> <span class="xref">long</span></dt>
+    <dd><p>The invocation start.</p>
+</dd>
+    <dt><code>pending</code> <span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheWriteOutcome.html">CacheWriteOutcome</a>&gt;&gt;</dt>
+    <dd><p>The actual storage outcome.</p>
+</dd>
+    <dt><code>slot</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheObservationSlot.html">CacheObservationSlot</a></dt>
+    <dd><p>The predeclared collection slot.</p>
+</dd>
+    <dt><code>clock</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The observation clock.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheWriteOutcome.html">CacheWriteOutcome</a>&gt;&gt;</dt>
+    <dd><p>The unchanged storage result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

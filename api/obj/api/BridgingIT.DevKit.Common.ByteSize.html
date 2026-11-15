@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ByteSize | bITdevKit API Reference ">
       
-      <meta name="description" content="Provides convenience helpers for calculating binary byte sizes.">
+      <meta name="description" content="Provides helpers for calculating and displaying binary byte sizes.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,7 @@ Class ByteSize
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Provides convenience helpers for calculating binary byte sizes.</p>
+  <div class="markdown summary"><p>Provides helpers for calculating and displaying binary byte sizes.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -118,10 +118,17 @@ Class ByteSize
 
 
   <h2 id="BridgingIT_DevKit_Common_ByteSize_examples">Examples</h2>
-  <pre><code class="lang-csharp">var maxValueSize = ByteSize.Megabytes(1);
-var chunkSize = ByteSize.Megabytes(4);</code></pre>
+  <pre><code class="lang-csharp">var maxPayloadBytes = ByteSize.Megabytes(2);
+var cacheCapacity = ByteSize.Megabytes(8);
+var bufferSize = checked((int)ByteSize.Kilobytes(64));</code></pre>
 
 
+  <h2 id="BridgingIT_DevKit_Common_ByteSize_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Size calculation helpers return Int64 byte counts suitable for configuration properties and fluent size limits.
+Kilobytes, megabytes, gigabytes, and terabytes use powers of 1,024. Negative values are rejected,
+and conversions throw on Int64 overflow. Use a checked cast when an API requires an Int32 byte count.
+Display formatting accepts signed byte counts and uses invariant culture.</p>
+</div>
 
 
   <h2 class="section" id="fields">Fields
@@ -306,6 +313,52 @@ var chunkSize = ByteSize.Megabytes(4);</code></pre>
   <pre><code class="lang-csharp">var size = ByteSize.Bytes(512);</code></pre>
 
 
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ByteSize_FormatBinary_" data-uid="BridgingIT.DevKit.Common.ByteSize.FormatBinary*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ByteSize_FormatBinary_System_Int64_" data-uid="BridgingIT.DevKit.Common.ByteSize.FormatBinary(System.Int64)">
+  FormatBinary(long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Formats a signed byte count using binary units and at most two fractional digits.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string FormatBinary(long bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <span class="xref">long</span></dt>
+    <dd><p>The byte count, including negative counts used for size differences.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>An invariant-culture label without digit grouping, using B, KiB, MiB, GiB, TiB, PiB, or EiB.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ByteSize_FormatBinary_System_Int64__examples">Examples</h4>
+  <pre><code class="lang-csharp">var payloadSize = ByteSize.FormatBinary(904512); // "883.31 KiB"
+var sizeChange = ByteSize.FormatBinary(-1536); // "-1.5 KiB"</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ByteSize_FormatBinary_System_Int64__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Unit selection uses the absolute count and powers of 1,024. Midpoints round away from zero.</p>
+</div>
 
 
 

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Namespace BridgingIT.DevKit.Infrastructure.FileSystem.Caching | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Namespace BridgingIT.DevKit.Infrastructure.FileSystem.Caching | bITdevKit API Reference ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching">
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching" class="text-break">Namespace BridgingIT.DevKit.Infrastructure.FileSystem.Caching</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheCheckedMetadata.html">CacheCheckedMetadata</a></dt>
+      <dd><p>Reads and atomically publishes length-bounded JSON records protected by a format header and SHA-256 digest.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheCollectionBoundary.html">CacheCollectionBoundary</a></dt>
+      <dd><p>Captures a collection epoch and fixed maximum committed sequence for each of its 256 shards.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheCollectionQuotaState.html">CacheCollectionQuotaState</a></dt>
+      <dd><p>Holds one logical collection's durable quotas, invalidation epoch and conservative payload, metadata and reservation attribution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileQueryCursor.html">CacheFileQueryCursor</a></dt>
+      <dd><p>Carries authenticated query progress, fixed cutoff and per-shard sequence bounds; serialize only through the provider's encrypted continuation contract.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileSelectionPlan.html">CacheFileSelectionPlan</a></dt>
+      <dd><p>Selects a bounded index range and its candidate-filtering rank for one validated metadata selection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileSystemAccess.html">CacheFileSystemAccess</a></dt>
+      <dd><p>Checks the observable filesystem kind before selecting the cache root's native ownership protocol.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileSystemRecoveryOutcome.html">CacheFileSystemRecoveryOutcome</a></dt>
+      <dd><p>Reports a fenced offline recovery boundary separately from cache-content retention and physical cleanup.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileSystemRecoveryState.html">CacheFileSystemRecoveryState</a></dt>
+      <dd><p>Exposes the checked root identity needed for an explicit offline maintenance acknowledgement.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexBlockCache.html">CacheIndexBlockCache</a></dt>
+      <dd><p>Retains verified immutable index blocks within a byte budget and pins them until each reader releases its lease.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexBlockLease.html">CacheIndexBlockLease</a></dt>
+      <dd><p>Owns access to a verified index block and invokes its release callback once when disposed.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexCompactor.html">CacheIndexCompactor</a></dt>
+      <dd><p>Merges immutable sorted segments without publishing them; the caller must validate the input manifest generation before publication.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexKey.html">CacheIndexKey</a></dt>
+      <dd><p>Stores one canonical 192-byte composite index key with ordinal byte ordering and zero padding.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexRange.html">CacheIndexRange</a></dt>
+      <dd><p>Defines an inclusive lower and optional exclusive upper bound in composite-key order.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexReader.html">CacheIndexReader</a></dt>
+      <dd><p>Opens an immutable sorted segment for checked binary searches and streamed range reads with bounded block caching.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheJournal.html">CacheJournal</a></dt>
+      <dd><p>Appends checked commit frames and reads only the authoritative committed journal prefix.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheJournalFrame.html">CacheJournalFrame</a></dt>
+      <dd><p>Owns one verified journal frame and the memory charge retained while its payload is consumed.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheLedgerIntent.html">CacheLedgerIntent</a></dt>
+      <dd><p>Persists exact root-ledger checkpoint inputs, outputs and workspace bounds for deterministic control-ledger recovery.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheManifest.html">CacheManifest</a></dt>
+      <dd><p>Defines the authoritative shard generation, committed journal prefix and newest-first immutable segment set.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataBuffer.html">CacheMetadataBuffer</a></dt>
+      <dd><p>Rejects synchronous JSON writes that would exceed the configured metadata limit before growing its memory buffer.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataDocument-1.html">CacheMetadataDocument&lt;T&gt;</a></dt>
+      <dd><p>Owns a decoded metadata value and its memory charge; dispose the document after the value is no longer retained.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.html">CacheMetadataIndex</a></dt>
+      <dd><p>Builds format-one composite metadata keys and ordered ranges from canonical identities and typed dimensions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeCompactionPlan.html">CacheNativeCompactionPlan</a></dt>
+      <dd><p>Binds compaction input files and manifest generation to predeclared output names before staging and later reclamation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeContract.html">CacheNativeContract</a></dt>
+      <dd><p>Persists the canonical value contract, bounded dimension schema and provider collection policies.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeContractReference.html">CacheNativeContractReference</a></dt>
+      <dd><p>Connects a logical collection's schema index to an exact contract-qualified catalog identity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeCreditPage.html">CacheNativeCreditPage</a></dt>
+      <dd><p>Owns a bounded quota-credit page, its last examined key and the memory charges retained by its decoded records.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeEntry.html">CacheNativeEntry</a></dt>
+      <dd><p>Persists full entry metadata, an optional immutable payload reference and its publication quota attribution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeEntryState.html">CacheNativeEntryState</a></dt>
+      <dd><p>Tracks the publication sequence and outstanding captures for one exact contract-qualified cache identity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeFence.html">CacheNativeFence</a></dt>
+      <dd><p>Captures the root and key epochs, exact publication sequence and deadline authorizing one attempted write.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeFlightPointer.html">CacheNativeFlightPointer</a></dt>
+      <dd><p>Identifies the exact source flight and owner selected for a canonical cache identity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeInterest.html">CacheNativeInterest</a></dt>
+      <dd><p>Persists one follower's interest in a specific source flight, bounded by that follower's deadline.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeKeyState.html">CacheNativeKeyState</a></dt>
+      <dd><p>Tracks the logical key epoch, outstanding captures and read-fence sequence across value contracts.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeMutation.html">CacheNativeMutation</a></dt>
+      <dd><p>Owns the durable quota credit and native staging authority for one filesystem mutation through its actual termination.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeOperationPage.html">CacheNativeOperationPage</a></dt>
+      <dd><p>Owns a bounded decoded operation page and releases its retained memory charges on disposal.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeOperationRecord.html">CacheNativeOperationRecord</a></dt>
+      <dd><p>Persists a tracked operation with its selection fingerprint, execution claim and any unresolved mutation checkpoint.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeOwnership.html">CacheNativeOwnership</a></dt>
+      <dd><p>Persists source ownership, publication fencing, deadlines and the bounded terminal outcome of one source flight.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativePublicationReceipt.html">CacheNativePublicationReceipt</a></dt>
+      <dd><p>Records the publication version and operation receipt needed to reconcile a completed payload write.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeRecords.html">CacheNativeRecords</a></dt>
+      <dd><p>Reads and writes bounded JSON values inside checked shard index transactions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeRetiredPayload.html">CacheNativeRetiredPayload</a></dt>
+      <dd><p>Retains a retired payload reference and its quota attribution until physical deletion is proven safe.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheNativeTrackedProgress.html">CacheNativeTrackedProgress</a></dt>
+      <dd><p>Binds a proposed invalidation checkpoint to the exact operation revision, continuation and node claim it may advance.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CachePayloadReader.html">CachePayloadReader</a></dt>
+      <dd><p>Reads an immutable payload through independently verified 64 KiB frames while retaining its native reader pin.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CachePayloadReference.html">CachePayloadReference</a></dt>
+      <dd><p>Describes an immutable payload's generated version, logical length and full SHA-256 digest independently of block framing.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CachePayloadWriter.html">CachePayloadWriter</a></dt>
+      <dd><p>Stages one immutable payload as checked blocks under incremental space admission before sealing its descriptor.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheQuotaChange.html">CacheQuotaChange</a></dt>
+      <dd><p>Describes signed payload, retirement, metadata and entry-count deltas applied by one confirmed publication.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheReaderRegistry.html">CacheReaderRegistry</a></dt>
+      <dd><p>Creates durable bounded reader pins under shard authority and uses native liveness proof before allowing physical reclamation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRecordPosition.html">CacheRecordPosition</a></dt>
+      <dd><p>Locates a hashed metadata record in one immutable segment, including tombstone and sequence information.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRegistrationExtensions.html">CacheRegistrationExtensions</a></dt>
+      <dd><p>Registers the complete native filesystem cache kind independently of filesystem storage and simple Common.Caching.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaLedger.html">CacheRootQuotaLedger</a></dt>
+      <dd><p>Serializes durable root quota, collection boundaries, publication receipts and tracked-operation checkpoints without owning application payload transfers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheRootQuotaState.html">CacheRootQuotaState</a></dt>
+      <dd><p>Holds conservative store-wide quota attribution and prepared-publication counters persisted in the root control ledger.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheSegmentReference.html">CacheSegmentReference</a></dt>
+      <dd><p>Identifies immutable index and record files with their publication sequence, exact lengths and full SHA-256 digests.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheSegmentRow.html">CacheSegmentRow</a></dt>
+      <dd><p>Represents a sorted key mutation, its publication sequence, and either bounded record bytes or a tombstone.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheShardCheckpoint.html">CacheShardCheckpoint</a></dt>
+      <dd><p>Stages a bounded immutable index checkpoint outside shard authority and publishes only after comparing its entire input generation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheShardCommitIdentity.html">CacheShardCommitIdentity</a></dt>
+      <dd><p>Predeclares the generated immutable segment name and authoritative manifest generation for one attempted commit.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheShardReceipt.html">CacheShardReceipt</a></dt>
+      <dd><p>Persists an always-durable shard publication boundary so older readable Buffered content can never be adopted as current.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheShardScanValue.html">CacheShardScanValue</a></dt>
+      <dd><p>Exposes one bounded range-scan key, sequence, tombstone flag and record view valid only during its current enumeration step.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheShardStore.html">CacheShardStore</a></dt>
+      <dd><p>Opens one fixed collection shard under native authority and validates its checked bootstrap header and authoritative manifest.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheShardTransaction.html">CacheShardTransaction</a></dt>
+      <dd><p>Owns one shard's native authority, checked manifest snapshot and bounded staged index mutations until commit or disposal.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheShardValue.html">CacheShardValue</a></dt>
+      <dd><p>Owns one checked shard record or tombstone and releases copied metadata memory on disposal.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheSortedSegment.html">CacheSortedSegment</a></dt>
+      <dd><p>Writes format-one immutable sorted indexes with checked fixed-size blocks and separately hashed metadata records.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheSpaceCredit.html">CacheSpaceCredit</a></dt>
+      <dd><p>Persists one native operation's durable space ownership and publication or reclamation evidence.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheStoreHeader.html">CacheStoreHeader</a></dt>
+      <dd><p>Persists the root identity, native profile, quota limits and durable generation fence used by every cache participant.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheStoreRoot.html">CacheStoreRoot</a></dt>
+      <dd><p>Binds generated cache paths to one dedicated root and validates its durable identity, profile and recovery generation before use.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.FileSystemCacheOptions.html">FileSystemCacheOptions</a></dt>
+      <dd><p>Captures validated advanced-cache filesystem settings without accessing the root.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.FileSystemCacheProviderOptionsBuilder.html">FileSystemCacheProviderOptionsBuilder</a></dt>
+      <dd><p>Records native filesystem cache options while preserving configuration precedence and final catalog validation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.FileSystemCacheRecovery.html">FileSystemCacheRecovery</a></dt>
+      <dd><p>Performs explicit offline recovery and disposable-cache reset under an operator-established maintenance window.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.FileSystemCacheStoreProvider.html">FileSystemCacheStoreProvider</a></dt>
+      <dd><p>Owns a native advanced-cache root, checked metadata indexes, immutable payload generations, and durable quota authority.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheShardReceiptState.html">CacheShardReceiptState</a></dt>
+      <dd><p>Identifies a durable shard publication receipt awaiting confirmation, confirmed as current, or proven aborted.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheSpaceCreditKind.html">CacheSpaceCreditKind</a></dt>
+      <dd><p>Identifies whether a durable reservation covers payload staging, metadata mutation, a reader pin or index compaction.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheSpaceCreditState.html">CacheSpaceCreditState</a></dt>
+      <dd><p>Identifies whether a durable space reservation is pending, prepared, published or safely released.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

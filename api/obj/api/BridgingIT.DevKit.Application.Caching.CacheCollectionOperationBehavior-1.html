@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CacheCollectionOperationBehavior&lt;T&gt; | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CacheCollectionOperationBehavior&lt;T&gt; | bITdevKit API Reference ">
+      
+      <meta name="description" content="Applies configured operation behaviors around a typed collection while preserving the mandatory engine&#39;s result.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1" class="text-break">
+Class CacheCollectionOperationBehavior&lt;T&gt;  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Caching.html">Caching</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Caching.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Applies configured operation behaviors around a typed collection while preserving the mandatory engine's result.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CacheCollectionOperationBehavior&lt;T&gt; : ICacheCollection&lt;T&gt;</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The collection's declared value type.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">CacheCollectionOperationBehavior&lt;T&gt;</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Caching.ICacheCollection-1.html">ICacheCollection</a>&lt;T&gt;</div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_examples">Examples</h2>
+  <pre><code class="lang-csharp">var observed = new CacheCollectionOperationBehavior&lt;T&gt;(collection, binding, tasks,
+    resolveIdentity, behaviors);</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Use the catalog's collection resolver in application code. This wrapper supports custom collection composition.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1__ctor_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1__ctor_BridgingIT_DevKit_Application_Caching_ICacheCollection__0__BridgingIT_DevKit_Application_Caching_CacheCollectionBinding_BridgingIT_DevKit_Application_Caching_CacheRuntimeTasks_System_Func_System_String_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity__System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Caching_ICacheCollectionBehavior__" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.#ctor(BridgingIT.DevKit.Application.Caching.ICacheCollection{`0},BridgingIT.DevKit.Application.Caching.CacheCollectionBinding,BridgingIT.DevKit.Application.Caching.CacheRuntimeTasks,System.Func{System.String,BridgingIT.DevKit.Application.Caching.CacheEntryIdentity},System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Caching.ICacheCollectionBehavior})">
+  CacheCollectionOperationBehavior(ICacheCollection&lt;T&gt;, CacheCollectionBinding, CacheRuntimeTasks, Func&lt;string, CacheEntryIdentity&gt;, IReadOnlyList&lt;ICacheCollectionBehavior&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Applies configured operation behaviors around a typed collection while preserving the mandatory engine's result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CacheCollectionOperationBehavior(ICacheCollection&lt;T&gt; inner, CacheCollectionBinding binding, CacheRuntimeTasks tasks, Func&lt;string, CacheEntryIdentity&gt; resolveIdentity, IReadOnlyList&lt;ICacheCollectionBehavior&gt; behaviors)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>inner</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.ICacheCollection-1.html">ICacheCollection</a>&lt;T&gt;</dt>
+    <dd><p>The collection that performs mandatory cache work.</p>
+</dd>
+    <dt><code>binding</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheCollectionBinding.html">CacheCollectionBinding</a></dt>
+    <dd><p>The validated effective collection binding used to describe each operation.</p>
+</dd>
+    <dt><code>tasks</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheRuntimeTasks.html">CacheRuntimeTasks</a></dt>
+    <dd><p>The owner that observes behavior faults and drains outstanding runtime work.</p>
+</dd>
+    <dt><code>resolveIdentity</code> <span class="xref">Func</span>&lt;<span class="xref">string</span>, <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a>&gt;</dt>
+    <dd><p>The collection's identity resolver, including its configured key limits.</p>
+</dd>
+    <dt><code>behaviors</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.ICacheCollectionBehavior.html">ICacheCollectionBehavior</a>&gt;</dt>
+    <dd><p>The compatible behaviors in outermost-to-innermost execution order.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1__ctor_BridgingIT_DevKit_Application_Caching_ICacheCollection__0__BridgingIT_DevKit_Application_Caching_CacheCollectionBinding_BridgingIT_DevKit_Application_Caching_CacheRuntimeTasks_System_Func_System_String_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity__System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Caching_ICacheCollectionBehavior___examples">Examples</h4>
+  <pre><code class="lang-csharp">var observed = new CacheCollectionOperationBehavior&lt;T&gt;(collection, binding, tasks,
+    resolveIdentity, behaviors);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1__ctor_BridgingIT_DevKit_Application_Caching_ICacheCollection__0__BridgingIT_DevKit_Application_Caching_CacheCollectionBinding_BridgingIT_DevKit_Application_Caching_CacheRuntimeTasks_System_Func_System_String_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity__System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Caching_ICacheCollectionBehavior___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use the catalog's collection resolver in application code. This wrapper supports custom collection composition.</p>
+</div>
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_Name_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.Name*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_Name" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.Name">
+  Name
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the canonical declared name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Name { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The startup-declared collection name, using invariant case normalization.</p>
+</dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_Name_examples">Examples</h4>
+  <pre><code class="lang-csharp">var name = collection.Name;</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_ClearAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.ClearAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_ClearAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.ClearAsync(System.Threading.CancellationToken)">
+  ClearAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Explicitly invalidates the whole logical collection across retained contract versions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheInvalidationOutcome&gt;&gt; ClearAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels provider invalidation or the wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome.html">CacheInvalidationOutcome</a>&gt;&gt;</dt>
+    <dd><p>The actual invalidation progress and continuation, or an explicit failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_ClearAsync_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cleared = await collection.ClearAsync(cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_ClearAsync_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Clear fences prior active loads and uses the same bounded work rules as selection invalidation. Inspect completion before assuming the entire collection is invalidated.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.GetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.GetAsync(System.String,System.Threading.CancellationToken)">
+  GetAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a valid cached value or confirmed absence without invoking a source.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheLookup&lt;T&gt;&gt;&gt; GetAsync(string key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd><p>The exact key, compared using invariant case equivalence. Wildcards have no special meaning.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels this caller's read or wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLookup-1.html">CacheLookup</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>A read-only value, confirmed absence, or successful miss. Provider, validation, and resource failures remain failures.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await collection.GetAsync("product:42", cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetAsync_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A miss has both <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLookup-1.html#BridgingIT_DevKit_Application_Caching_CacheLookup_1_Found">Found</a> and <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLookup-1.html#BridgingIT_DevKit_Application_Caching_CacheLookup_1_IsNotFound">IsNotFound</a> set to false.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.GetOrLoadAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadAsync_BridgingIT_DevKit_Application_Caching_CacheItem_BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__BridgingIT_DevKit_Application_Caching_CacheAccessOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.GetOrLoadAsync(BridgingIT.DevKit.Application.Caching.CacheItem,BridgingIT.DevKit.Application.Caching.CacheLoadDelegate{`0},BridgingIT.DevKit.Application.Caching.CacheAccessOptions,System.Threading.CancellationToken)">
+  GetOrLoadAsync(CacheItem, CacheLoadDelegate&lt;T&gt;, CacheAccessOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads or loads with an explicit typed access mode and background classification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheLookup&lt;T&gt;&gt;&gt; GetOrLoadAsync(CacheItem item, CacheLoadDelegate&lt;T&gt; loader, CacheAccessOptions options, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheItem.html">CacheItem</a></dt>
+    <dd><p>The exact key and known dependencies captured for source work.</p>
+</dd>
+    <dt><code>loader</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLoadDelegate-1.html">CacheLoadDelegate</a>&lt;T&gt;</dt>
+    <dd><p>A repeatable source read using cache-owned scoped services.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheAccessOptions.html">CacheAccessOptions</a></dt>
+    <dd><p>The access choices within the collection's fixed limits. Null uses normal foreground access.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels this caller's wait independently of other interested callers.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLookup-1.html">CacheLookup</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>A read-only source or cache outcome, or a validation, source, provider, or admission failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadAsync_BridgingIT_DevKit_Application_Caching_CacheItem_BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__BridgingIT_DevKit_Application_Caching_CacheAccessOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await collection.GetOrLoadAsync(item, loader, new(CacheAccessMode.Bypass), cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadAsync_BridgingIT_DevKit_Application_Caching_CacheItem_BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__BridgingIT_DevKit_Application_Caching_CacheAccessOptions_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Bypass skips lookup and suppresses publication of bypass-owned work. A disabled typed collection also loads without retaining values.
+Background access avoids foreground activity updates. Nested refresh or bypass from an executing loader is rejected.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.GetOrLoadAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadAsync_BridgingIT_DevKit_Application_Caching_CacheItem_BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.GetOrLoadAsync(BridgingIT.DevKit.Application.Caching.CacheItem,BridgingIT.DevKit.Application.Caching.CacheLoadDelegate{`0},System.Threading.CancellationToken)">
+  GetOrLoadAsync(CacheItem, CacheLoadDelegate&lt;T&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a valid entry or loads its source under the configured ownership and admission limits.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheLookup&lt;T&gt;&gt;&gt; GetOrLoadAsync(CacheItem item, CacheLoadDelegate&lt;T&gt; loader, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheItem.html">CacheItem</a></dt>
+    <dd><p>The exact key and known dependencies captured for source work.</p>
+</dd>
+    <dt><code>loader</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLoadDelegate-1.html">CacheLoadDelegate</a>&lt;T&gt;</dt>
+    <dd><p>A repeatable source read using the cache-owned context. A joining caller's delegate may never run.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels this caller's wait independently of other callers sharing the source work.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLookup-1.html">CacheLookup</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>The value or confirmed absence with separate lookup and storage outcomes, or an explicit failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadAsync_BridgingIT_DevKit_Application_Caching_CacheItem_BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await collection.GetOrLoadAsync(new("product:42"), loader, cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadAsync_BridgingIT_DevKit_Application_Caching_CacheItem_BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The configured strategy may coalesce source work or run separately admitted loads. The owner supplies the captured item and metadata.
+Loaders may be retried and must not perform business mutations. A successful source value can be returned even when publication fails.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadManyAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.GetOrLoadManyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadManyAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Caching_CacheItem__BridgingIT_DevKit_Application_Caching_CacheBatchLoadDelegate__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.GetOrLoadManyAsync(System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Caching.CacheItem},BridgingIT.DevKit.Application.Caching.CacheBatchLoadDelegate{`0},System.Threading.CancellationToken)">
+  GetOrLoadManyAsync(IReadOnlyList&lt;CacheItem&gt;, CacheBatchLoadDelegate&lt;T&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads captured owned misses through a repeatable batch source and preserves input order in the results.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;IReadOnlyList&lt;Result&lt;CacheLookup&lt;T&gt;&gt;&gt;&gt;&gt; GetOrLoadManyAsync(IReadOnlyList&lt;CacheItem&gt; items, CacheBatchLoadDelegate&lt;T&gt; loader, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>items</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheItem.html">CacheItem</a>&gt;</dt>
+    <dd><p>The bounded batch, without null members or equivalent duplicate keys.</p>
+</dd>
+    <dt><code>loader</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheBatchLoadDelegate-1.html">CacheBatchLoadDelegate</a>&lt;T&gt;</dt>
+    <dd><p>The batch source, receiving only owned misses and yielding one independent completion per owned key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels this caller's batch wait independently of other interested callers.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLookup-1.html">CacheLookup</a>&lt;T&gt;&gt;&gt;&gt;&gt;</dt>
+    <dd><p>An outer admission result containing ordered per-item cache or source results, including partial failures.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadManyAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Caching_CacheItem__BridgingIT_DevKit_Application_Caching_CacheBatchLoadDelegate__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await collection.GetOrLoadManyAsync(items, batchLoader, cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadManyAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Caching_CacheItem__BridgingIT_DevKit_Application_Caching_CacheBatchLoadDelegate__0__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Hits and foreign in-flight loads are excluded from the source context. Completions can arrive in any order and publish independently.
+Omitted keys receive incomplete failures. Unknown or duplicate completion keys are contract failures.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadManyAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.GetOrLoadManyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadManyAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Caching_CacheItem__BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.GetOrLoadManyAsync(System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Caching.CacheItem},BridgingIT.DevKit.Application.Caching.CacheLoadDelegate{`0},System.Threading.CancellationToken)">
+  GetOrLoadManyAsync(IReadOnlyList&lt;CacheItem&gt;, CacheLoadDelegate&lt;T&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads or loads an ordered batch using one repeatable single-item loader.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;IReadOnlyList&lt;Result&lt;CacheLookup&lt;T&gt;&gt;&gt;&gt;&gt; GetOrLoadManyAsync(IReadOnlyList&lt;CacheItem&gt; items, CacheLoadDelegate&lt;T&gt; loader, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>items</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheItem.html">CacheItem</a>&gt;</dt>
+    <dd><p>The bounded batch, without null members or equivalent duplicate keys. The engine captures it before starting work.</p>
+</dd>
+    <dt><code>loader</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLoadDelegate-1.html">CacheLoadDelegate</a>&lt;T&gt;</dt>
+    <dd><p>The repeatable loader for each owned miss, using that item's cache-owned context.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels this caller's batch wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLookup-1.html">CacheLookup</a>&lt;T&gt;&gt;&gt;&gt;&gt;</dt>
+    <dd><p>An outer admission result containing one independent result per input item in the original order.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadManyAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Caching_CacheItem__BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await collection.GetOrLoadManyAsync([new("product:42"), new("product:43")], loader, cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_GetOrLoadManyAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Caching_CacheItem__BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Inspect every inner result. An outer success does not mean all items succeeded. Overlapping batches do not hold unfinished source callbacks while joining foreign work.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_InvalidateAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.InvalidateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_InvalidateAsync_BridgingIT_DevKit_Application_Caching_CacheSelection_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.InvalidateAsync(BridgingIT.DevKit.Application.Caching.CacheSelection,System.Threading.CancellationToken)">
+  InvalidateAsync(CacheSelection, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Invalidates matching entries and fences matching active loads through bounded provider work.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheInvalidationOutcome&gt;&gt; InvalidateAsync(CacheSelection selection, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>selection</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheSelection.html">CacheSelection</a></dt>
+    <dd><p>The validated key or declared-dimension selection. An empty selection matches nothing.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels provider invalidation or the wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome.html">CacheInvalidationOutcome</a>&gt;&gt;</dt>
+    <dd><p>The actual invalidation progress and continuation, or an explicit failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_InvalidateAsync_BridgingIT_DevKit_Application_Caching_CacheSelection_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var invalidated = await collection.InvalidateAsync(CacheSelection.Pattern("product:*"), cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_InvalidateAsync_BridgingIT_DevKit_Application_Caching_CacheSelection_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Check <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome.html#BridgingIT_DevKit_Application_Caching_CacheInvalidationOutcome_Completed">Completed</a>. A successful partial outcome does not establish that every match was invalidated. Already acquired handles remain independent snapshots.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_OpenReadAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.OpenReadAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_OpenReadAsync_System_String_BridgingIT_DevKit_Application_Caching_CacheReadOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.OpenReadAsync(System.String,BridgingIT.DevKit.Application.Caching.CacheReadOptions,System.Threading.CancellationToken)">
+  OpenReadAsync(string, CacheReadOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Acquires a snapshot of the collection's logical encoded bytes without decoding a typed value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheLookup&lt;ICacheReadHandle&gt;&gt;&gt; OpenReadAsync(string key, CacheReadOptions options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd><p>The exact key using invariant case equivalence.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheReadOptions.html">CacheReadOptions</a></dt>
+    <dd><p>An optional expected version, seek requirement, or logical-byte range. Null requests a full forward read.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels this acquisition or this caller's bounded wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLookup-1.html">CacheLookup</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.ICacheReadHandle.html">ICacheReadHandle</a>&gt;&gt;&gt;</dt>
+    <dd><p>A caller-owned read handle, confirmed absence, a successful miss, or an explicit failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_OpenReadAsync_System_String_BridgingIT_DevKit_Application_Caching_CacheReadOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await collection.OpenReadAsync("product:42", cancellationToken: cancellationToken);
+if (result.IsSuccess &amp;&amp; result.Value.Found)
+{
+    await using var handle = result.Value.Value;
+    await handle.Stream.CopyToAsync(destination, cancellationToken);
+    var completion = await handle.WaitForCompletionAsync(cancellationToken);
+}</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_OpenReadAsync_System_String_BridgingIT_DevKit_Application_Caching_CacheReadOptions_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Dispose each acquired handle asynchronously. Handles have independent positions and bounded lifetimes.
+Seeking and ranges require explicit codec and provider support. Reading bytes does not prove integrity until terminal completion succeeds.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_PreviewInvalidationAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.PreviewInvalidationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_PreviewInvalidationAsync_BridgingIT_DevKit_Application_Caching_CacheSelection_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.PreviewInvalidationAsync(BridgingIT.DevKit.Application.Caching.CacheSelection,System.Threading.CancellationToken)">
+  PreviewInvalidationAsync(CacheSelection, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Previews matching metadata within the collection's query limits.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheInvalidationPreview&gt;&gt; PreviewInvalidationAsync(CacheSelection selection, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>selection</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheSelection.html">CacheSelection</a></dt>
+    <dd><p>The validated key or declared-dimension selection. An empty selection matches nothing.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels metadata enumeration or the wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheInvalidationPreview.html">CacheInvalidationPreview</a>&gt;&gt;</dt>
+    <dd><p>The count, count accuracy, bounded sample, and any continuation, or an explicit failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_PreviewInvalidationAsync_BridgingIT_DevKit_Application_Caching_CacheSelection_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var preview = await collection.PreviewInvalidationAsync(CacheSelection.Pattern("product:*"), cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_PreviewInvalidationAsync_BridgingIT_DevKit_Application_Caching_CacheSelection_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Preview does not open payloads or change entries and fences. Its result is an observation, not a reservation for a later invalidation.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RefreshAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.RefreshAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RefreshAsync_BridgingIT_DevKit_Application_Caching_CacheItem_BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__BridgingIT_DevKit_Application_Caching_CacheAccessOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.RefreshAsync(BridgingIT.DevKit.Application.Caching.CacheItem,BridgingIT.DevKit.Application.Caching.CacheLoadDelegate{`0},BridgingIT.DevKit.Application.Caching.CacheAccessOptions,System.Threading.CancellationToken)">
+  RefreshAsync(CacheItem, CacheLoadDelegate&lt;T&gt;, CacheAccessOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Refreshes with an optional expected version and background classification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheLookup&lt;T&gt;&gt;&gt; RefreshAsync(CacheItem item, CacheLoadDelegate&lt;T&gt; loader, CacheAccessOptions options, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheItem.html">CacheItem</a></dt>
+    <dd><p>The stable source key and captured dimensions.</p>
+</dd>
+    <dt><code>loader</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLoadDelegate-1.html">CacheLoadDelegate</a>&lt;T&gt;</dt>
+    <dd><p>The repeatable source loader executed in an owned scope.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheAccessOptions.html">CacheAccessOptions</a></dt>
+    <dd><p>The access mode, background classification, and optional acquired expected version. Null uses normal foreground access.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>This caller's wait cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLookup-1.html">CacheLookup</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>The actual source and publication result. A normal refresh whose selected version is no longer valid fails before source execution.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RefreshAsync_BridgingIT_DevKit_Application_Caching_CacheItem_BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__BridgingIT_DevKit_Application_Caching_CacheAccessOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await collection.RefreshAsync(item, loader, new(Background: true, ExpectedVersion: version), cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RefreshAsync_BridgingIT_DevKit_Application_Caching_CacheItem_BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__BridgingIT_DevKit_Application_Caching_CacheAccessOptions_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Background work avoids foreground activity and rechecks selected-version eligibility before source execution. The old valid entry remains available while refresh runs.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RefreshAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.RefreshAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RefreshAsync_BridgingIT_DevKit_Application_Caching_CacheItem_BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.RefreshAsync(BridgingIT.DevKit.Application.Caching.CacheItem,BridgingIT.DevKit.Application.Caching.CacheLoadDelegate{`0},System.Threading.CancellationToken)">
+  RefreshAsync(CacheItem, CacheLoadDelegate&lt;T&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Requests a fresh source load while preserving an independently valid old version.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheLookup&lt;T&gt;&gt;&gt; RefreshAsync(CacheItem item, CacheLoadDelegate&lt;T&gt; loader, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheItem.html">CacheItem</a></dt>
+    <dd><p>The exact key and captured dependencies for the source load.</p>
+</dd>
+    <dt><code>loader</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLoadDelegate-1.html">CacheLoadDelegate</a>&lt;T&gt;</dt>
+    <dd><p>The repeatable source read using cache-owned scoped services.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels this caller's wait independently of other interested callers.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheLookup-1.html">CacheLookup</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>The source value or confirmed absence with its actual publication outcome, or an explicit failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RefreshAsync_BridgingIT_DevKit_Application_Caching_CacheItem_BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await collection.RefreshAsync(item, loader, cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RefreshAsync_BridgingIT_DevKit_Application_Caching_CacheItem_BridgingIT_DevKit_Application_Caching_CacheLoadDelegate__0__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Publication remains conditional on the observed version and invalidation fences. Failure does not remove a valid old version, and conflicts never retry unconditionally.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RemoveAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.RemoveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RemoveAsync_System_String_BridgingIT_DevKit_Application_Caching_CacheEntryVersion_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.RemoveAsync(System.String,BridgingIT.DevKit.Application.Caching.CacheEntryVersion,System.Threading.CancellationToken)">
+  RemoveAsync(string, CacheEntryVersion, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes a key only while its acquired expected version is current.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&gt; RemoveAsync(string key, CacheEntryVersion expectedVersion, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd><p>The exact key to remove.</p>
+</dd>
+    <dt><code>expectedVersion</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryVersion.html">CacheEntryVersion</a></dt>
+    <dd><p>The token acquired from a confirmed cache lookup or write.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels the provider mutation or wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>Success when the matching version is removed, or a conflict if the condition fails.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RemoveAsync_System_String_BridgingIT_DevKit_Application_Caching_CacheEntryVersion_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var removed = await collection.RemoveAsync("product:42", lookup.Version.Value, cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RemoveAsync_System_String_BridgingIT_DevKit_Application_Caching_CacheEntryVersion_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A conflict preserves the current entry and does not advance invalidation fences.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RemoveAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.RemoveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RemoveAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.RemoveAsync(System.String,System.Threading.CancellationToken)">
+  RemoveAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes an exact key and prevents previously started loads from publishing it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&gt; RemoveAsync(string key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd><p>The exact key to remove, with no wildcard interpretation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels the provider mutation or wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>Success when the removal boundary is established, including an already missing key, or an explicit failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RemoveAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var removed = await collection.RemoveAsync("product:42", cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_RemoveAsync_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A missing key still advances the publication fence. Already acquired immutable read handles keep their snapshots.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.SetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetAsync_BridgingIT_DevKit_Application_Caching_CacheItem__0_BridgingIT_DevKit_Application_Caching_CacheEntryDescriptor_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.SetAsync(BridgingIT.DevKit.Application.Caching.CacheItem,`0,BridgingIT.DevKit.Application.Caching.CacheEntryDescriptor,System.Threading.CancellationToken)">
+  SetAsync(CacheItem, T, CacheEntryDescriptor, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores a derived value without an expected-version condition.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheWriteOutcome&gt;&gt; SetAsync(CacheItem item, T value, CacheEntryDescriptor descriptor = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheItem.html">CacheItem</a></dt>
+    <dd><p>The exact key and known dependencies for the new entry.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to encode, including a null or empty value permitted by the declared contract.</p>
+</dd>
+    <dt><code>descriptor</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryDescriptor.html">CacheEntryDescriptor</a></dt>
+    <dd><p>Additional dependencies and bounded metadata overrides. Null uses collection defaults.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels this write or this caller's bounded wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheWriteOutcome.html">CacheWriteOutcome</a>&gt;&gt;</dt>
+    <dd><p>The actual storage acknowledgement and a version only when publication is confirmed, or an explicit failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetAsync_BridgingIT_DevKit_Application_Caching_CacheItem__0_BridgingIT_DevKit_Application_Caching_CacheEntryDescriptor_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var stored = await collection.SetAsync(new("product:42"), card, cancellationToken: cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetAsync_BridgingIT_DevKit_Application_Caching_CacheItem__0_BridgingIT_DevKit_Application_Caching_CacheEntryDescriptor_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Encoding, admission, and invalidation fences still apply. A direct write does not establish when caller-managed source access occurred.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.SetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetAsync_BridgingIT_DevKit_Application_Caching_CacheItem__0_BridgingIT_DevKit_Application_Caching_CacheEntryVersion_BridgingIT_DevKit_Application_Caching_CacheEntryDescriptor_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.SetAsync(BridgingIT.DevKit.Application.Caching.CacheItem,`0,BridgingIT.DevKit.Application.Caching.CacheEntryVersion,BridgingIT.DevKit.Application.Caching.CacheEntryDescriptor,System.Threading.CancellationToken)">
+  SetAsync(CacheItem, T, CacheEntryVersion, CacheEntryDescriptor, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Replaces an acquired version only if it is still current at publication.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheWriteOutcome&gt;&gt; SetAsync(CacheItem item, T value, CacheEntryVersion expectedVersion, CacheEntryDescriptor descriptor = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheItem.html">CacheItem</a></dt>
+    <dd><p>The exact key and known dependencies for the replacement entry.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The replacement read-only value, including a permitted null or empty value.</p>
+</dd>
+    <dt><code>expectedVersion</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryVersion.html">CacheEntryVersion</a></dt>
+    <dd><p>The token acquired from a confirmed cache lookup or write.</p>
+</dd>
+    <dt><code>descriptor</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryDescriptor.html">CacheEntryDescriptor</a></dt>
+    <dd><p>Additional dependencies and bounded metadata overrides. Null uses collection defaults.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels this write or this caller's bounded wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheWriteOutcome.html">CacheWriteOutcome</a>&gt;&gt;</dt>
+    <dd><p>The actual storage acknowledgement, or a conflict when the expected version no longer matches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetAsync_BridgingIT_DevKit_Application_Caching_CacheItem__0_BridgingIT_DevKit_Application_Caching_CacheEntryVersion_BridgingIT_DevKit_Application_Caching_CacheEntryDescriptor_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var stored = await collection.SetAsync(item, replacement, lookup.Version.Value, cancellationToken: cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetAsync_BridgingIT_DevKit_Application_Caching_CacheItem__0_BridgingIT_DevKit_Application_Caching_CacheEntryVersion_BridgingIT_DevKit_Application_Caching_CacheEntryDescriptor_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The provider checks the version atomically at commit. A conflict preserves the current entry and never falls back to an unconditional write.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.SetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetAsync_BridgingIT_DevKit_Application_Caching_CacheItem__0_BridgingIT_DevKit_Application_Caching_CacheWriteCondition_BridgingIT_DevKit_Application_Caching_CacheEntryDescriptor_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.SetAsync(BridgingIT.DevKit.Application.Caching.CacheItem,`0,BridgingIT.DevKit.Application.Caching.CacheWriteCondition,BridgingIT.DevKit.Application.Caching.CacheEntryDescriptor,System.Threading.CancellationToken)">
+  SetAsync(CacheItem, T, CacheWriteCondition, CacheEntryDescriptor, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores a value only when the supplied condition holds at publication.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheWriteOutcome&gt;&gt; SetAsync(CacheItem item, T value, CacheWriteCondition condition, CacheEntryDescriptor descriptor = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheItem.html">CacheItem</a></dt>
+    <dd><p>The exact key and known dependencies for the entry.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The read-only value to encode, including a permitted null or empty value.</p>
+</dd>
+    <dt><code>condition</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheWriteCondition.html">CacheWriteCondition</a></dt>
+    <dd><p>The acquired expected version, create-only condition, or default for an unconditional write.</p>
+</dd>
+    <dt><code>descriptor</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryDescriptor.html">CacheEntryDescriptor</a></dt>
+    <dd><p>Additional dependencies and bounded metadata overrides. Null uses collection defaults.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels this write or this caller's bounded wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheWriteOutcome.html">CacheWriteOutcome</a>&gt;&gt;</dt>
+    <dd><p>The actual storage acknowledgement, or a conflict if the atomic condition fails.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetAsync_BridgingIT_DevKit_Application_Caching_CacheItem__0_BridgingIT_DevKit_Application_Caching_CacheWriteCondition_BridgingIT_DevKit_Application_Caching_CacheEntryDescriptor_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var created = await collection.SetAsync(item, card, new CacheWriteCondition(CreateOnly: true), cancellationToken: cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetAsync_BridgingIT_DevKit_Application_Caching_CacheItem__0_BridgingIT_DevKit_Application_Caching_CacheWriteCondition_BridgingIT_DevKit_Application_Caching_CacheEntryDescriptor_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Create-only can replace confirmed absence, but a positive null or empty value is present. Failed conditions do not overwrite the current entry or retry unconditionally.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetEncodedAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.SetEncodedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetEncodedAsync_BridgingIT_DevKit_Application_Caching_CacheItem_System_IO_Stream_BridgingIT_DevKit_Application_Caching_CacheEntryDescriptor_BridgingIT_DevKit_Application_Caching_CacheWriteCondition_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.SetEncodedAsync(BridgingIT.DevKit.Application.Caching.CacheItem,System.IO.Stream,BridgingIT.DevKit.Application.Caching.CacheEntryDescriptor,BridgingIT.DevKit.Application.Caching.CacheWriteCondition,System.Threading.CancellationToken)">
+  SetEncodedAsync(CacheItem, Stream, CacheEntryDescriptor, CacheWriteCondition, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates and stores encoded input without materializing a typed value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheWriteOutcome&gt;&gt; SetEncodedAsync(CacheItem item, Stream input, CacheEntryDescriptor descriptor = null, CacheWriteCondition condition = default, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheItem.html">CacheItem</a></dt>
+    <dd><p>The exact key and known dependencies for the entry.</p>
+</dd>
+    <dt><code>input</code> <span class="xref">Stream</span></dt>
+    <dd><p>The caller-owned encoded input, read from its current position. The cache neither retains nor disposes it.</p>
+</dd>
+    <dt><code>descriptor</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryDescriptor.html">CacheEntryDescriptor</a></dt>
+    <dd><p>Additional dependencies and bounded metadata overrides. Null uses collection defaults.</p>
+</dd>
+    <dt><code>condition</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheWriteCondition.html">CacheWriteCondition</a></dt>
+    <dd><p>The atomic publication condition, or default for an unconditional write.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels the transfer or this caller's bounded wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheWriteOutcome.html">CacheWriteOutcome</a>&gt;&gt;</dt>
+    <dd><p>The actual storage acknowledgement, or a failure for unsupported validation, invalid bytes, failed conditions, or resource limits.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetEncodedAsync_BridgingIT_DevKit_Application_Caching_CacheItem_System_IO_Stream_BridgingIT_DevKit_Application_Caching_CacheEntryDescriptor_BridgingIT_DevKit_Application_Caching_CacheWriteCondition_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var stored = await collection.SetEncodedAsync(item, encoded, cancellationToken: cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_SetEncodedAsync_BridgingIT_DevKit_Application_Caching_CacheItem_System_IO_Stream_BridgingIT_DevKit_Application_Caching_CacheEntryDescriptor_BridgingIT_DevKit_Application_Caching_CacheWriteCondition_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The selected codec must have an explicitly registered, bounded, nonmaterializing streaming validator. Format compatibility and all normal publication checks still apply.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_TouchAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.TouchAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_TouchAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Caching.CacheCollectionOperationBehavior`1.TouchAsync(System.String,System.Threading.CancellationToken)">
+  TouchAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Renews an eligible entry's sliding timeout without loading its source.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&gt; TouchAsync(string key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd><p>The exact key whose authoritative validity is checked.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels the provider operation or wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>The provider's renewal result, or an explicit failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_TouchAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var touched = await collection.TouchAsync("product:42", cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Caching_CacheCollectionOperationBehavior_1_TouchAsync_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Renewal cannot revive expired or invalidated content, extend the original absolute expiry, or reset source age.</p>
+</div>
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class EntityFrameworkCacheStoreProvider | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class EntityFrameworkCacheStoreProvider | bITdevKit API Reference ">
+      
+      <meta name="description" content="Owns the complete advanced-cache relational store using short bounded transactions and immutable payload generations.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider" class="text-break">
+Class EntityFrameworkCacheStoreProvider  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.html">Caching</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Owns the complete advanced-cache relational store using short bounded transactions and immutable payload generations.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class EntityFrameworkCacheStoreProvider : ICacheStoreProvider</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">EntityFrameworkCacheStoreProvider</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Caching.ICacheStoreProvider.html">ICacheStoreProvider</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider-1.html">EntityFrameworkCacheStoreProvider&lt;TContext&gt;</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_examples">Examples</h2>
+  <pre><code class="lang-csharp">var provider = new EntityFrameworkCacheStoreProvider("database", options, () =&gt; new CacheDbContext(contextOptions));</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Hosts deploy matching migrations and SQLite WAL/FULL settings before readiness. Native SQLite I/O is synchronous and host-local.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider__ctor_System_String_BridgingIT_DevKit_Application_Caching_CacheProviderOptions_System_Func_Microsoft_EntityFrameworkCore_DbContext__System_TimeProvider_BridgingIT_DevKit_Application_Caching_CacheRuntimeResources_BridgingIT_DevKit_Common_IDatabaseReadyService_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider__BridgingIT_DevKit_Application_Caching_CacheDiagnosticsOptions_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.#ctor(System.String,BridgingIT.DevKit.Application.Caching.CacheProviderOptions,System.Func{Microsoft.EntityFrameworkCore.DbContext},System.TimeProvider,BridgingIT.DevKit.Application.Caching.CacheRuntimeResources,BridgingIT.DevKit.Common.IDatabaseReadyService,Microsoft.Extensions.Logging.ILogger{BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider},BridgingIT.DevKit.Application.Caching.CacheDiagnosticsOptions)">
+  EntityFrameworkCacheStoreProvider(string, CacheProviderOptions, Func&lt;DbContext&gt;, TimeProvider, CacheRuntimeResources, IDatabaseReadyService, ILogger&lt;EntityFrameworkCacheStoreProvider&gt;, CacheDiagnosticsOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates lazy native bindings without database access. Every context returned by the host factory is independently owned and disposed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkCacheStoreProvider(string name, CacheProviderOptions options, Func&lt;DbContext&gt; contexts, TimeProvider timeProvider = null, CacheRuntimeResources resources = null, IDatabaseReadyService ready = null, ILogger&lt;EntityFrameworkCacheStoreProvider&gt; logger = null, CacheDiagnosticsOptions diagnostics = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderOptions.html">CacheProviderOptions</a></dt>
+    <dd></dd>
+    <dt><code>contexts</code> <span class="xref">Func</span>&lt;<span class="xref">DbContext</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>timeProvider</code> <span class="xref">TimeProvider</span></dt>
+    <dd></dd>
+    <dt><code>resources</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheRuntimeResources.html">CacheRuntimeResources</a></dt>
+    <dd></dd>
+    <dt><code>ready</code> <a class="xref" href="BridgingIT.DevKit.Common.IDatabaseReadyService.html">IDatabaseReadyService</a></dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.html">EntityFrameworkCacheStoreProvider</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>diagnostics</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheDiagnosticsOptions.html">CacheDiagnosticsOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_Capabilities_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.Capabilities*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_Capabilities" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.Capabilities">
+  Capabilities
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the actual engine's persistence, coordination, native-I/O and access scope.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CacheProviderCapabilities Capabilities { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderCapabilities.html">CacheProviderCapabilities</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_Name_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.Name*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_Name" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.Name">
+  Name
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets this complete provider's normalized registration alias.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Name { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_AcquireOwnershipAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.AcquireOwnershipAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_AcquireOwnershipAsync_BridgingIT_DevKit_Application_Caching_CacheOwnershipRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.AcquireOwnershipAsync(BridgingIT.DevKit.Application.Caching.CacheOwnershipRequest,System.Threading.CancellationToken)">
+  AcquireOwnershipAsync(CacheOwnershipRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates one authoritative shared flight or registers bounded interest in its active owner. It never invokes application source work.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheOwnershipObservation&gt;&gt; AcquireOwnershipAsync(CacheOwnershipRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheOwnershipRequest.html">CacheOwnershipRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheOwnershipObservation.html">CacheOwnershipObservation</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_BeginWriteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.BeginWriteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_BeginWriteAsync_BridgingIT_DevKit_Application_Caching_CacheProviderWriteRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.BeginWriteAsync(BridgingIT.DevKit.Application.Caching.CacheProviderWriteRequest,System.Threading.CancellationToken)">
+  BeginWriteAsync(CacheProviderWriteRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reserves finite shared staging credits and creates one same-database immutable candidate, without changing the current entry.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;ICacheProviderWriteSession&gt;&gt; BeginWriteAsync(CacheProviderWriteRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderWriteRequest.html">CacheProviderWriteRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.ICacheProviderWriteSession.html">ICacheProviderWriteSession</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_CapabilitiesFor_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.CapabilitiesFor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_CapabilitiesFor_BridgingIT_DevKit_Application_Caching_CacheProviderOptions_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.CapabilitiesFor(BridgingIT.DevKit.Application.Caching.CacheProviderOptions)">
+  CapabilitiesFor(CacheProviderOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resolves truthful engine capabilities without opening a database or promising arbitrary seeking.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CacheProviderCapabilities CapabilitiesFor(CacheProviderOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderOptions.html">CacheProviderOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderCapabilities.html">CacheProviderCapabilities</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_CaptureFenceAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.CaptureFenceAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_CaptureFenceAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.CaptureFenceAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,System.Threading.CancellationToken)">
+  CaptureFenceAsync(CacheEntryIdentity, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captures a persisted key/collection epoch and exact observed version before any source or staging access.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CachePublicationFence&gt;&gt; CaptureFenceAsync(CacheEntryIdentity identity, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CachePublicationFence.html">CachePublicationFence</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_CompleteOwnershipAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.CompleteOwnershipAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_CompleteOwnershipAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_BridgingIT_DevKit_Application_Caching_CacheOwnerToken_BridgingIT_DevKit_Application_Caching_CacheOwnershipCompletion_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.CompleteOwnershipAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,BridgingIT.DevKit.Application.Caching.CacheOwnerToken,BridgingIT.DevKit.Application.Caching.CacheOwnershipCompletion,System.Threading.CancellationToken)">
+  CompleteOwnershipAsync(CacheEntryIdentity, CacheOwnerToken, CacheOwnershipCompletion, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Completes one confirmed owner with an exact published version, metadata-only absence, or bounded failure classification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&gt; CompleteOwnershipAsync(CacheEntryIdentity identity, CacheOwnerToken owner, CacheOwnershipCompletion completion, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>owner</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheOwnerToken.html">CacheOwnerToken</a></dt>
+    <dd></dd>
+    <dt><code>completion</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheOwnershipCompletion.html">CacheOwnershipCompletion</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_DisposeAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.DisposeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_DisposeAsync" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.DisposeAsync">
+  DisposeAsync()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stops new native work. Existing independently owned contexts/streams retain their resources until actual completion.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask DisposeAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_GetOperationAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.GetOperationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_GetOperationAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.GetOperationAsync(System.String,System.Threading.CancellationToken)">
+  GetOperationAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads one native record only when its logical scope belongs to this provider instance's declared catalog.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheProviderOperation&gt;&gt; GetOperationAsync(string operationId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operationId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderOperation.html">CacheProviderOperation</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_GetOperationsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.GetOperationsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_GetOperationsAsync_System_Int32_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.GetOperationsAsync(System.Int32,System.Threading.CancellationToken)">
+  GetOperationsAsync(int, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists a bounded four-MiB native operation page without inspecting payload tables or returning another namespace's records.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;IReadOnlyList&lt;CacheProviderOperation&gt;&gt;&gt; GetOperationsAsync(int limit = 100, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>limit</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderOperation.html">CacheProviderOperation</a>&gt;&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_GetQuotaAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.GetQuotaAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_GetQuotaAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.GetQuotaAsync(System.Threading.CancellationToken)">
+  GetQuotaAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns authoritative aggregate current, staged, retired and conservatively charged metadata counters without reading payloads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheProviderQuota&gt;&gt; GetQuotaAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderQuota.html">CacheProviderQuota</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_InitializeAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.InitializeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_InitializeAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Caching_CacheProviderCollection__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.InitializeAsync(System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Caching.CacheProviderCollection},System.Threading.CancellationToken)">
+  InitializeAsync(IReadOnlyList&lt;CacheProviderCollection&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks deployed metadata/schema and canonical contracts. It never creates tables, applies migrations or changes SQLite journal mode.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&gt; InitializeAsync(IReadOnlyList&lt;CacheProviderCollection&gt; collections, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collections</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderCollection.html">CacheProviderCollection</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_InvalidateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.InvalidateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_InvalidateAsync_BridgingIT_DevKit_Application_Caching_CacheProviderInvalidation_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.InvalidateAsync(BridgingIT.DevKit.Application.Caching.CacheProviderInvalidation,System.Threading.CancellationToken)">
+  InvalidateAsync(CacheProviderInvalidation, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fences preexisting source publication, then conditionally retires one bounded metadata batch and commits tracked progress with those deletions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheInvalidationOutcome&gt;&gt; InvalidateAsync(CacheProviderInvalidation request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderInvalidation.html">CacheProviderInvalidation</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome.html">CacheInvalidationOutcome</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_LookupAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.LookupAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_LookupAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_BridgingIT_DevKit_Application_Caching_CacheReadRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.LookupAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,BridgingIT.DevKit.Application.Caching.CacheReadRequest,System.Threading.CancellationToken)">
+  LookupAsync(CacheEntryIdentity, CacheReadRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Acquires an indexed metadata/inline-payload snapshot in one query by default, or a bounded protected chunk stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheReadValidation&gt;&gt; LookupAsync(CacheEntryIdentity identity, CacheReadRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheReadRequest.html">CacheReadRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheReadValidation.html">CacheReadValidation</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_MaintainAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.MaintainAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_MaintainAsync_BridgingIT_DevKit_Application_Caching_CacheMaintenanceRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.MaintainAsync(BridgingIT.DevKit.Application.Caching.CacheMaintenanceRequest,System.Threading.CancellationToken)">
+  MaintainAsync(CacheMaintenanceRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reclaims bounded indexed metadata and chunk batches. Protected generations remain charged; cleanup never loads payload content.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheMaintenanceOutcome&gt;&gt; MaintainAsync(CacheMaintenanceRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheMaintenanceRequest.html">CacheMaintenanceRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheMaintenanceOutcome.html">CacheMaintenanceOutcome</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_ObserveOwnershipAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.ObserveOwnershipAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_ObserveOwnershipAsync_BridgingIT_DevKit_Application_Caching_CacheOwnershipRequest_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.ObserveOwnershipAsync(BridgingIT.DevKit.Application.Caching.CacheOwnershipRequest,System.String,System.Threading.CancellationToken)">
+  ObserveOwnershipAsync(CacheOwnershipRequest, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Observes one already registered flight using a short metadata read; waiting and polling delays remain outside native I/O admission.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheOwnershipObservation&gt;&gt; ObserveOwnershipAsync(CacheOwnershipRequest request, string flightId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheOwnershipRequest.html">CacheOwnershipRequest</a></dt>
+    <dd></dd>
+    <dt><code>flightId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheOwnershipObservation.html">CacheOwnershipObservation</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_QueryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.QueryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_QueryAsync_BridgingIT_DevKit_Application_Caching_CacheMetadataQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.QueryAsync(BridgingIT.DevKit.Application.Caching.CacheMetadataQuery,System.Threading.CancellationToken)">
+  QueryAsync(CacheMetadataQuery, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns one bounded indexed metadata page with canonical residual checks, fixed cutoff and store-signed continuation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheMetadataPage&gt;&gt; QueryAsync(CacheMetadataQuery query, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheMetadataQuery.html">CacheMetadataQuery</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheMetadataPage.html">CacheMetadataPage</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_QueryRefreshAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.QueryRefreshAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_QueryRefreshAsync_BridgingIT_DevKit_Application_Caching_CacheRefreshQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.QueryRefreshAsync(BridgingIT.DevKit.Application.Caching.CacheRefreshQuery,System.Threading.CancellationToken)">
+  QueryRefreshAsync(CacheRefreshQuery, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a bounded indexed page of current-contract refresh candidates without opening payloads or recording foreground activity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheRefreshPage&gt;&gt; QueryRefreshAsync(CacheRefreshQuery query, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheRefreshQuery.html">CacheRefreshQuery</a></dt>
+    <dd><p>The fixed refresh horizon, activity window and candidate allowance.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token for bounded native reads.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheRefreshPage.html">CacheRefreshPage</a>&gt;&gt;</dt>
+    <dd><p>Eligible immutable metadata and signed keyset progress.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_QueryRefreshAsync_BridgingIT_DevKit_Application_Caching_CacheRefreshQuery_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await provider.QueryRefreshAsync(new("catalog", "cards", "1", now, lead, activity), token);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_ReconcileAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.ReconcileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_ReconcileAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.ReconcileAsync(System.String,System.Threading.CancellationToken)">
+  ReconcileAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reconciles one exact operation/version without replaying its mutation or source stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheWriteOutcome&gt;&gt; ReconcileAsync(string operationId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operationId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheWriteOutcome.html">CacheWriteOutcome</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_RecordRefreshAttemptAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.RecordRefreshAttemptAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_RecordRefreshAttemptAsync_BridgingIT_DevKit_Application_Caching_CacheRefreshAttempt_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.RecordRefreshAttemptAsync(BridgingIT.DevKit.Application.Caching.CacheRefreshAttempt,System.Threading.CancellationToken)">
+  RecordRefreshAttemptAsync(CacheRefreshAttempt, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records finite scheduler backoff only while the selected publication version remains current.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&gt; RecordRefreshAttemptAsync(CacheRefreshAttempt attempt, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>attempt</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheRefreshAttempt.html">CacheRefreshAttempt</a></dt>
+    <dd><p>The exact version, source outcome and completion timestamp.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token for the conditional metadata transaction.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>Success for an applied update or an already superseded version.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_RecordRefreshAttemptAsync_BridgingIT_DevKit_Application_Caching_CacheRefreshAttempt_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await provider.RecordRefreshAttemptAsync(new(identity, selectedVersion, true, now), token);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_ReleaseFenceAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.ReleaseFenceAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_ReleaseFenceAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_BridgingIT_DevKit_Application_Caching_CachePublicationFence_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.ReleaseFenceAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,BridgingIT.DevKit.Application.Caching.CachePublicationFence,System.Threading.CancellationToken)">
+  ReleaseFenceAsync(CacheEntryIdentity, CachePublicationFence, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases one exact captured authority record. Repeated release is harmless and never resets a still-captured key epoch.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&gt; ReleaseFenceAsync(CacheEntryIdentity identity, CachePublicationFence fence, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>fence</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CachePublicationFence.html">CachePublicationFence</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_ReleaseInterestAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.ReleaseInterestAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_ReleaseInterestAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.ReleaseInterestAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,System.String,System.String,System.Threading.CancellationToken)">
+  ReleaseInterestAsync(CacheEntryIdentity, string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases exactly one local observation group's interest. Other nodes' interest and actual source work remain independent.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&gt; ReleaseInterestAsync(CacheEntryIdentity identity, string flightId, string interestId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>flightId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>interestId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_RemoveAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.RemoveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_RemoveAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_BridgingIT_DevKit_Application_Caching_CacheWriteCondition_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.RemoveAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,BridgingIT.DevKit.Application.Caching.CacheWriteCondition,System.Threading.CancellationToken)">
+  RemoveAsync(CacheEntryIdentity, CacheWriteCondition, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fences one logical key across retained contracts, even when it has no current entry.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheInvalidationOutcome&gt;&gt; RemoveAsync(CacheEntryIdentity identity, CacheWriteCondition condition = default, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>condition</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheWriteCondition.html">CacheWriteCondition</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome.html">CacheInvalidationOutcome</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_RemoveAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.RemoveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_RemoveAsync_BridgingIT_DevKit_Application_Caching_CacheProviderRemoval_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.RemoveAsync(BridgingIT.DevKit.Application.Caching.CacheProviderRemoval,System.Threading.CancellationToken)">
+  RemoveAsync(CacheProviderRemoval, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks exact acquired versions and optional source authority before any key fence or deletion is changed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheInvalidationOutcome&gt;&gt; RemoveAsync(CacheProviderRemoval request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderRemoval.html">CacheProviderRemoval</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheInvalidationOutcome.html">CacheInvalidationOutcome</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_RenewOwnershipAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.RenewOwnershipAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_RenewOwnershipAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_BridgingIT_DevKit_Application_Caching_CacheOwnerToken_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.RenewOwnershipAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,BridgingIT.DevKit.Application.Caching.CacheOwnerToken,System.Threading.CancellationToken)">
+  RenewOwnershipAsync(CacheEntryIdentity, CacheOwnerToken, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Renews only a live exact owner and its unchanged publication fence. It never extends the original source deadline.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheOwnershipObservation&gt;&gt; RenewOwnershipAsync(CacheEntryIdentity identity, CacheOwnerToken owner, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>owner</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheOwnerToken.html">CacheOwnerToken</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheOwnershipObservation.html">CacheOwnershipObservation</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_SaveOperationAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.SaveOperationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_SaveOperationAsync_BridgingIT_DevKit_Application_Caching_CacheProviderOperation_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.SaveOperationAsync(BridgingIT.DevKit.Application.Caching.CacheProviderOperation,System.String,System.Threading.CancellationToken)">
+  SaveOperationAsync(CacheProviderOperation, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates or conditionally changes a bounded native invalidation record. Running records hold one renewable fenced execution claim.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheProviderOperation&gt;&gt; SaveOperationAsync(CacheProviderOperation operation, string expectedRevision = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderOperation.html">CacheProviderOperation</a></dt>
+    <dd></dd>
+    <dt><code>expectedRevision</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheProviderOperation.html">CacheProviderOperation</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_TouchAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.TouchAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_TouchAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_System_Nullable_BridgingIT_DevKit_Application_Caching_CacheEntryVersion__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.TouchAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,System.Nullable{BridgingIT.DevKit.Application.Caching.CacheEntryVersion},System.Threading.CancellationToken)">
+  TouchAsync(CacheEntryIdentity, CacheEntryVersion?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Atomically renews an unexpired sliding version without replacing its immutable payload or version token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheEntryMetadata&gt;&gt; TouchAsync(CacheEntryIdentity identity, CacheEntryVersion? expectedVersion = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>expectedVersion</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryVersion.html">CacheEntryVersion</a>?</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryMetadata.html">CacheEntryMetadata</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_ValidateReadAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.ValidateReadAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Caching_EntityFrameworkCacheStoreProvider_ValidateReadAsync_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_BridgingIT_DevKit_Application_Caching_CacheEntryVersion_BridgingIT_DevKit_Application_Caching_CacheReadRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Caching.EntityFrameworkCacheStoreProvider.ValidateReadAsync(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity,BridgingIT.DevKit.Application.Caching.CacheEntryVersion,BridgingIT.DevKit.Application.Caching.CacheReadRequest,System.Threading.CancellationToken)">
+  ValidateReadAsync(CacheEntryIdentity, CacheEntryVersion, CacheReadRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Establishes authoritative validity for the expected hot version without selecting payload columns unless requested explicitly.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Result&lt;CacheReadValidation&gt;&gt; ValidateReadAsync(CacheEntryIdentity identity, CacheEntryVersion expectedVersion, CacheReadRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+    <dt><code>expectedVersion</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryVersion.html">CacheEntryVersion</a></dt>
+    <dd></dd>
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheReadRequest.html">CacheReadRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheReadValidation.html">CacheReadValidation</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

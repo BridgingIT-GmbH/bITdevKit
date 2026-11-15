@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CacheMetadataIndex | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CacheMetadataIndex | bITdevKit API Reference ">
+      
+      <meta name="description" content="Builds format-one composite metadata keys and ordered ranges from canonical identities and typed dimensions.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex" class="text-break">
+Class CacheMetadataIndex  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.html">FileSystem</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.html">Caching</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.FileSystem.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Builds format-one composite metadata keys and ordered ranges from canonical identities and typed dimensions.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class CacheMetadataIndex</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">CacheMetadataIndex</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_examples">Examples</h2>
+  <pre><code class="lang-csharp">var entryKey = CacheMetadataIndex.Primary(identity);</code></pre>
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Access" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Access">
+  Access
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The format-one composite-key kind prefix for sampled last-access candidates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const byte Access = 23</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Entry" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Entry">
+  Entry
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The format-one composite-key kind prefix for primary-entry records.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const byte Entry = 16</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Expiry" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Expiry">
+  Expiry
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The format-one composite-key kind prefix for logical expiry candidates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const byte Expiry = 20</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Interval" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Interval">
+  Interval
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The format-one composite-key kind prefix for half-open interval-start candidates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const byte Interval = 35</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_KeyPrefix" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.KeyPrefix">
+  KeyPrefix
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The format-one composite-key kind prefix for ordinal normalized-key prefix candidates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const byte KeyPrefix = 18</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_LogicalKey" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.LogicalKey">
+  LogicalKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The format-one composite-key kind prefix for logical-key candidates across contract versions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const byte LogicalKey = 17</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Member" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Member">
+  Member
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The format-one composite-key kind prefix for typed set-member candidates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const byte Member = 34</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Present" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Present">
+  Present
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The format-one composite-key kind prefix for declared dimension presence candidates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const byte Present = 32</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Priority" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Priority">
+  Priority
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The format-one composite-key kind prefix for eviction-priority candidates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const byte Priority = 24</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Published" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Published">
+  Published
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The format-one composite-key kind prefix for publication-time candidates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const byte Published = 19</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Purge" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Purge">
+  Purge
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The format-one composite-key kind prefix for physical purge-after candidates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const byte Purge = 21</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Refresh" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Refresh">
+  Refresh
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The format-one composite-key kind prefix for scheduled refresh candidates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const byte Refresh = 25</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Scalar" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Scalar">
+  Scalar
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The format-one composite-key kind prefix for typed scalar dimension candidates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const byte Scalar = 33</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_StoredSize" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.StoredSize">
+  StoredSize
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The format-one composite-key kind prefix for stored-byte-size candidates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const byte StoredSize = 22</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_IntervalRange_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.IntervalRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_IntervalRange_System_String_BridgingIT_DevKit_Application_Caching_CacheDimensionKind_System_Int64_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.IntervalRange(System.String,BridgingIT.DevKit.Application.Caching.CacheDimensionKind,System.Int64)">
+  IntervalRange(string, CacheDimensionKind, long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the interval-start candidate range below an exclusive upper endpoint; callers must still test overlap against full metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CacheIndexRange IntervalRange(string name, CacheDimensionKind kind, long upper)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>kind</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheDimensionKind.html">CacheDimensionKind</a></dt>
+    <dd></dd>
+    <dt><code>upper</code> <span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexRange.html">CacheIndexRange</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_KeyPrefixRange_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.KeyPrefixRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_KeyPrefixRange_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.KeyPrefixRange(System.String)">
+  KeyPrefixRange(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the ordered key-prefix candidate range for a normalized key string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CacheIndexRange KeyPrefixRange(string key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexRange.html">CacheIndexRange</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Keys_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Keys*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Keys_BridgingIT_DevKit_Application_Caching_CacheEntryMetadata_System_DateTimeOffset_System_Nullable_System_DateTimeOffset__" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Keys(BridgingIT.DevKit.Application.Caching.CacheEntryMetadata,System.DateTimeOffset,System.Nullable{System.DateTimeOffset})">
+  Keys(CacheEntryMetadata, DateTimeOffset, DateTimeOffset?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enumerates secondary metadata keys for one entry, including expiry, access and declared dimension values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;CacheIndexKey&gt; Keys(CacheEntryMetadata metadata, DateTimeOffset purgeAfter, DateTimeOffset? refreshDue = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>metadata</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryMetadata.html">CacheEntryMetadata</a></dt>
+    <dd></dd>
+    <dt><code>purgeAfter</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+    <dt><code>refreshDue</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexKey.html">CacheIndexKey</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_LogicalPrefix_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.LogicalPrefix*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_LogicalPrefix_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.LogicalPrefix(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity)">
+  LogicalPrefix(CacheEntryIdentity)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the logical-key digest prefix used to locate all contract versions of one key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] LogicalPrefix(CacheEntryIdentity identity)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_OrderedRange_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.OrderedRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_OrderedRange_System_Byte_System_Int64_System_Int64_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.OrderedRange(System.Byte,System.Int64,System.Int64)">
+  OrderedRange(byte, long, long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds a numeric secondary-index range with inclusive lower and exclusive upper bounds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CacheIndexRange OrderedRange(byte kind, long lower, long upper)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>kind</code> <span class="xref">byte</span></dt>
+    <dd></dd>
+    <dt><code>lower</code> <span class="xref">long</span></dt>
+    <dd></dd>
+    <dt><code>upper</code> <span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexRange.html">CacheIndexRange</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Pointer_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Pointer*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Pointer_BridgingIT_DevKit_Application_Caching_CacheEntryMetadata_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Pointer(BridgingIT.DevKit.Application.Caching.CacheEntryMetadata)">
+  Pointer(CacheEntryMetadata)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes an exact identity digest and immutable payload version for a secondary-index candidate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Pointer(CacheEntryMetadata metadata)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>metadata</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryMetadata.html">CacheEntryMetadata</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_PrefixRange_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.PrefixRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_PrefixRange_System_ReadOnlySpan_System_Byte__" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.PrefixRange(System.ReadOnlySpan{System.Byte})">
+  PrefixRange(ReadOnlySpan&lt;byte&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds an inclusive lower and exclusive upper bound for a nonempty composite prefix.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CacheIndexRange PrefixRange(ReadOnlySpan&lt;byte&gt; prefix)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>prefix</code> <span class="xref">ReadOnlySpan</span>&lt;<span class="xref">byte</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexRange.html">CacheIndexRange</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_PresenceNameRange_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.PresenceNameRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_PresenceNameRange_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.PresenceNameRange(System.String)">
+  PresenceNameRange(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the candidate range for a normalized dimension name across kinds and forms.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CacheIndexRange PresenceNameRange(string name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexRange.html">CacheIndexRange</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_PresenceRange_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.PresenceRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_PresenceRange_System_String_BridgingIT_DevKit_Application_Caching_CacheDimensionKind_BridgingIT_DevKit_Application_Caching_CacheDimensionForm_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.PresenceRange(System.String,BridgingIT.DevKit.Application.Caching.CacheDimensionKind,BridgingIT.DevKit.Application.Caching.CacheDimensionForm)">
+  PresenceRange(string, CacheDimensionKind, CacheDimensionForm)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the candidate range for a dimension's exact name, kind and form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CacheIndexRange PresenceRange(string name, CacheDimensionKind kind, CacheDimensionForm form)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>kind</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheDimensionKind.html">CacheDimensionKind</a></dt>
+    <dd></dd>
+    <dt><code>form</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheDimensionForm.html">CacheDimensionForm</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexRange.html">CacheIndexRange</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Primary_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Primary*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Primary_BridgingIT_DevKit_Application_Caching_CacheEntryIdentity_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Primary(BridgingIT.DevKit.Application.Caching.CacheEntryIdentity)">
+  Primary(CacheEntryIdentity)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the primary-entry key from an exact identity or its SHA-256 digest.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CacheIndexKey Primary(CacheEntryIdentity identity)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>identity</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheEntryIdentity.html">CacheEntryIdentity</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexKey.html">CacheIndexKey</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Primary_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Primary*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_Primary_System_ReadOnlySpan_System_Byte__" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.Primary(System.ReadOnlySpan{System.Byte})">
+  Primary(ReadOnlySpan&lt;byte&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the primary-entry key from an exact identity or its SHA-256 digest.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CacheIndexKey Primary(ReadOnlySpan&lt;byte&gt; digest)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>digest</code> <span class="xref">ReadOnlySpan</span>&lt;<span class="xref">byte</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexKey.html">CacheIndexKey</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_ValueRange_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.ValueRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheMetadataIndex_ValueRange_System_String_BridgingIT_DevKit_Application_Caching_CacheDimensionForm_BridgingIT_DevKit_Application_Caching_CacheDimensionValue_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheMetadataIndex.ValueRange(System.String,BridgingIT.DevKit.Application.Caching.CacheDimensionForm,BridgingIT.DevKit.Application.Caching.CacheDimensionValue)">
+  ValueRange(string, CacheDimensionForm, CacheDimensionValue)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the exact typed scalar or set-member candidate range for a declared dimension value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CacheIndexRange ValueRange(string name, CacheDimensionForm form, CacheDimensionValue value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>form</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheDimensionForm.html">CacheDimensionForm</a></dt>
+    <dd></dd>
+    <dt><code>value</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheDimensionValue.html">CacheDimensionValue</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheIndexRange.html">CacheIndexRange</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

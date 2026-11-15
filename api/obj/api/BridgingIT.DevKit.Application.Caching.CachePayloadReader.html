@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CachePayloadReader | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CachePayloadReader | bITdevKit API Reference ">
+      
+      <meta name="description" content="Builds an owned logical read handle over an acquired provider snapshot with bounded envelope, transform, and transfer state.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Caching.CachePayloadReader">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Caching_CachePayloadReader" data-uid="BridgingIT.DevKit.Application.Caching.CachePayloadReader" class="text-break">
+Class CachePayloadReader  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Caching.html">Caching</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Caching.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Builds an owned logical read handle over an acquired provider snapshot with bounded envelope, transform, and transfer state.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class CachePayloadReader</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">CachePayloadReader</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Application_Caching_CachePayloadReader_examples">Examples</h2>
+  <pre><code class="lang-csharp">var opened = await CachePayloadReader.OpenAsync(acquired, options, binding, resources, tasks, time, transfer, cancellationToken);</code></pre>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Caching_CachePayloadReader_OpenAsync_" data-uid="BridgingIT.DevKit.Application.Caching.CachePayloadReader.OpenAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Caching_CachePayloadReader_OpenAsync_BridgingIT_DevKit_Application_Caching_ICacheProviderReadHandle_BridgingIT_DevKit_Application_Caching_CacheReadOptions_BridgingIT_DevKit_Application_Caching_CacheCollectionBinding_BridgingIT_DevKit_Application_Caching_CacheRuntimeResources_BridgingIT_DevKit_Application_Caching_CacheRuntimeTasks_System_TimeProvider_BridgingIT_DevKit_Application_Caching_CacheAdmissionLease_System_Threading_CancellationToken_BridgingIT_DevKit_Application_Caching_CachePayloadTransformRegistry_System_Action_BridgingIT_DevKit_Application_Caching_ICacheProviderInfrastructureObserver_BridgingIT_DevKit_Application_Caching_CacheObservationSlot_" data-uid="BridgingIT.DevKit.Application.Caching.CachePayloadReader.OpenAsync(BridgingIT.DevKit.Application.Caching.ICacheProviderReadHandle,BridgingIT.DevKit.Application.Caching.CacheReadOptions,BridgingIT.DevKit.Application.Caching.CacheCollectionBinding,BridgingIT.DevKit.Application.Caching.CacheRuntimeResources,BridgingIT.DevKit.Application.Caching.CacheRuntimeTasks,System.TimeProvider,BridgingIT.DevKit.Application.Caching.CacheAdmissionLease,System.Threading.CancellationToken,BridgingIT.DevKit.Application.Caching.CachePayloadTransformRegistry,System.Action,BridgingIT.DevKit.Application.Caching.ICacheProviderInfrastructureObserver,BridgingIT.DevKit.Application.Caching.CacheObservationSlot)">
+  OpenAsync(ICacheProviderReadHandle, CacheReadOptions, CacheCollectionBinding, CacheRuntimeResources, CacheRuntimeTasks, TimeProvider, CacheAdmissionLease, CancellationToken, CachePayloadTransformRegistry, Action, ICacheProviderInfrastructureObserver, CacheObservationSlot)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adopts provider snapshot and transfer ownership, validates read capabilities, and removes registered persisted transformations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ValueTask&lt;Result&lt;ICacheReadHandle&gt;&gt; OpenAsync(ICacheProviderReadHandle acquired, CacheReadOptions options, CacheCollectionBinding binding, CacheRuntimeResources resources, CacheRuntimeTasks tasks, TimeProvider time, CacheAdmissionLease transfer, CancellationToken cancellationToken, CachePayloadTransformRegistry transforms = null, Action validated = null, ICacheProviderInfrastructureObserver infrastructureObserver = null, CacheObservationSlot observations = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>acquired</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.ICacheProviderReadHandle.html">ICacheProviderReadHandle</a></dt>
+    <dd><p>The acquired provider snapshot; this method disposes it on failure or transfers it to the returned handle.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheReadOptions.html">CacheReadOptions</a></dt>
+    <dd><p>The explicit full, seekable, or range read requirements.</p>
+</dd>
+    <dt><code>binding</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheCollectionBinding.html">CacheCollectionBinding</a></dt>
+    <dd><p>The immutable collection policy and native capabilities.</p>
+</dd>
+    <dt><code>resources</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheRuntimeResources.html">CacheRuntimeResources</a></dt>
+    <dd><p>The finite process and collection resource hierarchy.</p>
+</dd>
+    <dt><code>tasks</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheRuntimeTasks.html">CacheRuntimeTasks</a></dt>
+    <dd><p>The tracker for already admitted transfer tails and cleanup.</p>
+</dd>
+    <dt><code>time</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The transfer deadline clock.</p>
+</dd>
+    <dt><code>transfer</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheAdmissionLease.html">CacheAdmissionLease</a></dt>
+    <dd><p>The already admitted transfer lease adopted by the returned handle or disposed on failure.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation forwarded to initial envelope and range acquisition.</p>
+</dd>
+    <dt><code>transforms</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CachePayloadTransformRegistry.html">CachePayloadTransformRegistry</a></dt>
+    <dd><p>The optional code-approved reader registry for version-two transformation stacks.</p>
+</dd>
+    <dt><code>validated</code> <span class="xref">Action</span></dt>
+    <dd><p>An optional callback invoked after full-envelope validation, never for partial ranges.</p>
+</dd>
+    <dt><code>infrastructureObserver</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.ICacheProviderInfrastructureObserver.html">ICacheProviderInfrastructureObserver</a></dt>
+    <dd><p>Optional enabled provider-circuit observation for actual post-acquisition native reads.</p>
+</dd>
+    <dt><code>observations</code> <a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheObservationSlot.html">CacheObservationSlot</a></dt>
+    <dd><p>Optional predeclared collection observations for late native failures.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Caching.ICacheReadHandle.html">ICacheReadHandle</a>&gt;&gt;</dt>
+    <dd><p>The owned logical handle, or a validation, capacity, capability, compatibility, or envelope failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

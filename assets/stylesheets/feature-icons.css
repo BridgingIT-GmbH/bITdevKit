@@ -35,6 +35,15 @@
   fill: none;
 }
 
+.bdk-feature-name {
+  white-space: nowrap;
+}
+
+.bdk-feature-name > .bdk-feature-icon,
+.md-typeset span.bdk-feature-name > .bdk-feature-icon {
+  margin-right: .25em;
+}
+
 .md-typeset h1 .bdk-feature-icon,
 .md-typeset h2 .bdk-feature-icon,
 .md-typeset h3 .bdk-feature-icon {
@@ -43,11 +52,6 @@
 
 .md-nav__link > .bdk-feature-icon {
   margin-top: .05em;
-}
-
-/* Material truncates its label inside the flex link; the icon keeps its width. */
-.md-nav__link > .bdk-feature-icon + .bdk-feature-icon {
-  margin-left: -.25rem;
 }
 
 .bdk-icon-grid {

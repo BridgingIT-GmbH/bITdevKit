@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CacheFileSystemAccess | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CacheFileSystemAccess | bITdevKit API Reference ">
+      
+      <meta name="description" content="Checks the observable filesystem kind before selecting the cache root&#39;s native ownership protocol.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileSystemAccess">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileSystemAccess" class="text-break">
+Class CacheFileSystemAccess  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.html">FileSystem</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.html">Caching</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.FileSystem.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Checks the observable filesystem kind before selecting the cache root's native ownership protocol.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class CacheFileSystemAccess</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">CacheFileSystemAccess</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess_examples">Examples</h2>
+  <pre><code class="lang-csharp">CacheFileSystemAccess.ValidateBeforeCreate(profile.RootPath, profile.Native.AccessKind);</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>A shared marker protocol may be exercised conservatively on a local filesystem. This guard establishes protocol selection, not network durability qualification. Mount options and credentials are not emitted.</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess_ClassifyLinux_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileSystemAccess.ClassifyLinux*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess_ClassifyLinux_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileSystemAccess.ClassifyLinux(System.String)">
+  ClassifyLinux(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a Linux mount filesystem name to its observable local or supported remote protocol.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ClassifyLinux(string fileSystem)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fileSystem</code> <span class="xref">string</span></dt>
+    <dd><p>The filesystem name from the mount table, without options.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>Local, Smb, Nfs, or Unsupported.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess_ClassifyLinux_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var kind = CacheFileSystemAccess.ClassifyLinux("ext4");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess_IsUncPath_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileSystemAccess.IsUncPath*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess_IsUncPath_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileSystemAccess.IsUncPath(System.String)">
+  IsUncPath(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Recognizes ordinary and extended UNC roots without accessing a server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsUncPath(string path)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The fully qualified Windows path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>Whether the path names a network namespace.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess_IsUncPath_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var isRemote = CacheFileSystemAccess.IsUncPath(@"\\server\share\cache");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess_ValidateBeforeCreate_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileSystemAccess.ValidateBeforeCreate*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess_ValidateBeforeCreate_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileSystemAccess.ValidateBeforeCreate(System.String,System.String)">
+  ValidateBeforeCreate(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Inspects an existing mount or ancestor and rejects an incompatible ownership declaration before any cache files are created.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ValidateBeforeCreate(string root, string declared)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>root</code> <span class="xref">string</span></dt>
+    <dd><p>The normalized absolute cache root.</p>
+</dd>
+    <dt><code>declared</code> <span class="xref">string</span></dt>
+    <dd><p>The configured ownership protocol.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess_ValidateBeforeCreate_System_String_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">CacheFileSystemAccess.ValidateBeforeCreate(root, "Local");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheTransferException.html">CacheTransferException</a></dt>
+    <dd><p>The actual filesystem is unsupported or does not match the safe declared protocol.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess_ValidateKind_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileSystemAccess.ValidateKind*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess_ValidateKind_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.FileSystem.Caching.CacheFileSystemAccess.ValidateKind(System.String,System.String)">
+  ValidateKind(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Rejects an unsafe local declaration for a remote filesystem, mismatched remote protocols and unknown native kinds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ValidateKind(string declared, string observed)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>declared</code> <span class="xref">string</span></dt>
+    <dd><p>The configured Local, Smb or Nfs protocol.</p>
+</dd>
+    <dt><code>observed</code> <span class="xref">string</span></dt>
+    <dd><p>The observed Local, Smb, Nfs or Unsupported kind.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_FileSystem_Caching_CacheFileSystemAccess_ValidateKind_System_String_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">CacheFileSystemAccess.ValidateKind("Smb", "Local");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Caching.CacheTransferException.html">CacheTransferException</a></dt>
+    <dd><p>The ownership protocol cannot safely serve the observed filesystem.</p>
+</dd>
+  </dl>
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

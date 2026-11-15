@@ -9,9 +9,14 @@ use_directory_urls: true
 
 nav:
   - Home: index.md
-  - Quickstart:
-      - Quickstart: getting-started.md
-      - Templates: templates.md
+  - Get started:
+      - Overview: getting-started.md
+      - "Path A: New solution":
+          - Create a solution from templates: getting-started-template.md
+          - Templates reference: templates.md
+      - "Path B: Existing app":
+          - Add DevKit to an existing app: getting-started-existing-app.md
+          - Add features: getting-started-existing-app-features.md
   - Docs:
       - Documentation Overview: docs.md
       - Feature Icons: feature-icons.md
@@ -120,6 +125,7 @@ nav:
       - "Result&lt;T&gt; or plain return type": decisions-results.md
   - API: api/index.md
   - Examples: examples.md
+  - FAQ: faq.md
 
 theme:
   name: material
@@ -129,6 +135,7 @@ theme:
   font: false
   features:
     - navigation.instant
+    - navigation.footer
     - navigation.path
     - navigation.sections
     - navigation.tabs

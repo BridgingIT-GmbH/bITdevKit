@@ -20,9 +20,9 @@ Results, rules, pipelines, requester/notifier flows, and queue and messaging abs
 
 The libraries provide durable queueing, outbox-backed messaging, job scheduling, document and file storage, and operational endpoints.
 
-### Generated project structure
+### Two ways to start
 
-The templates generate the solution and module structure. The examples show how to configure and use the generated projects.
+The templates generate the solution and module structure for a new application. An existing ASP.NET Core app keeps its projects. It swaps one line in `Program.cs` for the DevKit host builder, then adds features one at a time. Each feature is a separate package with its own registration, so a team can ship logging and request correlation first and add queueing or jobs later. [Get started](getting-started.md) compares both paths. The examples show how to configure and use the generated projects.
 
 ## When to use it
 

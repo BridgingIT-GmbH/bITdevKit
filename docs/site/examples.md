@@ -68,6 +68,9 @@ Use it to:
 - learn service-agent abstractions through the Open-Meteo integration
 - trace commands, queries, requester pipelines, scheduled ingestion, and data export
 - inspect subscription-gated features, developer dashboards, console commands, and MCP integration
+- read a host assembled from individual features
+
+Its `Program.cs` starts from `DevKitWebApplication.CreateBuilder` and registers each feature with its own `Add...` call, such as requester, messaging, queueing, storage, profiling and the dashboard. It is the full reference for [adding DevKit to an existing app](getting-started-existing-app.md), which adds the same registrations one at a time.
 
 Run it from the repository root:
 

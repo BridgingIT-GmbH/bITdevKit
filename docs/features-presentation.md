@@ -410,6 +410,8 @@ var builder = DevKitApplication.CreateBuilder(args, options => options
 
 Use this path when moving an application from raw `WebApplicationBuilder` to the DevKit builder.
 
+For the minimum setup in a running app, follow [Add DevKit to an existing app](./site/getting-started-existing-app.md). To add more features afterwards, use [Add features](./site/getting-started-existing-app-features.md).
+
 ### Before
 
 ```csharp

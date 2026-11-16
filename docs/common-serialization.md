@@ -138,6 +138,45 @@ public sealed record ReportSummary(string Title, int Rows);
 
 These abstractions belong to Common. They supply no provider, expiration, source ownership, or hosting policy. [Application Caching](features-application-caching.md#codecs-compression-and-hot-entries) uses them for its bounded persisted representations and owns its cache compression and envelopes. Use [Common Caching](common-caching.md) for basic in-process cache access.
 
+### Register versioned codec readers
+
+Use `AddValueCodecs` to register trusted codec implementations and the shared `ValueCodecRegistry`:
+
+```csharp
+using BridgingIT.DevKit.Common;
+using Microsoft.Extensions.DependencyInjection;
+
+services.AddValueCodecs(codecs => codecs
+	.WithCodec<ReportSummary, ReportCodecV1>()
+	.WithCodec<ReportSummary, ReportCodecV2>(isDefault: true));
+```
+
+`ReportCodecV1` and `ReportCodecV2` are application-provided implementations of `IValueCodec<ReportSummary>`. Both declare `FormatId = "report"`, with `FormatVersion` values of `1` and `2`. `WithCodec<T, TCodec>()` registers the concrete codec as a singleton and resolves constructor dependencies through DI. An existing concrete codec registration is preserved. Codec instances must support concurrent calls.
+
+For an already configured instance, use the instance overload:
+
+```csharp
+services.AddValueCodecs(codecs => codecs
+	.WithCodec(new SystemTextJsonValueCodec<ReportSummary>(jsonOptions), isDefault: true));
+```
+
+Resolve a reader using the format ID and version stored with the payload:
+
+```csharp
+var registry = serviceProvider.GetRequiredService<ValueCodecRegistry>();
+var format = new ValueCodecFormat("report", 1);
+if (registry.TryGet<ReportSummary>(format, out var reader))
+{
+	var decoded = await reader.DecodeAsync(content, cancellationToken);
+}
+```
+
+The registry matches the exact value type, format ID, and format version. An unregistered combination returns `false`; it does not select a newer reader. Duplicate registrations for the same combination throw when the registry is resolved.
+
+Set `isDefault: true` to select the writer resolved as `IValueCodec<T>`. The writer uses the same instance as its registered reader. A later explicit default selection replaces the previous writer for that value type; other reader registrations leave it unchanged. Without an explicit default, these methods register readers only. They do not replace `ISerializer`. Retain older readers while their payloads exist.
+
+The [Blob Storage codec example](features-storage-blobs.md#store-with-a-versioned-codec-and-compression) combines versioned readers, blob properties, and transparent GZip compression.
+
 ### Streaming payload transforms
 
 `IStreamingPayloadTransform` describes a reversible transformation over streams without choosing a storage provider, value model, or persisted envelope. `FormatId` and `FormatVersion` identify its bytes. `MaximumStateBytes` supplies a conservative per-stream workspace estimate for resource admission; input buffers, output buffers, retained data, and transfer limits are separate responsibilities.

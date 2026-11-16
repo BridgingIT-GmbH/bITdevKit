@@ -1027,6 +1027,119 @@ var bytesResult = await blobs.DownloadBytesAsync(
 
 The byte helpers intentionally buffer content in memory and are not a replacement for stream-first large blob operations.
 
+### Store with a versioned codec and compression
+
+Use `IValueCodec<T>` to encode a typed value into a binary stream before upload. Store its `FormatId` and `FormatVersion` in blob properties. On download, resolve that exact format through `ValueCodecRegistry` before decoding. Blob Storage does not select codecs automatically.
+
+This example stores an inventory snapshot as a `List<InventoryItem>`. `InventoryItem` is an application-defined record with a product code and a quantity. `InventoryCodecV1` and `InventoryCodecV2` are application-provided implementations of `IValueCodec<List<InventoryItem>>`. Both declare `FormatId = "inventory"`; their `FormatVersion` values are `1` and `2`. The codec implementations are omitted so the example focuses on the storage API.
+
+1. Register both readers, select V2 for new writes, and enable the [compression behavior](#compression-and-encryption-behaviors).
+
+```csharp
+using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Common;
+using Microsoft.Extensions.DependencyInjection;
+
+services.AddValueCodecs(codecs => codecs
+	.WithCodec<List<InventoryItem>, InventoryCodecV1>()
+	.WithCodec<List<InventoryItem>, InventoryCodecV2>(isDefault: true));
+
+services.AddBlobStorage()
+	.WithCompressionBehavior() // GZip, applied after inventory encoding.
+	.WithInMemoryClient("inventory");
+```
+
+`WithCodec<T, TCodec>()` registers the concrete codec as a singleton and resolves its constructor dependencies through DI. `isDefault: true` also registers V2 as the `IValueCodec<List<InventoryItem>>` writer; the registry retains both readers. See [codec registration](common-serialization.md#register-versioned-codec-readers) for configured instances and exact-format resolution.
+
+The in-memory provider keeps this example self-contained. Replace `WithInMemoryClient` with a persistent provider registration for durable storage. Compression applies to clients registered through this builder, across their containers.
+
+2. Encode the list and upload the bytes with their codec properties.
+
+Pass the injected `IBlobStoreClientFactory` and current `IValueCodec<List<InventoryItem>>` to this helper. For example, use `new BlobKey("snapshots", "warehouse-42/current.bin")` as the key.
+
+```csharp
+static async Task<Result<BlobInfo>> UploadInventoryAsync(
+	IBlobStoreClientFactory factory,
+	IValueCodec<List<InventoryItem>> writer,
+	BlobKey key,
+	List<InventoryItem> inventory,
+	CancellationToken cancellationToken)
+{
+	var blobs = factory.CreateClient("inventory");
+	await using var content = new MemoryStream();
+
+	var encoded = await writer.EncodeAsync(inventory, content, cancellationToken);
+	if (encoded.IsFailure)
+	{
+		return Result<BlobInfo>.Failure(encoded);
+	}
+
+	content.Position = 0;
+	return await blobs.UploadAsync(new BlobUpload
+	{
+		Key = key,
+		Content = content,
+		ContentType = ContentType.BIN,
+		Properties = new PropertyBag
+		{
+			["codec_id"] = writer.FormatId,
+			["codec_version"] = writer.FormatVersion
+		}
+	}, cancellationToken);
+}
+```
+
+The write path is `inventory -> encoded bytes -> GZip -> provider`. The compression behavior preserves the custom codec properties and manages its own compression metadata. Do not compress the encoded stream manually when this behavior is enabled.
+
+3. Download the blob and decode it with the registered reader for its stored format.
+
+Pass the injected `ValueCodecRegistry` and the same blob key to this helper. Read the codec properties from the returned `BlobDownload.Info`, so the metadata and content come from the same download.
+
+```csharp
+static async Task<Result<List<InventoryItem>>> DownloadInventoryAsync(
+	IBlobStoreClientFactory factory,
+	ValueCodecRegistry registry,
+	BlobKey key,
+	CancellationToken cancellationToken)
+{
+	var blobs = factory.CreateClient("inventory");
+	var downloaded = await blobs.DownloadAsync(key, cancellationToken);
+	if (downloaded.IsFailure)
+	{
+		return Result<List<InventoryItem>>.Failure(downloaded);
+	}
+
+	await using var download = downloaded.Value;
+	var properties = download.Info.Properties;
+	if (!properties.TryGet<string>("codec_id", out var formatId) ||
+		string.IsNullOrWhiteSpace(formatId) ||
+		!properties.TryGet<int>("codec_version", out var formatVersion) ||
+		formatVersion < 1)
+	{
+		return Result<List<InventoryItem>>.Failure(
+			new ValueCodecError("MissingFormat", "Blob codec properties are missing or invalid."));
+	}
+
+	var format = new ValueCodecFormat(formatId, formatVersion);
+	if (!registry.TryGet<List<InventoryItem>>(format, out var reader))
+	{
+		return Result<List<InventoryItem>>.Failure(
+			new ValueCodecError("UnsupportedFormat", "No reader is registered for the blob's codec format."));
+	}
+
+	// The blob behavior has already decompressed the encoded bytes.
+	return await reader.DecodeAsync(download.Content, cancellationToken);
+}
+```
+
+The read path is `provider -> GZip decompression -> stored codec reader -> inventory`. Both helpers return failures to the caller and propagate cancellation. The upload helper disposes its staging stream; the download helper disposes the returned `BlobDownload` after decoding.
+
+Keep V1 registered while V1 blobs exist. Selecting V2 for new writes does not rewrite existing blobs. The registry resolves the exact value type, format ID, and format version; it does not fall back to the newest reader. Codec format versions describe the byte representation independently of application schema versions.
+
+Treat `codec_id` and `codec_version` as part of the payload contract. Upload them together with the encoded content, and preserve them during later property updates. Changing these properties alone does not convert the stored bytes.
+
+This example buffers the encoded list in a `MemoryStream`. For larger lists, use a temporary file as the upload staging stream. Honor the codec's declared stream access requirements when choosing streams or changing the behavior pipeline.
+
 ### Reading many blobs at once
 
 Use `DownloadBytesManyAsync` when a request needs many small blobs, for example all days of a set of ids:

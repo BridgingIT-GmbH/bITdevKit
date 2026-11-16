@@ -403,7 +403,7 @@ Resolve read-only SSR/prerender data through server-capable feature services. Fo
 
 Public first content must not wait on optional navigation children, personalization, a badge, diagnostics or an optional recommendation query. Bound required reads and use native streaming/deferred noncritical regions where appropriate. Keep unavailable optional content truthful and reserve space where needed. Streaming and prerendering do not make a slow mandatory source fast; record server time-to-first-byte separately from browser download/activation.
 
-Apply normal web delivery practices: appropriately sized images with dimensions, prioritized primary imagery, deferred off-screen media, bounded CSS/JavaScript/fonts and versioned static assets. Use native HTTP/output caching or owning-module data caches only with complete culture/query/access keys and safe invalidation. Shared public output cannot contain personal data, basket content, antiforgery tokens or mutation-intent IDs. The upcoming Application.Caching feature is not a prerequisite for server rendering or native HTTP asset caching.
+Apply normal web delivery practices: appropriately sized images with dimensions, prioritized primary imagery, deferred off-screen media, bounded CSS/JavaScript/fonts and versioned static assets. Use native HTTP/output caching or owning-module data caches only with complete culture/query/access keys and safe invalidation. Shared public output cannot contain personal data, basket content, antiforgery tokens or mutation-intent IDs. Application.Caching is available for backend data caching and is not a prerequisite for server rendering or native HTTP asset caching.
 
 Measure both initial content and actual interaction. Interactive Server removes the browser .NET download but still has connection/per-event network costs. Prefer native browser behavior for basic input/navigation and avoid a server round trip for every unnecessary keystroke. A browser/WASM area is a deliberate alternative when measured interaction requirements justify its extra payload and runtime coverage. No single render mode is declared universally fastest.
 
@@ -2214,7 +2214,7 @@ The framework is ready for the subsequent ShopFiesta implementation when those c
 
 - [bITdevKit AppState](https://bridgingit-gmbh.github.io/bITdevKit/reference/features-presentation-appstate/)
 
-- [Upcoming backend Application Caching design, pending merge](spec-application-caching.md)
+- [bITdevKit Application Caching](../features-application-caching.md)
 
 - [Blazor routing](https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/routing?view=aspnetcore-10.0)
 

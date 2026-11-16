@@ -54,7 +54,7 @@ public class JobSchedulerEndpointsApplication(ITestOutputHelper output) : WebApp
     }
 }
 
-public class JobSchedulerEndpointsTests : IAsyncDisposable
+public class JobSchedulerEndpointsTests : IAsyncLifetime
 {
     private readonly JobSchedulerEndpointsApplication factory;
     private readonly HttpClient client;
@@ -69,7 +69,11 @@ public class JobSchedulerEndpointsTests : IAsyncDisposable
         this.query = this.factory.Query;
     }
 
-    public async ValueTask DisposeAsync()
+    /// <inheritdoc />
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    /// <inheritdoc />
+    public async Task DisposeAsync()
     {
         await this.factory.DisposeAsync();
     }

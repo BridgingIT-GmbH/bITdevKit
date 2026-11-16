@@ -39,7 +39,7 @@ public class QueueingEndpointsApplication : WebApplicationFactory<QueueingEndpoi
     }
 }
 
-public class QueueingEndpointsTests : IAsyncDisposable
+public class QueueingEndpointsTests : IAsyncLifetime
 {
     private readonly QueueingEndpointsApplication factory;
     private readonly HttpClient client;
@@ -52,7 +52,11 @@ public class QueueingEndpointsTests : IAsyncDisposable
         this.queueBrokerService = this.factory.QueueBrokerService;
     }
 
-    public async ValueTask DisposeAsync()
+    /// <inheritdoc />
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    /// <inheritdoc />
+    public async Task DisposeAsync()
     {
         await this.factory.DisposeAsync();
     }

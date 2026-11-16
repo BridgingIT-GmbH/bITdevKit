@@ -41,7 +41,7 @@ public class AspNetMetricsEndpointsApplication : WebApplicationFactory<AspNetMet
     }
 }
 
-public class AspNetMetricsEndpointsTests : IAsyncDisposable
+public class AspNetMetricsEndpointsTests : IAsyncLifetime
 {
     private readonly AspNetMetricsEndpointsApplication factory;
     private readonly HttpClient client;
@@ -52,7 +52,11 @@ public class AspNetMetricsEndpointsTests : IAsyncDisposable
         this.client = this.factory.CreateClient();
     }
 
-    public async ValueTask DisposeAsync()
+    /// <inheritdoc />
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    /// <inheritdoc />
+    public async Task DisposeAsync()
     {
         await this.factory.DisposeAsync();
     }

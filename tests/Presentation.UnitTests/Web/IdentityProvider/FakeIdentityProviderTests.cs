@@ -131,7 +131,7 @@ public class FakeIdentityProviderSsoDisabledApplication : WebApplicationFactory<
     }
 }
 
-public class FakeIdentityProviderTests : IAsyncDisposable
+public class FakeIdentityProviderTests : IAsyncLifetime
 {
     private readonly FakeIdentityProviderApplication factory;
     private readonly HttpClient client;
@@ -149,7 +149,11 @@ public class FakeIdentityProviderTests : IAsyncDisposable
         this.testConfig = this.factory.Services.GetRequiredService<TestConfiguration>();
     }
 
-    public async ValueTask DisposeAsync()
+    /// <inheritdoc />
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    /// <inheritdoc />
+    public async Task DisposeAsync()
     {
         if (this.factory != null)
         {

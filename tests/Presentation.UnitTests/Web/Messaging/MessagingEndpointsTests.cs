@@ -41,7 +41,7 @@ public class MessagingEndpointsApplication : WebApplicationFactory<MessagingEndp
     }
 }
 
-public class MessagingEndpointsTests : IAsyncDisposable
+public class MessagingEndpointsTests : IAsyncLifetime
 {
     [Fact]
     public async Task SearchMessages_ShouldPassFilterAndArchiveScopeToService()
@@ -79,7 +79,11 @@ public class MessagingEndpointsTests : IAsyncDisposable
         this.messageBrokerService = this.factory.MessageBrokerService;
     }
 
-    public async ValueTask DisposeAsync()
+    /// <inheritdoc />
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    /// <inheritdoc />
+    public async Task DisposeAsync()
     {
         await this.factory.DisposeAsync();
     }

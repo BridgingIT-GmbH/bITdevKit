@@ -13,7 +13,7 @@ using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Storage.Models;
 using Microsoft.Extensions.DependencyInjection;
 
-public sealed class BlobStorageMutationEndpointsTests : IAsyncDisposable
+public sealed class BlobStorageMutationEndpointsTests : IAsyncLifetime
 {
     private const string Route = "/_bdk/api/storage/blobs/reports/blobs";
     private readonly BlobStorageEndpointsApplication factory;
@@ -29,7 +29,11 @@ public sealed class BlobStorageMutationEndpointsTests : IAsyncDisposable
         this.blobs = this.scope.ServiceProvider.GetRequiredService<IBlobStoreClientFactory>().CreateClient("reports");
     }
 
-    public async ValueTask DisposeAsync()
+    /// <inheritdoc />
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    /// <inheritdoc />
+    public async Task DisposeAsync()
     {
         this.sut.Dispose();
         this.scope.Dispose();

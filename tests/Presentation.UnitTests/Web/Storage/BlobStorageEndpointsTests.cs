@@ -52,7 +52,7 @@ public class BlobStorageEndpointsApplication : WebApplicationFactory<BlobStorage
 
 }
 
-public class BlobStorageEndpointsTests : IAsyncDisposable
+public class BlobStorageEndpointsTests : IAsyncLifetime
 {
     private readonly BlobStorageEndpointsApplication factory;
     private readonly HttpClient client;
@@ -67,7 +67,11 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         this.blobStoreClientFactory = this.scope.ServiceProvider.GetRequiredService<IBlobStoreClientFactory>();
     }
 
-    public async ValueTask DisposeAsync()
+    /// <inheritdoc />
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    /// <inheritdoc />
+    public async Task DisposeAsync()
     {
         this.client.Dispose();
         this.scope.Dispose();

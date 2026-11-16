@@ -119,10 +119,11 @@ public sealed class InMemoryBlobStoreProvider(
         if (!this.Context.TryStore(
                 new InMemoryBlobEntry { Content = content, Info = info },
                 upload.OverwriteMode == BlobOverwriteMode.FailIfExists,
+                upload.IfMatchETag,
                 out var stored))
         {
             return Result<BlobInfo>.Failure(new BlobStoreConflictError(
-                $"Blob with container '{upload.Key.Container}' and name '{upload.Key.Name}' already exists."));
+                $"Blob create-only or ETag condition did not match for '{upload.Key.Container}/{upload.Key.Name}'."));
         }
 
         return Result<BlobInfo>.Success(stored.Info);
@@ -288,6 +289,9 @@ public sealed class InMemoryBlobStoreProvider(
         BlobDeleteOptions options = null,
         CancellationToken cancellationToken = default)
     {
+        var condition = BlobValidator.Validate(options);
+        if (condition.IsFailure) return Task.FromResult(condition);
+
         cancellationToken.ThrowIfCancellationRequested();
 
         var validation = BlobValidator.Validate(key);

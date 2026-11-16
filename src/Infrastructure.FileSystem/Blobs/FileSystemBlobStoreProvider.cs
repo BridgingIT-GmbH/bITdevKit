@@ -78,6 +78,11 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
                 return Result<BlobInfo>.Failure(new BlobStoreConflictError("A physical blob already exists."));
             }
 
+            if (!string.IsNullOrWhiteSpace(upload.IfMatchETag) && (current is null || current.Blob.ETag != upload.IfMatchETag))
+            {
+                return Result<BlobInfo>.Failure(new BlobStoreConflictError("The blob ETag changed or the blob was deleted."));
+            }
+
             var now = DateTimeOffset.UtcNow;
             var info = new BlobInfo
             {
@@ -216,6 +221,9 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
     {
         var result = await FileSystemResults.BlobAsync(async () =>
         {
+            var condition = BlobValidator.Validate(options);
+            if (condition.IsFailure) return Result<bool>.Failure((IResult)condition);
+
             var validation = BlobValidator.Validate(key);
 
             if (validation.IsFailure)

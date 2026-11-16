@@ -97,29 +97,53 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
                     name = CombineBlobName(GetFormValue(form, "prefix"), file.FileName);
                 }
 
-                await using var stream = file.OpenReadStream();
-                var expiresAt = GetFormValue(form, "expiresAt");
+                var key = new BlobKey(container, name);
+                var isEdit = string.Equals(GetFormValue(form, "mode"), "edit", StringComparison.OrdinalIgnoreCase);
+                var forceOverwrite = GetBoolean(form, "forceOverwrite");
+                var properties = new PropertyBag();
                 DateTimeOffset? expiration = null;
-                if (!string.IsNullOrWhiteSpace(expiresAt))
+                if (isEdit)
                 {
-                    if (!DateTimeOffset.TryParse(expiresAt, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var parsed))
+                    var current = await client.GetPropertiesAsync(key, cancellationToken).ConfigureAwait(false);
+                    if (current.IsSuccess)
                     {
-                        return Result.Failure(new ValidationError("Expiration must be an ISO-8601 timestamp."));
+                        properties = current.Value.Properties.Clone();
+                        expiration = current.Value.ExpiresAt;
                     }
+                    else if (!current.HasError<BlobStoreNotFoundError>())
+                    {
+                        return Result.Failure(current.Messages, current.Errors);
+                    }
+                    else if (!forceOverwrite)
+                    {
+                        return Result.Failure(new BlobStoreConflictError("The blob was deleted before replacement."));
+                    }
+                }
+                else
+                {
+                    var expiresAt = GetFormValue(form, "expiresAt");
+                    if (!string.IsNullOrWhiteSpace(expiresAt))
+                    {
+                        if (!DateTimeOffset.TryParse(expiresAt, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var parsed))
+                        {
+                            return Result.Failure(new ValidationError("Expiration must be an ISO-8601 timestamp."));
+                        }
 
-                    expiration = parsed;
+                        expiration = parsed;
+                    }
                 }
 
+                await using var stream = file.OpenReadStream();
                 var result = await client.UploadAsync(
                     new BlobUpload
                     {
-                        Key = new BlobKey(container, name),
+                        Key = key,
                         Content = stream,
+                        IfMatchETag = forceOverwrite ? null : GetFormValue(form, "etag"),
                         ContentType = ResolveContentType(file.ContentType, name),
                         ExpiresAt = expiration,
-                        OverwriteMode = GetBoolean(form, "overwrite")
-                            ? BlobOverwriteMode.Overwrite
-                            : BlobOverwriteMode.FailIfExists
+                        Properties = properties,
+                        OverwriteMode = isEdit ? BlobOverwriteMode.Overwrite : BlobOverwriteMode.FailIfExists
                     },
                     cancellationToken);
 
@@ -191,7 +215,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
                 ContentType = propertiesResult.Value.ContentType,
                 Properties = propertiesResult.Value.Properties,
                 ExpiresAt = expiresAt,
-                IfMatchETag = GetFormValue(form, "etag")
+                IfMatchETag = GetBoolean(form, "forceOverwrite") ? null : GetFormValue(form, "etag")
             },
             cancellationToken).ConfigureAwait(false);
 
@@ -247,6 +271,12 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
         try
         {
+            var isDelete = context.Request.Path.Value?.EndsWith("/delete", StringComparison.OrdinalIgnoreCase) == true;
+            var isUpload = context.Request.Path.Value?.EndsWith("/upload", StringComparison.OrdinalIgnoreCase) == true;
+            var isNew = isUpload && !string.Equals(GetFormValue(form, "mode"), "edit", StringComparison.OrdinalIgnoreCase);
+            var force = GetBoolean(form, "forceOverwrite");
+            if ((isNew && force) || (!isNew && (!force || isDelete) && string.IsNullOrWhiteSpace(GetFormValue(form, "etag"))))
+                return Results.Problem("An original ETag is required for an edit; use Force overwrite explicitly to omit it.", statusCode: 400);
             var result = await action(client, form);
             return result.IsSuccess
                 ? Results.Ok(new { message = result.Messages?.LastOrDefault() ?? "Blob action completed." })

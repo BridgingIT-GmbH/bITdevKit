@@ -79,7 +79,8 @@ public static class BlobFileStorageExtensions
             ContentType = options.ContentType ?? GetInferredContentType(filePath, options),
             ExpectedContentHash = options.ExpectedContentHash,
             Properties = options.Properties?.Clone() ?? new PropertyBag(),
-            OverwriteMode = options.OverwriteMode
+            IfMatchETag = options.IfMatchETag,
+                OverwriteMode = options.OverwriteMode
         };
 
         return await blobClient.UploadAsync(upload, cancellationToken).ConfigureAwait(false);

@@ -33,15 +33,18 @@
                 <input type="hidden" name="store">
                 <input type="hidden" name="container">
                 <input type="hidden" name="prefix">
+                <input type="hidden" name="mode" value="new">
+                <input type="hidden" name="etag">
                 <label class="form-label" for="blobs-upload-name">Blob name</label>
                 <input id="blobs-upload-name" class="form-control mb-3" name="name" autocomplete="off" placeholder="Use file name">
                 <label class="form-label" for="blobs-upload-file">File</label>
                 <input id="blobs-upload-file" class="form-control mb-3" type="file" name="file" required>
                 <label class="form-label" for="blobs-upload-expires">Expires at (UTC)</label>
                 <input id="blobs-upload-expires" class="form-control form-control-sm mb-3" type="datetime-local" name="expiresAt">
+                <div class="small text-body-secondary mb-3" data-blobs-replace-metadata-note hidden>Properties and expiration are kept. Use Blob Details to edit them.</div>
                 <div class="form-check">
-                    <input id="blobs-upload-overwrite" class="form-check-input" type="checkbox" name="overwrite" value="true" checked>
-                    <label class="form-check-label" for="blobs-upload-overwrite">Overwrite existing blob</label>
+                    <input id="blobs-upload-overwrite" class="form-check-input" type="checkbox" name="forceOverwrite" value="true" disabled>
+                    <label class="form-check-label" for="blobs-upload-overwrite">Force overwrite</label>
                 </div>
             </div>
             <div class="modal-footer">
@@ -76,6 +79,7 @@
                 <label class="form-label small" for="blobs-details-properties">Properties JSON</label>
                 <textarea id="blobs-details-properties" class="form-control form-control-sm font-monospace" rows="8" readonly></textarea>
                 <input type="hidden" name="store"><input type="hidden" name="container"><input type="hidden" name="name"><input type="hidden" name="etag">
+                <input type="hidden" name="forceOverwrite" value="false">
                 <label class="form-label small mt-3" for="blobs-details-expires-input">Expires at</label>
                 <div class="input-group"><input id="blobs-details-expires-input" class="form-control form-control-sm" type="datetime-local" name="expiresAt"><button class="btn btn-outline-secondary btn-sm" type="button" title="Clear expiration" aria-label="Clear expiration" data-blobs-clear-expiration><i class="bi bi-x-lg" aria-hidden="true"></i></button></div>
             </div>
@@ -270,6 +274,8 @@
             form.elements.container.value = target.dataset.container || '';
             form.elements.name.value = target.dataset.name || '';
             form.elements.etag.value = target.dataset.etag || '';
+            form.elements.forceOverwrite.value = 'false';
+            form.querySelector('[data-etag-conflict-actions]')?.remove();
             form.elements.expiresAt.value = toDateTimeLocal(target.dataset.expiresAt);
             try {
                 modal.querySelector('#blobs-details-properties').value = JSON.stringify(JSON.parse(target.dataset.properties || '{}'), null, 2);
@@ -328,6 +334,36 @@
             }
         }
 
+        function showConflictActions(form) {
+            form.querySelector('[data-etag-conflict-actions]')?.remove();
+            const actions = document.createElement('div');
+            actions.dataset.etagConflictActions = '';
+            actions.className = 'd-flex flex-wrap gap-2 p-3';
+            const reload = document.createElement('button');
+            reload.type = 'button'; reload.className = 'btn btn-outline-secondary btn-sm'; reload.textContent = 'Reload current item';
+            reload.onclick = async () => {
+                if (!await window.bdkDashboard.confirmAction({ title: 'Reload current item', message: 'Discard your changes and reload the current item?', confirmText: 'Reload' })) return;
+                await refreshContent(getState(), false);
+                const row = Array.from(shellElement.querySelectorAll('[data-blobs-command="details"]')).find(item => item.dataset.container === form.elements.container.value && item.dataset.name === form.elements.name.value);
+                if (!row) { window.bdkDashboard.showDialogError(form.closest('.modal'), 'The item was deleted or is no longer in this list.'); return; }
+                if (form.elements.mode) {
+                    form.elements.etag.value = row.dataset.etag;
+                    form.elements.file.value = '';
+                    form.elements.forceOverwrite.checked = false;
+                    form.elements.expiresAt.value = toDateTimeLocal(row.dataset.expiresAt);
+                } else { showDetails(row); }
+                actions.remove();
+            };
+            const force = document.createElement('button');
+            force.type = 'button'; force.className = 'btn btn-outline-danger btn-sm'; force.textContent = 'Force overwrite';
+            force.onclick = async () => {
+                const input = form.elements.forceOverwrite;
+                if (input.type === 'checkbox') input.checked = true; else input.value = 'true';
+                await submitForm(form, form.dataset.blobsAction);
+            };
+            actions.append(reload, force); form.querySelector('.modal-body').append(actions);
+        }
+
         async function submitForm(form, actionUrl) {
             const button = form.querySelector('[type="submit"]');
             if (button) {
@@ -341,6 +377,11 @@
                     headers: { 'X-Requested-With': 'fetch' }
                 });
 
+                if (response.status === 409 && !actionUrl.endsWith('/delete') && (!form.elements.mode || form.elements.mode.value === 'edit')) {
+                    window.bdkDashboard.showDialogError(form.closest('.modal'), 'The stored item changed. Your changes have been kept.');
+                    showConflictActions(form);
+                    return;
+                }
                 if (!response.ok) {
                     window.bdkDashboard.showDialogError(form.closest('.modal'), 'The action failed. Your changes have been kept; try again.');
                     console.error('Blob action failed:', await response.text().catch(() => response.statusText));
@@ -394,8 +435,36 @@
             if (command === 'upload') {
                 const modal = showModal('blobs-upload-modal');
                 const form = modal.querySelector('form');
+                form.reset();
+                form.querySelector('[data-etag-conflict-actions]')?.remove();
                 setContextFields(form);
                 form.querySelector('[name="name"]').value = '';
+                form.elements.name.readOnly = false;
+                form.elements.mode.value = 'new';
+                form.elements.expiresAt.disabled = false;
+                form.querySelector('[data-blobs-replace-metadata-note]').hidden = true;
+                form.elements.etag.value = '';
+                form.elements.forceOverwrite.checked = false;
+                form.elements.forceOverwrite.disabled = true;
+                return;
+            }
+
+            if (command === 'replace') {
+                const modal = showModal('blobs-upload-modal');
+                const form = modal.querySelector('form');
+                form.reset();
+                form.querySelector('[data-etag-conflict-actions]')?.remove();
+                setContextFields(form);
+                form.elements.container.value = target.dataset.container;
+                form.elements.prefix.value = '';
+                form.elements.name.value = target.dataset.name;
+                form.elements.name.readOnly = true;
+                form.elements.mode.value = 'edit';
+                form.elements.expiresAt.value = toDateTimeLocal(target.dataset.expiresAt);
+                form.elements.expiresAt.disabled = true;
+                form.querySelector('[data-blobs-replace-metadata-note]').hidden = false;
+                form.elements.etag.value = target.dataset.etag;
+                form.elements.forceOverwrite.disabled = false;
                 return;
             }
 

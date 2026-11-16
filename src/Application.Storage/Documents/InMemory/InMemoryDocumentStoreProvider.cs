@@ -116,6 +116,9 @@ public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) 
     /// <inheritdoc />
     public Task<Result<DocumentInfo>> UpsertAsync(DocumentTypeIdentity type, StoredDocumentWrite write, CancellationToken cancellationToken = default)
     {
+        var condition = DocumentWriteValidator.Validate(write.Options);
+        if (condition.IsFailure) return Task.FromResult(Result<DocumentInfo>.Failure(condition));
+
         cancellationToken.ThrowIfCancellationRequested();
         lock (this.syncRoot)
         {
@@ -159,6 +162,9 @@ public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) 
         bool preserveExpiration,
         CancellationToken cancellationToken = default)
     {
+        var condition = DocumentWriteValidator.Validate(update);
+        if (condition.IsFailure) return Task.FromResult(Result<DocumentInfo>.Failure(condition));
+
         cancellationToken.ThrowIfCancellationRequested();
         lock (this.syncRoot)
         {
@@ -188,6 +194,9 @@ public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) 
     /// <inheritdoc />
     public Task<Result> DeleteAsync(DocumentTypeIdentity type, DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default)
     {
+        var condition = DocumentWriteValidator.Validate(options);
+        if (condition.IsFailure) return Task.FromResult(condition);
+
         cancellationToken.ThrowIfCancellationRequested();
         lock (this.syncRoot)
         {

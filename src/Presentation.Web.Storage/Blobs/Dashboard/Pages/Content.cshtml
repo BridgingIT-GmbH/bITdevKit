@@ -261,6 +261,7 @@
                                                     data-properties="@SerializeProperties(blob.Properties)" aria-label="Blob details">
                                                 <i class="bi bi-info-circle" aria-hidden="true"></i>
                                             </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" data-blobs-command="replace" data-container="@blob.Container" data-name="@blob.Name" data-etag="@blob.ETag" data-expires-at="@blob.ExpiresAt?.ToString("O", CultureInfo.InvariantCulture)" title="Replace content" aria-label="Replace content"><i class="bi bi-upload" aria-hidden="true"></i></button>
                                             <button type="button"
                                                     class="btn btn-sm btn-outline-danger"
                                                     title="Delete blob"

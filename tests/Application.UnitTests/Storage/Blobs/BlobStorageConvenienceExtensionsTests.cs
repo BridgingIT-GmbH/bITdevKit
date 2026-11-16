@@ -14,6 +14,102 @@ using Microsoft.Extensions.Logging.Abstractions;
 [UnitTest("Application")]
 public sealed class BlobStorageConvenienceExtensionsTests
 {
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public async Task TransferAsync_WithDestinationETag_ChangesOnlyMatchingTargetAndPreservesSourceOnConflict(bool move, bool stale)
+    {
+        // Arrange
+        var source = CreateClient();
+        var target = CreateClient();
+        var sourceKey = new BlobKey("reports", "conditional-source.txt");
+        var targetKey = new BlobKey("archive", "conditional-target.txt");
+        (await source.UploadTextAsync(sourceKey, "source")).IsSuccess.ShouldBeTrue();
+        var originalTarget = await target.UploadTextAsync(targetKey, "original target");
+        originalTarget.IsSuccess.ShouldBeTrue();
+        var currentTarget = stale ? await target.UploadTextAsync(targetKey, "newer target") : originalTarget;
+        currentTarget.IsSuccess.ShouldBeTrue();
+        var copy = new BlobCopyOptions { IfMatchETag = originalTarget.Value.ETag };
+
+        // Act
+        var result = move
+            ? await source.MoveToAsync(sourceKey, target, targetKey, new BlobMoveOptions { Copy = copy })
+            : await source.CopyToAsync(sourceKey, target, targetKey, copy);
+        var downloaded = await target.DownloadTextAsync(targetKey);
+        var sourceExists = await source.ExistsAsync(sourceKey);
+
+        // Assert
+        result.IsSuccess.ShouldBe(!stale);
+        downloaded.IsSuccess.ShouldBeTrue();
+        downloaded.Value.Text.ShouldBe(stale ? "newer target" : "source");
+        sourceExists.Value.ShouldBe(stale || !move);
+        if (stale)
+        {
+            result.HasError<BlobStoreConflictError>().ShouldBeTrue();
+            downloaded.Value.Info.ETag.ShouldBe(currentTarget.Value.ETag);
+        }
+        else
+        {
+            result.Value.Target.ETag.ShouldNotBe(originalTarget.Value.ETag);
+            downloaded.Value.Info.ETag.ShouldBe(result.Value.Target.ETag);
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task TransferAsync_WithDestinationETagAndMissingTarget_DoesNotCreateOrDeleteSource(bool move)
+    {
+        // Arrange
+        var source = CreateClient();
+        var target = CreateClient();
+        var sourceKey = new BlobKey("reports", "source.txt");
+        var targetKey = new BlobKey("archive", "absent.txt");
+        (await source.UploadTextAsync(sourceKey, "source")).IsSuccess.ShouldBeTrue();
+        var copy = new BlobCopyOptions { IfMatchETag = "missing-version" };
+
+        // Act
+        var result = move
+            ? await source.MoveToAsync(sourceKey, target, targetKey, new BlobMoveOptions { Copy = copy })
+            : await source.CopyToAsync(sourceKey, target, targetKey, copy);
+
+        // Assert
+        result.HasError<BlobStoreConflictError>().ShouldBeTrue();
+        (await target.ExistsAsync(targetKey)).Value.ShouldBeFalse();
+        (await source.ExistsAsync(sourceKey)).Value.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task DeleteByPrefixAsync_WhenItemChangesAfterEnumeration_PreservesNewVersion()
+    {
+        // Arrange
+        var storage = CreateClient();
+        var key = new BlobKey("reports", "tmp/racing.txt");
+        var original = await storage.UploadTextAsync(key, "original");
+        original.IsSuccess.ShouldBeTrue();
+        var sut = Substitute.For<IBlobStoreClient>();
+        sut.ListPageAsync(Arg.Any<BlobQuery>(), Arg.Any<CancellationToken>()).Returns(async call =>
+        {
+            var page = await storage.ListPageAsync(call.Arg<BlobQuery>(), call.Arg<CancellationToken>());
+            (await storage.UploadTextAsync(key, "newer version")).IsSuccess.ShouldBeTrue();
+            return page;
+        });
+        sut.DeleteAsync(Arg.Any<BlobKey>(), Arg.Any<BlobDeleteOptions>(), Arg.Any<CancellationToken>())
+            .Returns(call => storage.DeleteAsync(call.Arg<BlobKey>(), call.Arg<BlobDeleteOptions>(), call.Arg<CancellationToken>()));
+
+        // Act
+        var result = await sut.DeleteByPrefixAsync("reports", "tmp/");
+        var downloaded = await storage.DownloadTextAsync(key);
+
+        // Assert
+        result.HasError<BlobStoreTransferError>().ShouldBeTrue();
+        downloaded.IsSuccess.ShouldBeTrue();
+        downloaded.Value.Text.ShouldBe("newer version");
+        await sut.Received(1).DeleteAsync(key, Arg.Is<BlobDeleteOptions>(options => options != null && options.IfMatchETag == original.Value.ETag), Arg.Any<CancellationToken>());
+    }
+
     [Fact]
     public async Task ListAllAsync_WithPagedInMemoryProvider_ReturnsAllMatchingItems()
     {

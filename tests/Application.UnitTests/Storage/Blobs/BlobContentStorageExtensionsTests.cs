@@ -12,6 +12,60 @@ using BridgingIT.DevKit.Common;
 [UnitTest("Application")]
 public sealed class BlobContentStorageExtensionsTests
 {
+    [Theory]
+    [InlineData("bytes", false)]
+    [InlineData("bytes", true)]
+    [InlineData("text", false)]
+    [InlineData("text", true)]
+    [InlineData("object", false)]
+    [InlineData("object", true)]
+    public async Task UploadHelpers_AfterMetadataChanges_ApplyOnlyMatchingVersion(string helper, bool stale)
+    {
+        // Arrange
+        var sut = CreateClient();
+        var key = new BlobKey("notes", "conditional.txt");
+        var original = await sut.UploadTextAsync(key, "original");
+        original.IsSuccess.ShouldBeTrue();
+        var current = await sut.UpdatePropertiesAsync(new()
+        {
+            Key = key,
+            IfMatchETag = original.Value.ETag,
+            ContentType = ContentType.TXT,
+            Properties = new() { ["reviewed"] = true },
+            ExpiresAt = DateTimeOffset.UtcNow.AddHours(1)
+        });
+        current.IsSuccess.ShouldBeTrue();
+        var condition = stale ? original.Value.ETag : current.Value.ETag;
+
+        // Act
+        var result = helper switch
+        {
+            "bytes" => await sut.UploadBytesAsync(key, Encoding.UTF8.GetBytes("replacement"), new BlobBytesUploadOptions { IfMatchETag = condition }),
+            "text" => await sut.UploadTextAsync(key, "replacement", new BlobTextUploadOptions { IfMatchETag = condition }),
+            _ => await sut.UploadObjectAsync(key, new TestProfile("replacement", 42), new BlobObjectUploadOptions { IfMatchETag = condition })
+        };
+        var downloaded = await sut.DownloadBytesAsync(key);
+
+        // Assert
+        result.IsSuccess.ShouldBe(!stale);
+        downloaded.IsSuccess.ShouldBeTrue();
+        if (stale)
+        {
+            result.HasError<BlobStoreConflictError>().ShouldBeTrue();
+            Encoding.UTF8.GetString(downloaded.Value.Bytes).ShouldBe("original");
+            downloaded.Value.Info.ETag.ShouldBe(current.Value.ETag);
+            downloaded.Value.Info.ContentHash.ShouldBe(current.Value.ContentHash);
+            downloaded.Value.Info.ExpiresAt.ShouldBe(current.Value.ExpiresAt);
+            downloaded.Value.Info.Properties.Get<bool>("reviewed").ShouldBeTrue();
+        }
+        else
+        {
+            Encoding.UTF8.GetString(downloaded.Value.Bytes).ShouldContain("replacement");
+            result.Value.ETag.ShouldNotBe(current.Value.ETag);
+            downloaded.Value.Info.ETag.ShouldBe(result.Value.ETag);
+        }
+    }
+
     [Fact]
     public async Task UploadTextAsync_WithDefaultOptions_UploadsUtf8TextAndMetadata()
     {

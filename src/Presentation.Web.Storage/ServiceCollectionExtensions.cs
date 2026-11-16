@@ -602,10 +602,8 @@ public static class ServiceCollectionExtensions
             return;
         }
 
-        if (options is not null)
-        {
-            services.AddSingleton(options);
-        }
+        if (options is null) services.TryAddSingleton(new BlobStorageMaintenanceEndpointsOptions());
+        else services.AddSingleton(options);
 
         RegisterBlobStorageConsoleCommands(services, enabled);
         services.AddEndpoints<BlobStorageMaintenanceEndpoints>(enabled);
@@ -621,10 +619,8 @@ public static class ServiceCollectionExtensions
             return;
         }
 
-        if (options is not null)
-        {
-            services.AddSingleton(options);
-        }
+        if (options is null) services.TryAddSingleton(new BlobStorageReadEndpointsOptions());
+        else services.AddSingleton(options);
 
         RegisterBlobStorageConsoleCommands(services, enabled);
         services.AddEndpoints<BlobStorageReadEndpoints>(enabled);

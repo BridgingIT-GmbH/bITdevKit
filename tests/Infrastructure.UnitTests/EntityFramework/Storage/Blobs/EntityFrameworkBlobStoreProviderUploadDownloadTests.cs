@@ -19,6 +19,137 @@ using Microsoft.Extensions.Logging;
 public sealed class EntityFrameworkBlobStoreProviderUploadDownloadTests
 {
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task UploadAsync_WhenLeaseIsLost_FailedWriterDoesNotRestoreOverNewVersion(bool recreate)
+    {
+        // Arrange
+        var databaseName = $"blob-lease-loss-{Guid.NewGuid():N}";
+        var registrations = new ServiceCollection();
+        registrations.AddDbContext<TestBlobDbContext>(options => options.UseInMemoryDatabase(databaseName));
+        using var services = registrations.BuildServiceProvider();
+        var sut = new EntityFrameworkBlobStoreProvider<TestBlobDbContext>(services.GetRequiredService<IServiceScopeFactory>(), new() { ChunkSize = 2 });
+        var key = new BlobKey("reports", "file.bin");
+        var original = await sut.UploadAsync(CreateUpload("original"));
+        original.IsSuccess.ShouldBeTrue();
+        await using var content = new PausedFailingReadStream();
+        var pending = sut.UploadAsync(new()
+        {
+            Key = key,
+            Content = content,
+            IfMatchETag = original.Value.ETag
+        });
+        var first = await Task.WhenAny(content.ReadStarted.Task, pending);
+        first.ShouldBeSameAs(content.ReadStarted.Task);
+        var currentETag = $"\"{Guid.NewGuid():N}\"";
+
+        try
+        {
+            await using (var scope = services.CreateAsyncScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<TestBlobDbContext>();
+                var leased = await context.StorageBlobs.SingleAsync();
+                if (recreate)
+                {
+                    context.StorageBlobs.Remove(leased);
+                    await context.SaveChangesAsync();
+                    leased = SeedExpiredLeasedBlob(context, "newer version");
+                }
+                else
+                {
+                    var bytes = Encoding.UTF8.GetBytes("newer version");
+                    context.StorageBlobChunks.Add(new() { BlobId = leased.Id, Index = 0, Content = bytes, Length = bytes.Length });
+                    leased.Length = bytes.Length;
+                    leased.ContentHash = $"{BlobContentHash.Prefix}{HashHelper.ComputeSha256(bytes)}";
+                }
+
+                leased.ETag = currentETag;
+                leased.LeaseId = null;
+                leased.LeaseAcquiredBy = null;
+                leased.LeaseAcquiredUntil = null;
+                leased.ConcurrencyVersion = Guid.NewGuid();
+                await context.SaveChangesAsync();
+            }
+        }
+        finally
+        {
+            content.Continue.TrySetResult(true);
+        }
+
+        // Act
+        var failed = await pending;
+        var downloaded = await sut.DownloadAsync(key);
+
+        // Assert
+        failed.HasError<BlobStoreProviderError>().ShouldBeTrue();
+        downloaded.IsSuccess.ShouldBeTrue();
+        await using var download = downloaded.Value;
+        download.Info.ETag.ShouldBe(currentETag);
+        using var reader = new StreamReader(download.Content, Encoding.UTF8);
+        (await reader.ReadToEndAsync()).ShouldBe("newer version");
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task UploadAsync_AfterLeaseExpires_SerializesProviderInstancesUntilContentPublicationCompletes(bool conditionalCompetitor)
+    {
+        // Arrange
+        var registrations = new ServiceCollection();
+        var databaseName = $"blob-expired-active-lease-{Guid.NewGuid():N}";
+        registrations.AddDbContext<TestBlobDbContext>(options => options.UseInMemoryDatabase(databaseName));
+        using var services = registrations.BuildServiceProvider();
+        var scopes = services.GetRequiredService<IServiceScopeFactory>();
+        var sut = new EntityFrameworkBlobStoreProvider<TestBlobDbContext>(scopes, new() { ChunkSize = 2 });
+        var competitor = new EntityFrameworkBlobStoreProvider<TestBlobDbContext>(scopes, new() { ChunkSize = 2 });
+        var original = await sut.UploadAsync(CreateUpload("original"));
+        original.IsSuccess.ShouldBeTrue();
+        await using var content = new PausedReadStream(Encoding.UTF8.GetBytes("first replacement"));
+        var first = sut.UploadAsync(new() { Key = new("reports", "file.bin"), Content = content, IfMatchETag = original.Value.ETag });
+        (await Task.WhenAny(content.ReadStarted.Task, first)).ShouldBeSameAs(content.ReadStarted.Task);
+        await using (var scope = services.CreateAsyncScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<TestBlobDbContext>();
+            var blob = await context.StorageBlobs.SingleAsync();
+            blob.LeaseAcquiredUntil = DateTimeOffset.UtcNow.AddMinutes(-1);
+            await context.SaveChangesAsync();
+        }
+
+        // Act
+        var second = competitor.UploadAsync(new()
+        {
+            Key = new("reports", "file.bin"),
+            Content = new MemoryStream(Encoding.UTF8.GetBytes("second replacement")),
+            IfMatchETag = conditionalCompetitor ? original.Value.ETag : null
+        });
+        try
+        {
+            second.IsCompleted.ShouldBeFalse();
+        }
+        finally
+        {
+            content.Continue.TrySetResult(true);
+        }
+
+        var firstResult = await first;
+        var secondResult = await second;
+        var downloaded = await sut.DownloadAsync(new("reports", "file.bin"));
+
+        // Assert
+        firstResult.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, firstResult.Errors.Select(error => error.Message)));
+        secondResult.IsSuccess.ShouldBe(!conditionalCompetitor);
+        if (conditionalCompetitor)
+        {
+            secondResult.HasError<BlobStoreConflictError>().ShouldBeTrue();
+        }
+
+        await using var download = downloaded.Value;
+        download.Info.ETag.ShouldBe(conditionalCompetitor ? firstResult.Value.ETag : secondResult.Value.ETag);
+        using var reader = new StreamReader(download.Content, Encoding.UTF8);
+        (await reader.ReadToEndAsync()).ShouldBe(conditionalCompetitor ? "first replacement" : "second replacement");
+    }
+
+    [Theory]
     [InlineData(4, 10, 2)]
     [InlineData(1, 8, 4)]
     public async Task UploadAsync_FlushesChunksByConfiguredCount(
@@ -669,6 +800,34 @@ public sealed class EntityFrameworkBlobStoreProviderUploadDownloadTests
             }
 
             return base.SaveChangesAsync(cancellationToken);
+        }
+    }
+
+    private sealed class PausedFailingReadStream : MemoryStream
+    {
+        public TaskCompletionSource<bool> ReadStarted { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public TaskCompletionSource<bool> Continue { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+        {
+            this.ReadStarted.TrySetResult(true);
+            await this.Continue.Task.WaitAsync(cancellationToken);
+            throw new IOException("The original writer failed after losing its lease.");
+        }
+    }
+
+    private sealed class PausedReadStream(byte[] content) : MemoryStream(content)
+    {
+        public TaskCompletionSource<bool> ReadStarted { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public TaskCompletionSource<bool> Continue { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+        {
+            this.ReadStarted.TrySetResult(true);
+            await this.Continue.Task.WaitAsync(cancellationToken);
+            return await base.ReadAsync(buffer, cancellationToken);
         }
     }
 

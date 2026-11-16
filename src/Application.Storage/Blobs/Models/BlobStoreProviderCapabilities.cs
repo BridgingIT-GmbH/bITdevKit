@@ -70,7 +70,7 @@ public sealed class BlobStoreProviderCapabilities
     public bool SupportsContentType { get; init; }
 
     /// <summary>
-    /// Gets a value indicating whether entity tags are supported.
+    /// Gets whether item ETags support conditional content replacement, metadata updates, and exact deletion.
     /// </summary>
     /// <example>
     /// <code>

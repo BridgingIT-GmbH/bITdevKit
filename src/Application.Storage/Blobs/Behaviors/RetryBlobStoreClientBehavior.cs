@@ -161,7 +161,8 @@ public sealed class RetryBlobStoreClientBehavior(
 
     private static bool IsTransient(IResult result)
     {
-        if (result.HasError<BlobStoreIndeterminateOperationError>() ||
+        if (result.HasError<BlobStorePartialUpdateError>() ||
+            result.HasError<BlobStoreIndeterminateOperationError>() ||
             result.HasError<BlobStoreValidationError>() ||
             result.HasError<BlobStoreNotFoundError>() ||
             result.HasError<BlobStoreConflictError>() ||

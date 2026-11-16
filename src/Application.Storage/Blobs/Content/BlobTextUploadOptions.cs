@@ -21,6 +21,10 @@ using System.Text;
 /// </example>
 public sealed class BlobTextUploadOptions
 {
+    /// <summary>Gets the original item ETag required for replacement; omission permits unconditional overwrite.</summary>
+    /// <example><code>var expected = options.IfMatchETag;</code></example>
+    public string IfMatchETag { get; init; }
+
     /// <summary>
     /// Gets the text encoding used to convert the string to bytes.
     /// </summary>

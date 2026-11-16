@@ -98,6 +98,7 @@ public sealed record DocumentEntry<T> : DocumentInfo where T : class
 
 /// <summary>Configures concurrency, integrity, properties, and expiration for one document write.</summary>
 /// <remarks>
+/// The ETag covers content, properties, and expiration; either kind of mutation invalidates the prior token.
 /// By default an existing record is replaced while its expiration and properties are preserved. Create-only and ETag
 /// conditions are mutually exclusive validation concerns enforced before provider mutation.
 /// </remarks>

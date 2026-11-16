@@ -192,6 +192,9 @@ public class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScopeFactory
     /// <inheritdoc />
     public async Task<Result<DocumentInfo>> UpsertAsync(DocumentTypeIdentity type, StoredDocumentWrite write, CancellationToken cancellationToken = default)
     {
+        var condition = DocumentWriteValidator.Validate(write.Options);
+        if (condition.IsFailure) return Result<DocumentInfo>.Failure(condition);
+
         if (write.Key.PartitionKey.Length > StorageDocument.MaximumKeyLength || write.Key.RowKey.Length > StorageDocument.MaximumKeyLength)
         {
             return Result<DocumentInfo>.Failure(new DocumentStoreInvalidQueryError($"Entity Framework document keys cannot exceed {StorageDocument.MaximumKeyLength} characters."));
@@ -272,7 +275,11 @@ public class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScopeFactory
         {
             rows.TryGetValue(write.Key, out var entity);
             IResultError error = null;
-            if (write.Key.PartitionKey.Length > StorageDocument.MaximumKeyLength || write.Key.RowKey.Length > StorageDocument.MaximumKeyLength)
+            if (DocumentWriteValidator.Validate(write.Options).IsFailure)
+            {
+                error = new DocumentStoreInvalidQueryError("Invalid document write condition.");
+            }
+            else if (write.Key.PartitionKey.Length > StorageDocument.MaximumKeyLength || write.Key.RowKey.Length > StorageDocument.MaximumKeyLength)
             {
                 error = new DocumentStoreInvalidQueryError($"Entity Framework document keys cannot exceed {StorageDocument.MaximumKeyLength} characters.");
             }
@@ -325,6 +332,14 @@ public class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScopeFactory
         var removed = 0;
         foreach (var delete in deletes)
         {
+            var condition = DocumentWriteValidator.Validate(delete.Options);
+            if (condition.IsFailure)
+            {
+                failedKey = delete.Key;
+                failureMessages = condition.Messages;
+                break;
+            }
+
             if (rows.TryGetValue(delete.Key, out var entity))
             {
                 if (!Matches(entity, delete.Options?.IfMatchETag))
@@ -462,6 +477,9 @@ public class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScopeFactory
     /// <inheritdoc />
     public async Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentTypeIdentity type, DocumentPropertiesUpdate update, DateTimeOffset? resolvedExpiresAt, bool preserveExpiration, CancellationToken cancellationToken = default)
     {
+        var condition = DocumentWriteValidator.Validate(update);
+        if (condition.IsFailure) return Result<DocumentInfo>.Failure(condition);
+
         try
         {
             await using var scope = scopeFactory.CreateAsyncScope();
@@ -483,6 +501,9 @@ public class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScopeFactory
     /// <inheritdoc />
     public async Task<Result> DeleteAsync(DocumentTypeIdentity type, DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default)
     {
+        var condition = DocumentWriteValidator.Validate(options);
+        if (condition.IsFailure) return condition;
+
         try
         {
             await using var scope = scopeFactory.CreateAsyncScope();

@@ -93,20 +93,6 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
                     return validation;
                 }
 
-                if (string.Equals(GetFormValue(form, "mode"), "new", StringComparison.OrdinalIgnoreCase))
-                {
-                    var existingResult = await accessor.GetJsonAsync(key, cancellationToken);
-                    if (existingResult.IsSuccess)
-                    {
-                        return Result.Failure(new ConflictError($"Document '{key.PartitionKey}/{key.RowKey}' already exists."));
-                    }
-
-                    if (!existingResult.Errors.Any(e => e is DocumentStoreNotFoundError or NotFoundError))
-                    {
-                        return Result.Failure(existingResult.Messages, existingResult.Errors);
-                    }
-                }
-
                 var metadata = ParseProperties(GetFormText(form, "properties"));
                 if (metadata.IsFailure)
                 {
@@ -117,7 +103,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
                 var writeOptions = new DocumentWriteOptions
                 {
                     CreateOnly = string.Equals(GetFormValue(form, "mode"), "new", StringComparison.OrdinalIgnoreCase),
-                    IfMatchETag = GetFormValue(form, "etag"),
+                    IfMatchETag = string.Equals(GetFormValue(form, "forceOverwrite"), "true", StringComparison.OrdinalIgnoreCase) ? null : GetFormValue(form, "etag"),
                     Properties = metadata.Value,
                     Expiration = string.IsNullOrWhiteSpace(expiresAt)
                         ? ExpirationChange.Clear
@@ -182,6 +168,11 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
         try
         {
+            var isNew = context.Request.Path.Value?.EndsWith("/save", StringComparison.OrdinalIgnoreCase) == true && string.Equals(GetFormValue(form, "mode"), "new", StringComparison.OrdinalIgnoreCase);
+            var force = string.Equals(GetFormValue(form, "forceOverwrite"), "true", StringComparison.OrdinalIgnoreCase);
+            var isDelete = context.Request.Path.Value?.EndsWith("/delete", StringComparison.OrdinalIgnoreCase) == true;
+            if ((isNew && force) || (!isNew && (!force || isDelete) && string.IsNullOrWhiteSpace(GetFormValue(form, "etag"))))
+                return Results.Problem("An original ETag is required for an edit; use Force overwrite explicitly to omit it.", statusCode: 400);
             var result = await action(accessor, form);
             return result.IsSuccess
                 ? Results.Ok(new { message = result.Messages?.LastOrDefault() ?? "Document action completed." })
@@ -235,6 +226,8 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
         return error switch
         {
+            DocumentStoreConflictError => Results.Problem(message, statusCode: (int)HttpStatusCode.Conflict),
+            DocumentStoreInvalidQueryError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             ValidationError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             DocumentStoreNotFoundError => Results.NotFound(message),
             NotFoundError => Results.NotFound(message),
@@ -271,6 +264,9 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
         try
         {
+            var scalars = HttpMetadata.ParseProperties(content);
+            if (scalars.IsFailure) return scalars;
+
             using var document = JsonDocument.Parse(content);
             if (document.RootElement.ValueKind != JsonValueKind.Object)
             {
@@ -288,8 +284,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
                     JsonValueKind.String => property.Value.GetString(),
                     JsonValueKind.True => true,
                     JsonValueKind.False => false,
-                    JsonValueKind.Number when property.Value.TryGetInt64(out var integer) => integer,
-                    JsonValueKind.Number => property.Value.GetDecimal(),
+                    JsonValueKind.Number => scalars.Value.Get(property.Name),
                     _ => throw new JsonException($"Property '{property.Name}' must contain a scalar value.")
                 });
             }

@@ -127,6 +127,7 @@ public sealed class EncryptionBlobStoreClientBehavior : IBlobStoreClient
                 ExpectedContentHash = null,
                 ExpiresAt = upload.ExpiresAt,
                 Properties = properties,
+                IfMatchETag = upload.IfMatchETag,
                 OverwriteMode = upload.OverwriteMode
             }, cancellationToken).ConfigureAwait(false);
 

@@ -21,6 +21,10 @@ using BridgingIT.DevKit.Common;
 /// </example>
 public sealed class BlobObjectUploadOptions
 {
+    /// <summary>Gets the original item ETag required for replacement; omission permits unconditional overwrite.</summary>
+    /// <example><code>var expected = options.IfMatchETag;</code></example>
+    public string IfMatchETag { get; init; }
+
     /// <summary>
     /// Gets the serializer used to write the object content.
     /// </summary>

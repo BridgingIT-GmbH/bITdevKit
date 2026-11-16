@@ -63,6 +63,7 @@ public static class BlobBytesStorageExtensions
                 ContentType = options.ContentType,
                 ExpectedContentHash = options.ExpectedContentHash,
                 Properties = options.Properties?.Clone() ?? new PropertyBag(),
+                IfMatchETag = options.IfMatchETag,
                 OverwriteMode = options.OverwriteMode
             },
             cancellationToken).ConfigureAwait(false);

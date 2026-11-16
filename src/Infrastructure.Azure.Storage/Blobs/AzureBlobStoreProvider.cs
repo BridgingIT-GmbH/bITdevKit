@@ -144,7 +144,7 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
 
         try
         {
-            await this.backend.UploadAsync(
+            var committed = await this.backend.UploadAsync(
                     upload.Key,
                     upload.Content,
                     new AzureBlobUploadRequest(
@@ -154,11 +154,21 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
                         upload.OverwriteMode == BlobOverwriteMode.FailIfExists,
                         upload.ExpectedContentHash,
                         this.options.MaxBlobSize,
-                        ContentHashMetadataKey),
+                        ContentHashMetadataKey,
+                        upload.IfMatchETag),
                     cancellationToken)
                 .ConfigureAwait(false);
 
-            var properties = await this.backend.GetPropertiesAsync(upload.Key, cancellationToken).ConfigureAwait(false);
+            var properties = committed.CommittedProperties
+                ?? await this.backend.GetPropertiesAsync(upload.Key, cancellationToken).ConfigureAwait(false);
+            if (!string.Equals(properties.ETag, committed.ETag, StringComparison.Ordinal))
+            {
+                return Result<BlobInfo>.Failure(new BlobStorePartialUpdateError(
+                    "The Azure backend did not return properties for the committed upload version.",
+                    "The upload was committed, but its properties are unavailable.",
+                    "A later version cannot be used to describe the committed upload."));
+            }
+
             return Result<BlobInfo>.Success(ToInfo(properties));
         }
         catch (AzureBlobStoreBackendException exception)
@@ -168,6 +178,10 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
         catch (OperationCanceledException)
         {
             throw;
+        }
+        catch (RequestFailedException exception) when (exception.Status == 404 && !string.IsNullOrWhiteSpace(upload.IfMatchETag))
+        {
+            return Result<BlobInfo>.Failure(new BlobStoreConflictError("The conditional upload target no longer exists."));
         }
         catch (Exception exception)
         {
@@ -259,12 +273,6 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
 
         try
         {
-            var current = await this.backend.GetPropertiesAsync(update.Key, cancellationToken).ConfigureAwait(false);
-            if (!string.IsNullOrWhiteSpace(current.Metadata?.GetValueOrDefault(ContentHashMetadataKey)))
-            {
-                metadataResult.Value[ContentHashMetadataKey] = current.Metadata[ContentHashMetadataKey];
-            }
-
             var updated = await this.backend.UpdatePropertiesAsync(
                     update.Key,
                     update.ContentType?.MimeType(),
@@ -371,6 +379,12 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
         cancellationToken.ThrowIfCancellationRequested();
 
         var validation = BlobValidator.Validate(key);
+        if (validation.IsFailure)
+        {
+            return validation;
+        }
+
+        validation = BlobValidator.Validate(options);
         if (validation.IsFailure)
         {
             return validation;

@@ -148,6 +148,8 @@ builder.Services.AddDocumentStorage(o => o.Enabled())
         })
     .WithAuditing<OpenMeteoWeatherArchiveDocument>()
     .WithPermalinks<OpenMeteoWeatherArchiveDocument>()
+    .AddMaintenanceEndpoints(options => options.RequireAuthorization(), enabled: true)
+    .AddReadEndpoints(options => options.RequireAuthorization(), enabled: true)
     .AddConsoleCommands();
 
 builder.Services.AddBlobStorage(o => o.Enabled())
@@ -162,6 +164,8 @@ builder.Services.AddBlobStorage(o => o.Enabled())
         o.MaxTake = 250;
     })
     .WithPermalinks()
+    .AddMaintenanceEndpoints(options => options.RequireAuthorization(), enabled: true)
+    .AddReadEndpoints(options => options.RequireAuthorization(), enabled: true)
     .AddConsoleCommands();
 
 builder.Services.AddMapping().WithMapster();

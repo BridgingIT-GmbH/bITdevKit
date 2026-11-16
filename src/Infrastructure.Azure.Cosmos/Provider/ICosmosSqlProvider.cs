@@ -66,7 +66,7 @@ public interface ICosmosSqlProvider<TItem>
         object partitionKeyValue = null,
         CancellationToken cancellationToken = default);
 
-    /// <summary>Upserts an item only when the supplied opaque Cosmos ETag still matches.</summary>
+    /// <summary>Replaces an existing item only when the supplied opaque Cosmos ETag still matches; omission permits upsert.</summary>
     /// <param name="item">The item to replace.</param>
     /// <param name="partitionKeyValue">The partition key value.</param>
     /// <param name="ifMatchETag">The exact Cosmos ETag required for replacement.</param>

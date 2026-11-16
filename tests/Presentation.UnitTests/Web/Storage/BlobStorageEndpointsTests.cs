@@ -377,6 +377,21 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         exists.Value.ShouldBeFalse();
     }
 
+    [Fact]
+    public async Task DeleteBlob_WithStaleHeader_PreservesCurrentVersion()
+    {
+        var blobs = this.blobStoreClientFactory.CreateClient("reports");
+        var created = await blobs.UploadAsync(CreateUpload("conditional-delete.txt", "one"));
+        await blobs.UploadAsync(CreateUpload("conditional-delete.txt", "two"));
+        using var request = new HttpRequestMessage(HttpMethod.Delete, "/_bdk/api/storage/blobs/reports/blobs?container=reports&name=conditional-delete.txt");
+        request.Headers.TryAddWithoutValidation("If-Match", created.Value.ETag);
+
+        var response = await this.client.SendAsync(request);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
+        (await blobs.ExistsAsync(new BlobKey("reports", "conditional-delete.txt"))).Value.ShouldBeTrue();
+    }
+
     private static BlobUpload CreateUpload(string name, string content) => new()
     {
         Key = new BlobKey("reports", name),

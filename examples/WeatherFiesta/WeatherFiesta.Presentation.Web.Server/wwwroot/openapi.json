@@ -11514,6 +11514,1680 @@
         }
       }
     },
+    "/_bdk/api/storage/documents/clients": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Documents.Maintenance"
+        ],
+        "summary": "List registered document storage clients",
+        "operationId": "_bdk.Storage.Documents.Maintenance.ListClients",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentStorageClientInfoModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/documents/{clientId}/documents/properties": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Documents.Maintenance"
+        ],
+        "summary": "Read document properties",
+        "operationId": "_bdk.Storage.Documents.Maintenance.GetProperties",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partitionKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rowKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentStorageDocumentInfoModel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "_bdk.Storage.Documents.Maintenance"
+        ],
+        "summary": "Update document properties without replacing content",
+        "operationId": "_bdk.Storage.Documents.Maintenance.UpdateProperties",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partitionKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rowKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentStorageUpdatePropertiesRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentStorageDocumentInfoModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/documents/{clientId}/documents/exists": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Documents.Maintenance"
+        ],
+        "summary": "Check exact document existence",
+        "operationId": "_bdk.Storage.Documents.Maintenance.Exists",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partitionKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rowKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/documents/{clientId}/documents/keys": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Documents.Maintenance"
+        ],
+        "summary": "List a bounded page of document keys",
+        "operationId": "_bdk.Storage.Documents.Maintenance.ListKeys",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partitionKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rowKeyPrefix",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "continuationToken",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "allowFullScan",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentKeyPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/documents/{clientId}/documents": {
+      "post": {
+        "tags": [
+          "_bdk.Storage.Documents.Maintenance"
+        ],
+        "summary": "Create a document",
+        "description": "Creates only when no physical document exists. If-Match cannot be supplied for creation.",
+        "operationId": "_bdk.Storage.Documents.Maintenance.Create",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partitionKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rowKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentStorageWriteRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentStorageDocumentInfoModel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "_bdk.Storage.Documents.Maintenance"
+        ],
+        "summary": "Create or replace document content",
+        "description": "Optional If-Match requires the caller's observed version. Omission permits unconditional creation or replacement. Omitted properties and expiration are preserved.",
+        "operationId": "_bdk.Storage.Documents.Maintenance.Upsert",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partitionKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rowKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentStorageWriteRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentStorageDocumentInfoModel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "_bdk.Storage.Documents.Maintenance"
+        ],
+        "summary": "Delete a document with an optional ETag condition",
+        "operationId": "_bdk.Storage.Documents.Maintenance.Delete",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partitionKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rowKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "_bdk.Storage.Documents.Read"
+        ],
+        "summary": "Read document content",
+        "description": "Returns one typed document as JSON with its whole-item ETag, through the registered client pipeline.",
+        "operationId": "_bdk.Storage.Documents.Read.Get",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partitionKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rowKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonElement"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Request Timeout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/blobs/clients": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Blobs.Maintenance"
+        ],
+        "summary": "List registered blob storage clients",
+        "description": "Retrieves the registered Blob Storage clients and provider-neutral capabilities.",
+        "operationId": "_bdk.Storage.Blobs.Maintenance.ListClients",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BlobStorageClientInfoModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/blobs/{storeName}/provider": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Blobs.Maintenance"
+        ],
+        "summary": "Get blob storage client information",
+        "description": "Retrieves provider-neutral information about one configured Blob Storage client.",
+        "operationId": "_bdk.Storage.Blobs.Maintenance.GetClientInfo",
+        "parameters": [
+          {
+            "name": "storeName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlobStorageClientInfoModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/blobs/{storeName}/blobs/exists": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Blobs.Maintenance"
+        ],
+        "summary": "Check whether a blob exists",
+        "description": "Checks exact-key blob existence without downloading blob content.",
+        "operationId": "_bdk.Storage.Blobs.Maintenance.Exists",
+        "parameters": [
+          {
+            "name": "storeName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "container",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlobStorageExistsResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/blobs/{storeName}/blobs/properties": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Blobs.Maintenance"
+        ],
+        "summary": "Get blob properties",
+        "description": "Retrieves blob metadata without downloading blob content.",
+        "operationId": "_bdk.Storage.Blobs.Maintenance.GetProperties",
+        "parameters": [
+          {
+            "name": "storeName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "container",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlobStorageBlobInfoModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "_bdk.Storage.Blobs.Maintenance"
+        ],
+        "summary": "Update blob properties",
+        "description": "Updates blob metadata without downloading or rewriting blob content.",
+        "operationId": "_bdk.Storage.Blobs.Maintenance.UpdateProperties",
+        "parameters": [
+          {
+            "name": "storeName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlobStorageUpdatePropertiesRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlobStorageBlobInfoModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "423": {
+            "description": "Locked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/blobs/{storeName}/blobs": {
+      "post": {
+        "tags": [
+          "_bdk.Storage.Blobs.Maintenance"
+        ],
+        "summary": "Create a blob",
+        "description": "Streams the request body into a new blob. An existing key conflicts. If-Match is invalid for creation; X-Storage-Properties optionally supplies a JSON scalar-property object.",
+        "operationId": "_bdk.Storage.Blobs.Maintenance.Create",
+        "parameters": [
+          {
+            "name": "storeName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "container",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expiresAt",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Storage-Properties",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/Stream"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlobStorageBlobInfoModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "_bdk.Storage.Blobs.Maintenance"
+        ],
+        "summary": "Create or replace blob content",
+        "description": "Streams the request body into the blob. Optional If-Match requires the previously observed version; omission permits unconditional creation or replacement. X-Storage-Properties optionally supplies a JSON scalar-property object.",
+        "operationId": "_bdk.Storage.Blobs.Maintenance.Upsert",
+        "parameters": [
+          {
+            "name": "storeName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "container",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expiresAt",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Storage-Properties",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/Stream"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlobStorageBlobInfoModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "_bdk.Storage.Blobs.Maintenance"
+        ],
+        "summary": "List blobs",
+        "description": "Lists one page of blob metadata without returning content streams.",
+        "operationId": "_bdk.Storage.Blobs.Maintenance.ListPage",
+        "parameters": [
+          {
+            "name": "storeName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "container",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "prefix",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "continuationToken",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "allowFullScan",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlobStorageBlobPageModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "_bdk.Storage.Blobs.Maintenance"
+        ],
+        "summary": "Delete a blob",
+        "description": "Deletes a blob by exact key. Deleting a missing blob follows the configured blob client contract.",
+        "operationId": "_bdk.Storage.Blobs.Maintenance.Delete",
+        "parameters": [
+          {
+            "name": "storeName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "container",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "423": {
+            "description": "Locked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/blobs/{storeName}/content": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Blobs.Read"
+        ],
+        "summary": "Download blob content",
+        "description": "Streams one blob by exact key through the configured Blob Storage client.",
+        "operationId": "_bdk.Storage.Blobs.Read.Download",
+        "parameters": [
+          {
+            "name": "storeName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "container",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/_bdk/api/system": {
       "get": {
         "tags": [
@@ -12450,6 +14124,227 @@
           }
         }
       },
+      "BlobStorageBlobInfoModel": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "length": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "contentType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "contentHash": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "eTag": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "lastModifiedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "properties": {
+            "type": [
+              "null",
+              "object"
+            ]
+          }
+        }
+      },
+      "BlobStorageBlobPageModel": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/BlobStorageBlobInfoModel"
+            }
+          },
+          "continuationToken": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BlobStorageClientInfoModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "providerName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/BlobStoreProviderCapabilities"
+          }
+        }
+      },
+      "BlobStorageExistsResponseModel": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "exists": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BlobStorageUpdatePropertiesRequestModel": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "contentType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "expiresAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "properties": {
+            "type": [
+              "null",
+              "object"
+            ]
+          },
+          "ifMatchETag": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "BlobStoreProviderCapabilities": {
+        "type": "object",
+        "properties": {
+          "supportsContinuationPaging": {
+            "type": "boolean"
+          },
+          "supportsPrefixListing": {
+            "type": "boolean"
+          },
+          "supportsFullContainerScan": {
+            "type": "boolean"
+          },
+          "supportsProperties": {
+            "type": "boolean"
+          },
+          "supportsContentType": {
+            "type": "boolean"
+          },
+          "supportsETag": {
+            "type": "boolean"
+          },
+          "supportsContentHash": {
+            "type": "boolean"
+          },
+          "supportsNativeLeases": {
+            "type": "boolean"
+          },
+          "supportsInternalLeases": {
+            "type": "boolean"
+          },
+          "supportsConditionalPropertiesUpdate": {
+            "type": "boolean"
+          },
+          "supportsStreamingUpload": {
+            "type": "boolean"
+          },
+          "supportsStreamingDownload": {
+            "type": "boolean"
+          },
+          "supportsExpiration": {
+            "type": "boolean"
+          },
+          "supportsRetentionSweep": {
+            "type": "boolean"
+          },
+          "supportsNativeRetention": {
+            "type": "boolean"
+          }
+        }
+      },
       "BrokerMessageBrokerCapabilities": {
         "type": "object",
         "properties": {
@@ -13311,6 +15206,227 @@
           "generatedAt": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "DocumentKey": {
+        "type": "object",
+        "properties": {
+          "partitionKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "rowKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "DocumentKeyPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/DocumentKey"
+            }
+          },
+          "continuationToken": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DocumentQuerySupport": {
+        "enum": [
+          "Unsupported",
+          "SupportedEfficiently",
+          "SupportedServerSide",
+          "SupportedClientSide"
+        ]
+      },
+      "DocumentStorageClientInfoModel": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "documentTypeName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "providerName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/DocumentStoreProviderCapabilities"
+          }
+        }
+      },
+      "DocumentStorageDocumentInfoModel": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "$ref": "#/components/schemas/DocumentKey"
+          },
+          "eTag": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "contentHash": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "contentLength": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "properties": {
+            "type": [
+              "null",
+              "object"
+            ]
+          }
+        }
+      },
+      "DocumentStorageUpdatePropertiesRequestModel": {
+        "type": "object",
+        "properties": {
+          "properties": {
+            "type": [
+              "null",
+              "object"
+            ]
+          },
+          "expiresAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "clearExpiration": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DocumentStorageWriteRequestModel": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/JsonElement"
+          },
+          "properties": {
+            "type": [
+              "null",
+              "object"
+            ]
+          },
+          "expiresAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "clearExpiration": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DocumentStoreProviderCapabilities": {
+        "type": "object",
+        "properties": {
+          "maxStoredDocumentSize": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
+          "supportsConditionalWrite": {
+            "type": "boolean"
+          },
+          "supportsConditionalDelete": {
+            "type": "boolean"
+          },
+          "supportsAtomicPropertyUpdate": {
+            "type": "boolean"
+          },
+          "supportsLogicalExpiration": {
+            "type": "boolean"
+          },
+          "supportsRetention": {
+            "type": "boolean"
+          },
+          "fullMatch": {
+            "$ref": "#/components/schemas/DocumentQuerySupport"
+          },
+          "rowKeyPrefixMatch": {
+            "$ref": "#/components/schemas/DocumentQuerySupport"
+          },
+          "rowKeySuffixMatch": {
+            "$ref": "#/components/schemas/DocumentQuerySupport"
+          },
+          "fullScan": {
+            "$ref": "#/components/schemas/DocumentQuerySupport"
+          },
+          "keyListing": {
+            "$ref": "#/components/schemas/DocumentQuerySupport"
+          },
+          "supportsContinuationPaging": {
+            "type": "boolean"
+          },
+          "supportsServerSideCount": {
+            "type": "boolean"
+          },
+          "supportsKeyOnlyProjection": {
+            "type": "boolean"
           }
         }
       },
@@ -16000,6 +18116,10 @@
           }
         }
       },
+      "Stream": {
+        "type": "string",
+        "format": "binary"
+      },
       "SunDataModel": {
         "type": "object",
         "properties": {
@@ -16622,6 +18742,18 @@
     },
     {
       "name": "_bdk.Storage.Files"
+    },
+    {
+      "name": "_bdk.Storage.Documents.Maintenance"
+    },
+    {
+      "name": "_bdk.Storage.Documents.Read"
+    },
+    {
+      "name": "_bdk.Storage.Blobs.Maintenance"
+    },
+    {
+      "name": "_bdk.Storage.Blobs.Read"
     },
     {
       "name": "_bdk.System"

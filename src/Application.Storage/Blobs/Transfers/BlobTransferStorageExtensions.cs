@@ -63,6 +63,8 @@ public static class BlobTransferStorageExtensions
         }
 
         options ??= new BlobCopyOptions();
+        var condition = BlobValidator.ValidateCondition(options.IfMatchETag, options.OverwriteMode == BlobOverwriteMode.FailIfExists);
+        if (condition.IsFailure) return Result<BlobTransferResult>.Failure(condition);
         var downloadResult = await sourceClient.DownloadAsync(sourceKey, cancellationToken).ConfigureAwait(false);
         if (downloadResult.IsFailure)
         {
@@ -111,7 +113,8 @@ public static class BlobTransferStorageExtensions
                     ExpectedContentHash = expectedContentHash,
                     ExpiresAt = options.ExpiresAtOverride ?? (options.PreserveExpiration ? download.Info.ExpiresAt : null),
                     Properties = CreateTargetProperties(download.Info, options),
-                    OverwriteMode = options.OverwriteMode
+                    IfMatchETag = options.IfMatchETag,
+                OverwriteMode = options.OverwriteMode
                 },
                 cancellationToken).ConfigureAwait(false);
             if (uploadResult.IsFailure)
@@ -297,6 +300,7 @@ public static class BlobTransferStorageExtensions
 
             var deleteResult = await blobClient.DeleteAsync(
                     item.Value.Key,
+                    new BlobDeleteOptions { IfMatchETag = item.Value.ETag },
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
             if (deleteResult.IsFailure)

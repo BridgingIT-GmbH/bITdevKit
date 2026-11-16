@@ -18,7 +18,7 @@ namespace BridgingIT.DevKit.Application.Storage;
 public interface IBlobStoreClient
 {
     /// <summary>
-    /// Uploads one blob from a caller-owned stream.
+    /// Uploads one blob from a caller-owned stream, conditionally replacing the whole item when IfMatchETag is supplied.
     /// </summary>
     /// <param name="upload">The upload model.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>

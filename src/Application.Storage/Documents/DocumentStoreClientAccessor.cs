@@ -6,7 +6,7 @@ namespace BridgingIT.DevKit.Application.Storage;
 using System.Text;
 
 /// <summary>
-/// Adapts a typed document client for dashboard operations.
+/// Adapts a typed document client for operational endpoints and dashboards.
 /// </summary>
 /// <typeparam name="T">
 /// The document type.
@@ -74,18 +74,31 @@ public sealed class DocumentStoreClientAccessor<T>(DocumentStoreClientDescriptor
     /// <inheritdoc />
     public async Task<Result> UpsertJsonAsync(DocumentKey key, string content, DocumentWriteOptions options = null, CancellationToken cancellationToken = default)
     {
+        var result = await this.UpsertEntryJsonAsync(key, content, options, cancellationToken);
+        return result.IsSuccess ? Result.Success().WithMessages(result.Messages) : Result.Failure(result.Messages, result.Errors);
+    }
+
+    /// <inheritdoc />
+    public async Task<Result<DocumentInfo>> UpsertEntryJsonAsync(DocumentKey key, string content, DocumentWriteOptions options = null, CancellationToken cancellationToken = default)
+    {
+        T value;
         try
         {
-            var value = this.serializer.Deserialize<T>(content ?? string.Empty);
-            if (value is null) return Result.Failure(new ValidationError("Document content must deserialize to a non-null payload."));
-            var result = await client.UpsertAsync(key, value, options, cancellationToken);
-            return result.IsSuccess ? Result.Success().WithMessages(result.Messages) : Result.Failure().WithMessages(result.Messages);
+            value = this.serializer.Deserialize<T>(content ?? string.Empty);
+            if (value is null) return Result<DocumentInfo>.Failure(new ValidationError("Document content must deserialize to a non-null payload."));
         }
+        catch (OperationCanceledException) { throw; }
         catch (Exception ex)
         {
-            return Result.Failure(new ValidationError($"Document content is invalid: {ex.Message}"));
+            return Result<DocumentInfo>.Failure(new ValidationError($"Document content is invalid: {ex.Message}"));
         }
+
+        return await client.UpsertAsync(key, value, options, cancellationToken);
     }
+
+    /// <inheritdoc />
+    public Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default) => client.UpdatePropertiesAsync(update, cancellationToken);
+
     /// <inheritdoc />
     public Task<Result> DeleteAsync(DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default) => client.DeleteAsync(key, options, cancellationToken);
     /// <inheritdoc />

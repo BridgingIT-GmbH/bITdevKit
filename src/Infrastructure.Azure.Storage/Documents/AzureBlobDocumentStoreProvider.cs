@@ -169,6 +169,9 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
     /// <inheritdoc />
     public async Task<Result<DocumentInfo>> UpsertAsync(DocumentTypeIdentity type, StoredDocumentWrite write, CancellationToken cancellationToken = default)
     {
+        var condition = DocumentWriteValidator.Validate(write.Options);
+        if (condition.IsFailure) return Result<DocumentInfo>.Failure(condition);
+
         try
         {
             var blob = (await this.GetContainerAsync(type, cancellationToken)).GetBlobClient(Name(write.Key));
@@ -195,6 +198,9 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
     /// <inheritdoc />
     public async Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentTypeIdentity type, DocumentPropertiesUpdate update, DateTimeOffset? resolvedExpiresAt, bool preserveExpiration, CancellationToken cancellationToken = default)
     {
+        var condition = DocumentWriteValidator.Validate(update);
+        if (condition.IsFailure) return Result<DocumentInfo>.Failure(condition);
+
         try
         {
             var blob = (await this.GetContainerAsync(type, cancellationToken)).GetBlobClient(Name(update.Key));
@@ -220,6 +226,9 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
     /// <inheritdoc />
     public async Task<Result> DeleteAsync(DocumentTypeIdentity type, DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default)
     {
+        var condition = DocumentWriteValidator.Validate(options);
+        if (condition.IsFailure) return condition;
+
         try
         {
             var blob = (await this.GetContainerAsync(type, cancellationToken)).GetBlobClient(Name(key));

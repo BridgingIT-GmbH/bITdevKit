@@ -146,7 +146,8 @@ public sealed class BlobStoreClient : IBlobStoreClient, IBlobStoreContainerCatal
             return Result.Failure().WithErrors(validation.Errors).WithMessages(validation.Messages);
         }
 
-        return await this.inner.DeleteAsync(key, options, cancellationToken).ConfigureAwait(false);
+        var condition = BlobValidator.Validate(options);
+        return condition.IsFailure ? condition : await this.inner.DeleteAsync(key, options, cancellationToken).ConfigureAwait(false);
     }
 
     private static Result<T> ToFailure<T>(Result validation) =>

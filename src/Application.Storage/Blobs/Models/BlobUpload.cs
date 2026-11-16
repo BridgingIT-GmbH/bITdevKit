@@ -20,6 +20,10 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class BlobUpload
 {
+    /// <summary>Gets the original item ETag required for replacement; omission permits unconditional overwrite.</summary>
+    /// <example><code>var expected = options.IfMatchETag;</code></example>
+    public string IfMatchETag { get; init; }
+
     /// <summary>
     /// Gets the destination blob key.
     /// </summary>

@@ -154,13 +154,18 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
     /// <inheritdoc />
     public async Task<Result<DocumentInfo>> UpsertAsync(DocumentTypeIdentity type, StoredDocumentWrite write, CancellationToken cancellationToken = default)
     {
+        var validation = DocumentWriteValidator.Validate(write.Options);
+        if (validation.IsFailure) return Result<DocumentInfo>.Failure(validation);
+
         try
         {
             var table = await this.GetTableAsync(type, cancellationToken);
             StoredDocument current = null;
             var physical = await this.GetPhysicalAsync(table, write.Key, cancellationToken);
+            if (physical.IsFailure && !physical.Errors.All(error => error is DocumentStoreNotFoundError)) return physical.Wrap<DocumentInfo>();
             if (physical.IsSuccess) current = physical.Value;
             if (write.Options.CreateOnly && current is not null) return Result<DocumentInfo>.Failure(new DocumentStoreConflictError("A physical document already exists."));
+            if (current is null && !string.IsNullOrWhiteSpace(write.Options.IfMatchETag)) return Result<DocumentInfo>.Failure(new DocumentStoreConflictError("The document no longer exists."));
             var now = DateTimeOffset.UtcNow;
             var entity = ToEntity(write, current, now);
             if (EstimateEntitySize(entity) > MaximumEntitySize)
@@ -168,20 +173,22 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
                 return Result<DocumentInfo>.Failure(new DocumentStoreSizeLimitError("The complete Azure Table entity exceeds the 1 MiB service limit."));
             }
 
+            Response response;
             if (current is null)
             {
-                await table.AddEntityAsync(entity, cancellationToken);
+                response = await table.AddEntityAsync(entity, cancellationToken);
             }
             else
             {
                 var etag = string.IsNullOrWhiteSpace(write.Options.IfMatchETag) ? ETag.All : new ETag(write.Options.IfMatchETag);
-                await table.UpdateEntityAsync(entity, etag, TableUpdateMode.Replace, cancellationToken);
+                response = await table.UpdateEntityAsync(entity, etag, TableUpdateMode.Replace, cancellationToken);
             }
 
-            var saved = await table.GetEntityAsync<TableEntity>(entity.PartitionKey, entity.RowKey, cancellationToken: cancellationToken);
-            return Result<DocumentInfo>.Success(ToInfo(Map(saved.Value)));
+            entity.ETag = ReadCommittedETag(response);
+            return Result<DocumentInfo>.Success(ToInfo(Map(entity)));
         }
         catch (RequestFailedException ex) when (ex.Status is 409 or 412) { return Result<DocumentInfo>.Failure(new DocumentStoreConflictError(ex.Message)); }
+        catch (RequestFailedException ex) when (ex.Status == 404 && !string.IsNullOrWhiteSpace(write.Options.IfMatchETag)) { return Result<DocumentInfo>.Failure(new DocumentStoreConflictError(ex.Message)); }
         catch (OperationCanceledException) { throw; }
         catch (Exception ex) { return Result<DocumentInfo>.Failure(new DocumentStoreProviderError("Azure Table document write failed.", ex)); }
     }
@@ -189,6 +196,9 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
     /// <inheritdoc />
     public async Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentTypeIdentity type, DocumentPropertiesUpdate update, DateTimeOffset? resolvedExpiresAt, bool preserveExpiration, CancellationToken cancellationToken = default)
     {
+        var validation = DocumentWriteValidator.Validate(update);
+        if (validation.IsFailure) return Result<DocumentInfo>.Failure(validation);
+
         try
         {
             var table = await this.GetTableAsync(type, cancellationToken);
@@ -204,7 +214,8 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
             }
 
             var etag = string.IsNullOrWhiteSpace(update.IfMatchETag) ? response.Value.ETag : new ETag(update.IfMatchETag);
-            await table.UpdateEntityAsync(entity, etag, TableUpdateMode.Replace, cancellationToken);
+            var updated = await table.UpdateEntityAsync(entity, etag, TableUpdateMode.Replace, cancellationToken);
+            entity.ETag = ReadCommittedETag(updated);
             return Result<DocumentInfo>.Success(ToInfo(Map(entity)));
         }
         catch (RequestFailedException ex) when (ex.Status == 404) { return Result<DocumentInfo>.Failure(new DocumentStoreNotFoundError()); }
@@ -216,6 +227,9 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
     /// <inheritdoc />
     public async Task<Result> DeleteAsync(DocumentTypeIdentity type, DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default)
     {
+        var validation = DocumentWriteValidator.Validate(options);
+        if (validation.IsFailure) return validation;
+
         try
         {
             var table = await this.GetTableAsync(type, cancellationToken);
@@ -320,6 +334,14 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
         return new() { Key = new((string)entity["bdk_partition_key"], (string)entity["bdk_row_key"]), Content = stream.ToArray(), ETag = entity.ETag.ToString(), ContentHash = entity.GetValueOrDefault("bdk_content_hash") as string, StoredContentHash = entity.GetValueOrDefault("bdk_stored_content_hash") as string, CreatedAt = (DateTimeOffset)entity["bdk_created_at"], LastModifiedAt = (DateTimeOffset)entity["bdk_modified_at"], ExpiresAt = entity.GetValueOrDefault("bdk_expires_at") as DateTimeOffset?, Properties = DecodeBag(entity.GetValueOrDefault("bdk_properties") as string), TransformMetadata = DecodeBag(entity.GetValueOrDefault("bdk_transforms") as string) };
     }
     private static DocumentInfo ToInfo(StoredDocument x) => new() { Key = x.Key, ETag = x.ETag, ContentHash = x.ContentHash, CreatedAt = x.CreatedAt, LastModifiedAt = x.LastModifiedAt, ExpiresAt = x.ExpiresAt, Properties = x.Properties.Clone() };
+
+    private static ETag ReadCommittedETag(Response response)
+    {
+        return response.Headers.TryGetValue("ETag", out var etag) && !string.IsNullOrWhiteSpace(etag)
+            ? new ETag(etag)
+            : throw new InvalidOperationException("The Azure Table mutation response did not include an ETag.");
+    }
+
     private static string EncodeBag(PropertyBag bag) => Base64UrlHelper.Encode(JsonSerializer.SerializeToUtf8Bytes((bag ?? new()).ToDictionary(x => x.Key, x => PropertyBagScalarCodec.Encode(x.Value))));
     private static PropertyBag DecodeBag(string value) { if (string.IsNullOrWhiteSpace(value)) return new(); var values = JsonSerializer.Deserialize<Dictionary<string, string>>(Base64UrlHelper.Decode(value)); return new(values.ToDictionary(x => x.Key, x => PropertyBagScalarCodec.Decode(x.Value))); }
     private static string Encode(string value) => Base64UrlHelper.Encode(Encoding.UTF8.GetBytes(value));

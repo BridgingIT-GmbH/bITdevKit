@@ -32,6 +32,7 @@ Named `IBlobStoreClient` instances expose Result-native upload, download, proper
 
 - stream-first uploads and caller-disposed downloads
 - provider-neutral keys, metadata, ETags, expiration, and SHA-256 hashes
+- optional ETag conditions for content replacement, property updates, and exact deletes
 - query-bound continuation tokens and guarded full scans
 - named clients with in-memory, filesystem, Entity Framework, and Azure Blob providers
 - compression, encryption, content-type detection, caching, and verification behaviors
@@ -138,7 +139,7 @@ app.Run();
 - Full container scans require global client configuration and query-level approval.
 - Delete is idempotent.
 - Range downloads, resumable uploads, resumable downloads, and public lease APIs are not part of this feature.
-- Optional HTTP endpoints live in `Presentation.Web.Storage` and are registered separately for maintenance metadata operations and read-only content downloads.
+- Optional HTTP endpoints live in `Presentation.Web.Storage` and are registered separately for content and metadata maintenance and read-only content downloads.
 - Optional dashboard pages live in `Presentation.Web.Storage` and are discovered by the DevKit dashboard when Blob Storage has registered clients.
 
 ## Registration
@@ -358,7 +359,16 @@ The MCP handler is diagnostics-only. It exposes registration, provider capabilit
 
 ## HTTP endpoints
 
-`Presentation.Web.Storage` can expose Blob Storage over Minimal API endpoints. Maintenance endpoints and read-only content endpoints are deliberately separate so applications can protect or expose them differently.
+`Presentation.Web.Storage` provides optional Blob Storage Minimal API endpoints. Enable each group explicitly in the feature setup:
+
+- `AddMaintenanceEndpoints(...)` enables content creation/replacement, property updates, deletes, and metadata reads.
+- `AddReadEndpoints(...)` enables the separate content-download route.
+
+Registering `AddBlobStorage()` and its clients does not enable either group. Assembly discovery through `AddEndpoints()` also leaves them disabled until explicitly configured. `app.MapEndpoints()` maps the enabled registrations.
+
+### Enable endpoints in the feature setup
+
+Reference `BridgingIT.DevKit.Presentation.Web.Storage` in the host. Each registration below uses `enabled: true`; omit a registration or pass `enabled: false` to leave that group disabled. Maintenance and content-download endpoints can be enabled independently. Document Storage provides the same independent maintenance/read setup; see [Document Storage HTTP endpoints](features-storage-documents.md#http-endpoints).
 
 Both endpoint groups require authorization by default. Use the shared endpoint-options methods to select policies or roles. Call `AllowAnonymous()` explicitly only for content that is intentionally public.
 
@@ -370,25 +380,48 @@ services.AddBlobStorage()
     })
     .AddMaintenanceEndpoints(options => options
         .GroupPath("/_bdk/api/storage/blobs")
-        .RequireAuthorization())
+        .RequireAuthorization(), enabled: true)
     .AddReadEndpoints(options => options
         .GroupPath("/_bdk/api/storage/blobs")
-        .AllowAnonymous());
+        .AllowAnonymous(), enabled: true);
 
 app.MapEndpoints();
 ```
 
-Maintenance endpoints do not upload or download blob content. They expose registered clients, provider capabilities, exact-key existence checks, properties, property updates, metadata listing, and idempotent deletes:
+For separate service registration, use `services.AddBlobStorageMaintenanceEndpoints(...)` and `services.AddBlobStorageReadEndpoints(...)`. They provide the same options and explicit `enabled` switch. Endpoint registration does not configure host authentication; configure the authentication and authorization services required by the selected policies.
+
+### Routes and request semantics
+
+Maintenance endpoints expose streamed content creation and replacement, registered clients, provider capabilities, exact-key existence checks, properties, property updates, metadata listing, and idempotent deletes:
 
 ```http
 GET    /_bdk/api/storage/blobs/clients
 GET    /_bdk/api/storage/blobs/{storeName}/provider
+POST   /_bdk/api/storage/blobs/{storeName}/blobs?container=reports&name=2026/report.pdf
+PUT    /_bdk/api/storage/blobs/{storeName}/blobs?container=reports&name=2026/report.pdf
 GET    /_bdk/api/storage/blobs/{storeName}/blobs/exists?container=reports&name=2026/report.pdf
 GET    /_bdk/api/storage/blobs/{storeName}/blobs/properties?container=reports&name=2026/report.pdf
 PATCH  /_bdk/api/storage/blobs/{storeName}/blobs/properties
 GET    /_bdk/api/storage/blobs/{storeName}/blobs?container=reports&prefix=2026/&take=100
 DELETE /_bdk/api/storage/blobs/{storeName}/blobs?container=reports&name=2026/report.pdf
 ```
+
+POST streams the raw request body and atomically creates a new key, returning HTTP 201 with a metadata body and `Location`. An existing physical key returns HTTP 409. PUT streams the raw request body and creates or replaces content, returning HTTP 200 with committed metadata. Set `Content-Type` to the payload MIME type; no multipart envelope is required. Both accept optional `expiresAt` in the query and `X-Storage-Properties` containing a JSON object of scalar values. Uploads replace the property bag and expiration: omitted properties produce an empty bag, and omitted expiration produces an unexpired blob. Nested property objects and arrays return HTTP 400. Numeric values that overflow or underflow the supported finite .NET numeric types also return HTTP 400.
+
+PUT, property PATCH, and DELETE accept an optional `If-Match` header. Copy the complete `ETag` header from a prior content download, properties GET, or successful write. It identifies the whole item: changing content, properties, or expiration invalidates the previous version. A stale condition returns HTTP 409 without changing the item, including a conditional PUT after deletion. Omitting the condition permits unconditional creation or replacement. Deleting an already absent target remains a successful no-op. POST rejects any `If-Match` header with HTTP 400 because creation is already guarded by create-only semantics.
+
+Response `ETag` headers use a quoted opaque transport token (`"bdk.<base64url>"`) that preserves the provider's exact native token. Echo the header unchanged; do not strip quotes, decode it, or generate a token from content. The metadata body's `ETag` remains the native provider value. Legacy native conditions remain accepted, and property PATCH still accepts `IfMatchETag` in its body. When header and body are both supplied, they must identify the same version or the API returns HTTP 400. Wildcards and ETag lists are unsupported.
+
+```http
+PUT /_bdk/api/storage/blobs/reports/blobs?container=reports&name=2026/report.txt
+Content-Type: text/plain
+If-Match: "bdk.<token-from-the-last-response>"
+X-Storage-Properties: {"reviewed":true,"revision":2}
+
+Revised report content
+```
+
+Property PATCH retains its existing JSON shape (`container`, `name`, optional `contentType`, `expiresAt`, `properties`, and legacy `ifMatchETag`). It replaces properties and expiration according to `BlobPropertiesUpdate`; it leaves content bytes unchanged. Every successful mutation returns a fresh whole-item ETag from the exact commit, without a follow-up read.
 
 The read endpoint is content-only and streams a single exact-key blob through the configured named client:
 
@@ -439,6 +472,10 @@ Open Blobs at `/_bdk/dashboard/storage/blobs`. Choose a store and container, the
 [![Blob dashboard with store and container filters, content metadata and row actions](assets/dashboard/19-storage-blobs-blobs.png)](assets/dashboard/19-storage-blobs-blobs.png)
 
 Use Upload to add a file. Select a row's information button to edit properties and expiration, or download its content. Permalink download and copy actions appear for clients decorated with `WithPermalinks()`. Use Previous and Next when the query returns continuation pages. See the [shared dashboard setup](features-presentation-dashboard.md) for plugin discovery and authorization.
+
+New uploads use create-only semantics. **Replace content** retains the selected row's identity and ETag and preserves the blob's current custom properties and expiration. Use Blob Details to edit properties or expiration. Property and expiration edits also send the originally displayed ETag. An ordinary edit without that token is invalid.
+
+When a conflict occurs, the editor retains the draft, selected upload file, identity, and original ETag. **Reload current item** asks for discard confirmation before replacing the draft. **Force overwrite** submits the retained draft without an ETag condition. Refreshing an edit does not silently authorize overwriting a newer version.
 
 ## <img class="bdk-doc-icon" src="assets/features/compression.svg" width="24" height="24" alt=""> <img class="bdk-doc-icon" src="assets/features/encryption.svg" width="24" height="24" alt=""> Compression and encryption behaviors
 
@@ -614,9 +651,11 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
 
 ## Azure commit semantics
 
-Azure uploads stage uniquely named blocks while streaming and hashing the caller content once. The provider enforces size and expected-hash constraints before committing the block list. Content type, custom metadata, content hash, expiration metadata/tags, overwrite conditions, and the staged block ids are applied in the final commit, so cancellation or validation failure does not replace the currently committed blob.
+Azure uploads stage uniquely named blocks while streaming and hashing the caller content once. The provider enforces size and expected-hash constraints before committing the block list. The final commit applies content type, metadata, hash, expiration tags, and the original `IfMatchETag` or create-only condition. A failed condition leaves the committed blob unchanged, even if another writer changed it during staging. Cancellation before publication does not replace the committed blob.
 
-Azure property updates read a complete state snapshot and apply headers, metadata, and tags through ETag-conditional mutations. On an operation error or cancellation, the provider restores the original state with a non-cancelable cleanup token. If restoration also fails, the result contains `BlobStorePartialUpdateError` with both failure descriptions.
+Upload results describe the version acknowledged by the commit response. The provider reads native creation time only with that committed ETag. `BlobInfo.CreatedAt` can be null if rapid replacement, deletion, or a failed optional lookup prevents reading that timestamp. A later writer's ETag or timestamps are never substituted.
+
+Azure property updates read properties and tags bound to one version, then apply headers, metadata, and tags through conditional requests. These are multiple native mutations. On failure, compensation uses only the last ETag acknowledged as written by this operation, with a non-cancelable cleanup token. If another writer changed that version, compensation stops instead of restoring old metadata over the newer item. An unconfirmed mutation or failed compensation returns `BlobStorePartialUpdateError`; failed compensation includes both failure descriptions. Conflicts and partial-update failures are excluded from automatic retries.
 
 ## Named clients
 
@@ -673,6 +712,39 @@ var mimeType = info.ContentType?.MimeType();
 ```
 
 Blob Storage reads from the supplied stream but does not dispose it.
+
+### Conditional replacement
+
+An ETag represents the entire blob, including content, content type, properties, and expiration. Every successful content or metadata update invalidates the previous ETag, even when the submitted values are unchanged. Retain the ETag read with the item being edited and send it with the replacement:
+
+```csharp
+var key = new BlobKey("reports", "2026/06/report.pdf");
+var current = await blobs.GetPropertiesAsync(key, cancellationToken);
+if (current.IsFailure)
+{
+	return current;
+}
+
+await using var replacement = File.OpenRead("revised-report.pdf");
+var saved = await blobs.UploadAsync(new BlobUpload
+{
+	Key = key,
+	Content = replacement,
+	ContentType = ContentType.PDF,
+	IfMatchETag = current.Value.ETag
+}, cancellationToken);
+
+if (saved.IsFailure)
+{
+	return saved;
+}
+```
+
+`IfMatchETag` is optional on `BlobUpload` and `BlobPropertiesUpdate`. Null, empty, and whitespace-only conditions are omitted. Without a condition, uploads create or replace unconditionally and property updates mutate the existing item. A supplied stale ETag returns `BlobStoreConflictError`. A conditional upload against a missing target also conflicts and never creates it; a property update against a missing target fails without creating it.
+
+Use `BlobOverwriteMode.FailIfExists` for create-only uploads. Combining it with a nonempty `IfMatchETag` is a validation error. The wildcard `*` is invalid as a version token. A successful mutation returns its committed ETag, which becomes stale if another writer subsequently changes the item.
+
+Byte, text, object, and file upload options carry the same optional condition. Compression, encryption, and content-type detection preserve it. `ExpectedContentHash` checks the incoming payload and does not compare the stored version. Keep the named store, container, and name alongside the ETag; the token does not replace identity validation or authorization.
 
 ## <img class="bdk-doc-icon" src="assets/features/storage-retention.svg" width="24" height="24" alt=""> Expiration and retention
 
@@ -1020,7 +1092,7 @@ if (propertiesResult.IsSuccess)
 }
 ```
 
-When supplied, `IfMatchETag` is used for optimistic property updates. A stale ETag returns a conflict Result failure.
+When supplied, `IfMatchETag` is used for optimistic property updates. A stale ETag returns a conflict Result failure. A content replacement also invalidates an earlier property-edit ETag, and a property update invalidates an earlier content-edit ETag.
 
 For small property-only changes, patch helpers read current properties, apply a local mutation, and update with the current ETag:
 
@@ -1190,6 +1262,8 @@ var moveResult = await blobs.MoveToAsync(
 
 Copies and moves preserve the source expiration by default. Set `BlobCopyOptions.PreserveExpiration` to `false` to create a non-expiring target, or use `ExpiresAtOverride` to set a new expiration. The override wins when both are supplied.
 
+`BlobCopyOptions.IfMatchETag` refers to the destination version. Set it when replacing a previously read target, or use `OverwriteMode = BlobOverwriteMode.FailIfExists` for create-only. The two conditions cannot be combined. Omitting both retains unconditional target replacement. Moves carry these destination options through `BlobMoveOptions.Copy`; a failed destination condition prevents source deletion.
+
 `MoveToAsync` copies first and conditionally deletes the source using the ETag observed during the copy. If the source changes, the copied target remains and `BlobStoreTransferError` reports that the source was not deleted. Moving to the same client and key verifies that the blob exists and returns a successful no-op with `SourceDeleted = false`.
 
 Use `DeleteByPrefixAsync` for guarded cleanup workflows:
@@ -1211,7 +1285,7 @@ var deleteResult = await blobs.DeleteByPrefixAsync(
     cancellationToken: cancellationToken);
 ```
 
-Prefix delete requires a non-empty prefix unless `AllowFullScan` is explicitly set. Use dry runs before scheduled cleanup jobs.
+Prefix delete requires a non-empty prefix unless `AllowFullScan` is explicitly set. Each deletion uses the ETag observed during enumeration, so a changed blob is retained and reported as a failed deletion. Use dry runs before scheduled cleanup jobs.
 
 ## <img class="bdk-doc-icon" src="assets/features/storage-health.svg" width="24" height="24" alt=""> Health checks
 
@@ -1297,6 +1371,7 @@ Expected failures are Result failures, not exceptions. Common typed errors inclu
 - `BlobStorePageSizeExceededError`
 - `BlobStoreInvalidContinuationTokenError`
 - `BlobStoreConflictError`
+- `BlobStorePartialUpdateError`, an unconfirmed or partially compensated Azure metadata mutation that must not be retried automatically
 - `BlobStoreLeaseError`
 - `BlobStoreSerializationError`
 - `BlobStoreProviderError`

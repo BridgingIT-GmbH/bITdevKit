@@ -70,4 +70,7 @@
   <ItemGroup>
     <Compile Include="../Shared/Caching/*.cs" Link="Caching/Shared/%(Filename)%(Extension)" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/Storage/DocumentStoreConcurrencyContractTests.cs" Link="Storage/DocumentStoreConcurrencyContractTests.cs" />
+  </ItemGroup>
 </Project>

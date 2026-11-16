@@ -366,6 +366,7 @@
             }
 
             detailsForm.dataset.documentsMode = 'edit';
+            detailsForm.querySelector('[data-etag-conflict-actions]')?.remove();
             clearDetailsAlert();
             detailsForm.elements.mode.value = 'edit';
             detailsForm.elements.clientId.value = document.clientId;
@@ -394,6 +395,7 @@
             }
 
             detailsForm.dataset.documentsMode = 'new';
+            detailsForm.querySelector('[data-etag-conflict-actions]')?.remove();
             clearDetailsAlert();
             detailsForm.elements.mode.value = 'new';
             detailsForm.elements.clientId.value = state.clientId;
@@ -519,7 +521,21 @@
             }
         }
 
-        async function submitDocumentAction(actionForm, submitter) {
+        function showConflictActions() {
+            detailsForm.querySelector('[data-etag-conflict-actions]')?.remove();
+            const actions = document.createElement('div'); actions.dataset.etagConflictActions = ''; actions.className = 'd-flex flex-wrap gap-2 mb-3';
+            const reload = document.createElement('button'); reload.type = 'button'; reload.className = 'btn btn-outline-secondary btn-sm'; reload.textContent = 'Reload current item';
+            reload.onclick = async () => {
+                if (!await window.bdkDashboard.confirmAction({ title: 'Reload current item', message: 'Discard your changes and reload the current item?', confirmText: 'Reload' })) return;
+                await refresh(stateFromRoot());
+                if (getSelectedDocument()) showDetailsDialog(); else showDetailsAlert('danger', 'The document was deleted.');
+            };
+            const force = document.createElement('button'); force.type = 'button'; force.className = 'btn btn-outline-danger btn-sm'; force.textContent = 'Force overwrite';
+            force.onclick = () => submitDocumentAction(detailsForm, detailsSaveButton, true);
+            actions.append(reload, force); detailsForm.querySelector('.modal-body').prepend(actions);
+        }
+
+        async function submitDocumentAction(actionForm, submitter, forceOverwrite = false) {
             clearDetailsAlert();
             const actionUrl = submitter?.dataset.documentsAction ||
                 submitter?.getAttribute('formaction') ||
@@ -554,16 +570,19 @@
             setBusy(true, isDeleteAction ? 'Deleting document...' : 'Saving document...');
 
             try {
+                const payload = new FormData(actionForm);
+                payload.set('forceOverwrite', String(forceOverwrite && !isDeleteAction));
                 const response = await fetch(actionUrl, {
                     method: 'POST',
-                    body: new FormData(actionForm),
+                    body: payload,
                     headers: { 'X-Requested-With': 'fetch' }
                 });
 
                 if (!response.ok) {
                     const message = await readResponseMessage(response, 'Document action failed.');
                     if (actionForm === detailsForm) {
-                        showDetailsAlert('danger', message);
+                        showDetailsAlert('danger', response.status === 409 ? 'The stored item changed. Your changes have been kept.' : message);
+                        if (response.status === 409 && !isDeleteAction && detailsForm.elements.mode.value === 'edit') showConflictActions();
                     } else {
                         await window.bdkDashboard.showMessage({ title: 'Document action failed', message, kind: 'danger' });
                     }

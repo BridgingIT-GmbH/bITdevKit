@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web.Storage;
 
 using System.Net;
+using System.Text.Json;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Storage.Models;
@@ -18,8 +19,9 @@ using Microsoft.Extensions.Logging.Abstractions;
 using HttpResult = Microsoft.AspNetCore.Http.IResult;
 
 /// <summary>
-/// Exposes metadata-only REST endpoints for registered Blob Storage clients.
+/// Exposes content mutation and metadata REST endpoints for registered Blob Storage clients.
 /// </summary>
+/// <remarks>Enable this group with <c>AddMaintenanceEndpoints</c> or <c>AddBlobStorageMaintenanceEndpoints</c>. Assembly discovery alone leaves it disabled.</remarks>
 /// <example>
 /// <code>
 /// services.AddBlobStorage()
@@ -35,7 +37,7 @@ public sealed class BlobStorageMaintenanceEndpoints(
     private readonly ILogger<BlobStorageMaintenanceEndpoints> logger =
         loggerFactory?.CreateLogger<BlobStorageMaintenanceEndpoints>() ??
         NullLogger<BlobStorageMaintenanceEndpoints>.Instance;
-    private readonly BlobStorageMaintenanceEndpointsOptions options = options ?? new BlobStorageMaintenanceEndpointsOptions();
+    private readonly BlobStorageMaintenanceEndpointsOptions options = options ?? new BlobStorageMaintenanceEndpointsOptions { Enabled = false };
 
     /// <summary>
     /// Maps Blob Storage maintenance endpoints into the current endpoint route builder.
@@ -81,8 +83,8 @@ public sealed class BlobStorageMaintenanceEndpoints(
             .WithSummary("Check whether a blob exists")
             .WithDescription("Checks exact-key blob existence without downloading blob content.");
 
-        group.MapGet("{storeName}/blobs/properties", (string storeName, [FromQuery] string container, [FromQuery] string name, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
-            this.GetPropertiesAsync(factory, storeName, container, name, cancellationToken))
+        group.MapGet("{storeName}/blobs/properties", (HttpContext context, string storeName, [FromQuery] string container, [FromQuery] string name, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            this.GetPropertiesAsync(factory, storeName, container, name, context, cancellationToken))
             .Produces<BlobStorageBlobInfoModel>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
@@ -91,8 +93,34 @@ public sealed class BlobStorageMaintenanceEndpoints(
             .WithSummary("Get blob properties")
             .WithDescription("Retrieves blob metadata without downloading blob content.");
 
-        group.MapPatch("{storeName}/blobs/properties", (string storeName, BlobStorageUpdatePropertiesRequestModel request, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
-            this.UpdatePropertiesAsync(factory, storeName, request, cancellationToken))
+        group.MapPost("{storeName}/blobs", (HttpContext context, string storeName, [FromQuery] string container, [FromQuery] string name, [FromQuery] DateTimeOffset? expiresAt, [FromHeader(Name = "If-Match")] string ifMatchETag, [FromHeader(Name = "X-Storage-Properties")] string properties, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            this.UploadAsync(factory, storeName, container, name, expiresAt, ifMatchETag, properties, context, true, cancellationToken))
+            .Accepts<Stream>("*/*")
+            .Produces<BlobStorageBlobInfoModel>((int)HttpStatusCode.Created)
+            .Produces<string>((int)HttpStatusCode.NotFound)
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
+            .Produces<ProblemDetails>((int)HttpStatusCode.RequestEntityTooLarge)
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName($"{RouteNamePrefix}.Create")
+            .WithSummary("Create a blob")
+            .WithDescription("Streams the request body into a new blob. An existing key conflicts. If-Match is invalid for creation; X-Storage-Properties optionally supplies a JSON scalar-property object.");
+
+        group.MapPut("{storeName}/blobs", (HttpContext context, string storeName, [FromQuery] string container, [FromQuery] string name, [FromQuery] DateTimeOffset? expiresAt, [FromHeader(Name = "If-Match")] string ifMatchETag, [FromHeader(Name = "X-Storage-Properties")] string properties, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            this.UploadAsync(factory, storeName, container, name, expiresAt, ifMatchETag, properties, context, false, cancellationToken))
+            .Accepts<Stream>("*/*")
+            .Produces<BlobStorageBlobInfoModel>()
+            .Produces<string>((int)HttpStatusCode.NotFound)
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
+            .Produces<ProblemDetails>((int)HttpStatusCode.RequestEntityTooLarge)
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName($"{RouteNamePrefix}.Upsert")
+            .WithSummary("Create or replace blob content")
+            .WithDescription("Streams the request body into the blob. Optional If-Match requires the previously observed version; omission permits unconditional creation or replacement. X-Storage-Properties optionally supplies a JSON scalar-property object.");
+
+        group.MapPatch("{storeName}/blobs/properties", (HttpContext context, string storeName, BlobStorageUpdatePropertiesRequestModel request, [FromHeader(Name = "If-Match")] string ifMatchETag, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            this.UpdatePropertiesAsync(factory, storeName, request, ifMatchETag, context, cancellationToken))
             .Accepts<BlobStorageUpdatePropertiesRequestModel>("application/json")
             .Produces<BlobStorageBlobInfoModel>()
             .Produces<string>((int)HttpStatusCode.NotFound)
@@ -114,8 +142,8 @@ public sealed class BlobStorageMaintenanceEndpoints(
             .WithSummary("List blobs")
             .WithDescription("Lists one page of blob metadata without returning content streams.");
 
-        group.MapDelete("{storeName}/blobs", (string storeName, [FromQuery] string container, [FromQuery] string name, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
-            this.DeleteAsync(factory, storeName, container, name, cancellationToken))
+        group.MapDelete("{storeName}/blobs", (string storeName, [FromQuery] string container, [FromQuery] string name, [FromHeader(Name = "If-Match")] string ifMatchETag, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            this.DeleteAsync(factory, storeName, container, name, ifMatchETag, cancellationToken))
             .Produces<string>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
@@ -185,6 +213,7 @@ public sealed class BlobStorageMaintenanceEndpoints(
         string storeName,
         string container,
         string name,
+        HttpContext context,
         CancellationToken cancellationToken)
     {
         if (!TryCreateClient(factory, storeName, out var client, out var failure))
@@ -194,15 +223,79 @@ public sealed class BlobStorageMaintenanceEndpoints(
 
         var result = await client.GetPropertiesAsync(new BlobKey(container, name), cancellationToken).ConfigureAwait(false);
 
-        return result.IsSuccess
-            ? Results.Ok(MapInfo(result.Value))
-            : MapFailure(result, $"{container}/{name}");
+        if (result.IsFailure)
+        {
+            return MapFailure(result, $"{container}/{name}");
+        }
+
+        HttpETag.Write(context.Response, result.Value.ETag);
+        return Results.Ok(MapInfo(result.Value));
+    }
+
+    private async Task<HttpResult> UploadAsync(
+        IBlobStoreClientFactory factory,
+        string storeName,
+        string container,
+        string name,
+        DateTimeOffset? expiresAt,
+        string ifMatchETag,
+        string propertiesJson,
+        HttpContext context,
+        bool createOnly,
+        CancellationToken cancellationToken)
+    {
+        if (!TryCreateClient(factory, storeName, out var client, out var failure))
+        {
+            return failure;
+        }
+
+        if (createOnly && (ifMatchETag is not null || context.Request.Headers.ContainsKey("If-Match")))
+        {
+            return Results.Problem("If-Match cannot be supplied for create-only uploads.", statusCode: (int)HttpStatusCode.BadRequest);
+        }
+
+        var condition = HttpETag.ReadCondition(ifMatchETag);
+        if (condition.IsFailure)
+        {
+            return MapFailure(condition, $"{container}/{name}");
+        }
+
+        var properties = HttpMetadata.ParseProperties(propertiesJson);
+        if (properties.IsFailure)
+        {
+            return MapFailure(properties, $"{container}/{name}");
+        }
+
+        var result = await client.UploadAsync(new BlobUpload
+        {
+            Key = new BlobKey(container, name),
+            Content = context.Request.Body,
+            ContentType = string.IsNullOrWhiteSpace(context.Request.ContentType)
+                ? null
+                : ContentTypeExtensions.FromMimeType(context.Request.ContentType.Split(';')[0].Trim(), ContentType.DEFAULT),
+            Properties = properties.Value,
+            ExpiresAt = expiresAt,
+            IfMatchETag = condition.Value,
+            OverwriteMode = createOnly ? BlobOverwriteMode.FailIfExists : BlobOverwriteMode.Overwrite
+        }, cancellationToken).ConfigureAwait(false);
+
+        if (result.IsFailure)
+        {
+            return MapFailure(result, $"{container}/{name}");
+        }
+
+        HttpETag.Write(context.Response, result.Value.ETag);
+        return createOnly
+            ? Results.Created($"{context.Request.PathBase}{context.Request.Path}/properties?container={Uri.EscapeDataString(container)}&name={Uri.EscapeDataString(name)}", MapInfo(result.Value))
+            : Results.Ok(MapInfo(result.Value));
     }
 
     private async Task<HttpResult> UpdatePropertiesAsync(
         IBlobStoreClientFactory factory,
         string storeName,
         BlobStorageUpdatePropertiesRequestModel request,
+        string ifMatchETag,
+        HttpContext context,
         CancellationToken cancellationToken)
     {
         if (!TryCreateClient(factory, storeName, out var client, out var failure))
@@ -215,6 +308,18 @@ public sealed class BlobStorageMaintenanceEndpoints(
             return Results.Problem("Blob property update request is required.", statusCode: (int)HttpStatusCode.BadRequest);
         }
 
+        var condition = HttpETag.ReadCondition(ifMatchETag, request.IfMatchETag);
+        if (condition.IsFailure)
+        {
+            return MapFailure(condition, $"{request.Container}/{request.Name}");
+        }
+
+        var properties = HttpMetadata.ParseProperties(JsonSerializer.Serialize(request.Properties));
+        if (properties.IsFailure)
+        {
+            return MapFailure(properties, $"{request.Container}/{request.Name}");
+        }
+
         var update = new BlobPropertiesUpdate
         {
             Key = new BlobKey(request.Container, request.Name),
@@ -222,15 +327,19 @@ public sealed class BlobStorageMaintenanceEndpoints(
                 ? null
                 : ContentTypeExtensions.FromMimeType(request.ContentType, ContentType.DEFAULT),
             ExpiresAt = request.ExpiresAt,
-            IfMatchETag = request.IfMatchETag,
-            Properties = new PropertyBag(request.Properties ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase))
+            IfMatchETag = condition.Value,
+            Properties = properties.Value
         };
 
         var result = await client.UpdatePropertiesAsync(update, cancellationToken).ConfigureAwait(false);
 
-        return result.IsSuccess
-            ? Results.Ok(MapInfo(result.Value))
-            : MapFailure(result, $"{request.Container}/{request.Name}");
+        if (result.IsFailure)
+        {
+            return MapFailure(result, $"{request.Container}/{request.Name}");
+        }
+
+        HttpETag.Write(context.Response, result.Value.ETag);
+        return Results.Ok(MapInfo(result.Value));
     }
 
     private async Task<HttpResult> ListPageAsync(
@@ -274,6 +383,7 @@ public sealed class BlobStorageMaintenanceEndpoints(
         string storeName,
         string container,
         string name,
+        string ifMatchETag,
         CancellationToken cancellationToken)
     {
         if (!TryCreateClient(factory, storeName, out var client, out var failure))
@@ -281,9 +391,16 @@ public sealed class BlobStorageMaintenanceEndpoints(
             return failure;
         }
 
+        var condition = HttpETag.ReadCondition(ifMatchETag);
+        if (condition.IsFailure)
+        {
+            return MapFailure(condition, $"{container}/{name}");
+        }
+
         this.logger.LogInformation("Deleting blob through maintenance endpoint (store={StoreName})", storeName);
         var result = await client.DeleteAsync(
                 new BlobKey(container, name),
+                new BlobDeleteOptions { IfMatchETag = condition.Value },
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
@@ -350,6 +467,7 @@ public sealed class BlobStorageMaintenanceEndpoints(
 
         return error switch
         {
+            ValidationError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             BlobStoreValidationError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             BlobStoreQueryTooBroadError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             BlobStorePageSizeExceededError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),

@@ -447,13 +447,20 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(item, nameof(item));
+        EnsureArg.IsTrue(this.ValidateItemId(item), this.idProperty.Name, o => o.WithMessage($"Property '{this.idProperty.Name}' should have a value."));
         await this.InitializeAsync(this.options, cancellationToken);
         var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue, item);
-        var response = await this.container.UpsertItemAsync(
-            item,
-            requestOptions.PartitionKey.Value,
-            new ItemRequestOptions { IfMatchEtag = ifMatchETag },
-            cancellationToken).AnyContext();
+        var response = string.IsNullOrWhiteSpace(ifMatchETag)
+            ? await this.container.UpsertItemAsync(
+                item,
+                requestOptions.PartitionKey,
+                cancellationToken: cancellationToken).AnyContext()
+            : await this.container.ReplaceItemAsync(
+                item,
+                this.idProperty.GetValue(item).ToString(),
+                requestOptions.PartitionKey,
+                new ItemRequestOptions { IfMatchEtag = ifMatchETag },
+                cancellationToken).AnyContext();
         this.SetOpaqueETag(response.Resource, response.ETag);
         this.LogRequestCharge(response.RequestCharge, response.ActivityId);
         return response.Resource;

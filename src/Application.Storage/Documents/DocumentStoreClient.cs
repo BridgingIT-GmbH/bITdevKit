@@ -337,6 +337,8 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
         }
 
         options ??= new DocumentWriteOptions();
+        var condition = DocumentWriteValidator.Validate(options);
+        if (condition.IsFailure) return Result<PreparedWrite>.Failure(condition);
         try
         {
             using var stream = new MemoryStream();
@@ -405,6 +407,9 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
             return Task.FromResult(Result<DocumentInfo>.Failure(new DocumentStoreInvalidQueryError("A valid properties update is required.")));
         }
 
+        var condition = DocumentWriteValidator.Validate(update);
+        if (condition.IsFailure) return Task.FromResult(Result<DocumentInfo>.Failure(condition));
+
         var expiresAt = ExpirationHelper.Resolve(update.Expiration, null, this.timeProvider);
         return this.Provider.UpdatePropertiesAsync(
             this.type,
@@ -418,6 +423,7 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
     public Task<Result> DeleteAsync(DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default)
     {
         var validation = ValidateKey(key);
+        if (validation.IsSuccess) validation = DocumentWriteValidator.Validate(options);
         return validation.IsFailure
             ? Task.FromResult(validation)
             : this.Provider.DeleteAsync(this.type, key, options, cancellationToken);
@@ -428,7 +434,7 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
         IReadOnlyCollection<DocumentDelete> deletes,
         CancellationToken cancellationToken = default)
     {
-        if (deletes is null || deletes.Any(x => x is null || ValidateKey(x.Key).IsFailure))
+        if (deletes is null || deletes.Any(x => x is null || ValidateKey(x.Key).IsFailure || DocumentWriteValidator.Validate(x.Options).IsFailure))
         {
             return Result<DocumentBatchResult<DocumentKey>>.Failure(new DocumentStoreInvalidQueryError("Every delete must contain a valid key."));
         }

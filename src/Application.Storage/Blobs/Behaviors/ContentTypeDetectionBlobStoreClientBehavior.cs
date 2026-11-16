@@ -75,7 +75,8 @@ public sealed class ContentTypeDetectionBlobStoreClientBehavior : IBlobStoreClie
             ExpectedContentHash = upload.ExpectedContentHash,
             ExpiresAt = upload.ExpiresAt,
             Properties = upload.Properties,
-            OverwriteMode = upload.OverwriteMode
+            IfMatchETag = upload.IfMatchETag,
+                OverwriteMode = upload.OverwriteMode
         }, cancellationToken);
     }
 

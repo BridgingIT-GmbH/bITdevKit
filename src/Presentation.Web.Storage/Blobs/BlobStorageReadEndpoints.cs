@@ -17,6 +17,7 @@ using HttpResult = Microsoft.AspNetCore.Http.IResult;
 /// <summary>
 /// Exposes read-only REST endpoints for downloading Blob Storage content.
 /// </summary>
+/// <remarks>Enable this group with <c>AddReadEndpoints</c> or <c>AddBlobStorageReadEndpoints</c>. Assembly discovery alone leaves it disabled.</remarks>
 /// <example>
 /// <code>
 /// services.AddBlobStorage()
@@ -28,7 +29,7 @@ public sealed class BlobStorageReadEndpoints(
     BlobStorageReadEndpointsOptions options = null) : EndpointsBase
 {
     private const string RouteNamePrefix = "_bdk.Storage.Blobs.Read";
-    private readonly BlobStorageReadEndpointsOptions options = options ?? new BlobStorageReadEndpointsOptions();
+    private readonly BlobStorageReadEndpointsOptions options = options ?? new BlobStorageReadEndpointsOptions { Enabled = false };
 
     /// <summary>
     /// Maps Blob Storage read endpoints into the current endpoint route builder.
@@ -49,8 +50,8 @@ public sealed class BlobStorageReadEndpoints(
         var group = this.MapGroup(app, this.options)
             .DisableAntiforgery();
 
-        group.MapGet("{storeName}/content", (string storeName, [FromQuery] string container, [FromQuery] string name, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
-            this.DownloadAsync(factory, storeName, container, name, cancellationToken))
+        group.MapGet("{storeName}/content", (HttpContext context, string storeName, [FromQuery] string container, [FromQuery] string name, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            this.DownloadAsync(factory, storeName, container, name, context, cancellationToken))
             .Produces((int)HttpStatusCode.OK)
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
@@ -67,6 +68,7 @@ public sealed class BlobStorageReadEndpoints(
         string storeName,
         string container,
         string name,
+        HttpContext context,
         CancellationToken cancellationToken)
     {
         if (!TryCreateClient(factory, storeName, out var client, out var failure))
@@ -81,6 +83,7 @@ public sealed class BlobStorageReadEndpoints(
         }
 
         var download = result.Value;
+        HttpETag.Write(context.Response, download.Info?.ETag);
         var contentType = download.Info?.ContentType?.MimeType();
         if (string.IsNullOrWhiteSpace(contentType))
         {

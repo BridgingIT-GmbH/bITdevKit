@@ -4,10 +4,10 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 /// <summary>
-/// Provides non-generic, JSON-oriented access to one selected typed document client for operational presentation surfaces.
+/// Provides non-generic, JSON-oriented access to one selected typed document client for operational endpoints and dashboards.
 /// </summary>
 /// <remarks>
-/// The dashboard uses this adapter after selecting a <see cref="DocumentStoreClientDescriptor" />. Implementations delegate
+/// Operational presentation code uses this adapter after selecting a <see cref="DocumentStoreClientDescriptor" />. Implementations delegate
 /// to the same container-owned typed client used by application code, preserving behaviors, validation, concurrency,
 /// expiration, and provider lifetime. It is not a second persistence API for normal application use.
 /// </remarks>
@@ -58,7 +58,7 @@ public interface IDocumentStoreClientAccessor
     Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Gets one bounded page of dashboard-safe JSON entries with metadata and serialized sizes.
+    /// Gets one bounded page of JSON entries with metadata and serialized sizes.
     /// </summary>
     /// <param name="query">
     /// The bounded query, filters, continuation token, and explicit full-scan approval.
@@ -115,7 +115,7 @@ public interface IDocumentStoreClientAccessor
     Task<Result<bool>> ExistsAsync(DocumentKey key, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Gets one typed document serialized into dashboard-safe JSON.
+    /// Gets one typed document serialized into JSON for operational presentation.
     /// </summary>
     /// <param name="key">
     /// The exact partition and row key.
@@ -134,7 +134,7 @@ public interface IDocumentStoreClientAccessor
     Task<Result<string>> GetJsonAsync(DocumentKey key, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Gets one dashboard-safe JSON payload together with provider-neutral metadata.
+    /// Gets one JSON payload together with provider-neutral metadata for operational presentation.
     /// </summary>
     /// <param name="key">
     /// The exact partition and row key.
@@ -178,7 +178,40 @@ public interface IDocumentStoreClientAccessor
     Task<Result> UpsertJsonAsync(DocumentKey key, string content, DocumentWriteOptions options = null, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Deletes one physical document, optionally guarded by the ETag displayed by the dashboard.
+    /// Deserializes JSON and writes it through the selected typed client, returning metadata from that exact commit.
+    /// </summary>
+    /// <param name="key">The partition and row key under which the document is written.</param>
+    /// <param name="content">The JSON payload to deserialize into the selected document type.</param>
+    /// <param name="options">Optional ETag, create-only, integrity, property, and expiration settings.</param>
+    /// <param name="cancellationToken">The token used to cancel the operation.</param>
+    /// <returns>
+    /// The typed client's committed metadata and ETag without a subsequent read, or the original typed-client failure.
+    /// Invalid JSON returns a validation failure; cancellation propagates to the caller.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// var result = await accessor.UpsertEntryJsonAsync(
+    ///     key, json, new DocumentWriteOptions { IfMatchETag = original.ETag }, cancellationToken);
+    /// </code>
+    /// </example>
+    Task<Result<DocumentInfo>> UpsertEntryJsonAsync(DocumentKey key, string content, DocumentWriteOptions options = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Updates document properties and expiration through the selected typed client without replacing its content.
+    /// </summary>
+    /// <param name="update">The exact key, replacement properties, expiration change, and optional original ETag.</param>
+    /// <param name="cancellationToken">The token used to cancel the operation.</param>
+    /// <returns>The typed client's exact mutation result, including committed metadata, ETag, and original failures.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await accessor.UpdatePropertiesAsync(
+    ///     new DocumentPropertiesUpdate(key) { IfMatchETag = original.ETag, Properties = properties }, cancellationToken);
+    /// </code>
+    /// </example>
+    Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes one physical document, optionally guarded by the ETag previously observed by the caller.
     /// </summary>
     /// <param name="key">
     /// The exact partition and row key.
@@ -223,7 +256,7 @@ public interface IDocumentStoreClientAccessor
 }
 
 /// <summary>
-/// Contains a dashboard-safe JSON representation and the metadata snapshot used for conditional actions.
+/// Contains a JSON representation and the metadata snapshot used for conditional operational actions.
 /// </summary>
 /// <example>
 /// <code>
@@ -264,7 +297,7 @@ public sealed record DocumentJsonEntry
 }
 
 /// <summary>
-/// Contains one bounded page of dashboard-safe JSON document entries.
+/// Contains one bounded page of JSON document entries for operational presentation.
 /// </summary>
 /// <example>
 /// <code>

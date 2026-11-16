@@ -129,6 +129,9 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
     /// <inheritdoc />
     public async Task<Result<DocumentInfo>> UpsertAsync(DocumentTypeIdentity type, StoredDocumentWrite write, CancellationToken cancellationToken = default)
     {
+        var validation = DocumentWriteValidator.Validate(write.Options);
+        if (validation.IsFailure) return Result<DocumentInfo>.Failure(validation);
+        var replacingExisting = false;
         try
         {
             var storageType = this.StorageType(type);
@@ -137,6 +140,7 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
             if (!string.IsNullOrWhiteSpace(write.Options.IfMatchETag) && (current is null || ETag(current) != NormalizeETag(write.Options.IfMatchETag))) return Result<DocumentInfo>.Failure(new DocumentStoreConflictError("The document ETag changed."));
             var now = DateTimeOffset.UtcNow;
             var isNew = current is null;
+            replacingExisting = !isNew;
             current ??= new() { Id = GuidGenerator.Create($"{storageType}-{write.Key.PartitionKey}-{write.Key.RowKey}").ToString(), Type = storageType, PartitionKey = write.Key.PartitionKey, RowKey = write.Key.RowKey, CreatedDate = now };
             current.Content = write.Content.ToArray(); current.ContentHash = write.ContentHash; current.StoredContentHash = write.StoredContentHash;
             current.Properties = (write.Properties?.Clone() ?? new PropertyBag(current.Properties)).ToDictionary(x => x.Key, x => x.Value);
@@ -148,6 +152,7 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
                 : await provider.UpsertItemAsync(current, storageType, HeaderETag(current), cancellationToken);
             return Result<DocumentInfo>.Success(ToInfo(current));
         }
+        catch (CosmosException ex) when (replacingExisting && ex.StatusCode == System.Net.HttpStatusCode.NotFound) { return Result<DocumentInfo>.Failure(new DocumentStoreConflictError("The document was removed before replacement.")); }
         catch (CosmosException ex) when (ex.StatusCode is System.Net.HttpStatusCode.Conflict or System.Net.HttpStatusCode.PreconditionFailed) { return Result<DocumentInfo>.Failure(new DocumentStoreConflictError(ex.Message)); }
         catch (OperationCanceledException) { throw; }
         catch (Exception ex) { return Result<DocumentInfo>.Failure(new DocumentStoreProviderError("Cosmos document write failed.", ex)); }
@@ -156,6 +161,9 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
     /// <inheritdoc />
     public async Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentTypeIdentity type, DocumentPropertiesUpdate update, DateTimeOffset? resolvedExpiresAt, bool preserveExpiration, CancellationToken cancellationToken = default)
     {
+        var validation = DocumentWriteValidator.Validate(update);
+        if (validation.IsFailure) return Result<DocumentInfo>.Failure(validation);
+        var replacingExisting = false;
         try
         {
             var storageType = this.StorageType(type);
@@ -165,9 +173,11 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
             if (update.Properties is not null) current.Properties = update.Properties.ToDictionary(x => x.Key, x => x.Value);
             if (!preserveExpiration) current.ExpiresAt = resolvedExpiresAt;
             current.UpdatedDate = DateTimeOffset.UtcNow; current.Ttl = ToTtl(current.ExpiresAt, current.UpdatedDate.Value);
+            replacingExisting = true;
             current = await provider.UpsertItemAsync(current, storageType, HeaderETag(current), cancellationToken);
             return Result<DocumentInfo>.Success(ToInfo(current));
         }
+        catch (CosmosException ex) when (replacingExisting && ex.StatusCode == System.Net.HttpStatusCode.NotFound) { return Result<DocumentInfo>.Failure(new DocumentStoreConflictError("The document was removed before replacement.")); }
         catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.PreconditionFailed) { return Result<DocumentInfo>.Failure(new DocumentStoreConflictError(ex.Message)); }
         catch (OperationCanceledException) { throw; }
         catch (Exception ex) { return Result<DocumentInfo>.Failure(new DocumentStoreProviderError("Cosmos metadata update failed.", ex)); }
@@ -176,6 +186,8 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
     /// <inheritdoc />
     public async Task<Result> DeleteAsync(DocumentTypeIdentity type, DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default)
     {
+        var validation = DocumentWriteValidator.Validate(options);
+        if (validation.IsFailure) return validation;
         try
         {
             var storageType = this.StorageType(type);

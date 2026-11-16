@@ -23,11 +23,12 @@ Typed JSON data needs more than provider-specific CRUD. Callers need stable keys
 ## Key Features
 
 - typed reads and writes with two-part `DocumentKey` values
-- ETag-based conditional updates and deletes
+- optional ETag conditions for document content, metadata updates, and deletes
 - bounded paging with query-bound continuation tokens
 - size limits and logical/stored SHA-256 integrity checks
 - scalar properties, expiration, retention, compression, and encryption
 - named clients, behaviors, diagnostics, dashboard, and MCP integration
+- optional maintenance and content-read REST endpoints with independent feature registration
 - in-memory, filesystem, Entity Framework, Azure Blob, Azure Table, and Cosmos providers
 
 ## Architecture
@@ -178,15 +179,55 @@ Core operations:
 - `CountAsync`: provider-side count where supported.
 - `ExistsAsync`: exact logical existence.
 - `GetManyAsync`: batched exact reads returning one `Result<DocumentEntry<T>>` per requested key, in input order. A missing or expired key is a per-item `DocumentStoreNotFoundError`; the outer result fails only when the whole read fails. Duplicate keys are read once.
-- `UpsertAsync`: one conditional typed write returning `DocumentInfo`.
+- `UpsertAsync`: one typed write with an optional ETag condition, returning `DocumentInfo`.
 - `UpsertManyAsync`: ordered, prevalidated, non-atomic batch with explicit partial completion. Providers that implement `IDocumentStoreBulkWriteProvider` (Entity Framework) commit the batch in one round trip.
-- `UpdatePropertiesAsync`: metadata/expiration-only conditional update.
+- `UpdatePropertiesAsync`: metadata and expiration update with an optional ETag condition.
 - `DeleteAsync`: idempotent optional ETag delete.
 - `DeleteManyAsync`: ordered, prevalidated delete batch, also bulk-capable.
 
 Batch read size is controlled by `DocumentStoreOptions.GetManyBatchSize` (default 25, valid range 1 to 1000). `DocumentStoreOptions.GetManyMaxParallelism` (default 4, valid range 1 to 32) limits how many batches of one call run at the same time. Providers without `IDocumentStoreBatchGetProvider` fall back to one `GetAsync` per distinct key.
 
 `DocumentEntry<T>` and `DocumentInfo` expose provider-neutral `ETag`, logical `ContentHash`, creation/modification timestamps, `ExpiresAt`, and cloned scalar properties. The stored transformed hash remains an internal integrity value.
+
+### Conditional updates
+
+`DocumentWriteOptions.IfMatchETag` protects replacement of a previously read document. `DocumentPropertiesUpdate.IfMatchETag` and `DocumentDeleteOptions.IfMatchETag` protect metadata updates and exact deletes. These conditions are optional. Null, empty, and whitespace-only values are omitted; the wildcard `*` is invalid as a concrete version token.
+
+One ETag represents the whole item. Every successful content, property, or expiration update invalidates the previous ETag, even when the submitted values are unchanged. Retain the original token while editing, then submit it with the draft:
+
+```csharp
+var key = new DocumentKey("customers", "42");
+var draft = await documents.GetAsync(key, cancellationToken);
+if (draft.IsFailure)
+{
+	Console.Error.WriteLine("The customer document could not be read.");
+	return;
+}
+
+draft.Value.Value.Name = "Harbor Supplies";
+var saved = await documents.UpsertAsync(key, draft.Value.Value,
+	new DocumentWriteOptions { IfMatchETag = draft.Value.ETag },
+	cancellationToken);
+
+if (saved.IsFailure)
+{
+	Console.Error.WriteLine(string.Join("; ", saved.Errors.Select(error => error.Message)));
+}
+```
+
+| Request | Behavior |
+| --- | --- |
+| Upsert without an ETag | Create if absent, or replace unconditionally |
+| Upsert with a matching ETag | Replace that version and return the committed new ETag |
+| Upsert with a stale ETag or missing target | Return `DocumentStoreConflictError` without creating or changing the item |
+| Metadata update with a stale ETag | Return `DocumentStoreConflictError` without changing the item |
+| Metadata update against a missing target | Fail without creating an item |
+| `CreateOnly = true` without an ETag | Create only if no physical record exists, including an expired record |
+| `CreateOnly = true` with a nonempty ETag | Validation failure before mutation |
+
+Metadata updates without an ETag are unconditional but still require an existing item. Exact deletes remain idempotent when the item is already absent. Conditional deletes retain a newer item and return a conflict when its ETag differs.
+
+The returned ETag and metadata describe the version committed by the operation. An intervening writer's token is never adopted from a later unconditional read. Keep the named client, document type, partition key, and row key with the token. ETags do not establish authorization, and `ExpectedContentHash` validates the incoming logical payload rather than the stored version. Bulk writes preserve each `DocumentWrite<T>.Options` condition.
 
 ## Query safety
 
@@ -307,6 +348,94 @@ Every typed client method is measured, including count, key-only paging, propert
 
 `CopyAsync` and `MoveAsync` work across any two clients of the same document type. They reserialize through the target client and preserve properties and expiration unless overridden. Move copies first, then conditionally deletes the source ETag. A changed source remains intact and returns `DocumentStoreTransferError`; a move to the same client/key is a successful existence-checked no-op.
 
+`DocumentTransferOptions.IfMatchETag` refers to the destination version. Set it when replacing a previously read target. `CreateOnly = true` prevents replacing any physical target record and cannot be combined with a nonempty ETag. Without either condition, the destination write is unconditional. A failed destination condition prevents move source deletion.
+
+## HTTP endpoints
+
+The `Presentation.Web.Storage` package exposes registered typed Document Storage clients through two optional Minimal API groups:
+
+- `AddMaintenanceEndpoints(...)` enables create/update/delete actions, property reads/updates, existence checks, registered clients, and bounded key listing.
+- `AddReadEndpoints(...)` enables exact-key document content reads with an ETag response header.
+
+Enable each group explicitly in the feature setup. Registering `AddDocumentStorage()` and its providers does not enable either group. Assembly discovery through `AddEndpoints()` also leaves them disabled until explicitly configured. `app.MapEndpoints()` maps the enabled registrations.
+
+### Enable endpoints in the feature setup
+
+Reference `BridgingIT.DevKit.Presentation.Web.Storage` in the host. Register the provider and endpoints, then map the DevKit endpoints:
+
+```csharp
+services.AddDocumentStorage()
+    .WithProvider<CustomerDocument>(sp => new InMemoryDocumentStoreProvider(),
+        lifetime: ServiceLifetime.Singleton)
+    .AddMaintenanceEndpoints(options => options
+        .GroupPath("/_bdk/api/storage/documents")
+        .RequireAuthorization(), enabled: true)
+    .AddReadEndpoints(options => options
+        .GroupPath("/_bdk/api/storage/documents")
+        .RequireAuthorization(), enabled: true);
+
+app.MapEndpoints();
+```
+
+The in-memory example uses a singleton so separate HTTP requests share stored documents. Choose the normal provider lifetime for persistent providers.
+
+Omit either registration or pass `enabled: false` to leave that group disabled. For separate service registration, use `services.AddDocumentStorageMaintenanceEndpoints(...)` and `services.AddDocumentStorageReadEndpoints(...)` with the same options and `enabled` switch.
+
+Both groups require authorization by default. Each has independent options for its path, tag, policies, and roles. Configure host authentication and authorization for the selected policies. To expose intentionally public content, call `AllowAnonymous()` on the read group while retaining authorization on maintenance. The default paths can be shared because the groups map different routes and HTTP methods.
+
+### Routes and request semantics
+
+Get `clientId` from the clients endpoint. It identifies a registered named, typed client; the API does not accept arbitrary CLR types. URL-encode the client id and exact key query values, including keys containing slashes.
+
+The read group exposes the existing exact content URL:
+
+```http
+GET /_bdk/api/storage/documents/{clientId}/documents?partitionKey=customers&rowKey=customer-42
+```
+
+The maintenance group exposes these routes:
+
+```http
+GET    /_bdk/api/storage/documents/clients
+GET    /_bdk/api/storage/documents/{clientId}/documents/properties?partitionKey=customers&rowKey=customer-42
+GET    /_bdk/api/storage/documents/{clientId}/documents/exists?partitionKey=customers&rowKey=customer-42
+GET    /_bdk/api/storage/documents/{clientId}/documents/keys?partitionKey=customers&rowKeyPrefix=customer-&take=100
+POST   /_bdk/api/storage/documents/{clientId}/documents?partitionKey=customers&rowKey=customer-42
+PUT    /_bdk/api/storage/documents/{clientId}/documents?partitionKey=customers&rowKey=customer-42
+PATCH  /_bdk/api/storage/documents/{clientId}/documents/properties?partitionKey=customers&rowKey=customer-42
+DELETE /_bdk/api/storage/documents/{clientId}/documents?partitionKey=customers&rowKey=customer-42
+```
+
+POST is atomic create-only and returns HTTP 201 with committed `DocumentInfo`, an `ETag` header, and a `Location` pointing to the maintenance properties route. An existing physical record, including an expired record, returns HTTP 409. PUT creates or replaces content and returns HTTP 200 with committed `DocumentInfo` and a fresh `ETag`. Both deserialize the `content` envelope field through the selected typed client's serializer and use its normal validation, behaviors, transforms, size limits, and provider pipeline.
+
+```http
+PUT /_bdk/api/storage/documents/{clientId}/documents?partitionKey=customers&rowKey=customer-42
+Content-Type: application/json
+If-Match: "bdk.<token-from-the-last-response>"
+
+{
+  "content": { "id": "customer-42", "name": "Ada" },
+  "properties": { "reviewed": true, "revision": 2 },
+  "expiresAt": "2030-12-31T23:59:59Z"
+}
+```
+
+PUT, PATCH, and DELETE accept optional `If-Match`. Echo the complete `ETag` response header from an earlier read or successful write. The token covers content, custom properties, and expiration together. Any change invalidates the old token; stale content saves, property edits, and deletes return HTTP 409 without modifying the item. A stale PUT after deletion also conflicts and cannot recreate the document. Omit `If-Match` to permit unconditional creation or replacement. An already absent delete target is a successful HTTP 200 no-op. POST rejects `If-Match` with HTTP 400; wildcards and ETag lists are unsupported.
+
+HTTP `ETag` headers are quoted opaque transport tokens (`"bdk.<base64url>"`) preserving each provider's exact native token. Copy them unchanged without stripping quotes or decoding. The metadata body's `ETag` remains the native provider token; legacy native conditions are also accepted. Content GET requires `AddReadEndpoints(...)` and returns the typed JSON payload and ETag from the same snapshot. It uses the selected typed client pipeline, including behaviors, transforms, integrity checks, and expiration visibility. Properties GET returns `DocumentInfo` with the corresponding header. Successful writes return metadata from the exact commit without rereading the document.
+
+Omitted or null `properties` preserve the existing bag; `{}` clears it. Properties must contain scalar JSON values, not nested objects or arrays. Numeric values that overflow or underflow the supported finite .NET numeric types return HTTP 400. Omitted expiration preserves it. Supply `expiresAt` to set it or `clearExpiration: true` to remove it; combining both returns HTTP 400. These rules apply to POST/PUT and properties PATCH. PATCH uses the same metadata fields without a `content` field and leaves document content unchanged:
+
+```http
+PATCH /_bdk/api/storage/documents/{clientId}/documents/properties?partitionKey=customers&rowKey=customer-42
+Content-Type: application/json
+If-Match: "bdk.<token-from-the-last-response>"
+
+{ "properties": { "reviewed": true }, "clearExpiration": true }
+```
+
+Unknown clients and missing reads return HTTP 404. Invalid requests return HTTP 400, and configured document size violations return HTTP 413. Key listing uses bounded paging and protected continuation tokens. Type-wide scans require client `AllowFullScans` approval plus `allowFullScan=true` on the request.
+
 ## Providers
 
 ### <img class="bdk-doc-icon" src="assets/features/provider-inmemory.svg" width="24" height="24" alt=""> In-memory
@@ -412,6 +541,8 @@ Open Documents at `/_bdk/dashboard/storage/documents`. Choose a client, then app
 [![Document dashboard with named client, key filters and persisted JSON document metadata](assets/dashboard/14-storage-documents-documents.png)](assets/dashboard/14-storage-documents-documents.png)
 
 Select a row's information button to inspect and edit its JSON payload, scalar properties and expiration. The New document button opens the same editor with editable partition and row keys. A create conflict reports an existing key rather than overwriting it.
+
+Existing edits submit the originally displayed ETag, and an ordinary edit without that token is invalid. On conflict, the editor retains its JSON draft, properties, expiration, identity, and original ETag. **Reload current item** asks for discard confirmation before replacing the draft. **Force overwrite** submits the retained draft without an ETag condition. This choice applies to one submission. After a validation error, HTTP error, or network failure, an ordinary Save uses the original ETag again. New documents remain create-only. The editor never refreshes the token silently to make a stale save succeed.
 
 [![Document details editor with keyed JSON payload, expiration and metadata](assets/dashboard/storage/document-details.png)](assets/dashboard/storage/document-details.png)
 

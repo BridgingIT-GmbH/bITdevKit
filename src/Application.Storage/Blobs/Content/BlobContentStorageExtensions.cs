@@ -75,7 +75,8 @@ public static class BlobContentStorageExtensions
             ContentType = options.ContentType,
             ExpectedContentHash = options.ExpectedContentHash,
             Properties = options.Properties?.Clone() ?? new PropertyBag(),
-            OverwriteMode = options.OverwriteMode
+            IfMatchETag = options.IfMatchETag,
+                OverwriteMode = options.OverwriteMode
         };
 
         return await blobClient.UploadAsync(upload, cancellationToken).ConfigureAwait(false);
@@ -225,7 +226,8 @@ public static class BlobContentStorageExtensions
             ContentType = options.ContentType,
             ExpectedContentHash = options.ExpectedContentHash,
             Properties = options.Properties?.Clone() ?? new PropertyBag(),
-            OverwriteMode = options.OverwriteMode
+            IfMatchETag = options.IfMatchETag,
+                OverwriteMode = options.OverwriteMode
         };
 
         return await blobClient.UploadAsync(upload, cancellationToken).ConfigureAwait(false);

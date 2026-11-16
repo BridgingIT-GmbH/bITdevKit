@@ -32,13 +32,20 @@ public sealed class InMemoryBlobStoreContext
     /// </code>
     /// </example>
     public bool TryStore(InMemoryBlobEntry entry, bool failIfExists, out InMemoryBlobEntry stored)
+        => this.TryStore(entry, failIfExists, null, out stored);
+
+    /// <summary>Publishes an entry only if its optional version condition matches under the store lock.</summary>
+    /// <example><code>var written = context.TryStore(entry, false, etag, out var stored);</code></example>
+    public bool TryStore(InMemoryBlobEntry entry, bool failIfExists, string ifMatchETag, out InMemoryBlobEntry stored)
     {
         ArgumentNullException.ThrowIfNull(entry);
         ArgumentNullException.ThrowIfNull(entry.Info);
 
         lock (this.syncRoot)
         {
-            if (failIfExists && this.blobs.ContainsKey(entry.Info.Key))
+            if ((failIfExists && this.blobs.ContainsKey(entry.Info.Key)) ||
+                (!string.IsNullOrWhiteSpace(ifMatchETag) &&
+                 (!this.blobs.TryGetValue(entry.Info.Key, out var expected) || !string.Equals(expected.Info.ETag, ifMatchETag, StringComparison.Ordinal))))
             {
                 stored = null;
                 return false;

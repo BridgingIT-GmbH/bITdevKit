@@ -92,6 +92,9 @@ public static class BlobValidator
             return Result.Failure(new BlobStoreValidationError("Blob overwrite mode is invalid."));
         }
 
+        var condition = ValidateCondition(upload.IfMatchETag, upload.OverwriteMode == BlobOverwriteMode.FailIfExists);
+        if (condition.IsFailure) return condition;
+
         if (upload.Properties is null)
         {
             return Result.Failure(new BlobStoreValidationError("Blob upload properties are required."));
@@ -140,8 +143,20 @@ public static class BlobValidator
             return Result.Failure(new BlobStoreValidationError("Blob properties are required."));
         }
 
-        return ValidateContentType(update.ContentType);
+        var condition = ValidateCondition(update.IfMatchETag);
+        return condition.IsFailure ? condition : ValidateContentType(update.ContentType);
     }
+
+    /// <summary>Validates optional exact-delete conditions.</summary>
+    /// <example><code>var result = BlobValidator.Validate(new BlobDeleteOptions());</code></example>
+    public static Result Validate(BlobDeleteOptions options) => ValidateCondition(options?.IfMatchETag);
+
+    /// <summary>Validates a concrete version condition and its create-only combination.</summary>
+    /// <example><code>var result = BlobValidator.ValidateCondition(etag);</code></example>
+    public static Result ValidateCondition(string etag, bool createOnly = false) =>
+        etag?.Trim() == "*" || (createOnly && !string.IsNullOrWhiteSpace(etag))
+            ? Result.Failure(new BlobStoreValidationError("A concrete ETag cannot be combined with create-only; wildcard ETags are unsupported."))
+            : Result.Success();
 
     private static Result ValidateContentType(ContentType? contentType)
     {

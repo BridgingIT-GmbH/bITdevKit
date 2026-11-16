@@ -100,6 +100,9 @@ public sealed class FileSystemDocumentStoreProvider : IDocumentStoreProvider, ID
     {
         return FileSystemResults.DocumentAsync(async () =>
         {
+            var condition = DocumentWriteValidator.Validate(write.Options);
+            if (condition.IsFailure) return Result<DocumentInfo>.Failure(condition);
+
             var identity = Identity(type, write.Key);
             var path = this.store.Resolve(identity);
             using var source = new MemoryStream(write.Content, false);
@@ -137,6 +140,9 @@ public sealed class FileSystemDocumentStoreProvider : IDocumentStoreProvider, ID
     {
         return FileSystemResults.DocumentAsync(async () =>
         {
+            var condition = DocumentWriteValidator.Validate(update);
+            if (condition.IsFailure) return Result<DocumentInfo>.Failure(condition);
+
             var identity = Identity(type, update.Key);
             var path = this.store.Resolve(identity, false);
             using var authority = await this.store.AcquireAsync(path, false, cancellationToken).ConfigureAwait(false);
@@ -170,6 +176,9 @@ public sealed class FileSystemDocumentStoreProvider : IDocumentStoreProvider, ID
     {
         var result = await FileSystemResults.DocumentAsync(async () =>
         {
+            var condition = DocumentWriteValidator.Validate(options);
+            if (condition.IsFailure) return Result<bool>.Failure((IResult)condition);
+
             var identity = Identity(type, key);
             var path = this.store.Resolve(identity, false);
             using var authority = await this.store.AcquireAsync(path, false, cancellationToken).ConfigureAwait(false);

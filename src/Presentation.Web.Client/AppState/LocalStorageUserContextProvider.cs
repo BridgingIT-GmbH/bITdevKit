@@ -1,99 +1,119 @@
-﻿namespace BridgingIT.DevKit.Presentation.Web.Client;
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Presentation.Web.Client;
 
 using System.Security.Claims;
 using System.Text;
+using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 
-/// <summary>
-/// Provides a user context ID stored in memory or optionally in localStorage for user isolation.
-/// </summary>
-/// <remarks>
-/// This implementation is Blazor-agnostic, using an in-memory ID by default. For Blazor apps, inject IJSRuntime to enable localStorage persistence.
-/// </remarks>
-/// <param name="jsRuntime">The optional JavaScript runtime for localStorage interaction (null in non-Blazor contexts).</param>
-/// <param name="authStateProvider">The authentication state provider to get the current user.</param>
-public class LocalStorageUserContextProvider(IJSRuntime jsRuntime = null, AuthenticationStateProvider authStateProvider = null) : IUserContextProvider
+/// <summary>Provides stable application-qualified anonymous or authenticated preference partitions.</summary>
+/// <example>
+/// <code><![CDATA[
+/// var context = new LocalStorageUserContextProvider(jsRuntime, null, "catalog-console");
+/// var first = await context.GetUserContextId();
+/// Debug.Assert(first == await context.GetUserContextId());
+/// ]]></code>
+/// </example>
+public class LocalStorageUserContextProvider : IUserContextProvider
 {
-    private const string UserContextKey = "appstate_user_context_id";
-    private const string UserIdKey = "appstate_user_id";
-    private string inMemoryContextId = jsRuntime == null ? Guid.NewGuid().ToString() : null;
+    private readonly IJSRuntime jsRuntime;
+    private readonly AuthenticationStateProvider authStateProvider;
+    private readonly string key;
+    private readonly SemaphoreSlim gate = new(1, 1);
+    private string inMemoryContextId = "anonymous:" + Guid.NewGuid().ToString("N");
 
-    /// <summary>
-    /// Asynchronously gets or generates a unique identifier for the current user context.
-    /// </summary>
-    /// <returns>A task returning a string representing the user context ID.</returns>
-    /// <remarks>
-    /// Uses localStorage if IJSRuntime is available (Blazor); otherwise, returns an in-memory ID.
-    /// Generates a new user context ID if the current user has changed.
-    /// </remarks>
+    /// <summary>Preserves the original optional-browser constructor.</summary>
+    /// <param name="jsRuntime">The optional originating browser runtime.</param>
+    /// <param name="authStateProvider">The optional native authentication integration.</param>
+    /// <example>
+    /// <code><![CDATA[
+    /// var context = new LocalStorageUserContextProvider(jsRuntime);
+    /// var partition = await context.GetUserContextId();
+    /// Debug.Assert(!string.IsNullOrEmpty(partition));
+    /// ]]></code>
+    /// </example>
+    public LocalStorageUserContextProvider(IJSRuntime jsRuntime = null, AuthenticationStateProvider authStateProvider = null)
+        : this(jsRuntime, authStateProvider, "default") { }
+
+    /// <summary>Creates an application-qualified partition provider without browser I/O.</summary>
+    /// <param name="jsRuntime">The optional browser runtime.</param>
+    /// <param name="authStateProvider">The optional authentication integration.</param>
+    /// <param name="applicationId">The stable application namespace.</param>
+    /// <example>
+    /// <code><![CDATA[
+    /// var context = new LocalStorageUserContextProvider(jsRuntime, null, "catalog-console");
+    /// var partition = await context.GetUserContextId();
+    /// Debug.Assert(!string.IsNullOrEmpty(partition));
+    /// ]]></code>
+    /// </example>
+    public LocalStorageUserContextProvider(IJSRuntime jsRuntime, AuthenticationStateProvider authStateProvider, string applicationId)
+    {
+        this.jsRuntime = jsRuntime;
+        this.authStateProvider = authStateProvider;
+        this.key = "bdk:appstate:anonymous:" + Base64UrlHelper.Encode(Encoding.UTF8.GetBytes(applicationId));
+        this.IsAvailable = jsRuntime != null;
+    }
+
+    /// <summary>Gets whether the most recent browser operation was available.</summary>
+    public bool IsAvailable { get; private set; }
+
+    /// <inheritdoc/>
     public async Task<string> GetUserContextId()
     {
-        if (jsRuntime != null)
+        var user = this.authStateProvider != null ? (await this.authStateProvider.GetAuthenticationStateAsync()).User : null;
+        var userId = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!string.IsNullOrEmpty(userId)) { return "user:" + userId; }
+
+        if (this.jsRuntime == null) { return this.inMemoryContextId; }
+
+        await this.gate.WaitAsync();
+        try
         {
-            // Get the current user ID
-            var currentUserId = await this.GetCurrentUserIdAsync();
-
-            // Get the stored user context ID and associated user ID from localStorage
-            var storedContextId = await jsRuntime.InvokeAsync<string>("localStorage.getItem", UserContextKey);
-            var storedUserId = await jsRuntime.InvokeAsync<string>("localStorage.getItem", UserIdKey);
-
-            // If there's no stored context ID, or the user has changed, generate a new context ID
-            if (string.IsNullOrEmpty(storedContextId) || storedUserId != currentUserId)
+            var stored = await this.jsRuntime.InvokeAsync<string>("localStorage.getItem", this.key);
+            if (string.IsNullOrEmpty(stored) || !stored.StartsWith("anonymous:", StringComparison.Ordinal)
+                || !Guid.TryParseExact(stored[10..], "N", out _))
             {
-                var newContextId = currentUserId ?? CreateShortHash();
-                await jsRuntime.InvokeVoidAsync("localStorage.setItem", UserContextKey, newContextId);
-                await jsRuntime.InvokeVoidAsync("localStorage.setItem", UserIdKey, currentUserId ?? string.Empty);
-                return newContextId;
+                stored = "anonymous:" + Guid.NewGuid().ToString("N");
+                await this.jsRuntime.InvokeVoidAsync("localStorage.setItem", this.key, stored);
             }
 
-            return storedContextId;
+            this.inMemoryContextId = stored;
+            this.IsAvailable = true;
+            return stored;
         }
-
-        // Non-Blazor fallback: use in-memory ID
-        return this.inMemoryContextId ??= CreateShortHash();
-    }
-
-    /// <summary>
-    /// Clears the stored user context ID and associated user ID from localStorage.
-    /// </summary>
-    /// <returns>A task representing the asynchronous clear operation.</returns>
-    public async Task ClearAsync()
-    {
-        if (jsRuntime != null)
+        catch (Exception ex) when (ex is InvalidOperationException or JSException)
         {
-            await jsRuntime.InvokeVoidAsync("localStorage.removeItem", UserContextKey);
-            await jsRuntime.InvokeVoidAsync("localStorage.removeItem", UserIdKey);
+            this.IsAvailable = false;
+            return this.inMemoryContextId;
         }
-
-        this.inMemoryContextId = null;
+        finally { this.gate.Release(); }
     }
 
-    private async Task<string> GetCurrentUserIdAsync()
+    /// <inheritdoc/>
+    public async Task Clear()
     {
-        if (authStateProvider == null)
+        await this.gate.WaitAsync();
+        try
         {
-            return null;
+            if (this.jsRuntime != null) { await this.jsRuntime.InvokeVoidAsync("localStorage.removeItem", this.key); }
+
+            this.inMemoryContextId = "anonymous:" + Guid.NewGuid().ToString("N");
         }
-
-        var authState = await authStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        return user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        finally { this.gate.Release(); }
     }
 
-    /// <summary>
-    /// Creates short hash.
-    /// </summary>
-    /// <returns>The result of the operation.</returns>
-    public static string CreateShortHash()
-    {
-        var guid = Guid.NewGuid();
-        var bytes = Encoding.UTF8.GetBytes(guid.ToString());
-        var hashBytes = System.Security.Cryptography.SHA256.HashData(bytes);
-        var truncatedHash = new byte[4];
-        Array.Copy(hashBytes, truncatedHash, 4);
-        var base64 = Convert.ToBase64String(truncatedHash);
-
-        return new string([.. base64.Where(char.IsLetterOrDigit).Take(8)]).ToLower();
-    }
+    /// <summary>Creates a nondurable opaque identifier for legacy callers.</summary>
+    /// <returns>A full random GUID, avoiding a small truncated partition space.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// var opaqueId = LocalStorageUserContextProvider.CreateShortHash();
+    /// Debug.Assert(Guid.TryParseExact(opaqueId, "N", out _));
+    /// ]]></code>
+    /// </example>
+    public static string CreateShortHash() => Guid.NewGuid().ToString("N");
 }

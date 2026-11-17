@@ -62,6 +62,7 @@ We use the **MADR (Markdown Architectural Decision Records)** format for consist
 | [ADR-0040](0040-complete-cache-provider-per-collection.md) | Keep Cache Publication and Resource Guarantees in One Provider | Accepted |
 | [ADR-0041](0041-strict-authoritative-hot-cache-validation.md) | Validate Every Hot Cache Reuse Authoritatively | Accepted |
 | [ADR-0042](0042-cache-owned-background-workers.md) | Keep Cache Scheduling in Cache-Owned Workers | Accepted |
+| [ADR-0043](0043-native-blazor-appstate-lifecycle.md) | Integrate AppState With Native Blazor Persistence | Accepted |
 
 ## When to Write an ADR
 

@@ -1,0 +1,96 @@
+@page "/"
+@using BridgingIT.DevKit.Presentation.Web.Client
+@using Presentation.WasmTestHost
+@implements IAsyncDisposable
+@inject AppStateFactory Factory
+@inject AppStateManager Manager
+
+<h1>AppState catalog probe</h1>
+<p id="ready">@(ready ? "Ready" : "Waiting for interactivity")</p>
+<p id="inventory">@Manager.GetInstances().Count</p>
+@if (left != null)
+{
+    <p id="left">@left.State.CurrentState.Page</p>
+    <button id="left-increment" @onclick="left.State.IncrementAsync">Advance left</button>
+}
+<p id="right">@right.State.CurrentState.Page</p>
+<button id="right-increment" @onclick="right.State.IncrementAsync">Advance right</button>
+<button id="save" @onclick="SaveAsync">Save preferences</button>
+<button id="toggle" @onclick="ToggleAsync">Toggle left owner</button>
+<button id="context" @onclick="ChangeContext">Change context</button>
+<p id="observations">@observations</p>
+<p id="saved">@saved</p>
+
+@code {
+#nullable disable
+    private AppStateLease<StateProbeState> left;
+    private AppStateLease<StateProbeState> right;
+    private AppStateSubscription subscription;
+    private bool ready;
+    private int observations;
+    private string saved = "Not saved";
+
+    /// <summary>Creates owners without loading browser storage during SSR.</summary>
+    protected override void OnInitialized()
+    {
+        left = Factory.Create<StateProbeState>("left");
+        right = Factory.Create<StateProbeState>("right");
+        ObserveLeft();
+    }
+
+    /// <summary>Loads browser preferences only after native interactive activation.</summary>
+    /// <param name="firstRender">Whether this is the initial interactive render.</param>
+    /// <returns>The read and UI update.</returns>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) { return; }
+        await left.State.Load();
+        await right.State.Load();
+        ready = true;
+        StateHasChanged();
+    }
+
+    private void ObserveLeft()
+    {
+        subscription = left.State.Subscribe(m => m.Page, (change, token) =>
+        {
+            observations++;
+            StateHasChanged();
+            return Task.CompletedTask;
+        }, dispatch: work => InvokeAsync(work));
+    }
+
+    private async Task SaveAsync()
+    {
+        if (left != null) { await left.State.Save(); }
+        await right.State.Save();
+        saved = "Saved";
+    }
+
+    private async Task ToggleAsync()
+    {
+        if (left != null)
+        {
+            subscription.Dispose();
+            await left.DisposeAsync();
+            left = null;
+        }
+        else
+        {
+            left = Factory.Create<StateProbeState>("left");
+            await left.State.Load();
+            ObserveLeft();
+        }
+    }
+
+    private Task ChangeContext() => Manager.ChangeContext(new("fictional-other-user", "fictional-other-workspace"));
+
+    /// <summary>Releases owners and observers without touching the scoped browser runtime.</summary>
+    /// <returns>Bounded owned cleanup.</returns>
+    public async ValueTask DisposeAsync()
+    {
+        subscription?.Dispose();
+        if (left != null) { await left.DisposeAsync(); }
+        if (right != null) { await right.DisposeAsync(); }
+    }
+}

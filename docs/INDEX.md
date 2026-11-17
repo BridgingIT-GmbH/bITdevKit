@@ -73,7 +73,7 @@ Browse the [feature icon catalog](./site/feature-icons.md) for the complete set 
 - <img class="bdk-doc-icon" src="assets/features/console-commands.svg" width="20" height="20" alt=""> [Console Commands](./features-presentation-console-commands.md): Expose operational and administrative actions through discoverable console commands and an interactive shell.
 - <img class="bdk-doc-icon" src="assets/features/cors.svg" width="20" height="20" alt=""> [CORS Configuration](./features-presentation-cors.md): Configure browser cross-origin access through fluent, settings-driven CORS policies.
 - <img class="bdk-doc-icon" src="assets/features/exception-handling.svg" width="20" height="20" alt=""> [Exception Handling](./features-presentation-exception-handling.md): Convert exceptions into consistent Problem Details responses with configurable handlers and mappings.
-- <img class="bdk-doc-icon" src="assets/features/app-state.svg" width="20" height="20" alt=""> [AppState](./features-presentation-appstate.md): Manage Blazor application state with persistence, history and change notifications.
+- <img class="bdk-doc-icon" src="assets/features/app-state.svg" width="20" height="20" alt=""> [AppState](./features-presentation-appstate.md): Add typed feature-state policies to Blazor with snapshots, selector subscriptions, component leases, optional preferences and native lifecycle handoff.
 
 ## Storage, Scheduling and Utilities
 

@@ -1,0 +1,75 @@
+@using BridgingIT.DevKit.Presentation.Web.Client
+@using Microsoft.AspNetCore.Components.Web
+@using Presentation.TestHost
+@implements IAsyncDisposable
+@inject AppStateFactory Factory
+@inject PersistentComponentState PersistentState
+
+<h1>Native lifecycle filter probe</h1>
+<p id="lifecycle-ready">@(this.ready ? "Ready" : "Waiting")</p>
+<p id="lifecycle-restored">@this.lifecycle.Restored</p>
+<p id="lifecycle-instance">@this.lease.State.InstanceId</p>
+<p id="lifecycle-initialization">@this.lease.State.CurrentState.Initialization</p>
+<p id="lifecycle-start">@this.lease.State.CurrentState.StartUtc.ToString("O")</p>
+<p id="lifecycle-end">@this.lease.State.CurrentState.EndUtc.ToString("O")</p>
+<p id="lifecycle-active">@this.lease.State.CurrentState.Active</p>
+<p id="lifecycle-undo">@this.lease.State.CanUndo</p>
+<p id="lifecycle-observations">@this.observations</p>
+<label>From UTC<input id="lifecycle-from" type="datetime-local" @bind="this.fromUtc" /></label>
+<label>To UTC<input id="lifecycle-to" type="datetime-local" @bind="this.toUtc" /></label>
+<label>Active<input id="lifecycle-checkbox" type="checkbox" @bind="this.active" /></label>
+<button id="lifecycle-apply" @onclick="this.Apply">Apply filter</button>
+<button id="lifecycle-save" @onclick="this.lease.State.Save">Save preferences</button>
+
+@code {
+#nullable disable
+    private AppStateLease<LifecycleProbeState> lease;
+    private AppStateLifecycle lifecycle;
+    private AppStateSubscription subscription;
+    private DateTime fromUtc;
+    private DateTime toUtc;
+    private bool active;
+    private bool ready;
+    private int observations;
+
+    /// <inheritdoc/>
+    protected override async Task OnInitializedAsync()
+    {
+        this.lease = this.Factory.Create<LifecycleProbeState>("header");
+        this.lifecycle = AppStateLifecycle.Attach(this.lease.State, this.PersistentState,
+            LifecycleProbeJson.Default.LifecycleProbeModel, RenderMode.InteractiveServer);
+        if (!this.lifecycle.Restored) { await this.lease.State.Initialize(); }
+
+        this.fromUtc = this.lease.State.CurrentState.StartUtc.UtcDateTime;
+        this.toUtc = this.lease.State.CurrentState.EndUtc.UtcDateTime;
+        this.active = this.lease.State.CurrentState.Active;
+        this.subscription = this.lease.State.Subscribe(model => model, (change, token) =>
+        {
+            this.observations++;
+            this.StateHasChanged();
+            return Task.CompletedTask;
+        }, dispatch: work => this.InvokeAsync(work));
+    }
+
+    /// <inheritdoc/>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) { return; }
+
+        await this.lease.State.Load();
+        this.ready = true;
+        this.StateHasChanged();
+    }
+
+    private Task Apply() => this.lease.State.SetFilter(
+        new DateTimeOffset(DateTime.SpecifyKind(this.fromUtc, DateTimeKind.Utc)),
+        new DateTimeOffset(DateTime.SpecifyKind(this.toUtc, DateTimeKind.Utc)), this.active);
+
+    /// <inheritdoc/>
+    public async ValueTask DisposeAsync()
+    {
+        this.lifecycle?.Dispose();
+        this.subscription?.Dispose();
+        if (this.lease != null) { await this.lease.DisposeAsync(); }
+    }
+}

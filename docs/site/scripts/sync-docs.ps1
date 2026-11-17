@@ -36,6 +36,7 @@ $destinationNames = @{
 }
 
 $syncedAssetDirectories = @(
+    'appstate',
     'dashboard'
 )
 
@@ -90,7 +91,7 @@ function Rewrite-MarkdownLinks {
             return $match.Value
         }
 
-        if ($normalized.StartsWith('assets/dashboard/')) {
+        if ($normalized.StartsWith('assets/appstate/') -or $normalized.StartsWith('assets/dashboard/')) {
             return $match.Groups['prefix'].Value + '../' + $normalized + $match.Groups['suffix'].Value
         }
 

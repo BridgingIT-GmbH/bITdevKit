@@ -7,6 +7,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Presentation.Web.Caching\Presentation.Web.Caching.csproj" />
+    <ProjectReference Include="..\..\src\Presentation.Web.Client\Presentation.Web.Client.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" />
   </ItemGroup>
 
   <PropertyGroup>

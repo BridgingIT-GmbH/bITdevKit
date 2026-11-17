@@ -240,6 +240,8 @@
     <Project Path="tests/Infrastructure.IntegrationTests/Infrastructure.IntegrationTests.csproj" />
     <Project Path="tests/Infrastructure.UnitTests/Infrastructure.UnitTests.csproj" />
     <Project Path="tests/Presentation.UnitTests/Presentation.UnitTests.csproj" />
+    <Project Path="tests/Presentation.TestHost/Presentation.TestHost.csproj" />
     <Project Path="tests/Presentation.UnitTests.ModulesFixtures/Presentation.UnitTests.ModulesFixtures.csproj" />
+    <Project Path="tests/Presentation.WasmTestHost/Presentation.WasmTestHost.csproj" />
   </Folder>
 </Solution>

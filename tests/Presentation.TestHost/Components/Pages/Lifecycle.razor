@@ -1,0 +1,15 @@
+@page "/lifecycle"
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Components.Web
+
+<LifecycleProbe @rendermode="this.Mode" />
+
+@code {
+#nullable disable
+    /// <summary>Gets the request context used only to select the fixture's prerender policy.</summary>
+    [CascadingParameter]
+    public HttpContext RequestContext { get; set; }
+
+    private IComponentRenderMode Mode => new InteractiveServerRenderMode(
+        prerender: string.Equals(this.RequestContext?.Request.Query["prerender"].ToString(), "true", StringComparison.Ordinal));
+}

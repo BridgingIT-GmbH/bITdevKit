@@ -1,166 +1,99 @@
-﻿namespace BridgingIT.DevKit.Presentation.Web.Client;
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+namespace BridgingIT.DevKit.Presentation.Web.Client;
+
+using System.Collections.Concurrent;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using Microsoft.JSInterop;
 
-/// <summary>
-/// A state store provider that persists state in the browser's localStorage, surviving page refreshes.
-/// </summary>
-/// <remarks>
-/// Initializes a new instance of the LocalStorageStateStoreProvider.
-/// </remarks>
-/// <param name="jsRuntime">The JavaScript runtime for interacting with localStorage.</param>
-/// <param name="debugger">The state debugger to determine if logging is enabled.</param>
-/// <exception cref="ArgumentNullException">Thrown if jsRuntime or debugger is null.</exception>
-public class LocalStorageStateStoreProvider(IJSRuntime jsRuntime, AppStateDebugger debugger) : IAppStateStoreProvider
+/// <summary>Stores explicitly selected safe preferences in browser local storage.</summary>
+/// <example>
+/// <code><![CDATA[
+/// // jsRuntime comes from the interactive browser/circuit after interactivity is ready.
+/// var storage = new LocalStorageStateStoreProvider(jsRuntime, debugger);
+/// await storage.SaveAsync("catalog-list", "anonymous:preview", new CatalogViewModel { Page = 2 },
+///     CatalogJson.Default.CatalogViewModel);
+/// ]]></code>
+/// </example>
+public class LocalStorageStateStoreProvider : IAppStateStoreProvider
 {
-    private readonly IJSRuntime jsRuntime = jsRuntime ?? throw new ArgumentNullException(nameof(jsRuntime));
-    private readonly AppStateDebugger debugger = debugger ?? throw new ArgumentNullException(nameof(debugger));
-    private readonly HashSet<string> stateIds = [];
+    private readonly IJSRuntime jsRuntime;
+    private readonly ConcurrentDictionary<string, byte> keys = new(StringComparer.Ordinal);
 
-    /// <summary>
-    /// Asynchronously saves the state to localStorage as JSON.
-    /// </summary>
-    /// <typeparam name="T">The type of the state object.</typeparam>
-    /// <param name="stateId">A unique identifier for the state.</param>
-    /// <param name="userContextId">A unique identifier for the user context (ignored as localStorage is client-specific).</param>
-    /// <param name="state">The state object to save.</param>
-    /// <returns>A task representing the asynchronous save operation.</returns>
-    public async Task SaveStateAsync<T>(string stateId, string userContextId, T state)
+    /// <summary>Creates the provider without performing browser I/O.</summary>
+    /// <param name="jsRuntime">The originating interactive runtime; null defers browser operations.</param>
+    /// <param name="debugger">The optional observer, retained for constructor compatibility.</param>
+    /// <example>
+    /// <code><![CDATA[
+    /// var storage = new LocalStorageStateStoreProvider(jsRuntime, debugger);
+    /// ]]></code>
+    /// </example>
+    public LocalStorageStateStoreProvider(IJSRuntime jsRuntime, AppStateDebugger debugger)
     {
-        try
-        {
-            var key = $"{stateId}_{userContextId}";
-            var json = JsonSerializer.Serialize(state);
-            if (this.debugger.IsEnabled)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.log", $"State saving to localStorage for {stateId}", state);
-            }
-
-            await this.jsRuntime.InvokeVoidAsync("localStorage.setItem", key, json);
-            this.stateIds.Add(key); // Track the state ID
-        }
-        catch (InvalidOperationException)
-        {
-            // ignore for now due to jsruntime not being available
-        }
-        catch (Exception ex)
-        {
-            if (this.debugger.IsEnabled)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to save state to localStorage for {stateId}: {ex.Message}");
-            }
-
-            throw;
-        }
+        this.jsRuntime = jsRuntime;
+        _ = debugger;
     }
 
-    /// <summary>
-    /// Asynchronously loads the state from localStorage, deserializing from JSON.
-    /// </summary>
-    /// <typeparam name="T">The type of the state object.</typeparam>
-    /// <param name="stateId">A unique identifier for the state.</param>
-    /// <param name="userContextId">A unique identifier for the user context (ignored as localStorage is client-specific).</param>
-    /// <returns>A task returning the loaded state, or default if not found.</returns>
-    public async Task<T> LoadStateAsync<T>(string stateId, string userContextId)
+    /// <inheritdoc/>
+    public Task SaveAsync<T>(string stateId, string userContextId, T state) =>
+        this.SaveAsync(stateId, userContextId, state, null, CancellationToken.None);
+
+    /// <inheritdoc/>
+    public Task SaveAsync<T>(string stateId, string userContextId, T state, CancellationToken cancellationToken) =>
+        this.SaveAsync(stateId, userContextId, state, null, cancellationToken);
+
+    /// <inheritdoc/>
+    public async Task SaveAsync<T>(string stateId, string userContextId, T state, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var key = $"{stateId}_{userContextId}";
-            var json = await this.jsRuntime.InvokeAsync<string>("localStorage.getItem", key);
-            var data = json != null ? JsonSerializer.Deserialize<T>(json) : default;
-            if (this.debugger.IsEnabled && json != null)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.log", $"State loaded from localStorage for {stateId}", data);
-            }
-
-            if (json != null)
-            {
-                this.stateIds.Add(key); // Track the state ID if it exists
-            }
-
-            return data;
-        }
-        catch (Exception ex)
-        {
-            if (this.debugger.IsEnabled)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to load state from localStorage for {stateId}: {ex.Message}");
-            }
-
-            throw;
-        }
+        var key = AppStateStorageKey.Resolve(stateId, userContextId);
+        var json = typeInfo != null ? JsonSerializer.Serialize(state, typeInfo) : JsonSerializer.Serialize(state, (JsonTypeInfo<T>)JsonSerializerOptions.Default.GetTypeInfo(typeof(T)));
+        await this.Runtime.InvokeVoidAsync("localStorage.setItem", cancellationToken, key, json);
+        this.keys[key] = 0;
     }
 
-    /// <summary>
-    /// Asynchronously clears the state from localStorage for the given state ID.
-    /// </summary>
-    /// <param name="stateId">A unique identifier for the state.</param>
-    /// <param name="userContextId">A unique identifier for the user context (ignored as localStorage is client-specific).</param>
-    /// <returns>A task representing the asynchronous clear operation.</returns>
-    public async Task ClearAsync(string stateId, string userContextId)
+    /// <inheritdoc/>
+    public Task<T> LoadAsync<T>(string stateId, string userContextId) =>
+        this.LoadAsync<T>(stateId, userContextId, null, CancellationToken.None);
+
+    /// <inheritdoc/>
+    public Task<T> LoadAsync<T>(string stateId, string userContextId, CancellationToken cancellationToken) =>
+        this.LoadAsync<T>(stateId, userContextId, null, cancellationToken);
+
+    /// <inheritdoc/>
+    public async Task<T> LoadAsync<T>(string stateId, string userContextId, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var key = $"{stateId}_{userContextId}";
-            await this.jsRuntime.InvokeVoidAsync("localStorage.removeItem", key);
-            if (this.debugger.IsEnabled)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.log", $"Cleared state from localStorage for {stateId}");
-            }
+        var key = AppStateStorageKey.Resolve(stateId, userContextId);
+        var json = await this.Runtime.InvokeAsync<string>("localStorage.getItem", cancellationToken, key);
+        if (json == null) { return default; }
 
-            this.stateIds.Remove(key);
-        }
-        catch (InvalidOperationException)
-        {
-            // ignore for now due to jsruntime not being available
-        }
-        catch (Exception ex)
-        {
-            if (this.debugger.IsEnabled)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to clear state from localStorage for {stateId}: {ex.Message}");
-            }
-
-            throw;
-        }
+        this.keys[key] = 0;
+        return typeInfo != null ? JsonSerializer.Deserialize(json, typeInfo) : JsonSerializer.Deserialize(json, (JsonTypeInfo<T>)JsonSerializerOptions.Default.GetTypeInfo(typeof(T)));
     }
 
-    /// <summary>
-    /// Asynchronously clears all state data from localStorage that was saved by this provider.
-    /// </summary>
-    /// <returns>A task representing the asynchronous clear operation.</returns>
+    /// <inheritdoc/>
+    public Task ClearAsync(string stateId, string userContextId) => this.ClearAsync(stateId, userContextId, CancellationToken.None);
+
+    /// <inheritdoc/>
+    public async Task ClearAsync(string stateId, string userContextId, CancellationToken cancellationToken)
+    {
+        var key = AppStateStorageKey.Resolve(stateId, userContextId);
+        await this.Runtime.InvokeVoidAsync("localStorage.removeItem", cancellationToken, key);
+        this.keys.TryRemove(key, out _);
+    }
+
+    /// <inheritdoc/>
     public async Task ClearAllAsync()
     {
-        try
+        foreach (var key in this.keys.Keys)
         {
-            foreach (var stateId in this.stateIds.ToList())
-            {
-                await this.jsRuntime.InvokeVoidAsync("localStorage.removeItem", stateId);
-                if (this.debugger.IsEnabled)
-                {
-                    await this.jsRuntime.InvokeVoidAsync("console.log", $"Cleared state from localStorage for {stateId}");
-                }
-            }
-
-            this.stateIds.Clear();
-            if (this.debugger.IsEnabled)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.log", "Cleared all tracked states from localStorage");
-            }
-        }
-        catch (InvalidOperationException)
-        {
-            // ignore for now due to jsruntime not being available
-        }
-        catch (Exception ex)
-        {
-            if (this.debugger.IsEnabled)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to clear all state from localStorage: {ex.Message}");
-            }
-
-            throw;
+            await this.Runtime.InvokeVoidAsync("localStorage.removeItem", key);
+            this.keys.TryRemove(key, out _);
         }
     }
+
+    private IJSRuntime Runtime => this.jsRuntime ?? throw new InvalidOperationException("Browser storage requires interactive JS.");
 }

@@ -51,6 +51,9 @@ public sealed class AuditingDocumentStoreClientBehavior<T>(IDocumentStoreClient<
     public override Task<Result<DocumentBatchResult<DocumentInfo>>> UpsertManyAsync(IReadOnlyCollection<DocumentWrite<T>> writes, CancellationToken cancellationToken = default) => this.AuditAsync("upsert-many", () => this.Inner.UpsertManyAsync(writes, cancellationToken), cancellationToken);
 
     /// <inheritdoc />
+    public override Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) => this.AuditAsync("update-dimensions", () => this.Inner.UpdateDimensionsAsync(update, cancellationToken), cancellationToken);
+
+    /// <inheritdoc />
     /// <example><code>await documents.UpdatePropertiesAsync(new(new("people", "42")));</code></example>
     public override Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default) => this.AuditAsync("update-properties", () => this.Inner.UpdatePropertiesAsync(update, cancellationToken), cancellationToken);
 

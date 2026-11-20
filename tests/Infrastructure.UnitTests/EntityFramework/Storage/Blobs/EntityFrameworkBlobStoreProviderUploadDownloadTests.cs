@@ -596,7 +596,7 @@ public sealed class EntityFrameworkBlobStoreProviderUploadDownloadTests
         context.ResetObservedState();
 
         // Act
-        var result = await sut.UpdatePropertiesAsync(new BlobPropertiesUpdate
+        var result = await sut.UpdatePropertiesAsync(new StoredBlobPropertiesUpdate
         {
             Key = new BlobKey("reports", "file.bin"),
             ContentType = ContentType.JSON,
@@ -655,14 +655,14 @@ public sealed class EntityFrameworkBlobStoreProviderUploadDownloadTests
             new SingleContextScopeFactory<TestBlobDbContext>(context),
             options ?? new BlobStoreOptions { ChunkSize = 4 });
 
-    private static BlobUpload CreateUpload(
+    private static StoredBlobUpload CreateUpload(
         string content,
         string expectedHash = null,
         BlobOverwriteMode overwriteMode = BlobOverwriteMode.Overwrite,
         string name = "file.bin") =>
         CreateUpload(new MemoryStream(Encoding.UTF8.GetBytes(content)), expectedHash, overwriteMode, name);
 
-    private static BlobUpload CreateUpload(
+    private static StoredBlobUpload CreateUpload(
         Stream content,
         string expectedHash = null,
         BlobOverwriteMode overwriteMode = BlobOverwriteMode.Overwrite,

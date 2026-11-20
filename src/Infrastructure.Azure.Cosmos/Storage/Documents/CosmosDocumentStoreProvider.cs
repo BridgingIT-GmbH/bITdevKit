@@ -57,6 +57,8 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
     /// <inheritdoc />
     public async Task<Result<StoredDocumentPage>> FindPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Result<StoredDocumentPage>.Failure(new DocumentDimensionsNotSupportedError());
+
         try
         {
             var take = query?.Take ?? this.options.DefaultTake;
@@ -72,6 +74,8 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
     /// <inheritdoc />
     public async Task<Result<DocumentKeyPage>> ListPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Result<DocumentKeyPage>.Failure(new DocumentDimensionsNotSupportedError());
+
         try
         {
             var take = query?.Take ?? this.options.DefaultTake;
@@ -100,6 +104,8 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
     /// <inheritdoc />
     public async Task<Result<long>> CountAsync(DocumentTypeIdentity type, DocumentCountQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Result<long>.Failure(new DocumentDimensionsNotSupportedError());
+
         var pageQuery = new DocumentQuery { DocumentKey = query?.DocumentKey, Filter = query?.Filter ?? DocumentKeyFilter.FullMatch, AllowFullScan = query?.AllowFullScan ?? false, Take = this.options.MaxTake };
         long count = 0;
         while (true)
@@ -129,6 +135,8 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
     /// <inheritdoc />
     public async Task<Result<DocumentInfo>> UpsertAsync(DocumentTypeIdentity type, StoredDocumentWrite write, CancellationToken cancellationToken = default)
     {
+        if ((write?.Dimensions is not null || write?.Options?.Dimensions is not null)) return Result<DocumentInfo>.Failure(new DocumentDimensionsNotSupportedError());
+
         var validation = DocumentWriteValidator.Validate(write.Options);
         if (validation.IsFailure) return Result<DocumentInfo>.Failure(validation);
         var replacingExisting = false;
@@ -143,7 +151,7 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
             replacingExisting = !isNew;
             current ??= new() { Id = GuidGenerator.Create($"{storageType}-{write.Key.PartitionKey}-{write.Key.RowKey}").ToString(), Type = storageType, PartitionKey = write.Key.PartitionKey, RowKey = write.Key.RowKey, CreatedDate = now };
             current.Content = write.Content.ToArray(); current.ContentHash = write.ContentHash; current.StoredContentHash = write.StoredContentHash;
-            current.Properties = (write.Properties?.Clone() ?? new PropertyBag(current.Properties)).ToDictionary(x => x.Key, x => x.Value);
+            current.Properties = (DocumentPropertyValues.Clone(write.Properties) ?? DocumentPropertyValues.Clone(new PropertyBag(current.Properties))).ToDictionary(x => x.Key, x => x.Value);
             current.TransformMetadataJson = EncodeBag(write.TransformMetadata);
             if (!write.PreserveExpiration) current.ExpiresAt = write.ExpiresAt;
             current.Ttl = ToTtl(current.ExpiresAt, now); current.UpdatedDate = now;
@@ -170,7 +178,7 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
             var current = (await provider.ReadItemsAsync(x => x.Type == storageType && x.PartitionKey == update.Key.PartitionKey && x.RowKey == update.Key.RowKey, partitionKeyValue: storageType, cancellationToken: cancellationToken)).FirstOrDefault();
             if (current is null) return Result<DocumentInfo>.Failure(new DocumentStoreNotFoundError());
             if (!string.IsNullOrWhiteSpace(update.IfMatchETag) && ETag(current) != NormalizeETag(update.IfMatchETag)) return Result<DocumentInfo>.Failure(new DocumentStoreConflictError("The document ETag changed."));
-            if (update.Properties is not null) current.Properties = update.Properties.ToDictionary(x => x.Key, x => x.Value);
+            if (update.Properties is not null) current.Properties = DocumentPropertyValues.Clone(update.Properties).ToDictionary(x => x.Key, x => x.Value);
             if (!preserveExpiration) current.ExpiresAt = resolvedExpiresAt;
             current.UpdatedDate = DateTimeOffset.UtcNow; current.Ttl = ToTtl(current.ExpiresAt, current.UpdatedDate.Value);
             replacingExisting = true;
@@ -214,8 +222,8 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
         else if (query.Filter == DocumentKeyFilter.RowKeySuffixMatch) yield return x => x.RowKey.EndsWith(key.RowKey);
     }
 
-    private static StoredDocument Map(CosmosStorageDocument x) => new() { Key = new(x.PartitionKey, x.RowKey), Content = x.Content?.ToArray() ?? [], ContentHash = x.ContentHash, StoredContentHash = x.StoredContentHash, ETag = ETag(x), CreatedAt = x.CreatedDate, LastModifiedAt = x.UpdatedDate ?? x.CreatedDate, ExpiresAt = x.ExpiresAt, Properties = new PropertyBag(x.Properties), TransformMetadata = DecodeBag(x.TransformMetadataJson) };
-    private static DocumentInfo ToInfo(CosmosStorageDocument x) => new() { Key = new(x.PartitionKey, x.RowKey), ETag = ETag(x), ContentHash = x.ContentHash, CreatedAt = x.CreatedDate, LastModifiedAt = x.UpdatedDate ?? x.CreatedDate, ExpiresAt = x.ExpiresAt, Properties = new PropertyBag(x.Properties) };
+    private static StoredDocument Map(CosmosStorageDocument x) => new() { Key = new(x.PartitionKey, x.RowKey), Content = x.Content?.ToArray() ?? [], ContentHash = x.ContentHash, StoredContentHash = x.StoredContentHash, ETag = ETag(x), CreatedAt = x.CreatedDate, LastModifiedAt = x.UpdatedDate ?? x.CreatedDate, ExpiresAt = x.ExpiresAt, Properties = DocumentPropertyValues.Clone(new PropertyBag(x.Properties)), TransformMetadata = DecodeBag(x.TransformMetadataJson) };
+    private static DocumentInfo ToInfo(CosmosStorageDocument x) => new() { Key = new(x.PartitionKey, x.RowKey), ETag = ETag(x), ContentHash = x.ContentHash, CreatedAt = x.CreatedDate, LastModifiedAt = x.UpdatedDate ?? x.CreatedDate, ExpiresAt = x.ExpiresAt, Properties = DocumentPropertyValues.Clone(new PropertyBag(x.Properties)) };
     private static string ETag(CosmosStorageDocument x) => NormalizeETag(x.ETag);
     private static string NormalizeETag(string value) => value?.Trim('"');
     // send the _etag exactly as the server returned it, Cosmos quotes it but the vnext emulator does not and compares If-Match literally

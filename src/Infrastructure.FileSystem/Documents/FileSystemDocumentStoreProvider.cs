@@ -98,6 +98,8 @@ public sealed class FileSystemDocumentStoreProvider : IDocumentStoreProvider, ID
     /// <inheritdoc />
     public Task<Result<DocumentInfo>> UpsertAsync(DocumentTypeIdentity type, StoredDocumentWrite write, CancellationToken cancellationToken = default)
     {
+        if ((write?.Dimensions is not null || write?.Options?.Dimensions is not null)) return Task.FromResult(Result<DocumentInfo>.Failure(new DocumentDimensionsNotSupportedError()));
+
         return FileSystemResults.DocumentAsync(async () =>
         {
             var condition = DocumentWriteValidator.Validate(write.Options);
@@ -126,7 +128,7 @@ public sealed class FileSystemDocumentStoreProvider : IDocumentStoreProvider, ID
                 CreatedAt = current?.CreatedAt ?? now,
                 LastModifiedAt = now,
                 ExpiresAt = write.PreserveExpiration ? current?.ExpiresAt : write.ExpiresAt?.ToUniversalTime(),
-                Properties = write.Properties?.Clone() ?? current?.Properties?.Clone() ?? new(),
+                Properties = DocumentPropertyValues.Clone(write.Properties) ?? DocumentPropertyValues.Clone(current?.Properties) ?? new(),
                 TransformMetadata = write.TransformMetadata?.Clone() ?? new()
             };
             this.store.Publish(path, new() { Identity = identity, Payload = staged.File, Length = staged.Length, Document = document }, authority, cancellationToken, staged);
@@ -163,7 +165,7 @@ public sealed class FileSystemDocumentStoreProvider : IDocumentStoreProvider, ID
                 ETag = Guid.NewGuid().ToString("N"),
                 LastModifiedAt = DateTimeOffset.UtcNow,
                 ExpiresAt = preserveExpiration ? current.ExpiresAt : resolvedExpiresAt?.ToUniversalTime(),
-                Properties = update.Properties?.Clone() ?? current.Properties.Clone()
+                Properties = DocumentPropertyValues.Clone(update.Properties) ?? DocumentPropertyValues.Clone(current.Properties)
             };
             this.store.Publish(path, record with { Document = document }, authority, cancellationToken);
 
@@ -202,6 +204,8 @@ public sealed class FileSystemDocumentStoreProvider : IDocumentStoreProvider, ID
     /// <inheritdoc />
     public Task<Result<StoredDocumentPage>> FindPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Task.FromResult(Result<StoredDocumentPage>.Failure(new DocumentDimensionsNotSupportedError()));
+
         return FileSystemResults.DocumentAsync(async () =>
         {
             var page = this.Page(type, query, visibilityCutoff, "find", cancellationToken);
@@ -241,6 +245,8 @@ public sealed class FileSystemDocumentStoreProvider : IDocumentStoreProvider, ID
     /// <inheritdoc />
     public Task<Result<DocumentKeyPage>> ListPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Task.FromResult(Result<DocumentKeyPage>.Failure(new DocumentDimensionsNotSupportedError()));
+
         return FileSystemResults.DocumentAsync(async () =>
         {
             var page = this.Page(type, query, visibilityCutoff, "list", cancellationToken);
@@ -253,6 +259,8 @@ public sealed class FileSystemDocumentStoreProvider : IDocumentStoreProvider, ID
     /// <inheritdoc />
     public Task<Result<long>> CountAsync(DocumentTypeIdentity type, DocumentCountQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Task.FromResult(Result<long>.Failure(new DocumentDimensionsNotSupportedError()));
+
         return FileSystemResults.DocumentAsync(async () =>
         {
             long count = 0;
@@ -401,7 +409,7 @@ public sealed class FileSystemDocumentStoreProvider : IDocumentStoreProvider, ID
             CreatedAt = document.CreatedAt,
             LastModifiedAt = document.LastModifiedAt,
             ExpiresAt = document.ExpiresAt,
-            Properties = document.Properties.Clone()
+            Properties = DocumentPropertyValues.Clone(document.Properties)
         };
     }
 

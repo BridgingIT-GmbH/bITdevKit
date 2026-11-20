@@ -505,7 +505,7 @@ internal static class FileSystemStorageLoadRunner
                 using var staged = await raw.StageAsync(path, source, null, default);
                 using var authority = await raw.AcquireAsync(path, false, default);
                 var previous = raw.Read(path, identity);
-                var info = new BlobInfo
+                var info = new StoredBlobInfo
                 {
                     Key = new("control", prefix + worker),
                     Length = staged.Length,

@@ -4,11 +4,15 @@
 namespace BridgingIT.DevKit.Presentation.Web.Storage.Models;
 
 using System.Text.Json;
+using BridgingIT.DevKit.Application.Storage;
 
 /// <summary>Supplies typed document JSON and optional metadata for a maintenance content write.</summary>
 /// <example><code>var request = new DocumentStorageWriteRequestModel { Content = JsonSerializer.SerializeToElement(new { Name = "Ada" }) };</code></example>
 public class DocumentStorageWriteRequestModel
 {
+    /// <summary>Gets or sets optional Dimensions. Omission/null preserves; an empty object clears.</summary>
+    public DocumentDimensions Dimensions { get; set; }
+
     /// <summary>Gets or sets the document payload; it must deserialize as the selected registered document type.</summary>
     /// <example><code>request.Content = JsonSerializer.SerializeToElement(new { Name = "Ada" });</code></example>
     public JsonElement Content { get; set; }

@@ -15,7 +15,7 @@ using HttpResult = Microsoft.AspNetCore.Http.IResult;
 /// <summary>Exposes read-only REST endpoints for retrieving typed Document Storage content.</summary>
 /// <remarks>Enable this group with <c>AddReadEndpoints</c> or <c>AddDocumentStorageReadEndpoints</c>. Assembly discovery alone leaves it disabled.</remarks>
 /// <example><code>services.AddDocumentStorage().AddReadEndpoints(options => options.RequireAuthorization());</code></example>
-public sealed class DocumentStorageReadEndpoints(DocumentStorageReadEndpointsOptions options = null) : EndpointsBase
+public sealed partial class DocumentStorageReadEndpoints(DocumentStorageReadEndpointsOptions options = null) : EndpointsBase
 {
     private readonly DocumentStorageReadEndpointsOptions options = options ?? new() { Enabled = false };
 
@@ -36,6 +36,8 @@ public sealed class DocumentStorageReadEndpoints(DocumentStorageReadEndpointsOpt
             .WithName("_bdk.Storage.Documents.Read.Get")
             .WithSummary("Read document content")
             .WithDescription("Returns one typed document as JSON with its whole-item ETag, through the registered client pipeline.");
+
+        this.MapDimensions(group);
 
         this.IsRegistered = true;
     }

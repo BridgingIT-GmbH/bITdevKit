@@ -300,6 +300,8 @@ public class StubDbContext : DbContext,
         modelBuilder.ApplyDocumentStoreConfiguration();
 
         var provider = this.Database.ProviderName;
+        if (this.Database.IsCosmos()) modelBuilder.ExcludeDocumentDimensions();
+
         if (provider?.Contains("sqlserver", StringComparison.OrdinalIgnoreCase) == true || provider?.Contains("postgres", StringComparison.OrdinalIgnoreCase) == true)
         {
             modelBuilder.HasSequence<int>("TestSequence")

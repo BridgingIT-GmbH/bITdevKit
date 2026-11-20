@@ -71,7 +71,10 @@ public static class BlobQueryValidator
             return Result<BlobQueryValidation>.Failure(new BlobStorePageSizeExceededError(take, options.MaxTake));
         }
 
-        var shapeResult = ValidateShape(query, options, capabilities);
+        var dimensions = BlobDimensionFilterValidator.Validate(query.DimensionFilter, capabilities.Dimensions);
+        if (dimensions.IsFailure) return Result<BlobQueryValidation>.Failure(dimensions);
+        var shapeResult = query.DimensionFilter?.HasPositiveAnchor == true && string.IsNullOrEmpty(query.Prefix)
+            ? Result.Success() : ValidateShape(query, options, capabilities);
         if (shapeResult.IsFailure)
         {
             return Result<BlobQueryValidation>.Failure(shapeResult);
@@ -83,6 +86,7 @@ public static class BlobQueryValidator
             Prefix = query.Prefix,
             Take = take,
             ContinuationToken = query.ContinuationToken,
+            DimensionFilter = query.DimensionFilter,
             AllowFullScan = query.AllowFullScan
         };
         var queryHash = BlobQueryHash.Compute(normalizedQuery);

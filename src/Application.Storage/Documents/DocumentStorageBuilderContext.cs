@@ -105,6 +105,7 @@ public sealed class DocumentStorageBuilderContext(
     /// <param name="providerFactory">The container-owned provider factory.</param>
     /// <param name="providerName">The provider display and continuation-token identity.</param>
     /// <param name="displayName">The document display name.</param>
+    /// <param name="capabilitiesFactory">Optional DI-time capability resolution without backend access.</param>
     /// <param name="capabilities">The provider capabilities.</param>
     /// <param name="documentStoreOptions">The per-client validation and size options.</param>
     /// <param name="name">The normalized named-client identity.</param>
@@ -120,7 +121,8 @@ public sealed class DocumentStorageBuilderContext(
         DocumentStoreOptions documentStoreOptions = null,
         string name = "default",
         bool isDefault = true,
-        ServiceLifetime? lifetime = null)
+        ServiceLifetime? lifetime = null,
+        Func<IServiceProvider, DocumentStoreProviderCapabilities> capabilitiesFactory = null)
         where T : class, new()
     {
         ArgumentNullException.ThrowIfNull(providerFactory);
@@ -179,20 +181,20 @@ public sealed class DocumentStorageBuilderContext(
             return this.auditFactories.TryGetValue(typeof(T), out var auditFactory) ? (IDocumentStoreClient<T>)auditFactory(boundary, serviceProvider) : boundary;
         });
 
-        var descriptor = new DocumentStoreClientDescriptor(
+        DocumentStoreClientDescriptor CreateDescriptor(IServiceProvider serviceProvider) => new(
             $"{typeof(T).FullName?.ToLowerInvariant() ?? typeof(T).Name.ToLowerInvariant()}:{normalizedName}",
             typeof(T),
             displayName ?? typeof(T).PrettyName(),
             resolvedProviderName,
-            capabilities ?? CreateDefaultCapabilities(),
+            capabilitiesFactory?.Invoke(serviceProvider) ?? capabilities ?? CreateDefaultCapabilities(),
             normalizedName,
             isDefault,
             resolvedLifetime,
             DocumentTypeIdentity.For<T>(),
             this.transforms.Where(x => x.DocumentType == typeof(T)).Select(x => x.Identifier).Where(x => x is not null).ToArray());
-        this.Services.AddSingleton(descriptor);
+        this.Services.AddSingleton(CreateDescriptor);
         this.AddKeyed<IDocumentStoreClientAccessor>(key, resolvedLifetime, serviceProvider =>
-            new DocumentStoreClientAccessor<T>(descriptor, serviceProvider.GetRequiredKeyedService<IDocumentStoreClient<T>>(key), serviceProvider.GetService<ISerializer>()));
+            new DocumentStoreClientAccessor<T>(serviceProvider.GetServices<DocumentStoreClientDescriptor>().Single(descriptor => descriptor.DocumentType == typeof(T) && descriptor.Name == normalizedName), serviceProvider.GetRequiredKeyedService<IDocumentStoreClient<T>>(key), serviceProvider.GetService<ISerializer>()));
         if (isDefault)
         {
             this.Services.Add(new ServiceDescriptor(typeof(IDocumentStoreClient<T>), serviceProvider =>
@@ -291,12 +293,21 @@ public sealed class DocumentStorageBuilderContext(
             IsValid(key) ? inner.ExistsAsync(key, cancellationToken) : Invalid<bool>();
 
         public Task<Result<DocumentInfo>> UpsertAsync(DocumentKey key, T value, DocumentWriteOptions writeOptions = null, CancellationToken cancellationToken = default) =>
-            IsValid(key) && value is not null ? inner.UpsertAsync(key, value, writeOptions, cancellationToken) : Invalid<DocumentInfo>();
+            writeOptions?.Dimensions is not null && provider.Capabilities?.Dimensions?.SupportsDimensions != true
+                ? Task.FromResult(Result<DocumentInfo>.Failure(new DocumentDimensionsNotSupportedError()))
+                : IsValid(key) && value is not null ? inner.UpsertAsync(key, value, writeOptions, cancellationToken) : Invalid<DocumentInfo>();
 
         public Task<Result<DocumentBatchResult<DocumentInfo>>> UpsertManyAsync(IReadOnlyCollection<DocumentWrite<T>> writes, CancellationToken cancellationToken = default) =>
-            writes is not null && writes.All(x => x is not null && IsValid(x.Key) && x.Value is not null)
+            writes?.Any(write => write?.Options?.Dimensions is not null) == true && provider.Capabilities?.Dimensions?.SupportsDimensions != true
+                ? Task.FromResult(Result<DocumentBatchResult<DocumentInfo>>.Failure(new DocumentDimensionsNotSupportedError()))
+                : writes is not null && writes.All(x => x is not null && IsValid(x.Key) && x.Value is not null)
                 ? inner.UpsertManyAsync(writes, cancellationToken)
                 : Invalid<DocumentBatchResult<DocumentInfo>>();
+
+        public Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) =>
+            provider.Capabilities?.Dimensions?.SupportsDimensions != true
+                ? Task.FromResult(Result<DocumentInfo>.Failure(new DocumentDimensionsNotSupportedError()))
+                : update is not null && IsValid(update.Key) ? inner.UpdateDimensionsAsync(update, cancellationToken) : Invalid<DocumentInfo>();
 
         public Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default) =>
             update is not null && IsValid(update.Key) ? inner.UpdatePropertiesAsync(update, cancellationToken) : Invalid<DocumentInfo>();
@@ -355,6 +366,7 @@ public sealed class DocumentStorageBuilderContext(
             DocumentKey = query?.DocumentKey,
             Filter = query?.Filter ?? DocumentKeyFilter.FullMatch,
             Take = query?.Take,
+            DimensionFilter = query?.DimensionFilter,
             AllowFullScan = query?.AllowFullScan ?? false,
             ContinuationToken = token
         };

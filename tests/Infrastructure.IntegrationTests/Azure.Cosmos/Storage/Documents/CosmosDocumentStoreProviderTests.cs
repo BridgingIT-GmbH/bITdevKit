@@ -29,6 +29,24 @@ public class CosmosDocumentStoreProviderTests
         }
     }
 
+    [SkippableFact]
+    public async Task Properties_WithAllScalarTypesAndMutations_RoundTripThroughCosmos()
+    {
+        Skip.If(this.sut is null, "Cosmos emulator is unavailable.");
+        var client = new DocumentStoreClient<PersonStub>(this.sut);
+        var key = new DocumentKey("properties", Guid.NewGuid().ToString("N"));
+        var expected = Application.UnitTests.Storage.StoragePropertySamples.Create();
+        var write = await client.UpsertAsync(key, new() { FirstName = "Ada" }, new() { Properties = expected });
+        write.IsSuccess.ShouldBeTrue(string.Join("; ", write.Errors.Select(error => error.Message)));
+        Application.UnitTests.Storage.StoragePropertySamples.AssertEqual((await client.GetAsync(key)).Value.Properties, expected);
+        var replace = await client.UpsertAsync(key, new() { FirstName = "Grace" });
+        replace.IsSuccess.ShouldBeTrue();
+        Application.UnitTests.Storage.StoragePropertySamples.AssertEqual(replace.Value.Properties, expected);
+        Application.UnitTests.Storage.StoragePropertySamples.AssertEqual((await client.UpdatePropertiesAsync(new(key))).Value.Properties, expected);
+        (await client.UpdatePropertiesAsync(new(key) { Properties = new() })).Value.Properties.Count.ShouldBe(0);
+        (await client.GetAsync(key)).Value.Value.FirstName.ShouldBe("Grace");
+    }
+
     /// <summary>Fresh header/body ETags agree and stale conditional writes/deletes remain rejected.</summary>
     /// <param name="quotedToken">Whether the caller supplies the token in HTTP header form.</param>
     /// <example>await test.ConditionalMutations_WithStaleEtag_AreRejectedAtomically(true);</example>

@@ -30,6 +30,9 @@ public class TimeoutDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory,
     /// <inheritdoc />
     public override Task<Result<DocumentBatchResult<DocumentInfo>>> UpsertManyAsync(IReadOnlyCollection<DocumentWrite<T>> writes, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.UpsertManyAsync(writes, ct), cancellationToken);
     /// <inheritdoc />
+    public override Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.UpdateDimensionsAsync(update, ct), cancellationToken);
+
+    /// <inheritdoc />
     public override Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.UpdatePropertiesAsync(update, ct), cancellationToken);
     /// <inheritdoc />
     public override Task<Result> DeleteAsync(DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.DeleteAsync(key, options, ct), cancellationToken);

@@ -19,6 +19,9 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class BlobStoreProviderCapabilities
 {
+    /// <summary>Gets the independent Dimensions storage and operator profile.</summary>
+    public BlobDimensionCapabilities Dimensions { get; init; } = BlobDimensionCapabilities.Unsupported;
+
     /// <summary>
     /// Gets a value indicating whether continuation paging is supported.
     /// </summary>

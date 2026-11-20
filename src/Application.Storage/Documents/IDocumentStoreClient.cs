@@ -286,4 +286,13 @@ public interface IDocumentStoreClient<T> where T : class, new()
     /// </code>
     /// </example>
     Task<Result<DocumentBatchResult<DocumentKey>>> DeleteManyAsync(IReadOnlyCollection<DocumentDelete> deletes, CancellationToken cancellationToken = default);
+
+    /// <summary>Replaces Dimensions under the existing whole-item ETag without rewriting content.</summary>
+    /// <param name="update">The exact key, required replacement collection, and optional current whole-item ETag.</param>
+    /// <param name="cancellationToken">Cancels provider I/O.</param>
+    /// <returns>The acknowledged metadata snapshot or a typed failure.</returns>
+    /// <example><code>var result = await client.UpdateDimensionsAsync(new() { Key = key, Dimensions = DocumentDimensions.Empty, IfMatchETag = current.ETag }, cancellationToken);</code></example>
+    Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Result<DocumentInfo>.Failure(new DocumentDimensionsNotSupportedError()));
+
 }

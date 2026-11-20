@@ -19,6 +19,8 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class DocumentQueryBuilder
 {
+    private DocumentDimensionFilter dimensionFilter;
+
     private DocumentKey? documentKey;
     private DocumentKeyFilter filter = DocumentKeyFilter.FullMatch;
     private int? take;
@@ -201,6 +203,13 @@ public sealed class DocumentQueryBuilder
         return this;
     }
 
+    /// <summary>Adds predicates over explicitly indexed Dimensions.</summary>
+    public DocumentQueryBuilder WhereDimensions(DocumentDimensionFilter filter)
+    {
+        this.dimensionFilter = filter ?? throw new ArgumentNullException(nameof(filter));
+        return this;
+    }
+
     /// <summary>
     /// Builds the query model.
     /// </summary>
@@ -218,6 +227,7 @@ public sealed class DocumentQueryBuilder
         Filter = this.filter,
         Take = this.take,
         ContinuationToken = this.continuationToken,
+        DimensionFilter = this.dimensionFilter,
         AllowFullScan = this.allowFullScan
     };
 }

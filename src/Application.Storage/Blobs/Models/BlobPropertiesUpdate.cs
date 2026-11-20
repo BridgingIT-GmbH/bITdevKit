@@ -52,13 +52,14 @@ public sealed class BlobPropertiesUpdate
 
     /// <summary>
     /// Gets the replacement custom property bag.
+    /// Null preserves existing properties; an explicit empty bag clears them.
     /// </summary>
     /// <example>
     /// <code>
-    /// var reviewed = update.Properties.Get&lt;bool&gt;("reviewed");
+    /// var reviewed = update.Properties?.Get&lt;bool&gt;("reviewed");
     /// </code>
     /// </example>
-    public PropertyBag Properties { get; init; } = new();
+    public PropertyBag Properties { get; init; }
 
     /// <summary>
     /// Gets the optional entity tag required for optimistic property updates.
@@ -69,4 +70,6 @@ public sealed class BlobPropertiesUpdate
     /// </code>
     /// </example>
     public string IfMatchETag { get; init; }
+
+    internal PropertyBag TransformMetadata { get; init; }
 }

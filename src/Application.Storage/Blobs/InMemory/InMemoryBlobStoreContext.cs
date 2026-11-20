@@ -54,7 +54,7 @@ public sealed class InMemoryBlobStoreContext
             var createdAt = this.blobs.TryGetValue(entry.Info.Key, out var existing)
                 ? existing.Info.CreatedAt
                 : entry.Info.CreatedAt;
-            var normalized = Clone(entry, createdAt);
+            var normalized = Clone(entry, createdAt, entry.Info.Properties ?? existing?.Info.Properties);
             this.blobs[entry.Info.Key] = normalized;
             stored = Clone(normalized);
             return true;
@@ -238,10 +238,10 @@ public sealed class InMemoryBlobStoreContext
         }
     }
 
-    private static InMemoryBlobEntry Clone(InMemoryBlobEntry entry, DateTimeOffset? createdAt = null) => new()
+    private static InMemoryBlobEntry Clone(InMemoryBlobEntry entry, DateTimeOffset? createdAt = null, PropertyBag properties = null) => new()
     {
         Content = [.. entry.Content],
-        Info = new BlobInfo
+        Info = new StoredBlobInfo
         {
             Key = entry.Info.Key,
             Length = entry.Info.Length,
@@ -251,7 +251,8 @@ public sealed class InMemoryBlobStoreContext
             CreatedAt = createdAt ?? entry.Info.CreatedAt,
             LastModifiedAt = entry.Info.LastModifiedAt,
             ExpiresAt = entry.Info.ExpiresAt,
-            Properties = entry.Info.Properties?.Clone() ?? new PropertyBag()
+            Properties = BlobPropertyValues.Clone(properties ?? entry.Info.Properties) ?? new PropertyBag(),
+            TransformMetadata = BlobPropertyValues.Clone(entry.Info.TransformMetadata) ?? new PropertyBag()
         }
     };
 }

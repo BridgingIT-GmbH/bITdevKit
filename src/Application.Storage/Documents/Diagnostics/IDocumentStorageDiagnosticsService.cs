@@ -13,6 +13,9 @@ using Microsoft.Extensions.DependencyInjection;
 /// <example><code>var snapshot = await diagnostics.CaptureAsync(cancellationToken);</code></example>
 public interface IDocumentStorageDiagnosticsService
 {
+    /// <summary>Captures a snapshot, optionally counting retained Dimension names on explicit inspection.</summary>
+    Task<Result<DocumentStorageDiagnosticsSnapshot>> CaptureAsync(bool includeDimensionNameCounts, CancellationToken cancellationToken = default) => CaptureAsync(cancellationToken);
+
     /// <summary>Captures one point-in-time snapshot of every registered named document client.</summary>
     /// <param name="cancellationToken">The token used to cancel client health probes.</param>
     /// <returns>A result containing non-sensitive registration and health diagnostics.</returns>
@@ -36,6 +39,12 @@ public sealed record DocumentStorageDiagnosticsSnapshot
 /// <example><code>Console.WriteLine(client.Name);</code></example>
 public sealed record DocumentStorageClientDiagnostics
 {
+    /// <summary>Gets cheap Dimension counters and explicitly requested retained-name cardinality when available.</summary>
+    public DocumentDimensionDiagnostics DimensionDiagnostics { get; init; }
+
+    /// <summary>Gets a non-sensitive inspection failure when optional Dimension diagnostics are unavailable.</summary>
+    public string DimensionDiagnosticsError { get; init; }
+
     /// <summary>Gets the normalized case-insensitive client name used by keyed dependency injection.</summary>
     /// <example><code>var name = client.Name;</code></example>
     public string Name { get; init; }

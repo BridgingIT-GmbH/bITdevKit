@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -52,6 +52,9 @@ public sealed class ContentTypeDetectionBlobStoreClientBehavior : IBlobStoreClie
     public string StoreName { get; }
 
     /// <inheritdoc />
+    public BlobDimensionCapabilities DimensionCapabilities => this.inner.DimensionCapabilities;
+
+    /// <inheritdoc />
     public Task<Result<BlobInfo>> UploadAsync(
         BlobUpload upload,
         CancellationToken cancellationToken = default)
@@ -70,13 +73,15 @@ public sealed class ContentTypeDetectionBlobStoreClientBehavior : IBlobStoreClie
         return this.inner.UploadAsync(new BlobUpload
         {
             Key = upload.Key,
+            Dimensions = upload.Dimensions,
             Content = upload.Content,
             ContentType = contentType,
             ExpectedContentHash = upload.ExpectedContentHash,
             ExpiresAt = upload.ExpiresAt,
             Properties = upload.Properties,
+            TransformMetadata = upload.TransformMetadata,
             IfMatchETag = upload.IfMatchETag,
-                OverwriteMode = upload.OverwriteMode
+            OverwriteMode = upload.OverwriteMode
         }, cancellationToken);
     }
 
@@ -87,6 +92,10 @@ public sealed class ContentTypeDetectionBlobStoreClientBehavior : IBlobStoreClie
     /// <inheritdoc />
     public Task<Result<BlobInfo>> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken = default) =>
         this.inner.GetPropertiesAsync(key, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Result<BlobInfo>> UpdateDimensionsAsync(BlobDimensionsUpdate update, CancellationToken cancellationToken = default) =>
+        this.inner.UpdateDimensionsAsync(update, cancellationToken);
 
     /// <inheritdoc />
     public Task<Result<BlobInfo>> UpdatePropertiesAsync(BlobPropertiesUpdate update, CancellationToken cancellationToken = default) =>

@@ -18,6 +18,8 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class DocumentCountQueryBuilder
 {
+    private DocumentDimensionFilter dimensionFilter;
+
     private DocumentKey? documentKey;
     private DocumentKeyFilter filter = DocumentKeyFilter.FullMatch;
     private bool allowFullScan;
@@ -146,6 +148,13 @@ public sealed class DocumentCountQueryBuilder
         return this;
     }
 
+    /// <summary>Adds predicates over explicitly indexed Dimensions.</summary>
+    public DocumentCountQueryBuilder WhereDimensions(DocumentDimensionFilter filter)
+    {
+        this.dimensionFilter = filter ?? throw new ArgumentNullException(nameof(filter));
+        return this;
+    }
+
     /// <summary>
     /// Builds the count query model.
     /// </summary>
@@ -161,6 +170,7 @@ public sealed class DocumentCountQueryBuilder
     {
         DocumentKey = this.documentKey,
         Filter = this.filter,
+        DimensionFilter = this.dimensionFilter,
         AllowFullScan = this.allowFullScan
     };
 }

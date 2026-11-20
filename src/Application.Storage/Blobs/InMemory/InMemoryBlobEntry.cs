@@ -33,5 +33,5 @@ public sealed class InMemoryBlobEntry
     /// var key = entry.Info.Key;
     /// </code>
     /// </example>
-    public BlobInfo Info { get; init; }
+    public StoredBlobInfo Info { get; init; }
 }

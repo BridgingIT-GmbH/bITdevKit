@@ -26,13 +26,13 @@ public sealed class InMemoryBlobStoreProviderContractTests : BlobStoreProviderCo
         var now = DateTimeOffset.UtcNow;
         var expired = new BlobKey("contracts", "retention/expired.txt");
         var future = new BlobKey("contracts", "retention/future.txt");
-        await sut.UploadAsync(new BlobUpload
+        await sut.UploadAsync(new StoredBlobUpload
         {
             Key = expired,
             Content = new MemoryStream([1]),
             ExpiresAt = now.AddMinutes(-1)
         });
-        await sut.UploadAsync(new BlobUpload
+        await sut.UploadAsync(new StoredBlobUpload
         {
             Key = future,
             Content = new MemoryStream([2]),

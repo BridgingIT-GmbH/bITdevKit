@@ -1,0 +1,14 @@
+@using System.Text.Json
+@inherits RazorSlices.RazorSlice<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DashboardDimensionQueryModel>
+
+<div class="mt-2" data-storage-dimension-editor
+     data-supported="@Model.SupportsQueries.ToString().ToLowerInvariant()"
+     data-operators="@JsonSerializer.Serialize(Model.Operators)">
+    <textarea name="dimensionFilter" hidden>@Model.FilterJson</textarea>
+    <div class="small text-body-secondary" @(Model.SupportsQueries ? "hidden" : null)>Dimension queries are unavailable for this provider.</div>
+    <details data-preserve-key="storage-dimension-query" @(Model.SupportsQueries ? null : "hidden") @(!string.IsNullOrEmpty(Model.FilterJson) ? "open" : null)>
+        <summary class="small">Dimensions <span class="text-body-secondary" data-dimension-count></span></summary>
+        <div data-dimension-conditions></div>
+    </details>
+    <div class="alert alert-danger small py-1 mt-2 mb-0" role="alert" data-dimension-error hidden></div>
+</div>

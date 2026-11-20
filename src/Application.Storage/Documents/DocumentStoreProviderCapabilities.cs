@@ -27,6 +27,9 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class DocumentStoreProviderCapabilities
 {
+    /// <summary>Gets the independent Dimensions storage and operator profile.</summary>
+    public DocumentDimensionCapabilities Dimensions { get; init; } = DocumentDimensionCapabilities.Unsupported;
+
     /// <summary>
     /// Gets the maximum transformed payload size accepted by the provider, in bytes, or <see langword="null" /> when the
     /// backend does not impose a lower known limit than the client configuration.

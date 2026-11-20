@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -107,6 +107,7 @@ public sealed class RetryBlobStoreClientBehavior(
 
     private bool ShouldRetry(IResult result, BlobStoreOperationContext context, int attempt)
     {
+        if (context.Upload?.Dimensions is not null) return false;
         if (attempt >= this.Options.Attempts)
         {
             return false;

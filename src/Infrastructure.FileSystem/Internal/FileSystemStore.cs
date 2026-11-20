@@ -10,9 +10,9 @@ using System.Text.Json;
 /// <example><code>var record = store.Read(path, ["blobs", "reports", "daily"]);</code></example>
 public sealed record FileSystemRecord
 {
-    /// <summary>Gets the on-disk format version. Current records use version 2.</summary>
+    /// <summary>Gets the on-disk format version. Current records use version 3.</summary>
     /// <example><code>var version = record.Version;</code></example>
-    public int Version { get; init; } = 2;
+    public int Version { get; init; } = 3;
 
     /// <summary>Gets the ordinal logical identity: kind/container/name or kind/type/partition/row.</summary>
     /// <example><code>var identity = record.Identity;</code></example>
@@ -28,7 +28,7 @@ public sealed record FileSystemRecord
 
     /// <summary>Gets blob metadata for a live blob record; otherwise null.</summary>
     /// <example><code>var etag = record.Blob?.ETag;</code></example>
-    public BlobInfo Blob { get; init; }
+    public StoredBlobInfo Blob { get; init; }
 
     /// <summary>Gets document metadata for a live document record; otherwise null. Content is stored separately.</summary>
     /// <example><code>var etag = record.Document?.ETag;</code></example>
@@ -338,7 +338,7 @@ public sealed class FileSystemStore
 
         var record = JsonSerializer.Deserialize<FileSystemRecord>(stream, Json);
 
-        if (record is null || record.Version != 2 || record.Identity is not { Length: >= 3 } || record.Identity.Any(s => s is null)
+        if (record is null || record.Version != 3 || record.Identity is not { Length: >= 3 } || record.Identity.Any(s => s is null)
             || (record.Identity[0] == "blobs" ? record.Identity.Length != 3 : record.Identity[0] != "documents" || record.Identity.Length != 4)
             || (!record.Deleted && (record.Identity[0] == "blobs" ? record.Blob is null || record.Document is not null
                 || record.Blob.Key?.Container != record.Identity[1] || record.Blob.Key?.Name != record.Identity[2]
@@ -878,6 +878,14 @@ public sealed class FileSystemStore
         {
             MaxDepth = 32
         };
+        var resolver = new System.Text.Json.Serialization.Metadata.DefaultJsonTypeInfoResolver();
+        resolver.Modifiers.Add(typeInfo =>
+        {
+            if (typeInfo.Type != typeof(StoredBlobInfo) && typeInfo.Type != typeof(StoredDocument)) return;
+            var dimensions = typeInfo.Properties.FirstOrDefault(property => property.Name == "Dimensions");
+            if (dimensions is not null) typeInfo.Properties.Remove(dimensions);
+        });
+        options.TypeInfoResolver = resolver;
         options.Converters.Add(new FileSystemPropertyBagConverter());
         options.MakeReadOnly(true);
 

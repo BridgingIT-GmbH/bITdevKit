@@ -18,6 +18,23 @@ using Microsoft.Extensions.DependencyInjection;
 public sealed class EntityFrameworkBlobStorageModelTests
 {
     [Fact]
+    public void StorageBlob_CodecColumns_PreserveEveryScalarAndSeparateTransforms()
+    {
+        var expected = Application.UnitTests.Storage.StoragePropertySamples.Create();
+        var sut = new StorageBlob
+        {
+            Properties = expected.ToDictionary(item => item.Key, item => item.Value),
+            TransformMetadata = new Dictionary<string, object> { ["algorithm"] = "system" }
+        };
+        var restored = new StorageBlob { PropertiesJson = sut.PropertiesJson, TransformMetadataJson = sut.TransformMetadataJson };
+        Application.UnitTests.Storage.StoragePropertySamples.AssertEqual(new(restored.Properties), expected);
+        restored.Properties.ContainsKey("algorithm").ShouldBeFalse();
+        restored.TransformMetadata["algorithm"].ShouldBe("system");
+        typeof(StorageBlob).GetProperty(nameof(StorageBlob.TransformMetadataJson))
+            ?.GetCustomAttribute<ColumnAttribute>()?.Name.ShouldBe("TransformMetadata");
+    }
+
+    [Fact]
     public void BlobStoreDbContext_AsBlobStoreContext_ExposesRequiredDbSets()
     {
         // Arrange
@@ -57,6 +74,7 @@ public sealed class EntityFrameworkBlobStorageModelTests
         sut.FindProperty(nameof(StorageBlob.LastModifiedAt)).ShouldNotBeNull();
         sut.FindProperty(nameof(StorageBlob.ExpiresAt)).ShouldNotBeNull();
         sut.FindProperty(nameof(StorageBlob.PropertiesJson)).ShouldNotBeNull();
+        sut.FindProperty(nameof(StorageBlob.TransformMetadataJson)).ShouldNotBeNull();
         sut.FindProperty(nameof(StorageBlob.LeaseId)).ShouldNotBeNull();
         sut.FindProperty(nameof(StorageBlob.LeaseAcquiredBy)).ShouldNotBeNull();
         sut.FindProperty(nameof(StorageBlob.LeaseAcquiredUntil)).ShouldNotBeNull();
@@ -111,7 +129,7 @@ public sealed class EntityFrameworkBlobStorageModelTests
     }
 
     [Fact]
-    public void StorageBlobChunk_WithConfiguration_HasUniqueBlobIdAndIndexSupport()
+    public void StorageBlobChunk_WithConfiguration_UsesCompositeKeyWithoutRedundantIndex()
     {
         // Arrange
         using var context = CreateContext();
@@ -119,8 +137,7 @@ public sealed class EntityFrameworkBlobStorageModelTests
 
         // Act
         var primaryKey = sut.FindPrimaryKey();
-        var uniqueIndex = sut.GetIndexes().SingleOrDefault(index =>
-            index.IsUnique &&
+        var redundantIndex = sut.GetIndexes().SingleOrDefault(index =>
             index.Properties.Select(property => property.Name)
                 .SequenceEqual([nameof(StorageBlobChunk.BlobId), nameof(StorageBlobChunk.Index)]));
 
@@ -128,7 +145,7 @@ public sealed class EntityFrameworkBlobStorageModelTests
         primaryKey.ShouldNotBeNull();
         primaryKey.Properties.Select(property => property.Name)
             .ShouldBe([nameof(StorageBlobChunk.BlobId), nameof(StorageBlobChunk.Index)]);
-        uniqueIndex.ShouldNotBeNull();
+        redundantIndex.ShouldBeNull();
     }
 
     [Fact]
@@ -168,7 +185,7 @@ public sealed class EntityFrameworkBlobStorageModelTests
         propertiesJson.ShouldNotBeNull();
         typeof(StorageBlob).GetProperty(nameof(StorageBlob.PropertiesJson))
             ?.GetCustomAttribute<ColumnAttribute>()?.Name.ShouldBe("Properties");
-        serialized.ShouldContain("monthly-export");
+        serialized.ShouldContain(PropertyBagScalarCodec.Encode("monthly-export"));
         restored.Properties["source"].ShouldBeOfType<string>().ShouldBe("monthly-export");
         restored.Properties["reviewed"].ShouldBeOfType<bool>().ShouldBeTrue();
     }

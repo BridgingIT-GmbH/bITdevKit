@@ -143,25 +143,59 @@ public partial class AzureBlobStoreProvider
                     "ExpectedContentHash does not match uploaded content."));
             }
 
-            var metadata = new Dictionary<string, string>(request.Metadata, StringComparer.OrdinalIgnoreCase)
+            Dictionary<string, string> metadata = null;
+            Response<BlobContentInfo> response = null;
+            for (var attempt = 0; attempt < 3; attempt++)
             {
-                [request.ContentHashMetadataKey] = contentHash
-            };
-            var response = await blobClient.CommitBlockListAsync(
-                    staging.BlockIds,
-                    new CommitBlockListOptions
+                metadata = new Dictionary<string, string>(request.Metadata, StringComparer.OrdinalIgnoreCase)
+                {
+                    [request.ContentHashMetadataKey] = contentHash
+                };
+                BlobRequestConditions conditions = request.FailIfExists
+                    ? new() { IfNoneMatch = ETag.All }
+                    : string.IsNullOrWhiteSpace(request.IfMatchETag) ? null : new() { IfMatch = new ETag(request.IfMatchETag) };
+                if (request.PreservePropertiesMetadataKey is not null && !request.FailIfExists)
+                {
+                    try
+                    {
+                        var current = await blobClient.GetPropertiesAsync(conditions, cancellationToken).ConfigureAwait(false);
+                        conditions = new() { IfMatch = current.Value.ETag };
+                        if (current.Value.Metadata.TryGetValue(request.PreservePropertiesMetadataKey, out var preserved))
+                        {
+                            metadata[request.PreservePropertiesMetadataKey] = preserved;
+                        }
+                    }
+                    catch (RequestFailedException exception) when (exception.Status == 404 && string.IsNullOrWhiteSpace(request.IfMatchETag))
+                    {
+                        conditions = new() { IfNoneMatch = ETag.All };
+                    }
+                }
+
+                var metadataBytes = metadata.Sum(item => Encoding.UTF8.GetByteCount(item.Key) + Encoding.UTF8.GetByteCount(item.Value));
+                if (metadataBytes > 8192)
+                {
+                    throw new AzureBlobStoreBackendException(new BlobStoreSizeLimitExceededError(metadataBytes, 8192));
+                }
+
+                try
+                {
+                    response = await blobClient.CommitBlockListAsync(staging.BlockIds, new CommitBlockListOptions
                     {
                         HttpHeaders = new BlobHttpHeaders { ContentType = request.ContentType },
                         Metadata = metadata,
                         Tags = request.Tags,
-                        Conditions = request.FailIfExists
-                            ? new BlobRequestConditions { IfNoneMatch = ETag.All }
-                            : string.IsNullOrWhiteSpace(request.IfMatchETag)
-                                ? null
-                                : new BlobRequestConditions { IfMatch = new ETag(request.IfMatchETag) }
-                    },
-                    cancellationToken)
-                .ConfigureAwait(false);
+                        Conditions = conditions
+                    }, cancellationToken).ConfigureAwait(false);
+                    break;
+                }
+                catch (RequestFailedException exception) when (exception.Status == 412 && request.PreservePropertiesMetadataKey is not null && !request.FailIfExists && string.IsNullOrWhiteSpace(request.IfMatchETag))
+                {
+                    if (attempt == 2)
+                    {
+                        throw new AzureBlobStoreBackendException(new BlobStoreConflictError("Properties changed during blob publication."));
+                    }
+                }
+            }
 
             DateTimeOffset? createdAt = null;
             try
@@ -216,6 +250,12 @@ public partial class AzureBlobStoreProvider
             string ifMatchETag,
             CancellationToken cancellationToken)
         {
+            var metadataBytes = metadata.Sum(item => Encoding.UTF8.GetByteCount(item.Key) + Encoding.UTF8.GetByteCount(item.Value));
+            if (metadataBytes > 8192)
+            {
+                throw new AzureBlobStoreBackendException(new BlobStoreSizeLimitExceededError(metadataBytes, 8192));
+            }
+
             var blobClient = this.GetContainerClient(key.Container).GetBlobClient(key.Name);
             var before = await this.GetPropertiesSnapshotAsync(key, ifMatchETag, cancellationToken).ConfigureAwait(false);
             var requestedMetadata = new Dictionary<string, string>(metadata, StringComparer.OrdinalIgnoreCase);
@@ -467,7 +507,8 @@ public partial class AzureBlobStoreProvider
         string ExpectedContentHash,
         long? MaxBlobSize,
         string ContentHashMetadataKey,
-        string IfMatchETag = null);
+        string IfMatchETag = null,
+        string PreservePropertiesMetadataKey = null);
 
     /// <summary>
     /// Describes a committed Azure blob upload.

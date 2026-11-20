@@ -110,6 +110,8 @@
     </div>
 </div>
 
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQueryScript>())
+
 <script>
     (() => {
         const shellElement = document.getElementById('dashboard-blobs-shell');
@@ -126,6 +128,7 @@
             const root = getRoot();
             return {
                 store: root?.dataset.store || '',
+                dimensionFilter: root?.dataset.dimensionFilter || '',
                 container: root?.dataset.container || '',
                 prefix: root?.dataset.prefix || '',
                 take: root?.dataset.take || '100',
@@ -136,7 +139,7 @@
 
         function setUrl(state) {
             const url = new URL(window.location.href);
-            for (const key of ['store', 'container', 'prefix', 'take', 'continuationToken']) {
+            for (const key of ['store', 'container', 'prefix', 'take', 'continuationToken', 'dimensionFilter']) {
                 if (state[key]) {
                     url.searchParams.set(key, state[key]);
                 } else {
@@ -151,7 +154,7 @@
 
         function buildContentUrl(state) {
             const url = new URL(baseContentUrl, window.location.origin);
-            for (const key of ['store', 'container', 'prefix', 'take', 'continuationToken']) {
+            for (const key of ['store', 'container', 'prefix', 'take', 'continuationToken', 'dimensionFilter']) {
                 if (state[key]) {
                     url.searchParams.set(key, state[key]);
                 }
@@ -163,23 +166,30 @@
         }
 
         let contentController = null;
-        async function refreshContent(state, updateUrl, preserveDraft = false) {
+        async function refreshContent(state, updateUrl, preserveDraft = false, acceptQueryError = false) {
             listPending = true;
             growingList.cancel();
             refresher.cancel(); contentController?.abort();
             const controller = new AbortController(); contentController = controller;
             const previous = getState();
-            const sameSelection = ['store', 'container', 'prefix', 'take', 'allowFullScan'].every(key => String(state[key] ?? '') === String(previous[key] ?? ''));
+            const sameSelection = ['store', 'container', 'prefix', 'take', 'allowFullScan', 'dimensionFilter'].every(key => String(state[key] ?? '') === String(previous[key] ?? ''));
             try {
                 const response = await fetch(buildContentUrl(state).toString(), { cache: 'no-store', headers: { 'X-Requested-With': 'fetch' }, signal: controller.signal });
                 if (!response.ok || response.redirected || !(response.headers.get('content-type') || '').includes('text/html')) throw new Error('Blobs could not be loaded.');
                 const html = await response.text();
                 if (controller.signal.aborted || contentController !== controller) return;
-                const draft = (sameSelection || preserveDraft) ? window.bdkDashboard.captureFilterDraft(shellElement, '[data-blobs-filter-form]') : null;
+                const editedDimensionFilter = shellElement.querySelector('[name="dimensionFilter"]')?.value || '';
+                const keepDimensionDraft = editedDimensionFilter !== (state.dimensionFilter || '');
+                const draft = (sameSelection || preserveDraft || keepDimensionDraft) ? window.bdkDashboard.captureFilterDraft(shellElement, '[data-blobs-filter-form]') : null;
                 const validation = document.createElement('template'); validation.innerHTML = html;
-                if (validation.content.querySelector('[data-dashboard-query-error]')) throw new Error('Query failed');
+                const queryError = validation.content.querySelector('[data-dashboard-query-error]');
+                if (queryError && !acceptQueryError && state.store === previous.store) {
+                    window.bdkDashboard.storageDimensions.showError(shellElement, queryError.textContent.trim());
+                    throw new Error('Query failed');
+                }
                 growingList.applyResponse(shellElement, html);
                 if (draft) window.bdkDashboard.restoreFilterDraft(shellElement, '[data-blobs-filter-form]', draft);
+                window.bdkDashboard.storageDimensions.mount(shellElement);
                 if (updateUrl) setUrl(state);
                 window.bdkDashboard.clearRefreshError(shellElement);
                 document.getElementById('blobs-refresh-status').textContent = `Updated ${new Date().toISOString().slice(11, 19)} UTC`;
@@ -305,7 +315,7 @@
             refreshButtonSelector: '#blobs-refresh-now',
             storageKey: 'bdk.dashboard.blobs.refreshInterval',
             shouldRefresh: () => !growingList.busy() && contentController === null && document.querySelector('#blobs-upload-modal.show, #blobs-details-modal.show, #blobs-delete-modal.show') === null,
-            onSuccess: () => populatePrefixHistory()
+            onSuccess: () => { populatePrefixHistory(); window.bdkDashboard.storageDimensions.mount(shellElement); }
         });
 
         function showModal(id) {
@@ -412,6 +422,7 @@
             const data = new FormData(form);
             const state = {
                 store: data.get('store') || '',
+                dimensionFilter: data.get('dimensionFilter') || '',
                 container: data.get('container') || '',
                 prefix: data.get('prefix') || '',
                 take: data.get('take') || '100',
@@ -487,15 +498,17 @@
             if (command === 'clear-filter') {
                 const state = getState();
                 state.prefix = '';
+                state.dimensionFilter = '';
                 state.allowFullScan = false;
                 state.continuationToken = '';
-                await refreshContent(state, true);
+                window.bdkDashboard.storageDimensions.clear(shellElement.querySelector('[data-blobs-filter-form]'));
+                await refreshContent(state, true, false, true);
                 return;
             }
 
         });
 
-        shellElement.addEventListener('change', event => {
+        shellElement.addEventListener('change', async event => {
             if (!event.target.matches('#blobs-store, #blobs-container')) {
                 return;
             }
@@ -506,6 +519,12 @@
             }
 
             const data = new FormData(form);
+            if (event.target.name === 'store') {
+                window.bdkDashboard.storageDimensions.clear(form);
+                await refreshContent({ ...getState(), store: data.get('store') || '', container: '', prefix: '', dimensionFilter: '', continuationToken: '' }, true);
+                return;
+            }
+
             populatePrefixHistory({
                 store: data.get('store') || '',
                 container: data.get('container') || ''
@@ -539,6 +558,7 @@
         });
 
         populatePrefixHistory();
+        window.bdkDashboard.storageDimensions.mount(shellElement);
         const storedFullScan = window.bdkDashboard.state.get(fullScanStorageKey);
         if (storedFullScan === null) {
             window.bdkDashboard.state.set(fullScanStorageKey, 'true');

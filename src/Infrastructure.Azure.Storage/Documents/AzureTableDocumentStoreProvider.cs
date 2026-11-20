@@ -95,6 +95,8 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
     /// <inheritdoc />
     public async Task<Result<StoredDocumentPage>> FindPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Result<StoredDocumentPage>.Failure(new DocumentDimensionsNotSupportedError());
+
         try
         {
             var table = await this.GetTableAsync(type, cancellationToken);
@@ -123,6 +125,8 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
     /// <inheritdoc />
     public async Task<Result<DocumentKeyPage>> ListPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Result<DocumentKeyPage>.Failure(new DocumentDimensionsNotSupportedError());
+
         var result = await this.FindPageAsync(type, query, visibilityCutoff, cancellationToken);
         return result.IsFailure ? result.Wrap<DocumentKeyPage>() : Result<DocumentKeyPage>.Success(new() { Items = result.Value.Items.Select(x => x.Key).ToArray(), ContinuationToken = RebindToken("list", type, query, visibilityCutoff, result.Value.ContinuationToken) });
     }
@@ -130,6 +134,8 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
     /// <inheritdoc />
     public async Task<Result<long>> CountAsync(DocumentTypeIdentity type, DocumentCountQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Result<long>.Failure(new DocumentDimensionsNotSupportedError());
+
         var pageQuery = new DocumentQuery { DocumentKey = query?.DocumentKey, Filter = query?.Filter ?? DocumentKeyFilter.FullMatch, AllowFullScan = query?.AllowFullScan ?? false, Take = this.options.MaxTake };
         long count = 0;
         while (true)
@@ -154,6 +160,8 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
     /// <inheritdoc />
     public async Task<Result<DocumentInfo>> UpsertAsync(DocumentTypeIdentity type, StoredDocumentWrite write, CancellationToken cancellationToken = default)
     {
+        if ((write?.Dimensions is not null || write?.Options?.Dimensions is not null)) return Result<DocumentInfo>.Failure(new DocumentDimensionsNotSupportedError());
+
         var validation = DocumentWriteValidator.Validate(write.Options);
         if (validation.IsFailure) return Result<DocumentInfo>.Failure(validation);
 
@@ -164,6 +172,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
             var physical = await this.GetPhysicalAsync(table, write.Key, cancellationToken);
             if (physical.IsFailure && !physical.Errors.All(error => error is DocumentStoreNotFoundError)) return physical.Wrap<DocumentInfo>();
             if (physical.IsSuccess) current = physical.Value;
+            else if (!physical.HasError<DocumentStoreNotFoundError>()) return physical.Wrap<DocumentInfo>();
             if (write.Options.CreateOnly && current is not null) return Result<DocumentInfo>.Failure(new DocumentStoreConflictError("A physical document already exists."));
             if (current is null && !string.IsNullOrWhiteSpace(write.Options.IfMatchETag)) return Result<DocumentInfo>.Failure(new DocumentStoreConflictError("The document no longer exists."));
             var now = DateTimeOffset.UtcNow;
@@ -180,7 +189,9 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
             }
             else
             {
-                var etag = string.IsNullOrWhiteSpace(write.Options.IfMatchETag) ? ETag.All : new ETag(write.Options.IfMatchETag);
+                var etag = string.IsNullOrWhiteSpace(write.Options.IfMatchETag)
+                    ? write.Properties is null || write.PreserveExpiration ? new ETag(current.ETag) : ETag.All
+                    : new ETag(write.Options.IfMatchETag);
                 response = await table.UpdateEntityAsync(entity, etag, TableUpdateMode.Replace, cancellationToken);
             }
 
@@ -333,8 +344,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
 
         return new() { Key = new((string)entity["bdk_partition_key"], (string)entity["bdk_row_key"]), Content = stream.ToArray(), ETag = entity.ETag.ToString(), ContentHash = entity.GetValueOrDefault("bdk_content_hash") as string, StoredContentHash = entity.GetValueOrDefault("bdk_stored_content_hash") as string, CreatedAt = (DateTimeOffset)entity["bdk_created_at"], LastModifiedAt = (DateTimeOffset)entity["bdk_modified_at"], ExpiresAt = entity.GetValueOrDefault("bdk_expires_at") as DateTimeOffset?, Properties = DecodeBag(entity.GetValueOrDefault("bdk_properties") as string), TransformMetadata = DecodeBag(entity.GetValueOrDefault("bdk_transforms") as string) };
     }
-    private static DocumentInfo ToInfo(StoredDocument x) => new() { Key = x.Key, ETag = x.ETag, ContentHash = x.ContentHash, CreatedAt = x.CreatedAt, LastModifiedAt = x.LastModifiedAt, ExpiresAt = x.ExpiresAt, Properties = x.Properties.Clone() };
-
+    private static DocumentInfo ToInfo(StoredDocument x) => new() { Key = x.Key, ETag = x.ETag, ContentHash = x.ContentHash, CreatedAt = x.CreatedAt, LastModifiedAt = x.LastModifiedAt, ExpiresAt = x.ExpiresAt, Properties = DocumentPropertyValues.Clone(x.Properties) };
     private static ETag ReadCommittedETag(Response response)
     {
         return response.Headers.TryGetValue("ETag", out var etag) && !string.IsNullOrWhiteSpace(etag)

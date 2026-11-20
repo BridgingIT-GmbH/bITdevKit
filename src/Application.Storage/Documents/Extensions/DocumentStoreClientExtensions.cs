@@ -186,7 +186,7 @@ public static class DocumentStoreClientExtensions
         if (read.IsFailure) return read.Wrap<DocumentTransferResult>();
         var entry = read.Value;
         var expiration = options.ExpirationOverride ?? (options.PreserveExpiration && entry.ExpiresAt is not null ? ExpirationChange.At(entry.ExpiresAt.Value) : ExpirationChange.Clear);
-        var write = await target.UpsertAsync(targetKey, entry.Value, new() { CreateOnly = options.CreateOnly, IfMatchETag = options.IfMatchETag, Properties = options.PropertiesOverride ?? (options.PreserveProperties ? entry.Properties.Clone() : new PropertyBag()), Expiration = expiration }, cancellationToken);
+        var write = await target.UpsertAsync(targetKey, entry.Value, new() { CreateOnly = options.CreateOnly, IfMatchETag = options.IfMatchETag, Properties = options.PropertiesOverride ?? (options.PreserveProperties ? DocumentPropertyValues.Clone(entry.Properties) : new PropertyBag()), Expiration = expiration }, cancellationToken);
         return write.IsFailure ? write.Wrap<DocumentTransferResult>() : Result<DocumentTransferResult>.Success(new() { Source = entry, Target = write.Value });
     }
 
@@ -243,5 +243,5 @@ public static class DocumentStoreClientExtensions
     }
 
     private static void EnsureMaximum(int value) { if (value <= 0) throw new ArgumentOutOfRangeException(nameof(value), "MaxItems must be greater than zero."); }
-    private static DocumentQuery Copy(DocumentQuery query, string continuationToken) => new() { DocumentKey = query.DocumentKey, Filter = query.Filter, Take = query.Take, AllowFullScan = query.AllowFullScan, ContinuationToken = continuationToken };
+    private static DocumentQuery Copy(DocumentQuery query, string continuationToken) => new() { DocumentKey = query.DocumentKey, DimensionFilter = query.DimensionFilter, Filter = query.Filter, Take = query.Take, AllowFullScan = query.AllowFullScan, ContinuationToken = continuationToken };
 }

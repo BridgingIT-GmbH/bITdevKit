@@ -50,6 +50,9 @@ public sealed class MetricsDocumentStoreClientBehavior<T> : DocumentStoreClientB
     /// <inheritdoc />
     public override Task<Result<DocumentBatchResult<DocumentInfo>>> UpsertManyAsync(IReadOnlyCollection<DocumentWrite<T>> writes, CancellationToken cancellationToken = default) => this.Measure("upsert-many", () => base.UpsertManyAsync(writes, cancellationToken));
     /// <inheritdoc />
+    public override Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) => this.Measure("update-dimensions", () => base.UpdateDimensionsAsync(update, cancellationToken));
+
+    /// <inheritdoc />
     public override Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default) => this.Measure("update-properties", () => base.UpdatePropertiesAsync(update, cancellationToken));
     /// <inheritdoc />
     public override Task<Result> DeleteAsync(DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default) => this.Measure("delete", () => base.DeleteAsync(key, options, cancellationToken));

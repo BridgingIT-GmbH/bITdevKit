@@ -20,6 +20,9 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class BlobUpload
 {
+    /// <summary>Gets optional explicitly queryable Dimensions.</summary>
+    public BlobDimensions Dimensions { get; init; }
+
     /// <summary>Gets the original item ETag required for replacement; omission permits unconditional overwrite.</summary>
     /// <example><code>var expected = options.IfMatchETag;</code></example>
     public string IfMatchETag { get; init; }
@@ -76,14 +79,15 @@ public sealed class BlobUpload
     public DateTimeOffset? ExpiresAt { get; init; }
 
     /// <summary>
-    /// Gets custom application properties to store with the blob.
+    /// Gets replacement scalar application properties. Null preserves existing properties; an empty bag clears them.
     /// </summary>
     /// <example>
     /// <code>
-    /// var source = upload.Properties.Get&lt;string&gt;("source");
+    /// // Clear application properties explicitly; omit Properties to preserve them.
+    /// var clear = new PropertyBag();
     /// </code>
     /// </example>
-    public PropertyBag Properties { get; init; } = new();
+    public PropertyBag Properties { get; init; }
 
     /// <summary>
     /// Gets the overwrite behavior for the upload.
@@ -94,4 +98,6 @@ public sealed class BlobUpload
     /// </code>
     /// </example>
     public BlobOverwriteMode OverwriteMode { get; init; } = BlobOverwriteMode.Overwrite;
+
+    internal PropertyBag TransformMetadata { get; init; }
 }

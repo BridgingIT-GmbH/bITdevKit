@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -36,6 +36,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     public const string ProviderName = "Entity Framework";
 
     private readonly IServiceScopeFactory scopeFactory;
+    private readonly BlobDimensionNameResolver<TContext> dimensionNames;
     private readonly BlobStoreOptions options;
     private readonly IContinuationTokenProtector continuationTokenProtector;
     private readonly IMetricsService metricsService;
@@ -98,6 +99,8 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         string storeName = null)
     {
         this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
+        this.dimensionNames = new(scopeFactory);
+        this.Capabilities = ResolveCapabilities(scopeFactory);
         this.options = options ?? new BlobStoreOptions();
         this.continuationTokenProtector = continuationTokenProtector;
         this.metricsService = metricsService;
@@ -106,8 +109,38 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         this.storeName = string.IsNullOrWhiteSpace(storeName) ? "default" : storeName;
     }
 
+    /// <summary>Resolves engine metadata through an owned scope without opening a connection.</summary>
+    public static BlobStoreProviderCapabilities GetCapabilities(IServiceProvider services) =>
+        ResolveCapabilities(services.GetRequiredService<IServiceScopeFactory>());
+
+    private static BlobStoreProviderCapabilities ResolveCapabilities(IServiceScopeFactory scopes)
+    {
+        using var scope = scopes.CreateScope();
+        var options = scope?.ServiceProvider?.GetService<DbContextOptions<TContext>>();
+        if (options is not null)
+        {
+            var provider = options.Extensions.SingleOrDefault(extension => extension.Info.IsDatabaseProvider);
+            return CreateCapabilities(provider?.GetType().Assembly.GetName().Name);
+        }
+
+        // Direct test/host factories may register only the context, without its options service.
+        var context = scope?.ServiceProvider?.GetService<TContext>();
+        return CreateCapabilities(context?.Database.ProviderName);
+    }
+
+    private static BlobDimensionCapabilities CreateDimensionsCapabilities(string provider)
+    {
+        var qualified = provider is "Microsoft.EntityFrameworkCore.SqlServer" or "Npgsql.EntityFrameworkCore.PostgreSQL" or "Microsoft.EntityFrameworkCore.Sqlite";
+        return new()
+        {
+            SupportsDimensions = qualified,
+            SupportsQueries = qualified,
+            SupportsDecimalComparisons = qualified && provider != "Microsoft.EntityFrameworkCore.Sqlite"
+        };
+    }
+
     /// <inheritdoc />
-    public BlobStoreProviderCapabilities Capabilities { get; } = CreateCapabilities();
+    public BlobStoreProviderCapabilities Capabilities { get; }
 
     /// <inheritdoc />
     public async Task<Result<IReadOnlyList<string>>> ListContainersAsync(CancellationToken cancellationToken = default)
@@ -139,8 +172,10 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     /// var capabilities = EntityFrameworkBlobStoreProvider&lt;AppDbContext&gt;.CreateCapabilities();
     /// </code>
     /// </example>
-    public static BlobStoreProviderCapabilities CreateCapabilities() => new()
+    /// <param name="databaseProvider">The EF provider name, without connecting to the database.</param>
+    public static BlobStoreProviderCapabilities CreateCapabilities(string databaseProvider = null) => new()
     {
+        Dimensions = CreateDimensionsCapabilities(databaseProvider),
         SupportsContinuationPaging = true,
         SupportsPrefixListing = true,
         SupportsFullContainerScan = true,
@@ -158,21 +193,24 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     };
 
     /// <inheritdoc />
-    public async Task<Result<BlobInfo>> UploadAsync(
-        BlobUpload upload,
+    public async Task<Result<StoredBlobInfo>> UploadAsync(
+        StoredBlobUpload upload,
         CancellationToken cancellationToken = default)
     {
+        if (upload?.Dimensions is not null && !this.Capabilities.Dimensions.SupportsDimensions) return Result<StoredBlobInfo>.Failure(new BlobDimensionsNotSupportedError());
+
         cancellationToken.ThrowIfCancellationRequested();
 
         var validation = BlobValidator.Validate(upload, this.options);
         if (validation.IsFailure)
         {
-            return Result<BlobInfo>.Failure(validation);
+            return Result<StoredBlobInfo>.Failure(validation);
         }
 
         await using var lease = this.CreateContextLease();
         var dbContext = lease.Context;
         using var mutationGate = await AcquireMutationGateAsync(dbContext, upload.Key, cancellationToken).ConfigureAwait(false);
+        await using var dimensions = upload.Dimensions is not null ? this.dimensionNames.BeginSession() : null;
         BlobSnapshot snapshot = null;
         BlobMutationLease mutationLease = null;
         IDbContextTransaction transaction = null;
@@ -188,14 +226,14 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             if (blob is not null && upload.OverwriteMode == BlobOverwriteMode.FailIfExists)
             {
                 await this.RollbackAsync(transaction, cancellationToken).ConfigureAwait(false);
-                return Result<BlobInfo>.Failure(new BlobStoreConflictError(
+                return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError(
                     $"Blob with container '{upload.Key.Container}' and name '{upload.Key.Name}' already exists."));
             }
 
             if (!string.IsNullOrWhiteSpace(upload.IfMatchETag) && (blob is null || blob.ETag != upload.IfMatchETag))
             {
                 await this.RollbackAsync(transaction, cancellationToken).ConfigureAwait(false);
-                return Result<BlobInfo>.Failure(new BlobStoreConflictError("The blob ETag changed or the blob was deleted."));
+                return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError("The blob ETag changed or the blob was deleted."));
             }
 
             var now = DateTimeOffset.UtcNow;
@@ -225,10 +263,10 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 {
                     var latest = await this.QueryExactBlob(dbContext, key).AsNoTracking().SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
                     if (latest is null || latest.ETag != upload.IfMatchETag)
-                        return Result<BlobInfo>.Failure(new BlobStoreConflictError("The blob ETag changed."));
+                        return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError("The blob ETag changed."));
                 }
 
-                return Result<BlobInfo>.Failure(new BlobStoreLeaseError(
+                return Result<StoredBlobInfo>.Failure(new BlobStoreLeaseError(
                     $"Could not acquire blob upload lease for '{upload.Key.Container}/{upload.Key.Name}'."));
             }
 
@@ -240,7 +278,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             if (!string.IsNullOrWhiteSpace(upload.IfMatchETag) && blob.ETag != upload.IfMatchETag)
             {
                 await this.RollbackAsync(transaction, cancellationToken).ConfigureAwait(false);
-                return Result<BlobInfo>.Failure(new BlobStoreConflictError("The blob ETag changed."));
+                return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError("The blob ETag changed."));
             }
 
             await this.DeleteChunksAsync(dbContext, blob.Id, cancellationToken).ConfigureAwait(false);
@@ -258,6 +296,12 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                     "ExpectedContentHash does not match uploaded content."));
             }
 
+            if (upload.Dimensions is not null)
+            {
+                var dimensionResult = await BlobDimensionMutations.ApplyAsync(dbContext, blob, upload.Dimensions, this.dimensionNames, dimensions, cancellationToken).ConfigureAwait(false);
+                if (dimensionResult.IsFailure) throw new BlobStoreResultException(dimensionResult.Errors.First());
+            }
+
             blob.Length = contentHash.Length;
             blob.ContentHash = contentHash.Hash;
             blob.ContentTypeMimeType = upload.ContentType?.MimeType();
@@ -265,7 +309,8 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             blob.CreatedAt = createdAt;
             blob.LastModifiedAt = DateTimeOffset.UtcNow;
             blob.ExpiresAt = ToUtc(upload.ExpiresAt);
-            blob.Properties = ToDictionary(upload.Properties);
+            blob.Properties = ToDictionary(upload.Properties ?? new PropertyBag(blob.Properties));
+            blob.TransformMetadata = ToDictionary(upload.TransformMetadata);
             blob.LeaseId = null;
             blob.LeaseAcquiredBy = null;
             blob.LeaseAcquiredUntil = null;
@@ -275,16 +320,22 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
 
             if (transaction is not null)
             {
-                await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+                if (dimensions is not null)
+                {
+                    var committed = await CommitDimensionsAsync(transaction, "upload", cancellationToken).ConfigureAwait(false);
+                    if (committed.IsFailure) return Result<StoredBlobInfo>.Failure(committed);
+                }
+                else await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
             }
 
-            return Result<BlobInfo>.Success(ToInfo(blob));
+            if (dimensions is not null) this.dimensionNames.PublishCommitted(dimensions);
+            return Result<StoredBlobInfo>.Success(ToInfo(blob));
         }
         catch (BlobStoreResultException exception)
         {
             await this.RollbackAsync(transaction, CancellationToken.None).ConfigureAwait(false);
             await this.RestoreSnapshotIfNeededAsync(dbContext, snapshot, mutationLease, transaction, CancellationToken.None).ConfigureAwait(false);
-            return Result<BlobInfo>.Failure(exception.Error);
+            return Result<StoredBlobInfo>.Failure(exception.Error);
         }
         catch (OperationCanceledException)
         {
@@ -296,14 +347,14 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         {
             await this.RollbackAsync(transaction, CancellationToken.None).ConfigureAwait(false);
             await this.RestoreSnapshotIfNeededAsync(dbContext, snapshot, mutationLease, transaction, CancellationToken.None).ConfigureAwait(false);
-            return Result<BlobInfo>.Failure(new BlobStoreConflictError(
+            return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError(
                 $"Blob with container '{upload.Key.Container}' and name '{upload.Key.Name}' already exists."));
         }
         catch (Exception exception)
         {
             await this.RollbackAsync(transaction, CancellationToken.None).ConfigureAwait(false);
             await this.RestoreSnapshotIfNeededAsync(dbContext, snapshot, mutationLease, transaction, CancellationToken.None).ConfigureAwait(false);
-            return Result<BlobInfo>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result<StoredBlobInfo>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
         }
         finally
         {
@@ -315,7 +366,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     }
 
     /// <inheritdoc />
-    public async Task<Result<BlobDownload>> DownloadAsync(
+    public async Task<Result<StoredBlobDownload>> DownloadAsync(
         BlobKey key,
         CancellationToken cancellationToken = default)
     {
@@ -324,7 +375,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         var validation = BlobValidator.Validate(key);
         if (validation.IsFailure)
         {
-            return Result<BlobDownload>.Failure(validation);
+            return Result<StoredBlobDownload>.Failure(validation);
         }
 
         var lease = this.CreateContextLease();
@@ -344,7 +395,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             if (row is null)
             {
                 await lease.DisposeAsync().ConfigureAwait(false);
-                return Result<BlobDownload>.Failure(new BlobStoreNotFoundError(key));
+                return Result<StoredBlobDownload>.Failure(new BlobStoreNotFoundError(key));
             }
 
             var blob = row.Blob;
@@ -352,14 +403,14 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             {
                 await lease.DisposeAsync().ConfigureAwait(false);
 
-                return Result<BlobDownload>.Success(new BlobDownload
+                return Result<StoredBlobDownload>.Success(new StoredBlobDownload
                 {
                     Info = ToInfo(blob),
                     Content = new MemoryStream(inlineBytes, 0, inlineBytes.Length, writable: false, publiclyVisible: true)
                 });
             }
 
-            return Result<BlobDownload>.Success(new BlobDownload
+            return Result<StoredBlobDownload>.Success(new StoredBlobDownload
             {
                 Info = ToInfo(blob),
                 Content = new BlobChunkReadStream(lease, blob.Id, blob.Length)
@@ -373,7 +424,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         catch (Exception exception)
         {
             await lease.DisposeAsync().ConfigureAwait(false);
-            return Result<BlobDownload>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result<StoredBlobDownload>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
         }
     }
 
@@ -381,13 +432,13 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     public int MaxDownloadBatchSize => this.options.DownloadBatchSize;
 
     /// <inheritdoc />
-    public async Task<IReadOnlyDictionary<BlobKey, Result<BlobDownload>>> DownloadManyAsync(
+    public async Task<IReadOnlyDictionary<BlobKey, Result<StoredBlobDownload>>> DownloadManyAsync(
         IReadOnlyCollection<BlobKey> keys,
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var results = new Dictionary<BlobKey, Result<BlobDownload>>();
+        var results = new Dictionary<BlobKey, Result<StoredBlobDownload>>();
         if (keys is null || keys.Count == 0)
         {
             return results;
@@ -423,7 +474,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                     // Blobs above one chunk are left out and streamed by the single read.
                     if (TryGetInlineBytes(row, inlineLimit, out var inlineBytes))
                     {
-                        results[key] = Result<BlobDownload>.Success(new BlobDownload
+                        results[key] = Result<StoredBlobDownload>.Success(new StoredBlobDownload
                         {
                             Info = ToInfo(row.Blob),
                             Content = new MemoryStream(inlineBytes, 0, inlineBytes.Length, writable: false, publiclyVisible: true)
@@ -433,7 +484,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
 
                 foreach (var key in container.Where(key => !found.Contains(key)))
                 {
-                    results[key] = Result<BlobDownload>.Failure(new BlobStoreNotFoundError(key));
+                    results[key] = Result<StoredBlobDownload>.Failure(new BlobStoreNotFoundError(key));
                 }
             }
         }
@@ -451,14 +502,14 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     }
 
     /// <inheritdoc />
-    public async Task<Result<BlobInfo>> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken = default)
+    public async Task<Result<StoredBlobInfo>> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
         var validation = BlobValidator.Validate(key);
         if (validation.IsFailure)
         {
-            return Result<BlobInfo>.Failure(validation);
+            return Result<StoredBlobInfo>.Failure(validation);
         }
 
         await using var lease = this.CreateContextLease();
@@ -471,8 +522,8 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 .ConfigureAwait(false);
 
             return blob is null
-                ? Result<BlobInfo>.Failure(new BlobStoreNotFoundError(key))
-                : Result<BlobInfo>.Success(ToInfo(blob));
+                ? Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(key))
+                : Result<StoredBlobInfo>.Success(ToInfo(blob));
         }
         catch (OperationCanceledException)
         {
@@ -480,13 +531,13 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         }
         catch (Exception exception)
         {
-            return Result<BlobInfo>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result<StoredBlobInfo>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
         }
     }
 
     /// <inheritdoc />
-    public async Task<Result<BlobInfo>> UpdatePropertiesAsync(
-        BlobPropertiesUpdate update,
+    public async Task<Result<StoredBlobInfo>> UpdatePropertiesAsync(
+        StoredBlobPropertiesUpdate update,
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -494,7 +545,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         var validation = BlobValidator.Validate(update);
         if (validation.IsFailure)
         {
-            return Result<BlobInfo>.Failure(validation);
+            return Result<StoredBlobInfo>.Failure(validation);
         }
 
         await using var lease = this.CreateContextLease();
@@ -514,21 +565,21 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             if (blob is null)
             {
                 await this.RollbackAsync(transaction, cancellationToken).ConfigureAwait(false);
-                return Result<BlobInfo>.Failure(new BlobStoreNotFoundError(update.Key));
+                return Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(update.Key));
             }
 
             if (!string.IsNullOrWhiteSpace(update.IfMatchETag) &&
                 !string.Equals(update.IfMatchETag, blob.ETag, StringComparison.Ordinal))
             {
                 await this.RollbackAsync(transaction, cancellationToken).ConfigureAwait(false);
-                return Result<BlobInfo>.Failure(new BlobStoreConflictError(
+                return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError(
                     $"Blob ETag does not match for '{update.Key.Container}/{update.Key.Name}'."));
             }
 
             if (!await this.TryAcquireLeaseAsync(dbContext, blob, cancellationToken).ConfigureAwait(false))
             {
                 await this.RollbackAsync(transaction, cancellationToken).ConfigureAwait(false);
-                return Result<BlobInfo>.Failure(new BlobStoreLeaseError(
+                return Result<StoredBlobInfo>.Failure(new BlobStoreLeaseError(
                     $"Could not acquire blob property update lease for '{update.Key.Container}/{update.Key.Name}'."));
             }
 
@@ -538,7 +589,8 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             blob.ExpiresAt = ToUtc(update.ExpiresAt);
             blob.ETag = CreateETag();
             blob.LastModifiedAt = DateTimeOffset.UtcNow;
-            blob.Properties = ToDictionary(update.Properties);
+            blob.Properties = ToDictionary(update.Properties ?? new PropertyBag(blob.Properties));
+            blob.TransformMetadata = ToDictionary(update.TransformMetadata ?? new PropertyBag(blob.TransformMetadata));
             blob.LeaseId = null;
             blob.LeaseAcquiredBy = null;
             blob.LeaseAcquiredUntil = null;
@@ -551,7 +603,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
             }
 
-            return Result<BlobInfo>.Success(ToInfo(blob));
+            return Result<StoredBlobInfo>.Success(ToInfo(blob));
         }
         catch (OperationCanceledException)
         {
@@ -563,7 +615,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         {
             await this.RollbackAsync(transaction, CancellationToken.None).ConfigureAwait(false);
             await this.RestoreMetadataSnapshotIfNeededAsync(dbContext, snapshot, mutationLease, transaction, CancellationToken.None).ConfigureAwait(false);
-            return Result<BlobInfo>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result<StoredBlobInfo>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
         }
         finally
         {
@@ -607,8 +659,10 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     }
 
     /// <inheritdoc />
-    public async Task<Result<BlobPage>> ListPageAsync(BlobQuery query, CancellationToken cancellationToken = default)
+    public async Task<Result<StoredBlobPage>> ListPageAsync(BlobQuery query, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null && !this.Capabilities.Dimensions.SupportsQueries) return Result<StoredBlobPage>.Failure(new BlobDimensionsNotSupportedError());
+
         cancellationToken.ThrowIfCancellationRequested();
 
         var validation = BlobQueryValidator.NormalizeAndValidate(
@@ -619,7 +673,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             this.continuationTokenProtector);
         if (validation.IsFailure)
         {
-            return Result<BlobPage>.Failure(validation);
+            return Result<StoredBlobPage>.Failure(validation);
         }
 
         await using var lease = this.CreateContextLease();
@@ -634,9 +688,23 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 rows = rows.Where(e => e.Name.StartsWith(validation.Value.Query.Prefix));
             }
 
+            if (validation.Value.Query.DimensionFilter is not null)
+            {
+                var translated = await BlobDimensionQueryTranslator.ApplyAsync(lease.Context, rows, validation.Value.Query.Container,
+                    validation.Value.Query.DimensionFilter, this.Capabilities.Dimensions, this.dimensionNames, cancellationToken).ConfigureAwait(false);
+                if (translated.IsFailure) return Result<StoredBlobPage>.Failure(translated);
+                rows = translated.Value;
+            }
+
             if (!string.IsNullOrWhiteSpace(validation.Value.ContinuationToken?.Name))
             {
                 rows = rows.Where(e => string.Compare(e.Name, validation.Value.ContinuationToken.Name) > 0);
+            }
+
+            if (validation.Value.Query.DimensionFilter is not null)
+            {
+                var pageIds = rows.OrderBy(e => e.Name).Select(e => e.Id).Take(validation.Value.Take + 1);
+                rows = lease.Context.StorageBlobs.AsNoTracking().Where(e => pageIds.Contains(e.Id));
             }
 
             var pageRows = await rows
@@ -651,7 +719,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                     e.CreatedAt,
                     e.LastModifiedAt,
                     e.ExpiresAt,
-                    e.PropertiesJson))
+                    e.PropertiesJson, e.TransformMetadataJson, e.DimensionsJson))
                 .Take(validation.Value.Take + 1)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
@@ -664,7 +732,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 ? this.CreateContinuationToken(validation.Value.QueryHash, items[^1].Key)
                 : null;
 
-            return Result<BlobPage>.Success(new BlobPage
+            return Result<StoredBlobPage>.Success(new StoredBlobPage
             {
                 Items = items,
                 ContinuationToken = continuationToken
@@ -676,7 +744,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         }
         catch (Exception exception)
         {
-            return Result<BlobPage>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result<StoredBlobPage>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
         }
     }
 
@@ -740,7 +808,12 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             snapshot = transaction is null
                 ? await this.CreateSnapshotAsync(dbContext, identity, cancellationToken).ConfigureAwait(false)
                 : null;
-            await this.DeleteChunksAsync(dbContext, blob.Id, cancellationToken).ConfigureAwait(false);
+            // Relational deletes cascade to chunks. Pre-deletion can deadlock with that cascade on SQL Server.
+            if (!dbContext.Database.IsRelational())
+            {
+                await this.DeleteChunksAsync(dbContext, blob.Id, cancellationToken).ConfigureAwait(false);
+            }
+
             dbContext.StorageBlobs.Remove(blob);
             await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
@@ -793,13 +866,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var candidates = await dbContext.StorageBlobs
-                    .Where(e => e.ExpiresAt != null && e.ExpiresAt <= request.ExpiresOnOrBefore)
-                    .OrderBy(e => e.ExpiresAt)
-                    .ThenBy(e => e.Id)
-                    .Take(Math.Max(1, request.BatchSize))
-                    .ToListAsync(cancellationToken)
-                    .ConfigureAwait(false);
+                var candidates = await ReadExpiredCandidatesAsync(dbContext, request, cancellationToken).ConfigureAwait(false);
 
                 if (candidates.Count == 0)
                 {
@@ -831,7 +898,11 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                             continue;
                         }
 
-                        await this.DeleteChunksAsync(dbContext, blob.Id, cancellationToken).ConfigureAwait(false);
+                        if (!dbContext.Database.IsRelational())
+                        {
+                            await this.DeleteChunksAsync(dbContext, blob.Id, cancellationToken).ConfigureAwait(false);
+                        }
+
                         dbContext.StorageBlobs.Remove(blob);
                         await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                         deleted++;
@@ -1013,7 +1084,8 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         blob.CreatedAt = snapshot.CreatedAt;
         blob.LastModifiedAt = snapshot.LastModifiedAt;
         blob.ExpiresAt = ToUtc(snapshot.ExpiresAt);
-        blob.Properties = new Dictionary<string, object>(snapshot.Properties, StringComparer.OrdinalIgnoreCase);
+        blob.Properties = ToDictionary(new PropertyBag(snapshot.Properties));
+        blob.TransformMetadata = ToDictionary(new PropertyBag(snapshot.TransformMetadata));
         blob.LeaseId = null;
         blob.LeaseAcquiredBy = null;
         blob.LeaseAcquiredUntil = null;
@@ -1205,7 +1277,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         }
     }
 
-    private async Task<bool> TryAcquireLeaseAsync(TContext dbContext, StorageBlob blob, CancellationToken cancellationToken)
+    private async Task<bool> TryAcquireLeaseAsync(TContext dbContext, StorageBlob blob, CancellationToken cancellationToken, bool reload = true)
     {
         var now = DateTimeOffset.UtcNow;
         var owner = this.GetLeaseOwner();
@@ -1233,7 +1305,25 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 return false;
             }
 
-            await dbContext.Entry(blob).ReloadAsync(cancellationToken).ConfigureAwait(false);
+            if (reload)
+            {
+                await dbContext.Entry(blob).ReloadAsync(cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                // The version predicate proves the loaded metadata is current; adopt only the lease fields just written.
+                var lease = new
+                {
+                    LeaseId = leaseId,
+                    LeaseAcquiredBy = owner,
+                    LeaseAcquiredUntil = (DateTimeOffset?)leaseUntil,
+                    ConcurrencyVersion = nextVersion
+                };
+                var entry = dbContext.Entry(blob);
+                entry.CurrentValues.SetValues(lease);
+                entry.OriginalValues.SetValues(lease);
+            }
+
             return true;
         }
 
@@ -1326,7 +1416,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     private static DateTimeOffset? ToUtc(DateTimeOffset? value) => value?.ToUniversalTime();
 
     private static IDictionary<string, object> ToDictionary(PropertyBag properties) =>
-        properties?.ToDictionary(item => item.Key, item => item.Value, StringComparer.OrdinalIgnoreCase) ??
+        BlobPropertyValues.Clone(properties)?.ToDictionary(item => item.Key, item => item.Value, StringComparer.OrdinalIgnoreCase) ??
         new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
     private static PropertyBag ToPropertyBag(IDictionary<string, object> properties) =>
@@ -1339,11 +1429,12 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             return new PropertyBag();
         }
 
-        return JsonSerializer.Deserialize<PropertyBag>(propertiesJson, DefaultJsonSerializerOptions.Create()) ?? new();
+        return BlobPropertyValues.Deserialize(propertiesJson);
     }
 
-    private static BlobInfo ToInfo(StorageBlob blob) => new()
+    private static StoredBlobInfo ToInfo(StorageBlob blob) => new()
     {
+        Dimensions = ReadDimensions(blob.DimensionsJson),
         Key = new BlobKey(blob.Container, blob.Name),
         Length = blob.Length,
         ContentType = string.IsNullOrWhiteSpace(blob.ContentTypeMimeType)
@@ -1354,11 +1445,13 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         CreatedAt = blob.CreatedAt,
         LastModifiedAt = blob.LastModifiedAt,
         ExpiresAt = ToUtc(blob.ExpiresAt),
-        Properties = ToPropertyBag(blob.Properties)
+        Properties = ToPropertyBag(blob.Properties),
+        TransformMetadata = ToPropertyBag(blob.TransformMetadata)
     };
 
-    private static BlobInfo ToInfo(BlobInfoProjection blob) => new()
+    private static StoredBlobInfo ToInfo(BlobInfoProjection blob) => new()
     {
+        Dimensions = ReadDimensions(blob.DimensionsJson),
         Key = new BlobKey(blob.Container, blob.Name),
         Length = blob.Length,
         ContentType = string.IsNullOrWhiteSpace(blob.ContentTypeMimeType)
@@ -1369,7 +1462,8 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         CreatedAt = blob.CreatedAt,
         LastModifiedAt = blob.LastModifiedAt,
         ExpiresAt = ToUtc(blob.ExpiresAt),
-        Properties = ToPropertyBag(blob.PropertiesJson)
+        Properties = ToPropertyBag(blob.PropertiesJson),
+        TransformMetadata = ToPropertyBag(blob.TransformMetadataJson)
     };
 
     private string CreateContinuationToken(string queryHash, BlobKey lastKey)
@@ -1388,6 +1482,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     private static StorageBlob CloneBlob(StorageBlob blob) => new()
     {
         Id = blob.Id,
+        DimensionsJson = blob.DimensionsJson,
         Container = blob.Container,
         Name = blob.Name,
         ContainerHash = blob.ContainerHash,
@@ -1399,7 +1494,8 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         CreatedAt = blob.CreatedAt,
         LastModifiedAt = blob.LastModifiedAt,
         ExpiresAt = ToUtc(blob.ExpiresAt),
-        Properties = new Dictionary<string, object>(blob.Properties, StringComparer.OrdinalIgnoreCase),
+        Properties = ToDictionary(new PropertyBag(blob.Properties)),
+        TransformMetadata = ToDictionary(new PropertyBag(blob.TransformMetadata)),
         LeaseId = blob.LeaseId,
         LeaseAcquiredBy = blob.LeaseAcquiredBy,
         LeaseAcquiredUntil = blob.LeaseAcquiredUntil,
@@ -1422,7 +1518,9 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         DateTimeOffset CreatedAt,
         DateTimeOffset LastModifiedAt,
         DateTimeOffset? ExpiresAt,
-        string PropertiesJson);
+        string PropertiesJson,
+        string TransformMetadataJson,
+        string DimensionsJson);
 
     private sealed record BlobMutationLease(string BlobId, string LeaseId, Guid ConcurrencyVersion);
 

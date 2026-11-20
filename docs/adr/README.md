@@ -63,6 +63,8 @@ We use the **MADR (Markdown Architectural Decision Records)** format for consist
 | [ADR-0041](0041-strict-authoritative-hot-cache-validation.md) | Validate Every Hot Cache Reuse Authoritatively | Accepted |
 | [ADR-0042](0042-cache-owned-background-workers.md) | Keep Cache Scheduling in Cache-Owned Workers | Accepted |
 | [ADR-0043](0043-native-blazor-appstate-lifecycle.md) | Integrate AppState With Native Blazor Persistence | Accepted |
+| [ADR-0044](0044-independent-storage-dimensions.md) | Add Feature-Owned Storage Dimensions | Accepted |
+| [ADR-0045](0045-bounded-attempt-all-blob-upload-batches.md) | Coordinate Bounded Blob Upload Batches | Accepted |
 
 ## When to Write an ADR
 

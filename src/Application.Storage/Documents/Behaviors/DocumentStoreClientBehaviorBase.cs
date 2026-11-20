@@ -34,6 +34,9 @@ public abstract class DocumentStoreClientBehaviorBase<T>(IDocumentStoreClient<T>
     /// <inheritdoc />
     public virtual Task<Result<DocumentBatchResult<DocumentInfo>>> UpsertManyAsync(IReadOnlyCollection<DocumentWrite<T>> writes, CancellationToken cancellationToken = default) => this.Inner.UpsertManyAsync(writes, cancellationToken);
     /// <inheritdoc />
+    public virtual Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) => this.Inner.UpdateDimensionsAsync(update, cancellationToken);
+
+    /// <inheritdoc />
     public virtual Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default) => this.Inner.UpdatePropertiesAsync(update, cancellationToken);
     /// <inheritdoc />
     public virtual Task<Result> DeleteAsync(DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default) => this.Inner.DeleteAsync(key, options, cancellationToken);

@@ -16,7 +16,7 @@ using HttpResult = Microsoft.AspNetCore.Http.IResult;
 /// <summary>Exposes registered typed document clients through protected maintenance REST endpoints.</summary>
 /// <remarks>Enable this group with <c>AddMaintenanceEndpoints</c> or <c>AddDocumentStorageMaintenanceEndpoints</c>. Assembly discovery alone leaves it disabled.</remarks>
 /// <example><code>services.AddDocumentStorage().AddMaintenanceEndpoints(options => options.RequireAuthorization());</code></example>
-public sealed class DocumentStorageMaintenanceEndpoints(DocumentStorageMaintenanceEndpointsOptions options = null) : EndpointsBase
+public sealed partial class DocumentStorageMaintenanceEndpoints(DocumentStorageMaintenanceEndpointsOptions options = null) : EndpointsBase
 {
     private const string RouteNamePrefix = "_bdk.Storage.Documents.Maintenance";
     private readonly DocumentStorageMaintenanceEndpointsOptions options = options ?? new() { Enabled = false };
@@ -74,6 +74,8 @@ public sealed class DocumentStorageMaintenanceEndpoints(DocumentStorageMaintenan
         Describe(group.MapDelete("{clientId}/documents", (string clientId, [FromQuery] string partitionKey, [FromQuery] string rowKey, [FromHeader(Name = "If-Match")] string ifMatchETag, [FromServices] IDocumentStoreClientFactory factory, CancellationToken cancellationToken) =>
             DeleteAsync(factory, clientId, new(partitionKey, rowKey), ifMatchETag, cancellationToken)), "Delete", "Delete a document with an optional ETag condition")
             .Produces(StatusCodes.Status200OK);
+
+        this.MapDimensions(group);
 
         this.IsRegistered = true;
     }
@@ -139,6 +141,7 @@ public sealed class DocumentStorageMaintenanceEndpoints(DocumentStorageMaintenan
             CreateOnly = createOnly,
             IfMatchETag = condition.Value,
             Properties = properties.Value,
+            Dimensions = request.Dimensions,
             Expiration = expiration.Value
         }, cancellationToken).ConfigureAwait(false);
         if (result.IsFailure) return MapFailure(result);
@@ -182,6 +185,7 @@ public sealed class DocumentStorageMaintenanceEndpoints(DocumentStorageMaintenan
     private static DocumentStorageDocumentInfoModel MapInfo(DocumentInfo info) => new()
     {
         Key = info.Key,
+        Dimensions = info.Dimensions,
         ETag = info.ETag,
         ContentHash = info.ContentHash,
         ContentLength = info.ContentLength,
@@ -203,7 +207,7 @@ public sealed class DocumentStorageMaintenanceEndpoints(DocumentStorageMaintenan
             DocumentStoreConflictError => StatusCodes.Status409Conflict,
             DocumentStoreSizeLimitError => StatusCodes.Status413PayloadTooLarge,
             DocumentStoreTimeoutError => StatusCodes.Status408RequestTimeout,
-            ValidationError or DocumentStoreInvalidQueryError or DocumentStorePageSizeExceededError or
+            ValidationError or DocumentDimensionsNotSupportedError or DocumentStoreInvalidQueryError or DocumentStorePageSizeExceededError or
                 DocumentStoreFullScanNotAllowedError or DocumentStoreQueryNotSupportedError or
                 DocumentStoreClientSideFilteringRejectedError or DocumentStoreInvalidContinuationTokenError or
                 DocumentStoreContinuationTokenQueryMismatchError => StatusCodes.Status400BadRequest,

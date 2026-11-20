@@ -118,6 +118,13 @@ internal sealed class RecordingAzureBlobStoreBackend : AzureBlobStoreProvider
             var now = DateTimeOffset.UtcNow;
             var metadata = Clone(request.Metadata);
             metadata[request.ContentHashMetadataKey] = contentHash;
+            if (request.PreservePropertiesMetadataKey is not null &&
+                this.entries.TryGetValue(key, out var preservedEntry) &&
+                preservedEntry.Metadata.TryGetValue(request.PreservePropertiesMetadataKey, out var preserved))
+            {
+                metadata[request.PreservePropertiesMetadataKey] = preserved;
+            }
+
             var entry = new Entry
             {
                 Content = target.ToArray(),

@@ -19,6 +19,8 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class BlobQueryBuilder
 {
+    private BlobDimensionFilter dimensionFilter;
+
     private string container;
     private string prefix;
     private int? take;
@@ -137,6 +139,13 @@ public sealed class BlobQueryBuilder
         return this;
     }
 
+    /// <summary>Adds predicates over explicitly indexed Dimensions.</summary>
+    public BlobQueryBuilder WhereDimensions(BlobDimensionFilter filter)
+    {
+        this.dimensionFilter = filter ?? throw new ArgumentNullException(nameof(filter));
+        return this;
+    }
+
     /// <summary>
     /// Builds the query model.
     /// </summary>
@@ -152,6 +161,7 @@ public sealed class BlobQueryBuilder
         Prefix = this.prefix,
         Take = this.take,
         ContinuationToken = this.continuationToken,
+        DimensionFilter = this.dimensionFilter,
         AllowFullScan = this.allowFullScan
     };
 }

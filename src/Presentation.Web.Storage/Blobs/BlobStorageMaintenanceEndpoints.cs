@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -29,7 +29,7 @@ using HttpResult = Microsoft.AspNetCore.Http.IResult;
 ///     .AddMaintenanceEndpoints(options => options.RequireAuthorization());
 /// </code>
 /// </example>
-public sealed class BlobStorageMaintenanceEndpoints(
+public sealed partial class BlobStorageMaintenanceEndpoints(
     ILoggerFactory loggerFactory,
     BlobStorageMaintenanceEndpointsOptions options = null) : EndpointsBase
 {
@@ -154,6 +154,8 @@ public sealed class BlobStorageMaintenanceEndpoints(
             .WithSummary("Delete a blob")
             .WithDescription("Deletes a blob by exact key. Deleting a missing blob follows the configured blob client contract.");
 
+        this.MapDimensions(group);
+
         this.IsRegistered = true;
     }
 
@@ -260,7 +262,17 @@ public sealed class BlobStorageMaintenanceEndpoints(
             return MapFailure(condition, $"{container}/{name}");
         }
 
-        var properties = HttpMetadata.ParseProperties(propertiesJson);
+        BlobDimensions dimensions = null;
+        if (context.Request.Headers.TryGetValue("X-Storage-Dimensions", out var rawDimensions))
+        {
+            if (DimensionsHeadersTooLarge(context))
+                return Results.Problem("The request headers exceed the hosting limit. Reduce Dimensions metadata or configure a larger request-header limit.", statusCode: StatusCodes.Status431RequestHeaderFieldsTooLarge);
+            var parsed = BlobStorageDimensionsJson.Parse(rawDimensions.ToString());
+            if (parsed.IsFailure) return MapFailure(parsed, "dimensions");
+            dimensions = parsed.Value;
+        }
+
+        var properties = HttpMetadata.ParseProperties(propertiesJson, preserveMissing: true);
         if (properties.IsFailure)
         {
             return MapFailure(properties, $"{container}/{name}");
@@ -274,6 +286,7 @@ public sealed class BlobStorageMaintenanceEndpoints(
                 ? null
                 : ContentTypeExtensions.FromMimeType(context.Request.ContentType.Split(';')[0].Trim(), ContentType.DEFAULT),
             Properties = properties.Value,
+            Dimensions = dimensions,
             ExpiresAt = expiresAt,
             IfMatchETag = condition.Value,
             OverwriteMode = createOnly ? BlobOverwriteMode.FailIfExists : BlobOverwriteMode.Overwrite
@@ -314,7 +327,7 @@ public sealed class BlobStorageMaintenanceEndpoints(
             return MapFailure(condition, $"{request.Container}/{request.Name}");
         }
 
-        var properties = HttpMetadata.ParseProperties(JsonSerializer.Serialize(request.Properties));
+        var properties = HttpMetadata.ParseProperties(JsonSerializer.Serialize(request.Properties), preserveMissing: true);
         if (properties.IsFailure)
         {
             return MapFailure(properties, $"{request.Container}/{request.Name}");
@@ -439,6 +452,7 @@ public sealed class BlobStorageMaintenanceEndpoints(
         new()
         {
             Container = info.Key?.Container,
+            Dimensions = info.Dimensions,
             Name = info.Key?.Name,
             Length = info.Length,
             ContentType = info.ContentType?.MimeType(),
@@ -468,7 +482,7 @@ public sealed class BlobStorageMaintenanceEndpoints(
         return error switch
         {
             ValidationError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
-            BlobStoreValidationError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
+            BlobStoreValidationError or BlobDimensionsNotSupportedError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             BlobStoreQueryTooBroadError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             BlobStorePageSizeExceededError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             BlobStoreInvalidContinuationTokenError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),

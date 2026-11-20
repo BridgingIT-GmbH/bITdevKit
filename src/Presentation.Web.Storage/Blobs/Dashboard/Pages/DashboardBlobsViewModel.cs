@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web.Storage.Blobs.Dashboard.Pages;
 
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Presentation.Web.Storage.Models;
 
 /// <summary>
@@ -18,6 +19,15 @@ using BridgingIT.DevKit.Presentation.Web.Storage.Models;
 /// </example>
 public sealed class DashboardBlobsViewModel
 {
+    /// <summary>Gets or sets the applied Dimension filter in its feature-owned transport format.</summary>
+    public string DimensionFilterJson { get; set; }
+
+    /// <summary>Gets or sets the validated Dimension filter used for this request.</summary>
+    public BlobDimensionFilter DimensionFilter { get; set; }
+
+    /// <summary>Gets or sets Dimension query capabilities for the selected provider.</summary>
+    public BlobDimensionCapabilities DimensionCapabilities { get; set; } = new();
+
     /// <summary>
     /// Gets or sets the captured at utc.
     /// </summary>

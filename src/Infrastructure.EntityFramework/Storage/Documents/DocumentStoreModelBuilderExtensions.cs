@@ -45,4 +45,18 @@ public static class DocumentStoreModelBuilderExtensions
 
         return modelBuilder;
     }
+
+    /// <summary>Excludes relational Dimensions members from a Cosmos document model.</summary>
+    /// <param name="modelBuilder">The Cosmos context model builder.</param>
+    /// <returns>The model builder for chaining.</returns>
+    /// <remarks>Call only for Cosmos. SQL providers discover Dimensions through annotations.</remarks>
+    /// <example><code>if (Database.IsCosmos()) modelBuilder.ExcludeDocumentDimensions();</code></example>
+    public static ModelBuilder ExcludeDocumentDimensions(this ModelBuilder modelBuilder)
+    {
+        ArgumentNullException.ThrowIfNull(modelBuilder);
+        modelBuilder.Entity<StorageDocument>().Ignore(owner => owner.DimensionValues);
+        modelBuilder.Entity<StorageDocument>().Ignore(owner => owner.DimensionsJson);
+        return modelBuilder;
+    }
+
 }

@@ -114,7 +114,7 @@ public sealed class AzureBlobStoreProviderTests
         await sut.UploadAsync(CreateUpload("original"));
 
         // Act
-        var result = await sut.UploadAsync(new BlobUpload
+        var result = await sut.UploadAsync(new StoredBlobUpload
         {
             Key = new BlobKey("reports", "file.txt"),
             Content = new NonSeekableReadStream(Encoding.UTF8.GetBytes("content")),
@@ -140,7 +140,7 @@ public sealed class AzureBlobStoreProviderTests
         using var cancellation = new CancellationTokenSource();
 
         // Act
-        var action = async () => await sut.UploadAsync(new BlobUpload
+        var action = async () => await sut.UploadAsync(new StoredBlobUpload
         {
             Key = new BlobKey("reports", "file.txt"),
             Content = new CancelAfterFirstReadStream(Encoding.UTF8.GetBytes("replacement"), cancellation)
@@ -154,14 +154,14 @@ public sealed class AzureBlobStoreProviderTests
     }
 
     [Fact]
-    public async Task UploadAsync_WithReservedMetadataKey_ReturnsSerializationError()
+    public async Task UploadAsync_WithSystemLikePropertyName_KeepsItAsApplicationData()
     {
         // Arrange
         var backend = new RecordingAzureBlobStoreBackend();
         var sut = CreateProvider(backend);
 
         // Act
-        var result = await sut.UploadAsync(new BlobUpload
+        var result = await sut.UploadAsync(new StoredBlobUpload
         {
             Key = new BlobKey("reports", "file.txt"),
             Content = new MemoryStream(Encoding.UTF8.GetBytes("content")),
@@ -172,20 +172,21 @@ public sealed class AzureBlobStoreProviderTests
         });
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
-        result.HasError<BlobStoreSerializationError>().ShouldBeTrue();
-        backend.UploadCalls.ShouldBe(0);
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.Properties.Get<string>("bdk_contenthash").ShouldBe("caller-value");
+        backend.LastMetadata["bdk_contenthash"].ShouldStartWith(BlobContentHash.Prefix);
+        backend.LastMetadata.ShouldContainKey("bdk_properties");
     }
 
     [Fact]
-    public async Task UploadAsync_WithComplexMetadataValue_ReturnsSerializationError()
+    public async Task UploadAsync_WithComplexMetadataValue_ReturnsValidationError()
     {
         // Arrange
         var backend = new RecordingAzureBlobStoreBackend();
         var sut = CreateProvider(backend);
 
         // Act
-        var result = await sut.UploadAsync(new BlobUpload
+        var result = await sut.UploadAsync(new StoredBlobUpload
         {
             Key = new BlobKey("reports", "file.txt"),
             Content = new MemoryStream(Encoding.UTF8.GetBytes("content")),
@@ -197,7 +198,7 @@ public sealed class AzureBlobStoreProviderTests
 
         // Assert
         result.IsFailure.ShouldBeTrue();
-        result.HasError<BlobStoreSerializationError>().ShouldBeTrue();
+        result.HasError<BlobStoreValidationError>().ShouldBeTrue();
         backend.UploadCalls.ShouldBe(0);
     }
 
@@ -228,7 +229,7 @@ public sealed class AzureBlobStoreProviderTests
         var upload = await sut.UploadAsync(CreateUpload("content"));
 
         // Act
-        var update = await sut.UpdatePropertiesAsync(new BlobPropertiesUpdate
+        var update = await sut.UpdatePropertiesAsync(new StoredBlobPropertiesUpdate
         {
             Key = new BlobKey("reports", "file.txt"),
             ContentType = ContentType.JSON,
@@ -264,7 +265,7 @@ public sealed class AzureBlobStoreProviderTests
         var expiresAt = DateTimeOffset.UtcNow.AddDays(2);
 
         // Act
-        var update = await sut.UpdatePropertiesAsync(new BlobPropertiesUpdate
+        var update = await sut.UpdatePropertiesAsync(new StoredBlobPropertiesUpdate
         {
             Key = new BlobKey("reports", "file.txt"),
             ContentType = ContentType.JSON,
@@ -364,13 +365,13 @@ public sealed class AzureBlobStoreProviderTests
         var backend = new RecordingAzureBlobStoreBackend();
         var sut = CreateProvider(backend);
         var now = DateTimeOffset.UtcNow;
-        await sut.UploadAsync(new BlobUpload
+        await sut.UploadAsync(new StoredBlobUpload
         {
             Key = new BlobKey("reports", "expired.txt"),
             Content = new MemoryStream(Encoding.UTF8.GetBytes("expired")),
             ExpiresAt = now.AddMinutes(-1)
         });
-        await sut.UploadAsync(new BlobUpload
+        await sut.UploadAsync(new StoredBlobUpload
         {
             Key = new BlobKey("reports", "future.txt"),
             Content = new MemoryStream(Encoding.UTF8.GetBytes("future")),
@@ -400,7 +401,7 @@ public sealed class AzureBlobStoreProviderTests
     private static AzureBlobStoreProvider CreateProvider(
         RecordingAzureBlobStoreBackend backend) => backend;
 
-    private static BlobUpload CreateUpload(
+    private static StoredBlobUpload CreateUpload(
         string content,
         string name = "file.txt",
         BlobOverwriteMode overwriteMode = BlobOverwriteMode.Overwrite,

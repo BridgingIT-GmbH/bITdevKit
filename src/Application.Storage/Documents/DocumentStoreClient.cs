@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 
 namespace BridgingIT.DevKit.Application.Storage;
@@ -226,6 +226,8 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
             return Result<DocumentBatchResult<DocumentInfo>>.Failure(new DocumentStoreInvalidQueryError("Writes must not be null."));
         }
 
+        if (writes.Any(write => write?.Options?.Dimensions is not null) && this.Provider.Capabilities?.Dimensions?.SupportsDimensions != true)
+            return Result<DocumentBatchResult<DocumentInfo>>.Failure(new DocumentDimensionsNotSupportedError());
         var materialized = writes.ToArray();
         if (materialized.Any(x => x is null || ValidateKey(x.Key).IsFailure || x.Value is null))
         {
@@ -247,12 +249,13 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
             var result = await this.UpsertAsync(write.Key, write.Value, write.Options, cancellationToken);
             if (result.IsFailure)
             {
-                return Result<DocumentBatchResult<DocumentInfo>>.Success(new()
+                var prefix = Result<DocumentBatchResult<DocumentInfo>>.Success(new()
                 {
                     Items = completed,
                     FailedKey = write.Key,
                     FailedKeys = [write.Key]
                 }).WithMessages(result.Messages);
+                return result.HasError<DocumentStoreIndeterminateOperationError>() ? prefix.WithErrors(result.Errors) : prefix;
             }
 
             completed.Add(result.Value);
@@ -290,7 +293,11 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
             var batch = await bulkProvider.UpsertManyAsync(this.type, prepared.Select(x => x.Write).ToArray(), cancellationToken);
             if (batch.IsFailure)
             {
-                return batch;
+                if (batch.Value is not { } prefix) return batch;
+                return Result<DocumentBatchResult<DocumentInfo>>.Failure(prefix with
+                {
+                    Items = prefix.Items.Select((item, index) => item with { ContentLength = prepared[index].ContentLength }).ToArray()
+                }).WithErrors(batch.Errors).WithMessages(batch.Messages);
             }
 
             for (var index = 0; index < batch.Value.Items.Count; index++)
@@ -336,9 +343,18 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
             return Result<PreparedWrite>.Failure(new DocumentStoreInvalidQueryError("Document value must not be null."));
         }
 
+        if (options?.Dimensions is not null && !this.Provider.Capabilities.Dimensions.SupportsDimensions)
+            return Result<PreparedWrite>.Failure(new DocumentDimensionsNotSupportedError());
         options ??= new DocumentWriteOptions();
         var condition = DocumentWriteValidator.Validate(options);
         if (condition.IsFailure) return Result<PreparedWrite>.Failure(condition);
+        var applicationProperties = DocumentPropertyValues.Clone(options.Properties);
+        var propertiesValidation = DocumentPropertyValues.Validate(applicationProperties);
+        if (propertiesValidation.IsFailure)
+        {
+            return Result<PreparedWrite>.Failure(propertiesValidation);
+        }
+
         try
         {
             using var stream = new MemoryStream();
@@ -384,7 +400,8 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
                     ContentHash = hash,
                     StoredContentHash = storedHash,
                     TransformMetadata = transformMetadata,
-                    Properties = options.Properties?.Clone(),
+                    Dimensions = options.Dimensions,
+                    Properties = applicationProperties,
                     ExpiresAt = expiration,
                     PreserveExpiration = options.Expiration.Mode == ExpirationChangeMode.Preserve,
                     Options = options
@@ -400,6 +417,17 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
     private sealed record PreparedWrite(StoredDocumentWrite Write, long ContentLength);
 
     /// <inheritdoc />
+    public Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default)
+    {
+        if (!this.Provider.Capabilities.Dimensions.SupportsDimensions)
+            return Task.FromResult(Result<DocumentInfo>.Failure(new DocumentDimensionsNotSupportedError()));
+        if (update is null || update.Dimensions is null || ValidateKey(update.Key).IsFailure)
+            return Task.FromResult(Result<DocumentInfo>.Failure(new DocumentStoreInvalidQueryError("Dimension update key and replacement collection are required.")));
+        var condition = DocumentWriteValidator.Validate(new DocumentDeleteOptions { IfMatchETag = update.IfMatchETag });
+        return condition.IsFailure ? Task.FromResult(Result<DocumentInfo>.Failure(condition)) : this.Provider.UpdateDimensionsAsync(this.type, update, cancellationToken);
+    }
+
+    /// <inheritdoc />
     public Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default)
     {
         if (update is null || ValidateKey(update.Key).IsFailure)
@@ -409,11 +437,17 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
 
         var condition = DocumentWriteValidator.Validate(update);
         if (condition.IsFailure) return Task.FromResult(Result<DocumentInfo>.Failure(condition));
+        var properties = DocumentPropertyValues.Clone(update.Properties);
+        var propertiesValidation = DocumentPropertyValues.Validate(properties);
+        if (propertiesValidation.IsFailure)
+        {
+            return Task.FromResult(Result<DocumentInfo>.Failure(propertiesValidation));
+        }
 
         var expiresAt = ExpirationHelper.Resolve(update.Expiration, null, this.timeProvider);
         return this.Provider.UpdatePropertiesAsync(
             this.type,
-            update with { Properties = update.Properties?.Clone() },
+            update with { Properties = properties },
             expiresAt,
             update.Expiration.Mode == ExpirationChangeMode.Preserve,
             cancellationToken);
@@ -500,7 +534,7 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
                     return Result<DocumentEntry<T>>.Failure(new DocumentStoreSerializationError($"Document transform '{descriptor.Id}' is not registered."));
                 }
 
-                logicalContent = await transform.ReadAsync(logicalContent, descriptor.Properties.Clone(), cancellationToken);
+                logicalContent = await transform.ReadAsync(logicalContent, DocumentPropertyValues.Clone(descriptor.Properties), cancellationToken);
             }
 
             if (envelope.LogicalLength != logicalContent.LongLength ||
@@ -523,7 +557,8 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
                     CreatedAt = stored.CreatedAt,
                     LastModifiedAt = stored.LastModifiedAt,
                     ExpiresAt = stored.ExpiresAt,
-                    Properties = stored.Properties?.Clone() ?? new PropertyBag()
+                    Dimensions = stored.Dimensions,
+                    Properties = DocumentPropertyValues.Clone(stored.Properties) ?? new PropertyBag()
                 });
         }
         catch (OperationCanceledException)

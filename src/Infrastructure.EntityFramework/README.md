@@ -18,6 +18,16 @@ the [CHANGELOG](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/CHAN
 
 Join us in advancing the world of software development with the bITDevKit!
 
+## Storage Dimensions
+
+The relational blob and document providers discover their own annotated name/value tables from the existing parent navigations. `IBlobStoreContext` and `IDocumentStoreContext` require no extra sets or SQL model-builder configuration. Generate host-owned migrations separately for SQL Server, PostgreSQL, and SQLite; no backfill worker is supplied.
+
+Each feature keeps a nullable typed snapshot on the parent and three ordinary search indexes on its value table. Names register automatically and remain retained after owner deletion. Name caches are bounded per provider instance. Recreate the provider, or quiesce operations and call `ClearDimensionNameCache()`, after external catalog recreation.
+
+Dimension values are searchable database metadata in plaintext. Payload encryption does not encrypt their searchable representations. EF Cosmos is unsupported and excludes the two relational document members with `modelBuilder.ExcludeDocumentDimensions()`.
+
+See the [blob](../../docs/features-storage-blobs.md#queryable-dimensions) and [document](../../docs/features-storage-documents.md#queryable-dimensions) guides. Volume qualification remains incomplete.
+
 ## Advanced Application Caching
 
 The optional complete `EntityFramework` cache provider belongs to `Application.Caching`. It is independent of existing minimal `Common.Caching`, Blob/Document Storage, and Key/Value Storage. One database contains cache metadata, indexes, payloads/chunks, source ownership, reader protection, and invalidation fences.
@@ -60,3 +70,18 @@ Avoid `EnableRetryOnFailure` or another automatic mutation execution strategy fo
 A central provider alone does not select shared source coalescing. `NodeLocal` is the collection default. Select `SharedStore` when one confirmed source owner across web nodes is required. Provider authority failure then starts no new source execution. Hot retention, when enabled, still validates the database on every reuse.
 
 Use the [common provider benchmark workloads](../../benchmarks/Application.Benchmarks/Caching/README.md) and [recorded profiles](../../benchmarks/Application.Benchmarks/Caching/RESULTS.md) for matching engine/payload/concurrency measurements. Local SQLite success does not supply SQL Server/PostgreSQL performance, network-failure, or native cancellation evidence.
+## Storage properties
+
+Blob and document `Properties` are optional scalar metadata. Null preserves the existing bag on replacement/update, an empty bag clears it, and a non-empty bag replaces it. Inserts without properties return an empty bag. Typed .NET calls preserve the `PropertyBagScalarCodec` scalar types and copy byte arrays. HTTP retains ordinary JSON semantics. Transform metadata is separate from application properties. Properties are not indexed; use the separate Dimensions collections for indexed metadata queries.
+
+The blob provider contracts and persisted blob formats have changed. Use newly created storage; this refactor supplies no migrations, backfill, or compatibility readers. See the [blob guide](../../docs/features-storage-blobs.md#properties) and [document guide](../../docs/features-storage-documents.md).
+
+## Storage Dimensions
+
+The EF blob and document providers implement independent optional Dimensions on SQL Server, PostgreSQL, and SQLite. Every accepted scalar is indexed automatically. Applications supply names and values; the database generates dictionary IDs. Standard EF annotations discover each feature's name/value tables through the parent navigations, with no new context sets or SQL model-builder calls.
+
+Values support `int`, exact `decimal(18,6)`, `bool`, Unicode string, UTC `DateTime`, and explicit null. Strings compare exactly and accept at most 256 UTF-8 bytes. SQLite supports decimal equality only; SQL Server and PostgreSQL also support decimal ranges. Inspect the effective provider capabilities before accepting Dimensions. Unsupported EF engines reject explicit Dimensions, including empty collections, before I/O. EF Cosmos document contexts use `ExcludeDocumentDimensions()` in their Cosmos-specific model configuration.
+
+Omitted replacement input preserves Dimensions; empty clears them. Dimensions-only updates preserve payload bytes and use the existing whole-item ETag. Name registration, value changes, the parent snapshot, and its version commit atomically. Relational owner deletion cascades to values and content chunks while retaining dictionary names. The chunk composite primary key enforces uniqueness without a duplicate secondary index.
+
+Runtime support is implemented; server volume qualification remains incomplete. See the [blob Dimensions guide](../../docs/features-storage-blobs.md#queryable-dimensions), [document Dimensions guide](../../docs/features-storage-documents.md#queryable-dimensions), and [implementation plan](../../plan/pln-feature-storage-dimensions-1.md) for contracts, setup, measured scaling, and remaining acceptance checks.

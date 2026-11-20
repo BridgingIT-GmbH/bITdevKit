@@ -20,6 +20,36 @@ public static class Program
     /// <example><code>$env:BDK_CACHE_BENCH_TIMEOUT_SECONDS = '900'; dotnet run -c Release --project benchmarks/Application.Benchmarks -- --filter '*CacheProviderBenchmarks.GetHitAsync*'</code></example>
     public static void Main(string[] args)
     {
+        if (args.Contains("--storage-random-reads") || args.Contains("--storage-item-writes"))
+        {
+            Environment.ExitCode = StorageDimensionsQualification.RunAsync(args).GetAwaiter().GetResult();
+            return;
+        }
+
+        if (args.Contains("--storage-dimensions-scheduler-proof"))
+        {
+            Environment.ExitCode = StorageDimensionsQualification.VerifyOfferedSchedulerAsync(args).GetAwaiter().GetResult();
+            return;
+        }
+
+        if (args.Contains("--storage-dimensions-metadata-profile"))
+        {
+            Environment.ExitCode = StorageDimensionsQualification.RunMetadataProfileAsync(args).GetAwaiter().GetResult();
+            return;
+        }
+
+        if (args.Contains("--storage-dimensions-snapshot-profile"))
+        {
+            Environment.ExitCode = StorageDimensionsSnapshotProfile.Run(args);
+            return;
+        }
+
+        if (args.Contains("--storage-dimensions-qualification") || args.Contains("--storage-dimensions-diagnostic"))
+        {
+            Environment.ExitCode = StorageDimensionsQualification.RunAsync(args).GetAwaiter().GetResult();
+            return;
+        }
+
         var timeoutText = Environment.GetEnvironmentVariable("BDK_CACHE_BENCH_TIMEOUT_SECONDS");
         if (string.IsNullOrWhiteSpace(timeoutText))
         {

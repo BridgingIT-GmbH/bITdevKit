@@ -11952,6 +11952,44 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "_bdk.Storage.Documents.Read"
+        ],
+        "summary": "Search document keys without reading payloads",
+        "operationId": "_bdk.Storage.Documents.Read.Keys",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentKeyPage"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/_bdk/api/storage/documents/{clientId}/documents": {
@@ -12346,6 +12384,164 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/documents/{clientId}/documents/dimensions": {
+      "patch": {
+        "tags": [
+          "_bdk.Storage.Documents.Maintenance"
+        ],
+        "summary": "Replace document Dimensions without replacing content",
+        "operationId": "_bdk.Storage.Documents.Maintenance.UpdateDimensions",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentStorageUpdateDimensionsRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentStorageDocumentInfoModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/documents/{clientId}/documents/search": {
+      "post": {
+        "tags": [
+          "_bdk.Storage.Documents.Read"
+        ],
+        "summary": "Search document keys and Dimensions",
+        "operationId": "_bdk.Storage.Documents.Read.Search",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentJsonPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/documents/{clientId}/documents/count": {
+      "post": {
+        "tags": [
+          "_bdk.Storage.Documents.Read"
+        ],
+        "summary": "Count documents matching keys and Dimensions",
+        "operationId": "_bdk.Storage.Documents.Read.Count",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentCountQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
                 }
               }
             }
@@ -13119,6 +13315,83 @@
         }
       }
     },
+    "/_bdk/api/storage/blobs/{storeName}/blobs/dimensions": {
+      "patch": {
+        "tags": [
+          "_bdk.Storage.Blobs.Maintenance"
+        ],
+        "summary": "Replace blob Dimensions without uploading content",
+        "operationId": "_bdk.Storage.Blobs.Maintenance.UpdateDimensions",
+        "parameters": [
+          {
+            "name": "storeName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlobStorageUpdateDimensionsRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlobStorageBlobInfoModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/_bdk/api/storage/blobs/{storeName}/content": {
       "get": {
         "tags": [
@@ -13177,6 +13450,56 @@
           },
           "500": {
             "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/blobs/{storeName}/blobs/search": {
+      "post": {
+        "tags": [
+          "_bdk.Storage.Blobs.Read"
+        ],
+        "summary": "Search blob keys and Dimensions",
+        "operationId": "_bdk.Storage.Blobs.Read.Search",
+        "parameters": [
+          {
+            "name": "storeName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlobQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlobStorageBlobPageModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -14124,9 +14447,109 @@
           }
         }
       },
+      "BlobDimensionCapabilities": {
+        "type": "object",
+        "properties": {
+          "supportsDimensions": {
+            "type": "boolean"
+          },
+          "supportsQueries": {
+            "type": "boolean"
+          },
+          "supportsDecimalComparisons": {
+            "type": "boolean"
+          },
+          "maximumCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maximumNameLength": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maximumStringBytes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maximumPredicates": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maximumGroups": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usesIndexedValuePredicates": {
+            "type": "boolean"
+          },
+          "maximumGroupDepth": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stringComparison": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "supportedOperators": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "BlobDimensionFilter": { },
+      "BlobDimensions": { },
+      "BlobQuery": {
+        "type": "object",
+        "properties": {
+          "dimensionFilter": {
+            "$ref": "#/components/schemas/BlobDimensionFilter"
+          },
+          "container": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "prefix": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "take": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "continuationToken": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "allowFullScan": {
+            "type": "boolean"
+          }
+        }
+      },
       "BlobStorageBlobInfoModel": {
         "type": "object",
         "properties": {
+          "dimensions": {
+            "$ref": "#/components/schemas/BlobDimensions"
+          },
           "container": {
             "type": [
               "null",
@@ -14253,6 +14676,32 @@
           }
         }
       },
+      "BlobStorageUpdateDimensionsRequestModel": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "dimensions": {
+            "$ref": "#/components/schemas/BlobDimensions"
+          },
+          "ifMatchETag": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "BlobStorageUpdatePropertiesRequestModel": {
         "type": "object",
         "properties": {
@@ -14298,6 +14747,9 @@
       "BlobStoreProviderCapabilities": {
         "type": "object",
         "properties": {
+          "dimensions": {
+            "$ref": "#/components/schemas/BlobDimensionCapabilities"
+          },
           "supportsContinuationPaging": {
             "type": "boolean"
           },
@@ -15209,6 +15661,180 @@
           }
         }
       },
+      "DocumentCountQuery": {
+        "type": "object",
+        "properties": {
+          "dimensionFilter": {
+            "$ref": "#/components/schemas/DocumentDimensionFilter"
+          },
+          "documentKey": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/DocumentKey"
+              }
+            ]
+          },
+          "filter": {
+            "$ref": "#/components/schemas/DocumentKeyFilter"
+          },
+          "allowFullScan": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DocumentDimensionCapabilities": {
+        "type": "object",
+        "properties": {
+          "supportsDimensions": {
+            "type": "boolean"
+          },
+          "supportsQueries": {
+            "type": "boolean"
+          },
+          "supportsDecimalComparisons": {
+            "type": "boolean"
+          },
+          "maximumCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maximumNameLength": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maximumStringBytes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maximumPredicates": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maximumGroups": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usesIndexedValuePredicates": {
+            "type": "boolean"
+          },
+          "maximumGroupDepth": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stringComparison": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "supportedOperators": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "DocumentDimensionFilter": { },
+      "DocumentDimensions": { },
+      "DocumentInfo": {
+        "required": [
+          "key"
+        ],
+        "type": "object",
+        "properties": {
+          "dimensions": {
+            "$ref": "#/components/schemas/DocumentDimensions"
+          },
+          "key": {
+            "$ref": "#/components/schemas/DocumentKey"
+          },
+          "eTag": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "contentHash": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "contentLength": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/PropertyBag"
+          }
+        }
+      },
+      "DocumentJsonEntry": {
+        "required": [
+          "info"
+        ],
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "info": {
+            "$ref": "#/components/schemas/DocumentInfo"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "DocumentJsonPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/DocumentJsonEntry"
+            }
+          },
+          "continuationToken": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "DocumentKey": {
         "type": "object",
         "properties": {
@@ -15225,6 +15851,13 @@
             ]
           }
         }
+      },
+      "DocumentKeyFilter": {
+        "enum": [
+          "FullMatch",
+          "RowKeySuffixMatch",
+          "RowKeyPrefixMatch"
+        ]
       },
       "DocumentKeyPage": {
         "type": "object",
@@ -15245,6 +15878,43 @@
             ]
           },
           "hasMore": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DocumentQuery": {
+        "type": "object",
+        "properties": {
+          "dimensionFilter": {
+            "$ref": "#/components/schemas/DocumentDimensionFilter"
+          },
+          "documentKey": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/DocumentKey"
+              }
+            ]
+          },
+          "filter": {
+            "$ref": "#/components/schemas/DocumentKeyFilter"
+          },
+          "take": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "continuationToken": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "allowFullScan": {
             "type": "boolean"
           }
         }
@@ -15292,6 +15962,9 @@
       "DocumentStorageDocumentInfoModel": {
         "type": "object",
         "properties": {
+          "dimensions": {
+            "$ref": "#/components/schemas/DocumentDimensions"
+          },
           "key": {
             "$ref": "#/components/schemas/DocumentKey"
           },
@@ -15334,6 +16007,32 @@
           }
         }
       },
+      "DocumentStorageUpdateDimensionsRequestModel": {
+        "type": "object",
+        "properties": {
+          "partitionKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "rowKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "dimensions": {
+            "$ref": "#/components/schemas/DocumentDimensions"
+          },
+          "ifMatchETag": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "DocumentStorageUpdatePropertiesRequestModel": {
         "type": "object",
         "properties": {
@@ -15358,6 +16057,9 @@
       "DocumentStorageWriteRequestModel": {
         "type": "object",
         "properties": {
+          "dimensions": {
+            "$ref": "#/components/schemas/DocumentDimensions"
+          },
           "content": {
             "$ref": "#/components/schemas/JsonElement"
           },
@@ -15382,6 +16084,9 @@
       "DocumentStoreProviderCapabilities": {
         "type": "object",
         "properties": {
+          "dimensions": {
+            "$ref": "#/components/schemas/DocumentDimensionCapabilities"
+          },
           "maxStoredDocumentSize": {
             "type": [
               "null",

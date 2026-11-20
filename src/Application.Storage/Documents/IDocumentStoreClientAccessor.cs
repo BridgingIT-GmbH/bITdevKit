@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 
 namespace BridgingIT.DevKit.Application.Storage;
@@ -18,6 +18,10 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public interface IDocumentStoreClientAccessor
 {
+    /// <summary>Replaces Dimensions under the existing whole-item ETag without rewriting content.</summary>
+    Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Result<DocumentInfo>.Failure(new DocumentDimensionsNotSupportedError()));
+
     /// <summary>
     /// Gets immutable registration identity, provider, lifetime, type, and capability metadata.
     /// </summary>

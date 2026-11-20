@@ -23,8 +23,8 @@ public sealed class BlobStorageMcpHandler(IBlobStorageDiagnosticsService diagnos
     public IReadOnlyCollection<McpCapability> Capabilities { get; } =
     [
         Capability("blobs.summary", McpToolset.Diagnostics, "Returns Blob Storage registration and health summary."),
-        Capability("blobs.clients", McpToolset.Diagnostics, "Lists registered Blob Storage clients with provider capabilities and probe status."),
-        Capability("blobs.probe", McpToolset.Diagnostics, "Returns non-mutating probe details for one registered Blob Storage client.")
+        Capability("blobs.clients", McpToolset.Diagnostics, "Lists registered Blob Storage clients with capabilities and probe status. Optional includeDimensionNameCounts=true performs dictionary counts."),
+        Capability("blobs.probe", McpToolset.Diagnostics, "Returns non-mutating probe details for one Blob Storage client. Optional includeDimensionNameCounts=true performs dictionary counts.")
     ];
 
     /// <inheritdoc />
@@ -66,7 +66,10 @@ public sealed class BlobStorageMcpHandler(IBlobStorageDiagnosticsService diagnos
 
     private async Task<McpResponse> ClientsAsync(JsonElement arguments, CancellationToken cancellationToken)
     {
-        var result = await diagnostics.GetSnapshotAsync(cancellationToken).ConfigureAwait(false);
+        var includeNames = McpArgumentReader.GetBoolean(arguments, "includeDimensionNameCounts") == true;
+        var result = includeNames
+            ? await diagnostics.GetSnapshotAsync(true, cancellationToken).ConfigureAwait(false)
+            : await diagnostics.GetSnapshotAsync(cancellationToken).ConfigureAwait(false);
         if (result.IsFailure)
         {
             return Failure(result, "Blob Storage client diagnostics failed.");
@@ -99,7 +102,10 @@ public sealed class BlobStorageMcpHandler(IBlobStorageDiagnosticsService diagnos
             return McpResponse.Unavailable(McpErrorCode.OperationFailed, "Blob Storage client name is required.", "Supply the name argument.");
         }
 
-        var result = await diagnostics.GetSnapshotAsync(cancellationToken).ConfigureAwait(false);
+        var includeNames = McpArgumentReader.GetBoolean(arguments, "includeDimensionNameCounts") == true;
+        var result = includeNames
+            ? await diagnostics.GetSnapshotAsync(true, cancellationToken).ConfigureAwait(false)
+            : await diagnostics.GetSnapshotAsync(cancellationToken).ConfigureAwait(false);
         if (result.IsFailure)
         {
             return Failure(result, $"Blob Storage probe for client '{name}' failed.");

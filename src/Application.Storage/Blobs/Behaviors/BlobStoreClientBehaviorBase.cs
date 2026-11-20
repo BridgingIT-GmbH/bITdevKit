@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -32,6 +32,9 @@ public abstract class BlobStoreClientBehaviorBase(
     /// <inheritdoc />
     public IBlobStoreClient InnerClient => this.Inner;
 
+    /// <inheritdoc />
+    public BlobDimensionCapabilities DimensionCapabilities => this.Inner.DimensionCapabilities;
+
     /// <summary>
     /// Gets the configured blob-store client name.
     /// </summary>
@@ -49,6 +52,11 @@ public abstract class BlobStoreClientBehaviorBase(
             BlobStoreOperationContext.ForUpload(upload),
             token => this.Inner.UploadAsync(upload, token),
             cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Result<BlobUploadBatchResult>> UploadManyAsync(IReadOnlyCollection<BlobUpload> uploads,
+        BlobUploadBatchOptions options = null, CancellationToken cancellationToken = default) =>
+        BlobUploadBatchExecutor.ExecuteAsync(this, uploads, options, cancellationToken);
 
     /// <inheritdoc />
     public Task<Result<BlobDownload>> DownloadAsync(BlobKey key, CancellationToken cancellationToken = default) =>
@@ -73,6 +81,10 @@ public abstract class BlobStoreClientBehaviorBase(
             BlobStoreOperationContext.ForUpdate(update),
             token => this.Inner.UpdatePropertiesAsync(update, token),
             cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Result<BlobInfo>> UpdateDimensionsAsync(BlobDimensionsUpdate update, CancellationToken cancellationToken = default) =>
+        this.ExecuteAsync("update_dimensions", BlobStoreOperationContext.ForKey(update?.Key), token => this.Inner.UpdateDimensionsAsync(update, token), cancellationToken);
 
     /// <inheritdoc />
     public Task<Result<bool>> ExistsAsync(BlobKey key, CancellationToken cancellationToken = default) =>
@@ -151,7 +163,9 @@ public abstract class BlobStoreClientBehaviorBase(
 /// </example>
 public sealed class BlobStoreOperationContext
 {
-    private BlobStoreOperationContext() { }
+    private BlobStoreOperationContext()
+    {
+    }
 
     /// <summary>
     /// Gets the exact blob key when available.
@@ -161,7 +175,10 @@ public sealed class BlobStoreOperationContext
     /// var container = context.Key?.Container;
     /// </code>
     /// </example>
-    public BlobKey Key { get; private init; }
+    public BlobKey Key
+    {
+        get; private init;
+    }
 
     /// <summary>
     /// Gets the upload model when the operation is an upload.
@@ -171,7 +188,10 @@ public sealed class BlobStoreOperationContext
     /// var canRead = context.Upload?.Content?.CanRead;
     /// </code>
     /// </example>
-    public BlobUpload Upload { get; private init; }
+    public BlobUpload Upload
+    {
+        get; private init;
+    }
 
     /// <summary>
     /// Gets the property update model when the operation updates properties.
@@ -181,7 +201,10 @@ public sealed class BlobStoreOperationContext
     /// var propertyCount = context.Update?.Properties?.Count;
     /// </code>
     /// </example>
-    public BlobPropertiesUpdate Update { get; private init; }
+    public BlobPropertiesUpdate Update
+    {
+        get; private init;
+    }
 
     /// <summary>
     /// Gets the query model when the operation lists blobs.
@@ -191,7 +214,10 @@ public sealed class BlobStoreOperationContext
     /// var take = context.Query?.Take;
     /// </code>
     /// </example>
-    public BlobQuery Query { get; private init; }
+    public BlobQuery Query
+    {
+        get; private init;
+    }
 
     /// <summary>
     /// Creates operation context from an exact blob key.

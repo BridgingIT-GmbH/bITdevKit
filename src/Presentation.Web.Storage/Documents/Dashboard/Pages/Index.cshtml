@@ -118,6 +118,8 @@
     </div>
 </div>
 
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQueryScript>())
+
 <script>
     (() => {
         const shellElement = document.getElementById('dashboard-documents-shell');
@@ -214,6 +216,7 @@
             const root = currentRoot();
             return {
                 clientId: root?.dataset.clientId || '',
+                dimensionFilter: root?.dataset.dimensionFilter || '',
                 partitionKey: root?.dataset.partitionKey || '',
                 rowKey: root?.dataset.rowKey || '',
                 rowKeyMode: root?.dataset.rowKeyMode || 'prefix',
@@ -608,7 +611,7 @@
 
         function setPageUrl(state) {
             const url = new URL(window.location.href);
-            ['clientId', 'partitionKey', 'rowKey', 'rowKeyMode', 'pageSize', 'continuationToken', 'selectedPartitionKey', 'selectedRowKey']
+            ['clientId', 'partitionKey', 'rowKey', 'rowKeyMode', 'dimensionFilter', 'pageSize', 'continuationToken', 'selectedPartitionKey', 'selectedRowKey']
                 .forEach(key => {
                     if (state[key]) {
                         url.searchParams.set(key, state[key]);
@@ -620,14 +623,14 @@
         }
 
         let contentController = null;
-        async function refresh(state, updateUrl = true, preserveDraft = false) {
+        async function refresh(state, updateUrl = true, preserveDraft = false, acceptQueryError = false) {
             listPending = !state.selectedPartitionKey && !state.selectedRowKey;
             growingList.cancel();
             refresher.cancel();
             contentController?.abort();
             const controller = new AbortController(); contentController = controller;
             const previous = stateFromRoot();
-            const sameSelection = ['clientId', 'partitionKey', 'rowKey', 'rowKeyMode', 'pageSize'].every(key => String(state[key] ?? '') === String(previous[key] ?? ''));
+            const sameSelection = ['clientId', 'partitionKey', 'rowKey', 'rowKeyMode', 'dimensionFilter', 'pageSize'].every(key => String(state[key] ?? '') === String(previous[key] ?? ''));
             setBusy(true, 'Loading documents...');
             try {
                 const response = await fetch(buildContentUrl(state).toString(), {
@@ -636,11 +639,18 @@
                 if (!response.ok || response.redirected || !(response.headers.get('content-type') || '').includes('text/html')) throw new Error('Documents could not be loaded.');
                 const html = await response.text();
                 if (controller.signal.aborted || contentController !== controller) return;
-                const draft = (sameSelection || preserveDraft) ? window.bdkDashboard.captureFilterDraft(shellElement, '[data-documents-filter-form]') : null;
+                const editedDimensionFilter = shellElement.querySelector('[name="dimensionFilter"]')?.value || '';
+                const keepDimensionDraft = editedDimensionFilter !== (state.dimensionFilter || '');
+                const draft = (sameSelection || preserveDraft || keepDimensionDraft) ? window.bdkDashboard.captureFilterDraft(shellElement, '[data-documents-filter-form]') : null;
                 const validation = document.createElement('template'); validation.innerHTML = html;
-                if (validation.content.querySelector('[data-dashboard-query-error]')) throw new Error('Query failed');
+                const queryError = validation.content.querySelector('[data-dashboard-query-error]');
+                if (queryError && !acceptQueryError && state.clientId === previous.clientId) {
+                    window.bdkDashboard.storageDimensions.showError(shellElement, queryError.textContent.trim());
+                    throw new Error('Query failed');
+                }
                 growingList.applyResponse(shellElement, html);
                 if (draft) window.bdkDashboard.restoreFilterDraft(shellElement, '[data-documents-filter-form]', draft);
+                window.bdkDashboard.storageDimensions.mount(shellElement);
                 if (updateUrl) setPageUrl(state);
                 populateFilterHistory();
                 window.bdkDashboard.clearRefreshError(shellElement);
@@ -678,7 +688,7 @@
             storageKey: 'bdk.dashboard.documents.refreshInterval',
             shouldRefresh: () => !growingList.busy() && detailsModalElement?.classList.contains('show') !== true &&
                 shellElement.getAttribute('aria-busy') !== 'true',
-            onSuccess: () => populateFilterHistory()
+            onSuccess: () => { populateFilterHistory(); window.bdkDashboard.storageDimensions.mount(shellElement); }
         });
 
         shellElement.addEventListener('change', async event => {
@@ -692,6 +702,7 @@
                 form.elements.partitionKey.value = '';
                 form.elements.rowKey.value = '';
                 form.elements.rowKeyMode.value = 'prefix';
+                window.bdkDashboard.storageDimensions.clear(form);
             }
 
             if (event.target.name === 'pageSize') {
@@ -780,8 +791,10 @@
                 state.partitionKey = '';
                 state.rowKey = '';
                 state.rowKeyMode = 'prefix';
+                state.dimensionFilter = '';
                 clearPagingAndSelection(state);
-                await refresh(state);
+                window.bdkDashboard.storageDimensions.clear(currentFilterForm());
+                await refresh(state, true, false, true);
                 return;
             }
 
@@ -820,6 +833,7 @@
                 state.partitionKey = '';
                 state.rowKey = '';
                 state.rowKeyMode = 'prefix';
+                state.dimensionFilter = '';
                 clearPagingAndSelection(state);
                 refresh(state);
             }
@@ -839,6 +853,7 @@
         });
 
         populateFilterHistory();
+        window.bdkDashboard.storageDimensions.mount(shellElement);
     })();
 </script>
 

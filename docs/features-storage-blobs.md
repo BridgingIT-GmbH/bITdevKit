@@ -311,7 +311,7 @@ services.AddBlobStorage()
     .WithInMemoryClient("archive");
 ```
 
-All seven client methods join an existing operation or create a `BlobStorage` operation with key `blobstorage:{operation}`. Dimensions are `blobstorage.store`, `blobstorage.container` and `blobstorage.operation`. Container names come from the key, upload, property update or listing query; blob names, prefixes, tokens and content are omitted. Returned download streams retain caller ownership, and timing ends when the download method returns. See [Storage profiling behaviors](features-profiling.md#storage-behaviors) for optional registration, classification and dimension comparisons.
+Individual client methods join an existing operation or create a `BlobStorage` operation with key `blobstorage:{operation}`. Dimensions are `blobstorage.store`, `blobstorage.container` and `blobstorage.operation`. Container names come from the key, upload, property update or listing query; blob names, prefixes, tokens and content are omitted. Returned download streams retain caller ownership, and timing ends when the download method returns. See [Storage profiling behaviors](features-profiling.md#storage-behaviors) for optional registration, classification and dimension comparisons.
 
 ## <img class="bdk-doc-icon" src="assets/features/storage-uploads.svg" width="24" height="24" alt=""> High-volume uploads
 
@@ -356,6 +356,35 @@ Tune active uploads and pending bytes together. For example, four active uploads
 When Blob Storage is registered in a DevKit web host with local MCP enabled, `AddBlobStorage` contributes the Blob Storage MCP handler automatically. Local AI agents can inspect blob client registrations and probe status through `bdk mcp` without an additional blob-specific MCP registration call.
 
 The MCP handler is diagnostics-only. It exposes registration, provider capability, and non-mutating health probe data; it does not expose blob content, raw provider clients, provider SDK types, or mutating blob operations. If MCP is disabled by the DevKit local tooling policy, the handler is not registered.
+
+### Upload multiple blobs
+
+`UploadManyAsync` attempts independent uploads with bounded concurrency and returns every item outcome in input order. The default is four active uploads. Set `MaxConcurrency` from 1 through 64; configured store admission can impose a lower effective limit. A call accepts at most 1000 requests.
+
+```csharp
+using var first = new MemoryStream("{\"total\":125}"u8.ToArray());
+using var second = new MemoryStream("{\"total\":250}"u8.ToArray());
+
+var result = await blobs.UploadManyAsync(
+[
+    new() { Key = new("exports", "invoice-101.json"), Content = first },
+    new() { Key = new("exports", "invoice-102.json"), Content = second }
+], new() { MaxConcurrency = 4 });
+
+if (result.IsSuccess)
+{
+    foreach (var item in result.Value.Items)
+    {
+        Console.WriteLine($"{item.Index}: {item.Key?.Name}, success={item.Result.IsSuccess}");
+    }
+}
+```
+
+A successful outer Result means the batch finished, not that every upload succeeded. Inspect `AllSucceeded`, `FailedCount` or each `item.Result`. One failure does not stop unrelated uploads. Use distinct keys and independent stream instances; conflicting duplicate keys or shared stream instances receive item-level validation failures.
+
+Keep each stream open until the awaited call completes or cancellation is observed; the caller disposes it. Uploads use the existing per-item validation and behavior pipeline, including ETag conditions, Properties, Dimensions and transforms. The batch never retries the whole collection. Unexpected item exceptions can report `BlobStoreIndeterminateOperationError`; reconcile the item's key before replay.
+
+Cancellation throws `OperationCanceledException` after active work observes cancellation and does not return a complete outcome collection. Earlier commits remain committed. This is bounded parallel coordination over `UploadAsync`, not a native database bulk transaction or an all-or-nothing batch. See [ADR-0045](adr/0045-bounded-attempt-all-blob-upload-batches.md) for the contract.
 
 ## HTTP endpoints
 
@@ -456,7 +485,7 @@ GET /_bdk/dashboard/storage/blobs
 The dashboard page is provider-neutral and uses the configured `IBlobStoreClientFactory`. It lets operators:
 
 - switch between registered named blob clients
-- list `BlobInfo` metadata by container and prefix
+- list `BlobInfo` metadata by container, prefix, and supported typed Dimension filters
 - select discovered provider containers and retain prefix history per store and container
 - opt into approved full scans with the same query-level approval required by the client API
 - remember full-scan consent in local browser storage, selected by default
@@ -464,6 +493,10 @@ The dashboard page is provider-neutral and uses the configured `IBlobStoreClient
 - download an exact blob through the selected client
 - inspect content metadata, timestamps, ETags, hashes, and scalar properties in a compact details dialog
 - conditionally delete an exact blob using the ETag shown by the current row
+
+For a provider that supports Dimension queries, expand **Dimensions**, add a name, type, comparison, and value, then choose **Apply**. Combine conditions with **Match all** or **Match any**, including nested groups. Available comparisons follow the selected provider. Applied filters remain active through refresh and Load more. Reset clears the Dimension filter, and changing stores clears it before loading the new provider. The key-filter illustration below omits the optional Dimensions panel.
+
+Dashboard filters travel in URLs and remain subject to hosting limits. A large valid filter can return HTTP 414 when it exceeds the request-line or query-string limit. Use the POST search endpoint or .NET query API for larger filters.
 
 The compact list shows content type, size, modification time, expiration, and content hash. Manual and interval refreshes use the currently applied store, container, prefix, page size, full-scan consent, and continuation state. The standard refresh interval is off by default and remembered in browser-local storage. The dashboard renders metadata only and does not download blob content for list, exists, or property-style operations. The download action streams the selected blob and disposes the returned `BlobDownload`.
 
@@ -509,7 +542,7 @@ Compression uses GZip. Encryption uses AES with a random initialization vector p
 - `DownloadAsync` returns decompressed and decrypted content.
 - `BlobInfo.Length`, `ContentType`, and `ContentHash` describe the logical content, not the stored transformed bytes.
 - `ExpectedContentHash` is checked against the caller-provided logical upload content before the transformed bytes are committed.
-- Internal behavior metadata is removed from public `BlobInfo.Properties`.
+- Internal behavior metadata travels in a private pipeline channel and separate provider fields. Public `BlobInfo.Properties` contains application metadata only.
 - `UpdatePropertiesAsync` preserves the internal transform metadata so property updates do not make existing transformed blobs unreadable.
 - Upload streams remain caller-owned. Returned download streams remain owned by `BlobDownload`.
 
@@ -781,7 +814,7 @@ Provider behavior:
 
 - In-memory keeps expiration with the in-memory entry and deletes due entries under the context lock.
 - Filesystem stores `ExpiresAt` in metadata and uses the existing background service. A persisted, bounded discovery cursor resumes across sweeps and restarts. Cleanup acquires key authority without waiting, rechecks expiration before deletion, and reclaims obsolete payload files. Open download handles can retain disk blocks until disposed. Tombstones and coordination directories remain on disk; offline compaction is not implemented.
-- Entity Framework stores expiration in `StorageBlob.ExpiresAt` with an index. Sweeps query due rows by that index, acquire the existing internal blob lease, then delete chunks and metadata in batches.
+- Entity Framework stores expiration in `StorageBlob.ExpiresAt` with an index. Sweeps query due rows by that index, acquire the existing internal blob lease, and delete expired blobs in batches. Relational providers cascade deletion to content chunks and Dimension rows.
 - Azure Blob Storage stores expiration as metadata for property round-trips and as a fixed-width blob index tag for efficient native tag queries. The DevKit sweeper deletes blobs found through the tag index. Azure account-level lifecycle management can also be used for coarse retention classes, but exact per-blob `ExpiresAt` deletion is handled by the DevKit sweeper.
 
 Multiple application nodes can run the background service at the same time. Provider sweeps must be idempotent and lease- or condition-protected; a blob already deleted by another node is treated as a successful cleanup outcome.
@@ -1176,9 +1209,83 @@ A provider can implement the optional `IBlobStoreBatchDownloadProvider` capabili
 
 Configure the batch size with `BlobStoreOptions.DownloadBatchSize` (1 to 1000). See [ADR-0032](adr/0032-batched-ef-blob-reads-for-many-keys.md).
 
+## Queryable Dimensions
+
+Use `Properties` for descriptive metadata and optional `Dimensions` for typed, indexed queries. EF SQL Server, PostgreSQL, and SQLite support Dimensions. Check `blobs.DimensionCapabilities` before offering the feature. Other providers reject explicit Dimensions, including an empty collection, before backend I/O or stream consumption.
+
+```csharp
+var dimensions = BlobDimensions.Create(new Dictionary<string, object>
+{
+    ["FiscalYear"] = 2026,
+    ["Approved"] = true,
+    ["Category"] = "Invoice"
+});
+if (dimensions.IsFailure) return;
+
+var uploaded = await blobs.UploadAsync(new BlobUpload
+{
+    Key = new BlobKey("invoices", "INV-42.pdf"),
+    Content = content,
+    Dimensions = dimensions.Value
+}, cancellationToken);
+
+var year = BlobDimensionPredicate.Create("FiscalYear", BlobDimensionOperator.Equal, 2026);
+if (year.IsFailure) return;
+var page = await blobs.ListPageAsync(new BlobQuery
+{
+    Container = "invoices",
+    DimensionFilter = BlobDimensionFilter.Where(year.Value),
+    Take = 100
+}, cancellationToken);
+```
+
+Every supported scalar is indexed automatically. Names register within their container, and the database assigns IDs. Applications do not manage IDs or define an index for each name.
+
+| Contract | Behavior |
+| --- | --- |
+| Scalar values | `int`, `decimal`, `bool`, `string`, UTC `DateTime`, or explicit null |
+| Decimal | Exact `decimal(18,6)` range; excess fractional precision is rejected |
+| String values | Exact case-sensitive equality, spaces significant; at most 256 UTF-8 bytes |
+| Names | Case-insensitive ASCII identifiers matching `[A-Za-z_][A-Za-z0-9_.:-]{0,127}`; snapshots retain supplied spelling |
+| Per-blob limit | 64 dimensions, including nulls |
+| Filter limits | 16 predicates, 16 groups, four nested group levels |
+| Comparisons | Equality/inequality, integer/date/decimal ranges, existence and null checks; `All`/`Any` groups |
+| SQLite decimal | Indexed equality only; other decimal comparisons fail before query execution |
+
+Missing names and explicit null are distinct. `NotEqual` matches only present, non-null values of the operand's type. String ordering is unsupported. A positive indexed predicate permits selective listings. Broad negative queries need existing key constraints or full-scan consent; every `Any` branch needs an anchor. Filters run before paging, and continuation tokens bind the logical filter.
+
+Omitted Dimensions preserve the current collection on content replacement. `BlobDimensions.Empty` clears it; nonempty input replaces it. New blobs without dimensions remain dimensionless. `UpdateDimensionsAsync(new BlobDimensionsUpdate { Key = key, Dimensions = replacement, IfMatchETag = current.ETag })` changes dimensions without reading or rewriting content. Content, Properties, and Dimensions share one ETag, so a change to any field invalidates a previously read version.
+
+Upload helpers forward Dimensions from their options. Copy and move inherit source dimensions when the override is omitted, clear them for an explicit empty override, and replace them for nonempty input. A destination must support Dimensions if the operation supplies or copies any.
+
+EF discovers the two annotated dimension tables from `StorageBlob`; the context interface needs no new sets. Existing Properties require no backfill. Generate the application's normal provider-specific migrations for the added snapshot and tables. Unused dictionary names remain retained without a quota. The per-provider positive cache holds at most 4,096 names. After external database recreation, quiesce operations and recreate the provider or call its `ClearDimensionNameCache()`.
+
+Enabled read endpoints add POST `/{storeName}/blobs/search` under their configured route group. Maintenance adds PATCH `/{storeName}/blobs/dimensions`. Raw uploads accept typed `X-Storage-Dimensions` JSON, subject to the host's header limit. An envelope is `{"FiscalYear":{"type":"integer","value":2026},"Amount":{"type":"decimal","value":"125.5"}}`. Filter leaves use `{"name":"FiscalYear","operator":"Equal","operand":{"type":"integer","value":2026}}`; groups use `{"all":[...]}` or `{"any":[...]}`. CLI listing accepts filter JSON through `--dimension-filter`.
+
+Diagnostics expose local cache and registration counters without scanning the dictionary. MCP `blobs.clients` and `blobs.probe` count dictionary entries only when `includeDimensionNameCounts` is explicitly true.
+
+Dimensions are plaintext searchable metadata in the database. Payload encryption does not encrypt their snapshot or search values. Avoid placing secrets in Dimensions.
+
+See the [Dimensions specification](specs/spec-storage-dimensions.md) for the schema and qualification requirements. See the [performance and scaling](#appendix-a-performance-and-scaling) for measured behavior as the collection grows. SQLite retains functional support with informational performance diagnostics; parity with SQL Server/PostgreSQL is not a target. Server performance targets remain subject to volume qualification; index presence does not promise constant latency as data grows. SQLite retention compares normalized UTC expiry values through the existing expiry index, including exact-tick cutoffs.
+
 ## Properties
 
 Properties operations return or update `BlobInfo` without downloading content.
+
+Blob Storage supports application-defined `Properties`. Names are case-insensitive and retain supplied spelling. Results contain detached bags, including copies of byte-array values.
+
+| Input | Insert | Content replacement or metadata update |
+| --- | --- | --- |
+| Omitted or `null` | Empty bag | Preserve current properties |
+| Empty bag | Empty bag | Clear application properties |
+| Non-empty bag | Store the bag | Replace the entire bag |
+
+A present entry with a null value remains present. Use the merge/set/remove helpers for explicit read-modify-write changes.
+
+Supported values are null, `string`, `char`, `bool`, `byte`, `sbyte`, `short`, `ushort`, `int`, `uint`, `long`, `ulong`, `float`, `double`, `decimal`, `Guid`, `DateTime`, `DateTimeOffset`, `DateOnly`, `TimeOnly`, `TimeSpan`, and `byte[]`. Other objects and collections fail validation before provider I/O. Typed .NET calls and provider persistence preserve scalar type and value. HTTP uses ordinary JSON objects: strings stay strings, and JSON does not carry every .NET numeric or temporal type.
+
+Properties remain unindexed descriptive metadata. Use the separate Dimensions collection for indexed queries on supported EF providers. Compression/encryption state lives in separate provider metadata and survives clearing Properties. Application keys resembling transform keys are ordinary user properties.
+
 
 ```csharp
 var propertiesResult = await blobs.GetPropertiesAsync(
@@ -1231,6 +1338,13 @@ await blobs.RemovePropertyAsync(
 ```
 
 These helpers do not download or rewrite blob content.
+
+### Properties persistence format
+
+Blob providers accept `StoredBlobUpload`, `StoredBlobPropertiesUpdate`, and return stored blob models with independent `Properties` and `TransformMetadata` bags. The client adapter maps these to public models without exposing transform state. Full content replacement installs fresh transform metadata for the new payload.
+
+EF stores scalar-codec JSON in `Properties` and a separate annotated `TransformMetadata` column. Azure Blob stores Base64Url-encoded scalar-codec JSON in managed `bdk_properties` and `bdk_transforms` metadata fields; its 8 KiB total metadata limit applies to the encoded data. Oversized metadata fails without truncation. The filesystem record format is version 3. These breaking formats require newly created storage; there are no schema/data migrations or legacy readers.
+
 
 ## Exists
 
@@ -1496,78 +1610,209 @@ Expected failures are Result failures, not exceptions. Common typed errors inclu
 - `BlobStoreTimeoutError`
 - `BlobStoreIndeterminateOperationError`, an uncertain mutation that must be reconciled before replay
 
-## Appendix: Entity Framework read performance
-
-These figures come from the benchmarks in `benchmarks/Application.Benchmarks` (BenchmarkDotNet, 12 iterations, one request in flight). They show what the Entity Framework provider can do and how the read paths compare. They are not a guarantee for your hardware, network, or schema.
-
-**Test setup.** AMD Ryzen 9 9900X, .NET 10, SQL Server 2022 in a local Docker container, so there is no network latency between the application and the database. Only SQL Server was benchmarked. PostgreSQL and SQLite are covered by the integration contract tests, not by timings. "Cold" means the SQL Server buffer pool was emptied with `DBCC DROPCLEANBUFFERS` before each iteration. The operating system file cache stayed warm, so real disks will be slower.
-
-Each figure below is one request for 100 keys.
-
-### Reading 100 blobs
-
-Throughput is the payload bytes of the 100 blobs divided by the mean time. SQL Server, warm cache, blobs below `ChunkSize`. All sizes come from one benchmark run. The raw SQL column is the fastest hand-written multi-key query over the same data (25 keys per query, 4 queries in parallel), with no DevKit pipeline. It shows the ceiling for this setup.
-
-| Blob size | 16 parallel `DownloadBytesAsync` | `DownloadBytesManyAsync` | Raw SQL ceiling | Batch vs parallel |
-|---|---|---|---|---|
-| 1 KB | 20.4 ms, 4,912 blobs/s, 4.8 MiB/s | 6.0 ms, 16,664 blobs/s, 16.3 MiB/s | 1.8 ms, 55,772 blobs/s, 54.5 MiB/s | 3.4x faster |
-| 4 KB | 17.6 ms, 5,671 blobs/s, 22.2 MiB/s | 7.0 ms, 14,225 blobs/s, 55.6 MiB/s | 2.5 ms, 39,698 blobs/s, 155.1 MiB/s | 2.5x faster |
-| 10 KB | 18.7 ms, 5,338 blobs/s, 52.1 MiB/s | 8.1 ms, 12,294 blobs/s, 120.1 MiB/s | 5.1 ms, 19,755 blobs/s, 192.9 MiB/s | 2.3x faster |
-| 32 KB | 24.6 ms, 4,066 blobs/s, 127.0 MiB/s | 17.5 ms, 5,727 blobs/s, 179.0 MiB/s | 12.8 ms, 7,816 blobs/s, 244.3 MiB/s | 1.4x faster |
-| 64 KB | 33.4 ms, 2,996 blobs/s, 187.3 MiB/s | 27.0 ms, 3,701 blobs/s, 231.3 MiB/s | 24.5 ms, 4,083 blobs/s, 255.2 MiB/s | 1.2x faster |
-| 100 KB | 44.5 ms, 2,248 blobs/s, 219.6 MiB/s | 42.8 ms, 2,335 blobs/s, 228.0 MiB/s | 37.8 ms, 2,644 blobs/s, 258.2 MiB/s | 1.0x |
-| 1 MB | 408.5 ms, 245 blobs/s, 244.8 MiB/s | 374.3 ms, 267 blobs/s, 267.2 MiB/s | 369.9 ms, 270 blobs/s, 270.3 MiB/s | 1.1x faster |
-
-- **Small blobs (up to about 10 KB)** are limited by per-blob cost, not bandwidth. The batch API removes most of it: 2.3 to 3.4 times faster than parallel single reads with 67% to 75% less allocation. Its throughput in MiB/s rises with blob size because each blob costs about the same time.
-- **Between 32 KB and 100 KB** the gain shrinks from 1.4x to none, as moving the bytes starts to dominate.
-- **From about 64 KB** the batch API sits at roughly 230 to 270 MiB/s on this machine and within about 15% of raw SQL (1% at 1 MB).
-- **Remaining overhead for tiny blobs.** At 1 KB the batch API is about three times slower than the raw SQL ceiling (6.0 ms against 1.8 ms) and allocates about 4.8 MB per 100 blobs against 0.4 MB. That is the cost of passing every key through the behavior pipeline, validation and a result object per blob. It is not a database limit.
-- Figures vary by a few percent between runs. The ADR and changelog numbers for 10 KB (20.1 ms and 9.4 ms) come from an earlier run of the same benchmark.
-
-A single read of a 10 KB blob went from 3.28 ms to 1.40 ms after the single-query read path (ADR-0031).
-
-### Scaling to 1,000,000 blobs
-
-The table was seeded with 1,000,000 blobs of 1 KB each. Each request read 100 random keys, rotating through a fixed set of precomputed random requests. SQL Server, random keys.
-
-| Read path | Warm, 1,000 rows | Warm, 1,000,000 rows | Cold, 1,000,000 rows | Warm MiB/s at 1M | Cold MiB/s at 1M |
-|---|---|---|---|---|---|
-| One by one | 125.6 ms | 116.2 ms | 302.2 ms | 0.84 | 0.32 |
-| 16 parallel | 17.0 ms | 18.9 ms | 49.6 ms | 5.2 | 2.0 |
-| `DownloadBytesManyAsync` | 6.1 ms | 5.8 ms | 31.4 ms | 17 | 3.1 |
-
-- With a warm cache the table size does not matter. Lookups use the unique index on the hashes of container and name and stay index seeks.
-- With a cold cache every key needs its own page reads, so time is spent on I/O and not on the DevKit. The batch API still reads 100 keys about 10 times faster than one by one.
-- 1 KB blobs measure per-blob overhead, not bandwidth. Throughput in MiB/s rises with blob size, as the table above shows.
-
-### Row ids
-
-New blob rows use time-ordered GUIDs (ADR-0033). Random ids fragment the clustered primary key because every insert lands on a random page.
-
-| At 1,000,000 blobs | Random ids | Time-ordered ids |
-|---|---|---|
-| Blob primary key | 135,464 pages, 99% fragmented | 90,910 pages, 0.1% fragmented |
-| Chunk primary key | 215,698 pages, 98.8% fragmented | 142,858 pages, 0% fragmented |
-| Data file size | 4.1 GB | 3.0 GB |
-| Cold read of recently written blobs, one by one | 307 ms | 196 ms |
-| Cold read of recently written blobs, batch API | 34.5 ms | 26.4 ms |
-
-Reads of random keys do not change (32 ms either way), because they are decided by the hash index, which stays random. Warm reads do not change either.
-
-### Measuring in production
-
-Use `blobstorage_bytes_per_second` and `blobstorage_operation_duration` from the metrics behavior (see [Metrics](#metrics)), split by `operation`. Compare the two rates with your own blob sizes, since the same store reads 1 KB blobs at a few MiB/s and 1 MB blobs at hundreds of MiB/s.
-
-### Limits of these figures
-
-- One request was in flight at a time, except for the parallel rows. A sustained load test with many concurrent workers reading the full 1,000,000 blobs was not run.
-- There was no network between the application and SQL Server. Over a network each query adds a round trip, which favors the batch API, but this was not measured.
-- Only SQL Server was benchmarked.
-- Blob sizes above `ChunkSize` stream chunk by chunk and are not part of these figures.
-
-See [ADR-0031](adr/0031-single-query-ef-blob-read-for-small-blobs.md), [ADR-0032](adr/0032-batched-ef-blob-reads-for-many-keys.md) and [ADR-0033](adr/0033-time-ordered-ef-blob-row-ids.md) for the design decisions behind these results.
-
-
 ## Dashboard throughput tests
 
 The Diagnostics tab provides read/write throughput tests and live metric charts for the configured providers. See [Storage dashboard throughput tests](storage-load-testing.md) for controls, measurement semantics, and temporary-item cleanup.
+
+<a id="appendix-a-read-performance-and-scaling"></a>
+
+## Appendix A: Performance and scaling
+
+**Selective Dimension reads remained in the tens of milliseconds at one million blobs.** Their latency grew much more slowly than the number of stored records in these measurements. Native plans for selective indexed value filters located matching keys without scanning every parent record.
+
+### Read by key
+
+The following figures measure a complete random 1-MiB item retrieved by key, with no writers or Dimensions. Each collection mixes 1-KiB, 16-KiB, 256-KiB and 1-MiB items.
+
+#### Single reader
+
+With one reader, latency grew more slowly than the number of stored records. Larger working sets increased the cost of large-content reads, especially on SQL Server.
+
+<div class="storage-performance-comparison" markdown="1">
+
+<figure class="storage-performance-figure" markdown="1">
+
+```mermaid
+%%{init: {"theme":"base","xyChart":{"width":420,"height":310,"titleFontSize":17,"legendFontSize":16,"xAxis":{"labelFontSize":16,"titleFontSize":15},"yAxis":{"labelFontSize":16,"titleFontSize":15}},"themeVariables":{"xyChart":{"backgroundColor":"transparent","titleColor":"var(--bdk-text)","legendTextColor":"var(--bdk-text)","plotColorPalette":"#397fc4, #c27a32","xAxisLabelColor":"var(--bdk-muted)","xAxisTitleColor":"var(--bdk-muted)","xAxisTickColor":"var(--bdk-muted)","xAxisLineColor":"var(--bdk-muted)","yAxisLabelColor":"var(--bdk-muted)","yAxisTitleColor":"var(--bdk-muted)","yAxisTickColor":"var(--bdk-muted)","yAxisLineColor":"var(--bdk-muted)"}}}}%%
+xychart-beta
+    title "1-MiB key read: single reader"
+    x-axis "Stored records" ["10k", "100k", "1m"]
+    y-axis "p95 latency (ms)" 0 --> 25
+    line "SQL Server" [6.7, 7.1, 20.5]
+    line "PostgreSQL" [7.0, 7.4, 9.2]
+```
+
+</figure>
+
+<div class="storage-performance-data" markdown="1">
+
+| Total records | SQL Server p95 | PostgreSQL p95 |
+|---:|---:|---:|
+| 10,000 | 6.7 ms | 7.0 ms |
+| 100,000 | 7.1 ms | 7.4 ms |
+| 1,000,000 | 20.5 ms | 9.2 ms |
+
+</div>
+
+</div>
+
+#### 16 concurrent readers
+
+With 16 readers, full-content latency increased moderately across the 100-fold larger collection. Throughput and per-request latency differ from the single-reader profile.
+
+<div class="storage-performance-comparison" markdown="1">
+
+<figure class="storage-performance-figure" markdown="1">
+
+```mermaid
+%%{init: {"theme":"base","xyChart":{"width":420,"height":310,"titleFontSize":17,"legendFontSize":16,"xAxis":{"labelFontSize":16,"titleFontSize":15},"yAxis":{"labelFontSize":16,"titleFontSize":15}},"themeVariables":{"xyChart":{"backgroundColor":"transparent","titleColor":"var(--bdk-text)","legendTextColor":"var(--bdk-text)","plotColorPalette":"#397fc4, #c27a32","xAxisLabelColor":"var(--bdk-muted)","xAxisTitleColor":"var(--bdk-muted)","xAxisTickColor":"var(--bdk-muted)","xAxisLineColor":"var(--bdk-muted)","yAxisLabelColor":"var(--bdk-muted)","yAxisTitleColor":"var(--bdk-muted)","yAxisTickColor":"var(--bdk-muted)","yAxisLineColor":"var(--bdk-muted)"}}}}%%
+xychart-beta
+    title "1-MiB key read: 16 readers"
+    x-axis "Stored records" ["10k", "100k", "1m"]
+    y-axis "p95 latency (ms)" 0 --> 80
+    line "SQL Server" [64.4, 67.7, 69.0]
+    line "PostgreSQL" [60.1, 62.2, 63.5]
+```
+
+</figure>
+
+<div class="storage-performance-data" markdown="1">
+
+| Total records | SQL Server p95 | PostgreSQL p95 |
+|---:|---:|---:|
+| 10,000 | 64.4 ms | 60.1 ms |
+| 100,000 | 67.7 ms | 62.2 ms |
+| 1,000,000 | 69.0 ms | 63.5 ms |
+
+</div>
+
+</div>
+
+At one million records, 1-KiB content reads stayed below 2.1 ms p95 with one reader and below 10 ms with 16 readers on both engines. Cache residency and content size affect latency; these results do not imply constant latency beyond the tested working sets.
+
+Read figures are medians of three 30-second run-level p95 values, including complete content consumption and checksum verification. Caches remain active, all payloads fit one blob chunk, and HTTP and typed document deserialization are excluded. The million-record collection contains 10,000 of the 1-MiB items.
+
+At one million blobs, a warm-cache batch of 100 random 1-KiB blobs took **5.8 ms** with `DownloadBytesManyAsync`, versus 116.2 ms when read one key at a time. The batch took 31.4 ms with cold database buffers and a warm operating-system cache.
+
+### Read by Dimensions
+
+The table shows a 100-item metadata page selected by an integer Dimension. Each record has eight Dimensions.
+
+<div class="storage-performance-comparison" markdown="1">
+
+<figure class="storage-performance-figure" markdown="1">
+
+```mermaid
+%%{init: {"theme":"base","xyChart":{"width":420,"height":310,"titleFontSize":17,"legendFontSize":16,"xAxis":{"labelFontSize":16,"titleFontSize":15},"yAxis":{"labelFontSize":16,"titleFontSize":15}},"themeVariables":{"xyChart":{"backgroundColor":"transparent","titleColor":"var(--bdk-text)","legendTextColor":"var(--bdk-text)","plotColorPalette":"#397fc4, #c27a32","xAxisLabelColor":"var(--bdk-muted)","xAxisTitleColor":"var(--bdk-muted)","xAxisTickColor":"var(--bdk-muted)","xAxisLineColor":"var(--bdk-muted)","yAxisLabelColor":"var(--bdk-muted)","yAxisTitleColor":"var(--bdk-muted)","yAxisTickColor":"var(--bdk-muted)","yAxisLineColor":"var(--bdk-muted)"}}}}%%
+xychart-beta
+    title "100-item Dimension metadata page"
+    x-axis "Stored records" ["10k", "100k", "1m"]
+    y-axis "p95 latency (ms)" 0 --> 100
+    line "SQL Server" [11.5, 33.5, 32.8]
+    line "PostgreSQL" [15.6, 70.4, 89.5]
+```
+
+</figure>
+
+<div class="storage-performance-data" markdown="1">
+
+| Blobs | Dimension rows | SQL Server p95 | PostgreSQL p95 |
+|---:|---:|---:|---:|
+| 10,000 | 80,000 | 11.5 ms | 15.6 ms |
+| 100,000 | 800,000 | 33.5 ms | 70.4 ms |
+| 1,000,000 | 8,000,000 | 32.8 ms | 89.5 ms |
+
+</div>
+
+</div>
+
+The 100k and million-record filters both selected 960 matches; the 10k filter selected 200. The million-record plans examined matching keys rather than work proportional to the whole collection. This supports efficient indexed selection at the tested sizes, not constant latency for every filter.
+
+Use exact keys when known, selective Dimensions for discovery, and batching to reduce round trips. Fetching content adds transfer cost. Common values, broad filters, counts and sorting can be much slower, so keep interactive queries selective and paged.
+
+Dimension figures are medians of three two-minute run-level p95 values, with 16 readers and four concurrent writers shared across both storage features. Both features ran together within the approved local eight-CPU/32-GiB resource budget on NVMe. These are mixed-load provider timings, not pure read-only capacity or service guarantees. Payloads, selectivity, cache residency, network latency and competing work affect results.
+
+
+### Add and content-update performance
+
+Increasing the collection from 10k to one million blobs did not produce an accelerating rise in write latency. Single add and content-update calls stayed between 8.9 and 13.0 ms p95 across both engines and Dimension variants. The operation method affected completion time much more than collection size.
+
+These writes use 1-KiB content and collections of 10k, 100k and one million records. Every record has either no Dimensions or three: an integer, a Boolean and a short string. Updates replace content and change all three values. There are no competing readers.
+
+Single and sequential operations use one writer. The public `UploadManyAsync` groups use four bounded workers; their 100 uploads commit independently. The charts show this bulk API.
+
+Each cell shows **SQL Server / PostgreSQL**: p95 milliseconds first, then call-only items/second in small text. Chart legends use 0 or 3 for the Dimension count.
+
+#### Add items
+
+<div class="storage-performance-comparison" markdown="1">
+
+<figure class="storage-performance-figure" markdown="1">
+
+```mermaid
+%%{init: {"theme":"base","xyChart":{"width":420,"height":310,"titleFontSize":17,"legendFontSize":16,"xAxis":{"labelFontSize":16,"titleFontSize":15},"yAxis":{"labelFontSize":16,"titleFontSize":15}},"themeVariables":{"xyChart":{"backgroundColor":"transparent","titleColor":"var(--bdk-text)","legendTextColor":"var(--bdk-muted)","plotColorPalette":"#7fb3df, #397fc4, #d8ad73, #c27a32","xAxisLabelColor":"var(--bdk-muted)","xAxisTitleColor":"var(--bdk-muted)","xAxisTickColor":"var(--bdk-muted)","xAxisLineColor":"var(--bdk-muted)","yAxisLabelColor":"var(--bdk-muted)","yAxisTitleColor":"var(--bdk-muted)","yAxisTickColor":"var(--bdk-muted)","yAxisLineColor":"var(--bdk-muted)"}}}}%%
+xychart-beta
+    title "Add 100 blobs"
+    x-axis "Stored records" ["10k", "100k", "1m"]
+    y-axis "Group p95 (ms)" 0 --> 360
+    line "SQL 0" [281.4, 281.7, 268.9]
+    line "SQL 3" [309.8, 302.6, 306.5]
+    line "PG 0" [236.8, 232.2, 217.0]
+    line "PG 3" [242.5, 236.1, 223.2]
+```
+
+</figure>
+
+<div class="storage-performance-data" markdown="1">
+
+| Method | Dims | 10k | 100k | 1m |
+|---|---:|---:|---:|---:|
+| Single | 0 | 9.2 / 9.9<br><small>123 / 116</small> | 9.8 / 9.1<br><small>120 / 126</small> | 11.4 / 9.8<br><small>113 / 128</small> |
+| Single | 3 | 10.5 / 10.5<br><small>115 / 114</small> | 10.0 / 9.4<br><small>117 / 119</small> | 10.7 / 9.0<br><small>111 / 126</small> |
+| 100 sequential | 0 | 842.4 / 1038.5<br><small>124 / 118</small> | 881.6 / 833.2<br><small>122 / 127</small> | 993.7 / 1002.4<br><small>116 / 128</small> |
+| 100 sequential | 3 | 998.9 / 910.7<br><small>115 / 118</small> | 1091.9 / 879.2<br><small>114 / 120</small> | 1091.1 / 864.6<br><small>110 / 125</small> |
+| UploadMany 100 | 0 | 281.4 / 236.8<br><small>387 / 465</small> | 281.7 / 232.2<br><small>385 / 462</small> | 268.9 / 217.0<br><small>391 / 483</small> |
+| UploadMany 100 | 3 | 309.8 / 242.5<br><small>364 / 447</small> | 302.6 / 236.1<br><small>365 / 449</small> | 306.5 / 223.2<br><small>360 / 469</small> |
+
+</div>
+
+</div>
+
+#### Replace content
+
+<div class="storage-performance-comparison" markdown="1">
+
+<figure class="storage-performance-figure" markdown="1">
+
+```mermaid
+%%{init: {"theme":"base","xyChart":{"width":420,"height":310,"titleFontSize":17,"legendFontSize":16,"xAxis":{"labelFontSize":16,"titleFontSize":15},"yAxis":{"labelFontSize":16,"titleFontSize":15}},"themeVariables":{"xyChart":{"backgroundColor":"transparent","titleColor":"var(--bdk-text)","legendTextColor":"var(--bdk-muted)","plotColorPalette":"#7fb3df, #397fc4, #d8ad73, #c27a32","xAxisLabelColor":"var(--bdk-muted)","xAxisTitleColor":"var(--bdk-muted)","xAxisTickColor":"var(--bdk-muted)","xAxisLineColor":"var(--bdk-muted)","yAxisLabelColor":"var(--bdk-muted)","yAxisTitleColor":"var(--bdk-muted)","yAxisTickColor":"var(--bdk-muted)","yAxisLineColor":"var(--bdk-muted)"}}}}%%
+xychart-beta
+    title "Replace 100 blobs"
+    x-axis "Stored records" ["10k", "100k", "1m"]
+    y-axis "Group p95 (ms)" 0 --> 400
+    line "SQL 0" [289.3, 298.6, 305.6]
+    line "SQL 3" [312.6, 313.1, 342.6]
+    line "PG 0" [237.4, 243.7, 226.2]
+    line "PG 3" [236.7, 243.3, 225.1]
+```
+
+</figure>
+
+<div class="storage-performance-data" markdown="1">
+
+| Method | Dims | 10k | 100k | 1m |
+|---|---:|---:|---:|---:|
+| Single | 0 | 9.3 / 9.5<br><small>119 / 121</small> | 9.8 / 9.9<br><small>116 / 124</small> | 10.3 / 9.1<br><small>111 / 130</small> |
+| Single | 3 | 10.6 / 9.6<br><small>109 / 117</small> | 11.8 / 9.3<br><small>109 / 119</small> | 13.0 / 8.9<br><small>99 / 126</small> |
+| 100 sequential | 0 | 934.7 / 897.1<br><small>119 / 123</small> | 891.6 / 950.6<br><small>120 / 123</small> | 941.8 / 803.3<br><small>113 / 133</small> |
+| 100 sequential | 3 | 1009.0 / 888.7<br><small>112 / 122</small> | 1512.7 / 984.3<br><small>103 / 118</small> | 1007.0 / 839.5<br><small>108 / 124</small> |
+| UploadMany 100 | 0 | 289.3 / 237.4<br><small>369 / 458</small> | 298.6 / 243.7<br><small>366 / 460</small> | 305.6 / 226.2<br><small>366 / 477</small> |
+| UploadMany 100 | 3 | 312.6 / 236.7<br><small>359 / 451</small> | 313.1 / 243.3<br><small>354 / 443</small> | 342.6 / 225.1<br><small>341 / 463</small> |
+
+</div>
+
+</div>
+
+At one million blobs with three Dimensions, `UploadManyAsync` completed 100 adds in 306.5 ms p95 on SQL Server and 223.2 ms on PostgreSQL. Content-update groups took 342.6 and 225.1 ms. Across the million-record variants, four workers finished groups about three to four times faster than sequential uploads.
+
+Write p95 uses 500 single calls or 50 complete groups across five repetitions after warm-up. Caches remain active. Group tails are indicative because they have fewer samples. Input preparation, persistent verification and insert cleanup are outside timing; rates cover provider/client call time, not full application capacity. The same resource budget described above applies. SQL Server used MAXDOP 1 and EF `MinBatchSize(1)`. Larger payloads, more Dimensions and competing work are outside this write study.

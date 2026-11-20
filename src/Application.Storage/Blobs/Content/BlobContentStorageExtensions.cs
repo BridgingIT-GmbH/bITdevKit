@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -74,9 +74,10 @@ public static class BlobContentStorageExtensions
             Content = stream,
             ContentType = options.ContentType,
             ExpectedContentHash = options.ExpectedContentHash,
-            Properties = options.Properties?.Clone() ?? new PropertyBag(),
+            Properties = BlobPropertyValues.Clone(options.Properties),
+            Dimensions = options.Dimensions,
             IfMatchETag = options.IfMatchETag,
-                OverwriteMode = options.OverwriteMode
+            OverwriteMode = options.OverwriteMode
         };
 
         return await blobClient.UploadAsync(upload, cancellationToken).ConfigureAwait(false);
@@ -225,9 +226,10 @@ public static class BlobContentStorageExtensions
             Content = stream,
             ContentType = options.ContentType,
             ExpectedContentHash = options.ExpectedContentHash,
-            Properties = options.Properties?.Clone() ?? new PropertyBag(),
+            Properties = BlobPropertyValues.Clone(options.Properties),
+            Dimensions = options.Dimensions,
             IfMatchETag = options.IfMatchETag,
-                OverwriteMode = options.OverwriteMode
+            OverwriteMode = options.OverwriteMode
         };
 
         return await blobClient.UploadAsync(upload, cancellationToken).ConfigureAwait(false);

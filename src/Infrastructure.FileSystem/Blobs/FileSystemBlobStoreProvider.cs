@@ -40,17 +40,19 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
     };
 
     /// <inheritdoc />
-    public Task<Result<BlobInfo>> UploadAsync(
-        BlobUpload upload,
+    public Task<Result<StoredBlobInfo>> UploadAsync(
+        StoredBlobUpload upload,
         CancellationToken cancellationToken = default)
     {
+        if (upload?.Dimensions is not null) return Task.FromResult(Result<StoredBlobInfo>.Failure(new BlobDimensionsNotSupportedError()));
+
         return FileSystemResults.BlobAsync(async () =>
         {
             var validation = BlobValidator.Validate(upload, this.options);
 
             if (validation.IsFailure)
             {
-                return Result<BlobInfo>.Failure(validation);
+                return Result<StoredBlobInfo>.Failure(validation);
             }
 
             var identity = Identity(upload.Key);
@@ -64,7 +66,7 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
 
             if (!string.IsNullOrWhiteSpace(upload.ExpectedContentHash) && upload.ExpectedContentHash != staged.Hash)
             {
-                return Result<BlobInfo>.Failure(new BlobStoreIntegrityError("Uploaded content hash differs."));
+                return Result<StoredBlobInfo>.Failure(new BlobStoreIntegrityError("Uploaded content hash differs."));
             }
 
             using var authority = await this.store.AcquireAsync(
@@ -75,16 +77,16 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
 
             if (current is not null && upload.OverwriteMode == BlobOverwriteMode.FailIfExists)
             {
-                return Result<BlobInfo>.Failure(new BlobStoreConflictError("A physical blob already exists."));
+                return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError("A physical blob already exists."));
             }
 
             if (!string.IsNullOrWhiteSpace(upload.IfMatchETag) && (current is null || current.Blob.ETag != upload.IfMatchETag))
             {
-                return Result<BlobInfo>.Failure(new BlobStoreConflictError("The blob ETag changed or the blob was deleted."));
+                return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError("The blob ETag changed or the blob was deleted."));
             }
 
             var now = DateTimeOffset.UtcNow;
-            var info = new BlobInfo
+            var info = new StoredBlobInfo
             {
                 Key = upload.Key,
                 Length = staged.Length,
@@ -94,7 +96,8 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
                 CreatedAt = current?.Blob.CreatedAt ?? now,
                 LastModifiedAt = now,
                 ExpiresAt = upload.ExpiresAt?.ToUniversalTime(),
-                Properties = upload.Properties?.Clone() ?? new()
+                Properties = BlobPropertyValues.Clone(upload.Properties ?? current?.Blob?.Properties) ?? new(),
+                TransformMetadata = BlobPropertyValues.Clone(upload.TransformMetadata) ?? new()
             };
 
             var record = new FileSystemRecord
@@ -107,12 +110,12 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
 
             this.store.Publish(path, record, authority, cancellationToken, staged);
 
-            return Result<BlobInfo>.Success(info);
+            return Result<StoredBlobInfo>.Success(info);
         });
     }
 
     /// <inheritdoc />
-    public Task<Result<BlobDownload>> DownloadAsync(BlobKey key, CancellationToken cancellationToken = default)
+    public Task<Result<StoredBlobDownload>> DownloadAsync(BlobKey key, CancellationToken cancellationToken = default)
     {
         return FileSystemResults.BlobAsync(async () =>
         {
@@ -120,7 +123,7 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
 
             if (validation.IsFailure)
             {
-                return Result<BlobDownload>.Failure(validation);
+                return Result<StoredBlobDownload>.Failure(validation);
             }
 
             var path = this.store.Resolve(Identity(key), false);
@@ -129,21 +132,21 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
 
             if (record is null)
             {
-                return Result<BlobDownload>.Failure(new BlobStoreNotFoundError(key));
+                return Result<StoredBlobDownload>.Failure(new BlobStoreNotFoundError(key));
             }
 
-            var download = new BlobDownload
+            var download = new StoredBlobDownload
             {
                 Content = this.store.OpenPayload(path, record),
                 Info = record.Blob
             };
 
-            return Result<BlobDownload>.Success(download);
+            return Result<StoredBlobDownload>.Success(download);
         });
     }
 
     /// <inheritdoc />
-    public Task<Result<BlobInfo>> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken = default)
+    public Task<Result<StoredBlobInfo>> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken = default)
     {
         return FileSystemResults.BlobAsync(async () =>
         {
@@ -152,14 +155,14 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
 
             if (validation.IsFailure)
             {
-                return Result<BlobInfo>.Failure(validation);
+                return Result<StoredBlobInfo>.Failure(validation);
             }
 
             var path = this.store.Resolve(Identity(key), false);
             var record = this.store.Read(path, Identity(key));
             await Task.CompletedTask;
 
-            return record is null ? Result<BlobInfo>.Failure(new BlobStoreNotFoundError(key)) : Result<BlobInfo>.Success(record.Blob);
+            return record is null ? Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(key)) : Result<StoredBlobInfo>.Success(record.Blob);
         });
     }
 
@@ -172,7 +175,7 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
     }
 
     /// <inheritdoc />
-    public Task<Result<BlobInfo>> UpdatePropertiesAsync(BlobPropertiesUpdate update, CancellationToken cancellationToken = default)
+    public Task<Result<StoredBlobInfo>> UpdatePropertiesAsync(StoredBlobPropertiesUpdate update, CancellationToken cancellationToken = default)
     {
         return FileSystemResults.BlobAsync(async () =>
         {
@@ -180,7 +183,7 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
 
             if (validation.IsFailure)
             {
-                return Result<BlobInfo>.Failure(validation);
+                return Result<StoredBlobInfo>.Failure(validation);
             }
 
             var identity = Identity(update.Key);
@@ -190,15 +193,15 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
 
             if (current is null)
             {
-                return Result<BlobInfo>.Failure(new BlobStoreNotFoundError(update.Key));
+                return Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(update.Key));
             }
 
             if (!string.IsNullOrWhiteSpace(update.IfMatchETag) && update.IfMatchETag != current.Blob.ETag)
             {
-                return Result<BlobInfo>.Failure(new BlobStoreConflictError("Blob ETag differs."));
+                return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError("Blob ETag differs."));
             }
 
-            var info = new BlobInfo
+            var info = new StoredBlobInfo
             {
                 Key = current.Blob.Key,
                 Length = current.Length,
@@ -208,11 +211,12 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
                 CreatedAt = current.Blob.CreatedAt,
                 LastModifiedAt = DateTimeOffset.UtcNow,
                 ExpiresAt = update.ExpiresAt?.ToUniversalTime(),
-                Properties = update.Properties?.Clone() ?? new()
+                Properties = BlobPropertyValues.Clone(update.Properties ?? current.Blob.Properties) ?? new(),
+                TransformMetadata = BlobPropertyValues.Clone(update.TransformMetadata ?? current.Blob.TransformMetadata) ?? new()
             };
             this.store.Publish(path, current with { Blob = info }, authority, cancellationToken);
 
-            return Result<BlobInfo>.Success(info);
+            return Result<StoredBlobInfo>.Success(info);
         });
     }
 
@@ -251,19 +255,21 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
     }
 
     /// <inheritdoc />
-    public Task<Result<BlobPage>> ListPageAsync(BlobQuery query, CancellationToken cancellationToken = default)
+    public Task<Result<StoredBlobPage>> ListPageAsync(BlobQuery query, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Task.FromResult(Result<StoredBlobPage>.Failure(new BlobDimensionsNotSupportedError()));
+
         return FileSystemResults.BlobAsync(async () =>
         {
             var validation = BlobQueryValidator.NormalizeAndValidate("FileSystem", query, this.options, this.Capabilities, this.protector);
 
             if (validation.IsFailure)
             {
-                return Result<BlobPage>.Failure(validation);
+                return Result<StoredBlobPage>.Failure(validation);
             }
 
             var normalized = validation.Value;
-            var rows = new SortedDictionary<string, BlobInfo>(StringComparer.Ordinal);
+            var rows = new SortedDictionary<string, StoredBlobInfo>(StringComparer.Ordinal);
             var inspected = 0;
 
             foreach (var path in this.store.Paths("blobs", normalized.Query.Container))
@@ -272,7 +278,7 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
 
                 if (++inspected > this.store.MaxQueryMetadataEntries)
                 {
-                    return Result<BlobPage>.Failure(new BlobStoreQueryTooBroadError("Metadata scan bound exceeded."));
+                    return Result<StoredBlobPage>.Failure(new BlobStoreQueryTooBroadError("Metadata scan bound exceeded."));
                 }
 
                 var record = this.store.Read(path);
@@ -302,7 +308,7 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
 
                 if (serialized.IsFailure)
                 {
-                    return Result<BlobPage>.Failure(serialized);
+                    return Result<StoredBlobPage>.Failure(serialized);
                 }
 
                 token = serialized.Value;
@@ -310,7 +316,7 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
 
             await Task.CompletedTask;
 
-            return Result<BlobPage>.Success(new() { Items = items, ContinuationToken = token });
+            return Result<StoredBlobPage>.Success(new() { Items = items, ContinuationToken = token });
         });
     }
 

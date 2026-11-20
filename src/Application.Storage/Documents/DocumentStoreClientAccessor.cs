@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 
 namespace BridgingIT.DevKit.Application.Storage;
@@ -17,7 +17,7 @@ using System.Text;
 /// </code>
 /// </example>
 public sealed class DocumentStoreClientAccessor<T>(DocumentStoreClientDescriptor descriptor, IDocumentStoreClient<T> client, ISerializer serializer = null)
-    : IDocumentStoreClientAccessor where T : class, new()
+    : IDocumentStoreClientAccessor, IDocumentDimensionDiagnosticsAccessor where T : class, new()
 {
     private readonly ISerializer serializer = serializer ?? new SystemTextJsonSerializer();
     /// <inheritdoc />
@@ -95,6 +95,15 @@ public sealed class DocumentStoreClientAccessor<T>(DocumentStoreClientDescriptor
 
         return await client.UpsertAsync(key, value, options, cancellationToken);
     }
+
+    /// <inheritdoc />
+    public Task<Result<DocumentDimensionDiagnostics>> GetDimensionDiagnosticsAsync(bool includeDictionaryCount = false, CancellationToken cancellationToken = default) =>
+        client is IDocumentStoreProviderAccessor { Provider: IDocumentDimensionDiagnosticsProvider diagnostics }
+            ? diagnostics.GetDimensionDiagnosticsAsync(this.Descriptor.TypeIdentity, includeDictionaryCount, cancellationToken)
+            : Task.FromResult(Result<DocumentDimensionDiagnostics>.Failure(new DocumentDimensionsNotSupportedError()));
+
+    /// <inheritdoc />
+    public Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) => client.UpdateDimensionsAsync(update, cancellationToken);
 
     /// <inheritdoc />
     public Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default) => client.UpdatePropertiesAsync(update, cancellationToken);

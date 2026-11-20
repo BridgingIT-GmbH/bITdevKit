@@ -62,7 +62,8 @@ public sealed class BlobStoreValueCodecTests
         raw.IsSuccess.ShouldBeTrue();
         await using (var stored = raw.Value)
         {
-            stored.Info.Properties.Get<string>("bdk_compression_algorithm").ShouldBe("gzip");
+            stored.Info.TransformMetadata.Get<string>("bdk_compression_algorithm").ShouldBe("gzip");
+            stored.Info.Properties.Contains("bdk_compression_algorithm").ShouldBeFalse();
             stored.Info.Properties.Get<string>("codec_id").ShouldBe("inventory");
             stored.Info.Properties.Get<int>("codec_version").ShouldBe(version);
             using var gzip = new GZipStream(stored.Content, CompressionMode.Decompress, leaveOpen: true);

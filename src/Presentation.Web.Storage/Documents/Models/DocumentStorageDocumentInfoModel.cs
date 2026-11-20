@@ -13,6 +13,9 @@ using BridgingIT.DevKit.Application.Storage;
 /// <example><code>var model = new DocumentStorageDocumentInfoModel { Key = new DocumentKey("orders", "42"), ETag = "version-token" };</code></example>
 public class DocumentStorageDocumentInfoModel
 {
+    /// <summary>Gets or sets the detached, original-name Dimensions snapshot.</summary>
+    public DocumentDimensions Dimensions { get; set; } = DocumentDimensions.Empty;
+
     /// <summary>Gets or sets the exact partition and row key identifying the document.</summary>
     /// <example><code>var key = model.Key;</code></example>
     public DocumentKey Key { get; set; }

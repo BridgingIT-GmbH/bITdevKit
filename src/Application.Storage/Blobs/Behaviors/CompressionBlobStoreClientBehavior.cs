@@ -60,10 +60,20 @@ public sealed class CompressionBlobStoreClientBehavior : IBlobStoreClient
     public string StoreName { get; }
 
     /// <inheritdoc />
+    public BlobDimensionCapabilities DimensionCapabilities => this.inner.DimensionCapabilities;
+
+    /// <inheritdoc />
     public async Task<Result<BlobInfo>> UploadAsync(
         BlobUpload upload,
         CancellationToken cancellationToken = default)
     {
+        upload = BlobStoredModelMapper.Snapshot(upload);
+        var propertiesValidation = BlobPropertyValues.Validate(upload?.Properties);
+        if (propertiesValidation.IsFailure)
+        {
+            return Result<BlobInfo>.Failure(propertiesValidation);
+        }
+
         var contentValidation = BlobBehaviorTransform.ValidateContent(upload?.Content);
         if (contentValidation.IsFailure)
         {
@@ -90,7 +100,7 @@ public sealed class CompressionBlobStoreClientBehavior : IBlobStoreClient
             }
 
             transformed.Position = 0;
-            var properties = BlobBehaviorTransform.CloneProperties(upload.Properties);
+            var properties = BlobBehaviorTransform.CloneProperties(upload.TransformMetadata);
             properties[BlobBehaviorTransform.CompressionAlgorithmKey] = Algorithm;
             properties[BlobBehaviorTransform.CompressionLengthKey] = copy.Length.ToString(CultureInfo.InvariantCulture);
             properties[BlobBehaviorTransform.CompressionContentTypeKey] = upload.ContentType?.ToString() ?? string.Empty;
@@ -99,11 +109,13 @@ public sealed class CompressionBlobStoreClientBehavior : IBlobStoreClient
             var result = await this.inner.UploadAsync(new BlobUpload
             {
                 Key = upload.Key,
+                Dimensions = upload.Dimensions,
                 Content = transformed,
                 ContentType = this.options.StoredContentType,
                 ExpectedContentHash = null,
                 ExpiresAt = upload.ExpiresAt,
-                Properties = properties,
+                Properties = BlobPropertyValues.Clone(upload.Properties),
+                TransformMetadata = properties,
                 IfMatchETag = upload.IfMatchETag,
                 OverwriteMode = upload.OverwriteMode
             }, cancellationToken).ConfigureAwait(false);
@@ -193,10 +205,24 @@ public sealed class CompressionBlobStoreClientBehavior : IBlobStoreClient
     }
 
     /// <inheritdoc />
+    public async Task<Result<BlobInfo>> UpdateDimensionsAsync(BlobDimensionsUpdate update, CancellationToken cancellationToken = default)
+    {
+        var result = await this.inner.UpdateDimensionsAsync(update, cancellationToken).ConfigureAwait(false);
+        return result.IsSuccess ? Result<BlobInfo>.Success(this.ToLogicalInfo(result.Value)) : result;
+    }
+
+    /// <inheritdoc />
     public async Task<Result<BlobInfo>> UpdatePropertiesAsync(
         BlobPropertiesUpdate update,
         CancellationToken cancellationToken = default)
     {
+        update = BlobStoredModelMapper.Snapshot(update);
+        var propertiesValidation = BlobValidator.Validate(update);
+        if (propertiesValidation.IsFailure)
+        {
+            return Result<BlobInfo>.Failure(propertiesValidation);
+        }
+
         var current = await this.inner.GetPropertiesAsync(update.Key, cancellationToken).ConfigureAwait(false);
         if (current.IsFailure)
         {
@@ -241,7 +267,7 @@ public sealed class CompressionBlobStoreClientBehavior : IBlobStoreClient
 
     private static bool IsCompressed(BlobInfo info) =>
         string.Equals(
-            info?.Properties?.Get<string>(BlobBehaviorTransform.CompressionAlgorithmKey),
+            info?.TransformMetadata?.Get<string>(BlobBehaviorTransform.CompressionAlgorithmKey),
             Algorithm,
             StringComparison.OrdinalIgnoreCase);
 
@@ -259,6 +285,7 @@ public sealed class CompressionBlobStoreClientBehavior : IBlobStoreClient
             : new BlobInfo
             {
                 Key = mapped.Key,
+                Dimensions = mapped.Dimensions,
                 Length = copy.Length,
                 ContentType = mapped.ContentType,
                 ContentHash = copy.ContentHash,
@@ -266,7 +293,8 @@ public sealed class CompressionBlobStoreClientBehavior : IBlobStoreClient
                 CreatedAt = mapped.CreatedAt,
                 LastModifiedAt = mapped.LastModifiedAt,
                 ExpiresAt = mapped.ExpiresAt,
-                Properties = mapped.Properties
+                Properties = mapped.Properties,
+                TransformMetadata = mapped.TransformMetadata
             };
     }
 }

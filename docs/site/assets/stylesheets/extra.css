@@ -2911,6 +2911,44 @@ body {
   }
 }
 
+.md-typeset .storage-performance-comparison {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-block: 1rem;
+}
+
+.md-typeset .storage-performance-figure,
+.md-typeset .storage-performance-data {
+  flex: 1 1 16rem;
+  min-width: 0;
+  margin: 0;
+}
+
+.md-typeset .storage-performance-figure .mermaid {
+  width: 100%;
+  margin: 0;
+  padding: 0.45rem;
+  overflow-x: auto;
+  background: transparent;
+}
+
+.md-typeset .storage-performance-data {
+  overflow-x: auto;
+}
+
+.md-typeset .storage-performance-data table:not([class]) {
+  display: table;
+  width: 100%;
+  margin: 0;
+}
+
+.md-typeset .storage-performance-data table:not([class]) th,
+.md-typeset .storage-performance-data table:not([class]) td {
+  padding: 0.65em 0.55em;
+}
+
 @media print {
   .md-header,
   .md-sidebar,

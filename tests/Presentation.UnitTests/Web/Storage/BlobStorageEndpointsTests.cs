@@ -352,6 +352,24 @@ public class BlobStorageEndpointsTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task UpdateProperties_WithOmittedNullAndEmptyBags_PreservesOrClears()
+    {
+        var blobs = this.blobStoreClientFactory.CreateClient("reports");
+        var key = new BlobKey("reports", "meta/preserve.txt");
+        (await blobs.UploadAsync(new() { Key = key, Content = new MemoryStream([1]), Properties = new() { ["source"] = "test" } })).IsSuccess.ShouldBeTrue();
+        foreach (var json in new[] { "{\"container\":\"reports\",\"name\":\"meta/preserve.txt\"}", "{\"container\":\"reports\",\"name\":\"meta/preserve.txt\",\"properties\":null}" })
+        {
+            using var response = await this.client.PatchAsync("/_bdk/api/storage/blobs/reports/blobs/properties", new StringContent(json, Encoding.UTF8, "application/json"));
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            (await blobs.GetPropertiesAsync(key)).Value.Properties.Get<string>("source").ShouldBe("test");
+        }
+
+        using var clear = await this.client.PatchAsJsonAsync("/_bdk/api/storage/blobs/reports/blobs/properties", new BlobStorageUpdatePropertiesRequestModel { Container = "reports", Name = key.Name, Properties = new() });
+        clear.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await blobs.GetPropertiesAsync(key)).Value.Properties.Count.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task ListBlobs_ShouldReturnMatchingPrefixOnly()
     {
         var blobs = this.blobStoreClientFactory.CreateClient("reports");

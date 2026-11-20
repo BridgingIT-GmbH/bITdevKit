@@ -40,8 +40,12 @@ public sealed class ProfilingDocumentStoreClientBehavior<T>(IDocumentStoreClient
     /// <example><code>await documents.UpsertManyAsync([new(new("people", "42"), new T())]);</code></example>
     public override Task<Result<DocumentBatchResult<DocumentInfo>>> UpsertManyAsync(IReadOnlyCollection<DocumentWrite<T>> writes, CancellationToken cancellationToken = default) => this.ProfileAsync("upsert-many", () => this.Inner.UpsertManyAsync(writes, cancellationToken), cancellationToken);
     /// <inheritdoc />
+    public override Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) => this.ProfileAsync("update-dimensions", () => this.Inner.UpdateDimensionsAsync(update, cancellationToken), cancellationToken);
+
+    /// <inheritdoc />
     /// <example><code>await documents.UpdatePropertiesAsync(new(new("people", "42")));</code></example>
     public override Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default) => this.ProfileAsync("update-properties", () => this.Inner.UpdatePropertiesAsync(update, cancellationToken), cancellationToken);
+
     /// <inheritdoc />
     /// <example><code>await documents.DeleteAsync(new("people", "42"));</code></example>
     public override Task<Result> DeleteAsync(DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default) => this.ProfileAsync("delete", () => this.Inner.DeleteAsync(key, options, cancellationToken), cancellationToken);

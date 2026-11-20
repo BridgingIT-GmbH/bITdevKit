@@ -18,6 +18,10 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class BlobMoveOptions
 {
+    /// <summary>Gets optional destination Dimensions. Omission copies the source; empty clears the destination.</summary>
+    /// <example><code>var dimensions = options.Dimensions;</code></example>
+    public BlobDimensions Dimensions { get; init; }
+
     /// <summary>
     /// Gets the copy options used before deleting the source.
     /// </summary>

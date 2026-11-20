@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using BridgingIT.DevKit.Presentation.Web.Storage.Models;
+
 using System.Globalization;
 using BridgingIT.DevKit.Application.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +26,13 @@ using Spectre.Console;
 /// </example>
 public sealed class StorageDocumentsConsoleCommand() : StorageConsoleCommandBase("documents", "Document Storage operations", "docs")
 {
+    private DocumentDimensionFilter dimensionFilter;
+
+    /// <summary>Gets or sets optional typed Dimensions filter JSON for list operations.</summary>
+    /// <example><code>storage documents list --dimension-filter '{"name":"year","operator":"Equal","operand":{"type":"integer","value":2026}}'</code></example>
+    [ConsoleCommandOption("dimension-filter", Description = "Typed Dimensions filter JSON (list only)")]
+    public string DimensionFilterJson { get; set; }
+
     /// <summary>
     /// Gets or sets the document operation: clients, list, read, delete, or delete-all.
     /// </summary>
@@ -177,6 +186,21 @@ public sealed class StorageDocumentsConsoleCommand() : StorageConsoleCommandBase
             return;
         }
 
+        if (this.DimensionFilterJson is not null && !string.Equals(this.Operation, "list", StringComparison.OrdinalIgnoreCase))
+        {
+            console.MarkupLine("[red]--dimension-filter is supported only by list operations.[/]");
+            return;
+        }
+
+        var dimensions = DocumentStorageDimensionsJson.ParseFilter(this.DimensionFilterJson);
+        if (dimensions.IsFailure)
+        {
+            WriteErrors(console, dimensions);
+            return;
+        }
+
+        this.dimensionFilter = dimensions.Value;
+
         switch ((this.Operation ?? "clients").ToLowerInvariant())
         {
             case "clients":
@@ -216,6 +240,7 @@ public sealed class StorageDocumentsConsoleCommand() : StorageConsoleCommandBase
         table.AddColumn("Name");
         table.AddColumn("Type");
         table.AddColumn("Provider");
+        table.AddColumn("Dimensions");
 
         foreach (var descriptor in descriptors.OrderBy(descriptor => descriptor.ClientId, StringComparer.OrdinalIgnoreCase))
         {
@@ -223,7 +248,8 @@ public sealed class StorageDocumentsConsoleCommand() : StorageConsoleCommandBase
                 Markup.Escape(descriptor.ClientId),
                 Markup.Escape(descriptor.Name ?? string.Empty),
                 Markup.Escape(descriptor.DocumentTypeName ?? descriptor.DocumentType?.Name ?? string.Empty),
-                Markup.Escape(descriptor.ProviderName ?? string.Empty));
+                Markup.Escape(descriptor.ProviderName ?? string.Empty),
+                Markup.Escape(DimensionProfile(descriptor.Capabilities?.Dimensions)));
         }
 
         console.Write(table);
@@ -418,19 +444,21 @@ public sealed class StorageDocumentsConsoleCommand() : StorageConsoleCommandBase
             {
                 DocumentKey = new DocumentKey(this.PartitionKey, rowKey),
                 Filter = this.RowKeyPrefix is not null ? DocumentKeyFilter.RowKeyPrefixMatch : DocumentKeyFilter.FullMatch,
+                DimensionFilter = this.dimensionFilter,
                 Take = this.Take > 0 ? this.Take : null,
                 ContinuationToken = this.ContinuationToken,
                 AllowFullScan = this.AllowFullScan
             };
         }
 
-        if (this.AllowFullScan)
+        if (this.AllowFullScan || this.dimensionFilter?.HasPositiveAnchor == true)
         {
             return new DocumentQuery
             {
+                DimensionFilter = this.dimensionFilter,
                 Take = this.Take > 0 ? this.Take : null,
                 ContinuationToken = this.ContinuationToken,
-                AllowFullScan = true
+                AllowFullScan = this.AllowFullScan
             };
         }
 
@@ -463,6 +491,7 @@ public sealed class StorageDocumentsConsoleCommand() : StorageConsoleCommandBase
     private static DocumentQuery ContinueQuery(DocumentQuery query, string continuationToken) => new()
     {
         DocumentKey = query.DocumentKey,
+        DimensionFilter = query.DimensionFilter,
         Filter = query.Filter,
         Take = query.Take,
         ContinuationToken = continuationToken,
@@ -495,4 +524,8 @@ public sealed class StorageDocumentsConsoleCommand() : StorageConsoleCommandBase
 
         return accessor;
     }
+    private static string DimensionProfile(DocumentDimensionCapabilities capabilities) => capabilities?.SupportsDimensions == true
+        ? $"{capabilities.MaximumCount}/record, {capabilities.MaximumPredicates} predicates, {capabilities.MaximumGroups} groups, depth {capabilities.MaximumGroupDepth}, names {capabilities.MaximumNameLength} ASCII, {capabilities.MaximumStringBytes}B UTF8, queries={capabilities.SupportsQueries}, decimal={(capabilities.SupportsDecimalComparisons ? "equality/ranges" : "equality")}"
+        : "Unsupported";
+
 }

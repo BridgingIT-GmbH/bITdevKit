@@ -394,7 +394,7 @@ public sealed class BlobDownloadManyTests
             return keys;
         }
 
-        public async Task<IReadOnlyDictionary<BlobKey, Result<BlobDownload>>> DownloadManyAsync(
+        public async Task<IReadOnlyDictionary<BlobKey, Result<StoredBlobDownload>>> DownloadManyAsync(
             IReadOnlyCollection<BlobKey> keys,
             CancellationToken cancellationToken = default)
         {
@@ -413,7 +413,7 @@ public sealed class BlobDownloadManyTests
                     throw new InvalidOperationException("batch failed");
                 }
 
-                var results = new Dictionary<BlobKey, Result<BlobDownload>>();
+                var results = new Dictionary<BlobKey, Result<StoredBlobDownload>>();
                 foreach (var key in keys.Where(key => !this.OmitFromBatch.Contains(key)))
                 {
                     results[key] = this.Create(key);
@@ -427,28 +427,28 @@ public sealed class BlobDownloadManyTests
             }
         }
 
-        public Task<Result<BlobDownload>> DownloadAsync(BlobKey key, CancellationToken cancellationToken = default)
+        public Task<Result<StoredBlobDownload>> DownloadAsync(BlobKey key, CancellationToken cancellationToken = default)
         {
             this.singleReads.Enqueue(key);
 
             return Task.FromResult(this.Create(key));
         }
 
-        public Task<Result<BlobInfo>> UploadAsync(BlobUpload upload, CancellationToken cancellationToken = default) =>
+        public Task<Result<StoredBlobInfo>> UploadAsync(StoredBlobUpload upload, CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
 
-        public Task<Result<BlobInfo>> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken = default) =>
+        public Task<Result<StoredBlobInfo>> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
 
-        public Task<Result<BlobInfo>> UpdatePropertiesAsync(
-            BlobPropertiesUpdate update,
+        public Task<Result<StoredBlobInfo>> UpdatePropertiesAsync(
+            StoredBlobPropertiesUpdate update,
             CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
 
         public Task<Result<bool>> ExistsAsync(BlobKey key, CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
 
-        public Task<Result<BlobPage>> ListPageAsync(BlobQuery query, CancellationToken cancellationToken = default) =>
+        public Task<Result<StoredBlobPage>> ListPageAsync(BlobQuery query, CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
 
         public Task<Result> DeleteAsync(
@@ -457,19 +457,19 @@ public sealed class BlobDownloadManyTests
             CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
 
-        private Result<BlobDownload> Create(BlobKey key)
+        private Result<StoredBlobDownload> Create(BlobKey key)
         {
             if (!this.blobs.TryGetValue(key, out var content))
             {
-                return Result<BlobDownload>.Failure(new BlobStoreNotFoundError(key));
+                return Result<StoredBlobDownload>.Failure(new BlobStoreNotFoundError(key));
             }
 
             var stream = new TrackedStream(content);
             this.createdStreams.Enqueue(stream);
 
-            return Result<BlobDownload>.Success(new BlobDownload
+            return Result<StoredBlobDownload>.Success(new StoredBlobDownload
             {
-                Info = new BlobInfo { Key = key, Length = content.Length },
+                Info = new StoredBlobInfo { Key = key, Length = content.Length },
                 Content = stream
             });
         }

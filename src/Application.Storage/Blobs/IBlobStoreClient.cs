@@ -17,6 +17,10 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public interface IBlobStoreClient
 {
+    /// <summary>Gets the current provider's indexed Dimensions profile.</summary>
+    /// <example><code>var supported = blobs.DimensionCapabilities.SupportsDimensions;</code></example>
+    BlobDimensionCapabilities DimensionCapabilities => BlobDimensionCapabilities.Unsupported;
+
     /// <summary>
     /// Uploads one blob from a caller-owned stream, conditionally replacing the whole item when IfMatchETag is supplied.
     /// </summary>
@@ -29,6 +33,17 @@ public interface IBlobStoreClient
     /// </code>
     /// </example>
     Task<Result<BlobInfo>> UploadAsync(BlobUpload upload, CancellationToken cancellationToken = default);
+
+    /// <summary>Attempts every independent upload with bounded concurrency and returns per-item outcomes in input order.</summary>
+    /// <param name="uploads">At most 1000 requests with distinct keys and caller-owned stream instances.</param>
+    /// <param name="options">Optional worker limit, defaulting to four active uploads.</param>
+    /// <param name="cancellationToken">Cancels outstanding work; previously committed uploads remain committed.</param>
+    /// <returns>A completed batch with individual successes/failures, or an outer failure for invalid batch options.</returns>
+    /// <remarks>Streams remain owned by the caller. The batch does not promise atomic publication or execution order. Duplicate keys/shared streams fail individually. Cancellation throws after active work observes cancellation; no complete outcome collection is returned. The batch itself never retries.</remarks>
+    /// <example><code>var batch = await blobs.UploadManyAsync(uploads, new() { MaxConcurrency = 4 });</code></example>
+    Task<Result<BlobUploadBatchResult>> UploadManyAsync(IReadOnlyCollection<BlobUpload> uploads,
+        BlobUploadBatchOptions options = null, CancellationToken cancellationToken = default) =>
+        BlobUploadBatchExecutor.ExecuteAsync(this, uploads, options, cancellationToken);
 
     /// <summary>
     /// Downloads one blob by exact key.
@@ -111,4 +126,13 @@ public interface IBlobStoreClient
         BlobKey key,
         BlobDeleteOptions options = null,
         CancellationToken cancellationToken = default);
+
+    /// <summary>Replaces Dimensions under the existing whole-item ETag without rewriting content.</summary>
+    /// <param name="update">The exact key, required replacement collection, and optional current whole-item ETag.</param>
+    /// <param name="cancellationToken">Cancels provider I/O.</param>
+    /// <returns>The acknowledged metadata snapshot or a typed failure.</returns>
+    /// <example><code>var result = await client.UpdateDimensionsAsync(new() { Key = key, Dimensions = BlobDimensions.Empty, IfMatchETag = current.ETag }, cancellationToken);</code></example>
+    Task<Result<BlobInfo>> UpdateDimensionsAsync(BlobDimensionsUpdate update, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Result<BlobInfo>.Failure(new BlobDimensionsNotSupportedError()));
+
 }

@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -25,7 +25,7 @@ using HttpResult = Microsoft.AspNetCore.Http.IResult;
 ///     .AddReadEndpoints(options => options.AllowAnonymous());
 /// </code>
 /// </example>
-public sealed class BlobStorageReadEndpoints(
+public sealed partial class BlobStorageReadEndpoints(
     BlobStorageReadEndpointsOptions options = null) : EndpointsBase
 {
     private const string RouteNamePrefix = "_bdk.Storage.Blobs.Read";
@@ -59,6 +59,8 @@ public sealed class BlobStorageReadEndpoints(
             .WithName($"{RouteNamePrefix}.Download")
             .WithSummary("Download blob content")
             .WithDescription("Streams one blob by exact key through the configured Blob Storage client.");
+
+        this.MapDimensions(group);
 
         this.IsRegistered = true;
     }
@@ -134,7 +136,8 @@ public sealed class BlobStorageReadEndpoints(
 
         return error switch
         {
-            BlobStoreValidationError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
+            BlobStoreValidationError or BlobDimensionsNotSupportedError or BlobStoreQueryTooBroadError or BlobStorePageSizeExceededError or
+                BlobStoreInvalidContinuationTokenError or BlobStoreQueryNotSupportedError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             BlobStoreTimeoutError => Results.Problem(message, statusCode: (int)HttpStatusCode.RequestTimeout),
             _ => Results.Problem(message, statusCode: (int)HttpStatusCode.InternalServerError)
         };

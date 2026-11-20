@@ -95,9 +95,10 @@ public static class BlobValidator
         var condition = ValidateCondition(upload.IfMatchETag, upload.OverwriteMode == BlobOverwriteMode.FailIfExists);
         if (condition.IsFailure) return condition;
 
-        if (upload.Properties is null)
+        var propertiesValidation = BlobPropertyValues.Validate(upload.Properties);
+        if (propertiesValidation.IsFailure)
         {
-            return Result.Failure(new BlobStoreValidationError("Blob upload properties are required."));
+            return propertiesValidation;
         }
 
         var contentTypeResult = ValidateContentType(upload.ContentType);
@@ -138,14 +139,37 @@ public static class BlobValidator
             return keyResult;
         }
 
-        if (update.Properties is null)
+        var propertiesValidation = BlobPropertyValues.Validate(update.Properties);
+        if (propertiesValidation.IsFailure)
         {
-            return Result.Failure(new BlobStoreValidationError("Blob properties are required."));
+            return propertiesValidation;
         }
 
         var condition = ValidateCondition(update.IfMatchETag);
         return condition.IsFailure ? condition : ValidateContentType(update.ContentType);
     }
+
+    /// <summary>Validates a provider-facing upload without changing its preserve semantics.</summary>
+    /// <param name="upload">The stored upload.</param>
+    /// <param name="options">The size limits.</param>
+    /// <returns>The input validation result.</returns>
+    /// <example><code>var result = BlobValidator.Validate(upload, options);</code></example>
+    public static Result Validate(StoredBlobUpload upload, BlobStoreOptions options = null) => Validate(upload is null ? null : new BlobUpload
+    {
+        Key = upload.Key, Content = upload.Content, ContentType = upload.ContentType,
+        ExpectedContentHash = upload.ExpectedContentHash, ExpiresAt = upload.ExpiresAt,
+        OverwriteMode = upload.OverwriteMode, Properties = upload.Properties, IfMatchETag = upload.IfMatchETag
+    }, options);
+
+    /// <summary>Validates a provider-facing metadata update.</summary>
+    /// <param name="update">The stored update.</param>
+    /// <returns>The input validation result.</returns>
+    /// <example><code>var result = BlobValidator.Validate(update);</code></example>
+    public static Result Validate(StoredBlobPropertiesUpdate update) => Validate(update is null ? (BlobPropertiesUpdate)null : new BlobPropertiesUpdate
+    {
+        Key = update.Key, ContentType = update.ContentType, ExpiresAt = update.ExpiresAt,
+        Properties = update.Properties, IfMatchETag = update.IfMatchETag
+    });
 
     /// <summary>Validates optional exact-delete conditions.</summary>
     /// <example><code>var result = BlobValidator.Validate(new BlobDeleteOptions());</code></example>

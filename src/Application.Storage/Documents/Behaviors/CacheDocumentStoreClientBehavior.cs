@@ -16,16 +16,16 @@ public class CacheDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
     /// <inheritdoc />
     public override async Task<Result<DocumentEntry<T>>> GetAsync(DocumentKey key, CancellationToken cancellationToken = default)
     {
-        if (await this.cache.TryGetAsync(this.Key(key), out DocumentEntry<T> cached, cancellationToken))
+        if (await this.cache.TryGetAsync(this.Key(key), out CacheEntry cached, cancellationToken))
         {
             this.logger.LogDebug("{LogKey} document cache hit (type={DocumentType})", Constants.LogKey, typeof(T).Name);
-            return Result<DocumentEntry<T>>.Success(cached);
+            return Result<DocumentEntry<T>>.Success(FromCache(cached));
         }
 
         var result = await base.GetAsync(key, cancellationToken);
         if (result.IsSuccess)
         {
-            await this.cache.SetAsync(this.Key(key), result.Value, this.options.SlidingExpiration, this.options.AbsoluteExpiration, cancellationToken);
+            await this.cache.SetAsync(this.Key(key), ToCache(result.Value), this.options.SlidingExpiration, this.options.AbsoluteExpiration, cancellationToken);
         }
 
         return result;
@@ -45,9 +45,9 @@ public class CacheDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
         var missed = new HashSet<DocumentKey>();
         for (var index = 0; index < keys.Count; index++)
         {
-            if (await this.cache.TryGetAsync(this.Key(keys[index]), out DocumentEntry<T> cached, cancellationToken))
+            if (await this.cache.TryGetAsync(this.Key(keys[index]), out CacheEntry cached, cancellationToken))
             {
-                results[index] = Result<DocumentEntry<T>>.Success(cached);
+                results[index] = Result<DocumentEntry<T>>.Success(FromCache(cached));
                 hits[index] = true;
             }
             else if (missed.Add(keys[index]))
@@ -73,7 +73,7 @@ public class CacheDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
             byKey[misses[index]] = fetched.Value[index];
             if (fetched.Value[index].IsSuccess)
             {
-                await this.cache.SetAsync(this.Key(misses[index]), fetched.Value[index].Value, this.options.SlidingExpiration, this.options.AbsoluteExpiration, cancellationToken);
+                await this.cache.SetAsync(this.Key(misses[index]), ToCache(fetched.Value[index].Value), this.options.SlidingExpiration, this.options.AbsoluteExpiration, cancellationToken);
             }
         }
 
@@ -81,7 +81,10 @@ public class CacheDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
         {
             if (!hits[index])
             {
-                results[index] = byKey[keys[index]];
+                var result = byKey[keys[index]];
+                results[index] = result.IsSuccess
+                    ? Result<DocumentEntry<T>>.Success(result.Value with { Properties = DocumentPropertyValues.Clone(result.Value.Properties) })
+                    : result;
             }
         }
 
@@ -92,7 +95,31 @@ public class CacheDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
     public override async Task<Result<DocumentInfo>> UpsertAsync(DocumentKey key, T value, DocumentWriteOptions options = null, CancellationToken cancellationToken = default)
     {
         var result = await base.UpsertAsync(key, value, options, cancellationToken);
-        if (result.IsSuccess) await this.cache.RemoveAsync(this.Key(key), cancellationToken);
+        if (result.IsSuccess || result.HasError<DocumentStoreIndeterminateOperationError>()) await this.cache.RemoveAsync(this.Key(key), cancellationToken);
+        return result;
+    }
+
+    /// <inheritdoc />
+    public override async Task<Result<DocumentBatchResult<DocumentInfo>>> UpsertManyAsync(IReadOnlyCollection<DocumentWrite<T>> writes, CancellationToken cancellationToken = default)
+    {
+        var result = await base.UpsertManyAsync(writes, cancellationToken);
+        if (result.HasError<DocumentStoreIndeterminateOperationError>())
+        {
+            foreach (var write in writes) await this.cache.RemoveAsync(this.Key(write.Key), cancellationToken);
+        }
+        else if (result.IsSuccess)
+        {
+            foreach (var item in result.Value.Items) await this.cache.RemoveAsync(this.Key(item.Key), cancellationToken);
+        }
+
+        return result;
+    }
+
+    /// <inheritdoc />
+    public override async Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default)
+    {
+        var result = await base.UpdateDimensionsAsync(update, cancellationToken);
+        if (result.IsSuccess || result.HasError<DocumentStoreIndeterminateOperationError>()) await this.cache.RemoveAsync(this.Key(update.Key), cancellationToken);
         return result;
     }
 
@@ -100,7 +127,7 @@ public class CacheDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
     public override async Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default)
     {
         var result = await base.UpdatePropertiesAsync(update, cancellationToken);
-        if (result.IsSuccess) await this.cache.RemoveAsync(this.Key(update.Key), cancellationToken);
+        if (result.IsSuccess || result.HasError<DocumentStoreIndeterminateOperationError>()) await this.cache.RemoveAsync(this.Key(update.Key), cancellationToken);
         return result;
     }
 
@@ -108,13 +135,31 @@ public class CacheDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
     public override async Task<Result> DeleteAsync(DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default)
     {
         var result = await base.DeleteAsync(key, options, cancellationToken);
-        if (result.IsSuccess) await this.cache.RemoveAsync(this.Key(key), cancellationToken);
+        if (result.IsSuccess || result.HasError<DocumentStoreIndeterminateOperationError>()) await this.cache.RemoveAsync(this.Key(key), cancellationToken);
         return result;
+    }
+
+    private static CacheEntry ToCache(DocumentEntry<T> value) => new()
+    {
+        Entry = value with { Properties = new() },
+        PropertiesJson = DocumentPropertyValues.Serialize(value.Properties)
+    };
+
+    private static DocumentEntry<T> FromCache(CacheEntry value) => value.Entry with
+    {
+        Properties = DocumentPropertyValues.Deserialize(value.PropertiesJson)
+    };
+
+    private sealed record CacheEntry
+    {
+        public DocumentEntry<T> Entry { get; init; }
+
+        public string PropertiesJson { get; init; }
     }
 
     private string Key(DocumentKey key)
     {
         var identity = $"{typeof(T).AssemblyQualifiedName}\0{key.PartitionKey}\0{key.RowKey}";
-        return $"bdk_document_{((IDocumentStoreClientIdentity)this).ClientName}_{ContentHashHelper.ComputeSha256(identity)}";
+        return $"bdk_document_v2_{((IDocumentStoreClientIdentity)this).ClientName}_{ContentHashHelper.ComputeSha256(identity)}";
     }
 }

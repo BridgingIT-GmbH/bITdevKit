@@ -68,7 +68,7 @@ public class BlobStorageUpdatePropertiesRequestModel
     /// request.Properties["source"] = "maintenance";
     /// </code>
     /// </example>
-    public Dictionary<string, object> Properties { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, object> Properties { get; set; }
 
     /// <summary>
     /// Gets or sets the optional entity tag required for optimistic updates.

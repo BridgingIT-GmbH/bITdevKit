@@ -137,6 +137,11 @@ public interface IBlobStoreClient
         BlobUpload upload,
         CancellationToken cancellationToken = default);
 
+    Task<Result<BlobUploadBatchResult>> UploadManyAsync(
+        IReadOnlyCollection<BlobUpload> uploads,
+        BlobUploadBatchOptions options = null,
+        CancellationToken cancellationToken = default);
+
     Task<Result<BlobDownload>> DownloadAsync(
         BlobKey key,
         CancellationToken cancellationToken = default);
@@ -1745,6 +1750,10 @@ Rules:
 ## Upload Semantics
 
 `UploadAsync` uploads or replaces content depending on `OverwriteMode`.
+
+`UploadManyAsync` coordinates the same per-item pipeline with bounded concurrency. It accepts at most 1000 independent requests, defaults to four workers, and permits one through 64. It attempts all valid items after individual failures and returns `BlobUploadOutcome` entries in input order. A successful outer Result means coordination completed; callers inspect the item results or `BlobUploadBatchResult.AllSucceeded`.
+
+Streams remain caller-owned. Conflicting duplicate keys and shared stream instances fail individually. Cancellation throws without rolling back earlier commits or returning a complete outcome collection. The batch does not retry, promise execution order or create a cross-blob transaction. Unexpected individual exceptions can yield `BlobStoreIndeterminateOperationError`. The contract is recorded in [ADR-0045](../adr/0045-bounded-attempt-all-blob-upload-batches.md).
 
 Rules:
 

@@ -386,3 +386,11 @@ public sealed class FileSystemProviderTests
 
     public sealed class TestDocument;
 }
+public sealed class FileSystemDocumentPropertiesContractTests : Application.UnitTests.Storage.DocumentPropertiesContractTests, IDisposable
+{
+    private readonly OwnedFileSystemRoot root = new();
+
+    protected override IDocumentStoreProvider CreateProvider() => new FileSystemDocumentStoreProvider(this.root.Options);
+
+    public void Dispose() => this.root.Dispose();
+}

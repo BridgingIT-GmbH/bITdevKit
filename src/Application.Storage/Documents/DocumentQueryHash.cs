@@ -34,7 +34,7 @@ public static class DocumentQueryHash
         where T : class, new()
     {
         var key = query?.DocumentKey;
-        return HashHelper.ComputeSha256(string.Join("|",
+        var keyHash = HashHelper.ComputeSha256(string.Join("|",
             DocumentTypeIdentity.For<T>().Value,
             operation,
             key?.PartitionKey ?? string.Empty,
@@ -42,6 +42,7 @@ public static class DocumentQueryHash
             query?.Filter.ToString() ?? DocumentKeyFilter.FullMatch.ToString(),
             take.ToString(CultureInfo.InvariantCulture),
             query?.AllowFullScan.ToString(CultureInfo.InvariantCulture) ?? bool.FalseString));
+        return query?.DimensionFilter is null ? keyHash : HashHelper.ComputeSha256(System.Text.Json.JsonSerializer.Serialize(new[] { keyHash, query.DimensionFilter.ToCanonicalString() }));
     }
 
     /// <summary>
@@ -60,21 +61,23 @@ public static class DocumentQueryHash
         where T : class, new()
     {
         var key = query?.DocumentKey;
-        return HashHelper.ComputeSha256(string.Join("|",
+        var keyHash = HashHelper.ComputeSha256(string.Join("|",
             DocumentTypeIdentity.For<T>().Value,
             operation,
             key?.PartitionKey ?? string.Empty,
             key?.RowKey ?? string.Empty,
             query?.Filter.ToString() ?? DocumentKeyFilter.FullMatch.ToString(),
             query?.AllowFullScan.ToString(CultureInfo.InvariantCulture) ?? bool.FalseString));
+        return query?.DimensionFilter is null ? keyHash : HashHelper.ComputeSha256(System.Text.Json.JsonSerializer.Serialize(new[] { keyHash, query.DimensionFilter.ToCanonicalString() }));
     }
 
     /// <summary>Computes a page-query hash for a provider-neutral type identity.</summary>
     public static string Compute(string operation, DocumentTypeIdentity type, DocumentQuery query, int take)
     {
         var key = query?.DocumentKey;
-        return HashHelper.ComputeSha256(string.Join("|", type.Value, operation, key?.PartitionKey ?? string.Empty,
+        var keyHash = HashHelper.ComputeSha256(string.Join("|", type.Value, operation, key?.PartitionKey ?? string.Empty,
             key?.RowKey ?? string.Empty, query?.Filter.ToString() ?? DocumentKeyFilter.FullMatch.ToString(),
             take.ToString(CultureInfo.InvariantCulture), query?.AllowFullScan.ToString(CultureInfo.InvariantCulture) ?? bool.FalseString));
+        return query?.DimensionFilter is null ? keyHash : HashHelper.ComputeSha256(System.Text.Json.JsonSerializer.Serialize(new[] { keyHash, query.DimensionFilter.ToCanonicalString() }));
     }
 }

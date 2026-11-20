@@ -118,6 +118,7 @@
      data-prefix="@vm.Prefix"
      data-take="@vm.Take"
      data-allow-full-scan="@vm.AllowFullScan.ToString().ToLowerInvariant()"
+     data-dimension-filter="@vm.DimensionFilterJson"
      data-continuation-token="@vm.ContinuationToken">
     @if (!vm.IsAvailable)
     {
@@ -172,8 +173,8 @@
                     </div>
                 </div>
                 <div class="col-12 col-lg-auto d-flex justify-content-end ms-auto">@(await RenderPartialAsync<FilterActions, DashboardFilterActionsModel>(new(ResetId: "blobs-filter-reset")))</div>
-
             </div>
+            @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQuery, BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DashboardDimensionQueryModel>(new(vm.DimensionFilterJson, vm.DimensionCapabilities.SupportsQueries, vm.DimensionCapabilities.SupportedOperators)))
         </form>
 
         <section class="blobs-panel" data-dashboard-list="blobs">
@@ -302,6 +303,7 @@
             Prefix = NormalizePrefix(GetQuery("prefix")),
             Take = ResolveTake(GetQuery("take")),
             AllowFullScan = !HttpContext.Request.Query.ContainsKey("allowFullScan") || GetBooleanQuery("allowFullScan"),
+            DimensionFilterJson = GetQuery("dimensionFilter"),
             ContinuationToken = GetQuery("continuationToken")
         };
 
@@ -322,6 +324,23 @@
         {
             var client = factory.CreateClient(model.SelectedStoreName);
             model.PermalinksEnabled = StoragePermalinkExtensions.FindBlobAccessor(client) is not null;
+            model.DimensionCapabilities = client.DimensionCapabilities;
+            var parsedFilter = BlobStorageDimensionsJson.ParseFilter(string.IsNullOrWhiteSpace(model.DimensionFilterJson) ? null : model.DimensionFilterJson);
+            if (parsedFilter.IsFailure)
+            {
+                model.Errors.Add("Check the Dimension names, comparisons, and typed values.");
+                return model;
+            }
+
+            var filterValidation = BlobDimensionFilterValidator.Validate(parsedFilter.Value, model.DimensionCapabilities);
+            if (filterValidation.IsFailure)
+            {
+                model.Errors.Add(GetFailureMessage(filterValidation, "Dimension queries are unavailable for this provider."));
+                return model;
+            }
+
+            model.DimensionFilter = parsedFilter.Value;
+
             var containersDiscovered = false;
             if (client is IBlobStoreContainerCatalog catalog)
             {
@@ -351,6 +370,7 @@
                 {
                     Container = model.Container,
                     Prefix = model.Prefix,
+                    DimensionFilter = model.DimensionFilter,
                     Take = model.Take,
                     AllowFullScan = model.AllowFullScan,
                     ContinuationToken = model.ContinuationToken

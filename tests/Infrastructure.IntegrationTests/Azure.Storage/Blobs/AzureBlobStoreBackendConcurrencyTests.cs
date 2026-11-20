@@ -29,7 +29,7 @@ public sealed class AzureBlobStoreBackendConcurrencyTests
         var sut = CreateProvider(transport);
 
         // Act
-        var result = await sut.UpdatePropertiesAsync(new BlobPropertiesUpdate
+        var result = await sut.UpdatePropertiesAsync(new StoredBlobPropertiesUpdate
         {
             Key = Key,
             IfMatchETag = "\"v1\"",
@@ -41,8 +41,9 @@ public sealed class AzureBlobStoreBackendConcurrencyTests
         transport.ETag.ShouldBe("\"competitor\"");
         transport.Metadata["owner"].ShouldBe(PropertyBagScalarCodec.Encode("competitor"));
         transport.Mutations.Last().Condition.ShouldNotBe(transport.ETag);
-        transport.PropertyReads.ShouldBe(1);
-        transport.TagReadConditions.ShouldBe(["\"v1\""]);
+        // The provider preserves private metadata before the backend captures its guarded snapshot.
+        transport.PropertyReads.ShouldBe(2);
+        transport.TagReadConditions.ShouldBe(["\"v1\"", "\"v1\""]);
     }
 
     [Fact]
@@ -53,7 +54,7 @@ public sealed class AzureBlobStoreBackendConcurrencyTests
         var sut = CreateProvider(transport);
 
         // Act
-        var result = await sut.UpdatePropertiesAsync(new BlobPropertiesUpdate
+        var result = await sut.UpdatePropertiesAsync(new StoredBlobPropertiesUpdate
         {
             Key = Key,
             IfMatchETag = "\"v1\"",
@@ -65,7 +66,8 @@ public sealed class AzureBlobStoreBackendConcurrencyTests
         result.Value.ETag.ShouldBe("\"v3\"");
         result.Value.Properties.Get<string>("owner").ShouldBe("draft");
         transport.ETag.ShouldBe("\"competitor\"");
-        transport.PropertyReads.ShouldBe(1);
+        // The provider preserves private metadata before the backend captures its guarded snapshot.
+        transport.PropertyReads.ShouldBe(2);
         transport.Mutations.Select(x => x.Condition).ShouldBe(["\"v1\"", "\"v2\"", "\"v3\""]);
     }
 
@@ -77,7 +79,7 @@ public sealed class AzureBlobStoreBackendConcurrencyTests
         var sut = CreateProvider(transport);
 
         // Act
-        var result = await sut.UpdatePropertiesAsync(new BlobPropertiesUpdate
+        var result = await sut.UpdatePropertiesAsync(new StoredBlobPropertiesUpdate
         {
             Key = Key,
             IfMatchETag = "\"old\"",
@@ -101,7 +103,7 @@ public sealed class AzureBlobStoreBackendConcurrencyTests
         using var content = new MemoryStream(Encoding.UTF8.GetBytes("new"));
 
         // Act
-        var result = await sut.UploadAsync(new BlobUpload { Key = Key, Content = content, IfMatchETag = "\"v1\"" });
+        var result = await sut.UploadAsync(new StoredBlobUpload { Key = Key, Content = content, Properties = new(), IfMatchETag = "\"v1\"" });
 
         // Assert
         result.HasError<BlobStoreConflictError>().ShouldBeTrue();
@@ -120,7 +122,7 @@ public sealed class AzureBlobStoreBackendConcurrencyTests
         using var content = new MemoryStream(Encoding.UTF8.GetBytes("new"));
 
         // Act
-        var result = await sut.UploadAsync(new BlobUpload { Key = Key, Content = content, IfMatchETag = "\"v1\"" });
+        var result = await sut.UploadAsync(new StoredBlobUpload { Key = Key, Content = content, Properties = new(), IfMatchETag = "\"v1\"" });
 
         // Assert
         result.IsSuccess.ShouldBeTrue(string.Join("; ", result.Errors.Select(x => x.Message)));

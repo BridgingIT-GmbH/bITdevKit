@@ -17,3 +17,8 @@ For the latest updates and release notes, please refer to
 the [CHANGELOG](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/CHANGELOG.md).
 
 Join us in advancing the world of software development with the bITDevKit!
+## Storage properties
+
+Blob and document `Properties` are optional scalar metadata. Null preserves the existing bag on replacement/update, an empty bag clears it, and a non-empty bag replaces it. Inserts without properties return an empty bag. Typed .NET calls preserve the `PropertyBagScalarCodec` scalar types and copy byte arrays. HTTP retains ordinary JSON semantics. Transform metadata is separate from application properties. Properties are not indexed; Dimensions remain a separate planned feature.
+
+The blob provider contracts and persisted blob formats have changed. Use newly created storage; this refactor supplies no migrations, backfill, or compatibility readers. See the [blob guide](../../docs/features-storage-blobs.md#properties) and [document guide](../../docs/features-storage-documents.md).

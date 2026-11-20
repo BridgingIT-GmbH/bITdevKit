@@ -167,4 +167,14 @@ public interface IDocumentStoreProvider
     /// <remarks>Deletion addresses physical records and can therefore remove an expired document hidden from logical reads.</remarks>
     /// <example><code>var result = await provider.DeleteAsync(type, key, options, cancellationToken);</code></example>
     Task<Result> DeleteAsync(DocumentTypeIdentity type, DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default);
+
+    /// <summary>Replaces Dimensions under the existing whole-item ETag without rewriting content.</summary>
+    /// <param name="type">The stable document namespace.</param>
+    /// <param name="update">The exact key, required replacement collection, and optional current whole-item ETag.</param>
+    /// <param name="cancellationToken">Cancels provider I/O.</param>
+    /// <returns>The acknowledged metadata snapshot or a typed failure.</returns>
+    /// <example><code>var result = await provider.UpdateDimensionsAsync(type, new() { Key = key, Dimensions = DocumentDimensions.Empty, IfMatchETag = current.ETag }, cancellationToken);</code></example>
+    Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentTypeIdentity type, DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Result<DocumentInfo>.Failure(new DocumentDimensionsNotSupportedError()));
+
 }

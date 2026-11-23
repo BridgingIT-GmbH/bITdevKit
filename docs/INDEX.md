@@ -77,6 +77,8 @@ Browse the [feature icon catalog](./site/feature-icons.md) for the complete set 
 
 ## Storage, Scheduling and Utilities
 
+- [LiteDB Infrastructure](./features-infrastructure-litedb.md)
+- [LiteDB Storage Providers specification](./specs/spec-infrastructure-litedb-providers.md)
 - <img class="bdk-doc-icon" src="assets/features/startup-tasks.svg" width="20" height="20" alt=""> [StartupTasks](./features-startuptasks.md): Run application startup work in a structured, observable and dependency-aware way.
 - <img class="bdk-doc-icon" src="assets/features/jobs.svg" width="20" height="20" alt=""> [Jobs](./features-jobs.md): Schedule durable background work through code-first jobs, triggers, batches, history and source-level integrations.
 - <img class="bdk-doc-icon" src="assets/features/job-scheduling.svg" width="20" height="20" alt=""> [JobScheduling](./features-jobscheduling.md): Legacy Quartz-backed scheduling feature for existing applications that have not migrated yet.

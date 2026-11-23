@@ -67,7 +67,7 @@ These packages implement transport and persistence choices:
 - `Infrastructure.Azure.Storage`
 - `Infrastructure.Azure.Cosmos`
 - `Infrastructure.RabbitMQ`
-- `Infrastructure.LiteDB`
+- [Infrastructure.LiteDB](reference/features-infrastructure-litedb.md)
 
 ## Presentation and host-facing packages
 

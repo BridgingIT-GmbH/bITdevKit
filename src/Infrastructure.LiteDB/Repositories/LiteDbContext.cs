@@ -8,6 +8,11 @@ namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 /// <summary>
 /// Represents lite db context.
 /// </summary>
+/// <remarks>
+/// LiteDB development prereleases require an explicit process-wide acknowledgement before opening a database.
+/// Call <c>LiteDBPragmas.I_AM_AWARE_MY_DATABASE_BREAKS_WHEN_I_USE_THIS()</c> only for development use with
+/// disposable data. This context preserves the upstream guard and does not acknowledge the risk for callers.
+/// </remarks>
 public class LiteDbContext : ILiteDbContext
 {
     /// <summary>

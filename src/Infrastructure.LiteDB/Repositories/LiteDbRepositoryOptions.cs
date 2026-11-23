@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -46,4 +46,16 @@ public class LiteDbRepositoryOptions : OptionsBase, ILiteDbRepositoryOptions
     /// Gets or sets the autosave.
     /// </summary>
     public bool Autosave { get; set; } = true;
+
+    /// <inheritdoc />
+    public LiteDbDatabaseSession Session { get; set; }
+
+    /// <inheritdoc />
+    public string CollectionName { get; set; }
+
+    /// <inheritdoc />
+    public int MaxMaterializedRows { get; set; } = 10000;
+
+    /// <inheritdoc />
+    public bool EnableOptimisticConcurrency { get; set; } = true;
 }

@@ -29,7 +29,7 @@ The repository pattern implementation provides:
 - **Generic Repository Interface**: `IGenericRepository<TEntity>` for common CRUD operations
 - **FindOptions**: A fluent API for building complex queries with filtering, ordering, paging, and includes
 - **Type-Safe Includes**: `IncludeOption<TEntity, TProperty>` with `ThenInclude` support for nested navigation properties
-- **Multiple Implementations**: Entity Framework, Cosmos DB, LiteDB, and in-memory repositories
+- **Multiple Implementations**: Entity Framework, Cosmos DB, [LiteDB](features-infrastructure-litedb.md#repositories), and in-memory repositories
 - **Specification Pattern**: Reusable query specifications for complex business rules
 
 This page focuses on how repositories consume specifications. For the specification model itself, see [Domain Specifications](./features-domain-specifications.md).
@@ -49,7 +49,7 @@ This page focuses on how repositories consume specifications. For the specificat
 `IGenericReadOnlyRepository<TEntity>` owns query, projection, existence, and count operations.
 `IGenericRepository<TEntity>` adds insert, update, upsert, delete, and set-based mutation methods.
 `FindOptions<TEntity>` shapes queries while `ISpecification<TEntity>` supplies selection criteria.
-Infrastructure implementations translate these contracts to Entity Framework, Cosmos DB, LiteDB,
+Infrastructure implementations translate these contracts to Entity Framework, Cosmos DB, [LiteDB](features-infrastructure-litedb.md#repositories),
 or an in-memory context. Repository and bulk-inserter behaviors add cross-cutting semantics.
 
 ## Use Cases

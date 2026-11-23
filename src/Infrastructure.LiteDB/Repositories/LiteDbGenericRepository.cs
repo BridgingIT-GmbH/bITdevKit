@@ -1,217 +1,133 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 
-using Common;
-using Domain;
-using Domain.Model;
-using Domain.Repositories;
-using Microsoft.Extensions.Logging;
-using Constants = Domain.Constants;
+using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain;
+using BridgingIT.DevKit.Domain.Model;
+using BridgingIT.DevKit.Domain.Repositories;
 
-/// <summary>
-/// Represents lite db generic repository.
-/// </summary>
+/// <summary>Provides atomic LiteDB repository writes with scoped transactions, concurrency, and feature capture.</summary>
 /// <typeparam name="TEntity">The entity type.</typeparam>
-/// <param name="options">The options controlling the operation.</param>
+/// <param name="options">The repository configuration.</param>
 public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
     : LiteDbReadOnlyGenericRepository<TEntity>(options), IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
-    /// <summary>
-    /// Initializes a new instance of the <c>LiteDbGenericRepository</c> class.
-    /// </summary>
-    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <summary>Creates a repository through the existing options builder.</summary>
+    /// <param name="optionsBuilder">The configuration callback.</param>
     public LiteDbGenericRepository(Builder<LiteDbRepositoryOptionsBuilder, LiteDbRepositoryOptions> optionsBuilder)
         : this(optionsBuilder(new LiteDbRepositoryOptionsBuilder()).Build()) { }
 
     /// <inheritdoc />
-    public virtual Task<long> UpdateSetAsync(
-        Action<IEntityUpdateSet<TEntity>> set,
-        IFindOptions<TEntity> options = null,
-        CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default) =>
+        (await this.UpsertAsync(entity, cancellationToken).ConfigureAwait(false)).entity;
 
     /// <inheritdoc />
-    public virtual Task<long> UpdateSetAsync(
-        ISpecification<TEntity> specification,
-        Action<IEntityUpdateSet<TEntity>> set,
-        IFindOptions<TEntity> options = null,
-        CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default) =>
+        (await this.UpsertAsync(entity, cancellationToken).ConfigureAwait(false)).entity;
 
     /// <inheritdoc />
-    public virtual Task<long> UpdateSetAsync(
-        IEnumerable<ISpecification<TEntity>> specifications,
-        Action<IEntityUpdateSet<TEntity>> set,
-        IFindOptions<TEntity> options = null,
-        CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <summary>
-    ///     Inserts the provided entity.
-    /// </summary>
-    /// <param name="entity">The entity to insert.</param>
-    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
-    public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
-    {
-        var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
-
-        return result.entity;
-    }
+    public virtual Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default) =>
+        this.Store.ExecuteAsync(db => this.Store.Upsert(db, entity), true, cancellationToken);
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<TEntity>> InsertSetAsync(
-        IEnumerable<TEntity> entities,
-        CancellationToken cancellationToken = default)
+    public virtual Task<IEnumerable<TEntity>> InsertSetAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default) =>
+        this.Store.ExecuteAsync<IEnumerable<TEntity>>(db =>
+        {
+            var items = Materialize(entities, this.Options.MaxMaterializedRows, cancellationToken);
+            var operationId = Guid.NewGuid();
+            foreach (var entity in items)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                this.Store.Upsert(db, entity, source: "InsertSet", operationId: operationId, affectedEntityCount: items.Count);
+            }
+
+            return items;
+        }, true, cancellationToken);
+
+    /// <inheritdoc />
+    public virtual Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default) =>
+        this.Store.ExecuteAsync(db => this.Store.Delete(db, id), true, cancellationToken);
+
+    /// <inheritdoc />
+    public virtual Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default) =>
+        this.Store.ExecuteAsync(db => entity is null ? RepositoryActionResult.None : this.Store.Delete(db, entity.Id, entity), true, cancellationToken);
+
+    /// <inheritdoc />
+    public virtual Task<long> UpdateSetAsync(Action<IEntityUpdateSet<TEntity>> set, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.UpdateSetAsync([], set, options, cancellationToken);
+
+    /// <inheritdoc />
+    public virtual Task<long> UpdateSetAsync(ISpecification<TEntity> specification, Action<IEntityUpdateSet<TEntity>> set, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.UpdateSetAsync([specification], set, options, cancellationToken);
+
+    /// <inheritdoc />
+    public virtual Task<long> UpdateSetAsync(IEnumerable<ISpecification<TEntity>> specifications, Action<IEntityUpdateSet<TEntity>> set, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.Store.ExecuteAsync(db =>
+        {
+            ArgumentNullException.ThrowIfNull(set);
+            var updates = new EntityUpdateSet<TEntity>();
+            set(updates);
+            var targets = this.Store.Query.Select(db, specifications, options, false, cancellationToken).Items;
+            var operationId = Guid.NewGuid();
+            foreach (var entity in targets)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var id = this.Store.Identity(entity.Id);
+                updates.Apply(entity);
+                if (id != this.Store.Identity(entity.Id)) { throw new LiteDbProviderException(new InvalidInputError("Set updates cannot change identities.")); }
+
+                this.Store.Upsert(db, entity, source: "UpdateSet", operationId: operationId, affectedEntityCount: targets.Count);
+            }
+
+            return (long)targets.Count;
+        }, true, cancellationToken);
+
+    /// <inheritdoc />
+    public virtual Task<long> DeleteSetAsync(IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.DeleteSetAsync([], options, cancellationToken);
+
+    /// <inheritdoc />
+    public virtual Task<long> DeleteSetAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.DeleteSetAsync([specification], options, cancellationToken);
+
+    /// <inheritdoc />
+    public virtual Task<long> DeleteSetAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.Store.ExecuteAsync(db =>
+        {
+            var targets = this.Store.Query.Select(db, specifications, options, false, cancellationToken).Items;
+            var operationId = Guid.NewGuid();
+            foreach (var entity in targets)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                this.Store.Delete(db, entity.Id, entity, "DeleteSet", operationId, targets.Count);
+            }
+
+            return (long)targets.Count;
+        }, true, cancellationToken);
+
+    /// <summary>Materializes a bounded entity sequence before writing, ignoring null entries.</summary>
+    /// <param name="entities">The input sequence.</param>
+    /// <param name="maximum">The configured row limit.</param>
+    /// <param name="cancellationToken">Cancels enumeration.</param>
+    /// <returns>The validated materialized selection.</returns>
+    public static IReadOnlyList<TEntity> Materialize(IEnumerable<TEntity> entities, int maximum, CancellationToken cancellationToken)
     {
         var result = new List<TEntity>();
-
-        foreach (var entity in entities.SafeNull())
+        foreach (var entity in entities ?? [])
         {
-            result.Add(await this.InsertAsync(entity, cancellationToken).AnyContext());
+            cancellationToken.ThrowIfCancellationRequested();
+            if (entity is null) { continue; }
+
+            if (result.Count == maximum) { throw new LiteDbProviderException(new InvalidOperationError("The write exceeds the configured row limit.")); }
+
+            result.Add(entity);
         }
 
-        return result.Where(e => e is not null);
-    }
-
-    /// <summary>
-    ///     Updates the provided entity.
-    /// </summary>
-    /// <param name="entity">The entity to update.</param>
-    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
-    public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
-    {
-        var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
-
-        return result.entity;
-    }
-
-    /// <summary>
-    ///     Insert or updates the provided entity.
-    /// </summary>
-    /// <param name="entity">The entity to insert or update.</param>
-    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
-    public virtual async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default)
-    {
-        if (entity is null)
-        {
-            return (null, RepositoryActionResult.None);
-        }
-
-        var isNew = entity.Id == null;
-        var existingEntity = isNew
-            ? null
-            : await this.FindOneAsync(entity.Id, null, cancellationToken)
-                .AnyContext(); // prevent the entity from being tracked (which find() does
-        isNew = isNew || existingEntity is null;
-
-        if (isNew)
-        {
-            this.Logger.LogDebug("[{LogKey}] repository: upsert - insert (type={entityType}, id={entityId})",
-                Constants.LogKey,
-                typeof(TEntity).Name,
-                entity.Id);
-            this.Options.DbContext.Database.GetCollection<TEntity>().Insert(entity);
-        }
-        else
-        {
-            this.Logger.LogDebug("[{LogKey}] repository: upsert - update (type={entityType}, id={entityId})",
-                Constants.LogKey,
-                typeof(TEntity).Name,
-                entity.Id);
-            this.Options.DbContext.Database.GetCollection<TEntity>().Update(entity);
-        }
-
-        //if (this.Options.Autosave)
-        //{
-        //}
-
-        return isNew ? (entity, RepositoryActionResult.Inserted) : (entity, RepositoryActionResult.Updated);
-    }
-
-    /// <summary>
-    /// Deletes .
-    /// </summary>
-    /// <param name="id">The entity identifier.</param>
-    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
-    public virtual async Task<RepositoryActionResult> DeleteAsync(
-        object id,
-        CancellationToken cancellationToken = default)
-    {
-        if (id == null)
-        {
-            return RepositoryActionResult.None;
-        }
-
-        var existingEntity = await this.FindOneAsync(id, cancellationToken: cancellationToken).AnyContext();
-        if (existingEntity is not null)
-        {
-            this.Options.DbContext.Database.GetCollection<TEntity>().DeleteMany(e => e.Id == existingEntity.Id);
-
-            //if (this.Options.Autosave)
-            //{
-            //}
-
-            return RepositoryActionResult.Deleted;
-        }
-
-        return RepositoryActionResult.None;
-    }
-
-    /// <summary>
-    /// Deletes .
-    /// </summary>
-    /// <param name="entity">The entity involved in the operation.</param>
-    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
-    public virtual async Task<RepositoryActionResult> DeleteAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default)
-    {
-        if (entity is null || entity.Id == null)
-        {
-            return RepositoryActionResult.None;
-        }
-
-        return await this.DeleteAsync(entity.Id, cancellationToken).AnyContext();
-    }
-
-    /// <inheritdoc />
-    public virtual Task<long> DeleteSetAsync(
-        IFindOptions<TEntity> options = null,
-        CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
-    public virtual Task<long> DeleteSetAsync(
-        ISpecification<TEntity> specification,
-        IFindOptions<TEntity> options = null,
-        CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
-    public virtual Task<long> DeleteSetAsync(
-        IEnumerable<ISpecification<TEntity>> specifications,
-        IFindOptions<TEntity> options = null,
-        CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
+        return result;
     }
 }

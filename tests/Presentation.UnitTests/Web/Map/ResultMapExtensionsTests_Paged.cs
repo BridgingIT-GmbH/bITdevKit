@@ -11,6 +11,7 @@ using System.Linq;
 using Bogus;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -82,7 +83,7 @@ public class ResultMapExtensionsPagedTests
         // Assert
         response.ShouldBeOfType<Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
         var innerResult = (response).Result;
-        innerResult.ShouldBeOfType<UnauthorizedHttpResult>();
+        innerResult.ShouldBeOfType<ProblemHttpResult>().StatusCode.ShouldBe(StatusCodes.Status401Unauthorized);
     }
 
     [Fact]

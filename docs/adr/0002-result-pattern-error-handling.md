@@ -25,20 +25,18 @@ The application needed an error handling approach that:
 
 ## Decision
 
-Adopt the **Result Pattern** (also known as Railway-Oriented Programming) using bITdevKit's `Result<T>` type for all operations that can fail in expected ways.
+Adopt the **Result Pattern** (also known as Railway-Oriented Programming) for operations
+with expected failure paths. Use the bITdevKit readonly structs `Result` for status,
+`Result<T>` for a typed payload, and `ResultPaged<T>` for a page and its metadata.
 
-### Result Type Structure
+### Result contract
 
-```csharp
-public class Result<T>
-{
-    public T Value { get; }                      // Success value
-    public bool IsSuccess { get; }               // Success indicator
-    public bool IsFailure { get; }               // Failure indicator
-    public IEnumerable<IResultMessage> Messages { get; }  // Informational messages
-    public IEnumerable<IResultError> Errors { get; }      // Error details
-}
-```
+`IResult` exposes `IsSuccess`, `IsFailure`, `IReadOnlyList<string> Messages`, and
+`IReadOnlyList<IResultError> Errors`. A failure can have no errors or can carry a
+documented partial payload. Use the status to choose the success or failure branch.
+Paged results carry the dataset count and the current page independently from the
+number of items loaded. See the [Results guide](../features-results.md#outcome-contract)
+for composition, conversions, and transport behavior.
 
 ### Usage Pattern
 
@@ -201,7 +199,7 @@ public async Task CreateCustomer_WithInvalidEmail_ReturnsFailure()
     var result = await requester.SendAsync(command);
 
     result.ShouldBeFailure();
-    result.Errors.Should().Contain(e => e.Message.Contains("email"));
+    result.Errors.ShouldContain(e => e.Message.Contains("email"));
 }
 ```
 
@@ -211,7 +209,7 @@ public async Task CreateCustomer_WithInvalidEmail_ReturnsFailure()
 | ---------- | --------- | --------- |
 | `Bind()` | Transform value | `.Bind(x => ProcessValue(x))` |
 | `BindAsync()` | Async transform | `.BindAsync(x => ProcessAsync(x))` |
-| `BindResult()` | Chain Results | `.BindResult(CreateEntity)` |
+| `BindResult()` | Merge a child result into the current context | `.BindResult(CheckStock, (order, stock) => order.WithStock(stock))` |
 | `Ensure()` | Inline validation | `.Ensure(x => x > 0, "Must be positive")` |
 | `Unless()` | Business rules | `.Unless(rule.Check())` |
 | `Map()` | Convert type | `.Map(entity => ToModel(entity))` |
@@ -220,7 +218,6 @@ public async Task CreateCustomer_WithInvalidEmail_ReturnsFailure()
 
 ### Implementation Files
 
-- **Result abstraction**: bITdevKit `Result<T>` type
-- **Domain usage**: `src/Modules/CoreModule/CoreModule.Domain/Model/CustomerAggregate/Customer.cs`
-- **Application usage**: `src/Modules/CoreModule/CoreModule.Application/Commands/CustomerCreateCommandHandler.cs`
-- **Test assertions**: `tests/Modules/CoreModule/CoreModule.UnitTests/Application/Commands/CustomerCreateCommandHandlerTests.cs`
+- [Result interfaces](../../src/Common.Abstractions/IResult.cs)
+- [Core result types and extensions](../../src/Common.Results/)
+- [Result unit tests](../../tests/Common.UnitTests/Results/)

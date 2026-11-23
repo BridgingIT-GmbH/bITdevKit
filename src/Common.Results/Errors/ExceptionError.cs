@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Text.Json.Serialization;
+
 /// <summary>
 /// Represents an error result that encapsulates an exception.
 /// </summary>
@@ -59,7 +61,8 @@ public class ExceptionError : IResultError
     public string StackTrace => this.Exception?.StackTrace?.Trim();
 
     /// <summary>
-    /// Gets the original exception that was encapsulated.
+    /// Gets the original exception that was encapsulated. JSON includes the diagnostic properties instead.
     /// </summary>
+    [JsonIgnore]
     public Exception Exception { get; }
 }

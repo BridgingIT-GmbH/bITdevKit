@@ -30,10 +30,12 @@ namespace BridgingIT.DevKit.Common;
 [DebuggerDisplay("{IsSuccess ? \"✓\" : \"✗\"} {messages.Count}Msg {errors.Count}Err, Page {CurrentPage}/{TotalPages} {FirstMessageOrError}")]
 public readonly struct ResultPaged<T> : IResultPaged<T>
 {
+    private const int DefaultPageSize = 10;
+
     private readonly bool success;
     private readonly ValueList<string> messages;
     private readonly ValueList<IResultError> errors;
-    private readonly IEnumerable<T> value;
+    private readonly IEnumerable<T> value; // Null for outcomes that carry only state and diagnostics.
     private readonly long totalCount;
     private readonly int currentPage;
     private readonly int pageSize;
@@ -46,14 +48,15 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
         bool success,
         long count = 0,
         int page = 1,
-        int pageSize = 10,
-        ValueList<string> messages = default, ValueList<IResultError> errors = default)
+        int pageSize = DefaultPageSize,
+        ValueList<string> messages = default,
+        ValueList<IResultError> errors = default)
     {
         this.success = success;
         this.value = value;
-        this.totalCount = count;
+        this.totalCount = Math.Max(0, count);
         this.currentPage = page < 1 ? 1 : page;
-        this.pageSize = pageSize < 1 ? 10 : pageSize;
+        this.pageSize = pageSize < 1 ? DefaultPageSize : pageSize;
         this.messages = messages;
         this.errors = errors;
     }
@@ -66,12 +69,12 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// <summary>
     /// Gets the current page number (1-based).
     /// </summary>
-    public int CurrentPage => this.currentPage;
+    public int CurrentPage => this.currentPage == 0 ? 1 : this.currentPage;
 
     /// <summary>
-    /// Gets the total number of pages based on total count and page size.
+    /// Gets the total number of pages based on total count and page size, capped at <see cref="int.MaxValue"/>.
     /// </summary>
-    public int TotalPages => (int)Math.Ceiling(this.totalCount / (double)this.pageSize);
+    public int TotalPages => this.totalCount == 0 ? 0 : (int)Math.Min(int.MaxValue, 1 + ((this.totalCount - 1) / this.PageSize));
 
     /// <summary>
     /// Gets the total count of items across all pages.
@@ -81,17 +84,17 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// <summary>
     /// Gets the number of items per page.
     /// </summary>
-    public int PageSize => this.pageSize;
+    public int PageSize => this.pageSize == 0 ? DefaultPageSize : this.pageSize;
 
     /// <summary>
     /// Gets a value indicating whether there is a previous page available.
     /// </summary>
-    public bool HasPreviousPage => this.currentPage > 1;
+    public bool HasPreviousPage => this.CurrentPage > 1;
 
     /// <summary>
     /// Gets a value indicating whether there is a next page available.
     /// </summary>
-    public bool HasNextPage => this.currentPage < this.TotalPages;
+    public bool HasNextPage => this.CurrentPage < this.TotalPages;
 
     /// <summary>
     /// Gets a value indicating whether the operation was successful.
@@ -127,6 +130,8 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// </summary>
     public IEnumerable<T> Value => this.value ?? [];
 
+    internal bool HasPage => this.value is not null;
+
     /// <summary>
     /// Gets the collection of messages associated with the result.
     /// </summary>
@@ -159,8 +164,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
 
         try
         {
-            var (values, totalCount) = operation();
-            return Success(values, totalCount, 1, values.Count());
+            return FromBoundPage(operation());
         }
         catch (Exception ex)
         {
@@ -195,8 +199,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
 
         try
         {
-            var (values, _) = await operation(cancellationToken);
-            return Success(values, 1, values.Count());
+            return FromBoundPage(await operation(cancellationToken).ConfigureAwait(false));
         }
         catch (OperationCanceledException)
         {
@@ -212,6 +215,17 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
         }
     }
 
+    private static ResultPaged<T> FromBoundPage((IEnumerable<T> Values, long TotalCount) page)
+    {
+        var values = page.Values.ToArray();
+
+        return Success(values, count: page.TotalCount, pageSize: values.Length);
+    }
+
+    internal static ResultPaged<T> FromOutcome(
+        bool isSuccess, ValueList<string> messages, ValueList<IResultError> errors) =>
+        new(null, isSuccess, messages: messages, errors: errors);
+
     /// <summary>
     /// Creates a successful paged result with the specified values and pagination details.
     /// </summary>
@@ -225,7 +239,8 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     ///     pageSize: 10
     /// );
     /// </example>
-    public static ResultPaged<T> Success(IEnumerable<T> values, long count = 0, int page = 1, int pageSize = 10) => new ResultPaged<T>(values, true, count, page, pageSize);
+    public static ResultPaged<T> Success(IEnumerable<T> values, long count = 0, int page = 1, int pageSize = DefaultPageSize) =>
+        new(values ?? [], true, count, page, pageSize);
 
     /// <summary>
     /// Creates a successful paged result with a message.
@@ -244,8 +259,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
         string message,
         long count = 0,
         int page = 1,
-        int pageSize = 10) => new ResultPaged<T>(values, true, count, page, pageSize)
-            .WithMessage(message);
+        int pageSize = DefaultPageSize) => Success(values, count, page, pageSize).WithMessage(message);
 
     /// <summary>
     /// Creates a successful paged result with multiple messages.
@@ -268,8 +282,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
         IEnumerable<string> messages,
         long count = 0,
         int page = 1,
-        int pageSize = 10) => new ResultPaged<T>(values, true, count, page, pageSize)
-            .WithMessages(messages);
+        int pageSize = DefaultPageSize) => Success(values, count, page, pageSize).WithMessages(messages);
 
     /// <summary>
     /// Creates a failed paged result.
@@ -281,7 +294,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     ///     Console.WriteLine("Failed to retrieve users");
     /// }
     /// </example>
-    public static ResultPaged<T> Failure() => new ResultPaged<T>([], false);
+    public static ResultPaged<T> Failure() => new(null, false);
 
     /// <summary>
     /// Creates a failed ResultPaged{T} with the specified values.
@@ -295,7 +308,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     ///     .WithError(new ValidationError("Invalid user data"));
     /// </code>
     /// </example>
-    public static ResultPaged<T> Failure(IEnumerable<T> values) => new ResultPaged<T>(values, false);
+    public static ResultPaged<T> Failure(IEnumerable<T> values) => new(values, false);
 
     /// <summary>
     /// Creates a failed paged result with a specific error type.
@@ -308,15 +321,14 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// }
     /// </example>
     public static ResultPaged<T> Failure<TError>()
-        where TError : IResultError, new() => new ResultPaged<T>([], false).WithError<TError>();
+        where TError : IResultError, new() => Failure().WithError<TError>();
 
     /// <summary>
     /// Creates a failed paged result with a specific error instance.
     /// </summary>
     /// <param name="error"></param>
     /// <returns></returns>
-    public static ResultPaged<T> Failure(IResultError error)
-         => new ResultPaged<T>([], false).WithError(error);
+    public static ResultPaged<T> Failure(IResultError error) => Failure().WithError(error);
 
     /// <summary>
     /// Creates a failed paged result with a message and optional error.
@@ -331,10 +343,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     {
         ArgumentNullException.ThrowIfNull(message);
 
-        var result = new ResultPaged<T>([], false)
-            .WithMessage(message);
-
-        return error is null ? result : result.WithError(error);
+        return Failure().WithMessage(message).WithError(error);
     }
 
     /// <summary>
@@ -350,7 +359,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// </example>
     public static ResultPaged<T> Failure(
         IEnumerable<string> messages,
-        IEnumerable<IResultError> errors = null) => new ResultPaged<T>([], false)
+        IEnumerable<IResultError> errors = null) => Failure()
             .WithMessages(messages)
             .WithErrors(errors);
 
@@ -367,7 +376,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     {
         ArgumentNullException.ThrowIfNull(message);
 
-        return new ResultPaged<T>([], false)
+        return Failure()
             .WithMessage(message)
             .WithError<TError>();
     }
@@ -383,7 +392,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// var result = ResultPaged{User}.Failure{ValidationError}(messages);
     /// </example>
     public static ResultPaged<T> Failure<TError>(IEnumerable<string> messages)
-        where TError : IResultError, new() => new ResultPaged<T>([], false)
+        where TError : IResultError, new() => Failure()
             .WithMessages(messages)
             .WithError<TError>();
 
@@ -571,16 +580,18 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// <param name="errorMessage">The message stored in the appended <see cref="Error"/>.</param>
     /// <returns>A failed paged result that preserves paging metadata, values, messages, and existing errors.</returns>
     public ResultPaged<T> WithError(string errorMessage)
-    {
-        return new ResultPaged<T>(
-            this.value,
-            false, // Set success to false when adding error
-            this.totalCount,
-            this.currentPage,
-            this.pageSize,
-            this.messages,
-            this.errors.Add(new Error(errorMessage)));
-    }
+        => this.WithError(new Error(errorMessage));
+
+    /// <summary>Adds an exception error while preserving the current values and paging metadata.</summary>
+    /// <param name="exception">The exception to wrap as an error. A null exception leaves the result unchanged.</param>
+    /// <returns>The failed paged result if an exception was supplied, or the current result otherwise.</returns>
+    /// <example>
+    /// <code>
+    /// var failedPage = page.WithError(new InvalidOperationException("Page processing failed."));
+    /// </code>
+    /// </example>
+    public ResultPaged<T> WithError(Exception exception)
+        => exception is null ? this : this.WithError(new ExceptionError(exception));
 
     /// <summary>
     /// Adds multiple errors to the result.
@@ -595,20 +606,55 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// </example>
     public ResultPaged<T> WithErrors(IEnumerable<IResultError> errors)
     {
-        if (errors?.Any() != true)
-        {
-            return this;
-        }
+        var combined = Result.AppendErrors(this.errors, errors);
+
+        return combined.Count == this.errors.Count
+            ? this
+            : new ResultPaged<T>(this.value, false, this.totalCount, this.currentPage, this.pageSize, this.messages, combined);
+    }
+
+    /// <summary>Appends another outcome's diagnostics and combines its success state with this page's state.</summary>
+    /// <param name="outcome">The outcome whose success state and diagnostics to include.</param>
+    /// <returns>A result that preserves the current values and paging metadata. Either failure makes the result fail.</returns>
+    /// <example>
+    /// <code>
+    /// var page = ResultPaged&lt;int&gt;.Success([21], count: 37, page: 3, pageSize: 10);
+    /// var result = page.WithOutcome(Result.Failure("Could not verify the page."));
+    /// </code>
+    /// </example>
+    public ResultPaged<T> WithOutcome(IResult outcome)
+    {
+        ArgumentNullException.ThrowIfNull(outcome);
+
+        var combinedErrors = Result.AppendErrors(this.errors, outcome.Errors);
 
         return new ResultPaged<T>(
-                this.value,
-                false, // Set success to false when adding errors
-                this.totalCount,
-                this.currentPage,
-                this.pageSize,
-                this.messages,
-                this.errors.AddRange(errors));
+            this.value,
+            this.IsSuccess && outcome.IsSuccess && combinedErrors.IsEmpty,
+            this.totalCount,
+            this.currentPage,
+            this.pageSize,
+            this.messages.AddRange(outcome.Messages),
+            combinedErrors);
     }
+
+    internal ResultPaged<T> WithPrependedOutcome<TSource>(ResultPaged<TSource> source) =>
+        new(
+            this.value,
+            this.IsSuccess && source.IsSuccess,
+            this.totalCount,
+            this.currentPage,
+            this.pageSize,
+            source.messages.AddRange(this.messages.AsEnumerable()),
+            source.errors.AddRange(this.errors.AsEnumerable()));
+
+    internal ResultPaged<T> AsFailure() =>
+        this.IsSuccess
+            ? new(this.value, false, this.totalCount, this.currentPage, this.pageSize, this.messages, this.errors)
+            : this;
+
+    internal ResultPaged<T> WithExceptionFailure(Exception exception) =>
+        this.AsFailure().WithError(Result.Settings.ExceptionErrorFactory(exception));
 
     /// <summary>
     /// Adds a specific error type to the result.
@@ -619,6 +665,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// </example>
     public ResultPaged<T> WithError<TError>()
         where TError : IResultError, new() => this.WithError(Activator.CreateInstance<TError>());
+
     /// <summary>
     /// Converts a generic ResultPaged{T} to a non-generic Result.
     /// </summary>
@@ -639,51 +686,30 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     }
 
     /// <summary>
-    /// Converts to a different ResultPaged type.
+    /// Converts to a different page type with an empty value sequence, preserving metadata and diagnostics.
     /// </summary>
     /// <example>
     /// var userDtos = pagedUsers.For{UserDto}();
     /// </example>
-    public ResultPaged<TOutput> For<TOutput>()
-    {
-        var result = this;
-
-        return this.Match(
-            _ => ResultPaged<TOutput>.Success(
-                    [],
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
-                .WithMessages(result.Messages)
-                .WithErrors(result.Errors),
-            _ => ResultPaged<TOutput>.Failure()
-                .WithMessages(result.Messages)
-                .WithErrors(result.Errors));
-    }
+    public ResultPaged<TOutput> For<TOutput>() =>
+        new(this.value is null ? null : [], this.success, this.totalCount, this.currentPage, this.pageSize, this.messages, this.errors);
 
     /// <summary>
-    /// Converts to a different ResultPaged type with provided values.
+    /// Converts to a different page type, preserving metadata and diagnostics. The provided values replace a successful page's values.
     /// </summary>
     /// <example>
     /// var dtos = users.Select(u => u.ToDto());
     /// var userDtos = pagedUsers.For(dtos);
     /// </example>
-    public ResultPaged<TOutput> For<TOutput>(IEnumerable<TOutput> values)
-    {
-        var result = this;
+    public ResultPaged<TOutput> For<TOutput>(IEnumerable<TOutput> values) =>
+        this.success && (this.HasPage || values is not null)
+            ? new ResultPaged<TOutput>(values ?? [], true, this.totalCount, this.currentPage, this.pageSize, this.messages, this.errors)
+            : this.For<TOutput>();
 
-        return this.Match(
-            _ => ResultPaged<TOutput>.Success(
-                    values,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
-                .WithMessages(result.Messages)
-                .WithErrors(result.Errors),
-            _ => ResultPaged<TOutput>.Failure()
-                .WithMessages(result.Messages)
-                .WithErrors(result.Errors));
-    }
+    internal ResultPaged<TOutput> CreateItemProjection<TOutput>(IEnumerable<TOutput> values) =>
+        this.HasPage
+            ? ResultPaged<TOutput>.Success(values, this.TotalCount, this.CurrentPage, this.PageSize)
+            : ResultPaged<TOutput>.FromOutcome(true, default, default);
 
     /// <summary>
     /// Implicit conversion to boolean based on success state.
@@ -704,10 +730,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// <example>
     /// Result baseResult = resultPaged; // Implicitly converts
     /// </example>
-    public static implicit operator Result(ResultPaged<T> result) =>
-        result.Match(
-            _ => Result.Success().WithMessages(result.Messages).WithErrors(result.Errors),
-            _ => Result.Failure().WithMessages(result.Messages).WithErrors(result.Errors));
+    public static implicit operator Result(ResultPaged<T> result) => result.Unwrap();
 
     /// <summary>
     /// Implicit conversion to Result{IEnumerable{TValue}}.
@@ -740,6 +763,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// <summary>
     /// Checks if the result contains an error of a specific type.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <example>
     /// var result = ResultPaged{User}.Failure()
     ///     .WithError(new ValidationError("Invalid page size"));
@@ -749,16 +773,12 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// }
     /// </example>
     public bool HasError<TError>()
-        where TError : class, IResultError
-    {
-        var errorType = typeof(TError);
-
-        return this.errors.AsEnumerable().Any(e => e.GetType() == errorType);
-    }
+        where TError : class, IResultError => this.GetError<TError>() is not null;
 
     /// <summary>
     /// Attempts to get the first error of a specific type.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <example>
     /// if (result.TryGetError{ValidationError}(out var error))
     /// {
@@ -772,8 +792,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     public bool TryGetError<TError>(out TError error)
         where TError : class, IResultError
     {
-        error = this.errors.AsEnumerable()
-            .FirstOrDefault(e => e.GetType() == typeof(TError)) as TError;
+        error = this.GetError<TError>();
 
         return error is not null;
     }
@@ -781,6 +800,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// <summary>
     /// Attempts to get all errors of a specific type.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <example>
     /// if (result.TryGetErrors{ValidationError}(out var errors))
     /// {
@@ -793,10 +813,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     public bool TryGetErrors<TError>(out IEnumerable<TError> errors)
         where TError : class, IResultError
     {
-        var errorType = typeof(TError);
-        errors = [.. this.errors.AsEnumerable()
-            .Where(e => e.GetType() == errorType)
-            .Cast<TError>()];
+        errors = this.GetErrors<TError>();
 
         return errors.Any();
     }
@@ -804,6 +821,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// <summary>
     /// Gets the first error of the specified type.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <example>
     /// var error = result.GetError{ValidationError}();
     /// if (error is not null)
@@ -812,12 +830,13 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// }
     /// </example>
     public TError GetError<TError>()
-        where TError : class, IResultError => this.errors.AsEnumerable()
-            .FirstOrDefault(e => e.GetType() == typeof(TError)) as TError;
+        where TError : class, IResultError =>
+        this.errors.AsEnumerable().FirstOrDefault(static error => error is TError) as TError;
 
     /// <summary>
     /// Gets all errors of the specified type.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <example>
     /// var validationErrors = result.GetErrors{ValidationError}();
     /// foreach (var error in validationErrors)
@@ -826,13 +845,7 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     /// }
     /// </example>
     public IEnumerable<TError> GetErrors<TError>()
-        where TError : class, IResultError
-    {
-        var errorType = typeof(TError);
-        return [.. this.errors.AsEnumerable()
-            .Where(e => e.GetType() == errorType)
-            .Cast<TError>()];
-    }
+        where TError : class, IResultError => this.errors.AsEnumerable().OfType<TError>();
 
     /// <summary>
     /// Creates a ResultPaged from an operation that returns both values and count.
@@ -905,55 +918,61 @@ public readonly struct ResultPaged<T> : IResultPaged<T>
     }
 
     /// <summary>
-    /// Combines multiple Results into a single Result.
-    /// The combined Result is successful only if all Results are successful.
+    /// Combines paged results in input order. The combined result succeeds only if every input succeeds.
     /// </summary>
+    /// <param name="results">The pages and any status-only outcomes to combine.</param>
+    /// <returns>A new result with materialized values and the combined diagnostics.</returns>
+    /// <remarks>
+    /// Status-only outcomes contribute state and diagnostics, without supplying paging metadata.
+    /// A single page keeps its metadata. For multiple pages, the total count is the number of
+    /// combined values, and the page number and page size are the maximum values supplied by those pages.
+    /// </remarks>
     /// <example>
-    /// var result1 = Result.Success("First operation");
-    /// var result2 = Result.Success("Second operation");
-    /// var result3 = Result.Failure("Third operation failed");
-    ///
-    /// var combined = Result.Combine(result1, result2, result3);
-    /// // combined.IsFailure == true
-    /// // combined.Messages contains all three messages
+    /// <code>
+    /// var validation = Result.Success("Query validated").ToResultPaged&lt;int&gt;();
+    /// var page = ResultPaged&lt;int&gt;.Success([21], count: 37, page: 3, pageSize: 10);
+    /// var result = ResultPaged&lt;int&gt;.Merge(validation, page);
+    /// </code>
     /// </example>
     public static ResultPaged<T> Merge(params ResultPaged<T>[] results)
     {
         if (results is null || results.Length == 0)
         {
-            return Success([], 0, 0, 0);
+            return new ResultPaged<T>(null, true);
         }
 
         var isSuccess = true;
         var values = new List<T>();
-
-        var combinedMessages = new ValueList<string>();
-        var combinedErrors = new ValueList<IResultError>();
+        var pageCount = 0;
+        var totalCount = 0L;
+        var currentPage = 1;
+        var pageSize = 0;
 
         foreach (var result in results)
         {
-            if (result.value?.Count() > 0)
+            if (result.value is not null)
             {
-                values.AddRange(result.Value);
+                values.AddRange(result.value);
+                pageCount++;
+                totalCount = result.TotalCount;
+                currentPage = Math.Max(currentPage, result.CurrentPage);
+                pageSize = Math.Max(pageSize, result.PageSize);
             }
 
             if (result.IsFailure)
             {
                 isSuccess = false;
             }
-
-            if (!result.messages.IsEmpty)
-            {
-                combinedMessages = combinedMessages.AddRange(result.messages.AsEnumerable());
-            }
-
-            if (!result.errors.IsEmpty)
-            {
-                combinedErrors = combinedErrors.AddRange(result.errors.AsEnumerable());
-            }
         }
 
-        return new ResultPaged<T>(values, isSuccess, values.Count, results.Max(r => r.CurrentPage), results.Max(r => r.PageSize), combinedMessages, combinedErrors);
+        return new ResultPaged<T>(
+            pageCount == 0 ? null : values,
+            isSuccess,
+            pageCount > 1 ? values.Count : totalCount,
+            currentPage,
+            pageSize,
+            new ValueList<string>().AddRange(results.SelectMany(static result => result.messages.AsEnumerable())),
+            new ValueList<IResultError>().AddRange(results.SelectMany(static result => result.errors.AsEnumerable())));
     }
 
     /// <summary>

@@ -43,14 +43,12 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
     {
         if (!result.IsSuccess)
         {
-            return ResultPaged<T>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<T>();
         }
 
         if (predicate is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Predicate cannot be null"));
         }
 
@@ -92,23 +90,13 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            var isSuccess = (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? ResultPaged<T>.Success(
-                        filteredItems,
-                        result.TotalCount,
-                        result.CurrentPage,
-                        result.PageSize)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : ResultPaged<T>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                filteredItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -149,14 +137,12 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
     {
         if (!result.IsSuccess)
         {
-            return ResultPaged<T>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<T>();
         }
 
         if (predicate is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Predicate cannot be null"));
         }
 
@@ -203,28 +189,18 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            var isSuccess = (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? ResultPaged<T>.Success(
-                        filteredItems,
-                        result.TotalCount,
-                        result.CurrentPage,
-                        result.PageSize)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : ResultPaged<T>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                filteredItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -369,14 +345,12 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
     {
         if (!result.IsSuccess)
         {
-            return ResultPaged<TResult>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<TResult>();
         }
 
         if (mapper is null)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new Error("Mapper cannot be null"));
         }
 
@@ -411,24 +385,13 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            var isSuccess = mappedItems.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? ResultPaged<TResult>.Success(
-                        mappedItems,
-                        result.TotalCount,
-                        result.CurrentPage,
-                        result.PageSize)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : ResultPaged<TResult>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                mappedItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (Exception ex)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -470,14 +433,12 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
     {
         if (!result.IsSuccess)
         {
-            return ResultPaged<TResult>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<TResult>();
         }
 
         if (mapper is null)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new Error("Mapper cannot be null"));
         }
 
@@ -517,29 +478,18 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            var isSuccess = mappedItems.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? ResultPaged<TResult>.Success(
-                        mappedItems,
-                        result.TotalCount,
-                        result.CurrentPage,
-                        result.PageSize)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : ResultPaged<TResult>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                mappedItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -688,7 +638,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
 
         if (action is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Action cannot be null"));
         }
 
@@ -728,27 +678,15 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            if (errors.Count != 0 && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return ResultPaged<T>.Failure(processedItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return ResultPaged<T>.Success(
-                    processedItems,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                processedItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
+            return result.AsFailure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message)
-                .WithMessages(result.Messages);
+                .WithMessage(ex.Message);
         }
     }
 
@@ -792,7 +730,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
 
         if (action is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Action cannot be null"));
         }
 
@@ -837,33 +775,20 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            if (errors.Count != 0 && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return ResultPaged<T>.Failure(processedItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return ResultPaged<T>.Success(
-                    processedItems,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                processedItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<T>.Failure()
-                .WithError(new OperationCancelledError())
-                .WithMessages(result.Messages);
+            return result.For<T>().AsFailure()
+                .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
+            return result.AsFailure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message)
-                .WithMessages(result.Messages);
+                .WithMessage(ex.Message);
         }
     }
 
@@ -998,14 +923,12 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
     {
         if (!result.IsSuccess)
         {
-            return ResultPaged<T>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<T>();
         }
 
         if (operation is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Operation cannot be null"));
         }
 
@@ -1068,24 +991,13 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            var isSuccess = results.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? ResultPaged<T>.Success(
-                        results,
-                        result.TotalCount,
-                        result.CurrentPage,
-                        result.PageSize)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : ResultPaged<T>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                results, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -1118,14 +1030,12 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
     {
         if (!result.IsSuccess)
         {
-            return ResultPaged<T>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<T>();
         }
 
         if (operation is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Operation cannot be null"));
         }
 
@@ -1193,29 +1103,18 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            var isSuccess = results.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? ResultPaged<T>.Success(
-                        results,
-                        result.TotalCount,
-                        result.CurrentPage,
-                        result.PageSize)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : ResultPaged<T>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                results, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -1355,14 +1254,12 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
     {
         if (!result.IsSuccess)
         {
-            return ResultPaged<TResult>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<TResult>();
         }
 
         if (binder is null)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new Error("Binder cannot be null"));
         }
 
@@ -1415,24 +1312,13 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            var isSuccess = boundItems.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? ResultPaged<TResult>.Success(
-                        boundItems,
-                        result.TotalCount,
-                        result.CurrentPage,
-                        result.PageSize)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : ResultPaged<TResult>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                boundItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (Exception ex)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -1467,14 +1353,12 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
     {
         if (!result.IsSuccess)
         {
-            return ResultPaged<TResult>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<TResult>();
         }
 
         if (binder is null)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new Error("Binder cannot be null"));
         }
 
@@ -1532,29 +1416,18 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            var isSuccess = boundItems.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? ResultPaged<TResult>.Success(
-                        boundItems,
-                        result.TotalCount,
-                        result.CurrentPage,
-                        result.PageSize)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : ResultPaged<TResult>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                boundItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -1668,6 +1541,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
 
     /// <summary>
     ///     Flattens a collection of paged Result collections into a single paged Result collection.
+    ///     Returns a failure when the combined total exceeds <see cref="long.MaxValue"/>.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
     /// <param name="results">The collection of paged Result collections to flatten.</param>
@@ -1689,40 +1563,28 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 .WithError(new Error("Results collection cannot be null"));
         }
 
+        var errors = new List<IResultError>();
+        var messages = new List<string>();
         try
         {
             options ??= ProcessingOptions.Default;
             var flattenedItems = new List<T>();
-            var errors = new List<IResultError>();
-            var messages = new List<string>();
             var failureCount = 0;
 
-            // For pagination metadata, we'll use values from the first successful result
-            // or default values if there are no successful results
             long totalCount = 0;
-            var currentPage = 1;
-            var pageSize = 0;
-            var metadataSet = false;
+            var pageSize = (int?)null;
 
             foreach (var result in results)
             {
                 if (result.IsSuccess)
                 {
-                    flattenedItems.AddRange(result.Value);
                     messages.AddRange(result.Messages);
 
-                    // Set pagination metadata from the first successful result
-                    if (!metadataSet)
+                    if (result.HasPage)
                     {
-                        totalCount = result.TotalCount;
-                        //currentPage = result.CurrentPage;
-                        pageSize = result.PageSize; // TODO: should be result.TotalCount but that would not mathc due to long vs int
-                        metadataSet = true;
-                    }
-                    else
-                    {
-                        // Update total count as we process more results
-                        totalCount += result.TotalCount;
+                        totalCount = checked(totalCount + result.TotalCount);
+                        flattenedItems.AddRange(result.Value);
+                        pageSize ??= result.PageSize;
                     }
                 }
                 else
@@ -1731,8 +1593,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                     errors.AddRange(result.Errors);
                     messages.AddRange(result.Messages);
 
-                    if (!options.ContinueOnItemFailure ||
-                        (options.MaxFailures.HasValue && failureCount > options.MaxFailures.Value))
+                    if (options.StopsAfterFailure(failureCount))
                     {
                         messages.Add($"Flattening aborted after {failureCount} failures");
                         break;
@@ -1740,25 +1601,18 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            var isSuccess = flattenedItems.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? ResultPaged<T>.Success(
-                        flattenedItems,
-                        totalCount,
-                        currentPage,
-                        pageSize)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : ResultPaged<T>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                flattenedItems, failureCount, options, messages, errors);
+            return pageSize.HasValue
+                ? ResultPaged<T>.Success(outcome.Value, totalCount, pageSize: pageSize.Value).WithOutcome(outcome)
+                : outcome.Unwrap().ToResultPaged<T>();
         }
         catch (Exception ex)
         {
             return ResultPaged<T>.Failure()
+                .WithErrors(errors)
                 .WithError(new ExceptionError(ex))
+                .WithMessages(messages)
                 .WithMessage(ex.Message);
         }
     }
@@ -1782,39 +1636,9 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
     {
-        if (resultTasks is null)
-        {
-            return ResultPaged<T>.Failure()
-                .WithError(new Error("Result tasks collection cannot be null"));
-        }
-
-        try
-        {
-            options ??= ProcessingOptions.Default;
-            var results = new List<ResultPaged<T>>();
-
-            // First await all tasks
-            foreach (var task in resultTasks)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                var result = await task;
-                results.Add(result);
-            }
-
-            // Then flatten the results
-            return results.Flatten(options);
-        }
-        catch (OperationCanceledException)
-        {
-            return ResultPaged<T>.Failure()
-                .WithError(new OperationCancelledError());
-        }
-        catch (Exception ex)
-        {
-            return ResultPaged<T>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message);
-        }
+        options ??= ProcessingOptions.Default;
+        var observed = await ResultTExtensions.AwaitResultTasksAsync(resultTasks, options, cancellationToken).AnyContext();
+        return observed.IsSuccess ? observed.Value.Flatten(options) : observed.Unwrap().ToResultPaged<T>();
     }
 
     /// <summary>
@@ -1843,14 +1667,12 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
     {
         if (!result.IsSuccess)
         {
-            return ResultPaged<TResult>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<TResult>();
         }
 
         if (selector is null)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new Error("Selector cannot be null"));
         }
 
@@ -1888,23 +1710,13 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            var isSuccess = (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? ResultPaged<TResult>.Success(
-                        selectedItems,
-                        result.TotalCount,
-                        result.CurrentPage,
-                        result.PageSize)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : ResultPaged<TResult>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                selectedItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (Exception ex)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -2152,20 +1964,18 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
     {
         if (!result.IsSuccess)
         {
-            return ResultPaged<TResult>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<TResult>();
         }
 
         if (mapper is null)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new Error("Mapper cannot be null"));
         }
 
         if (action is null)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new Error("Action cannot be null"));
         }
 
@@ -2201,24 +2011,13 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            var isSuccess = mappedItems.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? ResultPaged<TResult>.Success(
-                        mappedItems,
-                        result.TotalCount,
-                        result.CurrentPage,
-                        result.PageSize)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : ResultPaged<TResult>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                mappedItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (Exception ex)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -2254,20 +2053,18 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
     {
         if (!result.IsSuccess)
         {
-            return ResultPaged<TResult>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<TResult>();
         }
 
         if (mapper is null)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new Error("Mapper cannot be null"));
         }
 
         if (action is null)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new Error("Action cannot be null"));
         }
 
@@ -2308,29 +2105,18 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            var isSuccess = mappedItems.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? ResultPaged<TResult>.Success(
-                        mappedItems,
-                        result.TotalCount,
-                        result.CurrentPage,
-                        result.PageSize)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : ResultPaged<TResult>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                mappedItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<TResult>.Failure()
+            return result.For<TResult>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -2606,7 +2392,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
 
         if (validator is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Validator cannot be null"));
         }
 
@@ -2669,27 +2455,15 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return ResultPaged<T>.Failure(validItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return ResultPaged<T>.Success(
-                    validItems,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                validItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
+            return result.AsFailure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message)
-                .WithMessages(result.Messages);
+                .WithMessage(ex.Message);
         }
     }
 
@@ -2725,7 +2499,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
 
         if (validator is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Validator cannot be null"));
         }
 
@@ -2793,32 +2567,20 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return ResultPaged<T>.Failure(validItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return ResultPaged<T>.Success(
-                    validItems,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                validItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
+            return result.AsFailure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message)
-                .WithMessages(result.Messages);
+                .WithMessage(ex.Message);
         }
     }
 
@@ -2854,7 +2616,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
 
         if (predicate is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Predicate cannot be null"));
         }
 
@@ -2879,9 +2641,11 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                     else
                     {
                         failureCount++;
-                        var error = errorFactory(item);
-                        errors.Add(error);
-                        messages.Add($"Validation failed: {error.Message}");
+                        if (errorFactory(item) is { } error)
+                        {
+                            errors.Add(error);
+                            messages.Add($"Validation failed: {error.Message}");
+                        }
 
                         if (options.IncludeFailedItems)
                         {
@@ -2917,27 +2681,15 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return ResultPaged<T>.Failure(validItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return ResultPaged<T>.Success(
-                    validItems,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                validItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
+            return result.AsFailure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message)
-                .WithMessages(result.Messages);
+                .WithMessage(ex.Message);
         }
     }
 
@@ -2976,7 +2728,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
 
         if (predicate is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Predicate cannot be null"));
         }
 
@@ -3002,9 +2754,11 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                     else
                     {
                         failureCount++;
-                        var error = errorFactory(item);
-                        errors.Add(error);
-                        messages.Add($"Validation failed: {error.Message}");
+                        if (errorFactory(item) is { } error)
+                        {
+                            errors.Add(error);
+                            messages.Add($"Validation failed: {error.Message}");
+                        }
 
                         if (options.IncludeFailedItems)
                         {
@@ -3044,32 +2798,20 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return ResultPaged<T>.Failure(validItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return ResultPaged<T>.Success(
-                    validItems,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                validItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
+            return result.AsFailure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message)
-                .WithMessages(result.Messages);
+                .WithMessage(ex.Message);
         }
     }
 
@@ -3099,7 +2841,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
 
         if (validator is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Validator cannot be null"));
         }
 
@@ -3161,27 +2903,15 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return ResultPaged<T>.Failure(validItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return ResultPaged<T>.Success(
-                    validItems,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                validItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
+            return result.AsFailure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message)
-                .WithMessages(result.Messages);
+                .WithMessage(ex.Message);
         }
     }
 
@@ -3213,7 +2943,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
 
         if (validator is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Validator cannot be null"));
         }
 
@@ -3280,32 +3010,20 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 }
             }
 
-            if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return ResultPaged<T>.Failure(validItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return ResultPaged<T>.Success(
-                    validItems,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            var outcome = ResultTCollectionExtensions.CompleteCollectionOutcome(
+                validItems, failureCount, options, messages, errors);
+            return result.CreateItemProjection(outcome.Value).WithOutcome(outcome);
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
+            return result.AsFailure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message)
-                .WithMessages(result.Messages);
+                .WithMessage(ex.Message);
         }
     }
 
@@ -3342,7 +3060,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
 
         if (predicate is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Predicate cannot be null"));
         }
 
@@ -3350,16 +3068,15 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
         {
             if (!result.Value.All(predicate))
             {
-                return ResultPaged<T>.Failure(result.Value)
-                    .WithError(error)
-                    .WithMessages(result.Messages);
+                return result.AsFailure()
+                    .WithError(error);
             }
 
             return result;
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
+            return result.AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -3394,7 +3111,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
 
         if (predicate is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Predicate cannot be null"));
         }
 
@@ -3402,16 +3119,15 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
         {
             if (!result.Value.Any(predicate))
             {
-                return ResultPaged<T>.Failure(result.Value)
-                    .WithError(error)
-                    .WithMessages(result.Messages);
+                return result.AsFailure()
+                    .WithError(error);
             }
 
             return result;
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
+            return result.AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -3443,16 +3159,15 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
         {
             if (!result.Value.Any())
             {
-                return ResultPaged<T>.Failure(result.Value)
-                    .WithError(error)
-                    .WithMessages(result.Messages);
+                return result.AsFailure()
+                    .WithError(error);
             }
 
             return result;
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
+            return result.AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -3487,17 +3202,16 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
             var actualCount = result.Value.Count();
             if (actualCount != count)
             {
-                return ResultPaged<T>.Failure(result.Value)
+                return result.AsFailure()
                     .WithError(error)
-                    .WithMessage($"Expected {count} items, but found {actualCount}")
-                    .WithMessages(result.Messages);
+                    .WithMessage($"Expected {count} items, but found {actualCount}");
             }
 
             return result;
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
+            return result.AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -3528,14 +3242,12 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
     {
         if (!result.IsSuccess)
         {
-            return ResultPaged<IEnumerable<T>>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<IEnumerable<T>>();
         }
 
         if (size <= 0)
         {
-            return ResultPaged<IEnumerable<T>>.Failure()
+            return result.For<IEnumerable<T>>().AsFailure()
                 .WithError(new Error("Chunk size must be greater than zero"));
         }
 
@@ -3560,16 +3272,12 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 chunks.Add(currentChunk);
             }
 
-            return ResultPaged<IEnumerable<T>>.Success(
-                    chunks,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
+            return result.CreateItemProjection<IEnumerable<T>>(chunks)
                 .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return ResultPaged<IEnumerable<T>>.Failure()
+            return result.For<IEnumerable<T>>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -3600,7 +3308,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
 
         if (keySelector is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Key selector cannot be null"));
         }
 
@@ -3611,16 +3319,12 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                 .Select(group => group.First())
                 .ToList();
 
-            return ResultPaged<T>.Success(
-                    distinctItems,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
+            return result.CreateItemProjection(distinctItems)
                 .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -3902,7 +3606,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
 
         if (keySelector is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Key selector cannot be null"));
         }
 
@@ -3910,16 +3614,12 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
         {
             var orderedItems = result.Value.OrderBy(keySelector).ToList();
 
-            return ResultPaged<T>.Success(
-                    orderedItems,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
+            return result.CreateItemProjection(orderedItems)
                 .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -3950,7 +3650,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
 
         if (keySelector is null)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new Error("Key selector cannot be null"));
         }
 
@@ -3958,16 +3658,12 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
         {
             var orderedItems = result.Value.OrderByDescending(keySelector).ToList();
 
-            return ResultPaged<T>.Success(
-                    orderedItems,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
+            return result.CreateItemProjection(orderedItems)
                 .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure()
+            return result.For<T>().AsFailure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }

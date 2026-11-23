@@ -5,12 +5,10 @@
 
 using System.Text.Json;
 using BridgingIT.DevKit.Application.Auditing;
-using BridgingIT.DevKit.Presentation.Web.Auditing;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 
 // ===============================================================================================
@@ -243,8 +241,16 @@ builder.Services.AddResponseCompression(options =>
 builder.Services.AddControllers(); // needed for openapi gen, even with no controllers
 
 #pragma warning disable CS0618
-builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
+builder.Services.AddProblemDetails(o =>
+{
+    Configure.ProblemDetails(o, includeExceptionDetails: builder.Environment.IsDevelopment());
+    o.IncludeExceptionDetails = (_, _) => builder.Environment.IsDevelopment();
+    o.OnBeforeWriteDetails = (context, problem) =>
+        problem.Extensions["correlationId"] = context.TryGetCorrelationId() ?? context.TraceIdentifier;
+});
+builder.Services.AddResultHttpProblemDetails(builder.Environment.IsDevelopment());
 #pragma warning restore CS0618
+
 builder.Services.AddAppOpenApi();
 
 // ===============================================================================================

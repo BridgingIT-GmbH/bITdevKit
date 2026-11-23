@@ -35,7 +35,7 @@ public static class GenericRepositoryResultExtensions
             var insertedEntity = await source.InsertAsync(entity, cancellationToken).AnyContext();
             return Result<TEntity>.Success(insertedEntity);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -60,7 +60,7 @@ public static class GenericRepositoryResultExtensions
             var insertedEntities = await source.InsertSetAsync(entities, cancellationToken).AnyContext();
             return Result<IEnumerable<TEntity>>.Success(insertedEntities);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<IEnumerable<TEntity>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -89,7 +89,7 @@ public static class GenericRepositoryResultExtensions
         {
             return Result<TEntity>.Failure(cex.GetFullMessage(), new ConcurrencyError() { EntityType = typeof(TEntity).Name, EntityId = entity.Id?.ToString() });
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -118,7 +118,7 @@ public static class GenericRepositoryResultExtensions
         {
             return Result<(TEntity, RepositoryActionResult)>.Failure(cex.GetFullMessage(), new ConcurrencyError() { EntityType = typeof(TEntity).Name, EntityId = entity.Id?.ToString() });
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<(TEntity, RepositoryActionResult)>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -154,7 +154,7 @@ public static class GenericRepositoryResultExtensions
                 return Result<RepositoryActionResult>.Failure("Entity not deleted", new Error("Entity not deleted"));
             }
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<RepositoryActionResult>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -190,7 +190,7 @@ public static class GenericRepositoryResultExtensions
                 return Result<(TEntity, RepositoryActionResult)>.Failure("Entity not deleted", new Error("Entity not deleted"));
             }
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<(TEntity, RepositoryActionResult)>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }

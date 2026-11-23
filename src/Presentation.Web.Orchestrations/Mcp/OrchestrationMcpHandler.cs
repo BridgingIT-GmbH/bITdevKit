@@ -242,7 +242,7 @@ public sealed class OrchestrationMcpHandler(
             "archive" => await administrationService.ArchiveAsync(id.Value, cancellationToken).ConfigureAwait(false),
             "releaseLease" => await administrationService.ReleaseLeaseAsync(id.Value, cancellationToken).ConfigureAwait(false),
             "requeueTimers" => await administrationService.RequeueTimersAsync(id.Value, cancellationToken).ConfigureAwait(false),
-            _ => Result<string>.Failure("Unsupported repair action. Use archive, releaseLease, or requeueTimers.")
+            _ => Result<string>.Failure(message: "Unsupported repair action. Use archive, releaseLease, or requeueTimers.")
         };
 
         return result.IsFailure

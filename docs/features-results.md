@@ -8,6 +8,10 @@
 
 ## Overview
 
+Return a result when an operation has an expected failure path, such as validation, a missing
+record, or a business rule. Use `Result` for status alone, `Result<T>` for a typed payload, and
+`ResultPaged<T>` for one page with a dataset total.
+
 ## Challenges
 
 Application operations need one contract for expected success and failure outcomes:
@@ -88,11 +92,12 @@ classDiagram
         +long TotalCount
         +int CurrentPage
         +int PageSize
+        +int TotalPages
     }
 
     class Result {
-        -List messages
-        -List errors
+        -ValueList messages
+        -ValueList errors
         -bool success
         +bool IsSuccess
         +bool IsFailure
@@ -100,21 +105,19 @@ classDiagram
         +Result WithMessages(IEnumerable)
         +Result WithError(IResultError)
         +Result WithErrors(IEnumerable)
-        +Result For()
         +static Result Success()
         +static Result Failure()
     }
 
     class ResultOfT["Result<T>"] {
-        -List messages
-        -List errors
+        -ValueList messages
+        -ValueList errors
         -bool success
         +T Value
         +ResultOfT WithMessage(string)
         +ResultOfT WithMessages(IEnumerable)
         +ResultOfT WithError(IResultError)
         +ResultOfT WithErrors(IEnumerable)
-        +Result For()
         +static ResultOfT Success(T value)
         +static ResultOfT Failure()
     }
@@ -204,6 +207,24 @@ Output:
 Release notes
 ```
 
+### Outcome contract
+
+- Check `IsSuccess` or `IsFailure` before using the result. `Failure()` and message-only failures
+  can have an empty `Errors` list. A default result struct is also a failure. A default
+  `ResultPaged<T>` has no items, a total of zero, page 1, and size 10.
+- `WithMessage` adds context without changing status. `WithError` makes the result fail and
+  retains the current payload. Capture the returned struct when appending diagnostics. The
+  payload keeps its original type and mutability.
+- A failed `Result<T>` can hold a deliberate partial value. Read it on failure only when the
+  operation documents what that value means. Use `message:` or `value:` to disambiguate string
+  payloads. `Result<string>.Failure(message: "A title is required.")` stores a message.
+- The three core Result types include derived error types in `HasError<TError>`,
+  `TryGetError<TError>`, and `TryGetErrors<TError>`.
+- Use `Map` for a value transformation, `Bind` for an operation that returns a result, and
+  `BindResult` to merge an inner result's value back into the current context. Use `Tap` for a
+  success-only side effect. Use `AndThenResult` on `Result<T>` when a step returns a result
+  and the chain needs to keep the original value.
+
 ### Result operations
 
 ```csharp
@@ -213,7 +234,7 @@ var successWithMessage = Result.Success("Operation completed successfully");
 
 // Creating failure results
 var failure = Result.Failure("Operation failed")
-  .WithError<ValidationError>();
+  .WithError(new ValidationError("Invalid input"));
 
 // Checking result status
 if (success.IsSuccess)
@@ -267,50 +288,39 @@ public class UserService
 
 ### Imperative and declarative styles
 
-Imperative programming expresses logic as a sequence of explicit steps and checks. Declarative programming describes the desired outcome.
-In the Result pattern, imperative style requires explicit success checks and error handling, while declarative style creates a clean pipeline of operations using the functional extensions.
+The two forms below stop after the first failed step. `ValidateUser`, `SaveUser`, and
+`SendWelcomeEmail` each return a `Result`.
 
 ```csharp
-// IMPERATIVE STYLE (traditional)
-public Result<UserDto> ProcessRegistration(UserRequest request)
+public Result<UserDto> RegisterImperatively(UserRequest request)
 {
-    var validationResult = ValidateUser(request);     // Validate user
-    if (validationResult.IsFailure)
-        return Result<UserDto>.Failure(validationResult);
+    var status = ValidateUser(request);
+    if (status.IsFailure)
+        return Result<UserDto>.Failure(status);
 
+    var user = new User(request);
+    status = Result.Merge(status, SaveUser(user));
+    if (status.IsFailure)
+        return Result<UserDto>.Failure(status);
 
-    var user = new User(request);     // Create user
-    var saveResult = SaveUser(user);
-    if (saveResult.IsFailure)
-        return Result<UserDto>.Failure(saveResult);
-
-    var emailResult = SendWelcomeEmail(user);     // Send email
-    if (emailResult.IsFailure)
-        return Result<UserDto>.Failure(emailResult);
-
-    return Result<UserDto>.Success(user.ToDto());
+    status = Result.Merge(status, SendWelcomeEmail(user));
+    return status.IsSuccess
+        ? status.ToResult(user.ToDto())
+        : Result<UserDto>.Failure(status);
 }
 
-// DECLARATIVE STYLE (with functional extensions)
-public Result<UserDto> ProcessRegistration(UserRequest request) =>
+public Result<UserDto> RegisterWithResultPipeline(UserRequest request) =>
     Result<UserRequest>.Success(request)
-        .Bind(ValidateUser)
+        .AndThenResult(ValidateUser)
         .Map(req => new User(req))
-        .Bind(SaveUser)
-        .Tap(SendWelcomeEmail)
+        .AndThenResult(SaveUser)
+        .AndThenResult(SendWelcomeEmail)
         .Map(user => user.ToDto());
 ```
 
 ### Error handling
 
 ```csharp
-public class ValidationError : ResultErrorBase
-{
-    public ValidationError(string message) : base(message)
-    {
-    }
-}
-
 public class ValidationService
 {
     public Result ValidateData(DataModel model)
@@ -330,7 +340,7 @@ public class ValidationService
             // Handle validation error
         }
 
-        if (result.HasError<ValidationError>(out var validationErrors))
+        if (result.TryGetErrors<ValidationError>(out var validationErrors))
         {
             foreach (var error in validationErrors)
             {
@@ -376,6 +386,21 @@ public class WorkflowService
 
 ### Paged results
 
+`TotalCount` describes the query across all pages. The current page can contain fewer than
+`PageSize` items, or be empty while the total remains positive. A local map or item filter
+keeps the source page metadata. Use `WithOutcome` to append a hook's messages, errors, and
+status to an existing page. Paged `Bind` and `AndThen` take their page from the result returned by
+the callback. Use a paging query to filter the dataset and obtain a new total.
+
+For page queries, use named arguments for the dataset total, one-based page number, and
+page size. Filter-based paged repository and ActiveEntity queries default to page 1 and
+size 10 for omitted or nonpositive inputs. They return a failed result if the requested
+offset exceeds `int.MaxValue`.
+
+Paged ActiveEntity queries in the EF and in-memory providers count the filtered selection
+before applying `Skip` and `Take`. They use a page size of 10 when `Take` is omitted or
+nonpositive. A query failure produces a failed page.
+
 ```csharp
 public class ProductService
 {
@@ -398,10 +423,7 @@ public class ProductService
             var products = await this.repository.GetPageAsync(page, pageSize);
 
             return ResultPaged<Product>.Success(
-                products,
-                totalCount,
-                page,
-                pageSize);
+                products, count: totalCount, page: page, pageSize: pageSize);
         }
         catch (Exception ex)
         {
@@ -412,6 +434,31 @@ public class ProductService
     }
 }
 ```
+
+`ResultPaged<T>.Merge` preserves a sole page's metadata when combining it with status-only
+results produced by `Result.ToResultPaged<T>()`. Item mapping, binding, filtering, and collection
+preserve a status-only result. A paged `Bind` callback can also return one directly.
+When combining multiple pages, `Merge` concatenates items, counts the loaded items, and takes the
+largest page number and page size. `Flatten` sums the totals of successful pages and takes the
+size from the first successful result that carries a page. If the sum exceeds `long.MaxValue`,
+`Flatten` and `FlattenAsync` return a failure with the diagnostics collected so far. Without
+a successful page, `Flatten` returns a status-only outcome. For multiple pages from one
+dataset, keep that dataset's total separately.
+
+### JSON serialization
+
+The serializers from `Common.Serialization` register write-only converters for the three
+result types. Use the same options when calling `System.Text.Json` directly.
+
+```csharp
+var result = Result<string>.Failure(new ValidationError("A title is required.", "title"));
+var json = JsonSerializer.Serialize(result, DefaultJsonSerializerOptions.Create());
+```
+
+All three shapes write `isSuccess`, `messages`, and `errors`. `Result<T>` writes `value` on
+success. `ResultPaged<T>` writes the items and paging fields on both outcomes. The converters
+serialize typed error details and omit the raw exception object from `ExceptionError`.
+Deserialization into a Result struct through these converters throws `NotSupportedException`.
 
 ### Custom error types
 
@@ -994,14 +1041,14 @@ protected override async Task<Result<TodoItemModel>> HandleAsync(
 // With async operation factory
 public static ResultOperationScope<T, TOperation> StartOperation<T, TOperation>(
     this Result<T> result,
-    Func<CancellationToken, Task<TOperation>> startAsync)
-    where TOperation : class
+    Func<CancellationToken, Task<TOperation>> operation)
+    where TOperation : class, IOperationScope
 
 // With synchronously created operation
 public static ResultOperationScope<T, TOperation> StartOperation<T, TOperation>(
     this Result<T> result,
     TOperation operation)
-    where TOperation : class
+    where TOperation : class, IOperationScope
 ```
 
 #### Available operations
@@ -1039,12 +1086,13 @@ var result = await Result<User>.Success(user)
 
 ```csharp
 public async Task<Result<T>> EndOperationAsync(
-    Func<TOperation, CancellationToken, Task> commitAsync,
-    Func<TOperation, Exception, CancellationToken, Task> rollbackAsync = null,
+    Func<TOperation, CancellationToken, Task> commit,
+    Func<TOperation, Exception, CancellationToken, Task> rollback = null,
     CancellationToken cancellationToken = default)
 ```
 
-Use this overload for operations that don't implement `IOperationScope` or when you need custom commit/rollback logic.
+Use this overload to supply custom commit or rollback logic for an `IOperationScope`.
+Supply a rollback delegate to clean up the operation on failure.
 
 ### Operation scope interfaces
 
@@ -1292,7 +1340,8 @@ public class OrderService
 
 #### Error handling
 
-The extensions automatically handle exceptions and wrap them in Result objects:
+The repository extensions wrap ordinary provider exceptions in `ExceptionError`. They
+propagate cancellation and transient provider exceptions to the caller.
 
 ```csharp
 public class InventoryService
@@ -1464,17 +1513,23 @@ await result.TeeMapAsync(
     async (dto, ct) => await _cache.StoreDtoAsync(dto));
 ```
 
-- **Do**: Execute action regardless of Result state
+- **Do**: Run an action without passing the successful value
 
 ```csharp
 await result.DoAsync(async ct => await InitializeSystemAsync(ct));
 ```
 
-- **AndThen**: Chain operations preserving original value
+Use `AndThenResult` or `AndThenResultAsync` on `Result<T>` and `Task<Result<T>>` to
+run a result-returning step and keep the original value. A failed step makes the chain
+fail. A missing callback after a successful source also produces a failure.
 
 ```csharp
-await result.AndThenAsync(async (user, ct) => await ValidateUserAsync(user));
+var validated = await result.AndThenResultAsync((user, ct) => ValidateUserAsync(user, ct));
 ```
+
+The `AndThen` and `AndThenAsync` methods on `Result<T>` and `Task<Result<T>>` run side
+effects and discard callback return values. On `Result` and `ResultPaged<T>`, those method
+names accept callbacks that return results and propagate their failures.
 
 ### Control flow
 
@@ -1484,25 +1539,21 @@ await result.AndThenAsync(async (user, ct) => await ValidateUserAsync(user));
 
 ```csharp
 // Execute operations only when external condition is true
-await result.When(
+var checkedUser = result.When(
     user.IsActive,
-    r => r
-        .Ensure(u => u.Age >= 18, new Error("Must be adult"))
-        .Map(u => u.Email));
+    r => r.Ensure(u => u.Age >= 18, new Error("Must be adult")));
 
 // Execute operations only when predicate matches the value
-await result.When(
+var authorizedUser = result.When(
     user => user.Role == "Admin",
     r => r
         .Tap(u => Console.WriteLine("Admin user detected"))
-        .Bind(ValidateAdminPermissions));
+        .AndThenResult(ValidateAdminPermissions));
 
 // Async version with cancellation support
-await result.WhenAsync(
+var permittedUser = await result.WhenAsync(
     true,
-    async (r, ct) => await r
-        .EnsureAsync(async (u, ct) => await HasPermissionAsync(u), new Error("No permission"), ct)
-        .MapAsync(async (u, ct) => await LoadUserDetailsAsync(u), ct),
+    (r, ct) => r.EnsureAsync(HasPermissionAsync, new Error("No permission"), ct),
     cancellationToken);
 
 // Multiple When blocks for different conditions
@@ -1558,15 +1609,29 @@ await result.BiMap(
 - **Choose**: Filter optional values
 
 ```csharp
-await result.ChooseAsync(async (user, ct) =>
-    user.IsActive ? Option<UserDto>.Some(new UserDto(user)) : Option<UserDto>.None());
+await result.ChooseAsync((user, ct) => Task.FromResult(user.IsActive
+    ? ResultChooseOption<UserDto>.Some(new UserDto(user))
+    : ResultChooseOption<UserDto>.None()));
 ```
 
-- **Collect**: Transform collection preserving all errors
+- **Collect**: Run a result-returning operation for each item. The aggregate fails if
+  any child fails, including a child with only messages. The result keeps the source
+  diagnostics followed by the child diagnostics in input order.
 
 ```csharp
 await result.CollectAsync(async (user, ct) => await ValidateUserAsync(user));
 ```
+
+Item operators such as `MapItems` and `BindItems` accept an empty input as a success.
+`ProcessingOptions.ContinueOnItemFailure` and `MaxFailures` control how many items the
+operator attempts. An item failure affects the aggregate even when it supplies only
+messages or when an exception error factory omits diagnostics. A failed aggregate can
+carry partial values within the failure limit. Check `IsFailure` before considering that payload.
+
+`FlattenAsync` applies processing limits as it reads tasks from the sequence. Use a lazy
+task sequence with `ProcessingOptions.Strict` to stop starting work after the first failure.
+Cancellation ends the wait for the current task and preserves diagnostics already observed.
+Pass a token to the underlying work to cancel that work as well.
 
 ### Pattern matching
 
@@ -1735,8 +1800,8 @@ var result4 = Result<List<string>>.Success();
 // Basic failure (default value)
 var result1 = Result<User>.Failure();
 
-// Failure with specific error type
-var result2 = Result<Order>.Failure<ValidationError>();
+// Failure with a parameterless error type
+var result2 = Result<Order>.Failure<NotFoundError>();
 
 // Failure with value
 var result3 = Result<int>.Failure(42);
@@ -1757,7 +1822,7 @@ var result7 = Result<Product>.Failure(
     new IResultError[]
     {
         new ValidationError("Must be positive", "price"),
-        new DomainError("Invalid product state")
+        new InvalidInputError("Invalid product state")
     });
 ```
 
@@ -1833,10 +1898,42 @@ bool isSuccess = Result<User>.Success(user);
 // Implicit conversion from value
 Result<int> result3 = 42; // Creates successful result
 
-// Implicit conversion from IResult<T>
-IResult<User> interfaceResult = GetUser();
-Result<User> result4 = interfaceResult;
+// Carry a failure across a change in payload type
+IResult failedLookup = Result<User>.Failure(new NotFoundError());
+Result<UserDto> result4 = Result<UserDto>.Failure(failedLookup);
 ```
+
+### Retry and cancellation
+
+Pass a factory to `WithRetryPolicy` so each attempt starts fresh work. Only retry an
+operation that is safe to repeat. The policy evaluates original thrown exceptions and
+exceptions from returned `ExceptionError` values. An aggregate and its inner exceptions
+are eligible for matching. After retries are exhausted, a returned failure keeps its
+messages and errors.
+
+```csharp
+var policy = RetryPolicy.Create()
+    .RetryOn<TimeoutException>()
+    .WithMaxRetries(2);
+
+Func<CancellationToken, Task<Result<Inventory>>> load = inventoryReader.FindAsync;
+var result = await load.WithRetryPolicy(policy, cancellationToken);
+```
+
+The older overloads on `Task<Result>` and `Task<Result<T>>` are obsolete. A task represents
+one execution. The execution helpers distinguish an expired timeout from cancellation
+of the operation or the caller. With `ExecuteWithBackgroundAsync`, canceling the background
+work ends that work and leaves the main operation's result available.
+`ProcessSequenceAsync` stops reading the source when the caller cancels and returns a
+failed result with the diagnostics collected so far.
+
+The default finalizer rolls back an acquired scope after a failed operation, including a
+canceled commit. Pass a rollback delegate when using the custom finalizer. The cleanup
+receives a token independent of the caller's canceled token. If an exception escapes a
+step after the scope starts, `EndOperationAsync` rolls back before propagating it. For
+commit or rollback exceptions, the finalizer calls the exception error factory after cleanup.
+If rollback also throws while handling an escaped step exception, the finalizer
+propagates both exceptions in an `AggregateException`.
 
 ## <img class="bdk-doc-icon" src="assets/features/either.svg" width="24" height="24" alt=""> Appendix D: `Either<T1, T2>`
 
@@ -2075,7 +2172,8 @@ throw `InvalidOperationException` when the instance contains the other type. Pre
   return response.Result.MapHttpNoContent(logger);
   ```
 
-- **Outcomes**: `204 No Content`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+- Returns `204 No Content` on success. Failure responses include `404 Not Found`,
+  `401 Unauthorized`, and Problem Details.
 
 #### `MapHttpOk<T>`
 
@@ -2087,7 +2185,8 @@ throw `InvalidOperationException` when the instance contains the other type. Pre
   return response.Result.MapHttpOk(logger);
   ```
 
-- **Outcomes**: `200 OK` with `T`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+- Returns `200 OK` with `T` on success. Failure responses include `404 Not Found`,
+  `401 Unauthorized`, and Problem Details.
 
 #### `MapHttpOk`
 
@@ -2099,11 +2198,12 @@ throw `InvalidOperationException` when the instance contains the other type. Pre
   return response.Result.MapHttpOk(logger);
   ```
 
-- **Outcomes**: `200 OK`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+- Returns `200 OK` on success. Failure responses include `404 Not Found`,
+  `401 Unauthorized`, and Problem Details.
 
 #### `MapHttpOkAll<T>`
 
-- Maps a `Result<T>` to a response with a value, excluding not-found errors (e.g., broad success cases).
+- Maps a `Result<T>` to a response with a value and a Problem Details response for failures.
 - **Usage**:
 
   ```csharp
@@ -2111,7 +2211,8 @@ throw `InvalidOperationException` when the instance contains the other type. Pre
   return response.Result.MapHttpOkAll(logger);
   ```
 
-- **Outcomes**: `200 OK` with `T`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+- Returns `200 OK` with `T` on success. Failure responses include `401 Unauthorized`
+  and Problem Details.
 
 #### `MapHttpCreated<T>`
 
@@ -2120,12 +2221,11 @@ throw `InvalidOperationException` when the instance contains the other type. Pre
 
   ```csharp
   var response = await mediator.Send(new CreateItemCommand(item));
-  return response.Result.MapHttpCreated($"/api/items/{response.Result.Value.Id}", logger);
-  // OR with factory:
   return response.Result.MapHttpCreated(value => $"/api/items/{value.Id}", logger);
   ```
 
-- **Outcomes**: `201 Created` with `T` and `Location`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+- Returns `201 Created` with `T` and `Location` on success. Failure responses include
+  `401 Unauthorized` and Problem Details.
 
 #### `MapHttpAccepted` and `MapHttpAccepted<T>`
 
@@ -2137,7 +2237,8 @@ throw `InvalidOperationException` when the instance contains the other type. Pre
   return response.Result.MapHttpAccepted("/api/status/123", logger);
   ```
 
-- **Outcomes**: `202 Accepted` (with `T` if generic), `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+- Returns `202 Accepted` on success. The generic overload includes `T` in the body.
+  Failure responses include `401 Unauthorized` and Problem Details.
 
 #### `MapHttpOkPaged<T>`
 
@@ -2149,7 +2250,8 @@ throw `InvalidOperationException` when the instance contains the other type. Pre
   return response.Result.MapHttpOkPaged(logger);
   ```
 
-- **Outcomes**: `200 OK` with `PagedResponse<T>`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+- Returns `200 OK` with `PagedResponse<T>` on success. Failure responses include
+  `401 Unauthorized` and Problem Details.
 
 #### `MapHttpFile`
 
@@ -2161,7 +2263,8 @@ throw `InvalidOperationException` when the instance contains the other type. Pre
   return response.Result.MapHttpFile(logger);
   ```
 
-- **Outcomes**: File download, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+- Returns a file download on success. Failure responses include `404 Not Found`,
+  `401 Unauthorized`, and Problem Details.
 
 #### `MapHttp<TSuccess, ...>`
 
@@ -2170,11 +2273,42 @@ throw `InvalidOperationException` when the instance contains the other type. Pre
 
   ```csharp
   var response = await mediator.Send(new CustomOperationCommand());
-  return response.Result.MapHttp<Created<string>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>(
+  return response.Result.MapHttp<Created<string>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult, string>(
       value => TypedResults.Created("/api/custom", value), logger);
   ```
 
-- **Outcomes**: Depends on types; errors typically `500 Problem`.
+- Use `ProblemHttpResult` as the problem arm for error-specific statuses and structured
+  validation. An `InternalServerError` problem arm returns HTTP 500 for failures routed
+  to that arm. Explicit `NotFound` and `UnauthorizedHttpResult` arms return empty
+  responses. The correlation middleware supplies the `CorrelationId` header for
+  those responses.
+- For unions that use a separate validation arm, the built-in mapper supports
+  `BadRequest`, `BadRequest<string>`, and `BadRequest<ProblemDetails>`. Use a custom
+  handler that returns a declared arm for another response type.
+
+### Problem Details and exception diagnostics
+
+The default minimal API helpers and MVC result mapper return Problem Details for
+`UnauthorizedError` (401), `ForbiddenError` (403), and `NotFoundError` or
+`EntityNotFoundError` (404). This includes paged results and create or accept
+operations.
+
+Register `AddResultHttpProblemDetails` to populate the `correlationId` extension
+from each request. The mapper uses the ID established by the DevKit correlation
+middleware when available and falls back to the request trace ID.
+
+Result responses hide exception messages and stack traces by default. To include
+full exception text in the `exceptionDetails` extension, enable it for a trusted
+development environment by name.
+
+```csharp
+builder.Services.AddResultHttpProblemDetails(
+    includeExceptionDetails: builder.Environment.IsEnvironment("LocalDebug"));
+```
+
+This applies to the default MVC mapper and minimal API responses written through
+ASP.NET Core's Problem Details service. A typed response arm with no body has no
+Problem Details extensions.
 
 ### Custom error handling
 
@@ -2191,4 +2325,8 @@ throw `InvalidOperationException` when the instance contains the other type. Pre
 
 - **Usage Context**: These methods are designed for minimal API endpoints.
 - **Logging**: Pass an optional `ILogger` for debug/error logging.
-- **Error Precedence**: First matching error type determines the response.
+- **Error precedence**: Custom handlers match registered error types in the order the
+  errors appear in the result. Built-in mappings use a fixed precedence. Validation
+  produces HTTP 400 Problem Details when the declared union supports it. Other Problem
+  Details responses carry the status associated with the error, such as 409 for a
+  conflict or 504 for a timeout.

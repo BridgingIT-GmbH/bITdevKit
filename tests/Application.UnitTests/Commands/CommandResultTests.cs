@@ -108,4 +108,44 @@ public class CommandResultTests
         response.Result.Value.ShouldBe(outputValue);
         response.Result.Messages.ShouldBe(result.Messages);
     }
+
+    [Fact]
+    public void Failure_WithTypedError_PreservesSuppliedValueAndMessage()
+    {
+        var sut = CommandResult.Failure<int, DomainPolicyError>(42, "Missing item").Result;
+
+        sut.IsFailure.ShouldBeTrue();
+        sut.Value.ShouldBe(42);
+        sut.Messages.ShouldContain("Missing item");
+        sut.HasError<DomainPolicyError>().ShouldBeTrue();
+    }
+
+    [Fact]
+    public void For_WithPagedResultAsValue_PreservesInferredResponseType()
+    {
+        var page = ResultPaged<int>.Success([42], count: 91, page: 3, pageSize: 2)
+            .WithError(new NotFoundError());
+
+        var sut = CreateResponse();
+
+        sut.Result.IsSuccess.ShouldBeTrue();
+        sut.Result.Value.ShouldBe(page);
+
+        CommandResponse<Result<ResultPaged<int>>> CreateResponse() => CommandResult.For(page);
+    }
+
+    [Fact]
+    public void CommandResponseFor_WithFailedPage_PreservesFailureAndPaging()
+    {
+        var page = ResultPaged<int>.Success([42], count: 91, page: 3, pageSize: 2);
+        var result = page.WithError(new NotFoundError());
+
+        var sut = CommandResponse.For(result).Result;
+
+        sut.IsFailure.ShouldBeTrue();
+        sut.HasError<NotFoundError>().ShouldBeTrue();
+        sut.TotalCount.ShouldBe(91);
+        sut.CurrentPage.ShouldBe(3);
+        sut.PageSize.ShouldBe(2);
+    }
 }

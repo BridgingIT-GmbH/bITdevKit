@@ -916,13 +916,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
             context,
             async ctx =>
             {
-                var result = ResultPaged<TEntity>.Success([], 0, 0, 0);
+                var result = Result.Success().ToResultPaged<TEntity>();
                 var specification = new Specification<TEntity>(expression);
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TEntity>.Merge(result, (await behavior.BeforeFindAllPagedAsync(options, cancellationToken).AnyContext()).ToResultPaged<TEntity>());
+                    result = result.WithOutcome(await behavior.BeforeFindAllPagedAsync(options, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -934,7 +934,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 // after behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TEntity>.Merge(result, (await behavior.AfterFindAllPagedAsync(options, result, result.IsSuccess, cancellationToken).AnyContext()).ToResultPaged<TEntity>());
+                    result = result.WithOutcome(await behavior.AfterFindAllPagedAsync(options, result, result.IsSuccess, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -1002,12 +1002,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
             context,
             async ctx =>
             {
-                var result = ResultPaged<TEntity>.Success([], 0, 0, 0);
+                var result = Result.Success().ToResultPaged<TEntity>();
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TEntity>.Merge(result, (await behavior.BeforeFindAllPagedAsync(options, cancellationToken).AnyContext()).ToResultPaged<TEntity>());
+                    result = result.WithOutcome(await behavior.BeforeFindAllPagedAsync(options, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -1019,7 +1019,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 // after behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TEntity>.Merge(result, (await behavior.AfterFindAllPagedAsync(options, result, result.IsSuccess, cancellationToken).AnyContext()).ToResultPaged<TEntity>());
+                    result = result.WithOutcome(await behavior.AfterFindAllPagedAsync(options, result, result.IsSuccess, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -1087,12 +1087,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
             context,
             async ctx =>
             {
-                var result = ResultPaged<TEntity>.Success([], 0, 0, 0);
+                var result = Result.Success().ToResultPaged<TEntity>();
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TEntity>.Merge(result, (await behavior.BeforeFindAllPagedAsync(options, cancellationToken).AnyContext()).ToResultPaged<TEntity>());
+                    result = result.WithOutcome(await behavior.BeforeFindAllPagedAsync(options, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -1104,7 +1104,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 // after behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TEntity>.Merge(result, (await behavior.AfterFindAllPagedAsync(options, result, result.IsSuccess, cancellationToken).AnyContext()).ToResultPaged<TEntity>());
+                    result = result.WithOutcome(await behavior.AfterFindAllPagedAsync(options, result, result.IsSuccess, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -1176,15 +1176,21 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
             context,
             async ctx =>
             {
-                var result = ResultPaged<TEntity>.Success([], 0, 0, 0);
+                var result = Result.Success().ToResultPaged<TEntity>();
 
+                var pagedOptions = FindOptionsBuilder.BuildPagedResult<TEntity>(filter);
+                if (pagedOptions.IsFailure)
+                {
+                    return pagedOptions.Unwrap().ToResultPaged<TEntity>();
+                }
+
+                var options = pagedOptions.Value;
                 var specifications = SpecificationBuilder.Build(filter, additionalSpecifications).ToArray();
-                var options = FindOptionsBuilder.Build<TEntity>(filter);
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TEntity>.Merge(result, (await behavior.BeforeFindAllPagedAsync(options, cancellationToken).AnyContext()).ToResultPaged<TEntity>());
+                    result = result.WithOutcome(await behavior.BeforeFindAllPagedAsync(options, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -1196,7 +1202,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 // after behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TEntity>.Merge(result, (await behavior.AfterFindAllPagedAsync(options, result, result.IsSuccess, cancellationToken).AnyContext()).ToResultPaged<TEntity>());
+                    result = result.WithOutcome(await behavior.AfterFindAllPagedAsync(options, result, result.IsSuccess, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -1669,12 +1675,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
             context,
             async ctx =>
             {
-                var result = ResultPaged<TId>.Success([], 0, 0, 0);
+                var result = Result.Success().ToResultPaged<TId>();
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TId>.Merge(result, (await behavior.BeforeFindAllIdsPagedAsync(options, cancellationToken).AnyContext()).ToResultPaged<TId>());
+                    result = result.WithOutcome(await behavior.BeforeFindAllIdsPagedAsync(options, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -1686,7 +1692,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 // after behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TId>.Merge(result, (await behavior.AfterFindAllIdsPagedAsync(options, result, result.IsSuccess, cancellationToken).AnyContext()).ToResultPaged<TId>());
+                    result = result.WithOutcome(await behavior.AfterFindAllIdsPagedAsync(options, result, result.IsSuccess, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -1752,13 +1758,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
             context,
             async ctx =>
             {
-                var result = ResultPaged<TId>.Success([], 0, 0, 0);
+                var result = Result.Success().ToResultPaged<TId>();
                 var specification = new Specification<TEntity>(expression);
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TId>.Merge(result, (await behavior.BeforeFindAllIdsPagedAsync(specification, options, cancellationToken).AnyContext()).ToResultPaged<TId>());
+                    result = result.WithOutcome(await behavior.BeforeFindAllIdsPagedAsync(specification, options, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -1770,7 +1776,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 // after behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TId>.Merge(result, (await behavior.AfterFindAllIdsPagedAsync(specification, options, result, result.IsSuccess, cancellationToken).AnyContext()).ToResultPaged<TId>());
+                    result = result.WithOutcome(await behavior.AfterFindAllIdsPagedAsync(specification, options, result, result.IsSuccess, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -1838,12 +1844,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
             context,
             async ctx =>
             {
-                var result = ResultPaged<TId>.Success([], 0, 0, 0);
+                var result = Result.Success().ToResultPaged<TId>();
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TId>.Merge(result, (await behavior.BeforeFindAllIdsPagedAsync(specification, options, cancellationToken).AnyContext()).ToResultPaged<TId>());
+                    result = result.WithOutcome(await behavior.BeforeFindAllIdsPagedAsync(specification, options, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -1855,7 +1861,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 // after behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TId>.Merge(result, (await behavior.AfterFindAllIdsPagedAsync(specification, options, result, result.IsSuccess, cancellationToken).AnyContext()).ToResultPaged<TId>());
+                    result = result.WithOutcome(await behavior.AfterFindAllIdsPagedAsync(specification, options, result, result.IsSuccess, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -1923,12 +1929,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
             context,
             async ctx =>
             {
-                var result = ResultPaged<TId>.Success([], 0, 0, 0);
+                var result = Result.Success().ToResultPaged<TId>();
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TId>.Merge(result, (await behavior.BeforeFindAllIdsPagedAsync(specifications, options, cancellationToken).AnyContext()).ToResultPaged<TId>());
+                    result = result.WithOutcome(await behavior.BeforeFindAllIdsPagedAsync(specifications, options, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -1940,7 +1946,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 // after behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TId>.Merge(result, (await behavior.AfterFindAllIdsPagedAsync(specifications, options, result, result.IsSuccess, cancellationToken).AnyContext()).ToResultPaged<TId>());
+                    result = result.WithOutcome(await behavior.AfterFindAllIdsPagedAsync(specifications, options, result, result.IsSuccess, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -2012,15 +2018,21 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
             context,
             async ctx =>
             {
-                var result = ResultPaged<TId>.Success([], 0, 0, 0);
+                var result = Result.Success().ToResultPaged<TId>();
 
+                var pagedOptions = FindOptionsBuilder.BuildPagedResult<TEntity>(filter);
+                if (pagedOptions.IsFailure)
+                {
+                    return pagedOptions.Unwrap().ToResultPaged<TId>();
+                }
+
+                var options = pagedOptions.Value;
                 var specifications = SpecificationBuilder.Build(filter, additionalSpecifications).ToArray();
-                var options = FindOptionsBuilder.Build<TEntity>(filter);
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TId>.Merge(result, (await behavior.BeforeFindAllIdsPagedAsync(filter, options, cancellationToken).AnyContext()).ToResultPaged<TId>());
+                    result = result.WithOutcome(await behavior.BeforeFindAllIdsPagedAsync(filter, options, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -2032,7 +2044,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 // after behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TId>.Merge(result, (await behavior.AfterFindAllIdsPagedAsync(options, result, result.IsSuccess, cancellationToken).AnyContext()).ToResultPaged<TId>());
+                    result = result.WithOutcome(await behavior.AfterFindAllIdsPagedAsync(options, result, result.IsSuccess, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 

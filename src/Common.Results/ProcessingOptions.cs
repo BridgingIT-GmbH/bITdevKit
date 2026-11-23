@@ -32,4 +32,7 @@ public class ProcessingOptions
         MaxFailures = 0,
         IncludeFailedItems = false
     };
+
+    internal bool StopsAfterFailure(int failureCount) =>
+        !this.ContinueOnItemFailure || (this.MaxFailures.HasValue && failureCount > this.MaxFailures.Value);
 }

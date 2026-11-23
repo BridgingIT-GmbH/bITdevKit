@@ -170,7 +170,7 @@ public static class Configure // TODO: this should be replace by the GlobalExcep
                         {
                             type = ex.GetType().FullName,
                             message = ex.GetFullMessage(),
-                            stackTrace = ex.StackTrace.Trim()
+                            stackTrace = ex.StackTrace?.Trim()
                         }
                     }
                 };
@@ -184,7 +184,9 @@ public static class Configure // TODO: this should be replace by the GlobalExcep
             {
                 Title = "Internal Server Error",
                 Status = StatusCodes.Status500InternalServerError,
-                Detail = $"[{ex.GetType().Name}] {ex.Message}",
+                Detail = includeExceptionDetails
+                    ? $"[{ex.GetType().Name}] {ex.Message}"
+                    : "An unexpected error occurred.",
                 Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500",
                 Extensions = new Dictionary<string, object>()
                 {

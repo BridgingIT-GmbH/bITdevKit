@@ -9,17 +9,17 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 /// <summary>
-/// Provides functionality to convert Result{T} objects to and from JSON.
+/// Writes a value result to JSON, including its payload on success.
 /// </summary>
 public sealed class ResultValueJsonConverter<T> : JsonConverter<Result<T>>
 {
     /// <summary>
-    /// Reads and converts the JSON to a Result{T} object.
+    /// Deserialization is unsupported.
     /// </summary>
     /// <param name="reader">The Utf8JsonReader to read from.</param>
     /// <param name="typeToConvert">The type of the object to convert.</param>
     /// <param name="options">Options to control the conversion behavior.</param>
-    /// <returns>Returns the deserialized Result{T} object.</returns>
+    /// <exception cref="NotSupportedException">Always thrown.</exception>
     public override Result<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         throw new NotSupportedException("Deserialization is not supported.");
@@ -43,21 +43,8 @@ public sealed class ResultValueJsonConverter<T> : JsonConverter<Result<T>>
             JsonSerializer.Serialize(writer, result.Value, typeof(T), options);
         }
 
-        writer.WriteStartArray("messages");
-        foreach (var message in result.Messages)
-        {
-            writer.WriteStringValue(message);
-        }
-
-        writer.WriteEndArray();
-
-        writer.WriteStartArray("errors");
-        foreach (var error in result.Errors)
-        {
-            JsonSerializer.Serialize(writer, error, error.GetType(), options);
-        }
-
-        writer.WriteEndArray();
+        ResultJsonWriter.WriteMessages(writer, result.Messages);
+        ResultJsonWriter.WriteErrors(writer, result.Errors, options);
 
         writer.WriteEndObject();
     }

@@ -9,20 +9,18 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 /// <summary>
-/// Converter for serializing ResultPaged{T} objects to JSON format.
-/// Inherits from JsonConverter{ResultPaged{T}}.
-/// Serialization only; deserialization is not supported.
+/// Writes a paged result's values and pagination metadata to JSON.
 /// </summary>
 /// <typeparam name="T">Type of elements within the paged result.</typeparam>
 public sealed class ResultPagedJsonConverter<T> : JsonConverter<ResultPaged<T>>
 {
     /// <summary>
-    /// Reads and converts the JSON to an object of type ResultPaged{T}.
+    /// Deserialization is unsupported.
     /// </summary>
     /// <param name="reader">The reader that will read the JSON data.</param>
     /// <param name="typeToConvert">The type of the object to convert.</param>
     /// <param name="options">Options to control the conversion behavior.</param>
-    /// <returns>The converted ResultPaged object.</returns>
+    /// <exception cref="NotSupportedException">Always thrown.</exception>
     public override ResultPaged<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         throw new NotSupportedException("Deserialization is not supported.");
@@ -44,21 +42,8 @@ public sealed class ResultPagedJsonConverter<T> : JsonConverter<ResultPaged<T>>
         writer.WritePropertyName("value");
         JsonSerializer.Serialize(writer, value.Value, typeof(IEnumerable<T>), options);
 
-        writer.WriteStartArray("messages");
-        foreach (var message in value.Messages)
-        {
-            writer.WriteStringValue(message);
-        }
-
-        writer.WriteEndArray();
-
-        writer.WriteStartArray("errors");
-        foreach (var error in value.Errors)
-        {
-            JsonSerializer.Serialize(writer, error, error.GetType(), options);
-        }
-
-        writer.WriteEndArray();
+        ResultJsonWriter.WriteMessages(writer, value.Messages);
+        ResultJsonWriter.WriteErrors(writer, value.Errors, options);
 
         // ResultPaged specific properties
         writer.WriteNumber("currentPage", value.CurrentPage);

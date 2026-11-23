@@ -11,6 +11,51 @@ public class RepositoryResultFilterExtensionsTests
 {
     private readonly IGenericReadOnlyRepository<PersonStub> repository = Substitute.For<IGenericReadOnlyRepository<PersonStub>>();
 
+    [Theory]
+    [InlineData(0, 0, 0, 10)]
+    [InlineData(0, 3, 0, 3)]
+    [InlineData(3, 0, 20, 10)]
+    [InlineData(3, 2, 4, 2)]
+    public async Task FindAllResultPagedAsync_NormalizesPagingForBothQueryAndMetadata(
+        int page, int pageSize, int expectedSkip, int expectedTake)
+    {
+        var filter = new FilterModel { Page = page, PageSize = pageSize };
+        this.SetupRepository([], 100);
+
+        var result = await this.repository.FindAllResultPagedAsync(filter);
+
+        result.IsSuccess.ShouldBeTrue();
+        result.TotalCount.ShouldBe(100);
+        result.CurrentPage.ShouldBe(Math.Max(1, page));
+        result.PageSize.ShouldBe(expectedTake);
+        await this.repository.Received(1).FindAllAsync(
+            Arg.Any<IEnumerable<ISpecification<PersonStub>>>(),
+            Arg.Is<IFindOptions<PersonStub>>(options => options.Skip == expectedSkip && options.Take == expectedTake),
+            Arg.Any<CancellationToken>());
+        filter.Page.ShouldBe(page);
+        filter.PageSize.ShouldBe(pageSize);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task FindAllResultPagedAsync_ProviderCancellation_PropagatesCancellation(bool taskCanceled)
+    {
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+        var exception = taskCanceled
+            ? new TaskCanceledException("Cancelled", null, cancellation.Token)
+            : new OperationCanceledException(cancellation.Token);
+        this.repository.CountAsync(
+                Arg.Any<IEnumerable<ISpecification<PersonStub>>>(), cancellation.Token)
+            .Returns(Task.FromException<long>(exception));
+
+        var actual = await Should.ThrowAsync<OperationCanceledException>(
+            () => this.repository.FindAllResultPagedAsync(new FilterModel(), cancellationToken: cancellation.Token));
+
+        actual.CancellationToken.ShouldBe(cancellation.Token);
+    }
+
     [Fact]
     public async Task FindAllResultPagedAsync_WithBasicFilters_ReturnsCorrectResult()
     {

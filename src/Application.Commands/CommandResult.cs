@@ -279,6 +279,6 @@ public static class CommandResult
     public static CommandResponse<Result<TValue>> Failure<TValue, TError>(TValue value = default, string message = null)
         where TError : IResultError, new()
     {
-        return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Failure<TError>(message) };
+        return For(Result<TValue>.Failure(value, message).WithError<TError>());
     }
 }

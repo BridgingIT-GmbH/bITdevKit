@@ -69,11 +69,14 @@ public static class ResultTExtensions
     /// </example>
     public static Result<TNew> Map<T, TNew>(this Result<T> result, Func<T, TNew> mapper)
     {
-        if (!result.IsSuccess || mapper is null)
+        if (result.IsFailure)
         {
-            return Result<TNew>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return Result<TNew>.Failure(result);
+        }
+
+        if (mapper is null)
+        {
+            return Result<TNew>.Failure(result).WithError("Mapper cannot be null");
         }
 
         try
@@ -115,16 +118,20 @@ public static class ResultTExtensions
         Func<T, CancellationToken, Task<TNew>> mapper,
         CancellationToken cancellationToken = default)
     {
-        if (!result.IsSuccess || mapper is null)
+        if (result.IsFailure)
         {
-            return Result<TNew>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return Result<TNew>.Failure(result);
+        }
+
+        if (mapper is null)
+        {
+            return Result<TNew>.Failure(result).WithError("Mapper cannot be null");
         }
 
         try
         {
-            var newValue = await mapper(result.Value, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            var newValue = await mapper(result.Value, cancellationToken).AnyContext();
             return Result<TNew>.Success(newValue)
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
@@ -172,10 +179,7 @@ public static class ResultTExtensions
 
         try
         {
-            var newResult = binder(result.Value);
-            return newResult
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return PrependOutcome(result, binder(result.Value));
         }
         catch (Exception ex)
         {
@@ -211,18 +215,9 @@ public static class ResultTExtensions
             return result;
         }
 
-        try
-        {
-            var newValue = binder(result.Value);
-            return Result<T>.Success(newValue)
-                .WithMessages(result.Messages)
-                .WithErrors(result.Errors);
-        }
-        catch (Exception ex)
-        {
-            return Result<T>.Failure()
-                .WithError(new ExceptionError(ex));
-        }
+        return binder is null
+            ? Result<T>.Failure(result).WithError("Binder cannot be null")
+            : result.Bind<T, T>(value => Result<T>.Success(binder(value)));
     }
 
     /// <summary>
@@ -257,10 +252,8 @@ public static class ResultTExtensions
 
         try
         {
-            var newResult = await binder(result.Value, cancellationToken);
-            return newResult
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            cancellationToken.ThrowIfCancellationRequested();
+            return PrependOutcome(result, await binder(result.Value, cancellationToken).AnyContext());
         }
         catch (OperationCanceledException)
         {
@@ -277,6 +270,11 @@ public static class ResultTExtensions
                 .WithMessages(result.Messages);
         }
     }
+
+    private static Result<T> PrependOutcome<T>(IResult source, Result<T> next) =>
+        (next.IsSuccess ? Result<T>.Success(next.Value) : Result<T>.Failure(next.Value))
+        .WithMessages(source.Messages.Concat(next.Messages))
+        .WithErrors(source.Errors.Concat(next.Errors));
 
     /// <summary>
     /// Binds a synchronous operation that returns a <see cref="Result{TInner}"/> to a
@@ -309,23 +307,53 @@ public static class ResultTExtensions
         Func<T, TInner, T> merge)
     {
         if (result.IsFailure)
+        {
             return result;
+        }
 
         try
         {
-            var inner = binder(result.Value);
-            if (inner.IsFailure)
-                return inner.Wrap<T>();
-
-            var combined = merge(result.Value, inner.Value);
-            return Result<T>.Success(combined)
-                .WithMessages(result.Messages)
-                .WithErrors(result.Errors);
+            return MergeBoundResult(result, binder(result.Value), merge);
+        }
+        catch (OperationCanceledException)
+        {
+            return result.WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<T>.Failure()
-                .WithError(new ExceptionError(ex));
+            return result.AsFailure().WithError(Result.Settings.ExceptionErrorFactory(ex));
+        }
+    }
+
+    internal static Result<T> MergeBoundResult<T, TInner>(
+        Result<T> outer, Result<TInner> inner, Func<T, TInner, T> merge)
+    {
+        var messages = outer.Messages.Concat(inner.Messages);
+        var errors = outer.Errors.Concat(inner.Errors);
+        if (inner.IsFailure)
+        {
+            return Result<T>.Failure(outer.Value).WithMessages(messages).WithErrors(errors);
+        }
+
+        try
+        {
+            return Result<T>.Success(merge(outer.Value, inner.Value))
+                .WithMessages(messages)
+                .WithErrors(errors);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<T>.Failure(outer.Value)
+                .WithMessages(messages)
+                .WithErrors(errors)
+                .WithError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure(outer.Value)
+                .WithMessages(messages)
+                .WithErrors(errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex));
         }
     }
 
@@ -1459,7 +1487,7 @@ public static class ResultTExtensions
     }
 
     /// <summary>
-    ///     Chains a new operation if the current Result is successful, providing access to the previous Result's value.
+    ///     Runs a side effect with the value of a successful result.
     /// </summary>
     /// <typeparam name="T">The type of the result value.</typeparam>
     /// <param name="result">The result to chain.</param>
@@ -1468,8 +1496,8 @@ public static class ResultTExtensions
     /// <example>
     /// <code>
     /// var result = user.ToResult()
-    ///     .AndThen(user => ValidateUser(user))
-    ///     .AndThen(user => SaveUser(user));
+    ///     .AndThen(user => RecordAuditEntry(user))
+    ///     .AndThen(user => UpdateMetrics(user));
     /// </code>
     /// </example>
     public static Result<T> AndThen<T>(this Result<T> result, Action<T> operation)
@@ -1494,8 +1522,36 @@ public static class ResultTExtensions
         return result;
     }
 
+    /// <summary>Runs a result-producing step on success, retaining the original value and adding the step's diagnostics.</summary>
+    /// <typeparam name="T">The type of the original value.</typeparam>
+    /// <param name="result">The current result.</param>
+    /// <param name="operation">The step to run when the current result succeeds.</param>
+    /// <returns>The combined outcome with the current value. A missing step after success produces a failure.</returns>
+    /// <example><code>var saved = validated.AndThenResult(order => SaveOrder(order));</code></example>
+    public static Result<T> AndThenResult<T>(this Result<T> result, Func<T, Result> operation)
+    {
+        if (result.IsFailure)
+        {
+            return result;
+        }
+
+        return operation is null
+            ? result.WithError("Operation cannot be null")
+            : result.Unwrap().AndThen(() => operation(result.Value)).ToResult(result.Value);
+    }
+
+    /// <summary>Runs a typed step on success, retaining the original value and adding the step's diagnostics.</summary>
+    /// <typeparam name="T">The type of the original value.</typeparam>
+    /// <typeparam name="TInner">The type of the step's value.</typeparam>
+    /// <param name="result">The current result.</param>
+    /// <param name="operation">The step to run when the current result succeeds.</param>
+    /// <returns>The combined outcome with the current value. A missing step after success produces a failure.</returns>
+    /// <example><code>var checkedOrder = validated.AndThenResult(order => CheckStock(order));</code></example>
+    public static Result<T> AndThenResult<T, TInner>(this Result<T> result, Func<T, Result<TInner>> operation) =>
+        result.AndThenResult(operation is null ? null : value => operation(value).Unwrap());
+
     /// <summary>
-    ///     Chains a new async operation if the current Result is successful, providing access to the previous Result's value.
+    ///     Runs an asynchronous side effect with the value of a successful result.
     /// </summary>
     /// <typeparam name="T">The type of the result value.</typeparam>
     /// <param name="result">The result to chain.</param>
@@ -1506,7 +1562,7 @@ public static class ResultTExtensions
     /// <code>
     /// var result = await user.ToResult()
     ///     .AndThenAsync(
-    ///         async (user, ct) => await ValidateUserAsync(user),
+    ///         (user, ct) => RecordAuditEntryAsync(user, ct),
     ///         cancellationToken
     ///     );
     /// </code>
@@ -1542,6 +1598,48 @@ public static class ResultTExtensions
 
         return result;
     }
+
+    /// <summary>Awaits a result-producing step on success and keeps the original value.</summary>
+    /// <typeparam name="T">The type of the original value.</typeparam>
+    /// <param name="result">The current result.</param>
+    /// <param name="operation">The asynchronous step to run when the current result succeeds.</param>
+    /// <param name="cancellationToken">The token passed to the operation.</param>
+    /// <returns>The combined outcome with the current value. A missing step after success produces a failure.</returns>
+    /// <example><code>var saved = await validated.AndThenResultAsync((order, ct) => SaveOrderAsync(order, ct));</code></example>
+    public static async Task<Result<T>> AndThenResultAsync<T>(
+        this Result<T> result,
+        Func<T, CancellationToken, Task<Result>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (result.IsFailure)
+        {
+            return result;
+        }
+
+        if (operation is null)
+        {
+            return result.WithError("Operation cannot be null");
+        }
+
+        var outcome = await result.Unwrap().AndThenAsync(ct => operation(result.Value, ct), cancellationToken).AnyContext();
+        return outcome.ToResult(result.Value);
+    }
+
+    /// <summary>Awaits a typed step on success and keeps the original value.</summary>
+    /// <typeparam name="T">The type of the original value.</typeparam>
+    /// <typeparam name="TInner">The type of the step's value.</typeparam>
+    /// <param name="result">The current result.</param>
+    /// <param name="operation">The asynchronous step to run when the current result succeeds.</param>
+    /// <param name="cancellationToken">The token passed to the operation.</param>
+    /// <returns>The combined outcome with the current value. A missing step after success produces a failure.</returns>
+    /// <example><code>var checkedOrder = await validated.AndThenResultAsync((order, ct) => CheckStockAsync(order, ct));</code></example>
+    public static Task<Result<T>> AndThenResultAsync<T, TInner>(
+        this Result<T> result,
+        Func<T, CancellationToken, Task<Result<TInner>>> operation,
+        CancellationToken cancellationToken = default) =>
+        result.AndThenResultAsync(
+            operation is null ? null : async (value, ct) => (await operation(value, ct).AnyContext()).Unwrap(),
+            cancellationToken);
 
     /// <summary>
     ///     Provides a fallback value in case of failure.
@@ -1900,55 +1998,41 @@ public static class ResultTExtensions
         this Result<IEnumerable<TInput>> result,
         Func<TInput, Result<TOutput>> operation)
     {
-        if (!result.IsSuccess || operation is null)
+        if (result.IsFailure)
         {
-            return Result<IEnumerable<TOutput>>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.Wrap<IEnumerable<TOutput>>();
         }
 
-        if (result.Value is null)
+        var outcome = new CollectionOutcome<TOutput>(result);
+        if (!outcome.ValidateInput(result.Value, operation))
         {
-            return Result<IEnumerable<TOutput>>.Failure()
-                .WithErrors(result.Errors)
-                .WithError(new Error("Source sequence is null"))
-                .WithMessages(result.Messages);
+            return outcome.ToResult();
         }
 
-        var results = new List<TOutput>();
-        var errors = new List<IResultError>();
-        var messages = new List<string>();
-
-        foreach (var item in result.Value)
+        try
         {
-            try
+            foreach (var item in result.Value)
             {
-                var newResult = operation(item);
-                if (newResult.IsSuccess)
+                try
                 {
-                    results.Add(newResult.Value);
+                    outcome.Add(operation(item));
                 }
-                else
+                catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    errors.AddRange(newResult.Errors);
+                    outcome.AddError(Result.Settings.ExceptionErrorFactory(ex));
                 }
-
-                messages.AddRange(newResult.Messages);
-            }
-            catch (Exception ex)
-            {
-                errors.Add(Result.Settings.ExceptionErrorFactory(ex));
             }
         }
+        catch (OperationCanceledException)
+        {
+            outcome.AddError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            outcome.AddError(Result.Settings.ExceptionErrorFactory(ex));
+        }
 
-        return errors.Any()
-            ? Result<IEnumerable<TOutput>>.Failure()
-                .WithErrors(result.Errors)
-                .WithErrors(errors)
-                .WithMessages(messages)
-            : Result<IEnumerable<TOutput>>.Success(results)
-                .WithErrors(result.Errors)
-                .WithMessages(messages);
+        return outcome.ToResult();
     }
 
     /// <summary>
@@ -1974,60 +2058,91 @@ public static class ResultTExtensions
         Func<TInput, CancellationToken, Task<Result<TOutput>>> operation,
         CancellationToken cancellationToken = default)
     {
-        if (!result.IsSuccess || operation is null)
+        if (result.IsFailure)
         {
-            return Result<IEnumerable<TOutput>>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.Wrap<IEnumerable<TOutput>>();
         }
 
-        if (result.Value is null)
+        var outcome = new CollectionOutcome<TOutput>(result);
+        if (!outcome.ValidateInput(result.Value, operation))
         {
-            return Result<IEnumerable<TOutput>>.Failure()
-                .WithErrors(result.Errors)
-                .WithError(new Error("Source sequence is null"))
-                .WithMessages(result.Messages);
+            return outcome.ToResult();
         }
 
-        var results = new List<TOutput>();
-        var errors = new List<IResultError>();
-        var messages = new List<string>();
-
-        foreach (var item in result.Value)
+        try
         {
-            try
+            cancellationToken.ThrowIfCancellationRequested();
+            foreach (var item in result.Value)
             {
-                var newResult = await operation(item, cancellationToken);
-                if (newResult.IsSuccess)
+                cancellationToken.ThrowIfCancellationRequested();
+                try
                 {
-                    results.Add(newResult.Value);
+                    outcome.Add(await operation(item, cancellationToken).AnyContext());
                 }
-                else
+                catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    errors.AddRange(newResult.Errors);
+                    outcome.AddError(Result.Settings.ExceptionErrorFactory(ex));
                 }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            outcome.AddError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            outcome.AddError(Result.Settings.ExceptionErrorFactory(ex));
+        }
 
-                messages.AddRange(newResult.Messages);
-            }
-            catch (OperationCanceledException)
+        return outcome.ToResult();
+    }
+
+    private sealed class CollectionOutcome<T>(IResult source)
+    {
+        private readonly List<string> messages = [.. source.Messages];
+        private readonly List<IResultError> errors = [.. source.Errors];
+        private readonly List<T> values = [];
+        private bool failed;
+
+        public bool ValidateInput<TInput>(IEnumerable<TInput> sourceValues, Delegate operation)
+        {
+            if (operation is null)
             {
-                errors.Add(new OperationCancelledError());
-                break;
+                this.AddError(new Error("Operation cannot be null"));
             }
-            catch (Exception ex)
+            else if (sourceValues is null)
             {
-                errors.Add(Result.Settings.ExceptionErrorFactory(ex));
+                this.AddError(new Error("Source sequence is null"));
+            }
+
+            return !this.failed;
+        }
+
+        public void Add(Result<T> result)
+        {
+            this.messages.AddRange(result.Messages);
+            this.errors.AddRange(result.Errors);
+            this.failed |= result.IsFailure;
+            if (result.IsSuccess)
+            {
+                this.values.Add(result.Value);
             }
         }
 
-        return errors.Any()
-            ? Result<IEnumerable<TOutput>>.Failure()
-                .WithErrors(result.Errors)
-                .WithErrors(errors)
-                .WithMessages(messages)
-            : Result<IEnumerable<TOutput>>.Success(results)
-                .WithErrors(result.Errors)
-                .WithMessages(messages);
+        public void AddError(IResultError error)
+        {
+            this.failed = true;
+            this.errors.Add(error);
+        }
+
+        public Result<IEnumerable<T>> ToResult()
+        {
+            var result = this.failed
+                ? Result<IEnumerable<T>>.Failure()
+                : Result<IEnumerable<T>>.Success(this.values);
+
+            return result.WithMessages(this.messages).WithErrors(this.errors);
+        }
     }
 
     /// <summary>
@@ -2698,7 +2813,7 @@ public static class ResultTExtensions
     {
         ArgumentNullException.ThrowIfNull(operation);
 
-        return new ResultOperationScope<T, TOperation>(result, ct => Task.FromResult(operation));
+        return new ResultOperationScope<T, TOperation>(result, operation);
     }
 
     /// <summary>
@@ -2734,35 +2849,39 @@ public static class ResultTExtensions
 
         try
         {
-            // options ??= ProcessingOptions.Default;
+            options ??= ProcessingOptions.Default;
             var errors = new List<IResultError>();
             var messages = new List<string>();
             var lastSuccessResult = default(Result<T>);
             var firstFailedResult = default(Result<T>);
             var hasSuccess = false;
-            var hasFailure = false;
+            var failureCount = 0;
 
             foreach (var result in results)
             {
+                errors.AddRange(result.Errors);
+                messages.AddRange(result.Messages);
+
                 if (result.IsSuccess)
                 {
                     lastSuccessResult = result;
                     hasSuccess = true;
-                }
-                else
-                {
-                    if (!hasFailure)
-                    {
-                        firstFailedResult = result;
-                        hasFailure = true;
-                    }
+                    continue;
                 }
 
-                errors.AddRange(result.Errors);
-                messages.AddRange(result.Messages);
+                if (failureCount == 0)
+                {
+                    firstFailedResult = result;
+                }
+
+                if (options.StopsAfterFailure(++failureCount))
+                {
+                    messages.Add($"Flattening aborted after {failureCount} failures");
+                    break;
+                }
             }
 
-            if (hasFailure)
+            if (failureCount != 0)
             {
                 return Result<T>.Failure(firstFailedResult.Value)
                     .WithErrors(errors)
@@ -2816,74 +2935,62 @@ public static class ResultTExtensions
        ProcessingOptions options = null,
        CancellationToken cancellationToken = default)
     {
-        if (resultTasks is null)
+        options ??= ProcessingOptions.Default;
+        var observed = await AwaitResultTasksAsync(resultTasks, options, cancellationToken).AnyContext();
+        return observed.IsSuccess ? observed.Value.Flatten(options) : observed.Wrap<T>();
+    }
+
+    internal static async Task<Result<List<TResult>>> AwaitResultTasksAsync<TResult>(
+        IEnumerable<Task<TResult>> tasks,
+        ProcessingOptions options,
+        CancellationToken cancellationToken)
+        where TResult : struct, IResult
+    {
+        if (tasks is null)
         {
-            return Result<T>.Failure()
-                .WithError(new Error("Result tasks collection cannot be null"));
+            return Result<List<TResult>>.Failure(new Error("Result tasks collection cannot be null"));
         }
 
+        var observed = new List<TResult>();
         try
         {
-            // options ??= ProcessingOptions.Default;
-            var errors = new List<IResultError>();
-            var messages = new List<string>();
-            var lastSuccessResult = default(Result<T>);
-            var firstFailedResult = default(Result<T>);
-            var hasSuccess = false;
-            var hasFailure = false;
-
-            foreach (var task in resultTasks)
+            var failureCount = 0;
+            cancellationToken.ThrowIfCancellationRequested();
+            using var enumerator = tasks.GetEnumerator();
+            while (true)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var result = await task;
-
-                if (result.IsSuccess)
+                if (!enumerator.MoveNext())
                 {
-                    lastSuccessResult = result;
-                    hasSuccess = true;
-                }
-                else
-                {
-                    if (!hasFailure)
-                    {
-                        firstFailedResult = result;
-                        hasFailure = true;
-                    }
+                    break;
                 }
 
-                errors.AddRange(result.Errors);
-                messages.AddRange(result.Messages);
+                cancellationToken.ThrowIfCancellationRequested();
+                var result = await enumerator.Current.WaitAsync(cancellationToken).AnyContext();
+                observed.Add(result);
+                if (result.IsFailure && options.StopsAfterFailure(++failureCount))
+                {
+                    break;
+                }
             }
 
-            if (hasFailure)
-            {
-                return Result<T>.Failure(firstFailedResult.Value)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            if (hasSuccess)
-            {
-                return Result<T>.Success(lastSuccessResult.Value)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return Result<T>.Failure()
-                .WithErrors(errors)
-                .WithError(new Error("No results provided"))
-                .WithMessages(messages);
+            cancellationToken.ThrowIfCancellationRequested();
+            return Result<List<TResult>>.Success(observed);
         }
         catch (OperationCanceledException)
         {
-            return Result<T>.Failure()
+            return Result<List<TResult>>.Failure()
+                .WithMessages(observed.SelectMany(result => result.Messages))
+                .WithErrors(observed.SelectMany(result => result.Errors))
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<T>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message);
+            return Result<List<TResult>>.Failure()
+                .WithMessages(observed.SelectMany(result => result.Messages))
+                .WithErrors(observed.SelectMany(result => result.Errors))
+                .WithMessage(ex.Message)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex));
         }
     }
 }

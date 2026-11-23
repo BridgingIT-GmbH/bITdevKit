@@ -368,6 +368,21 @@ public sealed class McpFeatureHandlerTests
     }
 
     [Fact]
+    public async Task OrchestrationMcpHandler_UnsupportedRepairAction_ReportsFailureReason()
+    {
+        var sut = new OrchestrationMcpHandler(
+            Substitute.For<IOrchestrationQueryService>(),
+            Substitute.For<IOrchestrationService>(),
+            Substitute.For<IOrchestrationAdministrationService>());
+        var arguments = JsonSerializer.SerializeToElement(new { instanceId = Guid.NewGuid(), action = "unsupported" });
+
+        var response = await sut.HandleAsync(new McpRequest("orchestrations.repair", McpToolset.Operations, arguments), CancellationToken.None);
+
+        response.Available.ShouldBeFalse();
+        response.Reason.ShouldContain("Unsupported repair action");
+    }
+
+    [Fact]
     public void BlobStorageBuilderContext_AddMcpHandlers_RegistersHandlerOnceAndUsesConfiguredDiagnostics()
     {
         // Arrange

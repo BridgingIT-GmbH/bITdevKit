@@ -22,7 +22,7 @@ using System.Text.Json.Serialization;
 /// - For general errors, delegates to <see cref="JsonSerializer"/> using the
 ///   error's type and the provided options.
 /// - For <see cref="ExceptionError"/>, emits a safe, flattened object and
-///   deliberately excludes the raw <see cref="Exception"/> instance to avoid
+///   uses <c>type</c> for the exception type. It excludes the raw <see cref="Exception"/> instance to avoid
 ///   unsupported types (e.g., <c>MethodBase</c>) and oversized/PII payloads.
 /// </para>
 /// <para>
@@ -52,92 +52,8 @@ public sealed class ResultJsonConverter : JsonConverter<Result>
         writer.WriteStartObject();
 
         writer.WriteBoolean("isSuccess", value.IsSuccess);
-        WriteMessages(writer, value);
-        WriteErrors(writer, value, options);
-
-        writer.WriteEndObject();
-    }
-
-    /// <summary>
-    /// Writes the <c>messages</c> array for the result.
-    /// </summary>
-    private static void WriteMessages(Utf8JsonWriter writer, Result value)
-    {
-        writer.WriteStartArray("messages");
-        foreach (var message in value.Messages.SafeNull())
-        {
-            writer.WriteStringValue(message);
-        }
-
-        writer.WriteEndArray();
-    }
-
-    /// <summary>
-    /// Writes the <c>errors</c> array for the result. This method
-    /// special-cases <see cref="ExceptionError"/> to avoid serializing the raw
-    /// <see cref="Exception"/> instance (which can contain unsupported members
-    /// like <c>MethodBase</c> and potentially sensitive data).
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Why special-case ExceptionError?
-    /// - System.Text.Json cannot serialize certain members of <see cref="Exception"/>
-    ///   (e.g., <c>TargetSite</c>/<see cref="System.Reflection.MethodBase"/>), which
-    ///   throws <see cref="NotSupportedException"/>.
-    /// - Serializing full exceptions can bloat payloads and leak PII/implementation details.
-    /// </para>
-    /// <para>
-    /// Output shape for ExceptionError:
-    /// {
-    ///   "message": "�",
-    ///   "exceptionType": "Namespace.ExceptionType",
-    ///   "stackTrace": "�" // optional, omitted if null/empty
-    /// }
-    /// </para>
-    /// </remarks>
-    private static void WriteErrors(Utf8JsonWriter writer, Result value, JsonSerializerOptions options)
-    {
-        writer.WriteStartArray("errors");
-
-        foreach (var error in value.Errors.SafeNull())
-        {
-            if (error is ExceptionError exErr)
-            {
-                WriteExceptionError(writer, exErr);
-                continue;
-            }
-
-            // Default path for non-exception errors.
-            JsonSerializer.Serialize(writer, error, error.GetType(), options);
-        }
-
-        writer.WriteEndArray();
-    }
-
-    /// <summary>
-    /// Writes a safe, flattened representation of <see cref="ExceptionError"/>.
-    /// The raw <see cref="ExceptionError.Exception"/> is NOT serialized.
-    /// </summary>
-    private static void WriteExceptionError(Utf8JsonWriter writer, ExceptionError value)
-    {
-        writer.WriteStartObject();
-
-        if (!string.IsNullOrWhiteSpace(value.Message))
-        {
-            writer.WriteString("message", value.Message);
-        }
-
-        var typeName = value.ExceptionType;
-        if (!string.IsNullOrWhiteSpace(typeName))
-        {
-            writer.WriteString("type", typeName);
-        }
-
-        var stack = value.StackTrace;
-        if (!string.IsNullOrWhiteSpace(stack))
-        {
-            writer.WriteString("stackTrace", stack);
-        }
+        ResultJsonWriter.WriteMessages(writer, value.Messages);
+        ResultJsonWriter.WriteErrors(writer, value.Errors, options, useCompactExceptionError: true);
 
         writer.WriteEndObject();
     }

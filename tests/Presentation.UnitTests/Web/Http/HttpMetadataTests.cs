@@ -3,7 +3,6 @@
 
 namespace BridgingIT.DevKit.Presentation.UnitTests.Web.Http;
 
-using System.Globalization;
 using BridgingIT.DevKit.Presentation.Web;
 
 public sealed class HttpMetadataTests
@@ -26,146 +25,29 @@ public sealed class HttpMetadataTests
         preservation.Value.ShouldBeNull();
     }
 
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void ParseProperties_WithEmptyObject_ReturnsExplicitEmptyReplacement(bool preserveMissing)
-    {
-        var result = HttpMetadata.ParseProperties(" \n{ } ", preserveMissing);
-
-        result.IsSuccess.ShouldBeTrue();
-        result.Value.ShouldNotBeNull();
-        result.Value.ShouldBeEmpty();
-    }
-
     [Fact]
-    public void ParseProperties_WithScalarValues_ReturnsPortableClrValuesWithoutInferringStringTypes()
+    public void ParseProperties_WithCaseVariants_UsesLastValueAndKeepsFirstKeySpelling()
     {
-        var result = HttpMetadata.ParseProperties("""
-            {
-              "text": "München",
-              "empty": "",
-              "true": true,
-              "false": false,
-              "null": null,
-              "min": -9223372036854775808,
-              "max": 9223372036854775807,
-              "largeInteger": 9223372036854775808,
-              "decimal": 123.45,
-              "floating": 1e100,
-              "dateText": "2030-01-02T03:04:05Z",
-              "numericText": "00123",
-              "booleanText": "false"
-            }
-            """);
+        var result = HttpMetadata.ParseProperties(json: """{"Inspection":1,"inspection":2," Inspection ":3}""");
 
         result.IsSuccess.ShouldBeTrue();
-        var properties = result.Value;
-        properties.Get("TEXT").ShouldBe("München");
-        properties.Get("empty").ShouldBe(string.Empty);
-        properties.Get("true").ShouldBe(true);
-        properties.Get("false").ShouldBe(false);
-        properties.Contains("null").ShouldBeTrue();
-        properties.Get("null").ShouldBeNull();
-        properties.Get("min").ShouldBeOfType<long>().ShouldBe(long.MinValue);
-        properties.Get("max").ShouldBeOfType<long>().ShouldBe(long.MaxValue);
-        properties.Get("largeInteger").ShouldBeOfType<decimal>().ShouldBe(9223372036854775808m);
-        properties.Get("decimal").ShouldBeOfType<decimal>().ShouldBe(123.45m);
-        properties.Get("floating").ShouldBeOfType<double>().ShouldBe(1e100);
-        properties.Get("dateText").ShouldBe("2030-01-02T03:04:05Z");
-        properties.Get("numericText").ShouldBe("00123");
-        properties.Get("booleanText").ShouldBe("false");
-    }
-
-    [Fact]
-    public void ParseProperties_WithNonEnglishCulture_ParsesJsonNumbersIndependentlyOfCulture()
-    {
-        var originalCulture = CultureInfo.CurrentCulture;
-        try
-        {
-            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
-
-            var result = HttpMetadata.ParseProperties("{\"amount\":1.25}");
-
-            result.IsSuccess.ShouldBeTrue();
-            result.Value.Get("amount").ShouldBeOfType<decimal>().ShouldBe(1.25m);
-        }
-        finally
-        {
-            CultureInfo.CurrentCulture = originalCulture;
-        }
-    }
-
-    [Fact]
-    public void ParseProperties_AcrossCalls_DoesNotShareMutableDefaults()
-    {
-        var first = HttpMetadata.ParseProperties(null).Value;
-        var second = HttpMetadata.ParseProperties(null).Value;
-
-        first.Set("reviewed", true);
-
-        second.ShouldBeEmpty();
-        HttpMetadata.ParseProperties("{}").Value.ShouldBeEmpty();
+        result.Value.Select(property => property.Key).ShouldBe(["Inspection", " Inspection "]);
+        result.Value.Get("INSPECTION").ShouldBe(2L);
+        result.Value.Get(" Inspection ").ShouldBe(3L);
     }
 
     [Theory]
-    [InlineData("invalid JSON")]
-    [InlineData("{")]
-    [InlineData("[]")]
-    [InlineData("true")]
-    [InlineData("42")]
-    [InlineData("\"text\"")]
-    [InlineData("{\"nested\":{\"name\":\"Ada\"}}")]
-    [InlineData("{\"array\":[1,2]}")]
-    [InlineData("{\"\":1}")]
-    [InlineData("{\" \":1}")]
-    [InlineData("{\"\\t\":1}")]
-    [InlineData("{\"overflow\":1e400}")]
-    [InlineData("{\"overflow\":-1e400}")]
-    [InlineData("{\"underflow\":1e-400}")]
-    [InlineData("{\"underflow\":-1e-400}")]
-    [InlineData("{\"underflow\":1e-10000}")]
-    [InlineData("{\"number\":NaN}")]
-    [InlineData("{\"number\":Infinity}")]
-    [InlineData("{\"valid\":true,\"invalid\":[]}")]
-    public void ParseProperties_WithInvalidMetadata_ReturnsValidationFailureInEitherMode(string json)
+    [InlineData("[]", "Properties must be an object.")]
+    [InlineData("{\" \":1}", "Property names must not be blank.")]
+    [InlineData("{\"nested\":{}}", "Property values must be JSON scalars.")]
+    [InlineData("{\"number\":1e400}", "Property numbers must be finite and within the supported numeric range.")]
+    [InlineData("{\"number\":1e-400}", "Property numbers must be finite and within the supported numeric range.")]
+    public void ParseProperties_WithUnsupportedInput_ReturnsSpecificValidationMessage(string json, string message)
     {
-        foreach (var preserveMissing in new[] { false, true })
-        {
-            var result = HttpMetadata.ParseProperties(json, preserveMissing);
+        var result = HttpMetadata.ParseProperties(json, preserveMissing: true);
 
-            result.IsFailure.ShouldBeTrue();
-            result.Errors.Single().ShouldBeOfType<ValidationError>();
-        }
-    }
-
-    [Theory]
-    [InlineData("1e-29", 1e-29)]
-    [InlineData("-1e-29", -1e-29)]
-    [InlineData("6e-29", 6e-29)]
-    [InlineData("1.1e-28", 1.1e-28)]
-    [InlineData("1e-100", 1e-100)]
-    [InlineData("-1e-100", -1e-100)]
-    [InlineData("5e-324", double.Epsilon)]
-    public void ParseProperties_WithSmallFiniteNumber_PreservesNonzeroValue(string number, double expected)
-    {
-        var result = HttpMetadata.ParseProperties("{\"amount\":" + number + "}");
-
-        result.IsSuccess.ShouldBeTrue();
-        result.Value.Get("amount").ShouldBeOfType<double>().ShouldBe(expected);
-    }
-
-    [Theory]
-    [InlineData("0.0")]
-    [InlineData("-0.000")]
-    [InlineData("0e-10000")]
-    [InlineData("0e10000")]
-    public void ParseProperties_WithZeroSignificand_DoesNotMistakeExponentForUnderflow(string number)
-    {
-        var result = HttpMetadata.ParseProperties("{\"amount\":" + number + "}");
-
-        result.IsSuccess.ShouldBeTrue();
-        Convert.ToDouble(result.Value.Get("amount"), CultureInfo.InvariantCulture).ShouldBe(0);
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.Single().ShouldBeOfType<ValidationError>().Message.ShouldBe(message);
     }
 
     [Theory]

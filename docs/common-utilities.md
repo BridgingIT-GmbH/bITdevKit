@@ -2076,6 +2076,7 @@ The stream wrappers can be used independently of a storage provider:
 | `RangeReadStream` | Reads at most the selected length from the source's current position. It leaves the source open and does not seek to a range start. |
 | `OwnedStream` | Closes its source and releases a synchronous or asynchronous resource exactly once, including when source disposal fails. Use `await using` with asynchronous release; synchronous disposal waits for that release. |
 | `LimitedWriteStream` | Leaves its destination open, counts completed writes, and rejects writes beyond a finite byte limit with `StreamSizeLimitExceededException`. |
+| `IncrementalHashWriteStream` | Appends writes to a caller-owned `IncrementalHash`. |
 
 For a range view, position the source before creating the wrapper. This example copies only `REPORT` and leaves the source open:
 
@@ -2122,6 +2123,27 @@ await using var temporary = TemporaryFileHelper.Create(prefix: "bdk-export-");
 await source.CopyToAsync(temporary.Stream, cancellationToken);
 ```
 
+#### Hash output as it is written
+
+Use `IncrementalHashWriteStream` when a producer writes to a `Stream` and you need the digest of its output. The stream appends only the bytes supplied to each write and keeps no copy of the payload. It checks the token supplied at construction on each write and also checks the per-call token on asynchronous writes. Cancellation leaves previously appended bytes in the hash.
+
+```csharp
+using System.Security.Cryptography;
+using System.Text.Json;
+using BridgingIT.DevKit.Common;
+
+using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+using (var output = new IncrementalHashWriteStream(hash, cancellationToken))
+{
+    await JsonSerializer.SerializeAsync(output, new { Station = "North", SampleCount = 42 },
+        cancellationToken: cancellationToken);
+}
+
+var fingerprint = Convert.ToHexStringLower(hash.GetHashAndReset());
+```
+
+The caller owns and finalizes the hash. Flushing or disposing the stream leaves the hash and its accumulated bytes available. For hashing an existing input, see [HashHelper](#hashhelper).
+
 ### Base64Url encoding
 
 `Base64UrlHelper` converts binary values to canonical unpadded Base64Url text and back. `Encode` replaces the standard Base64 `+` and `/` characters with URL-safe characters and omits padding. `Decode` accepts only that canonical unpadded representation, rejecting malformed input, standard Base64 padding, and alternate encodings of the same bytes.
@@ -2157,6 +2179,8 @@ var restored = OpaqueContinuationTokenCodec.Deserialize<MyPayload>(token, "blob-
 Use a distinct stable purpose for each feature and keep the HMAC secret consistent across application instances that exchange continuation tokens.
 
 ### <img class="bdk-doc-icon" src="assets/features/hashing.svg" width="24" height="24" alt=""> HashHelper
+
+For producers that write to a stream, use [`IncrementalHashWriteStream`](#hash-output-as-it-is-written).
 
 `HashHelper` computes lowercase hexadecimal hashes for:
 

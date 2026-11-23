@@ -66,6 +66,16 @@ public sealed class HttpETagTests
         response.Headers["X-Correlation-Id"].ToString().ShouldBe("request-42");
     }
 
+    [Fact]
+    public void Write_WithQuotedVersion_UsesExactTransportBytes()
+    {
+        var response = new DefaultHttpContext().Response;
+
+        HttpETag.Write(response: response, etag: "\"v1\"");
+
+        response.Headers.ETag.ToString().ShouldBe("\"bdk.InYxIg\"");
+    }
+
     [Theory]
     [InlineData(null, null)]
     [InlineData("", "")]
@@ -85,6 +95,12 @@ public sealed class HttpETagTests
     [InlineData(" \tv1\t ", null, "v1")]
     [InlineData("\"v1\"", "\"v1\"", "\"v1\"")]
     [InlineData("W/\"v1\"", null, "W/\"v1\"")]
+    [InlineData("W/\"*\"", null, "W/\"*\"")]
+    [InlineData("\"unclosed", null, "\"unclosed")]
+    [InlineData("bdk.djE", null, "bdk.djE")]
+    [InlineData("\"BDK.djE\"", null, "\"BDK.djE\"")]
+    [InlineData("\r\nv1\r\n", null, "v1")]
+    [InlineData("\"bdk.YSxi\"", null, "a,b")]
     [InlineData("\"bdk.djE\"", null, "v1")]
     [InlineData(null, "\"bdk.djE\"", "v1")]
     [InlineData("\"bdk.djE\"", "v1", "v1")]
@@ -93,7 +109,7 @@ public sealed class HttpETagTests
     [InlineData("\"bdk.InYxIg\"", "\"v1\"", "\"v1\"")]
     public void ReadCondition_WithOneVersionOrEquivalentHeaderAndBody_ReturnsExactNativeVersion(string header, string body, string expected)
     {
-        var result = HttpETag.ReadCondition(header, body);
+        var result = HttpETag.ReadCondition(header: header, bodyETag: body);
 
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBe(expected);
@@ -110,7 +126,8 @@ public sealed class HttpETagTests
         var result = HttpETag.ReadCondition(header, body);
 
         result.IsFailure.ShouldBeTrue();
-        result.Errors.Single().ShouldBeOfType<ValidationError>();
+        result.Errors.Single().ShouldBeOfType<ValidationError>().Message
+            .ShouldBe("If-Match and the body ETag must identify the same version.");
     }
 
     [Theory]
@@ -123,6 +140,8 @@ public sealed class HttpETagTests
     [InlineData("one\0two")]
     [InlineData("\"bdk.djE")]
     [InlineData("\"bdk.%%%\"")]
+    [InlineData("\"bdk.djE=\"")]
+    [InlineData("\"bdk.djF\"")]
     [InlineData("\"bdk._w\"")]
     [InlineData("\"bdk.\"")]
     [InlineData("\"bdk.Kg\"")]
@@ -140,7 +159,8 @@ public sealed class HttpETagTests
         foreach (var result in results)
         {
             result.IsFailure.ShouldBeTrue();
-            result.Errors.Single().ShouldBeOfType<ValidationError>();
+            result.Errors.Single().ShouldBeOfType<ValidationError>().Message
+                .ShouldBe("Supply one concrete ETag returned by this API; wildcards and ETag lists are unsupported.");
         }
     }
 }

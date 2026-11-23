@@ -41,7 +41,7 @@ public static class AuditSearchProjection
     private static string ComputeHash(object instance, string domain, int version)
     {
         using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        using (var stream = new HashStream(hash))
+        using (var stream = new IncrementalHashWriteStream(hash))
         using (var writer = new Utf8JsonWriter(stream)) Write(writer, instance, domain, version);
         return Convert.ToHexStringLower(hash.GetHashAndReset());
     }
@@ -166,29 +166,5 @@ public static class AuditSearchProjection
         if (stored.ValueKind == JsonValueKind.Object) return stored.EnumerateObject().All(property => expected.TryGetProperty(property.Name, out var value) && Subset(property.Value, value));
         if (stored.ValueKind == JsonValueKind.Array) return stored.GetArrayLength() == expected.GetArrayLength() && stored.EnumerateArray().Zip(expected.EnumerateArray()).All(pair => Subset(pair.First, pair.Second));
         return stored.GetRawText() == expected.GetRawText();
-    }
-    private sealed class HashStream(IncrementalHash hash) : Stream
-    {
-        public override bool CanRead => false;
-
-        public override bool CanSeek => false;
-
-        public override bool CanWrite => true;
-
-        public override long Length => throw new NotSupportedException();
-
-        public override long Position { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
-
-        public override void Flush() { }
-
-        public override void Write(byte[] buffer, int offset, int count) => hash.AppendData(buffer, offset, count);
-
-        public override void Write(ReadOnlySpan<byte> buffer) => hash.AppendData(buffer);
-
-        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
-
-        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
-
-        public override void SetLength(long value) => throw new NotSupportedException();
     }
 }

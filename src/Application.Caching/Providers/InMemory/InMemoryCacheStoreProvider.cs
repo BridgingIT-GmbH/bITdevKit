@@ -84,7 +84,7 @@ public sealed class InMemoryCacheStoreProvider : ICacheStoreProvider
             }
 
             using var hash = System.Security.Cryptography.IncrementalHash.CreateHash(System.Security.Cryptography.HashAlgorithmName.SHA256);
-            using (var sink = new SelectionHashStream(hash, cancellationToken))
+            using (var sink = new IncrementalHashWriteStream(hash, cancellationToken))
             {
                 foreach (var definition in normalized.OrderBy(d => d.Namespace, StringComparer.Ordinal).ThenBy(d => d.Collection, StringComparer.Ordinal)
                     .ThenBy(d => d.ContractVersion, StringComparer.Ordinal))
@@ -1844,7 +1844,7 @@ public sealed class InMemoryCacheStoreProvider : ICacheStoreProvider
     private static string SelectionHash(CacheSelection selection, CancellationToken cancellationToken)
     {
         using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        using var sink = new SelectionHashStream(hash, cancellationToken);
+        using var sink = new IncrementalHashWriteStream(hash, cancellationToken);
         JsonSerializer.Serialize(sink, selection);
         return Convert.ToHexStringLower(hash.GetHashAndReset());
     }
@@ -1854,46 +1854,6 @@ public sealed class InMemoryCacheStoreProvider : ICacheStoreProvider
         long? MaximumPublicationSequence, string OperationId);
 
     private readonly record struct NativePage(CacheMetadataPage Page, MetadataCursor Cursor);
-
-    private sealed class SelectionHashStream(IncrementalHash hash, CancellationToken cancellationToken) : Stream
-    {
-        /// <inheritdoc />
-        public override bool CanRead => false;
-
-        /// <inheritdoc />
-        public override bool CanWrite => true;
-
-        /// <inheritdoc />
-        public override bool CanSeek => false;
-
-        /// <inheritdoc />
-        public override long Length => throw new NotSupportedException();
-
-        /// <inheritdoc />
-        public override long Position { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
-
-        /// <inheritdoc />
-        public override void Flush() { }
-
-        /// <inheritdoc />
-        public override void Write(byte[] buffer, int offset, int count) => this.Write(buffer.AsSpan(offset, count));
-
-        /// <inheritdoc />
-        public override void Write(ReadOnlySpan<byte> buffer)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            hash.AppendData(buffer);
-        }
-
-        /// <inheritdoc />
-        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
-
-        /// <inheritdoc />
-        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
-
-        /// <inheritdoc />
-        public override void SetLength(long value) => throw new NotSupportedException();
-    }
 
     /// <inheritdoc />
     public ValueTask<Result<CacheRefreshPage>> QueryRefreshAsync(CacheRefreshQuery query, CancellationToken cancellationToken = default) =>

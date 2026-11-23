@@ -191,6 +191,27 @@ Typical use cases:
 - checking whether a service has already been added to `IServiceCollection`
 - finding or locating a registered service descriptor during startup composition
 
+## HTTP helpers
+
+`OpaqueVersionETag` is in the `BridgingIT.DevKit.Common.Extensions.Web` package, under the `BridgingIT.DevKit.Common` namespace. Use it in ASP.NET Core endpoints that exchange opaque versions with a provider. `Write` sets one strong ETag. It wraps the UTF-8 version in quotes with a `bdk.` prefix and canonical unpadded Base64Url. For example, the version `"v1"` including its quotes becomes `"bdk.InYxIg"`. A blank version leaves the response header as it is.
+
+```csharp
+using BridgingIT.DevKit.Common;
+using Microsoft.AspNetCore.Http;
+
+var response = new DefaultHttpContext().Response;
+OpaqueVersionETag.Write(response, "\"v1\"");
+var condition = OpaqueVersionETag.ReadCondition(response.Headers.ETag, bodyETag: "\"v1\"");
+if (condition.IsSuccess)
+{
+    Console.WriteLine(condition.Value); // "v1"
+}
+```
+
+For an exact round-trip, use a nonblank provider version with well-formed UTF-16 and no control characters. UTF-8 encoding replaces unpaired surrogates. `ReadCondition` rejects decoded versions that contain control characters or become `*` after trimming surrounding double quotes.
+
+`ReadCondition` preserves quotes and spaces in the decoded version. It also accepts raw versions, trimming surrounding whitespace and retaining the supplied quoting. Wildcards (`*` or `"*"`), header lists, and malformed transport tags produce a `ValidationError`. When both header and body supply a version, their decoded values must match ordinally. When both are missing or blank, the result is successful with a `null` value. The provider applies the version condition to the mutation.
+
 ## Practical guidance
 
 - Use these helpers to reduce boilerplate, not to hide business logic.

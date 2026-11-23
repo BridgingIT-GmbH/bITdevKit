@@ -1921,7 +1921,7 @@ public class EntityFrameworkCacheStoreProvider : ICacheStoreProvider
     private static string SelectionFingerprint(CacheSelection selection, CancellationToken cancellationToken)
     {
         using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        using var sink = new FingerprintStream(hash, cancellationToken);
+        using var sink = new IncrementalHashWriteStream(hash, cancellationToken);
         JsonSerializer.Serialize(sink, selection);
         return Convert.ToHexStringLower(hash.GetHashAndReset());
     }
@@ -1938,42 +1938,6 @@ public class EntityFrameworkCacheStoreProvider : ICacheStoreProvider
     private sealed record MetadataHead(string Id, string Version, long MetadataBytes, int Characters);
 
     private sealed record NativeMetadataPage(CacheMetadataPage Page, QueryCheckpoint Cursor);
-
-    private sealed class FingerprintStream(IncrementalHash hash, CancellationToken cancellationToken) : Stream
-    {
-        /// <inheritdoc />
-        public override bool CanRead => false;
-
-        /// <inheritdoc />
-        public override bool CanSeek => false;
-
-        /// <inheritdoc />
-        public override bool CanWrite => true;
-
-        /// <inheritdoc />
-        public override long Length => throw new NotSupportedException();
-
-        /// <inheritdoc />
-        public override long Position { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
-
-        /// <inheritdoc />
-        public override void Write(ReadOnlySpan<byte> buffer) { cancellationToken.ThrowIfCancellationRequested(); hash.AppendData(buffer); }
-
-        /// <inheritdoc />
-        public override void Write(byte[] buffer, int offset, int count) => this.Write(buffer.AsSpan(offset, count));
-
-        /// <inheritdoc />
-        public override void Flush() { }
-
-        /// <inheritdoc />
-        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
-
-        /// <inheritdoc />
-        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
-
-        /// <inheritdoc />
-        public override void SetLength(long value) => throw new NotSupportedException();
-    }
 
     // Refresh candidates and backoff.
 

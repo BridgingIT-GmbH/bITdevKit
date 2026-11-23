@@ -1373,34 +1373,9 @@ public sealed class FileSystemCacheStoreProvider : ICacheStoreProvider, IAsyncDi
     private static string SelectionHash(CacheSelection selection, CancellationToken token)
     {
         using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        using var stream = new SelectionDigestStream(hash, token);
+        using var stream = new IncrementalHashWriteStream(hash, token);
         JsonSerializer.Serialize(stream, selection);
         return Convert.ToHexStringLower(hash.GetHashAndReset());
-    }
-
-    private sealed class SelectionDigestStream(IncrementalHash hash, CancellationToken token) : Stream
-    {
-        public override bool CanRead => false;
-
-        public override bool CanSeek => false;
-
-        public override bool CanWrite => true;
-
-        public override long Length => throw new NotSupportedException();
-
-        public override long Position { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
-
-        public override void Write(ReadOnlySpan<byte> buffer) { token.ThrowIfCancellationRequested(); hash.AppendData(buffer); }
-
-        public override void Write(byte[] buffer, int offset, int count) => this.Write(buffer.AsSpan(offset, count));
-
-        public override void Flush() { }
-
-        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
-
-        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
-
-        public override void SetLength(long value) => throw new NotSupportedException();
     }
 
     /// <summary>Acquires one indexed current snapshot, checking the durable generation receipt before exposing metadata or bytes.</summary>

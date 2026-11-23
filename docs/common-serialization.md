@@ -255,6 +255,27 @@ The JSON literal `null` raises `ArgumentNullException`. Malformed JSON raises `J
 
 `PropertyBagJsonConverter` reads ordinary JSON tokens. An ISO date in a JSON string is read as a string, and the converter infers numeric types from JSON numbers. `PropertyBagSerialization` reads the codec's explicit type tags, so an encoded `DateOnly` or `ushort` comes back with the original .NET type.
 
+### Plain scalar JSON
+
+Use `ScalarPropertyBagJson.Parse` from `BridgingIT.DevKit.Common.Serialization` to read a JSON object supplied as metadata. Strings stay strings, including dates and GUIDs. Boolean and null values become `bool` and `null`. The parser tries `long` first for a number, then `decimal` if it agrees with the `double` conversion, and otherwise uses a finite `double`. A nonzero number that rounds to zero as a `double` fails validation.
+
+```csharp
+using BridgingIT.DevKit.Common;
+
+var properties = ScalarPropertyBagJson.Parse(
+    """{"sampleCount":42,"reviewed":true,"inspectionDate":"2026-07-15"}""");
+if (properties.IsSuccess && properties.Value is { } metadata)
+{
+    Console.WriteLine(metadata.Get("sampleCount")); // 42 as Int64
+}
+```
+
+Keys compare without regard to case. If the same key appears more than once, the first spelling and last value survive. Blank names, nested values, and JSON syntax errors return a `ValidationError`. Decoding a property name or string value with an unpaired surrogate escape, such as `"\uD800"`, throws `InvalidOperationException`.
+
+Missing text, whitespace, and JSON `null` return a fresh empty bag by default. Pass `preserveMissing: true` to receive `null` for those inputs. An explicit `{}` always returns a fresh empty bag.
+
+For stored metadata with explicit CLR type tags, use [`PropertyBagSerialization`](#propertybagserialization). For ordinary JSON with nested values, see [`PropertyBagJsonConverter`](#propertybag).
+
 ### `OpaqueContinuationTokenCodec`
 
 `OpaqueContinuationTokenCodec` serializes purpose-bound continuation-token payloads using Base64Url. It supports unsigned values and optional protection through `IContinuationTokenProtector`.

@@ -224,6 +224,37 @@ Base64Url is appropriate for opaque URL segments, continuation tokens, and strin
 
 `PropertyBagScalarCodec` uses a versioned Base64Url envelope to preserve supported scalar types in string-only persistence systems. Legacy unprefixed values remain strings.
 
+### `PropertyBagSerialization`
+
+Use `PropertyBagSerialization` to store a whole scalar `PropertyBag` as a JSON dictionary. Each value is a string written by `PropertyBagScalarCodec`. Deserialization restores the original scalar types and preserves the spelling of case-insensitive keys.
+
+```csharp
+using System;
+using BridgingIT.DevKit.Common;
+
+var inspection = new PropertyBag
+{
+	["SampleCount"] = (ushort)42,
+	["InspectionDate"] = new DateOnly(2026, 7, 15),
+	["Signature"] = new byte[] { 1, 2, 3 }
+};
+
+var snapshot = PropertyBagSerialization.Clone(inspection);
+var json = PropertyBagSerialization.Serialize(snapshot);
+var restored = PropertyBagSerialization.Deserialize(json);
+
+Console.WriteLine(restored.Get("sampleCount").GetType().Name); // UInt16
+Console.WriteLine(restored.Get("inspectionDate").GetType().Name); // DateOnly
+```
+
+`Clone` returns `null` for a null bag and a new bag for an empty bag. For a populated bag, the clone copies byte-array contents and keeps the other values as supplied. Writing to an array in the clone leaves the source array unchanged. Deserialization also produces independent byte-array contents on each read.
+
+`Serialize` returns `null` for both null and empty bags. `Deserialize` returns a fresh empty bag for null input, the empty string, or `{}`. A present entry with a null value survives a round trip. Legacy unprefixed values such as `"00123"` stay strings.
+
+The JSON literal `null` raises `ArgumentNullException`. Malformed JSON raises `JsonException`, an invalid scalar encoding raises `FormatException`, and keys that differ only by case raise `ArgumentException`.
+
+`PropertyBagJsonConverter` reads ordinary JSON tokens. An ISO date in a JSON string is read as a string, and the converter infers numeric types from JSON numbers. `PropertyBagSerialization` reads the codec's explicit type tags, so an encoded `DateOnly` or `ushort` comes back with the original .NET type.
+
 ### `OpaqueContinuationTokenCodec`
 
 `OpaqueContinuationTokenCodec` serializes purpose-bound continuation-token payloads using Base64Url. It supports unsigned values and optional protection through `IContinuationTokenProtector`.

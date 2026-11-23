@@ -384,6 +384,8 @@ Properties remain unindexed descriptive metadata. Use the separate Dimensions co
 
 Providers use `PropertyBagScalarCodec` where text persistence is required. Azure Blob enforces its 8 KiB encoded metadata limit with a typed size failure. Filesystem document records use format version 3; recreate development/test storage, with no old-format reader or data conversion.
 
+See [scalar property bag persistence](common-serialization.md#propertybagserialization) for the shared JSON dictionary format.
+
 `IDocumentPayloadTransform` runs in registration order on writes and reverse order on reads. Compression uses `CompressionHelper`; encryption uses `EncryptionHelper` and `IEncryptionKeyProvider`, so active-key writes and historical-key reads support key rotation. Transform metadata is stored in a versioned `bdk_` envelope and is not exposed as application properties.
 
 ```csharp

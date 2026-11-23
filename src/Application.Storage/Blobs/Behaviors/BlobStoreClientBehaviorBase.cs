@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -101,6 +101,19 @@ public abstract class BlobStoreClientBehaviorBase(
             BlobStoreOperationContext.ForQuery(query),
             token => this.Inner.ListPageAsync(query, token),
             cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Result<BlobPage>> ListPageAsync(BlobFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) =>
+        this.ExecuteAsync("list_page", BlobStoreOperationContext.ForQuery(new BlobQuery
+        {
+            Container = scope?.Container,
+            Prefix = scope?.Prefix,
+            AllowFullScan = scope?.AllowFullScan ?? false,
+            Take = filter is { PageSize: not 0 } ? filter.PageSize : null,
+            ContinuationToken = continuationToken
+        }),
+            token => this.Inner.ListPageAsync(scope, filter, continuationToken, token), cancellationToken);
 
     /// <inheritdoc />
     public Task<Result> DeleteAsync(
@@ -207,7 +220,7 @@ public sealed class BlobStoreOperationContext
     }
 
     /// <summary>
-    /// Gets the query model when the operation lists blobs.
+    /// Gets the scope and paging inputs when the operation lists blobs.
     /// </summary>
     /// <example>
     /// <code>

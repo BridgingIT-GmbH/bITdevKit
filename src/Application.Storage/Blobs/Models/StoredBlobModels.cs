@@ -272,6 +272,12 @@ public sealed class StoredBlobDownload : IAsyncDisposable
 public sealed class StoredBlobPropertiesUpdate
 {
     /// <summary>
+    /// Gets the optional replacement dimensions for this metadata write. Null preserves the existing collection.
+    /// </summary>
+    /// <example><code>var update = new StoredBlobPropertiesUpdate { Dimensions = BlobDimensions.Empty };</code></example>
+    public BlobDimensions Dimensions { get; init; }
+
+    /// <summary>
     /// Gets the blob key to update.
     /// </summary>
     /// <example>

@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 
 namespace BridgingIT.DevKit.Application.Storage;
@@ -16,6 +16,8 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
     private readonly TimeProvider timeProvider;
     private readonly IReadOnlyList<IDocumentPayloadTransform> transforms;
     private readonly IReadOnlyDictionary<string, IDocumentPayloadTransform> transformsById;
+    private readonly string filterProviderName;
+    private readonly IContinuationTokenProtector filterTokenProtector;
 
     /// <summary>Initializes a document client.</summary>
     /// <param name="provider">The serialized persistence provider.</param>
@@ -32,6 +34,14 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
         TimeProvider timeProvider = null,
         IEnumerable<IDocumentPayloadTransform> transforms = null,
         string clientName = "default")
+        : this(provider, serializer, options, timeProvider, transforms, clientName, null, null)
+    {
+    }
+
+    /// <summary>Initializes a document client with a registered provider identity and filter continuation token protection.</summary>
+    public DocumentStoreClient(IDocumentStoreProvider provider, ISerializer serializer, DocumentStoreOptions options,
+        TimeProvider timeProvider, IEnumerable<IDocumentPayloadTransform> transforms, string clientName,
+        string providerName, IContinuationTokenProtector protector)
     {
         EnsureArg.IsNotNull(provider, nameof(provider));
         this.Provider = provider;
@@ -41,6 +51,8 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
         this.ClientName = string.IsNullOrWhiteSpace(clientName) ? "default" : clientName.Trim().ToLowerInvariant();
         this.transforms = transforms?.ToArray() ?? [];
         this.transformsById = this.transforms.ToDictionary(x => x.Identifier, StringComparer.Ordinal);
+        this.filterProviderName = providerName ?? provider.GetType().FullName;
+        this.filterTokenProtector = protector;
     }
 
     /// <summary>Gets the provider used by this client.</summary>
@@ -50,6 +62,30 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
     public string ClientName { get; }
 
     IDocumentStoreProvider IDocumentStoreProviderAccessor.Provider => this.Provider;
+
+    /// <inheritdoc />
+    public async Task<Result<DocumentInfoPage>> ListPageAsync(DocumentFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var prepared = DocumentFilterQuery.Prepare(scope, filter, continuationToken, this.filterProviderName,
+            this.ClientName, this.type.Value, this.options, this.Provider.Capabilities, this.filterTokenProtector);
+        if (prepared.IsFailure) return prepared.Wrap<DocumentInfoPage>();
+
+        var (query, pageSize, hash) = prepared.Value;
+        var page = await this.Provider.ListPageAsync(this.type, query, this.timeProvider.GetUtcNow(), pageSize, cancellationToken).ConfigureAwait(false);
+        if (page.IsFailure) return page;
+
+        var token = StorageFilterQuery.WrapPosition(page.Value.ContinuationToken, DocumentFilterQuery.Purpose,
+            this.filterProviderName, this.ClientName, this.type.Value, hash, this.filterTokenProtector, DocumentFilterQuery.IsValidPosition);
+        if (token.IsFailure) return Result<DocumentInfoPage>.Failure(new DocumentStoreProviderError(token.Errors.First().Message));
+
+        return Result<DocumentInfoPage>.Success(new()
+        {
+            Items = page.Value.Items,
+            ContinuationToken = token.Value
+        });
+    }
 
     /// <inheritdoc />
     public async Task<Result<DocumentEntry<T>>> GetAsync(DocumentKey key, CancellationToken cancellationToken = default)

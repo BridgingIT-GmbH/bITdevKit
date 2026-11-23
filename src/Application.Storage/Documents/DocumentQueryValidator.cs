@@ -155,7 +155,8 @@ public static class DocumentQueryValidator
         return Result<DocumentCountQueryValidation>.Success(new DocumentCountQueryValidation(DocumentQueryHash.Compute<T>(operation, query)));
     }
 
-    private static Result ValidateShape(
+    /// <summary>Validates storage key scope and applies the client's full-scan policy.</summary>
+    public static Result ValidateShape(
         DocumentKey? documentKey,
         DocumentKeyFilter filter,
         bool allowFullScan,

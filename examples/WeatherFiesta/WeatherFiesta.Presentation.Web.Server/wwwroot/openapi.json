@@ -14453,6 +14453,9 @@
           "supportsDimensions": {
             "type": "boolean"
           },
+          "supportsMetadataUpdates": {
+            "type": "boolean"
+          },
           "supportsQueries": {
             "type": "boolean"
           },

@@ -34,7 +34,8 @@ internal static class BlobDimensionQueryTranslator
         return filter.IsAny ? filter.Children.All(HasValueAnchor) : filter.Children.Any(HasValueAnchor);
     }
 
-    private static IQueryable<string> BuildCandidates(DbContext context, IQueryable<string> universe, BlobDimensionFilter filter, IReadOnlyDictionary<string, long> names)
+    /// <summary>Builds indexed blob candidates using already resolved Dimension names.</summary>
+    public static IQueryable<string> BuildCandidates(DbContext context, IQueryable<string> universe, BlobDimensionFilter filter, IReadOnlyDictionary<string, long> names)
     {
         if (filter.Predicate is { } predicate) return BuildConjunction(context, universe, [predicate], names);
         if (filter.IsAny)

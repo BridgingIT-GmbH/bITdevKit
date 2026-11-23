@@ -144,6 +144,10 @@ public sealed class ChecksumVerificationBlobStoreClientBehavior : IBlobStoreClie
         this.inner.ListPageAsync(query, cancellationToken);
 
     /// <inheritdoc />
+    public Task<Result<BlobPage>> ListPageAsync(BlobFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) => this.inner.ListPageAsync(scope, filter, continuationToken, cancellationToken);
+
+    /// <inheritdoc />
     public Task<Result> DeleteAsync(
         BlobKey key,
         BlobDeleteOptions options = null,

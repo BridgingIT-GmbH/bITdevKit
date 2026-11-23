@@ -237,7 +237,7 @@ public sealed class BlobStorageBuilderContext(
             {
                 IBlobStoreClient client = new BlobStoreClient(resolvedProviderName,
                     serviceProvider.GetRequiredKeyedService<IBlobStoreProvider>(name), options,
-                    inner => this.ApplyBehaviors(name, serviceProvider, inner), serviceProvider.GetService<IContinuationTokenProtector>());
+                    inner => this.ApplyBehaviors(name, serviceProvider, inner), serviceProvider.GetService<IContinuationTokenProtector>(), name);
                 return this.auditing ? new AuditingBlobStoreClientBehavior(client, serviceProvider.GetRequiredService<IServiceScopeFactory>(), name, this.auditOptions) : client;
             });
         if (capabilitiesFactory is null)

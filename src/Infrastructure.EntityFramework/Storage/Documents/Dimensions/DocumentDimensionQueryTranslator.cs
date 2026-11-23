@@ -34,7 +34,8 @@ internal static class DocumentDimensionQueryTranslator
         return filter.IsAny ? filter.Children.All(HasValueAnchor) : filter.Children.Any(HasValueAnchor);
     }
 
-    private static IQueryable<Guid> BuildCandidates(DbContext context, IQueryable<Guid> universe, DocumentDimensionFilter filter, IReadOnlyDictionary<string, long> names)
+    /// <summary>Builds indexed document candidates using already resolved Dimension names.</summary>
+    public static IQueryable<Guid> BuildCandidates(DbContext context, IQueryable<Guid> universe, DocumentDimensionFilter filter, IReadOnlyDictionary<string, long> names)
     {
         if (filter.Predicate is { } predicate) return BuildConjunction(context, universe, [predicate], names);
         if (filter.IsAny)

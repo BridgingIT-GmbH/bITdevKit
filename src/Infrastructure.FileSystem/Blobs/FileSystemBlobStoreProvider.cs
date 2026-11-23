@@ -177,6 +177,8 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
     /// <inheritdoc />
     public Task<Result<StoredBlobInfo>> UpdatePropertiesAsync(StoredBlobPropertiesUpdate update, CancellationToken cancellationToken = default)
     {
+        if (update?.Dimensions is not null) return Task.FromResult(Result<StoredBlobInfo>.Failure(new BlobDimensionsNotSupportedError()));
+
         return FileSystemResults.BlobAsync(async () =>
         {
             var validation = BlobValidator.Validate(update);

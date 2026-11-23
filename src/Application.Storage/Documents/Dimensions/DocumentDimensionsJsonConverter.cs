@@ -71,6 +71,21 @@ public sealed class DocumentDimensionsJsonConverter : JsonConverter<DocumentDime
         writer.WriteEndObject();
     }
 
+    /// <summary>Reads one explicitly typed Dimension operand from a filter criterion.</summary>
+    public static object ReadFilterOperand(JsonElement value)
+    {
+        try
+        {
+            var reader = new Utf8JsonReader(System.Text.Encoding.UTF8.GetBytes(value.GetRawText()));
+            reader.Read();
+            return ReadScalar(ref reader);
+        }
+        catch (Exception exception) when (exception is FormatException or InvalidOperationException or ArgumentException)
+        {
+            throw Invalid();
+        }
+    }
+
     private static object ReadScalar(ref Utf8JsonReader reader)
     {
         if (reader.TokenType != JsonTokenType.StartObject) throw Invalid();
@@ -118,6 +133,13 @@ public sealed class DocumentDimensionsJsonConverter : JsonConverter<DocumentDime
     internal static decimal ReadDecimal(string text)
     {
         if (string.IsNullOrEmpty(text)) throw Invalid();
+        // G29 uses scientific notation for small decimals in stored snapshots and typed JSON.
+        if (text.Contains('E') && decimal.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var scientific)
+            && string.Equals(text, scientific.ToString("G29", CultureInfo.InvariantCulture), StringComparison.Ordinal))
+        {
+            return scientific;
+        }
+
         var unsigned = text[0] is '-' or '+' ? text[1..] : text;
         var parts = unsigned.Split('.');
         if (parts.Length > 2 || parts.Any(part => part.Length == 0 || part.Any(character => character is < '0' or > '9'))

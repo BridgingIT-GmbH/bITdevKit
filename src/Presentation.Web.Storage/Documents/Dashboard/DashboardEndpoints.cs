@@ -12,6 +12,7 @@ using System.Text.Json;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
+using BridgingIT.DevKit.Presentation.Web.Storage.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -99,12 +100,20 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
                     return Result.Failure(metadata.Messages, metadata.Errors);
                 }
 
+                var dimensionInput = GetFormText(form, "dimensions");
+                var dimensions = DocumentStorageDimensionsJson.Parse(string.IsNullOrWhiteSpace(dimensionInput) ? null : dimensionInput);
+                if (dimensions.IsFailure)
+                {
+                    return Result.Failure(dimensions.Messages, dimensions.Errors);
+                }
+
                 var expiresAt = GetFormValue(form, "expiresAt");
                 var writeOptions = new DocumentWriteOptions
                 {
                     CreateOnly = string.Equals(GetFormValue(form, "mode"), "new", StringComparison.OrdinalIgnoreCase),
                     IfMatchETag = string.Equals(GetFormValue(form, "forceOverwrite"), "true", StringComparison.OrdinalIgnoreCase) ? null : GetFormValue(form, "etag"),
                     Properties = metadata.Value,
+                    Dimensions = dimensions.Value,
                     Expiration = string.IsNullOrWhiteSpace(expiresAt)
                         ? ExpirationChange.Clear
                         : DateTimeOffset.TryParse(expiresAt, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var parsed)
@@ -228,6 +237,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
         {
             DocumentStoreConflictError => Results.Problem(message, statusCode: (int)HttpStatusCode.Conflict),
             DocumentStoreInvalidQueryError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
+            DocumentDimensionsNotSupportedError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             ValidationError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             DocumentStoreNotFoundError => Results.NotFound(message),
             NotFoundError => Results.NotFound(message),

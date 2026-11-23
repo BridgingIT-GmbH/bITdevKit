@@ -20,6 +20,7 @@ public static class BlobStorageDashboardRoutes
     private const string BlobsPath = "/storage/blobs";
     private const string BlobsContentPath = "/storage/blobs/content";
     private const string BlobsDownloadPath = "/storage/blobs/download";
+    internal const string BlobsPreviewPath = "/storage/blobs/preview";
     private const string ActionsPath = "/storage/blobs/actions";
 
     /// <summary>
@@ -60,6 +61,9 @@ public static class BlobStorageDashboardRoutes
     /// </example>
     public static string BuildBlobsDownloadPath(DashboardEndpointsOptions options) =>
         DashboardPath.Combine(options?.GroupPath, BlobsDownloadPath);
+
+    internal static string BuildBlobsPreviewPath(DashboardEndpointsOptions options) =>
+        DashboardPath.Combine(options?.GroupPath, BlobsPreviewPath);
 
     /// <summary>
     /// Builds the blob dashboard action base path.

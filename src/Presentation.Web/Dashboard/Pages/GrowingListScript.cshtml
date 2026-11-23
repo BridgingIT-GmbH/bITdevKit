@@ -45,6 +45,7 @@ window.bdkDashboard.createGrowingLists = function(settings) {
                     if (rows(current).length === before) break;
                 }
                 const current = region(settings.root(), list.key), scroll = current.querySelector('[data-dashboard-list-scroll]');
+                settings.onRestored?.(current);
                 if (scroll) scroll.scrollTop = saved.scroll;
                 window.scrollTo({ top: saved.pageScroll || 0 });
             }

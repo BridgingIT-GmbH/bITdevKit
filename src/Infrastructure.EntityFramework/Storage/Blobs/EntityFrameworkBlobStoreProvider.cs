@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -134,6 +134,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         return new()
         {
             SupportsDimensions = qualified,
+            SupportsMetadataUpdates = qualified,
             SupportsQueries = qualified,
             SupportsDecimalComparisons = qualified && provider != "Microsoft.EntityFrameworkCore.Sqlite"
         };
@@ -176,6 +177,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     public static BlobStoreProviderCapabilities CreateCapabilities(string databaseProvider = null) => new()
     {
         Dimensions = CreateDimensionsCapabilities(databaseProvider),
+        SupportsFilterModel = CreateDimensionsCapabilities(databaseProvider).SupportsQueries,
         SupportsContinuationPaging = true,
         SupportsPrefixListing = true,
         SupportsFullContainerScan = true,
@@ -548,6 +550,14 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             return Result<StoredBlobInfo>.Failure(validation);
         }
 
+        if (update.Dimensions is not null)
+        {
+            return await this.UpdateDimensionsAsync(
+                new BlobDimensionsUpdate { Key = update.Key, Dimensions = update.Dimensions, IfMatchETag = update.IfMatchETag },
+                update,
+                cancellationToken).ConfigureAwait(false);
+        }
+
         await using var lease = this.CreateContextLease();
         var dbContext = lease.Context;
         using var mutationGate = await AcquireMutationGateAsync(dbContext, update.Key, cancellationToken).ConfigureAwait(false);
@@ -585,12 +595,9 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
 
             mutationLease = new(blob.Id, blob.LeaseId, blob.ConcurrencyVersion);
             snapshot = CloneBlob(blob);
-            blob.ContentTypeMimeType = update.ContentType?.MimeType();
-            blob.ExpiresAt = ToUtc(update.ExpiresAt);
+            ApplyPropertyUpdate(blob, update);
             blob.ETag = CreateETag();
             blob.LastModifiedAt = DateTimeOffset.UtcNow;
-            blob.Properties = ToDictionary(update.Properties ?? new PropertyBag(blob.Properties));
-            blob.TransformMetadata = ToDictionary(update.TransformMetadata ?? new PropertyBag(blob.TransformMetadata));
             blob.LeaseId = null;
             blob.LeaseAcquiredBy = null;
             blob.LeaseAcquiredUntil = null;
@@ -623,6 +630,21 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             {
                 await transaction.DisposeAsync().ConfigureAwait(false);
             }
+        }
+    }
+
+    private static void ApplyPropertyUpdate(StorageBlob blob, StoredBlobPropertiesUpdate update)
+    {
+        blob.ContentTypeMimeType = update.ContentType?.MimeType();
+        blob.ExpiresAt = ToUtc(update.ExpiresAt);
+        if (update.Properties is not null)
+        {
+            blob.Properties = ToDictionary(update.Properties);
+        }
+
+        if (update.TransformMetadata is not null)
+        {
+            blob.TransformMetadata = ToDictionary(update.TransformMetadata);
         }
     }
 

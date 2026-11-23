@@ -27,6 +27,10 @@ public sealed class ProfilingDocumentStoreClientBehavior<T>(IDocumentStoreClient
     /// <inheritdoc />
     /// <example><code>await documents.ListPageAsync(new DocumentQuery { AllowFullScan = true });</code></example>
     public override Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.ProfileAsync("list-page", () => this.Inner.ListPageAsync(query, cancellationToken), cancellationToken);
+
+    /// <inheritdoc />
+    public override Task<Result<DocumentInfoPage>> ListPageAsync(DocumentFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) => this.ProfileAsync("list-page", () => this.Inner.ListPageAsync(scope, filter, continuationToken, cancellationToken), cancellationToken);
     /// <inheritdoc />
     /// <example><code>await documents.CountAsync(new DocumentCountQuery { AllowFullScan = true });</code></example>
     public override Task<Result<long>> CountAsync(DocumentCountQuery query, CancellationToken cancellationToken = default) => this.ProfileAsync("count", () => this.Inner.CountAsync(query, cancellationToken), cancellationToken);

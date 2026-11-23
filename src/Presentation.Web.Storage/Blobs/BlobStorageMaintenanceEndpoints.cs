@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -57,6 +57,8 @@ public sealed partial class BlobStorageMaintenanceEndpoints(
 
         var group = this.MapGroup(app, this.options)
             .DisableAntiforgery();
+
+        MapFilter(group);
 
         group.MapGet("clients", ([FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
             ListClientsAsync(factory, cancellationToken))

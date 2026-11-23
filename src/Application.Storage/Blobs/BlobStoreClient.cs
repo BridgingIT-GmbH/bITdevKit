@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -55,6 +55,13 @@ public sealed class BlobStoreClient : IBlobStoreClient, IBlobStoreContainerCatal
         BlobStoreOptions options = null,
         Func<IBlobStoreClient, IBlobStoreClient> decorate = null,
         IContinuationTokenProtector continuationTokenProtector = null)
+        : this(providerName, provider, options, decorate, continuationTokenProtector, "default")
+    {
+    }
+
+    /// <summary>Initializes a named blob client with its continuation-token protection and behavior pipeline.</summary>
+    public BlobStoreClient(string providerName, IBlobStoreProvider provider, BlobStoreOptions options,
+        Func<IBlobStoreClient, IBlobStoreClient> decorate, IContinuationTokenProtector continuationTokenProtector, string clientName)
     {
         this.providerName = string.IsNullOrWhiteSpace(providerName) ? "custom" : providerName;
         ArgumentNullException.ThrowIfNull(provider);
@@ -62,7 +69,8 @@ public sealed class BlobStoreClient : IBlobStoreClient, IBlobStoreContainerCatal
         this.options = options ?? new BlobStoreOptions();
         this.capabilities = provider.Capabilities;
         this.continuationTokenProtector = continuationTokenProtector;
-        var providerClient = new ProviderClient(provider);
+        var normalizedName = string.IsNullOrWhiteSpace(clientName) ? "default" : clientName.Trim().ToLowerInvariant();
+        var providerClient = new ProviderClient(provider, this.providerName, normalizedName, this.options, continuationTokenProtector);
         this.inner = decorate?.Invoke(providerClient) ?? providerClient;
     }
 
@@ -121,6 +129,11 @@ public sealed class BlobStoreClient : IBlobStoreClient, IBlobStoreContainerCatal
         BlobPropertiesUpdate update,
         CancellationToken cancellationToken = default)
     {
+        if (update?.Dimensions is not null && !this.capabilities.Dimensions.SupportsMetadataUpdates)
+        {
+            return Result<BlobInfo>.Failure(new BlobDimensionsNotSupportedError());
+        }
+
         update = BlobStoredModelMapper.Snapshot(update);
         var validation = BlobValidator.Validate(update);
         return validation.IsFailure
@@ -196,8 +209,37 @@ public sealed class BlobStoreClient : IBlobStoreClient, IBlobStoreContainerCatal
     private static Result<T> ToFailure<T>(Result validation) =>
         Result<T>.Failure().WithErrors(validation.Errors).WithMessages(validation.Messages);
 
-    private sealed class ProviderClient(IBlobStoreProvider provider) : IBlobStoreClient
+    /// <inheritdoc />
+    public Task<Result<BlobPage>> ListPageAsync(BlobFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) => this.inner.ListPageAsync(scope, filter, continuationToken, cancellationToken);
+
+    private sealed class ProviderClient(IBlobStoreProvider provider, string providerName, string clientName,
+        BlobStoreOptions options, IContinuationTokenProtector protector) : IBlobStoreClient
     {
+        /// <inheritdoc />
+        public async Task<Result<BlobPage>> ListPageAsync(BlobFilterScope scope, FilterModel filter, string continuationToken,
+            CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var prepared = BlobFilterQuery.Prepare(scope, filter, continuationToken, providerName, clientName, options, provider.Capabilities, protector);
+            if (prepared.IsFailure) return prepared.Wrap<BlobPage>();
+
+            var (query, pageSize, hash) = prepared.Value;
+            var result = await provider.ListPageAsync(query, pageSize, cancellationToken).ConfigureAwait(false);
+            if (result.IsFailure) return result.Wrap<BlobPage>();
+
+            var page = BlobStoredModelMapper.ToClient(result.Value);
+            var token = StorageFilterQuery.WrapPosition(page.ContinuationToken, BlobFilterQuery.Purpose,
+                providerName, clientName, null, hash, protector, BlobFilterQuery.IsValidPosition);
+            if (token.IsFailure) return Result<BlobPage>.Failure(new BlobStoreProviderError(token.Errors.First().Message));
+
+            return Result<BlobPage>.Success(new()
+            {
+                Items = page.Items,
+                ContinuationToken = token.Value
+            });
+        }
+
         public BlobStoreProviderCapabilities Capabilities => provider.Capabilities;
 
         public BlobDimensionCapabilities DimensionCapabilities => provider.Capabilities.Dimensions;

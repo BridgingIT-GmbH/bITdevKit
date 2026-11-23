@@ -127,6 +127,8 @@
      data-row-key-mode="@vm.RowKeyMode"
      data-page-size="@vm.PageSize"
      data-dimension-filter="@vm.DimensionFilterJson"
+     data-dimension-filter-valid="@(vm.DimensionFilter is not null ? "true" : "false")"
+     data-supports-dimensions="@(vm.DimensionCapabilities.SupportsDimensions ? "true" : "false")"
      data-continuation-token="@vm.ContinuationToken"
      data-selected-partition-key="@vm.SelectedPartitionKey"
      data-selected-row-key="@vm.SelectedRowKey">
@@ -140,7 +142,7 @@
     {
         @if (vm.Errors.Count > 0)
         {
-            <div class="alert alert-danger py-2 mb-0" data-dashboard-query-error>
+            <div class="alert alert-danger py-2 mb-0" role="alert" data-dashboard-query-error>
                 @foreach (var error in vm.Errors)
                 {
                     <div>@error</div>
@@ -198,9 +200,13 @@
 
         <div class="documents-layout">
             <section class="documents-panel" data-dashboard-list="documents">
-                <div class="documents-panel-header">
+                <div class="documents-panel-header position-relative">
                     <span>Documents</span>
                     <div class="d-flex align-items-center gap-2">
+                    @if (vm.DimensionCapabilities.SupportsDimensions)
+                    {
+                        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionColumns>())
+                    }
                     <button type="button"
                             class="btn btn-outline-secondary btn-sm"
                             data-documents-command="new"
@@ -238,7 +244,8 @@
                                         var displayRowKey = Shortener.Apply(key.RowKey, new ShorteningOptions { MaximumLength = 64 });
                                         var active = string.Equals(key.PartitionKey, vm.SelectedPartitionKey, StringComparison.Ordinal) &&
                                             string.Equals(key.RowKey, vm.SelectedRowKey, StringComparison.Ordinal);
-                                        <tr class="@(active ? "table-active" : null)" data-dashboard-row-id="@JsonSerializer.Serialize(new[] { key.PartitionKey, key.RowKey })">
+                                        <tr class="@(active ? "table-active" : null)" data-dashboard-row-id="@JsonSerializer.Serialize(new[] { key.PartitionKey, key.RowKey })"
+                                            data-dimensions="@DocumentStorageDimensionsJson.Write(entry.Info.Dimensions)">
                                             <td class="documents-key-cell" title="@key.PartitionKey">
                                                 <button type="button"
                                                         class="btn btn-link btn-sm p-0 align-baseline text-start font-monospace"
@@ -317,6 +324,7 @@
                  data-expires-at="@vm.SelectedInfo?.ExpiresAt?.ToString("O", CultureInfo.InvariantCulture)"></div>
             <textarea hidden data-documents-selected-content>@vm.SelectedContent</textarea>
             <textarea hidden data-documents-selected-properties>@SerializeProperties(vm.SelectedInfo?.Properties)</textarea>
+            <textarea hidden data-documents-selected-dimensions>@DocumentStorageDimensionsJson.Write(vm.SelectedInfo?.Dimensions)</textarea>
         }
     }
 </div>

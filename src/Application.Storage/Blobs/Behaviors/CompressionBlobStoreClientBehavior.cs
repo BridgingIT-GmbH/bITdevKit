@@ -259,6 +259,16 @@ public sealed class CompressionBlobStoreClientBehavior : IBlobStoreClient
     }
 
     /// <inheritdoc />
+    public async Task<Result<BlobPage>> ListPageAsync(BlobFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await this.inner.ListPageAsync(scope, filter, continuationToken, cancellationToken).ConfigureAwait(false);
+        return result.IsSuccess
+            ? Result<BlobPage>.Success(BlobBehaviorTransform.ApplyLogicalPage(result.Value, info => this.ToLogicalInfo(info)))
+            : result;
+    }
+
+    /// <inheritdoc />
     public Task<Result> DeleteAsync(
         BlobKey key,
         BlobDeleteOptions options = null,

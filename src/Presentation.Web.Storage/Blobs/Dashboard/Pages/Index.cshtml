@@ -23,7 +23,7 @@
 </div>
 
 <div class="dashboard-dialog modal fade" id="blobs-upload-modal" tabindex="-1" aria-hidden="true" aria-labelledby="blobs-upload-modal-title">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
         <form class="modal-content" data-blobs-action="@($"{actionBase}/upload")" enctype="multipart/form-data">
             <div class="modal-header">
                 <h5 class="modal-title" id="blobs-upload-modal-title">Upload Blob</h5>
@@ -41,7 +41,13 @@
                 <input id="blobs-upload-file" class="form-control mb-3" type="file" name="file" required>
                 <label class="form-label" for="blobs-upload-expires">Expires at (UTC)</label>
                 <input id="blobs-upload-expires" class="form-control form-control-sm mb-3" type="datetime-local" name="expiresAt">
-                <div class="small text-body-secondary mb-3" data-blobs-replace-metadata-note hidden>Properties and expiration are kept. Use Blob Details to edit them.</div>
+                <div class="mb-3" data-blobs-upload-properties>
+                    <label class="form-label small" for="blobs-upload-properties">Properties JSON</label>
+                    <textarea id="blobs-upload-properties" class="form-control form-control-sm font-monospace"
+                              name="properties" rows="4" spellcheck="false" placeholder="{}"></textarea>
+                </div>
+                @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFields>())
+                <div class="small text-body-secondary mb-3" data-blobs-replace-metadata-note hidden>Properties, dimensions, and expiration are kept.</div>
                 <div class="form-check">
                     <input id="blobs-upload-overwrite" class="form-check-input" type="checkbox" name="forceOverwrite" value="true" disabled>
                     <label class="form-check-label" for="blobs-upload-overwrite">Force overwrite</label>
@@ -57,7 +63,7 @@
 
 <div class="dashboard-dialog modal fade" id="blobs-details-modal" tabindex="-1" aria-hidden="true" aria-labelledby="blobs-details-modal-title">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <form class="modal-content" data-blobs-action="@($"{actionBase}/expiration")">
+        <form class="modal-content" data-blobs-action="@($"{actionBase}/metadata")">
             <div class="modal-header">
                 <div>
                     <h5 class="modal-title" id="blobs-details-modal-title">Blob Details</h5>
@@ -77,13 +83,35 @@
                     <div class="col-12"><span class="text-muted">Content hash</span><div class="font-monospace text-break" data-blobs-details-hash></div></div>
                 </div>
                 <label class="form-label small" for="blobs-details-properties">Properties JSON</label>
-                <textarea id="blobs-details-properties" class="form-control form-control-sm font-monospace" rows="8" readonly></textarea>
+                <textarea id="blobs-details-properties" class="form-control form-control-sm font-monospace mb-3"
+                          name="properties" rows="5" spellcheck="false"></textarea>
+                @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFields>())
+                <div data-blobs-readonly-dimensions hidden>
+                    <div class="form-label small mb-1" id="blobs-details-dimensions-label">Dimensions</div>
+                    <div class="small text-muted" data-blobs-no-dimensions>None</div>
+                    <table class="table table-sm small text-break mb-0" aria-labelledby="blobs-details-dimensions-label"
+                           style="min-width: 0; table-layout: fixed" data-blobs-details-dimensions hidden>
+                        <thead><tr><th scope="col">Key</th><th scope="col">Type</th><th scope="col">Value</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
                 <input type="hidden" name="store"><input type="hidden" name="container"><input type="hidden" name="name"><input type="hidden" name="etag">
-                <input type="hidden" name="forceOverwrite" value="false">
                 <label class="form-label small mt-3" for="blobs-details-expires-input">Expires at</label>
                 <div class="input-group"><input id="blobs-details-expires-input" class="form-control form-control-sm" type="datetime-local" name="expiresAt"><button class="btn btn-outline-secondary btn-sm" type="button" title="Clear expiration" aria-label="Clear expiration" data-blobs-clear-expiration><i class="bi bi-x-lg" aria-hidden="true"></i></button></div>
+                <details class="mt-3" data-blobs-preview
+                         data-preview-url="@BlobStorageDashboardRoutes.BuildBlobsPreviewPath(dashboardOptions)"
+                         data-download-url="@BlobStorageDashboardRoutes.BuildBlobsDownloadPath(dashboardOptions)">
+                    <summary class="small">Preview content</summary>
+                    <div class="mt-2">
+                        <div class="small text-muted mb-2" role="status" data-preview-status></div>
+                        <pre class="border rounded p-2 mb-2 small text-break" style="white-space: pre-wrap; max-height: 24rem; overflow: auto"
+                             tabindex="0" aria-label="Blob text preview" data-preview-text hidden></pre>
+                        <img class="img-fluid mb-2" style="max-height: 24rem; object-fit: contain" alt="Blob content preview" data-preview-image hidden>
+                        <a class="btn btn-outline-secondary btn-sm" data-preview-download>Download</a>
+                    </div>
+                </details>
             </div>
-            @(await RenderPartialAsync<ModalActions, DashboardModalActionsModel>(new("Save expiration")))
+            @(await RenderPartialAsync<ModalActions, DashboardModalActionsModel>(new("Save changes")))
         </form>
     </div>
 </div>
@@ -111,14 +139,40 @@
 </div>
 
 @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQueryScript>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFieldsScript>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionExplorerScript>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFilterNavigationScript>())
 
 <script>
     (() => {
         const shellElement = document.getElementById('dashboard-blobs-shell');
+        const uploadForm = document.querySelector('#blobs-upload-modal form');
+        const uploadDimensions = window.bdkDashboard.createDimensionFields(uploadForm);
+        const detailsForm = document.querySelector('#blobs-details-modal form');
+        const detailsModal = detailsForm.closest('.modal');
+        const detailsDimensions = window.bdkDashboard.createDimensionFields(detailsForm);
+        const dimensionExplorer = window.bdkDashboard.createDimensionExplorer({
+            owner: shellElement,
+            root: getRoot,
+            scope: () => getState().store,
+            applyFilter: dimensionFilter =>
+                refreshContent({ ...getState(), dimensionFilter, continuationToken: '' }, true, true)
+        });
         const baseContentUrl = '@contentPath';
+        const dimensionNavigation = window.bdkDashboard.createDimensionFilterNavigation({
+            root: getRoot,
+            buildQuery: () => buildContentUrl(getState())
+        });
         const fullScanStorageKey = 'bdk.blobStorage.allowFullScan';
         const prefixHistoryStorageKey = 'bdk.blobStorage.prefixHistory';
         const prefixHistoryLimit = 20;
+        const preview = detailsForm.querySelector('[data-blobs-preview]');
+        const previewStatus = preview.querySelector('[data-preview-status]');
+        const previewText = preview.querySelector('[data-preview-text]');
+        const previewImage = preview.querySelector('[data-preview-image]');
+        let previewQuery;
+        let previewController;
+        let previewImageUrl;
 
         function getRoot() {
             return shellElement?.querySelector('#blobs-dashboard-root');
@@ -178,18 +232,19 @@
                 if (!response.ok || response.redirected || !(response.headers.get('content-type') || '').includes('text/html')) throw new Error('Blobs could not be loaded.');
                 const html = await response.text();
                 if (controller.signal.aborted || contentController !== controller) return;
-                const editedDimensionFilter = shellElement.querySelector('[name="dimensionFilter"]')?.value || '';
-                const keepDimensionDraft = editedDimensionFilter !== (state.dimensionFilter || '');
-                const draft = (sameSelection || preserveDraft || keepDimensionDraft) ? window.bdkDashboard.captureFilterDraft(shellElement, '[data-blobs-filter-form]') : null;
                 const validation = document.createElement('template'); validation.innerHTML = html;
                 const queryError = validation.content.querySelector('[data-dashboard-query-error]');
                 if (queryError && !acceptQueryError && state.store === previous.store) {
-                    window.bdkDashboard.storageDimensions.showError(shellElement, queryError.textContent.trim());
-                    throw new Error('Query failed');
+                    dimensionExplorer.showQueryError(queryError);
+                    document.getElementById('blobs-refresh-status').textContent = 'Filters could not be applied';
+                    return;
                 }
+                const editedDimensionFilter = shellElement.querySelector('[name="dimensionFilter"]')?.value || '';
+                const keepDimensionDraft = editedDimensionFilter !== (state.dimensionFilter || '');
+                const draft = (sameSelection || preserveDraft || keepDimensionDraft) ? window.bdkDashboard.captureFilterDraft(shellElement, '[data-blobs-filter-form]') : null;
                 growingList.applyResponse(shellElement, html);
                 if (draft) window.bdkDashboard.restoreFilterDraft(shellElement, '[data-blobs-filter-form]', draft);
-                window.bdkDashboard.storageDimensions.mount(shellElement);
+                dimensionExplorer.mount();
                 if (updateUrl) setUrl(state);
                 window.bdkDashboard.clearRefreshError(shellElement);
                 document.getElementById('blobs-refresh-status').textContent = `Updated ${new Date().toISOString().slice(11, 19)} UTC`;
@@ -267,8 +322,67 @@
             return Number.isNaN(date.valueOf()) ? '' : new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
         }
 
+        function clearPreview() {
+            previewController?.abort();
+            previewController = null;
+            if (previewImageUrl) URL.revokeObjectURL(previewImageUrl);
+            previewImageUrl = null;
+            previewImage.removeAttribute('src');
+            previewImage.hidden = true;
+            previewText.textContent = '';
+            previewText.hidden = true;
+            previewStatus.textContent = '';
+        }
+
+        preview.addEventListener('toggle', async () => {
+            clearPreview();
+            if (!preview.open || !previewQuery) return;
+            const controller = new AbortController();
+            previewController = controller;
+            previewStatus.textContent = 'Loading preview…';
+            try {
+                const response = await fetch(preview.dataset.previewUrl + '?' + previewQuery, {
+                    cache: 'no-store',
+                    signal: controller.signal
+                });
+                if (!response.ok || response.redirected) {
+                    const problem = await response.json().catch(() => null);
+                    if (!controller.signal.aborted) previewStatus.textContent = problem?.detail || 'Preview could not be loaded.';
+                    return;
+                }
+                const contentType = response.headers.get('content-type') || '';
+                if (contentType.startsWith('image/')) {
+                    const image = await response.blob();
+                    if (controller.signal.aborted) return;
+                    previewImageUrl = URL.createObjectURL(image);
+                    previewImage.src = previewImageUrl;
+                    previewImage.hidden = false;
+                    previewStatus.textContent = '';
+                } else if (contentType.startsWith('text/plain')) {
+                    const text = await response.text();
+                    if (controller.signal.aborted) return;
+                    previewText.textContent = text;
+                    previewText.hidden = !text;
+                    previewStatus.textContent = text ? '' : 'This blob is empty.';
+                } else {
+                    previewStatus.textContent = 'This file type cannot be previewed.';
+                }
+            } catch (error) {
+                if (!controller.signal.aborted) previewStatus.textContent = 'Preview could not be loaded.';
+            }
+        });
+        previewImage.addEventListener('error', () => {
+            if (!previewImageUrl) return;
+            clearPreview();
+            previewStatus.textContent = 'This image cannot be previewed.';
+        });
+        detailsModal.addEventListener('hidden.bs.modal', () => {
+            preview.open = false;
+            clearPreview();
+        });
+
         function showDetails(target) {
-            const modal = showModal('blobs-details-modal');
+            const modal = detailsModal;
             const value = selector => target.dataset[selector] || '-';
             modal.querySelector('[data-blobs-details-subtitle]').textContent = `${target.dataset.container || ''} / ${target.dataset.name || ''}`;
             modal.querySelector('[data-blobs-details-store]').textContent = getState().store || '-';
@@ -279,18 +393,51 @@
             modal.querySelector('[data-blobs-details-expires]').textContent = formatTimestamp(target.dataset.expiresAt);
             modal.querySelector('[data-blobs-details-etag]').textContent = value('etag');
             modal.querySelector('[data-blobs-details-hash]').textContent = value('contentHash');
-            const form = modal.querySelector('form');
+            const form = detailsForm;
             form.elements.store.value = getState().store || '';
             form.elements.container.value = target.dataset.container || '';
             form.elements.name.value = target.dataset.name || '';
             form.elements.etag.value = target.dataset.etag || '';
-            form.elements.forceOverwrite.value = 'false';
+            preview.open = false;
+            clearPreview();
+            previewQuery = new URLSearchParams({
+                store: form.elements.store.value, container: form.elements.container.value, name: form.elements.name.value
+            }).toString();
+            preview.querySelector('[data-preview-download]').href = preview.dataset.downloadUrl + '?' + previewQuery;
             form.querySelector('[data-etag-conflict-actions]')?.remove();
-            form.elements.expiresAt.value = toDateTimeLocal(target.dataset.expiresAt);
-            try {
-                modal.querySelector('#blobs-details-properties').value = JSON.stringify(JSON.parse(target.dataset.properties || '{}'), null, 2);
-            } catch {
-                modal.querySelector('#blobs-details-properties').value = target.dataset.properties || '{}';
+            form.elements.expiresAt.defaultValue = form.elements.expiresAt.value = toDateTimeLocal(target.dataset.expiresAt);
+            form.elements.properties.defaultValue = form.elements.properties.value = target.dataset.properties || '{}';
+            const canEditDimensions = getRoot()?.dataset.supportsDimensionUpdates === 'true';
+            const dimensions = target.closest('[data-dashboard-row-id]')?.dataset.dimensions || '{}';
+            detailsDimensions.load(canEditDimensions ? dimensions : null, canEditDimensions,
+                (key, value) => dimensionExplorer.filterAction(key, value, modal));
+            showReadonlyDimensions(modal, canEditDimensions ? null : dimensions);
+            window.bdkDashboard.markDialogSaved(modal);
+            showModal(modal.id);
+        }
+
+        function showReadonlyDimensions(modal, json) {
+            const section = modal.querySelector('[data-blobs-readonly-dimensions]');
+            section.hidden = json === null;
+            const dimensions = Object.entries(JSON.parse(json || '{}'));
+            const table = section.querySelector('[data-blobs-details-dimensions]');
+            table.hidden = dimensions.length === 0;
+            modal.querySelector('[data-blobs-no-dimensions]').hidden = !table.hidden;
+            const rows = table.tBodies[0];
+            rows.replaceChildren();
+            for (const [key, dimension] of dimensions) {
+                const row = rows.insertRow();
+                row.insertCell().textContent = key;
+                row.insertCell().textContent = dimension.type;
+                const cell = row.insertCell();
+                cell.style.whiteSpace = 'pre-wrap';
+                cell.textContent = dimension.value === '' ? '""' : String(dimension.value);
+                const filter = dimensionExplorer.filterAction(key, dimension, modal);
+                if (filter) {
+                    const button = window.bdkDashboard.createDimensionFilterButton(key, filter);
+                    button.classList.add('ms-2');
+                    cell.append(button);
+                }
             }
         }
 
@@ -299,6 +446,8 @@
             owner: shellElement, root: () => shellElement,
             appliedUrl: () => buildContentUrl(getState()), hasPending: () => listPending,
             lists: [{ key: 'blobs', cursor: 'continuationToken', boundary: 'listBoundary', size: 'take' }],
+            onAppended: dimensionExplorer.renderColumns,
+            onRestored: dimensionExplorer.renderColumns,
             onSizeChange: (list, value) => {
                 const state = getState(); state.take = value; state.continuationToken = '';
                 refreshContent(state, true, true);
@@ -314,8 +463,10 @@
             intervalSelector: '#blobs-refresh-interval',
             refreshButtonSelector: '#blobs-refresh-now',
             storageKey: 'bdk.dashboard.blobs.refreshInterval',
-            shouldRefresh: () => !growingList.busy() && contentController === null && document.querySelector('#blobs-upload-modal.show, #blobs-details-modal.show, #blobs-delete-modal.show') === null,
-            onSuccess: () => { populatePrefixHistory(); window.bdkDashboard.storageDimensions.mount(shellElement); }
+            shouldRefresh: () => !growingList.busy() && contentController === null &&
+                document.querySelector('#blobs-upload-modal.show, #blobs-details-modal.show, #blobs-delete-modal.show') === null &&
+                !shellElement.querySelector('[data-dimension-columns][open]'),
+            onSuccess: () => { populatePrefixHistory(); dimensionExplorer.mount(); }
         });
 
         function showModal(id) {
@@ -366,24 +517,31 @@
             };
             const force = document.createElement('button');
             force.type = 'button'; force.className = 'btn btn-outline-danger btn-sm'; force.textContent = 'Force overwrite';
-            force.onclick = async () => {
-                const input = form.elements.forceOverwrite;
-                if (input.type === 'checkbox') input.checked = true; else input.value = 'true';
-                await submitForm(form, form.dataset.blobsAction);
-            };
+            force.onclick = () => submitForm(form, form.dataset.blobsAction, true);
             actions.append(reload, force); form.querySelector('.modal-body').append(actions);
         }
 
-        async function submitForm(form, actionUrl) {
+        async function submitForm(form, actionUrl, forceOverwrite = false) {
             const button = form.querySelector('[type="submit"]');
+            if (button?.disabled || !form.reportValidity()) return;
             if (button) {
                 button.disabled = true;
             }
 
             try {
+                const payload = new FormData(form);
+                if (form === uploadForm) uploadDimensions.write(payload);
+                if (form === detailsForm) {
+                    detailsDimensions.write(payload);
+                    const { properties, expiresAt } = form.elements;
+                    if (properties.value === properties.defaultValue) payload.delete('properties');
+                    if (expiresAt.value === expiresAt.defaultValue) payload.delete('expiresAt');
+                    else if (expiresAt.value) payload.set('expiresAt', new Date(expiresAt.value).toISOString());
+                }
+                if (forceOverwrite) payload.set('forceOverwrite', 'true');
                 const response = await fetch(actionUrl, {
                     method: 'POST',
-                    body: new FormData(form),
+                    body: payload,
                     headers: { 'X-Requested-With': 'fetch' }
                 });
 
@@ -393,8 +551,9 @@
                     return;
                 }
                 if (!response.ok) {
-                    window.bdkDashboard.showDialogError(form.closest('.modal'), 'The action failed. Your changes have been kept; try again.');
-                    console.error('Blob action failed:', await response.text().catch(() => response.statusText));
+                    const problem = response.status === 400 ? await response.json().catch(() => null) : null;
+                    window.bdkDashboard.showDialogError(form.closest('.modal'),
+                        problem?.detail || 'The action failed. Your changes have been kept.');
                     return;
                 }
 
@@ -453,6 +612,9 @@
                 form.elements.name.readOnly = false;
                 form.elements.mode.value = 'new';
                 form.elements.expiresAt.disabled = false;
+                form.elements.properties.disabled = false;
+                form.querySelector('[data-blobs-upload-properties]').hidden = false;
+                uploadDimensions.load(null, getRoot()?.dataset.supportsDimensions === 'true');
                 form.querySelector('[data-blobs-replace-metadata-note]').hidden = true;
                 form.elements.etag.value = '';
                 form.elements.forceOverwrite.checked = false;
@@ -473,6 +635,9 @@
                 form.elements.mode.value = 'edit';
                 form.elements.expiresAt.value = toDateTimeLocal(target.dataset.expiresAt);
                 form.elements.expiresAt.disabled = true;
+                form.elements.properties.disabled = true;
+                form.querySelector('[data-blobs-upload-properties]').hidden = true;
+                uploadDimensions.load(null, false);
                 form.querySelector('[data-blobs-replace-metadata-note]').hidden = false;
                 form.elements.etag.value = target.dataset.etag;
                 form.elements.forceOverwrite.disabled = false;
@@ -501,6 +666,7 @@
                 state.dimensionFilter = '';
                 state.allowFullScan = false;
                 state.continuationToken = '';
+                dimensionNavigation.reset();
                 window.bdkDashboard.storageDimensions.clear(shellElement.querySelector('[data-blobs-filter-form]'));
                 await refreshContent(state, true, false, true);
                 return;
@@ -557,12 +723,14 @@
             if (icon) { icon.className = 'bi bi-check-lg'; setTimeout(() => icon.className = 'bi bi-clipboard', 1200); }
         });
 
+        if (dimensionNavigation.resume()) return;
+        const restoredDimensionDraft = dimensionNavigation.restoreDraft();
         populatePrefixHistory();
-        window.bdkDashboard.storageDimensions.mount(shellElement);
+        dimensionExplorer.mount();
         const storedFullScan = window.bdkDashboard.state.get(fullScanStorageKey);
         if (storedFullScan === null) {
             window.bdkDashboard.state.set(fullScanStorageKey, 'true');
-        } else {
+        } else if (!restoredDimensionDraft && !new URLSearchParams(location.search).has('allowFullScan')) {
             const desired = storedFullScan === 'true';
             const state = getState();
             if (state.allowFullScan !== desired) {

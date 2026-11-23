@@ -1,6 +1,6 @@
 ---
 created: 2026-11-19
-status: draft
+status: implemented
 ---
 
 # Specification: Filtering Review

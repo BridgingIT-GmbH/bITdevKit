@@ -260,6 +260,7 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        if (update?.Dimensions is not null) return Result<StoredBlobInfo>.Failure(new BlobDimensionsNotSupportedError());
 
         var validation = BlobValidator.Validate(update);
         if (validation.IsFailure)

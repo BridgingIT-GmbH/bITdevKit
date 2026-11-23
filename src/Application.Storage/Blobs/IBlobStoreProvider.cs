@@ -105,6 +105,19 @@ public interface IBlobStoreProvider
     /// </example>
     Task<Result<StoredBlobPage>> ListPageAsync(BlobQuery query, CancellationToken cancellationToken = default);
 
+    /// <summary>Lists one page of metadata matching key and Dimension criteria.</summary>
+    /// <param name="query">The validated scope, predicates, and seek order.</param>
+    /// <param name="pageSize">The maximum number of metadata items to return.</param>
+    /// <param name="cancellationToken">The token used to cancel provider I/O.</param>
+    /// <returns>A page with a JSON string array in <see cref="StoredBlobPage.ContinuationToken"/> when more items exist. The final page has a null token.</returns>
+    /// <remarks>
+    /// The continuation array contains the last returned name and its SHA-256 lookup hash in that order.
+    /// The client validates and wraps the array before returning a public token.
+    /// </remarks>
+    /// <example><code>var page = await provider.ListPageAsync(query, pageSize, cancellationToken);</code></example>
+    Task<Result<StoredBlobPage>> ListPageAsync(BlobFilterQuery query, int pageSize, CancellationToken cancellationToken) =>
+        Task.FromResult(Result<StoredBlobPage>.Failure(new BlobStoreQueryNotSupportedError("Provider does not support FilterModel queries.")));
+
     /// <summary>
     /// Deletes a blob by exact key.
     /// </summary>

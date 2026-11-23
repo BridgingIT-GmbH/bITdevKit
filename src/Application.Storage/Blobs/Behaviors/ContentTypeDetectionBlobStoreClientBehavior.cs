@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -108,6 +108,10 @@ public sealed class ContentTypeDetectionBlobStoreClientBehavior : IBlobStoreClie
     /// <inheritdoc />
     public Task<Result<BlobPage>> ListPageAsync(BlobQuery query, CancellationToken cancellationToken = default) =>
         this.inner.ListPageAsync(query, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Result<BlobPage>> ListPageAsync(BlobFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) => this.inner.ListPageAsync(scope, filter, continuationToken, cancellationToken);
 
     /// <inheritdoc />
     public Task<Result> DeleteAsync(

@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 
 namespace BridgingIT.DevKit.Application.Storage;
@@ -26,6 +26,10 @@ public sealed class DocumentStoreClientAccessor<T>(DocumentStoreClientDescriptor
     public bool PermalinksEnabled => StoragePermalinkExtensions.FindDocumentAccessor(client) is not null;
     /// <inheritdoc />
     public Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => client.ListPageAsync(query, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Result<DocumentInfoPage>> ListPageAsync(DocumentFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) => client.ListPageAsync(scope, filter, continuationToken, cancellationToken);
     /// <inheritdoc />
     public async Task<Result<DocumentJsonPage>> FindJsonPageAsync(DocumentQuery query, CancellationToken cancellationToken = default)
     {

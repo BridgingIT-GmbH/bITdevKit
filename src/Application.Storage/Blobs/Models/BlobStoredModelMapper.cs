@@ -22,6 +22,7 @@ internal static class BlobStoredModelMapper
     internal static BlobPropertiesUpdate Snapshot(BlobPropertiesUpdate value) => value is null ? null : new()
     {
         Key = value.Key,
+        Dimensions = value.Dimensions,
         ContentType = value.ContentType,
         ExpiresAt = value.ExpiresAt,
         IfMatchETag = value.IfMatchETag,
@@ -46,6 +47,7 @@ internal static class BlobStoredModelMapper
     internal static StoredBlobPropertiesUpdate ToStored(BlobPropertiesUpdate value) => new()
     {
         Key = value.Key,
+        Dimensions = value.Dimensions,
         ContentType = value.ContentType,
         ExpiresAt = value.ExpiresAt,
         IfMatchETag = value.IfMatchETag,

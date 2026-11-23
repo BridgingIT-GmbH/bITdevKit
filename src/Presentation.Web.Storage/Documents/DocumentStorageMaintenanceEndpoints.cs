@@ -29,6 +29,8 @@ public sealed partial class DocumentStorageMaintenanceEndpoints(DocumentStorageM
 
         var group = this.MapGroup(app, this.options).DisableAntiforgery();
 
+        MapFilter(group);
+
         group.MapGet("clients", ([FromServices] IDocumentStoreClientFactory factory) =>
             Results.Ok(factory.GetDescriptors().Select(descriptor => new DocumentStorageClientInfoModel
             {

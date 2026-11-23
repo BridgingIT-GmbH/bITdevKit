@@ -62,6 +62,12 @@ public sealed class BlobPropertiesUpdate
     public PropertyBag Properties { get; init; }
 
     /// <summary>
+    /// Gets the dimensions to replace in the same write. Null preserves them and an empty collection clears them.
+    /// </summary>
+    /// <example><code>var update = new BlobPropertiesUpdate { Dimensions = BlobDimensions.Empty };</code></example>
+    public BlobDimensions Dimensions { get; init; }
+
+    /// <summary>
     /// Gets the optional entity tag required for optimistic property updates.
     /// </summary>
     /// <example>

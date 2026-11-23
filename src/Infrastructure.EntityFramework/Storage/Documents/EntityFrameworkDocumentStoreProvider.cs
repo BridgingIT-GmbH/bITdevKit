@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
@@ -125,6 +125,7 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScop
     public static DocumentStoreProviderCapabilities CreateCapabilities(string databaseProvider = null) => new()
     {
         Dimensions = CreateDimensionsCapabilities(databaseProvider),
+        SupportsFilterModel = CreateDimensionsCapabilities(databaseProvider).SupportsQueries,
         FullMatch = DocumentQuerySupport.SupportedEfficiently,
         RowKeyPrefixMatch = DocumentQuerySupport.SupportedServerSide,
         RowKeySuffixMatch = DocumentQuerySupport.SupportedServerSide,

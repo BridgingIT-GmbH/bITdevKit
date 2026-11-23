@@ -1,0 +1,190 @@
+@inherits RazorSlices.RazorSlice
+
+<script>
+(() => {
+    const dashboard = window.bdkDashboard;
+    const maxColumns = 3;
+    const maxSuggestions = 100;
+    const dimensionName = /^[A-Za-z_][A-Za-z0-9_.:\-]{0,127}$/;
+
+    function parse(json) {
+        try { return JSON.parse(json || 'null'); }
+        catch { return null; }
+    }
+
+    function displayValue(dimension) {
+        return dimension.type === 'string' ? JSON.stringify(dimension.value) : String(dimension.value);
+    }
+
+    function unpinButton(key) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn btn-outline-secondary btn-sm text-start text-break mw-100';
+        button.textContent = key + ' ×';
+        button.setAttribute('aria-label', 'Unpin dimension ' + key);
+        button.title = 'Unpin dimension';
+        button.dataset.unpinDimension = key;
+        return button;
+    }
+
+    dashboard.createDimensionFilterButton = (key, filter) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn btn-outline-secondary btn-sm';
+        button.title = 'Filter by this saved value';
+        button.setAttribute('aria-label', 'Filter by saved ' + key + ' value');
+        const icon = document.createElement('i');
+        icon.className = 'bi bi-funnel';
+        icon.setAttribute('aria-hidden', 'true');
+        button.append(icon);
+        button.addEventListener('click', filter);
+        return button;
+    };
+
+    dashboard.createDimensionExplorer = ({ owner, root, scope, applyFilter: refreshFilter }) => {
+        let filterPending = false;
+
+        async function applyFilter(json) {
+            const draft = root()?.querySelector('[name=dimensionFilter]');
+            if (!draft || filterPending) return;
+            filterPending = true;
+            const previous = draft.value;
+            draft.value = json;
+            try { await refreshFilter(json); }
+            finally {
+                if (draft.isConnected && draft.value === json) draft.value = previous;
+                filterPending = false;
+            }
+        }
+
+        function storageKey() {
+            return dashboard.state.key('storage', 'dimensionColumns', location.pathname + ':' + scope());
+        }
+
+        function pinnedKeys() {
+            const keys = dashboard.state.getJson(storageKey(), []);
+            if (!Array.isArray(keys)) return [];
+            const distinct = new Map();
+            for (const key of keys) {
+                if (typeof key === 'string' && dimensionName.test(key) && !distinct.has(key.toUpperCase())) {
+                    distinct.set(key.toUpperCase(), key);
+                }
+                if (distinct.size === maxColumns) break;
+            }
+            return [...distinct.values()];
+        }
+
+        function renderCells(row, keys, values) {
+            const cells = [...row.querySelectorAll(':scope > [data-pinned-dimension]')];
+            if (cells.length === keys.length && cells.every((cell, index) => cell.dataset.pinnedDimension === keys[index])) return;
+            cells.forEach(cell => cell.remove());
+            const actions = row.lastElementChild;
+            for (const key of keys) {
+                const cell = document.createElement(values ? 'td' : 'th');
+                cell.dataset.pinnedDimension = key;
+                cell.className = 'small font-monospace text-break';
+                cell.style.maxWidth = '14rem';
+                if (values) {
+                    const value = values.get(key.toUpperCase());
+                    cell.textContent = value ? displayValue(value) : '—';
+                    cell.title = value ? cell.textContent : 'Missing';
+                    if (!value) cell.setAttribute('aria-label', 'Missing');
+                } else {
+                    cell.scope = 'col';
+                    cell.textContent = key;
+                }
+                row.insertBefore(cell, actions);
+            }
+        }
+
+        function renderColumns() {
+            const current = root();
+            const columns = current?.querySelector('[data-dimension-columns]');
+            if (!columns) return;
+            const keys = pinnedKeys();
+            const header = current.querySelector('[data-dashboard-list] thead tr');
+            if (header) renderCells(header, keys);
+            const available = new Map();
+            const pinned = new Set(keys.map(key => key.toUpperCase()));
+            for (const row of current.querySelectorAll('[data-dashboard-list-rows] > tr')) {
+                const values = new Map();
+                if (keys.length || available.size < maxSuggestions) {
+                    for (const [key, value] of Object.entries(parse(row.dataset.dimensions) || {})) {
+                        const identity = key.toUpperCase();
+                        if (pinned.has(identity)) values.set(identity, value);
+                        else if (available.size < maxSuggestions && !available.has(identity)) available.set(identity, key);
+                    }
+                }
+                renderCells(row, keys, values);
+            }
+            columns.querySelector('datalist').replaceChildren(...[...available.values()].sort().map(key => new Option(key, key)));
+            columns.querySelector('[type=submit]').disabled = keys.length >= maxColumns;
+            columns.querySelector('[data-pinned-dimension-keys]').replaceChildren(...keys.map(unpinButton));
+        }
+
+        owner.addEventListener('input', event => {
+            if (event.target.matches('[data-pin-dimension] input')) event.target.setCustomValidity('');
+        });
+        owner.addEventListener('submit', event => {
+            const form = event.target.closest('[data-pin-dimension]');
+            if (!form) return;
+            event.preventDefault();
+            const input = form.querySelector('input');
+            const key = input.value;
+            const keys = pinnedKeys();
+            if (keys.length >= maxColumns) return;
+            if (keys.some(value => value.toUpperCase() === key.toUpperCase())) {
+                input.setCustomValidity('This dimension is already pinned.');
+                input.reportValidity();
+                return;
+            }
+            dashboard.state.setJson(storageKey(), [...keys, key]);
+            form.reset();
+            renderColumns();
+            input.focus();
+        });
+        owner.addEventListener('click', event => {
+            const button = event.target.closest('[data-unpin-dimension]');
+            if (!button) return;
+            dashboard.state.setJson(storageKey(), pinnedKeys().filter(key => key !== button.dataset.unpinDimension));
+            renderColumns();
+            root().querySelector('[data-pin-dimension] input')?.focus();
+        });
+
+        return {
+            mount() {
+                dashboard.storageDimensions.mount(owner);
+                renderColumns();
+            },
+            renderColumns,
+            showQueryError(error) {
+                const current = root();
+                const existing = current.querySelector('[data-dashboard-query-error]');
+                const alert = error.cloneNode(true);
+                if (existing) existing.replaceWith(alert);
+                else current.prepend(alert);
+            },
+            filterAction(key, dimension, modal) {
+                const current = root();
+                const editor = current?.querySelector('[data-storage-dimension-editor]');
+                if (editor?.dataset.supported !== 'true') return null;
+                const operators = parse(editor.dataset.operators) || {};
+                const operator = dimension.type === 'null' ? 'IsNull' : 'Equal';
+                const supportsValue = Object.entries(operators).some(([type, values]) =>
+                    (dimension.type === 'null' || type.toLowerCase() === dimension.type) && values.includes(operator));
+                if (!supportsValue) return null;
+                const condition = { name: key, operator };
+                if (operator === 'Equal') condition.operand = dimension;
+                return async () => {
+                    if (!await dashboard.confirmDialogDiscard(modal)) return;
+                    const applied = current.dataset.dimensionFilterValid === 'true' ? parse(current.dataset.dimensionFilter) : null;
+                    const clauses = applied ? (applied.all || [applied]) : [];
+                    const json = JSON.stringify({ all: [...clauses, condition] });
+                    window.bootstrap.Modal.getInstance(modal)?.hide();
+                    await applyFilter(json);
+                };
+            }
+        };
+    };
+})();
+</script>

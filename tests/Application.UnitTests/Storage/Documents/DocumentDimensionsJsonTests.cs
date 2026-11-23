@@ -8,12 +8,23 @@ public class DocumentDimensionsJsonTests
     [Fact]
     public void JsonRoundTrip_AllKinds_PreservesLogicalTypesAndOriginalNames()
     {
-        var values = new Dictionary<string, object> { ["Year"] = 2026, ["amount"] = 1.000000m,
+        var values = new Dictionary<string, object> { ["Year"] = 2026, ["amount"] = -0.000001m,
             ["flag"] = false, ["country"] = "EU ", ["nullValue"] = null, ["at"] = new DateTime(1, DateTimeKind.Utc) };
         var sut = DocumentDimensions.Create(values).Value;
         var result = JsonSerializer.Deserialize<DocumentDimensions>(JsonSerializer.Serialize(sut));
         foreach (var item in sut) result[item.Key].ShouldBe(item.Value);
         result.Keys.ShouldContain("Year");
+    }
+
+    [Fact]
+    public void SnapshotRoundTrip_WithSmallDecimal_PreservesItsValue()
+    {
+        var dimensions = DocumentDimensions.Create(new Dictionary<string, object> { ["amount"] = 0.000001m }).Value;
+
+        var result = DocumentDimensionValues.Deserialize(DocumentDimensionValues.Serialize(dimensions));
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Value["amount"].Value.ShouldBe(0.000001m);
     }
 
     [Theory]

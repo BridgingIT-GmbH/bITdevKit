@@ -164,7 +164,9 @@ public sealed class DocumentStorageBuilderContext(
                 clientOptions,
                 serviceProvider.GetService<TimeProvider>(),
                 transforms,
-                normalizedName);
+                normalizedName,
+                resolvedProviderName,
+                serviceProvider.GetService<IContinuationTokenProtector>());
             IDocumentStoreClient<T> decorated = core;
             foreach (var behavior in this.behaviors.Where(x => x.DocumentType == typeof(T)).AsEnumerable().Reverse())
             {
@@ -272,6 +274,9 @@ public sealed class DocumentStorageBuilderContext(
             var token = this.WrapToken("find", prepared.Value.QueryHash, result.Value.ContinuationToken);
             return token.IsFailure ? token.Wrap<DocumentPage<T>>() : Result<DocumentPage<T>>.Success(new() { Items = result.Value.Items, ContinuationToken = token.Value });
         }
+
+        public Task<Result<DocumentInfoPage>> ListPageAsync(DocumentFilterScope scope, FilterModel filter, string continuationToken,
+            CancellationToken cancellationToken = default) => inner.ListPageAsync(scope, filter, continuationToken, cancellationToken);
 
         public async Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default)
         {

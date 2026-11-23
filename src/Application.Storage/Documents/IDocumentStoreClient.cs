@@ -118,6 +118,11 @@ public interface IDocumentStoreClient<T> where T : class, new()
     /// </example>
     Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default);
 
+    /// <summary>Lists one page of metadata matching key and Dimension criteria.</summary>
+    /// <example><code>var page = await documents.ListPageAsync(scope, filter, continuationToken: null, cancellationToken: cancellationToken);</code></example>
+    Task<Result<DocumentInfoPage>> ListPageAsync(DocumentFilterScope scope, FilterModel filter, string continuationToken, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Result<DocumentInfoPage>.Failure(new DocumentStoreQueryNotSupportedError("Provider does not support FilterModel queries.")));
+
     /// <summary>
     /// Counts documents matching a query that are visible at the operation cutoff.
     /// </summary>

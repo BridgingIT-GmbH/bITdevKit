@@ -181,6 +181,7 @@ public sealed class InMemoryBlobStoreProvider(
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        if (update?.Dimensions is not null) return Task.FromResult(Result<StoredBlobInfo>.Failure(new BlobDimensionsNotSupportedError()));
 
         var validation = BlobValidator.Validate(update);
         if (validation.IsFailure)

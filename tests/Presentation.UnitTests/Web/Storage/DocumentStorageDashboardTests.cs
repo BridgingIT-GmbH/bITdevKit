@@ -189,6 +189,45 @@ public sealed class DocumentStorageDashboardTests
         accessor.ReceivedCalls().ShouldBeEmpty();
     }
 
+    [Theory]
+    [InlineData(null, "edit", -1)]
+    [InlineData("{}", "edit", 0)]
+    [InlineData("""{"approved":{"type":"boolean","value":false}}""", "new", 1)]
+    public async Task SaveAction_WithOptionalDimensions_PreservesOmittedAndForwardsExplicitChanges(
+        string dimensions, string mode, int expectedCount)
+    {
+        var accessor = Substitute.For<IDocumentStoreClientAccessor>();
+        DocumentWriteOptions saved = null;
+        accessor.UpsertJsonAsync(Arg.Any<DocumentKey>(), Arg.Any<string>(), Arg.Do<DocumentWriteOptions>(options => saved = options),
+            Arg.Any<CancellationToken>()).Returns(Result.Success());
+        var form = Fields();
+        form["mode"] = mode;
+        if (mode == "edit") form["etag"] = "original-version";
+        if (dimensions is not null) form["dimensions"] = dimensions;
+
+        var status = await DispatchActionAsync("save", accessor, form);
+
+        status.ShouldBe(StatusCodes.Status200OK);
+        saved.CreateOnly.ShouldBe(mode == "new");
+        (saved.Dimensions?.Count ?? -1).ShouldBe(expectedCount);
+        if (expectedCount == 1) saved.Dimensions["approved"].Value.ShouldBe(false);
+    }
+
+    [Fact]
+    public async Task SaveAction_WithDuplicateDimensionNames_DoesNotWriteDocument()
+    {
+        var accessor = Substitute.For<IDocumentStoreClientAccessor>();
+        var form = Fields();
+        form["mode"] = "new";
+        form["dimensions"] = """{"tag":{"type":"string","value":"one"},"Tag":{"type":"string","value":"two"}}""";
+
+        var status = await DispatchActionAsync("save", accessor, form);
+
+        status.ShouldBe(StatusCodes.Status400BadRequest);
+        await accessor.DidNotReceive().UpsertJsonAsync(Arg.Any<DocumentKey>(), Arg.Any<string>(), Arg.Any<DocumentWriteOptions>(),
+            Arg.Any<CancellationToken>());
+    }
+
     private static Dictionary<string, string> Fields() => new()
     {
         ["clientId"] = "records", ["partitionKey"] = "records", ["rowKey"] = "42", ["mode"] = "edit", ["content"] = "{\"Name\":\"replacement\"}"

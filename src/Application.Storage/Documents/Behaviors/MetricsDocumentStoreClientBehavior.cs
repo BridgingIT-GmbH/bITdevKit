@@ -41,6 +41,10 @@ public sealed class MetricsDocumentStoreClientBehavior<T> : DocumentStoreClientB
     public override Task<Result<DocumentPage<T>>> FindPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.Measure("find", () => base.FindPageAsync(query, cancellationToken));
     /// <inheritdoc />
     public override Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.Measure("list", () => base.ListPageAsync(query, cancellationToken));
+
+    /// <inheritdoc />
+    public override Task<Result<DocumentInfoPage>> ListPageAsync(DocumentFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) => this.Measure("list", () => base.ListPageAsync(scope, filter, continuationToken, cancellationToken));
     /// <inheritdoc />
     public override Task<Result<long>> CountAsync(DocumentCountQuery query, CancellationToken cancellationToken = default) => this.Measure("count", () => base.CountAsync(query, cancellationToken));
     /// <inheritdoc />

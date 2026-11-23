@@ -6,6 +6,7 @@
     const labels = { Equal: 'is', NotEqual: 'is not', GreaterThan: 'greater than', GreaterThanOrEqual: 'at least', LessThan: 'less than', LessThanOrEqual: 'at most', Exists: 'exists', Missing: 'is missing', IsNull: 'is null', IsNotNull: 'is not null' };
     const kinds = { Integer: 'Integer', Decimal: 'Decimal', Boolean: 'Boolean', String: 'String', DateTime: 'Date/time (UTC)' };
     const states = new Set(['Exists', 'Missing', 'IsNull', 'IsNotNull']);
+    const originalStrings = new WeakMap();
     function element(tag, classes, text) {
         const node = document.createElement(tag);
         if (classes) node.className = classes;
@@ -42,8 +43,10 @@
         const supportedKinds = Object.fromEntries(Object.entries(kinds).filter(([kind]) => editor.operators[kind]?.length));
         const type = select('Value type', supportedKinds, Object.keys(kinds).find(k => k.toLowerCase() === node.operand?.type?.toLowerCase()) || 'Integer'); type.dataset.dimensionType = '';
         const operation = select('Comparison', {}, ''); operation.dataset.dimensionOperator = '';
-        const value = element('input', 'form-control form-control-sm'); value.setAttribute('aria-label', 'Dimension value'); value.dataset.dimensionValue = '';
+        const value = element('textarea', 'form-control form-control-sm'); value.setAttribute('aria-label', 'Dimension value'); value.dataset.dimensionValue = '';
+        value.rows = 1;
         value.value = node.operand?.value == null ? '' : String(node.operand.value);
+        if (node.operand?.type === 'string') originalStrings.set(value, { stored: node.operand.value, displayed: value.value });
         for (const [width, control] of [['col-12 col-lg-3', name], ['col-6 col-lg-2', type], ['col-6 col-lg-3', operation], ['col-10 col-lg-3', value], ['col-2 col-lg-1', button('Remove condition', 'remove-condition', true)]]) {
             const cell = element('div', width); cell.append(control); row.append(cell);
         }
@@ -92,7 +95,10 @@
             const node = { name: row.querySelector('[data-dimension-name]').value, operator: row.querySelector('[data-dimension-operator]').value };
             if (!states.has(node.operator)) {
                 const type = row.querySelector('[data-dimension-type]').value;
-                let value = row.querySelector('[data-dimension-value]').value;
+                const input = row.querySelector('[data-dimension-value]');
+                let value = input.value;
+                const original = originalStrings.get(input);
+                if (type === 'String' && original?.displayed === value) value = original.stored;
                 if (type === 'Integer' && /^[+-]?\d+$/.test(value) && Number.isSafeInteger(Number(value))) value = Number(value);
                 if (type === 'Boolean' && ['true', 'false'].includes(value.toLowerCase())) value = value.toLowerCase() === 'true';
                 node.operand = { type: type.toLowerCase(), value };
@@ -164,6 +170,6 @@
             editor.querySelector('[data-dimension-count]').textContent = editor.querySelectorAll('[data-dimension-condition]').length ? `(${editor.querySelectorAll('[data-dimension-condition]').length})` : '';
         });
     }
-    dashboard.storageDimensions = { mount, clear, showError };
+    dashboard.storageDimensions = { mount, clear };
 })();
 </script>

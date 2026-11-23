@@ -25,6 +25,10 @@ public class RetryDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
     public override Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.ListPageAsync(query, ct), cancellationToken);
 
     /// <inheritdoc />
+    public override Task<Result<DocumentInfoPage>> ListPageAsync(DocumentFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.ListPageAsync(scope, filter, continuationToken, ct), cancellationToken);
+
+    /// <inheritdoc />
     public override Task<Result<long>> CountAsync(DocumentCountQuery query, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.CountAsync(query, ct), cancellationToken);
 
     /// <inheritdoc />

@@ -110,6 +110,11 @@ public interface IBlobStoreClient
     /// </example>
     Task<Result<BlobPage>> ListPageAsync(BlobQuery query, CancellationToken cancellationToken = default);
 
+    /// <summary>Lists one page of metadata matching key and Dimension criteria.</summary>
+    /// <example><code>var page = await blobs.ListPageAsync(scope, filter, continuationToken: null, cancellationToken: cancellationToken);</code></example>
+    Task<Result<BlobPage>> ListPageAsync(BlobFilterScope scope, FilterModel filter, string continuationToken, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Result<BlobPage>.Failure(new BlobStoreQueryNotSupportedError("Provider does not support FilterModel queries.")));
+
     /// <summary>
     /// Deletes a blob by exact key.
     /// </summary>

@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 
 namespace BridgingIT.DevKit.Application.Storage;
@@ -60,6 +60,11 @@ public interface IDocumentStoreClientAccessor
     /// </code>
     /// </example>
     Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default);
+
+    /// <summary>Lists one page of metadata matching key and Dimension criteria.</summary>
+    /// <example><code>var page = await documents.ListPageAsync(scope, filter, continuationToken: null, cancellationToken: cancellationToken);</code></example>
+    Task<Result<DocumentInfoPage>> ListPageAsync(DocumentFilterScope scope, FilterModel filter, string continuationToken, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Result<DocumentInfoPage>.Failure(new DocumentStoreQueryNotSupportedError("Provider does not support FilterModel queries.")));
 
     /// <summary>
     /// Gets one bounded page of JSON entries with metadata and serialized sizes.

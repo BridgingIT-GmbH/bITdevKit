@@ -6,10 +6,14 @@
 namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
 using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
@@ -120,6 +124,7 @@ public sealed class BlobStorageDashboardTests
     [Theory]
     [InlineData("upload")]
     [InlineData("expiration")]
+    [InlineData("metadata")]
     [InlineData("delete")]
     public async Task EditAction_WithoutOriginalEtag_ReturnsBadRequest(string action)
     {
@@ -137,6 +142,7 @@ public sealed class BlobStorageDashboardTests
     [Theory]
     [InlineData("upload")]
     [InlineData("expiration")]
+    [InlineData("metadata")]
     [InlineData("delete")]
     public async Task EditAction_WithStaleEtag_ReturnsConflict(string action)
     {
@@ -160,7 +166,7 @@ public sealed class BlobStorageDashboardTests
         status.ShouldBe(StatusCodes.Status409Conflict);
         if (action == "upload")
             await client.Received(1).UploadAsync(Arg.Is<BlobUpload>(upload => upload.IfMatchETag == "original-version"), Arg.Any<CancellationToken>());
-        else if (action == "expiration")
+        else if (action is "expiration" or "metadata")
             await client.Received(1).UpdatePropertiesAsync(Arg.Is<BlobPropertiesUpdate>(update => update.IfMatchETag == "original-version"), Arg.Any<CancellationToken>());
         else
             await client.Received(1).DeleteAsync(Arg.Any<BlobKey>(), Arg.Is<BlobDeleteOptions>(options => options.IfMatchETag == "original-version"), Arg.Any<CancellationToken>());
@@ -315,20 +321,180 @@ public sealed class BlobStorageDashboardTests
     }
 
     [Fact]
-    public async Task UploadAction_NewUpload_UsesRequestedExpirationAndRemainsCreateOnly()
+    public async Task UploadAction_NewUpload_StoresPropertiesAndExpirationAndRemainsCreateOnly()
     {
         var client = new BlobStoreClient("inmemory", new InMemoryBlobStoreProvider());
         var expiresAt = DateTimeOffset.UtcNow.AddDays(1);
         var form = Fields();
         form["mode"] = "new";
         form["expiresAt"] = expiresAt.ToString("O");
+        form["properties"] = """{"classification":"internal","approved":true,"year":2026}""";
 
         var created = await DispatchActionAsync("upload", client, form);
         var duplicate = await DispatchActionAsync("upload", client, form);
 
         created.ShouldBe(StatusCodes.Status200OK);
         duplicate.ShouldBe(StatusCodes.Status409Conflict);
-        (await client.GetPropertiesAsync(new("records", "42.txt"))).Value.ExpiresAt.ShouldBe(expiresAt);
+        var info = (await client.GetPropertiesAsync(new("records", "42.txt"))).Value;
+        info.ExpiresAt.ShouldBe(expiresAt);
+        info.Properties.Get<string>("classification").ShouldBe("internal");
+        info.Properties.Get<bool>("approved").ShouldBeTrue();
+        info.Properties.Get<long>("year").ShouldBe(2026L);
+    }
+
+    [Theory]
+    [InlineData(null, "archive", "archive/42.txt")]
+    [InlineData("", "archive", "archive/42.txt")]
+    [InlineData("  ", "archive", "archive/42.txt")]
+    [InlineData("/", "archive", "archive/42.txt")]
+    [InlineData("", "", "42.txt")]
+    [InlineData("report.txt", "archive", "archive/report.txt")]
+    public async Task UploadAction_NewUpload_ResolvesNameWithinPrefix(string name, string prefix, string expectedName)
+    {
+        var client = new BlobStoreClient("inmemory", new InMemoryBlobStoreProvider());
+        var form = Fields();
+        form["mode"] = "new";
+        form["prefix"] = prefix;
+        form.Remove("name");
+        if (name is not null) form["name"] = name;
+
+        var status = await DispatchActionAsync("upload", client, form);
+
+        status.ShouldBe(StatusCodes.Status200OK);
+        (await client.ExistsAsync(new("records", expectedName))).Value.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task UploadAction_WithTypedDimensions_ForwardsTheirTypesAndValues()
+    {
+        var client = Substitute.For<IBlobStoreClient>();
+        client.UploadAsync(Arg.Any<BlobUpload>(), Arg.Any<CancellationToken>()).Returns(Result<BlobInfo>.Success(new()));
+        var form = Fields();
+        form["mode"] = "new";
+        form["dimensions"] = """{"year":{"type":"integer","value":2026},"amount":{"type":"decimal","value":"999999999999.999999"},"tag":{"type":"null","value":null}}""";
+
+        var status = await DispatchActionAsync("upload", client, form);
+
+        status.ShouldBe(StatusCodes.Status200OK);
+        await client.Received(1).UploadAsync(Arg.Is<BlobUpload>(upload =>
+            Equals(upload.Dimensions["year"].Value, 2026)
+            && Equals(upload.Dimensions["amount"].Value, 999999999999.999999m)
+            && upload.Dimensions["tag"].ValueType == BlobDimensionValueType.Null), Arg.Any<CancellationToken>());
+    }
+
+    [Theory]
+    [InlineData("properties", """{"tag":["invalid"]}""")]
+    [InlineData("dimensions", """{"year":{"type":"integer","value":"2026"}}""")]
+    public async Task UploadAction_WithInvalidMetadata_DoesNotUpload(string field, string value)
+    {
+        var client = Substitute.For<IBlobStoreClient>();
+        var form = Fields();
+        form["mode"] = "new";
+        form[field] = value;
+
+        var status = await DispatchActionAsync("upload", client, form);
+
+        status.ShouldBe(StatusCodes.Status400BadRequest);
+        await client.DidNotReceive().UploadAsync(Arg.Any<BlobUpload>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task MetadataAction_CombinedEdit_SavesUnderOneVersionAndKeepsContent()
+    {
+        await using var connection = new SqliteConnection("Data Source=:memory:");
+        await connection.OpenAsync();
+        await using var services = new ServiceCollection().AddDbContext<MetadataBlobContext>(options => options.UseSqlite(connection))
+            .BuildServiceProvider();
+        await using (var scope = services.CreateAsyncScope())
+        {
+            await scope.ServiceProvider.GetRequiredService<MetadataBlobContext>().Database.EnsureCreatedAsync();
+        }
+
+        var provider = new EntityFrameworkBlobStoreProvider<MetadataBlobContext>(services.GetRequiredService<IServiceScopeFactory>());
+        var sut = new BlobStoreClient("reports", provider, decorate: inner => new CompressionBlobStoreClientBehavior(inner));
+        var key = new BlobKey("records", "42.txt");
+        var expiresAt = DateTimeOffset.UtcNow.AddHours(1);
+        var owner = Guid.NewGuid();
+        await using var stream = new MemoryStream("report"u8.ToArray());
+        var initial = await sut.UploadAsync(new BlobUpload
+        {
+            Key = key,
+            Content = stream,
+            ContentType = ContentType.TXT,
+            ExpiresAt = expiresAt,
+            Properties = new PropertyBag { ["owner"] = owner },
+            Dimensions = BlobDimensions.Create(new Dictionary<string, object> { ["year"] = 2025 }).Value
+        });
+        initial.IsSuccess.ShouldBeTrue();
+
+        var form = Fields();
+        form["etag"] = initial.Value.ETag;
+        form["properties"] = $$"""{"owner":"{{owner}}","source":"reviewed"}""";
+        form["dimensions"] = """{"year":{"type":"integer","value":2026}}""";
+        (await DispatchActionAsync("metadata", sut, form)).ShouldBe(StatusCodes.Status200OK);
+
+        var edited = (await sut.GetPropertiesAsync(key)).Value;
+        edited.ETag.ShouldNotBe(initial.Value.ETag);
+        edited.Properties["owner"].ShouldBe(owner);
+        edited.Properties["source"].ShouldBe("reviewed");
+        edited.Dimensions["year"].Value.ShouldBe(2026);
+        edited.ContentType.ShouldBe(ContentType.TXT);
+        edited.ContentHash.ShouldBe(initial.Value.ContentHash);
+        edited.ExpiresAt.ShouldBe(expiresAt);
+
+        form["properties"] = "{}";
+        form["dimensions"] = "{}";
+        form["expiresAt"] = "";
+        (await DispatchActionAsync("metadata", sut, form)).ShouldBe(StatusCodes.Status409Conflict);
+        (await sut.GetPropertiesAsync(key)).Value.ETag.ShouldBe(edited.ETag);
+
+        form["etag"] = edited.ETag;
+        (await DispatchActionAsync("metadata", sut, form)).ShouldBe(StatusCodes.Status200OK);
+        var cleared = (await sut.GetPropertiesAsync(key)).Value;
+        cleared.Properties.ShouldBeEmpty();
+        cleared.Dimensions.ShouldBeEmpty();
+        cleared.ExpiresAt.ShouldBeNull();
+        await using var download = (await sut.DownloadAsync(key)).Value;
+        using var reader = new StreamReader(download.Content);
+        (await reader.ReadToEndAsync()).ShouldBe("report");
+    }
+
+    [Theory]
+    [InlineData("properties", """{"owner":[]}""")]
+    [InlineData("dimensions", """{"year":{"type":"integer","value":"2026"}}""")]
+    [InlineData("expiresAt", "invalid")]
+    public async Task MetadataAction_WithInvalidField_RejectsTheEntireEdit(string field, string value)
+    {
+        var sut = Substitute.For<IBlobStoreClient>();
+        var form = Fields();
+        form["etag"] = "original-version";
+        form[field] = value;
+
+        var status = await DispatchActionAsync("metadata", sut, form);
+
+        status.ShouldBe(StatusCodes.Status400BadRequest);
+        sut.ReceivedCalls().ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task MetadataAction_WithoutDimensionSupport_AllowsPropertyEditsAndRejectsDimensions()
+    {
+        var sut = new BlobStoreClient("inmemory", new InMemoryBlobStoreProvider());
+        var form = Fields();
+        form["mode"] = "new";
+        (await DispatchActionAsync("upload", sut, form)).ShouldBe(StatusCodes.Status200OK);
+        var key = new BlobKey("records", "42.txt");
+        var initial = (await sut.GetPropertiesAsync(key)).Value;
+        form["mode"] = "edit";
+        form["etag"] = initial.ETag;
+        form["properties"] = """{"source":"reviewed"}""";
+        form["dimensions"] = "{}";
+
+        (await DispatchActionAsync("metadata", sut, form)).ShouldBe(StatusCodes.Status400BadRequest);
+        (await sut.GetPropertiesAsync(key)).Value.ETag.ShouldBe(initial.ETag);
+        form.Remove("dimensions");
+        (await DispatchActionAsync("metadata", sut, form)).ShouldBe(StatusCodes.Status200OK);
+        (await sut.GetPropertiesAsync(key)).Value.Properties["source"].ShouldBe("reviewed");
     }
 
     private static Dictionary<string, string> Fields() => new()
@@ -372,4 +538,11 @@ public sealed class BlobStorageDashboardTests
         {
             RequestServices = services.BuildServiceProvider()
         };
+
+    private sealed class MetadataBlobContext(DbContextOptions<MetadataBlobContext> options) : DbContext(options), IBlobStoreContext
+    {
+        public DbSet<StorageBlob> StorageBlobs { get; set; }
+
+        public DbSet<StorageBlobChunk> StorageBlobChunks { get; set; }
+    }
 }

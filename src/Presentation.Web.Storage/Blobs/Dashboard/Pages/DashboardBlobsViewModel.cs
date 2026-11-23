@@ -142,4 +142,9 @@ public sealed record DashboardBlobRow(
     DateTimeOffset? CreatedAt,
     DateTimeOffset? LastModifiedAt,
     DateTimeOffset? ExpiresAt,
-    PropertyBag Properties);
+    PropertyBag Properties)
+{
+    /// <summary>Gets the stored dimensions displayed with the blob metadata.</summary>
+    /// <example><code>var dimensions = row.Dimensions;</code></example>
+    public BlobDimensions Dimensions { get; init; } = BlobDimensions.Empty;
+}

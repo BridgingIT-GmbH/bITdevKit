@@ -114,7 +114,8 @@ public static class BlobQueryValidator
         return Result<BlobQueryValidation>.Success(new BlobQueryValidation(normalizedQuery, take, queryHash, continuation));
     }
 
-    private static Result ValidateShape(
+    /// <summary>Validates storage key scope and applies the client's full-scan policy.</summary>
+    public static Result ValidateShape(
         BlobQuery query,
         BlobStoreOptions options,
         BlobStoreProviderCapabilities capabilities)

@@ -13,6 +13,10 @@ public sealed record BlobDimensionCapabilities
     /// <summary>Gets whether collections can be stored and round-tripped.</summary>
     public bool SupportsDimensions { get; init; }
 
+    /// <summary>Gets whether dimensions can be replaced in the same metadata write as properties.</summary>
+    /// <example><code>var editable = blobs.DimensionCapabilities.SupportsMetadataUpdates;</code></example>
+    public bool SupportsMetadataUpdates { get; init; }
+
     /// <summary>Gets whether dimension predicates execute in the backend.</summary>
     public bool SupportsQueries { get; init; }
 

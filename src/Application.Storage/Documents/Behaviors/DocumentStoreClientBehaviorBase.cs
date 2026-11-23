@@ -25,6 +25,10 @@ public abstract class DocumentStoreClientBehaviorBase<T>(IDocumentStoreClient<T>
     public virtual Task<Result<DocumentPage<T>>> FindPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.Inner.FindPageAsync(query, cancellationToken);
     /// <inheritdoc />
     public virtual Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.Inner.ListPageAsync(query, cancellationToken);
+
+    /// <inheritdoc />
+    public virtual Task<Result<DocumentInfoPage>> ListPageAsync(DocumentFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) => this.Inner.ListPageAsync(scope, filter, continuationToken, cancellationToken);
     /// <inheritdoc />
     public virtual Task<Result<long>> CountAsync(DocumentCountQuery query, CancellationToken cancellationToken = default) => this.Inner.CountAsync(query, cancellationToken);
     /// <inheritdoc />

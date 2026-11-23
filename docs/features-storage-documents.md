@@ -280,11 +280,72 @@ EF discovers the two dimension tables through annotated navigations on `StorageD
 
 The name dictionary retains unused names and has no quota. Its per-provider positive cache is bounded to 4,096 entries. After externally recreating the database, quiesce operations and recreate the provider or call `ClearDimensionNameCache()` on the EF provider. Diagnostics expose local cache/registration counters. MCP `documents.clients` and `documents.probe` count dictionary entries only when `includeDimensionNameCounts` is explicitly true.
 
-Dimensions are plaintext searchable metadata in the database. Payload encryption does not encrypt their snapshot or search values. Avoid placing secrets in Dimensions.
+Dimensions are plaintext metadata indexed for filtering. Payload encryption does not encrypt their snapshot or indexed values. Avoid placing secrets in Dimensions.
 
 Enabled read endpoints add POST `/{clientId}/documents/search`, `/documents/keys`, and `/documents/count` under their configured route group. Maintenance adds PATCH `/{clientId}/documents/dimensions`. Typed dimensions use envelopes such as `{"FiscalYear":{"type":"integer","value":2026},"Amount":{"type":"decimal","value":"125.5"}}`. A filter leaf is `{"name":"FiscalYear","operator":"Equal","operand":{"type":"integer","value":2026}}`; groups use `{"all":[...]}` or `{"any":[...]}`. CLI listing accepts this filter JSON through `--dimension-filter`.
 
 See the [Dimensions specification](specs/spec-storage-dimensions.md) for the schema and qualification requirements. See the [performance and scaling](#appendix-a-performance-and-scaling) for measured behavior as the collection grows. SQLite retains functional support with informational performance diagnostics; parity with SQL Server/PostgreSQL is not a target. Server performance targets remain subject to volume qualification; index presence does not promise constant latency as data grows.
+
+### Filter metadata with FilterModel
+
+Use the `ListPageAsync` overload to combine document keys and indexed Dimensions. This example lists approved invoices with row keys starting with `INV-`. Use an EF Core client for SQL Server, PostgreSQL, or SQLite. Check `descriptor.Capabilities.SupportsFilterModel` on the registration returned by `IDocumentStoreClientFactory.GetDescriptors()`.
+
+```csharp
+var scope = new DocumentFilterScope(PartitionKey: "invoices");
+var filter = new FilterModel
+{
+    PageSize = 25,
+    Filters =
+    [
+        new("RowKey", FilterOperator.StartsWith, "INV-"),
+        new("Dimensions.Approved", FilterOperator.Equal, true)
+    ]
+};
+
+string continuationToken = null;
+do
+{
+    var page = await documents.ListPageAsync(scope, filter, continuationToken, cancellationToken);
+    if (page.IsFailure)
+    {
+        Console.Error.WriteLine(string.Join(", ", page.Errors.Select(error => error.Message)));
+        break;
+    }
+
+    foreach (var document in page.Value.Items)
+    {
+        Console.WriteLine(document.Key.RowKey);
+    }
+
+    continuationToken = page.Value.ContinuationToken;
+}
+while (continuationToken is not null);
+```
+
+To run the same query over HTTP, enable maintenance endpoints for the EF-backed client and authenticate with the configured maintenance policy. Replace `{clientId}` with the registered ID from the [clients endpoint](#routes-and-request-semantics).
+
+```http
+POST /_bdk/api/storage/documents/{clientId}/search?partitionKey=invoices
+Content-Type: application/json
+
+{
+  "pageSize": 25,
+  "filters": [
+    { "field": "RowKey", "operator": "startswith", "value": "INV-" },
+    { "field": "Dimensions.Approved", "operator": "eq", "value": { "type": "boolean", "value": true } }
+  ]
+}
+```
+
+The `SupportsFilterModel` capability also applies to queries that only use keys. The `PartitionKey` and `RowKey` fields support `eq`, `neq`, and `startswith`. Sort results by either key or both.
+
+Use `Dimensions.<name>` for the provider's supported typed equality, inequality, range, and null checks. In HTTP requests, wrap a comparison value in a typed envelope as shown above. Omit `value` for `isnull` and `isnotnull`. Both checks require the Dimension to be present. Use the native Dimension query for `Exists` and `Missing`.
+
+Combine key and Dimension predicates in nested AND and OR groups. The selected partition and optional `rowKeyPrefix` query parameter constrain every branch. To avoid a full scan without a partition in the scope, each branch needs an equality comparison on `PartitionKey` or a positive indexed Dimension predicate. Use `allowFullScan=true` when the filter requires a full scan and the client permits it.
+
+Omit `page` or use `0` or `1`. Omit `pageSize` or use `0` for the configured `DefaultTake`, capped by `MaxTake` and 1,000. Each response includes metadata and Dimensions in `items`. When `hasMore` is true, send the same request with the returned `continuationToken` in the JSON body. Each page reevaluates expiration using the client clock. Fetch content through the item read.
+
+See the shared [FilterModel structure](features-filtering.md#filter-model-structure).
 
 ## Query safety
 
@@ -425,7 +486,7 @@ Every typed client method is measured, including count, key-only paging, propert
 
 The `Presentation.Web.Storage` package exposes registered typed Document Storage clients through two optional Minimal API groups:
 
-- `AddMaintenanceEndpoints(...)` enables create/update/delete actions, property reads/updates, existence checks, registered clients, and bounded key listing.
+- `AddMaintenanceEndpoints(...)` enables create, update, and delete actions, property reads and updates, existence checks, discovery of registered clients, bounded key listing, and FilterModel queries.
 - `AddReadEndpoints(...)` enables exact-key document content reads with an ETag response header.
 
 Enable each group explicitly in the feature setup. Registering `AddDocumentStorage()` and its providers does not enable either group. Assembly discovery through `AddEndpoints()` also leaves them disabled until explicitly configured. `app.MapEndpoints()` maps the enabled registrations.
@@ -471,11 +532,14 @@ GET    /_bdk/api/storage/documents/clients
 GET    /_bdk/api/storage/documents/{clientId}/documents/properties?partitionKey=customers&rowKey=customer-42
 GET    /_bdk/api/storage/documents/{clientId}/documents/exists?partitionKey=customers&rowKey=customer-42
 GET    /_bdk/api/storage/documents/{clientId}/documents/keys?partitionKey=customers&rowKeyPrefix=customer-&take=100
+POST   /_bdk/api/storage/documents/{clientId}/search?partitionKey=invoices
 POST   /_bdk/api/storage/documents/{clientId}/documents?partitionKey=customers&rowKey=customer-42
 PUT    /_bdk/api/storage/documents/{clientId}/documents?partitionKey=customers&rowKey=customer-42
 PATCH  /_bdk/api/storage/documents/{clientId}/documents/properties?partitionKey=customers&rowKey=customer-42
 DELETE /_bdk/api/storage/documents/{clientId}/documents?partitionKey=customers&rowKey=customer-42
 ```
+
+See the [FilterModel request example](#filter-metadata-with-filtermodel) for the JSON request to `POST /{clientId}/search`.
 
 POST is atomic create-only and returns HTTP 201 with committed `DocumentInfo`, an `ETag` header, and a `Location` pointing to the maintenance properties route. An existing physical record, including an expired record, returns HTTP 409. PUT creates or replaces content and returns HTTP 200 with committed `DocumentInfo` and a fresh `ETag`. Both deserialize the `content` envelope field through the selected typed client's serializer and use its normal validation, behaviors, transforms, size limits, and provider pipeline.
 
@@ -613,13 +677,17 @@ Open Documents at `/_bdk/dashboard/storage/documents`. Choose a client, then app
 
 For a provider that supports Dimension queries, expand **Dimensions** and add typed conditions. Combine them with **Match all** or **Match any**, including nested groups, then choose **Apply**. Available comparisons follow the provider. Results and the matching count use the same filter, which remains active through refresh and Load more. Reset or changing clients clears it. The key-filter illustration below omits the optional Dimensions panel.
 
+Applied filters and unfinished Dimension entries survive switching between **Explorer** and **Diagnostics** or navigating back in the same browser tab.
+
 Dashboard filters travel in URLs and remain subject to hosting limits. A large valid filter can return HTTP 414 when it exceeds the request-line or query-string limit. Use the POST search endpoint or .NET query API for larger filters.
 
 [![Document dashboard with named client, key filters and persisted JSON document metadata](assets/dashboard/14-storage-documents-documents.png)](assets/dashboard/14-storage-documents-documents.png)
 
-Select a row's information button to inspect and edit its JSON payload, scalar properties and expiration. The New document button opens the same editor with editable partition and row keys. A create conflict reports an existing key rather than overwriting it.
+Select a row's information button to inspect and edit its JSON payload, scalar properties, and expiration. For clients that support Dimensions, the editor shows the stored keys, types, and values. Use **Add dimension** to add an entry. The **New document** button opens the same editor with editable partition and row keys. A create conflict reports an existing key.
 
-Existing edits submit the originally displayed ETag, and an ordinary edit without that token is invalid. On conflict, the editor retains its JSON draft, properties, expiration, identity, and original ETag. **Reload current item** asks for discard confirmation before replacing the draft. **Force overwrite** submits the retained draft without an ETag condition. This choice applies to one submission. After a validation error, HTTP error, or network failure, an ordinary Save uses the original ETag again. New documents remain create-only. The editor never refreshes the token silently to make a stale save succeed.
+Use the funnel button beside a saved dimension in **Document Details** to add its value to the active filter. Edit or remove conditions in **Dimensions**, then select **Apply**. In **Dimension columns**, pin up to three keys in the results table. The dashboard remembers these keys for each selected document client. A dash indicates a missing dimension, and `null` indicates an explicit null.
+
+Existing edits submit the originally displayed ETag, and an ordinary edit without that token is invalid. On conflict, the editor retains its JSON draft, properties, dimensions, expiration, identity, and original ETag. **Reload current item** asks for discard confirmation before replacing the draft. **Force overwrite** submits the retained draft without an ETag condition. This choice applies to one submission. After a validation error, HTTP error, or network failure, an ordinary Save uses the original ETag again. New documents remain create-only. The editor never refreshes the token silently to make a stale save succeed.
 
 [![Document details editor with keyed JSON payload, expiration and metadata](assets/dashboard/storage/document-details.png)](assets/dashboard/storage/document-details.png)
 

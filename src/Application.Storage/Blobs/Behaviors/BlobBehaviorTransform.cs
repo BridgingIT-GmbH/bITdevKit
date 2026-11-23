@@ -326,6 +326,7 @@ public static class BlobBehaviorTransform
         return new BlobPropertiesUpdate
         {
             Key = update.Key,
+            Dimensions = update.Dimensions,
             ContentType = current.ContentType,
             ExpiresAt = update.ExpiresAt,
             Properties = BlobPropertyValues.Clone(update.Properties),

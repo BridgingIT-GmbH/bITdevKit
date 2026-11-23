@@ -32,9 +32,15 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobDi
     public void ClearDimensionNameCache() => this.dimensionNames.Clear();
 
     /// <inheritdoc />
-    public async Task<Result<StoredBlobInfo>> UpdateDimensionsAsync(
+    public Task<Result<StoredBlobInfo>> UpdateDimensionsAsync(
         BlobDimensionsUpdate update,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default) =>
+        this.UpdateDimensionsAsync(update, null, cancellationToken);
+
+    private async Task<Result<StoredBlobInfo>> UpdateDimensionsAsync(
+        BlobDimensionsUpdate update,
+        StoredBlobPropertiesUpdate propertiesUpdate,
+        CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -100,6 +106,11 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobDi
             snapshot = CloneBlob(blob);
             var changed = await BlobDimensionMutations.ApplyAsync(dbContext, blob, update.Dimensions, this.dimensionNames, dimensions, cancellationToken).ConfigureAwait(false);
             if (changed.IsFailure) throw new BlobStoreResultException(changed.Errors.First());
+            if (propertiesUpdate is not null)
+            {
+                ApplyPropertyUpdate(blob, propertiesUpdate);
+            }
+
             blob.ETag = CreateETag();
             blob.LastModifiedAt = DateTimeOffset.UtcNow;
             blob.LeaseId = null;
@@ -121,7 +132,8 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobDi
 
             if (transaction is not null)
             {
-                var committed = await CommitDimensionsAsync(transaction, "update-dimensions", cancellationToken).ConfigureAwait(false);
+                var operation = propertiesUpdate is null ? "update-dimensions" : "update-properties";
+                var committed = await CommitDimensionsAsync(transaction, operation, cancellationToken).ConfigureAwait(false);
                 if (committed.IsFailure) return Result<StoredBlobInfo>.Failure(committed);
             }
 

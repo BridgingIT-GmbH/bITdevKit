@@ -27,6 +27,9 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class DocumentStoreProviderCapabilities
 {
+    /// <summary>Gets whether the provider supports bounded FilterModel queries.</summary>
+    public bool SupportsFilterModel { get; init; }
+
     /// <summary>Gets the independent Dimensions storage and operator profile.</summary>
     public DocumentDimensionCapabilities Dimensions { get; init; } = DocumentDimensionCapabilities.Unsupported;
 

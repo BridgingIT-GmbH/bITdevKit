@@ -390,7 +390,7 @@ Cancellation throws `OperationCanceledException` after active work observes canc
 
 `Presentation.Web.Storage` provides optional Blob Storage Minimal API endpoints. Enable each group explicitly in the feature setup:
 
-- `AddMaintenanceEndpoints(...)` enables content creation/replacement, property updates, deletes, and metadata reads.
+- `AddMaintenanceEndpoints(...)` enables content creation and replacement, property updates, deletes, metadata reads, and FilterModel queries.
 - `AddReadEndpoints(...)` enables the separate content-download route.
 
 Registering `AddBlobStorage()` and its clients does not enable either group. Assembly discovery through `AddEndpoints()` also leaves them disabled until explicitly configured. `app.MapEndpoints()` maps the enabled registrations.
@@ -432,8 +432,11 @@ GET    /_bdk/api/storage/blobs/{storeName}/blobs/exists?container=reports&name=2
 GET    /_bdk/api/storage/blobs/{storeName}/blobs/properties?container=reports&name=2026/report.pdf
 PATCH  /_bdk/api/storage/blobs/{storeName}/blobs/properties
 GET    /_bdk/api/storage/blobs/{storeName}/blobs?container=reports&prefix=2026/&take=100
+POST   /_bdk/api/storage/blobs/{storeName}/search?container=invoices
 DELETE /_bdk/api/storage/blobs/{storeName}/blobs?container=reports&name=2026/report.pdf
 ```
+
+See the [FilterModel request example](#filter-metadata-with-filtermodel) for the JSON request to `POST /{storeName}/search`.
 
 POST streams the raw request body and atomically creates a new key, returning HTTP 201 with a metadata body and `Location`. An existing physical key returns HTTP 409. PUT streams the raw request body and creates or replaces content, returning HTTP 200 with committed metadata. Set `Content-Type` to the payload MIME type; no multipart envelope is required. Both accept optional `expiresAt` in the query and `X-Storage-Properties` containing a JSON object of scalar values. Uploads replace the property bag and expiration: omitted properties produce an empty bag, and omitted expiration produces an unexpired blob. Nested property objects and arrays return HTTP 400. Numeric values that overflow or underflow the supported finite .NET numeric types also return HTTP 400.
 
@@ -452,7 +455,7 @@ Revised report content
 
 Property PATCH retains its existing JSON shape (`container`, `name`, optional `contentType`, `expiresAt`, `properties`, and legacy `ifMatchETag`). It replaces properties and expiration according to `BlobPropertiesUpdate`; it leaves content bytes unchanged. Every successful mutation returns a fresh whole-item ETag from the exact commit, without a follow-up read.
 
-The read endpoint is content-only and streams a single exact-key blob through the configured named client:
+The content-download endpoint streams a single exact-key blob through the configured named client:
 
 ```http
 GET /_bdk/api/storage/blobs/{storeName}/content?container=reports&name=2026/report.pdf
@@ -496,6 +499,8 @@ The dashboard page is provider-neutral and uses the configured `IBlobStoreClient
 
 For a provider that supports Dimension queries, expand **Dimensions**, add a name, type, comparison, and value, then choose **Apply**. Combine conditions with **Match all** or **Match any**, including nested groups. Available comparisons follow the selected provider. Applied filters remain active through refresh and Load more. Reset clears the Dimension filter, and changing stores clears it before loading the new provider. The key-filter illustration below omits the optional Dimensions panel.
 
+Applied filters and unfinished Dimension entries survive switching between **Explorer** and **Diagnostics** or navigating back in the same browser tab.
+
 Dashboard filters travel in URLs and remain subject to hosting limits. A large valid filter can return HTTP 414 when it exceeds the request-line or query-string limit. Use the POST search endpoint or .NET query API for larger filters.
 
 The compact list shows content type, size, modification time, expiration, and content hash. Manual and interval refreshes use the currently applied store, container, prefix, page size, full-scan consent, and continuation state. The standard refresh interval is off by default and remembered in browser-local storage. The dashboard renders metadata only and does not download blob content for list, exists, or property-style operations. The download action streams the selected blob and disposes the returned `BlobDownload`.
@@ -504,9 +509,13 @@ Open Blobs at `/_bdk/dashboard/storage/blobs`. Choose a store and container, the
 
 [![Blob dashboard with store and container filters, content metadata and row actions](assets/dashboard/19-storage-blobs-blobs.png)](assets/dashboard/19-storage-blobs-blobs.png)
 
-Use Upload to add a file. Select a row's information button to edit properties and expiration, or download its content. Permalink download and copy actions appear for clients decorated with `WithPermalinks()`. Use Previous and Next when the query returns continuation pages. See the [shared dashboard setup](features-presentation-dashboard.md) for plugin discovery and authorization.
+Use **Upload** to add a file and optionally enter a JSON object of scalar properties. If the store supports Dimensions, use **Add dimension** to enter a key, type, and value. In **Blob Details**, edit the properties, dimensions, or expiration, then select **Save changes**. Dimension editing is available on stores that support combined metadata updates. Permalink download and copy actions appear for clients decorated with `WithPermalinks()`. Use **Load more** when the query returns a continuation page. See the [shared dashboard setup](features-presentation-dashboard.md) for plugin discovery and authorization.
 
-New uploads use create-only semantics. **Replace content** retains the selected row's identity and ETag and preserves the blob's current custom properties and expiration. Use Blob Details to edit properties or expiration. Property and expiration edits also send the originally displayed ETag. An ordinary edit without that token is invalid.
+Use the funnel button beside a saved dimension in **Blob Details** to add its value to the active filter. Edit or remove conditions in **Dimensions**, then select **Apply**. In **Dimension columns**, pin up to three keys in the results table. The dashboard remembers these keys for each store. A dash indicates a missing dimension, and `null` indicates an explicit null.
+
+Open **Preview content** in **Blob Details** to view UTF-8 text, JSON, PNG, JPEG, GIF, or WebP blobs up to 1 MiB. Choose **Download** to retrieve the file.
+
+New uploads use create-only semantics. **Replace content** retains the selected row's identity and preserves the blob's current properties, dimensions, and expiration. Content replacement and metadata edits send the originally displayed ETag. An ordinary edit without that token is invalid.
 
 When a conflict occurs, the editor retains the draft, selected upload file, identity, and original ETag. **Reload current item** asks for discard confirmation before replacing the draft. **Force overwrite** submits the retained draft without an ETag condition. Refreshing an edit does not silently authorize overwriting a newer version.
 
@@ -1256,6 +1265,8 @@ Missing names and explicit null are distinct. `NotEqual` matches only present, n
 
 Omitted Dimensions preserve the current collection on content replacement. `BlobDimensions.Empty` clears it; nonempty input replaces it. New blobs without dimensions remain dimensionless. `UpdateDimensionsAsync(new BlobDimensionsUpdate { Key = key, Dimensions = replacement, IfMatchETag = current.ETag })` changes dimensions without reading or rewriting content. Content, Properties, and Dimensions share one ETag, so a change to any field invalidates a previously read version.
 
+To change Properties and Dimensions in one write, check `blobs.DimensionCapabilities.SupportsMetadataUpdates` and set both on the `BlobPropertiesUpdate` passed to `UpdatePropertiesAsync`. Pass the current content type and expiration to preserve them. A null Dimensions value preserves the collection. Use `BlobDimensions.Empty` to clear it.
+
 Upload helpers forward Dimensions from their options. Copy and move inherit source dimensions when the override is omitted, clear them for an explicit empty override, and replace them for nonempty input. A destination must support Dimensions if the operation supplies or copies any.
 
 EF discovers the two annotated dimension tables from `StorageBlob`; the context interface needs no new sets. Existing Properties require no backfill. Generate the application's normal provider-specific migrations for the added snapshot and tables. Unused dictionary names remain retained without a quota. The per-provider positive cache holds at most 4,096 names. After external database recreation, quiesce operations and recreate the provider or call its `ClearDimensionNameCache()`.
@@ -1264,9 +1275,70 @@ Enabled read endpoints add POST `/{storeName}/blobs/search` under their configur
 
 Diagnostics expose local cache and registration counters without scanning the dictionary. MCP `blobs.clients` and `blobs.probe` count dictionary entries only when `includeDimensionNameCounts` is explicitly true.
 
-Dimensions are plaintext searchable metadata in the database. Payload encryption does not encrypt their snapshot or search values. Avoid placing secrets in Dimensions.
+Dimensions are plaintext metadata indexed for filtering. Payload encryption does not encrypt their snapshot or indexed values. Avoid placing secrets in Dimensions.
 
 See the [Dimensions specification](specs/spec-storage-dimensions.md) for the schema and qualification requirements. See the [performance and scaling](#appendix-a-performance-and-scaling) for measured behavior as the collection grows. SQLite retains functional support with informational performance diagnostics; parity with SQL Server/PostgreSQL is not a target. Server performance targets remain subject to volume qualification; index presence does not promise constant latency as data grows. SQLite retention compares normalized UTC expiry values through the existing expiry index, including exact-tick cutoffs.
+
+### Filter metadata with FilterModel
+
+Use the `ListPageAsync` overload to combine a blob name prefix with an indexed Dimension. The example lists invoices with names starting with `INV-` and a `FiscalYear` of 2026. Use an EF Core client for SQL Server, PostgreSQL, or SQLite that advertises `SupportsFilterModel`. Read the capability through `IBlobStoreClientFactory.GetRegistrations()` or the [provider endpoint](#routes-and-request-semantics).
+
+```csharp
+var scope = new BlobFilterScope("invoices");
+var filter = new FilterModel
+{
+    PageSize = 25,
+    Filters =
+    [
+        new("Name", FilterOperator.StartsWith, "INV-"),
+        new("Dimensions.FiscalYear", FilterOperator.Equal, 2026)
+    ]
+};
+
+string continuationToken = null;
+do
+{
+    var page = await blobs.ListPageAsync(scope, filter, continuationToken, cancellationToken);
+    if (page.IsFailure)
+    {
+        Console.Error.WriteLine(string.Join(", ", page.Errors.Select(error => error.Message)));
+        break;
+    }
+
+    foreach (var blob in page.Value.Items)
+    {
+        Console.WriteLine(blob.Key.Name);
+    }
+
+    continuationToken = page.Value.ContinuationToken;
+}
+while (continuationToken is not null);
+```
+
+To run the same query over HTTP, enable maintenance endpoints for the EF-backed client and authenticate with the configured maintenance policy. Here the named client is `reports`.
+
+```http
+POST /_bdk/api/storage/blobs/reports/search?container=invoices
+Content-Type: application/json
+
+{
+  "pageSize": 25,
+  "filters": [
+    { "field": "Name", "operator": "startswith", "value": "INV-" },
+    { "field": "Dimensions.FiscalYear", "operator": "eq", "value": { "type": "integer", "value": 2026 } }
+  ]
+}
+```
+
+The `SupportsFilterModel` capability also applies to queries that only use keys. The `Name` field supports `eq`, `neq`, and `startswith`. The `Container` field supports `eq` and `neq`. Sort results by `Name`.
+
+Use `Dimensions.<name>` for the provider's supported typed equality, inequality, range, and null checks. In HTTP requests, wrap a comparison value in a typed envelope as shown above. Omit `value` for `isnull` and `isnotnull`. Both checks require the Dimension to be present. Use the native Dimension query for `Exists` and `Missing`.
+
+Combine key and Dimension predicates in nested AND and OR groups. The selected container and optional `prefix` query parameter constrain every branch. To avoid a full scan without a prefix, each branch needs an equality or prefix comparison on `Name`, or a positive indexed Dimension predicate. Use `allowFullScan=true` when the filter requires a full scan and the client permits it.
+
+Omit `page` or use `0` or `1`. Omit `pageSize` or use `0` for the configured `DefaultTake`, capped by `MaxTake` and 1,000. Each response includes metadata and Dimensions in `items`. When `hasMore` is true, send the same request with the returned `continuationToken` in the JSON body.
+
+See the shared [FilterModel structure](features-filtering.md#filter-model-structure).
 
 ## Properties
 

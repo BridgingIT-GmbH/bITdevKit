@@ -1,7 +1,6 @@
 ---
 created: 2026-11-03
 status: implemented
-scope: Presentation dashboard
 ---
 
 # Dashboard Page Consistency

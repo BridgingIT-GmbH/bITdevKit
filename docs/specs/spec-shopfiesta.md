@@ -1,3 +1,8 @@
+---
+created: 2026-03-11
+status: draft
+---
+
 # ShopFiesta Application Specification
 
 > A complete customer-facing shop and staff application built on the bITdevKit presentation framework and DevKit backend features.

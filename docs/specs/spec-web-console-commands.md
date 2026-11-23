@@ -3,7 +3,6 @@ created: 2026-06-05
 status: implemented
 ---
 
-
 # Design Specification: Web Console for Console Commands
 
 > Add a browser-based interactive console for the existing Console Commands feature while keeping the existing Kestrel terminal console fully functional.

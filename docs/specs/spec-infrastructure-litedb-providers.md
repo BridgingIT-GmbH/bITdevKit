@@ -1,9 +1,6 @@
 ---
-title: LiteDB Storage Providers
 created: 2026-11-19
-updated: 2026-11-23
 status: in progress
-tags: [infrastructure, litedb, storage, providers]
 ---
 
 # LiteDB Storage Providers

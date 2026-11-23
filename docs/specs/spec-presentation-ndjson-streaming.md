@@ -1,7 +1,5 @@
 ---
 created: 2026-10-29
-last_updated: 2026-10-29
-version: '1.3'
 status: implemented
 ---
 

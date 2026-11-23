@@ -1,7 +1,5 @@
 ---
-title: NuGet Publishing from GHE
 created: 2026-11-10
-updated: 2026-11-10
 status: draft
 ---
 

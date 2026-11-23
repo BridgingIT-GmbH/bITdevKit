@@ -1,3 +1,8 @@
+---
+created: 2026-03-11
+status: draft
+---
+
 # bITdevKit Blazor Presentation Framework
 
 **Finalized requirements baseline.** Target platform is .NET 10 and Blazor, with MudBlazor as the default renderer.

@@ -1,6 +1,6 @@
 ---
 created: 2026-10-06
-status: Ready for implementation
+status: implemented
 ---
 
 # Runtime and Operation Profiling Specification

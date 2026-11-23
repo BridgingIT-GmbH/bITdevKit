@@ -1,6 +1,6 @@
 ---
 created: 2026-11-13
-status: draft
+status: implemented
 ---
 
 # Specification: Getting started paths

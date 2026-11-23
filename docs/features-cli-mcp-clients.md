@@ -31,11 +31,11 @@ flowchart LR
     Config[Repository or IDE MCP configuration] --> Client[MCP client]
     Client -->|starts STDIO process| Dotnet[dotnet]
     Dotnet --> CLI[bdk mcp]
-    CLI -->|documentation and guidance| Sources[DevKit sources]
+    CLI -->|documentation and guidance| Sources[Embedded docs and guidance]
     CLI -->|workspace discovery and local IPC| Host[Running DevKit web host]
 ```
 
-The MCP client owns process startup and communicates with `bdk mcp` over STDIO. The CLI resolves the workspace and forwards runtime tools to a separately running host.
+The MCP client owns process startup and communicates with `bdk mcp` over STDIO. Documentation and API lookup read embedded assembly resources without online fallback. The CLI resolves the workspace and forwards runtime tools to a separately running host.
 
 ## Use Cases
 
@@ -116,6 +116,14 @@ Visual Studio (`.vs/mcp.json`) uses a top-level `servers` object with an explici
 ```
 
 Reload the MCP client and call `bdk_mcp_status`. Treat `available: false` as a handled unavailable result and use its `code`, `reason` and suggested next calls. An available response shows the resolved workspace and server status.
+
+## Embedded documentation
+
+The local MCP tool contains the public DevKit Markdown and generated API metadata in its assembly. No documentation download, repository checkout, or running application is required. The server ignores tool/application version differences and reports source `embedded` through `bdk_mcp_status`.
+
+After reinstalling the local tool, restart or reload its MCP connection to use the new embedded content. Changing a source document does not update an already-running or installed tool.
+
+Source Debug builds embed Markdown automatically and skip API generation. API lookup can return `documentation_unavailable` until generated metadata is available. Release builds and packaging generate that metadata. See [Documentation and API tools](./features-cli-mcp.md#documentation-and-api-tools) for the authoring flow, build commands, index-only completeness marker, and document continuation.
 
 ## Repository configurations
 
@@ -266,7 +274,7 @@ After reloading the client:
 2. Call `bdk_mcp_status`; this does not require a selected runtime.
 3. Start a DevKit web host in Development for runtime tools.
 4. Call `bdk_runtimes_list` and select a runtime when more than one is ready.
-5. Call `bdk_mcp_self_test` to check IPC, protocol and capability discovery.
+5. Call `bdk_mcp_self_test` to check embedded documentation, IPC, protocol, and capability discovery. Documentation results remain available when no runtime is selected.
 
 All configurations enable `diagnostics`, `operations` and `admin` so the full catalog is available. Admin tools still require operation-specific confirmation arguments. Remove the `--toolset` argument for a diagnostics-only server; see [Full toolset](#full-toolset).
 

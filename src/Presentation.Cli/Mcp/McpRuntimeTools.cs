@@ -17,6 +17,8 @@ public sealed class McpRuntimeTools(
     HostSelectionStore selections,
     McpIpcClient ipcClient)
 {
+    private readonly EmbeddedMcpResources documentationResources = new(typeof(CliApplication).Assembly);
+
     /// <summary>
     /// Returns local MCP status without requiring a selected runtime.
     /// </summary>
@@ -50,8 +52,9 @@ public sealed class McpRuntimeTools(
                 readyRuntimes = readyHosts.Select(HostRuntimeJson.Map).ToArray(),
                 documentation = new
                 {
-                    source = "official GitHub documentation",
-                    url = "https://github.com/bridgingit/bitdevkit/tree/main/docs"
+                    source = "embedded",
+                    available = this.documentationResources.GetDocumentPaths().Count > 0,
+                    apiAvailable = this.documentationResources.Contains(EmbeddedMcpResources.ApiIndexPath)
                 }
             }));
     }
@@ -65,6 +68,7 @@ public sealed class McpRuntimeTools(
     public async Task<McpResponse> SelfTestAsync(McpCliOptions options, CancellationToken cancellationToken)
     {
         var status = await this.GetStatusAsync(options, cancellationToken).ConfigureAwait(false);
+        var documentation = await this.CheckDocumentationAsync(cancellationToken).ConfigureAwait(false);
         var resolved = this.ResolveRuntime(options);
         if (resolved.Response is not null)
         {
@@ -73,6 +77,7 @@ public sealed class McpRuntimeTools(
                 new
                 {
                     status = status.Data,
+                    documentation,
                     runtime = resolved.Response,
                     ipc = new { connected = false },
                     capabilities = (object)null
@@ -87,16 +92,36 @@ public sealed class McpRuntimeTools(
             cancellationToken).ConfigureAwait(false);
 
         return McpResponse.Success(
-            capabilities.Available
-                ? "bdk MCP self-test passed. Runtime selection, IPC, protocol, and capabilities are healthy."
-                : "bdk MCP self-test completed with capability issues.",
+            capabilities.Available && documentation.Available
+                ? "bdk MCP self-test passed. Runtime selection, IPC, protocol, capabilities, and embedded documentation are healthy."
+                : "bdk MCP self-test completed with capability or documentation issues.",
             new
             {
                 status = status.Data,
+                documentation,
                 runtime = HostRuntimeJson.Map(resolved.Host),
                 ipc = new { connected = capabilities.Available, responseCode = capabilities.Code },
                 capabilities
             });
+    }
+
+    private async Task<McpResponse> CheckDocumentationAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var path = this.documentationResources.GetDocumentPaths().FirstOrDefault();
+            if (path is null)
+            {
+                return McpResponse.Unavailable(McpErrorCode.DocumentationUnavailable, "No embedded documentation was found.");
+            }
+
+            var content = await this.documentationResources.ReadTextAsync(path, cancellationToken).ConfigureAwait(false);
+            return McpResponse.Success("Embedded documentation is readable.", new { source = "embedded", document = path, characters = content.Length });
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            return McpResponse.Unavailable(McpErrorCode.DocumentationUnavailable, "Embedded documentation is unreadable.", exception.Message);
+        }
     }
 
     /// <summary>

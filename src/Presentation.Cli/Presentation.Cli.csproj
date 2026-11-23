@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="../../docs/public-documentation.props" />
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Cli</AssemblyName>
@@ -25,5 +27,7 @@
     <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj" />
     <ProjectReference Include="..\Presentation\Presentation.csproj" />
   </ItemGroup>
+
+  <Import Project="build/EmbeddedDocumentation.targets" />
 
 </Project>

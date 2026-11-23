@@ -1,7 +1,5 @@
 namespace BridgingIT.DevKit.Cli;
 
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using BridgingIT.DevKit.Common;
@@ -49,7 +47,7 @@ public sealed class McpDocumentationTools(IMcpDocumentationSource source)
                 .Where(result => result.Score > 0)
                 .OrderByDescending(result => result.Score)
                 .ThenBy(result => result.Source, StringComparer.OrdinalIgnoreCase)
-                .Take(limit)
+                .Take(limit + 1)
                 .Select(result => new
                 {
                     source = result.Source,
@@ -61,22 +59,22 @@ public sealed class McpDocumentationTools(IMcpDocumentationSource source)
                 .ToArray();
 
             return McpResponse.Success(
-                results.Length == 0 ? $"No DevKit documentation matched '{query}'." : $"Found {results.Length} DevKit documentation result(s) for '{query}'.",
+                results.Length == 0 ? $"No DevKit documentation matched '{query}'." : $"Found {Math.Min(results.Length, limit)} DevKit documentation result(s) for '{query}'.",
                 new
                 {
                     query,
                     source = source.Name,
-                    results
+                    results = results.Take(limit).ToArray()
                 },
-                truncated: results.Length == limit);
+                truncated: results.Length > limit);
         }
         catch (Exception exception) when (exception is not OperationCanceledException)
         {
             return McpResponse.Unavailable(
                 McpErrorCode.DocumentationUnavailable,
                 "DevKit documentation search is unavailable.",
-                exception.Message,
-                [new McpNextCall("bdk_mcp_explain_setup", new { })]);
+                exception.Message + " Rebuild or reinstall the local bdk tool to restore embedded documentation.",
+                [new McpNextCall("bdk_mcp_status", new { })]);
         }
     }
 
@@ -98,6 +96,11 @@ public sealed class McpDocumentationTools(IMcpDocumentationSource source)
                 [new McpNextCall("bdk_docs_search", new { query = "mcp diagnostics" })]);
         }
 
+        if (!TryReadOffset(arguments, out var offset))
+        {
+            return InvalidOffset();
+        }
+
         try
         {
             var document = await source.GetAsync(sourceId, cancellationToken).ConfigureAwait(false);
@@ -111,12 +114,26 @@ public sealed class McpDocumentationTools(IMcpDocumentationSource source)
             }
 
             var maxChars = McpJson.GetInt32(arguments, "maxChars", DefaultMaxChars, 1, MaxChars);
-            var content = document.Content ?? string.Empty;
-            var truncated = content.Length > maxChars;
-            if (truncated)
+            var fullContent = document.Content ?? string.Empty;
+            if (offset > fullContent.Length || SplitsSurrogatePair(fullContent, offset))
             {
-                content = content[..maxChars];
+                return InvalidOffset();
             }
+
+            var length = Math.Min(maxChars, fullContent.Length - offset);
+            if (SplitsSurrogatePair(fullContent, offset + length))
+            {
+                length--;
+            }
+
+            if (length == 0 && offset < fullContent.Length)
+            {
+                return McpResponse.Unavailable(McpErrorCode.OperationFailed, "maxChars must allow at least one complete Unicode character.");
+            }
+
+            var content = fullContent.Substring(offset, length);
+            var truncated = offset + content.Length < fullContent.Length;
+            var nextOffset = truncated ? offset + content.Length : (int?)null;
 
             return McpResponse.Success(
                 $"Loaded DevKit documentation source '{document.Source}'.",
@@ -124,19 +141,40 @@ public sealed class McpDocumentationTools(IMcpDocumentationSource source)
                 {
                     source = document.Source,
                     url = document.Url,
-                    content
+                    content,
+                    offset,
+                    nextOffset,
+                    totalChars = fullContent.Length
                 },
-                truncated);
+                truncated,
+                next: nextOffset.HasValue
+                    ? [new McpNextCall("bdk_docs_get", new { source = document.Source, offset = nextOffset.Value, maxChars })]
+                    : []);
         }
         catch (Exception exception) when (exception is not OperationCanceledException)
         {
             return McpResponse.Unavailable(
                 McpErrorCode.DocumentationUnavailable,
                 "DevKit documentation content is unavailable.",
-                exception.Message,
-                [new McpNextCall("bdk_docs_search", new { query = sourceId })]);
+                exception.Message + " Rebuild or reinstall the local bdk tool to restore embedded documentation.",
+                [new McpNextCall("bdk_mcp_status", new { })]);
         }
     }
+
+    private static bool TryReadOffset(JsonElement arguments, out int offset)
+    {
+        offset = 0;
+        return !arguments.TryGetProperty("offset", out var property) ||
+            property.ValueKind == JsonValueKind.Number && property.TryGetInt32(out offset) && offset >= 0;
+    }
+
+    private static McpResponse InvalidOffset()
+        => McpResponse.Unavailable(
+            McpErrorCode.OperationFailed,
+            "offset must be a non-negative integer within the document length at a Unicode character boundary.");
+
+    private static bool SplitsSurrogatePair(string content, int offset)
+        => offset > 0 && offset < content.Length && char.IsHighSurrogate(content[offset - 1]) && char.IsLowSurrogate(content[offset]);
 
     private static SearchResult Score(McpDocumentationDocument document, IReadOnlyCollection<string> terms)
     {
@@ -206,161 +244,3 @@ public interface IMcpDocumentationSource
 /// <param name="Url">The public source URL.</param>
 /// <param name="Content">The markdown content.</param>
 public sealed record McpDocumentationDocument(string Source, string Url, string Content);
-
-/// <summary>
-/// Reads official DevKit documentation from GitHub.
-/// </summary>
-/// <example>
-/// <code>
-/// services.AddSingleton&lt;IMcpDocumentationSource, GitHubMcpDocumentationSource&gt;();
-/// </code>
-/// </example>
-public sealed class GitHubMcpDocumentationSource(HttpClient httpClient) : IMcpDocumentationSource
-{
-    private const string Owner = "bridgingit";
-    private const string Repository = "bitdevkit";
-    private const string Branch = "main";
-    private const string ContentsApiRoot = "https://api.github.com/repos/" + Owner + "/" + Repository + "/contents/docs?ref=" + Branch;
-    private const string WebRoot = "https://github.com/" + Owner + "/" + Repository + "/blob/" + Branch + "/";
-    private const string RawRoot = "https://raw.githubusercontent.com/" + Owner + "/" + Repository + "/" + Branch + "/";
-    private readonly SemaphoreSlim cacheLock = new(1, 1);
-    private IReadOnlyList<McpDocumentationDocument> cache;
-    private DateTimeOffset cacheCreatedAt;
-
-    /// <inheritdoc />
-    public string Name => "official GitHub documentation";
-
-    /// <inheritdoc />
-    public async Task<IReadOnlyList<McpDocumentationDocument>> ListAsync(CancellationToken cancellationToken)
-    {
-        await this.cacheLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-        try
-        {
-            if (this.cache is not null && DateTimeOffset.UtcNow - this.cacheCreatedAt < TimeSpan.FromMinutes(10))
-            {
-                return this.cache;
-            }
-
-            var documents = await this.ReadDocumentsAsync(cancellationToken).ConfigureAwait(false);
-            this.cache = documents;
-            this.cacheCreatedAt = DateTimeOffset.UtcNow;
-
-            return documents;
-        }
-        finally
-        {
-            this.cacheLock.Release();
-        }
-    }
-
-    /// <inheritdoc />
-    public async Task<McpDocumentationDocument> GetAsync(string source, CancellationToken cancellationToken)
-    {
-        var normalized = NormalizeSource(source);
-        if (string.IsNullOrWhiteSpace(normalized))
-        {
-            return null;
-        }
-
-        var documents = await this.ListAsync(cancellationToken).ConfigureAwait(false);
-        var found = documents.FirstOrDefault(document =>
-            string.Equals(document.Source, normalized, StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(document.Url, source, StringComparison.OrdinalIgnoreCase));
-        if (found is not null)
-        {
-            return found;
-        }
-
-        if (!normalized.StartsWith("docs/", StringComparison.OrdinalIgnoreCase) || !normalized.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
-        {
-            return null;
-        }
-
-        var content = await this.GetStringAsync(RawRoot + normalized, cancellationToken).ConfigureAwait(false);
-        return new McpDocumentationDocument(normalized, WebRoot + normalized, content);
-    }
-
-    private async Task<IReadOnlyList<McpDocumentationDocument>> ReadDocumentsAsync(CancellationToken cancellationToken)
-    {
-        var files = new List<GitHubContentItem>();
-        await this.CollectMarkdownFilesAsync(ContentsApiRoot, files, cancellationToken).ConfigureAwait(false);
-
-        var documents = new List<McpDocumentationDocument>(files.Count);
-        foreach (var file in files.OrderBy(item => item.Path, StringComparer.OrdinalIgnoreCase))
-        {
-            var downloadUrl = string.IsNullOrWhiteSpace(file.DownloadUrl) ? RawRoot + file.Path : file.DownloadUrl;
-            var content = await this.GetStringAsync(downloadUrl, cancellationToken).ConfigureAwait(false);
-            documents.Add(new McpDocumentationDocument(file.Path, string.IsNullOrWhiteSpace(file.HtmlUrl) ? WebRoot + file.Path : file.HtmlUrl, content));
-        }
-
-        return documents;
-    }
-
-    private async Task CollectMarkdownFilesAsync(string url, ICollection<GitHubContentItem> files, CancellationToken cancellationToken)
-    {
-        using var document = JsonDocument.Parse(await this.GetStringAsync(url, cancellationToken).ConfigureAwait(false));
-        if (document.RootElement.ValueKind != JsonValueKind.Array)
-        {
-            return;
-        }
-
-        foreach (var item in document.RootElement.EnumerateArray())
-        {
-            var type = GetString(item, "type");
-            var path = GetString(item, "path");
-            if (string.Equals(type, "file", StringComparison.OrdinalIgnoreCase) &&
-                path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
-            {
-                files.Add(new GitHubContentItem(path, GetString(item, "url"), GetString(item, "download_url"), GetString(item, "html_url")));
-            }
-            else if (string.Equals(type, "dir", StringComparison.OrdinalIgnoreCase))
-            {
-                var childUrl = GetString(item, "url");
-                if (!string.IsNullOrWhiteSpace(childUrl))
-                {
-                    await this.CollectMarkdownFilesAsync(childUrl, files, cancellationToken).ConfigureAwait(false);
-                }
-            }
-        }
-    }
-
-    private async Task<string> GetStringAsync(string url, CancellationToken cancellationToken)
-    {
-        using var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.UserAgent.Add(new ProductInfoHeaderValue("bdk-mcp", typeof(CliApplication).Assembly.GetName().Version?.ToString() ?? "1.0"));
-        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
-
-        using var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-        response.EnsureSuccessStatusCode();
-
-        return await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-    }
-
-    private static string NormalizeSource(string source)
-    {
-        var value = source.Replace('\\', '/').Trim();
-        if (value.StartsWith(WebRoot, StringComparison.OrdinalIgnoreCase))
-        {
-            value = value[WebRoot.Length..];
-        }
-        else if (value.StartsWith(RawRoot, StringComparison.OrdinalIgnoreCase))
-        {
-            value = value[RawRoot.Length..];
-        }
-        else if (Uri.TryCreate(value, UriKind.Absolute, out _))
-        {
-            return null;
-        }
-
-        return value.StartsWith("docs/", StringComparison.OrdinalIgnoreCase) ? value : null;
-    }
-
-    private static string GetString(JsonElement element, string name)
-        => element.ValueKind == JsonValueKind.Object &&
-            element.TryGetProperty(name, out var property) &&
-            property.ValueKind == JsonValueKind.String
-                ? property.GetString()
-                : null;
-
-    private sealed record GitHubContentItem(string Path, string ApiUrl, string DownloadUrl, string HtmlUrl);
-}

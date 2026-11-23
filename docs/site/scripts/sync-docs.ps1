@@ -11,16 +11,8 @@ $targetRoot = Join-Path $siteRoot 'reference'
 $siteAssetsRoot = Join-Path $siteRoot 'assets'
 $repoBaseUrl = 'https://github.com/bridgingIT/bITdevKit/blob/main'
 
-$includedPatterns = @(
-    'INDEX.md',
-    'introduction-ddd-guide.md',
-    'common-*.md',
-    'development-*.md',
-    'features-*.md',
-    'features-cli-mcp-clients.md',
-    'storage-*.md',
-    'testing-*.md'
-)
+[xml] $publicDocumentation = Get-Content (Join-Path $sourceRoot 'public-documentation.props') -Raw
+$includedPatterns = ([string] $publicDocumentation.Project.PropertyGroup.DevKitPublicDocumentationGlobs).Replace('$(DevKitDocumentationRoot)', '').Split(';', [System.StringSplitOptions]::RemoveEmptyEntries)
 
 $excludedDirectories = @(
     'adr',

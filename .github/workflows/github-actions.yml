@@ -296,6 +296,12 @@ jobs:
           echo "| Publishable ref | \`${is_publishable}\` |" >> "$GITHUB_STEP_SUMMARY"
           echo "| NuGet push enabled | \`${should_push}\` |" >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Prepare embedded MCP documentation
+        if: ${{ success() && steps.publishing.outputs.is_publishable == 'true' }}
+        run: |
+          dotnet tool restore
+          dotnet build src/Presentation.Cli/Presentation.Cli.csproj --configuration ${{ env.Build_Configuration }} -p:BdkGenerateMcpApiReference=true --nologo
+
       - name: Package pack (nuget)
         if: ${{ success() && steps.publishing.outputs.is_publishable == 'true' }}
         run: |
@@ -327,6 +333,10 @@ jobs:
           for package in "${packages[@]}"; do
             echo "| \`$(basename "$package")\` |" >> "$GITHUB_STEP_SUMMARY"
           done
+
+      - name: Verify packaged MCP documentation
+        if: ${{ success() && steps.publishing.outputs.is_publishable == 'true' }}
+        run: pwsh -NoProfile -File docs/api/scripts/test-mcp-documentation.ps1 -Configuration ${{ env.Build_Configuration }} -PackageDirectory "${NUGET_DIRECTORY}"
 
       - name: Package push (nuget)
         if: ${{ success() && steps.publishing.outputs.is_publishable == 'true' && steps.publishing.outputs.should_push == 'true' }}

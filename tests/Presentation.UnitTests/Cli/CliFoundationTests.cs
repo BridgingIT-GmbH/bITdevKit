@@ -1161,73 +1161,14 @@ public sealed class CliFoundationTests
     }
 
     [Fact]
-    public async Task GitHubPagesMcpApiReferenceSource_WhenLocalPageDetailExists_ResolvesRequestedSymbol()
+    public async Task EmbeddedMcpApiReferenceSource_WhenPageDetailExists_ResolvesRequestedSymbol()
     {
         // Arrange
-        var workspacePath = CreateTempDirectory();
-        var apiRoot = Path.Combine(workspacePath, ".github", "pages", "api");
-        var symbolRoot = Path.Combine(apiRoot, "agent-symbols");
-        Directory.CreateDirectory(symbolRoot);
-
         const string uid = "BridgingIT.DevKit.Common.Result.Bind(System.Action)";
-        await File.WriteAllTextAsync(
-            Path.Combine(apiRoot, "agent-index.json"),
-            JsonSerializer.Serialize(new
-            {
-                schemaVersion = 1,
-                siteUrl = "https://bridgingit-gmbh.github.io/bITdevKit/api/",
-                source = "docfx-mref",
-                symbols = new[]
-                {
-                    new
-                    {
-                        uid,
-                        name = "Bind(Action)",
-                        fullName = uid,
-                        kind = "Method",
-                        @namespace = "BridgingIT.DevKit.Common",
-                        assembly = "BridgingIT.DevKit.Common.Results",
-                        summary = "Creates a Result from an operation.",
-                        href = "obj/api/BridgingIT.DevKit.Common.Result.html#Bind",
-                        detail = "agent-symbols/result-page.json",
-                        topics = new[] { "results", "common" }
-                    }
-                }
-            }));
-        await File.WriteAllTextAsync(
-            Path.Combine(symbolRoot, "result-page.json"),
-            JsonSerializer.Serialize(new
-            {
-                schemaVersion = 1,
-                source = "docfx-mref-page",
-                file = "BridgingIT.DevKit.Common.Result.yml",
-                symbols = new[]
-                {
-                    new
-                    {
-                        uid,
-                        name = "Bind(Action)",
-                        fullName = uid,
-                        kind = "Method",
-                        @namespace = "BridgingIT.DevKit.Common",
-                        assembly = "BridgingIT.DevKit.Common.Results",
-                        summary = "Creates a Result from an operation.",
-                        syntax = new { content = "public static Result Bind(Action operation)" },
-                        parameters = new[] { new { id = "operation", type = "System.Action", description = "The operation." } },
-                        returns = new { type = "BridgingIT.DevKit.Common.Result", description = "The result." },
-                        url = "https://bridgingit-gmbh.github.io/bITdevKit/api/obj/api/BridgingIT.DevKit.Common.Result.html#Bind",
-                        topics = new[] { "results", "common" }
-                    }
-                }
-            }));
-
-        using var httpClient = new HttpClient();
-        var workspace = new WorkspaceResolver().Resolve(workspacePath);
-        var context = new CliRuntimeContext(
-            workspace,
-            new CliOutputSettings { Format = CliOutputFormat.Json },
-            new HostRegistryOptions { RuntimePath = CreateTempDirectory(), SelectionPath = CreateTempDirectory() });
-        var sut = new GitHubPagesMcpApiReferenceSource(httpClient, context);
+        var resources = new EmbeddedMcpResources(
+            typeof(CliFoundationTests).Assembly,
+            "BridgingIT.DevKit.Presentation.UnitTests.EmbeddedDocumentation/");
+        var sut = new EmbeddedMcpApiReferenceSource(resources);
 
         // Act
         var symbol = await sut.GetSymbolAsync(uid, CancellationToken.None);

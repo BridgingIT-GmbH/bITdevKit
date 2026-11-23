@@ -34,12 +34,12 @@ Coding agents need exact framework guidance and bounded runtime evidence, but ap
 
 ## Solution
 
-`bdk mcp` hosts MCP over standard input and output. Documentation, API-reference and guidance tools run in the CLI process. Runtime tools resolve a ready workspace host and forward a bounded DevKit request over user-local IPC to a registered `IMcpHandler`. Stable toolsets separate inspection, controlled operations and destructive administration.
+`bdk mcp` hosts MCP over standard input and output. Documentation, API-reference and guidance tools run in the CLI process. Markdown and generated API metadata are embedded in the CLI assembly, so documentation lookup requires no GitHub access. Runtime tools resolve a ready workspace host and forward a bounded DevKit request over user-local IPC to a registered `IMcpHandler`. Stable toolsets separate inspection, controlled operations and destructive administration.
 
 ## Key Features
 
 - Stable `bdk_*` tool names and JSON schemas.
-- Documentation, generated API-reference and curated guidance tools that do not require a running application.
+- Embedded documentation, generated API-reference and curated guidance tools that work without a running application or documentation network access.
 - Workspace-aware runtime discovery and selection.
 - Feature-owned and project-owned app-side handlers without an MCP SDK dependency.
 - Diagnostics enabled by default, with explicit operations and admin toolsets.
@@ -56,8 +56,8 @@ flowchart LR
     Host["Running DevKit web host"]
     Handler["Feature or project IMcpHandler"]
     Service["Application service"]
-    Docs["Official DevKit docs"]
-    Api["API reference metadata"]
+    Docs["Embedded DevKit docs"]
+    Api["Embedded API reference metadata"]
 
     Developer --> Agent
     Agent -->|"tools/list and tools/call"| Cli
@@ -728,9 +728,57 @@ Use bdk_project_operations to inspect project-owned operations, then call the op
 
 ## Documentation and API tools
 
-`bdk_docs_search` and `bdk_docs_get` use official DevKit documentation from GitHub rather than local repository docs. `bdk_api_search` and `bdk_api_get` first read generated metadata from `.github/pages/api` in the resolved workspace when it exists, then fall back to the published DevKit GitHub Pages API reference.
+`bdk_docs_search` and `bdk_docs_get` read public Markdown embedded in the installed CLI assembly. `bdk_api_search` and `bdk_api_get` read its embedded API index and symbol details. They make no documentation HTTP requests, use no checkout or writable documentation cache, and do not fall back to GitHub, GitHub Pages, or generated workspace files.
 
-This matters because most developers use `bdk mcp` from consuming application repositories, not from the DevKit source repository. The local repository may have no DevKit docs at all.
+The installed local tool determines which docs are available. MCP ignores differences between the tool and application DevKit versions. GitHub blob and raw URLs are accepted as aliases for embedded document paths, regardless of the URL's branch, tag, or version. A returned URL is a reference link, not a retrieval source.
+
+`bdk_mcp_status` reports documentation source `embedded`. Missing documents or symbol details return `documentation_unavailable` with a local reason. Guidance and unrelated runtime tools remain available.
+
+### Read a long document
+
+Documentation search defaults to five results and returns at most twenty. API search defaults to eight and returns at most twenty-five. Document get defaults to 6,000 characters and returns at most 20,000 per call.
+
+Start with a source returned by search, or a known public document path:
+
+```json
+{
+  "source": "docs/features-jobs.md",
+  "maxChars": 6000,
+  "offset": 0
+}
+```
+
+`bdk_docs_get` returns `offset`, `nextOffset`, and `totalChars` alongside its content. Follow the suggested `next` call while `nextOffset` is present. Offsets use .NET UTF-16 character indices. Negative, non-integer, or out-of-range offsets return `operation_failed`.
+
+### Add documentation to the embedded set
+
+The website and MCP share `docs/public-documentation.props` for the public-documentation selection. It includes root-level `INDEX.md`, `introduction-ddd-guide.md`, `common-*.md`, `development-*.md`, `features-*.md`, `storage-*.md`, and `testing-*.md`. ADRs, specifications, PRDs, presentations, generated site content, and binary assets are excluded.
+
+1. Add or edit a matching public document under `docs/`.
+2. Build the CLI. Matching additions, edits, renames, and removals are embedded automatically, without a clean build, manual sync, or per-file registration.
+3. Reinstall the rebuilt local tool and restart the MCP client. For source development, restart using the rebuilt CLI output.
+
+New documents become available through search and get. Curated guidance topics still require separate authoring. Add a new public filename category to the shared selection rather than maintaining an MCP-only file list.
+
+### Build API documentation
+
+Normal Debug builds skip API generation and can use existing generated API files. If those files are absent, API lookup returns `documentation_unavailable`, while Markdown and guidance still work.
+
+Release builds and packaging generate the API metadata before embedding it. Generation uses the pinned DocFX tool and PowerShell, without building the website or requiring Docker. Restore the repository tools before generating API metadata:
+
+```sh
+dotnet tool restore
+dotnet build src/Presentation.Cli/Presentation.Cli.csproj --configuration Release
+```
+
+For a Debug package prepared with `--no-build`, generate and embed the metadata first:
+
+```sh
+dotnet build src/Presentation.Cli/Presentation.Cli.csproj --configuration Debug -p:BdkGenerateMcpApiReference=true
+dotnet pack src/Presentation.Cli/Presentation.Cli.csproj --configuration Debug --no-build
+```
+
+Release builds and packaging check only for `api/agent-index.json` as the completeness marker. There is no validation pass over individual links or symbol-detail references. `--no-build` inspects the index resource in the already-built assembly and does not pick up later documentation edits.
 
 ## Safety model
 

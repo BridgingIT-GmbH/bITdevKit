@@ -1415,6 +1415,8 @@ These helpers do not download or rewrite blob content.
 
 Blob providers accept `StoredBlobUpload`, `StoredBlobPropertiesUpdate`, and return stored blob models with independent `Properties` and `TransformMetadata` bags. The client adapter maps these to public models without exposing transform state. Full content replacement installs fresh transform metadata for the new payload.
 
+See [scalar property bag persistence](common-serialization.md#propertybagserialization) for the shared JSON dictionary format.
+
 EF stores scalar-codec JSON in `Properties` and a separate annotated `TransformMetadata` column. Azure Blob stores Base64Url-encoded scalar-codec JSON in managed `bdk_properties` and `bdk_transforms` metadata fields; its 8 KiB total metadata limit applies to the encoded data. Oversized metadata fails without truncation. The filesystem record format is version 3. These breaking formats require newly created storage; there are no schema/data migrations or legacy readers.
 
 

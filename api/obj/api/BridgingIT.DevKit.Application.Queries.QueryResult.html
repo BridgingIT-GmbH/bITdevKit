@@ -476,7 +476,7 @@ with the provided value, error messages, and error details.</p>
     <dd><p>An optional message describing the failure.</p>
 </dd>
     <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
-    <dd><p>An optional error instance providing additional failure details.</p>
+    <dd><p>An optional error instance to use in place of a new <code class="typeparamref">TError</code>.</p>
 </dd>
   </dl>
 
@@ -493,7 +493,7 @@ with the provided value, error messages, and error details.</p>
     <dd><p>Type of the value associated with the result.</p>
 </dd>
     <dt><code>TError</code></dt>
-    <dd><p>Type of the error associated with the result, implementing IResultError.</p>
+    <dd><p>The error type created when an explicit error is not supplied.</p>
 </dd>
   </dl>
 

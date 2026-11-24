@@ -209,9 +209,6 @@ Class ChaosBlobStoreClientBehavior
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
-  </div>
-  <div>
       <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
   </div>
   <div>
@@ -222,12 +219,6 @@ Class ChaosBlobStoreClientBehavior
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobBytesStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobBytesStorageExtensions_DownloadBytesAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_System_Threading_CancellationToken_">BlobBytesStorageExtensions.DownloadBytesAsync(IBlobStoreClient, BlobKey, CancellationToken)</a>
@@ -310,9 +301,6 @@ Class ChaosBlobStoreClientBehavior
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
   </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
-  </div>
   </dd></dl>
 
 
@@ -372,6 +360,41 @@ Class ChaosBlobStoreClientBehavior
 
   <h2 class="section" id="properties">Properties
 </h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_ChaosBlobStoreClientBehavior_DimensionCapabilities_" data-uid="BridgingIT.DevKit.Application.Storage.ChaosBlobStoreClientBehavior.DimensionCapabilities*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_ChaosBlobStoreClientBehavior_DimensionCapabilities" data-uid="BridgingIT.DevKit.Application.Storage.ChaosBlobStoreClientBehavior.DimensionCapabilities">
+  DimensionCapabilities
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the current provider's indexed Dimensions profile.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BlobDimensionCapabilities DimensionCapabilities { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionCapabilities.html">BlobDimensionCapabilities</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_ChaosBlobStoreClientBehavior_DimensionCapabilities_examples">Examples</h4>
+  <pre><code class="lang-csharp">var supported = blobs.DimensionCapabilities.SupportsDimensions;</code></pre>
+
+
+
+
 
 
   <a id="BridgingIT_DevKit_Application_Storage_ChaosBlobStoreClientBehavior_StoreName_" data-uid="BridgingIT.DevKit.Application.Storage.ChaosBlobStoreClientBehavior.StoreName*"></a>
@@ -598,6 +621,52 @@ Class ChaosBlobStoreClientBehavior
 
   <a id="BridgingIT_DevKit_Application_Storage_ChaosBlobStoreClientBehavior_ListPageAsync_" data-uid="BridgingIT.DevKit.Application.Storage.ChaosBlobStoreClientBehavior.ListPageAsync*"></a>
 
+  <h3 id="BridgingIT_DevKit_Application_Storage_ChaosBlobStoreClientBehavior_ListPageAsync_BridgingIT_DevKit_Application_Storage_BlobFilterScope_BridgingIT_DevKit_Common_FilterModel_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.ChaosBlobStoreClientBehavior.ListPageAsync(BridgingIT.DevKit.Application.Storage.BlobFilterScope,BridgingIT.DevKit.Common.FilterModel,System.String,System.Threading.CancellationToken)">
+  ListPageAsync(BlobFilterScope, FilterModel, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists one page of metadata matching key and Dimension criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;BlobPage&gt;&gt; ListPageAsync(BlobFilterScope scope, FilterModel filter, string continuationToken, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>scope</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobFilterScope.html">BlobFilterScope</a></dt>
+    <dd></dd>
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd></dd>
+    <dt><code>continuationToken</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobPage.html">BlobPage</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_ChaosBlobStoreClientBehavior_ListPageAsync_BridgingIT_DevKit_Application_Storage_BlobFilterScope_BridgingIT_DevKit_Common_FilterModel_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await blobs.ListPageAsync(scope, filter, continuationToken: null, cancellationToken: cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_ChaosBlobStoreClientBehavior_ListPageAsync_" data-uid="BridgingIT.DevKit.Application.Storage.ChaosBlobStoreClientBehavior.ListPageAsync*"></a>
+
   <h3 id="BridgingIT_DevKit_Application_Storage_ChaosBlobStoreClientBehavior_ListPageAsync_BridgingIT_DevKit_Application_Storage_BlobQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.ChaosBlobStoreClientBehavior.ListPageAsync(BridgingIT.DevKit.Application.Storage.BlobQuery,System.Threading.CancellationToken)">
   ListPageAsync(BlobQuery, CancellationToken)
   
@@ -635,6 +704,51 @@ Class ChaosBlobStoreClientBehavior
 
   <h4 class="section" id="BridgingIT_DevKit_Application_Storage_ChaosBlobStoreClientBehavior_ListPageAsync_BridgingIT_DevKit_Application_Storage_BlobQuery_System_Threading_CancellationToken__examples">Examples</h4>
   <pre><code class="lang-csharp">var page = await blobs.ListPageAsync(query, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_ChaosBlobStoreClientBehavior_UpdateDimensionsAsync_" data-uid="BridgingIT.DevKit.Application.Storage.ChaosBlobStoreClientBehavior.UpdateDimensionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_ChaosBlobStoreClientBehavior_UpdateDimensionsAsync_BridgingIT_DevKit_Application_Storage_BlobDimensionsUpdate_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.ChaosBlobStoreClientBehavior.UpdateDimensionsAsync(BridgingIT.DevKit.Application.Storage.BlobDimensionsUpdate,System.Threading.CancellationToken)">
+  UpdateDimensionsAsync(BlobDimensionsUpdate, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Replaces Dimensions under the existing whole-item ETag without rewriting content.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;BlobInfo&gt;&gt; UpdateDimensionsAsync(BlobDimensionsUpdate update, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>update</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionsUpdate.html">BlobDimensionsUpdate</a></dt>
+    <dd><p>The exact key, required replacement collection, and optional current whole-item ETag.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels provider I/O.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobInfo.html">BlobInfo</a>&gt;&gt;</dt>
+    <dd><p>The acknowledged metadata snapshot or a typed failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_ChaosBlobStoreClientBehavior_UpdateDimensionsAsync_BridgingIT_DevKit_Application_Storage_BlobDimensionsUpdate_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await client.UpdateDimensionsAsync(new() { Key = key, Dimensions = BlobDimensions.Empty, IfMatchETag = current.ETag }, cancellationToken);</code></pre>
 
 
 
@@ -693,7 +807,7 @@ Class ChaosBlobStoreClientBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Uploads one blob from a caller-owned stream.</p>
+  <div class="markdown level1 summary"><p>Uploads one blob from a caller-owned stream, conditionally replacing the whole item when IfMatchETag is supplied.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

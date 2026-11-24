@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AppStateBuilder | bITdevKit API Reference ">
       
-      <meta name="description" content="Builds configuration for a specific state type within the ManagedState system.">
+      <meta name="description" content="Configures persistence, history and identity for one registered AppState type.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,7 @@ Class AppStateBuilder
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.Client.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Builds configuration for a specific state type within the ManagedState system.</p>
+  <div class="markdown summary"><p>Configures persistence, history and identity for one registered AppState type.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -115,144 +115,15 @@ Class AppStateBuilder
 
 
 
-  <dl class="typelist extensionMethods">
-    <dt>Extension Methods</dt>
-    <dd>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
-  </div>
-  </dd></dl>
 
+
+  <h2 id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_examples">Examples</h2>
+  <pre><code class="lang-csharp">services.AddAppState().AddState&lt;CatalogViewState&gt;()
+    .AsComponentScoped().WithHistory(10).Done();</code></pre>
 
 
   <h2 id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_remarks">Remarks</h2>
-  <div class="markdown level0 remarks"><p>Initializes a new instance of the StateBuilder.</p>
+  <div class="markdown level0 remarks"><p>Use the builder returned by AppStateManagementBuilder.AddState to configure a registered state.</p>
 </div>
 
 
@@ -267,7 +138,7 @@ Class AppStateBuilder
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Builds configuration for a specific state type within the ManagedState system.</p>
+  <div class="markdown level1 summary"><p>Configures persistence, history and identity for one registered AppState type.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -294,9 +165,13 @@ Class AppStateBuilder
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder__ctor_Microsoft_Extensions_DependencyInjection_IServiceCollection_BridgingIT_DevKit_Presentation_Web_Client_AppStateOptions_BridgingIT_DevKit_Presentation_Web_Client_AppStateManagementBuilder__examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddAppState().AddState&lt;CatalogViewState&gt;()
+    .AsComponentScoped().WithHistory(10).Done();</code></pre>
+
 
   <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder__ctor_Microsoft_Extensions_DependencyInjection_IServiceCollection_BridgingIT_DevKit_Presentation_Web_Client_AppStateOptions_BridgingIT_DevKit_Presentation_Web_Client_AppStateManagementBuilder__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Initializes a new instance of the StateBuilder.</p>
+  <div class="markdown level1 remarks"><p>Use the builder returned by AppStateManagementBuilder.AddState to configure a registered state.</p>
 </div>
 
   <h4 class="section">Exceptions</h4>
@@ -361,7 +236,7 @@ Class AppStateBuilder
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Configures the state to be component-scoped, with no persistence beyond the component lifetime.</p>
+  <div class="markdown level1 summary"><p>Disables persistence. DI lifetime remains unchanged; use a lease for component ownership.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -382,6 +257,10 @@ Class AppStateBuilder
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_AsComponentScoped_examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddAppState().AddState&lt;CatalogViewState&gt;()
+    .AsComponentScoped().Done();</code></pre>
+
 
 
   <h4 class="section">Exceptions</h4>
@@ -400,7 +279,7 @@ Class AppStateBuilder
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Configures the state to be in-memory scoped, sharing it across a user session without persistence beyond the session.</p>
+  <div class="markdown level1 summary"><p>Selects copied in-memory storage within the resolving DI scope.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -420,6 +299,10 @@ Class AppStateBuilder
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_AsInMemoryScoped_examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddAppState().AddState&lt;CatalogViewState&gt;()
+    .AsInMemoryScoped().Done();</code></pre>
 
 
 
@@ -460,6 +343,10 @@ Class AppStateBuilder
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_AsLocalStorageScoped_examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddAppState().AddState&lt;CatalogViewState&gt;()
+    .WithJsonTypeInfo(CatalogJson.Default.CatalogViewModel).AsLocalStorageScoped().Done();</code></pre>
+
 
 
   <h4 class="section">Exceptions</h4>
@@ -499,6 +386,10 @@ Class AppStateBuilder
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_Done_examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddAppState().AddState&lt;CatalogViewState&gt;()
+    .AsComponentScoped().WithHistory(10).Done();</code></pre>
+
 
 
   <h4 class="section">Exceptions</h4>
@@ -517,7 +408,7 @@ Class AppStateBuilder
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Executes the enabled operation.</p>
+  <div class="markdown level1 summary"><p>Enables or disables optional history and persistence without disabling state changes or independent snapshots.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -528,14 +419,14 @@ Class AppStateBuilder
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> <span class="xref">bool</span></dt>
-    <dd><p>The value used by the operation.</p>
+    <dd><p>Whether optional history and persistence are enabled.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateBuilder.html">AppStateBuilder</a></dt>
-    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the condition is met; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+    <dd><p>The current builder for chaining.</p>
 </dd>
   </dl>
 
@@ -543,6 +434,10 @@ Class AppStateBuilder
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_Enabled_System_Boolean__examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddAppState().AddState&lt;CatalogViewState&gt;()
+    .Enabled(false).Done();</code></pre>
 
 
 
@@ -589,6 +484,10 @@ Class AppStateBuilder
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_WithDebounceDelay_System_TimeSpan__examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddAppState().AddState&lt;CatalogViewState&gt;()
+    .AsInMemoryScoped().WithDebounceDelay(TimeSpan.FromMilliseconds(300)).Done();</code></pre>
+
 
 
   <h4 class="section">Exceptions</h4>
@@ -634,12 +533,175 @@ Class AppStateBuilder
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_WithHistory_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddAppState().AddState&lt;CatalogViewState&gt;()
+    .WithHistory(10).Done();</code></pre>
+
 
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><span class="xref">ArgumentOutOfRangeException</span></dt>
     <dd><p>Thrown if maxItems is less than or equal to zero.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_WithIdentity_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.AppStateBuilder.WithIdentity*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_WithIdentity_System_String_System_String_System_Int32_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.AppStateBuilder.WithIdentity(System.String,System.String,System.Int32)">
+  WithIdentity(string, string, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Publishes a stable logical owner and persisted schema.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AppStateBuilder WithIdentity(string moduleId, string stateName, int schemaVersion = 1)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>moduleId</code> <span class="xref">string</span></dt>
+    <dd><p>The logical module namespace.</p>
+</dd>
+    <dt><code>stateName</code> <span class="xref">string</span></dt>
+    <dd><p>The stable view or state identity.</p>
+</dd>
+    <dt><code>schemaVersion</code> <span class="xref">int</span></dt>
+    <dd><p>A positive schema version.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateBuilder.html">AppStateBuilder</a></dt>
+    <dd><p>This builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_WithIdentity_System_String_System_String_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddAppState().AddState&lt;CatalogViewState&gt;()
+    .WithIdentity("catalog", "list", schemaVersion: 2).Done();</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown if services, options, or parentBuilder is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_WithJsonTypeInfo_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.AppStateBuilder.WithJsonTypeInfo*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_WithJsonTypeInfo_System_Text_Json_Serialization_Metadata_JsonTypeInfo_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.AppStateBuilder.WithJsonTypeInfo(System.Text.Json.Serialization.Metadata.JsonTypeInfo)">
+  WithJsonTypeInfo(JsonTypeInfo)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Supplies generated metadata for snapshots and compatible storage providers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AppStateBuilder WithJsonTypeInfo(JsonTypeInfo typeInfo)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>typeInfo</code> <span class="xref">JsonTypeInfo</span></dt>
+    <dd><p>Metadata describing the state model.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateBuilder.html">AppStateBuilder</a></dt>
+    <dd><p>This builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_WithJsonTypeInfo_System_Text_Json_Serialization_Metadata_JsonTypeInfo__examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddAppState().AddState&lt;CatalogViewState&gt;()
+    .WithJsonTypeInfo(CatalogJson.Default.CatalogViewModel).Done();</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown if services, options, or parentBuilder is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_WithLegacyStorageKey_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.AppStateBuilder.WithLegacyStorageKey*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_WithLegacyStorageKey_System_String_System_String_System_String_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.AppStateBuilder.WithLegacyStorageKey(System.String,System.String,System.String)">
+  WithLegacyStorageKey(string, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enables import of one owner-confirmed legacy preference key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AppStateBuilder WithLegacyStorageKey(string stateId, string userContextId, string workspaceKey = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stateId</code> <span class="xref">string</span></dt>
+    <dd><p>The exact legacy state ID.</p>
+</dd>
+    <dt><code>userContextId</code> <span class="xref">string</span></dt>
+    <dd><p>The exact same-owner legacy user partition.</p>
+</dd>
+    <dt><code>workspaceKey</code> <span class="xref">string</span></dt>
+    <dd><p>The confirmed target workspace; null permits only unscoped import.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateBuilder.html">AppStateBuilder</a></dt>
+    <dd><p>This builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_WithLegacyStorageKey_System_String_System_String_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddAppState().AddState&lt;CatalogViewState&gt;()
+    .AsLocalStorageScoped().WithLegacyStorageKey("previous-list", confirmedPrincipalKey, confirmedWorkspaceKey).Done();</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown if services, options, or parentBuilder is null.</p>
 </dd>
   </dl>
 
@@ -678,6 +740,10 @@ Class AppStateBuilder
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateBuilder_WithPersistence__1_examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddAppState().AddState&lt;CatalogViewState&gt;()
+    .WithPersistence&lt;SessionScopedStateStoreProvider&gt;().Done();</code></pre>
 
 
 

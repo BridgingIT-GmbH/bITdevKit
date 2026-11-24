@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LiteDbOrchestrationStorageProvider | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LiteDbOrchestrationStorageProvider | bITdevKit API Reference ">
+      
+      <meta name="description" content="Persists orchestration snapshots, ownership, signals, timers, histories, and administration atomically in LiteDB.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider" class="text-break">
+Class LiteDbOrchestrationStorageProvider  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.html">LiteDb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.LiteDb.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Persists orchestration snapshots, ownership, signals, timers, histories, and administration atomically in LiteDB.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class LiteDbOrchestrationStorageProvider : IOrchestrationStorageProvider, IOrchestrationInstanceStore, IOrchestrationLeaseStore, IOrchestrationHistoryStore, IOrchestrationSignalStore, IOrchestrationTimerStore, IOrchestrationQueryStore, IOrchestrationAdministrationStore</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">LiteDbOrchestrationStorageProvider</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStorageProvider.html">IOrchestrationStorageProvider</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationInstanceStore.html">IOrchestrationInstanceStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationLeaseStore.html">IOrchestrationLeaseStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationHistoryStore.html">IOrchestrationHistoryStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalStore.html">IOrchestrationSignalStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationTimerStore.html">IOrchestrationTimerStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationQueryStore.html">IOrchestrationQueryStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationAdministrationStore.html">IOrchestrationAdministrationStore</a></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_BridgingIT_DevKit_Common_ISerializer_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationClock_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.#ctor(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase,BridgingIT.DevKit.Common.ISerializer,BridgingIT.DevKit.Application.Orchestrations.IOrchestrationClock)">
+  LiteDbOrchestrationStorageProvider(LiteDbFeatureDatabase, ISerializer, IOrchestrationClock)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates the native orchestration storage provider.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbOrchestrationStorageProvider(LiteDbFeatureDatabase database, ISerializer serializer = null, IOrchestrationClock clock = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>database</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.html">LiteDbFeatureDatabase</a></dt>
+    <dd><p>The feature database and declared collection namespace.</p>
+</dd>
+    <dt><code>serializer</code> <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
+    <dd><p>The durable context serializer.</p>
+</dd>
+    <dt><code>clock</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationClock.html">IOrchestrationClock</a></dt>
+    <dd><p>The workflow lease and audit clock.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_Administration_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.Administration*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_Administration" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.Administration">
+  Administration
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the orchestration administration store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOrchestrationAdministrationStore Administration { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationAdministrationStore.html">IOrchestrationAdministrationStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_History_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.History*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_History" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.History">
+  History
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the append-only orchestration history store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOrchestrationHistoryStore History { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationHistoryStore.html">IOrchestrationHistoryStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_Instances_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.Instances*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_Instances" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.Instances">
+  Instances
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the orchestration instance snapshot store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOrchestrationInstanceStore Instances { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationInstanceStore.html">IOrchestrationInstanceStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_Leases_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.Leases*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_Leases" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.Leases">
+  Leases
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the orchestration lease store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOrchestrationLeaseStore Leases { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationLeaseStore.html">IOrchestrationLeaseStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_Queries_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.Queries*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_Queries" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.Queries">
+  Queries
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the orchestration query store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOrchestrationQueryStore Queries { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationQueryStore.html">IOrchestrationQueryStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_Serializer_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.Serializer*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_Serializer" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.Serializer">
+  Serializer
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the serializer used for durable orchestration payloads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ISerializer Serializer { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_Signals_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.Signals*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_Signals" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.Signals">
+  Signals
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the orchestration signal store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOrchestrationSignalStore Signals { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalStore.html">IOrchestrationSignalStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_Timers_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.Timers*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_Timers" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.Timers">
+  Timers
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the orchestration timer store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOrchestrationTimerStore Timers { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationTimerStore.html">IOrchestrationTimerStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_AcquireAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.AcquireAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_AcquireAsync_System_Guid_System_String_System_TimeSpan_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.AcquireAsync(System.Guid,System.String,System.TimeSpan,System.Threading.CancellationToken)">
+  AcquireAsync(Guid, string, TimeSpan, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Acquires an exclusive lease for an orchestration instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationLease&gt; AcquireAsync(Guid instanceId, string owner, TimeSpan duration, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>owner</code> <span class="xref">string</span></dt>
+    <dd><p>The lease owner identity.</p>
+</dd>
+    <dt><code>duration</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The lease duration.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationLease.html">OrchestrationLease</a>&gt;</dt>
+    <dd><p>The acquired lease.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_AppendAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.AppendAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_AppendAsync_BridgingIT_DevKit_Application_Orchestrations_OrchestrationHistoryEntry_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.AppendAsync(BridgingIT.DevKit.Application.Orchestrations.OrchestrationHistoryEntry,System.Threading.CancellationToken)">
+  AppendAsync(OrchestrationHistoryEntry, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Appends a durable history record.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationHistoryEntry&gt; AppendAsync(OrchestrationHistoryEntry entry, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entry</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationHistoryEntry.html">OrchestrationHistoryEntry</a></dt>
+    <dd><p>The history entry to append.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationHistoryEntry.html">OrchestrationHistoryEntry</a>&gt;</dt>
+    <dd><p>The persisted history entry.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_ArchiveAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.ArchiveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_ArchiveAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.ArchiveAsync(System.Guid,System.Threading.CancellationToken)">
+  ArchiveAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Archives a persisted orchestration instance and its retained operational data.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; ArchiveAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p><code>true</code> when the instance transitioned to archived state; otherwise <code>false</code> when it was already archived.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_CreateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.CreateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_CreateAsync__1_BridgingIT_DevKit_Application_Orchestrations_OrchestrationContext___0__System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.CreateAsync``1(BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext{``0},System.String,System.Threading.CancellationToken)">
+  CreateAsync&lt;TData&gt;(OrchestrationContext&lt;TData&gt;, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new orchestration instance snapshot from the current context.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationInstanceSnapshot&gt; CreateAsync&lt;TData&gt;(OrchestrationContext&lt;TData&gt; context, string concurrencyKey = null, CancellationToken cancellationToken = default) where TData : class, IOrchestrationData</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext-1.html">OrchestrationContext</a>&lt;TData&gt;</dt>
+    <dd><p>The orchestration context to persist.</p>
+</dd>
+    <dt><code>concurrencyKey</code> <span class="xref">string</span></dt>
+    <dd><p>The optional concurrency key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceSnapshot.html">OrchestrationInstanceSnapshot</a>&gt;</dt>
+    <dd><p>The persisted snapshot.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TData</code></dt>
+    <dd><p>The orchestration data type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetAsync(System.Guid,System.Threading.CancellationToken)">
+  GetAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads the latest snapshot for an orchestration instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationInstanceSnapshot&gt; GetAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceSnapshot.html">OrchestrationInstanceSnapshot</a>&gt;</dt>
+    <dd><p>The persisted snapshot when found; otherwise <code>null</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetContextAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetContextAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetContextAsync__1_System_Guid_System_IServiceProvider_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetContextAsync``1(System.Guid,System.IServiceProvider,System.Threading.CancellationToken)">
+  GetContextAsync&lt;TData&gt;(Guid, IServiceProvider, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads and deserializes the current orchestration context snapshot by identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationContext&lt;TData&gt;&gt; GetContextAsync&lt;TData&gt;(Guid instanceId, IServiceProvider services = null, CancellationToken cancellationToken = default) where TData : class, IOrchestrationData</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>services</code> <span class="xref">IServiceProvider</span></dt>
+    <dd><p>The service provider used when rehydrating the context.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext-1.html">OrchestrationContext</a>&lt;TData&gt;&gt;</dt>
+    <dd><p>The rehydrated orchestration context when found; otherwise <code>null</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TData</code></dt>
+    <dd><p>The orchestration data type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetDueAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetDueAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetDueAsync_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetDueAsync(System.DateTimeOffset,System.Threading.CancellationToken)">
+  GetDueAsync(DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads due timers in deterministic order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;OrchestrationTimerRecord&gt;&gt; GetDueAsync(DateTimeOffset asOfUtc, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>asOfUtc</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd><p>The comparison time in UTC.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerRecord.html">OrchestrationTimerRecord</a>&gt;&gt;</dt>
+    <dd><p>The due timer records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetHistoryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetHistoryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetHistoryAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetHistoryAsync(System.Guid,System.Threading.CancellationToken)">
+  GetHistoryAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads execution history for an orchestration instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;OrchestrationHistoryEntry&gt;&gt; GetHistoryAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationHistoryEntry.html">OrchestrationHistoryEntry</a>&gt;&gt;</dt>
+    <dd><p>The persisted history records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetInstanceAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetInstanceAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetInstanceAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetInstanceAsync(System.Guid,System.Threading.CancellationToken)">
+  GetInstanceAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads the current orchestration instance snapshot by identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationInstanceSnapshot&gt; GetInstanceAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceSnapshot.html">OrchestrationInstanceSnapshot</a>&gt;</dt>
+    <dd><p>The persisted snapshot when found; otherwise <code>null</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetMetricsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetMetricsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetMetricsAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetMetricsAsync(System.Threading.CancellationToken)">
+  GetMetricsAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets basic metrics derived from persisted orchestration state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationMetricsSnapshot&gt; GetMetricsAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationMetricsSnapshot.html">OrchestrationMetricsSnapshot</a>&gt;</dt>
+    <dd><p>The persisted-state metrics snapshot.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetProcessableAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetProcessableAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetProcessableAsync_System_Guid_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetProcessableAsync(System.Guid,System.String,System.Threading.CancellationToken)">
+  GetProcessableAsync(Guid, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads pending signals eligible for processing in the specified state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;OrchestrationSignalRecord&gt;&gt; GetProcessableAsync(Guid instanceId, string currentState, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>currentState</code> <span class="xref">string</span></dt>
+    <dd><p>The current persisted business state.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalRecord.html">OrchestrationSignalRecord</a>&gt;&gt;</dt>
+    <dd><p>The processable signal records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetSignalsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetSignalsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetSignalsAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetSignalsAsync(System.Guid,System.Threading.CancellationToken)">
+  GetSignalsAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads persisted signal records for an orchestration instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;OrchestrationSignalRecord&gt;&gt; GetSignalsAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalRecord.html">OrchestrationSignalRecord</a>&gt;&gt;</dt>
+    <dd><p>The persisted signal records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetTimersAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetTimersAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_GetTimersAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.GetTimersAsync(System.Guid,System.Threading.CancellationToken)">
+  GetTimersAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads persisted timer records for an orchestration instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;OrchestrationTimerRecord&gt;&gt; GetTimersAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerRecord.html">OrchestrationTimerRecord</a>&gt;&gt;</dt>
+    <dd><p>The persisted timer records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_PersistAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.PersistAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_PersistAsync__1_System_Guid_System_String___0_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.PersistAsync``1(System.Guid,System.String,``0,System.String,System.String,System.Threading.CancellationToken)">
+  PersistAsync&lt;TPayload&gt;(Guid, string, TPayload, string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Persists a signal before it is processed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationSignalRecord&gt; PersistAsync&lt;TPayload&gt;(Guid instanceId, string signalName, TPayload payload, string currentState = null, string idempotencyKey = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>signalName</code> <span class="xref">string</span></dt>
+    <dd><p>The signal name.</p>
+</dd>
+    <dt><code>payload</code> <span class="xref">TPayload</span></dt>
+    <dd><p>The signal payload.</p>
+</dd>
+    <dt><code>currentState</code> <span class="xref">string</span></dt>
+    <dd><p>The optional state at the time of signal acceptance.</p>
+</dd>
+    <dt><code>idempotencyKey</code> <span class="xref">string</span></dt>
+    <dd><p>The optional caller-supplied idempotency key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalRecord.html">OrchestrationSignalRecord</a>&gt;</dt>
+    <dd><p>The persisted signal record.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TPayload</code></dt>
+    <dd><p>The signal payload type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_PurgeAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.PurgeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_PurgeAsync_BridgingIT_DevKit_Application_Orchestrations_OrchestrationPurgeCriteria_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.PurgeAsync(BridgingIT.DevKit.Application.Orchestrations.OrchestrationPurgeCriteria,System.Threading.CancellationToken)">
+  PurgeAsync(OrchestrationPurgeCriteria, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Purges persisted orchestration data matching the supplied maintenance criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationPurgeResult&gt; PurgeAsync(OrchestrationPurgeCriteria request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationPurgeCriteria.html">OrchestrationPurgeCriteria</a></dt>
+    <dd><p>The purge criteria.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationPurgeResult.html">OrchestrationPurgeResult</a>&gt;</dt>
+    <dd><p>The purge summary.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_QueryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.QueryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_QueryAsync_BridgingIT_DevKit_Application_Orchestrations_OrchestrationInstanceQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.QueryAsync(BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceQuery,System.Threading.CancellationToken)">
+  QueryAsync(OrchestrationInstanceQuery, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Queries persisted orchestration instances.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationInstanceQueryResult&gt; QueryAsync(OrchestrationInstanceQuery query, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceQuery.html">OrchestrationInstanceQuery</a></dt>
+    <dd><p>The query criteria.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceQueryResult.html">OrchestrationInstanceQueryResult</a>&gt;</dt>
+    <dd><p>The paged query result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_ReleaseAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.ReleaseAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_ReleaseAsync_System_Guid_System_Guid_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.ReleaseAsync(System.Guid,System.Guid,System.String,System.Threading.CancellationToken)">
+  ReleaseAsync(Guid, Guid, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases an owned lease.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ReleaseAsync(Guid instanceId, Guid leaseId, string owner, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>leaseId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The lease identifier.</p>
+</dd>
+    <dt><code>owner</code> <span class="xref">string</span></dt>
+    <dd><p>The lease owner identity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_ReleaseLeaseAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.ReleaseLeaseAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_ReleaseLeaseAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.ReleaseLeaseAsync(System.Guid,System.Threading.CancellationToken)">
+  ReleaseLeaseAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases an active persisted lease for an orchestration instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ReleaseLeaseAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_RenewAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.RenewAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_RenewAsync_System_Guid_System_Guid_System_String_System_TimeSpan_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.RenewAsync(System.Guid,System.Guid,System.String,System.TimeSpan,System.Threading.CancellationToken)">
+  RenewAsync(Guid, Guid, string, TimeSpan, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Renews an existing lease for an orchestration instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationLease&gt; RenewAsync(Guid instanceId, Guid leaseId, string owner, TimeSpan duration, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>leaseId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The lease identifier.</p>
+</dd>
+    <dt><code>owner</code> <span class="xref">string</span></dt>
+    <dd><p>The lease owner identity.</p>
+</dd>
+    <dt><code>duration</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The new lease duration.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationLease.html">OrchestrationLease</a>&gt;</dt>
+    <dd><p>The renewed lease.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_RequeueTimersAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.RequeueTimersAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_RequeueTimersAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.RequeueTimersAsync(System.Guid,System.Threading.CancellationToken)">
+  RequeueTimersAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Requeues persisted timers for an orchestration instance so they can be consumed again.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;int&gt; RequeueTimersAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">int</span>&gt;</dt>
+    <dd><p>The number of timers requeued.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_SaveAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.SaveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_SaveAsync__1_BridgingIT_DevKit_Application_Orchestrations_OrchestrationInstanceSnapshot_BridgingIT_DevKit_Application_Orchestrations_OrchestrationContext___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.SaveAsync``1(BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceSnapshot,BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext{``0},System.Threading.CancellationToken)">
+  SaveAsync&lt;TData&gt;(OrchestrationInstanceSnapshot, OrchestrationContext&lt;TData&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Persists an updated orchestration instance snapshot using optimistic concurrency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationInstanceSnapshot&gt; SaveAsync&lt;TData&gt;(OrchestrationInstanceSnapshot snapshot, OrchestrationContext&lt;TData&gt; context, CancellationToken cancellationToken = default) where TData : class, IOrchestrationData</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>snapshot</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceSnapshot.html">OrchestrationInstanceSnapshot</a></dt>
+    <dd><p>The previously loaded snapshot.</p>
+</dd>
+    <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext-1.html">OrchestrationContext</a>&lt;TData&gt;</dt>
+    <dd><p>The updated orchestration context.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceSnapshot.html">OrchestrationInstanceSnapshot</a>&gt;</dt>
+    <dd><p>The persisted snapshot with the new version.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TData</code></dt>
+    <dd><p>The orchestration data type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_ScheduleAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.ScheduleAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_ScheduleAsync_System_Guid_System_String_System_DateTimeOffset_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.ScheduleAsync(System.Guid,System.String,System.DateTimeOffset,System.String,System.String,System.Threading.CancellationToken)">
+  ScheduleAsync(Guid, string, DateTimeOffset, string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Persists a newly scheduled timer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationTimerRecord&gt; ScheduleAsync(Guid instanceId, string triggerKind, DateTimeOffset dueTime, string targetState = null, string continuation = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>triggerKind</code> <span class="xref">string</span></dt>
+    <dd><p>The timer trigger kind.</p>
+</dd>
+    <dt><code>dueTime</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd><p>The due time in UTC.</p>
+</dd>
+    <dt><code>targetState</code> <span class="xref">string</span></dt>
+    <dd><p>The optional target state.</p>
+</dd>
+    <dt><code>continuation</code> <span class="xref">string</span></dt>
+    <dd><p>The optional continuation metadata.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerRecord.html">OrchestrationTimerRecord</a>&gt;</dt>
+    <dd><p>The persisted timer record.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_UpdateStatusAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.UpdateStatusAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_UpdateStatusAsync_System_Guid_BridgingIT_DevKit_Application_Orchestrations_OrchestrationSignalStatus_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.UpdateStatusAsync(System.Guid,BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalStatus,System.String,System.Threading.CancellationToken)">
+  UpdateStatusAsync(Guid, OrchestrationSignalStatus, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates the durable status of a persisted signal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationSignalRecord&gt; UpdateStatusAsync(Guid signalId, OrchestrationSignalStatus status, string reason = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>signalId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The signal identifier.</p>
+</dd>
+    <dt><code>status</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalStatus.html">OrchestrationSignalStatus</a></dt>
+    <dd><p>The new signal status.</p>
+</dd>
+    <dt><code>reason</code> <span class="xref">string</span></dt>
+    <dd><p>The optional status reason.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalRecord.html">OrchestrationSignalRecord</a>&gt;</dt>
+    <dd><p>The updated signal record.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_UpdateStatusAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.UpdateStatusAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_UpdateStatusAsync_System_Guid_BridgingIT_DevKit_Application_Orchestrations_OrchestrationTimerStatus_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.UpdateStatusAsync(System.Guid,BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerStatus,System.String,System.Threading.CancellationToken)">
+  UpdateStatusAsync(Guid, OrchestrationTimerStatus, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates the durable status of a persisted timer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationTimerRecord&gt; UpdateStatusAsync(Guid timerId, OrchestrationTimerStatus status, string reason = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>timerId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The timer identifier.</p>
+</dd>
+    <dt><code>status</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerStatus.html">OrchestrationTimerStatus</a></dt>
+    <dd><p>The new timer status.</p>
+</dd>
+    <dt><code>reason</code> <span class="xref">string</span></dt>
+    <dd><p>The optional status reason.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerRecord.html">OrchestrationTimerRecord</a>&gt;</dt>
+    <dd><p>The updated timer record.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_VerifyAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.VerifyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbOrchestrationStorageProvider_VerifyAsync_System_Guid_System_Guid_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.VerifyAsync(System.Guid,System.Guid,System.String,System.Threading.CancellationToken)">
+  VerifyAsync(Guid, Guid, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Verifies that the specified owner still holds the active lease.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; VerifyAsync(Guid instanceId, Guid leaseId, string owner, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>leaseId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The lease identifier.</p>
+</dd>
+    <dt><code>owner</code> <span class="xref">string</span></dt>
+    <dd><p>The lease owner identity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p><code>true</code> when the lease is still valid and owned by the caller; otherwise <code>false</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

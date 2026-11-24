@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 890" width="1120" height="890" role="img" aria-labelledby="title description">
+  <title id="title">One app-header date range and Active filter shared by three components</title>
+  <desc id="description">Documentation mock. The Catalog reports header selects November 17, 2026, from 08:00 UTC to 17:00 UTC, has a checked Active checkbox and an Apply filter button. Activity summary, Orders and Timeline all display that accepted interval and Active: true. The header writes all three values to one scoped ReportFilterState. Each panel subscribes to the range and Active value through its own renderer and releases only its subscription when removed.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4c6571" />
+    </marker>
+    <style>
+      text { font-family: "DejaVu Sans", sans-serif; fill: #172737; }
+      .heading { font-size: 23px; font-weight: 600; }
+      .body { font-size: 18px; }
+      .small { font-size: 16px; }
+      .muted { fill: #4c5d6b; }
+      .line { stroke: #d8e0e6; stroke-width: 1.5; }
+      .field { fill: #ffffff; stroke: #91a6b3; stroke-width: 1.5; }
+      .flow { fill: none; stroke: #4c6571; stroke-width: 2; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1120" height="890" fill="#ffffff" />
+  <text x="32" y="43" font-size="28" font-weight="600">One header filter, three subscribers</text>
+  <rect x="806" y="17" width="282" height="34" rx="6" fill="#eef2f5" />
+  <text x="947" y="40" text-anchor="middle" class="small" font-weight="600">DOCUMENTATION MOCK</text>
+  <text x="32" y="80" class="body muted">The components use one shared state instance within the same runtime.</text>
+
+  <rect x="32" y="112" width="1056" height="480" rx="12" fill="#f5f7f9" stroke="#a7b4be" stroke-width="1.5" />
+  <path d="M 32 274 H 1088" class="line" />
+  <text x="56" y="150" class="heading">Catalog reports</text>
+  <text x="1064" y="150" text-anchor="end" class="small muted">Shared reporting filter</text>
+  <text x="56" y="184" class="small" font-weight="600">From UTC</text>
+  <rect x="56" y="196" width="304" height="48" rx="6" class="field" />
+  <text x="72" y="226" class="body">2026-11-17 08:00</text>
+  <text x="384" y="184" class="small" font-weight="600">To UTC, exclusive</text>
+  <rect x="384" y="196" width="304" height="48" rx="6" class="field" />
+  <text x="400" y="226" class="body">2026-11-17 17:00</text>
+  <g aria-label="Active checkbox checked">
+    <rect x="714" y="208" width="24" height="24" rx="4" fill="#246465" />
+    <path d="M 719 220 L 724 225 L 733 215" fill="none" stroke="#ffffff" stroke-width="2.5" />
+    <text x="748" y="226" class="body">Active</text>
+  </g>
+  <rect x="844" y="196" width="220" height="48" rx="6" fill="#246465" />
+  <text x="954" y="226" text-anchor="middle" font-size="18" font-weight="600" fill="#ffffff" style="fill:#ffffff">Apply filter</text>
+
+  <g aria-label="Activity summary observes the shared range and Active value">
+    <rect x="56" y="298" width="320" height="270" rx="8" fill="#ffffff" stroke="#b5c7c7" stroke-width="1.5" />
+    <text x="76" y="333" class="heading">Activity summary</text>
+    <text x="76" y="364" class="small muted">17 Nov, 08:00 to 17:00 UTC</text>
+    <text x="76" y="388" font-size="14" fill="#246465">Active: true</text>
+    <path d="M 76 458 H 356" class="line" />
+    <rect x="90" y="422" width="28" height="36" rx="3" fill="#b6d0cf" />
+    <rect x="136" y="400" width="28" height="58" rx="3" fill="#8eb6b4" />
+    <rect x="182" y="411" width="28" height="47" rx="3" fill="#b6d0cf" />
+    <rect x="228" y="386" width="28" height="72" rx="3" fill="#5b9291" />
+    <rect x="274" y="405" width="28" height="53" rx="3" fill="#8eb6b4" />
+    <text x="76" y="492" class="small muted">Counts for the selected interval</text>
+    <rect x="76" y="518" width="180" height="28" rx="5" fill="#edf5f4" />
+    <text x="166" y="537" text-anchor="middle" font-size="14" fill="#246465">Range + Active</text>
+  </g>
+
+  <g aria-label="Orders observes the same shared range and Active value">
+    <rect x="400" y="298" width="320" height="270" rx="8" fill="#ffffff" stroke="#b5c7c7" stroke-width="1.5" />
+    <text x="420" y="333" class="heading">Orders</text>
+    <text x="420" y="364" class="small muted">17 Nov, 08:00 to 17:00 UTC</text>
+    <text x="420" y="388" font-size="14" fill="#246465">Active: true</text>
+    <text x="420" y="413" class="small" font-weight="600">Order</text>
+    <text x="700" y="413" text-anchor="end" class="small" font-weight="600">Created UTC</text>
+    <path d="M 420 424 H 700" class="line" />
+    <text x="420" y="450" class="small">CAT-1042</text>
+    <text x="700" y="450" text-anchor="end" class="small muted">09:15</text>
+    <path d="M 420 463 H 700" class="line" />
+    <text x="420" y="489" class="small">CAT-1043</text>
+    <text x="700" y="489" text-anchor="end" class="small muted">14:30</text>
+    <rect x="420" y="518" width="180" height="28" rx="5" fill="#edf5f4" />
+    <text x="510" y="537" text-anchor="middle" font-size="14" fill="#246465">Range + Active</text>
+  </g>
+
+  <g aria-label="Timeline observes the same shared range and Active value">
+    <rect x="744" y="298" width="320" height="270" rx="8" fill="#ffffff" stroke="#b5c7c7" stroke-width="1.5" />
+    <text x="764" y="333" class="heading">Timeline</text>
+    <text x="764" y="364" class="small muted">17 Nov, 08:00 to 17:00 UTC</text>
+    <text x="764" y="388" font-size="14" fill="#246465">Active: true</text>
+    <path d="M 778 397 V 481" fill="none" stroke="#8eb6b4" stroke-width="2" />
+    <circle cx="778" cy="405" r="6" fill="#246465" />
+    <circle cx="778" cy="438" r="6" fill="#246465" />
+    <circle cx="778" cy="471" r="6" fill="#246465" />
+    <text x="797" y="411" class="small">09:15 Order received</text>
+    <text x="797" y="444" class="small">11:40 Packed</text>
+    <text x="797" y="477" class="small">16:10 Dispatched</text>
+    <rect x="764" y="518" width="180" height="28" rx="5" fill="#edf5f4" />
+    <text x="854" y="537" text-anchor="middle" font-size="14" fill="#246465">Range + Active</text>
+  </g>
+
+  <text x="32" y="633" class="small muted">How the change reaches each panel</text>
+  <rect x="32" y="650" width="270" height="116" rx="8" fill="#f1f4f7" stroke="#a7b4be" />
+  <text x="167" y="685" text-anchor="middle" class="body" font-weight="600">Header</text>
+  <text x="167" y="713" text-anchor="middle" class="small">Local draft inputs</text>
+  <text x="167" y="741" text-anchor="middle" class="small muted">SetFilter(start, end, active)</text>
+  <path d="M 312 708 H 372" class="flow" />
+  <rect x="384" y="650" width="352" height="116" rx="8" fill="#edf5f4" stroke="#5b9291" stroke-width="1.5" />
+  <text x="560" y="685" text-anchor="middle" class="body" font-weight="600">One ReportFilterState</text>
+  <text x="560" y="713" text-anchor="middle" class="small">One ReportFilterModel</text>
+  <text x="560" y="741" text-anchor="middle" class="small muted">Range + Active commit together</text>
+  <path d="M 748 708 H 808" class="flow" />
+  <rect x="820" y="650" width="268" height="116" rx="8" fill="#f1f4f7" stroke="#a7b4be" />
+  <text x="954" y="685" text-anchor="middle" class="body" font-weight="600">Three subscribers</text>
+  <text x="954" y="713" text-anchor="middle" class="small">Select complete filter</text>
+  <text x="954" y="741" text-anchor="middle" class="small muted">Own subscription per panel</text>
+
+  <text x="32" y="809" class="body">Removing Orders releases its subscription. The other panels keep observing.</text>
+  <text x="32" y="846" class="small muted">Illustrative data. Querying and chart rendering remain application code. No storage is configured.</text>
+</svg>

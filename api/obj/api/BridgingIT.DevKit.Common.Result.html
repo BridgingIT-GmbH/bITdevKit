@@ -120,12 +120,6 @@ The Result type is immutable and implements value semantics, making it thread-sa
     <dt>Extension Methods</dt>
     <dd>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultNonGenericExtensions.html#BridgingIT_DevKit_Common_ResultNonGenericExtensions_AndThen_BridgingIT_DevKit_Common_Result_System_Func_BridgingIT_DevKit_Common_Result__">ResultNonGenericExtensions.AndThen(Result, Func&lt;Result&gt;)</a>
   </div>
   <div>
@@ -244,18 +238,6 @@ The Result type is immutable and implements value semantics, making it thread-sa
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
   </div>
   </dd></dl>
 
@@ -1309,6 +1291,9 @@ var result = await new[]
 Console.WriteLine($&quot;Validation error: {error.Message}&quot;);</p>
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_GetError__1_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Matches errors assignable to <code class="typeparamref">TError</code>.</p>
+</div>
 
 
 
@@ -1353,6 +1338,9 @@ Console.WriteLine($&quot;Validation error: {error.Message}&quot;);
 }</p>
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_GetErrors__1_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Matches errors assignable to <code class="typeparamref">TError</code>.</p>
+</div>
 
 
 
@@ -1649,6 +1637,9 @@ Console.WriteLine(&quot;Validation error found&quot;);
 }</p>
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_HasError__1_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Matches errors assignable to <code class="typeparamref">TError</code>.</p>
+</div>
 
 
 
@@ -2308,6 +2299,9 @@ new ValidationError(&quot;Invalid email&quot;));</p>
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_ToResultPaged__1_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The converted result contributes only its outcome when passed to <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html#BridgingIT_DevKit_Common_ResultPaged_1_Merge_BridgingIT_DevKit_Common_ResultPaged__0____">Merge(params ResultPaged&lt;T&gt;[])</a>.</p>
+</div>
 
 
 
@@ -2556,6 +2550,9 @@ Console.WriteLine(&quot;No validation error found&quot;);
 }</p>
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_TryGetError__1___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Matches errors assignable to <code class="typeparamref">TError</code>.</p>
+</div>
 
 
 
@@ -2598,7 +2595,7 @@ Console.WriteLine(&quot;No validation error found&quot;);
 
 
   <h4 class="section" id="BridgingIT_DevKit_Common_Result_TryGetErrors__1_System_Collections_Generic_IEnumerable___0____examples">Examples</h4>
-  <p>if (result.HasError{ValidationError}(out var validationErrors))
+  <p>if (result.TryGetErrors{ValidationError}(out var validationErrors))
 {
 foreach(var error in validationErrors)
 {
@@ -2607,6 +2604,9 @@ Console.WriteLine(error.Message);
 }</p>
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_TryGetErrors__1_System_Collections_Generic_IEnumerable___0____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Matches errors assignable to <code class="typeparamref">TError</code>.</p>
+</div>
 
 
 

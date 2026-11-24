@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
     
     
       
@@ -3133,6 +3133,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#embedded-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedded documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#repository-configurations" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3468,6 +3479,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-infrastructure-litedb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LiteDB Infrastructure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -4958,6 +4997,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#embedded-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedded documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#repository-configurations" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5144,6 +5194,7 @@
 <li><a href="#architecture">Architecture</a></li>
 <li><a href="#use-cases">Use Cases</a></li>
 <li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#embedded-documentation">Embedded documentation</a></li>
 <li><a href="#repository-configurations"><span class="bdk-feature-name" data-feature-name="repositories"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="repositories" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h26v20H3V8Z M3 8l4-5h18l4 5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14h10v7H11Z M14 24h4" /></g></svg></span>Repository</span> configurations</a><ul>
 <li><a href="#full-toolset">Full toolset</a></li>
 </ul>
@@ -5175,9 +5226,9 @@
     Config[Repository or IDE MCP configuration] --&gt; Client[MCP client]
     Client --&gt;|starts STDIO process| Dotnet[dotnet]
     Dotnet --&gt; CLI[bdk mcp]
-    CLI --&gt;|documentation and guidance| Sources[DevKit sources]
+    CLI --&gt;|documentation and guidance| Sources[Embedded docs and guidance]
     CLI --&gt;|workspace discovery and local IPC| Host[Running DevKit web host]</code></pre>
-<p>The <span class="bdk-feature-name" data-feature-name="mcp"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>MCP</span> client owns process startup and communicates with <code>bdk mcp</code> over STDIO. The CLI resolves the workspace and forwards runtime tools to a separately running host.</p>
+<p>The <span class="bdk-feature-name" data-feature-name="mcp"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>MCP</span> client owns process startup and communicates with <code>bdk mcp</code> over STDIO. Documentation and API lookup read embedded assembly resources without online fallback. The CLI resolves the workspace and forwards runtime tools to a separately running host.</p>
 <h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Let Visual Studio or VS Code discover a <span class="bdk-feature-name" data-feature-name="mcp"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>DevKit</span> MCP server from source control.</li>
@@ -5247,6 +5298,10 @@
 <span class="p">}</span>
 </code></pre></div>
 <p>Reload the <span class="bdk-feature-name" data-feature-name="mcp"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>MCP</span> client and call <code>bdk_mcp_status</code>. Treat <code>available: false</code> as a handled unavailable result and use its <code>code</code>, <code>reason</code> and suggested next calls. An available response shows the resolved workspace and server status.</p>
+<h2 id="embedded-documentation">Embedded documentation<a class="headerlink" href="#embedded-documentation" title="Permanent link">&para;</a></h2>
+<p>The local <span class="bdk-feature-name" data-feature-name="mcp"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>MCP</span> tool contains the public DevKit Markdown and generated API metadata in its assembly. No documentation download, repository checkout, or running application is required. The server ignores tool/application version differences and reports source <code>embedded</code> through <code>bdk_mcp_status</code>.</p>
+<p>After reinstalling the local tool, restart or reload its <span class="bdk-feature-name" data-feature-name="mcp"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>MCP</span> connection to use the new embedded content. Changing a source document does not update an already-running or installed tool.</p>
+<p>Source Debug builds embed Markdown automatically and skip API generation. API lookup can return <code>documentation_unavailable</code> until generated metadata is available. Release builds and packaging generate that metadata. See <a href="../features-cli-mcp/#documentation-and-api-tools">Documentation and API tools</a> for the authoring flow, build commands, index-only completeness marker, and document continuation.</p>
 <h2 id="repository-configurations"><span class="bdk-feature-name" data-feature-name="repositories"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="repositories" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h26v20H3V8Z M3 8l4-5h18l4 5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14h10v7H11Z M14 24h4" /></g></svg></span>Repository</span> configurations<a class="headerlink" href="#repository-configurations" title="Permanent link">&para;</a></h2>
 <p>This repository is the <code>bdk</code> CLI source repository. The checked-in workspace-root <code>.mcp.json</code> offers both <code>bdk_local</code> (source) and <code>bdk</code> (the packaged local tool):</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
@@ -5366,7 +5421,7 @@
 <li>Call <code>bdk_mcp_status</code>; this does not require a selected runtime.</li>
 <li>Start a DevKit web host in Development for runtime tools.</li>
 <li>Call <code>bdk_runtimes_list</code> and select a runtime when more than one is ready.</li>
-<li>Call <code>bdk_mcp_self_test</code> to check IPC, protocol and capability discovery.</li>
+<li>Call <code>bdk_mcp_self_test</code> to check embedded documentation, IPC, protocol, and capability discovery. Documentation results remain available when no runtime is selected.</li>
 </ol>
 <p>All configurations enable <code>diagnostics</code>, <code>operations</code> and <code>admin</code> so the full catalog is available. Admin tools still require operation-specific confirmation arguments. Remove the <code>--toolset</code> argument for a diagnostics-only server; see <a href="#full-toolset">Full toolset</a>.</p>
 <h2 id="related-documentation">Related documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>

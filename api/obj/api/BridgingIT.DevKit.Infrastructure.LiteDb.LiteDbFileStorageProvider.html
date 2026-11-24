@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LiteDbFileStorageProvider | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LiteDbFileStorageProvider | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides a native virtual filesystem with explicit directories and atomic chunked publication.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider" class="text-break">
+Class LiteDbFileStorageProvider  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.html">LiteDb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.LiteDb.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a native virtual filesystem with explicit directories and atomic chunked publication.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class LiteDbFileStorageProvider : BaseFileStorageProvider, IFileStorageProvider</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.BaseFileStorageProvider.html">BaseFileStorageProvider</a></div>
+      <div><span class="xref">LiteDbFileStorageProvider</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BaseFileStorageProvider.html#BridgingIT_DevKit_Application_Storage_BaseFileStorageProvider_CopyFilesAsync_System_Collections_Generic_IEnumerable_System_ValueTuple_System_String_System_String___System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">BaseFileStorageProvider.CopyFilesAsync(IEnumerable&lt;(string SourcePath, string DestinationPath)&gt;, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BaseFileStorageProvider.html#BridgingIT_DevKit_Application_Storage_BaseFileStorageProvider_DeleteFilesAsync_System_Collections_Generic_IEnumerable_System_String__System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">BaseFileStorageProvider.DeleteFilesAsync(IEnumerable&lt;string&gt;, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BaseFileStorageProvider.html#BridgingIT_DevKit_Application_Storage_BaseFileStorageProvider_MoveFilesAsync_System_Collections_Generic_IEnumerable_System_ValueTuple_System_String_System_String___System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">BaseFileStorageProvider.MoveFilesAsync(IEnumerable&lt;(string SourcePath, string DestinationPath)&gt;, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BaseFileStorageProvider.html#BridgingIT_DevKit_Application_Storage_BaseFileStorageProvider_ReportProgress_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_String_System_Int64_System_Int64_System_Int64_">BaseFileStorageProvider.ReportProgress(IProgress&lt;FileProgress&gt;, string, long, long, long)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BaseFileStorageProvider.html#BridgingIT_DevKit_Application_Storage_BaseFileStorageProvider_LocationName">BaseFileStorageProvider.LocationName</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_examples">Examples</h2>
+  <pre><code class="lang-csharp">services.AddFileStorage(factory =&gt; factory.RegisterProvider("ledger", files =&gt; files.UseLiteDb("ledger")));</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileContentStore_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.#ctor(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileContentStore,System.String)">
+  LiteDbFileStorageProvider(LiteDbFileContentStore, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Provides a native virtual filesystem with explicit directories and atomic chunked publication.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbFileStorageProvider(LiteDbFileContentStore store, string locationName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>store</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileContentStore.html">LiteDbFileContentStore</a></dt>
+    <dd><p>The shared native content owner.</p>
+</dd>
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd><p>The exact logical storage location.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileContentStore_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddFileStorage(factory =&gt; factory.RegisterProvider("ledger", files =&gt; files.UseLiteDb("ledger")));</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_Description_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.Description*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_Description" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.Description">
+  Description
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the description.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string Description { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_SupportsNotifications_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.SupportsNotifications*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_SupportsNotifications" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.SupportsNotifications">
+  SupportsNotifications
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the supports notifications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool SupportsNotifications { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_CheckHealthAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.CheckHealthAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_CheckHealthAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.CheckHealthAsync(System.Threading.CancellationToken)">
+  CheckHealthAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the check health operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; CheckHealthAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_CopyFileAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.CopyFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_CopyFileAsync_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.CopyFileAsync(System.String,System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  CopyFileAsync(string, string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the copy file operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; CopyFileAsync(string path, string destinationPath, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>destinationPath</code> <span class="xref">string</span></dt>
+    <dd><p>The destination path used by the operation.</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>The progress used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_CreateDirectoryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.CreateDirectoryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_CreateDirectoryAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.CreateDirectoryAsync(System.String,System.Threading.CancellationToken)">
+  CreateDirectoryAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates directory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_DeleteDirectoryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.DeleteDirectoryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_DeleteDirectoryAsync_System_String_System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.DeleteDirectoryAsync(System.String,System.Boolean,System.Threading.CancellationToken)">
+  DeleteDirectoryAsync(string, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes directory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; DeleteDirectoryAsync(string path, bool recursive, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>recursive</code> <span class="xref">bool</span></dt>
+    <dd><p>The recursive used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_DeleteFileAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.DeleteFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_DeleteFileAsync_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.DeleteFileAsync(System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  DeleteFileAsync(string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; DeleteFileAsync(string path, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>The progress used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_DirectoryExistsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.DirectoryExistsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_DirectoryExistsAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.DirectoryExistsAsync(System.String,System.Threading.CancellationToken)">
+  DirectoryExistsAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the directory exists operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_FileExistsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.FileExistsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_FileExistsAsync_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.FileExistsAsync(System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  FileExistsAsync(string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the file exists operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; FileExistsAsync(string path, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>The progress used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_GetChecksumAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.GetChecksumAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_GetChecksumAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.GetChecksumAsync(System.String,System.Threading.CancellationToken)">
+  GetChecksumAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets checksum.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;string&gt;&gt; GetChecksumAsync(string path, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">string</span>&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_GetFileMetadataAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.GetFileMetadataAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_GetFileMetadataAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.GetFileMetadataAsync(System.String,System.Threading.CancellationToken)">
+  GetFileMetadataAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets file metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;FileMetadata&gt;&gt; GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a>&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_ListDirectoriesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.ListDirectoriesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_ListDirectoriesAsync_System_String_System_String_System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.ListDirectoriesAsync(System.String,System.String,System.Boolean,System.Threading.CancellationToken)">
+  ListDirectoriesAsync(string, string, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the list directories operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;IEnumerable&lt;string&gt;&gt;&gt; ListDirectoriesAsync(string path, string searchPattern = null, bool recursive = false, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>searchPattern</code> <span class="xref">string</span></dt>
+    <dd><p>The search pattern used by the operation.</p>
+</dd>
+    <dt><code>recursive</code> <span class="xref">bool</span></dt>
+    <dd><p>The recursive used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_ListFilesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.ListFilesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_ListFilesAsync_System_String_System_String_System_Boolean_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.ListFilesAsync(System.String,System.String,System.Boolean,System.String,System.Threading.CancellationToken)">
+  ListFilesAsync(string, string, bool, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the list files operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;(IEnumerable&lt;string&gt; Files, string NextContinuationToken)&gt;&gt; ListFilesAsync(string path, string searchPattern = null, bool recursive = false, string continuationToken = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>searchPattern</code> <span class="xref">string</span></dt>
+    <dd><p>The search pattern used by the operation.</p>
+</dd>
+    <dt><code>recursive</code> <span class="xref">bool</span></dt>
+    <dd><p>The recursive used by the operation.</p>
+</dd>
+    <dt><code>continuationToken</code> <span class="xref">string</span></dt>
+    <dd><p>The continuation token used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;(<span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt; <span class="xref">Files</span>, <span class="xref">string</span> <span class="xref">NextContinuationToken</span>)&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_MoveFileAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.MoveFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_MoveFileAsync_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.MoveFileAsync(System.String,System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  MoveFileAsync(string, string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the move file operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; MoveFileAsync(string path, string destinationPath, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>destinationPath</code> <span class="xref">string</span></dt>
+    <dd><p>The destination path used by the operation.</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>The progress used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_OpenWriteFileAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.OpenWriteFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_OpenWriteFileAsync_System_String_System_Boolean_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.OpenWriteFileAsync(System.String,System.Boolean,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  OpenWriteFileAsync(string, bool, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the open write file operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;Stream&gt;&gt; OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>useTemporaryWrite</code> <span class="xref">bool</span></dt>
+    <dd><p>The use temporary write used by the operation.</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>The progress used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">Stream</span>&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_ReadFileAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.ReadFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_ReadFileAsync_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.ReadFileAsync(System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  ReadFileAsync(string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the read file operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;Stream&gt;&gt; ReadFileAsync(string path, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>The progress used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">Stream</span>&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_RenameDirectoryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.RenameDirectoryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_RenameDirectoryAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.RenameDirectoryAsync(System.String,System.String,System.Threading.CancellationToken)">
+  RenameDirectoryAsync(string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the rename directory operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; RenameDirectoryAsync(string path, string destinationPath, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>destinationPath</code> <span class="xref">string</span></dt>
+    <dd><p>The destination path used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_RenameFileAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.RenameFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_RenameFileAsync_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.RenameFileAsync(System.String,System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  RenameFileAsync(string, string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the rename file operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; RenameFileAsync(string path, string destinationPath, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>destinationPath</code> <span class="xref">string</span></dt>
+    <dd><p>The destination path used by the operation.</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>The progress used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_SetFileMetadataAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.SetFileMetadataAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_SetFileMetadataAsync_System_String_BridgingIT_DevKit_Application_Storage_FileMetadata_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.SetFileMetadataAsync(System.String,BridgingIT.DevKit.Application.Storage.FileMetadata,System.Threading.CancellationToken)">
+  SetFileMetadataAsync(string, FileMetadata, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the set file metadata operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>metadata</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a></dt>
+    <dd><p>The metadata used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_UpdateFileMetadataAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.UpdateFileMetadataAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_UpdateFileMetadataAsync_System_String_System_Func_BridgingIT_DevKit_Application_Storage_FileMetadata_BridgingIT_DevKit_Application_Storage_FileMetadata__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.UpdateFileMetadataAsync(System.String,System.Func{BridgingIT.DevKit.Application.Storage.FileMetadata,BridgingIT.DevKit.Application.Storage.FileMetadata},System.Threading.CancellationToken)">
+  UpdateFileMetadataAsync(string, Func&lt;FileMetadata, FileMetadata&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the update file metadata operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;FileMetadata&gt;&gt; UpdateFileMetadataAsync(string path, Func&lt;FileMetadata, FileMetadata&gt; metadataUpdate, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>metadataUpdate</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a>, <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a>&gt;</dt>
+    <dd><p>The metadata update used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a>&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_WriteFileAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.WriteFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFileStorageProvider_WriteFileAsync_System_String_System_IO_Stream_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.WriteFileAsync(System.String,System.IO.Stream,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  WriteFileAsync(string, Stream, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the write file operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; WriteFileAsync(string path, Stream content, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path used by the operation.</p>
+</dd>
+    <dt><code>content</code> <span class="xref">Stream</span></dt>
+    <dd><p>The content used by the operation.</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>The progress used by the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

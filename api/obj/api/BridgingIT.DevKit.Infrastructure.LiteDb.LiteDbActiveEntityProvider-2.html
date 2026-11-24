@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LiteDbActiveEntityProvider&lt;TEntity, TId&gt; | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LiteDbActiveEntityProvider&lt;TEntity, TId&gt; | bITdevKit API Reference ">
+      
+      <meta name="description" content="Persists ActiveEntity records directly through a shared LiteDB database and scoped transaction session.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2" class="text-break">
+Class LiteDbActiveEntityProvider&lt;TEntity, TId&gt;  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.html">LiteDb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.LiteDb.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Persists ActiveEntity records directly through a shared LiteDB database and scoped transaction session.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class LiteDbActiveEntityProvider&lt;TEntity, TId&gt; : IActiveEntityEntityProvider&lt;TEntity, TId&gt; where TEntity : class, IEntity</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The stored entity type.</p>
+</dd>
+    <dt><code>TId</code></dt>
+    <dd><p>The entity identifier type.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">LiteDbActiveEntityProvider&lt;TEntity, TId&gt;</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Domain.IActiveEntityEntityProvider-2.html">IActiveEntityEntityProvider</a>&lt;TEntity, TId&gt;</div>
+    </dd>
+  </dl>
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_examples">Examples</h2>
+  <pre><code class="lang-csharp">configuration.For&lt;LedgerEntry, Guid&gt;().UseLiteDbProvider();</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Use ActiveEntity APIs to run registered behaviors. This provider invokes supplied callbacks and owns persistence only. Dispose the DI scope asynchronously.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProviderOptions__0__Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider__0__1___" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.#ctor(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession,BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProviderOptions{`0},Microsoft.Extensions.Logging.ILogger{BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider{`0,`1}})">
+  LiteDbActiveEntityProvider(LiteDbDatabaseSession, LiteDbActiveEntityProviderOptions&lt;TEntity&gt;, ILogger&lt;LiteDbActiveEntityProvider&lt;TEntity, TId&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates an entity provider using an existing scoped database session and configured mappings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbActiveEntityProvider(LiteDbDatabaseSession session, LiteDbActiveEntityProviderOptions&lt;TEntity&gt; settings, ILogger&lt;LiteDbActiveEntityProvider&lt;TEntity, TId&gt;&gt; logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>session</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.html">LiteDbDatabaseSession</a></dt>
+    <dd><p>The scoped session, shared by entity providers selecting the same named database.</p>
+</dd>
+    <dt><code>settings</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProviderOptions-1.html">LiteDbActiveEntityProviderOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Provider settings with an explicit collection name. The caller must keep them unchanged during use.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider-2.html">LiteDbActiveEntityProvider</a>&lt;TEntity, TId&gt;&gt;</dt>
+    <dd><p>Optional structured diagnostic logger.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProviderOptions__0__Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider__0__1____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Prefer UseLiteDbProvider for registration, mapping setup, and options snapshots. Manual composition must configure the database mapper before first use.</p>
+</div>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_BeginTransactionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.BeginTransactionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_BeginTransactionAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.BeginTransactionAsync(System.Threading.CancellationToken)">
+  BeginTransactionAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Begins a transaction in the underlying storage.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;IDatabaseTransaction&gt;&gt; BeginTransactionAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IDatabaseTransaction.html">IDatabaseTransaction</a>&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the transaction object.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_BeginTransactionAsync_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.BeginTransactionAsync();
+if (result.IsSuccess) { var transaction = result.Value; /* Use transaction */ }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_CommitTransactionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.CommitTransactionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_CommitTransactionAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.CommitTransactionAsync(System.Threading.CancellationToken)">
+  CommitTransactionAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Commits a transaction in the underlying storage.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&gt; CommitTransactionAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task with a Result indicating success or failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_CommitTransactionAsync_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var transactionResult = await provider.BeginTransactionAsync();
+if (transactionResult.IsSuccess) {
+    await provider.CommitAsync();
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_CountAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.CountAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_CountAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.CountAsync(BridgingIT.DevKit.Domain.ISpecification{`0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  CountAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Counts entities matching the given specification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;long&gt;&gt; CountAsync(ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the count of entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_CountAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.CountAsync(spec);
+if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_CountAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.CountAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_CountAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.CountAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  CountAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Counts entities matching the given specifications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;long&gt;&gt; CountAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the count of entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_CountAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.CountAsync(specs);
+if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_CountAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.CountAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_CountAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.CountAsync(System.Threading.CancellationToken)">
+  CountAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Counts entities matching the given options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;long&gt;&gt; CountAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the count of entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_CountAsync_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.CountAsync();
+if (result.IsSuccess) { Console.WriteLine($"Total entities: {result.Value}"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_DeleteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.DeleteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_DeleteAsync__0_BridgingIT_DevKit_Domain_ActiveEntityCallbackOptions__0__1__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.DeleteAsync(`0,BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions{`0,`1},System.Threading.CancellationToken)">
+  DeleteAsync(TEntity, ActiveEntityCallbackOptions&lt;TEntity, TId&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes an entity from the underlying storage.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&gt; DeleteAsync(TEntity entity, ActiveEntityCallbackOptions&lt;TEntity, TId&gt; callbacks = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity to delete.</p>
+</dd>
+    <dt><code>callbacks</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions-2.html">ActiveEntityCallbackOptions</a>&lt;TEntity, TId&gt;</dt>
+    <dd><p>Optional callbacks invoked around the delete operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task with a Result indicating success or failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_DeleteAsync__0_BridgingIT_DevKit_Domain_ActiveEntityCallbackOptions__0__1__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var customer = await provider.FindOneAsync(customerId);
+var result = await provider.DeleteAsync(customer.Value);
+if (result.IsSuccess) { Console.WriteLine("Customer deleted"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_DeleteSetAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.DeleteSetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_DeleteSetAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.DeleteSetAsync(BridgingIT.DevKit.Domain.ISpecification{`0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  DeleteSetAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes entities matching the given specification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;long&gt;&gt; DeleteSetAsync(ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., filtering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the number of deleted rows.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_DeleteSetAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.DeleteAsync(
+    new Specification&lt;User&gt;(u =&gt; u.IsDeleted));
+if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_DeleteSetAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.DeleteSetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_DeleteSetAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.DeleteSetAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  DeleteSetAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes entities matching the given specifications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;long&gt;&gt; DeleteSetAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., filtering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the number of deleted rows.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_DeleteSetAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var specs = new[] {
+    new Specification&lt;User&gt;(u =&gt; u.IsDeleted),
+    new Specification&lt;User&gt;(u =&gt; u.LastLogin &lt; DateTime.UtcNow.AddYears(-5))
+};
+var result = await provider.DeleteAsync(specs);
+if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ExistsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ExistsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ExistsAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ExistsAsync(BridgingIT.DevKit.Domain.ISpecification{`0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  ExistsAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if any entities exist matching the given specification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;bool&gt;&gt; ExistsAsync(ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>A task with a Result containing a boolean indicating if entities exist.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ExistsAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.ExistsAsync(spec);
+if (result.IsSuccess &amp;&amp; result.Value) { Console.WriteLine("Matching entities exist"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ExistsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ExistsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ExistsAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ExistsAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  ExistsAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if any entities exist matching the given specifications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;bool&gt;&gt; ExistsAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>A task with a Result containing a boolean indicating if entities exist.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ExistsAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.ExistsAsync(specs);
+if (result.IsSuccess &amp;&amp; result.Value) { Console.WriteLine("Matching entities exist"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ExistsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ExistsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ExistsAsync_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ExistsAsync(System.Object,System.Threading.CancellationToken)">
+  ExistsAsync(object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;bool&gt;&gt; ExistsAsync(object id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ExistsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ExistsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ExistsAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ExistsAsync(System.Threading.CancellationToken)">
+  ExistsAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;bool&gt;&gt; ExistsAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllAsync(BridgingIT.DevKit.Domain.ISpecification{`0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entities matching the given specification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;IEnumerable&lt;TEntity&gt;&gt;&gt; FindAllAsync(ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the collection of entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.FindAllAsync(spec);
+if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllAsync(BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllAsync(IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entities matching the given options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;IEnumerable&lt;TEntity&gt;&gt;&gt; FindAllAsync(IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the collection of entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var options = new FindOptions&lt;Customer&gt; { Take = 10 };
+var result = await provider.FindAllAsync(options);
+if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entities matching the given specifications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;IEnumerable&lt;TEntity&gt;&gt;&gt; FindAllAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the collection of entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.FindAllAsync(specs);
+if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllIdsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllIdsAsync(BridgingIT.DevKit.Domain.ISpecification{`0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllIdsAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entity IDs matching the given specification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;IEnumerable&lt;TId&gt;&gt;&gt; FindAllIdsAsync(ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TId&gt;&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the collection of entity IDs.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.FindAllIdsAsync(spec);
+if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllIdsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllIdsAsync(BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllIdsAsync(IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entity IDs matching the given options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;IEnumerable&lt;TId&gt;&gt;&gt; FindAllIdsAsync(IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TId&gt;&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the collection of entity IDs.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.FindAllIdsAsync();
+if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllIdsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllIdsAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllIdsAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entity IDs matching the given specifications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;IEnumerable&lt;TId&gt;&gt;&gt; FindAllIdsAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TId&gt;&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the collection of entity IDs.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.FindAllIdsAsync(specs);
+if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsPagedAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllIdsPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsPagedAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllIdsPagedAsync(BridgingIT.DevKit.Domain.ISpecification{`0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllIdsPagedAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entity IDs matching the given specification with pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;TId&gt;&gt; FindAllIdsPagedAsync(ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TId&gt;&gt;</dt>
+    <dd><p>A task with a ResultPaged containing the paged entity IDs and total count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsPagedAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var options = new FindOptions&lt;Customer&gt; { Take = 5 };
+var result = await provider.FindAllIdsPagedAsync(spec, options);
+if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsPagedAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllIdsPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsPagedAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllIdsPagedAsync(BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllIdsPagedAsync(IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entity IDs matching the given options with pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;TId&gt;&gt; FindAllIdsPagedAsync(IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TId&gt;&gt;</dt>
+    <dd><p>A task with a ResultPaged containing the paged entity IDs and total count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsPagedAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var options = new FindOptions&lt;Customer&gt; { Skip = 10, Take = 5 };
+var result = await provider.FindAllIdsPagedAsync(options);
+if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsPagedAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllIdsPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsPagedAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllIdsPagedAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllIdsPagedAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entity IDs matching the given specifications with pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;TId&gt;&gt; FindAllIdsPagedAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TId&gt;&gt;</dt>
+    <dd><p>A task with a ResultPaged containing the paged entity IDs and total count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllIdsPagedAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var options = new FindOptions&lt;Customer&gt; { Take = 5 };
+var result = await provider.FindAllIdsPagedAsync(specs, options);
+if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllPagedAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllPagedAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllPagedAsync(BridgingIT.DevKit.Domain.ISpecification{`0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllPagedAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entities matching the given specification with pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;TEntity&gt;&gt; FindAllPagedAsync(ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task with a ResultPaged containing the paged entities and total count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllPagedAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var options = new FindOptions&lt;Customer&gt; { Take = 5 };
+var result = await provider.FindAllPagedAsync(spec, options);
+if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllPagedAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllPagedAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllPagedAsync(BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllPagedAsync(IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entities matching the given options with pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;TEntity&gt;&gt; FindAllPagedAsync(IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task with a ResultPaged containing the paged entities and total count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllPagedAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var options = new FindOptions&lt;Customer&gt; { Skip = 10, Take = 5 };
+var result = await provider.FindAllPagedAsync(options);
+if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}, Page: {result.Value.Page}"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllPagedAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllPagedAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindAllPagedAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllPagedAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entities matching the given specifications with pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;TEntity&gt;&gt; FindAllPagedAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task with a ResultPaged containing the paged entities and total count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindAllPagedAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var options = new FindOptions&lt;Customer&gt; { Take = 5 };
+var result = await provider.FindAllPagedAsync(specs, options);
+if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindOneAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindOneAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindOneAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindOneAsync(BridgingIT.DevKit.Domain.ISpecification{`0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindOneAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds a single entity matching the given specification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;TEntity&gt;&gt; FindOneAsync(ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the found entity or null.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindOneAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var spec = new Specification&lt;Customer&gt;(c =&gt; c.Email == "john.doe@example.com");
+var result = await provider.FindOneAsync(spec);
+if (result.IsSuccess &amp;&amp; result.Value != null) { Console.WriteLine(result.Value.FirstName); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindOneAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindOneAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindOneAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindOneAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindOneAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds a single entity matching the given specifications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;TEntity&gt;&gt; FindOneAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications to filter the entity.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the found entity or null.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindOneAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.FindOneAsync(specs);
+if (result.IsSuccess &amp;&amp; result.Value != null) { Console.WriteLine(result.Value.FirstName); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindOneAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindOneAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_FindOneAsync_System_Object_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.FindOneAsync(System.Object,BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindOneAsync(object, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;TEntity&gt;&gt; FindOneAsync(object id, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_InsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.InsertAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_InsertAsync__0_BridgingIT_DevKit_Domain_ActiveEntityCallbackOptions__0__1__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.InsertAsync(`0,BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions{`0,`1},System.Threading.CancellationToken)">
+  InsertAsync(TEntity, ActiveEntityCallbackOptions&lt;TEntity, TId&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Inserts an entity into the underlying storage.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;TEntity&gt;&gt; InsertAsync(TEntity entity, ActiveEntityCallbackOptions&lt;TEntity, TId&gt; callbacks = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity to insert.</p>
+</dd>
+    <dt><code>callbacks</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions-2.html">ActiveEntityCallbackOptions</a>&lt;TEntity, TId&gt;</dt>
+    <dd><p>Optional callbacks invoked around the insert operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the inserted entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_InsertAsync__0_BridgingIT_DevKit_Domain_ActiveEntityCallbackOptions__0__1__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var customer = new Customer { FirstName = "John", LastName = "Doe" };
+var result = await provider.InsertAsync(customer);
+if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.Value.Id}"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ProjectAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ProjectAllAsync``1(BridgingIT.DevKit.Domain.ISpecification{`0},System.Linq.Expressions.Expression{System.Func{`0,``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  ProjectAllAsync&lt;TProjection&gt;(ISpecification&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities matching the given specification to a specified type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;IEnumerable&lt;TProjection&gt;&gt;&gt; ProjectAllAsync&lt;TProjection&gt;(ISpecification&lt;TEntity&gt; specification, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter entities.</p>
+</dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>The projection expression.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the projected entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to project to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.ProjectAllAsync(spec, c =&gt; c.FirstName);
+if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ProjectAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ProjectAllAsync``1(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},System.Linq.Expressions.Expression{System.Func{`0,``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  ProjectAllAsync&lt;TProjection&gt;(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities matching the given specifications to a specified type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;IEnumerable&lt;TProjection&gt;&gt;&gt; ProjectAllAsync&lt;TProjection&gt;(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>The projection expression.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the projected entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to project to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.ProjectAllAsync(specs, c =&gt; c.FirstName);
+if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ProjectAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ProjectAllAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  ProjectAllAsync&lt;TProjection&gt;(Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities to a specified type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;IEnumerable&lt;TProjection&gt;&gt;&gt; ProjectAllAsync&lt;TProjection&gt;(Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>The projection expression.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the projected entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to project to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.ProjectAllAsync&lt;Customer, string&gt;(c =&gt; c.FirstName);
+if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllPagedAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ProjectAllPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllPagedAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ProjectAllPagedAsync``1(BridgingIT.DevKit.Domain.ISpecification{`0},System.Linq.Expressions.Expression{System.Func{`0,``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  ProjectAllPagedAsync&lt;TProjection&gt;(ISpecification&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities matching the given specification to a specified type with pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;TProjection&gt;&gt; ProjectAllPagedAsync&lt;TProjection&gt;(ISpecification&lt;TEntity&gt; specification, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter entities.</p>
+</dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>The projection expression.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TProjection&gt;&gt;</dt>
+    <dd><p>A task with a ResultPaged containing the paged projected entities and total count.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to project to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllPagedAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var options = new FindOptions&lt;Customer&gt; { Take = 5 };
+var result = await provider.ProjectAllPagedAsync(spec, c =&gt; c.FirstName, options);
+if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllPagedAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ProjectAllPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllPagedAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ProjectAllPagedAsync``1(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},System.Linq.Expressions.Expression{System.Func{`0,``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  ProjectAllPagedAsync&lt;TProjection&gt;(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities matching the given specifications to a specified type with pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;TProjection&gt;&gt; ProjectAllPagedAsync&lt;TProjection&gt;(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>The projection expression.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TProjection&gt;&gt;</dt>
+    <dd><p>A task with a ResultPaged containing the paged projected entities and total count.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to project to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllPagedAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var options = new FindOptions&lt;Customer&gt; { Take = 5 };
+var result = await provider.ProjectAllPagedAsync(specs, c =&gt; c.FirstName, options);
+if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllPagedAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ProjectAllPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllPagedAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.ProjectAllPagedAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  ProjectAllPagedAsync&lt;TProjection&gt;(Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities to a specified type with pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;TProjection&gt;&gt; ProjectAllPagedAsync&lt;TProjection&gt;(Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>The projection expression.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TProjection&gt;&gt;</dt>
+    <dd><p>A task with a ResultPaged containing the paged projected entities and total count.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to project to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_ProjectAllPagedAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var options = new FindOptions&lt;Customer&gt; { Skip = 10, Take = 5 };
+var result = await provider.ProjectAllPagedAsync&lt;Customer, string&gt;(c =&gt; c.FirstName, options);
+if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_RollbackAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.RollbackAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_RollbackAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.RollbackAsync(System.Threading.CancellationToken)">
+  RollbackAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Rolls back a transaction in the underlying storage.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&gt; RollbackAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task with a Result indicating success or failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_RollbackAsync_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var transactionResult = await provider.BeginTransactionAsync();
+if (transactionResult.IsSuccess) {
+    await provider.RollbackAsync();
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_UpdateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.UpdateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_UpdateAsync__0_BridgingIT_DevKit_Domain_ActiveEntityCallbackOptions__0__1__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.UpdateAsync(`0,BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions{`0,`1},System.Threading.CancellationToken)">
+  UpdateAsync(TEntity, ActiveEntityCallbackOptions&lt;TEntity, TId&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates an existing entity in the underlying storage.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;TEntity&gt;&gt; UpdateAsync(TEntity entity, ActiveEntityCallbackOptions&lt;TEntity, TId&gt; callbacks = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity to update.</p>
+</dd>
+    <dt><code>callbacks</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions-2.html">ActiveEntityCallbackOptions</a>&lt;TEntity, TId&gt;</dt>
+    <dd><p>Optional callbacks invoked around the update operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the updated entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_UpdateAsync__0_BridgingIT_DevKit_Domain_ActiveEntityCallbackOptions__0__1__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var customer = await provider.FindOneAsync(customerId);
+customer.Value.FirstName = "Jane";
+var result = await provider.UpdateAsync(customer.Value);
+if (result.IsSuccess) { Console.WriteLine("Customer updated"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_UpdateSetAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.UpdateSetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_UpdateSetAsync_BridgingIT_DevKit_Domain_ISpecification__0__System_Action_BridgingIT_DevKit_Domain_Repositories_IEntityUpdateSet__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.UpdateSetAsync(BridgingIT.DevKit.Domain.ISpecification{`0},System.Action{BridgingIT.DevKit.Domain.Repositories.IEntityUpdateSet{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  UpdateSetAsync(ISpecification&lt;TEntity&gt;, Action&lt;IEntityUpdateSet&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates entities matching the given specification by setting the specified properties.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;long&gt;&gt; UpdateSetAsync(ISpecification&lt;TEntity&gt; specification, Action&lt;IEntityUpdateSet&lt;TEntity&gt;&gt; set, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter entities.</p>
+</dd>
+    <dt><code>set</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IEntityUpdateSet-1.html">IEntityUpdateSet</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A builder action to specify which properties to update and their values.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., filtering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the number of affected rows.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_UpdateSetAsync_BridgingIT_DevKit_Domain_ISpecification__0__System_Action_BridgingIT_DevKit_Domain_Repositories_IEntityUpdateSet__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.UpdateAsync(
+    new Specification&lt;User&gt;(u =&gt; u.LastLogin &lt; DateTime.UtcNow.AddYears(-1)),
+    set =&gt; set
+        .Set(u =&gt; u.IsActive, false)
+        .Set(u =&gt; u.Status, "Inactive"));
+if (result.IsSuccess) { Console.WriteLine($"Updated {result.Value} users"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_UpdateSetAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.UpdateSetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_UpdateSetAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Action_BridgingIT_DevKit_Domain_Repositories_IEntityUpdateSet__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.UpdateSetAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},System.Action{BridgingIT.DevKit.Domain.Repositories.IEntityUpdateSet{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  UpdateSetAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, Action&lt;IEntityUpdateSet&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates entities matching the given specifications by setting the specified properties.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;long&gt;&gt; UpdateSetAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, Action&lt;IEntityUpdateSet&lt;TEntity&gt;&gt; set, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
+    <dt><code>set</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IEntityUpdateSet-1.html">IEntityUpdateSet</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A builder action to specify which properties to update and their values.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options (e.g., filtering, includes).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the number of affected rows.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_UpdateSetAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Action_BridgingIT_DevKit_Domain_Repositories_IEntityUpdateSet__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var specs = new[] {
+    new Specification&lt;User&gt;(u =&gt; u.IsDeleted),
+    new Specification&lt;User&gt;(u =&gt; !u.IsActive)
+};
+var result = await provider.UpdateAsync(
+    specs,
+    set =&gt; set.Set(u =&gt; u.Status, "Archived"));
+if (result.IsSuccess) { Console.WriteLine($"Archived {result.Value} users"); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_UpsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.UpsertAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_UpsertAsync__0_BridgingIT_DevKit_Domain_ActiveEntityCallbackOptions__0__1__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider`2.UpsertAsync(`0,BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions{`0,`1},System.Threading.CancellationToken)">
+  UpsertAsync(TEntity, ActiveEntityCallbackOptions&lt;TEntity, TId&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Upserts an entity (inserts if new, updates if exists) in the underlying storage.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;(TEntity entity, RepositoryActionResult action)&gt;&gt; UpsertAsync(TEntity entity, ActiveEntityCallbackOptions&lt;TEntity, TId&gt; callbacks = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity to upsert.</p>
+</dd>
+    <dt><code>callbacks</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions-2.html">ActiveEntityCallbackOptions</a>&lt;TEntity, TId&gt;</dt>
+    <dd><p>Optional callbacks invoked around the upsert and applicable insert or update stages.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;(TEntity <span class="xref">entity</span>, <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.RepositoryActionResult.html">RepositoryActionResult</a> <span class="xref">action</span>)&gt;&gt;</dt>
+    <dd><p>A task with a Result containing the entity and the action performed (Inserted/Updated).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityProvider_2_UpsertAsync__0_BridgingIT_DevKit_Domain_ActiveEntityCallbackOptions__0__1__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var customer = new Customer { Id = Guid.NewGuid(), FirstName = "John" };
+var result = await provider.UpsertAsync(customer);
+Console.WriteLine($"Action: {result.Value.action}"); // Inserted or Updated</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

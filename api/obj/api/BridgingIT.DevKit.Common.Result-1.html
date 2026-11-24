@@ -126,13 +126,19 @@ This struct provides value semantics and is optimized for reference type values.
     <dt>Extension Methods</dt>
     <dd>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_AndThenAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">ResultTExtensions.AndThenAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_AndThenResultAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___System_Threading_CancellationToken_">ResultTExtensions.AndThenResultAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;Result&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_AndThenResultAsync__2_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___1____System_Threading_CancellationToken_">ResultTExtensions.AndThenResultAsync&lt;T, TInner&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;Result&lt;TInner&gt;&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_AndThenResult__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_BridgingIT_DevKit_Common_Result__">ResultTExtensions.AndThenResult&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, Result&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_AndThenResult__2_BridgingIT_DevKit_Common_Result___0__System_Func___0_BridgingIT_DevKit_Common_Result___1___">ResultTExtensions.AndThenResult&lt;T, TInner&gt;(Result&lt;T&gt;, Func&lt;T, Result&lt;TInner&gt;&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_AndThen__1_BridgingIT_DevKit_Common_Result___0__System_Action___0__">ResultTExtensions.AndThen&lt;T&gt;(Result&lt;T&gt;, Action&lt;T&gt;)</a>
@@ -304,18 +310,6 @@ This struct provides value semantics and is optimized for reference type values.
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
   </div>
   </dd></dl>
 
@@ -519,7 +513,7 @@ foreach(var message in result.Messages)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the value if the result is successful. Throws if accessing a failed result's value.</p>
+  <div class="markdown level1 summary"><p>Gets the stored value. A failure can carry a partial value or the default value for <code class="typeparamref">T</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -539,25 +533,8 @@ foreach(var message in result.Messages)
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Value_examples">Examples</h4>
-  <pre><code class="lang-csharp">var result = Result{User}.Success(user);
-try
-{
-    var name = result.Value.Name; // Safe if IsSuccess is true
-}
-catch (InvalidOperationException)
-{
-    Console.WriteLine("Cannot access value of failed result");
-}</code></pre>
 
 
-
-  <h4 class="section">Exceptions</h4>
-  <dl class="parameters">
-    <dt><span class="xref">InvalidOperationException</span></dt>
-    <dd><p>Thrown when attempting to access the Value property of a failed result.</p>
-</dd>
-  </dl>
 
 
 
@@ -1357,6 +1334,9 @@ if (error != null)
 }</code></pre>
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_GetError__1_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Matches errors assignable to <code class="typeparamref">TError</code>.</p>
+</div>
 
 
 
@@ -1407,6 +1387,9 @@ var errorMessages = result.GetErrors{ValidationError}()
     .ToList();</code></pre>
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_GetErrors__1_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Matches errors assignable to <code class="typeparamref">TError</code>.</p>
+</div>
 
 
 
@@ -1496,6 +1479,9 @@ if (result.HasError{ValidationError}())
 }</code></pre>
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_HasError__1_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Matches errors assignable to <code class="typeparamref">TError</code>.</p>
+</div>
 
 
 
@@ -2075,6 +2061,9 @@ else
 }</code></pre>
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_TryGetError__1___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Matches errors assignable to <code class="typeparamref">TError</code>.</p>
+</div>
 
 
 
@@ -2133,6 +2122,9 @@ else
 }</code></pre>
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_TryGetErrors__1_System_Collections_Generic_IEnumerable___0____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Matches errors assignable to <code class="typeparamref">TError</code>.</p>
+</div>
 
 
 

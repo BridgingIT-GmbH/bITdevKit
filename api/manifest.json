@@ -18369,6 +18369,244 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionCapabilities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionCapabilities.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionCapabilities",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionCapabilities.yml\" sourcestartlinenumber=\"1\">Describes the storage and indexed query profile for blob Dimensions.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionDiagnostics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionDiagnostics.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionDiagnostics",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionDiagnostics.yml\" sourcestartlinenumber=\"1\">Contains non-sensitive provider-instance dictionary/cache counters and optional retained-name cardinality.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionFilter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionFilter",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionFilter.yml\" sourcestartlinenumber=\"1\">An immutable leaf or bounded AND/OR expression.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionFilterJsonConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionFilterJsonConverter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionFilterJsonConverter",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionFilterJsonConverter.yml\" sourcestartlinenumber=\"1\">Reads and writes bounded blob filters with explicitly typed operands.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionFilterValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionFilterValidator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionFilterValidator",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionFilterValidator.yml\" sourcestartlinenumber=\"1\">Validates bounded expression structure and backend operator support.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionHashCollisionError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionHashCollisionError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionHashCollisionError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionHashCollisionError.yml\" sourcestartlinenumber=\"1\">Reports a verified digest collision without exposing dimension values.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionLimits.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionLimits.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionLimits",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionLimits.yml\" sourcestartlinenumber=\"1\">Defines the portable blob Dimensions limits.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionOperator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionOperator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionOperator",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionOperator.yml\" sourcestartlinenumber=\"1\">Defines the bounded blob dimension predicate operators.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionPredicate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionPredicate.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionPredicate",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionPredicate.yml\" sourcestartlinenumber=\"1\">An immutable validated predicate over one logical dimension name.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionRegistrationContentionError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionRegistrationContentionError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionRegistrationContentionError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionRegistrationContentionError.yml\" sourcestartlinenumber=\"1\">Reports exhaustion of the bounded dictionary registration race budget.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionValue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionValue.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionValue",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionValue.yml\" sourcestartlinenumber=\"1\">An immutable validated scalar blob dimension.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionValueType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionValueType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionValueType",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionValueType.yml\" sourcestartlinenumber=\"1\">Identifies the logical kind of a blob dimension.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionValues.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionValues.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionValues",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionValues.yml\" sourcestartlinenumber=\"1\">Validates names and serializes independent typed blob Dimensions snapshots.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensions.yml\" sourcestartlinenumber=\"1\">An immutable case-insensitive collection of explicitly supplied blob dimensions.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionsJsonConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionsJsonConverter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionsJsonConverter",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionsJsonConverter.yml\" sourcestartlinenumber=\"1\">Reads and writes explicitly typed blob Dimensions without numeric type loss.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionsNotSupportedError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionsNotSupportedError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionsNotSupportedError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionsNotSupportedError.yml\" sourcestartlinenumber=\"1\">Reports an explicit Dimensions operation on an unsupported provider.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionsUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionsUpdate.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobDimensionsUpdate",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobDimensionsUpdate.yml\" sourcestartlinenumber=\"1\">Replaces or clears Dimensions under the existing whole-item version.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobDownload.yml",
       "output": {
         ".html": {
@@ -18506,6 +18744,34 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.BlobFileUploadOptions",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobFileUploadOptions.yml\" sourcestartlinenumber=\"1\">Configures a file-to-blob transfer.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobFilterQuery.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobFilterQuery.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobFilterQuery",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobFilterQuery.yml\" sourcestartlinenumber=\"1\">Represents a validated blob filter query passed to a storage provider.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobFilterScope.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobFilterScope.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobFilterScope",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobFilterScope.yml\" sourcestartlinenumber=\"1\">Sets the mandatory storage boundaries for a blob filter query.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -18674,6 +18940,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.BlobPropertyStorageExtensions",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobPropertyStorageExtensions.yml\" sourcestartlinenumber=\"1\">Provides provider-neutral optimistic property patch helpers for blobs.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobPropertyValues.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobPropertyValues.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobPropertyValues",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobPropertyValues.yml\" sourcestartlinenumber=\"1\">Validates, copies, and persists scalar application properties for Blob Storage.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -19475,6 +19755,62 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadBatchExecutor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadBatchExecutor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobUploadBatchExecutor",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadBatchExecutor.yml\" sourcestartlinenumber=\"1\">Coordinates bounded blob uploads through an existing client's per-item pipeline.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadBatchOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadBatchOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobUploadBatchOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadBatchOptions.yml\" sourcestartlinenumber=\"1\">Controls the bounded workers used by a blob upload batch.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadBatchResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadBatchResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobUploadBatchResult",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadBatchResult.yml\" sourcestartlinenumber=\"1\">Contains every completed item outcome in input order, independently of execution order.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadOutcome.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadOutcome.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobUploadOutcome",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadOutcome.yml\" sourcestartlinenumber=\"1\">Contains the outcome of one request, at its original zero-based input position.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobValidator.yml",
       "output": {
         ".html": {
@@ -19923,6 +20259,244 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionCapabilities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionCapabilities.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionCapabilities",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionCapabilities.yml\" sourcestartlinenumber=\"1\">Describes the storage and indexed query profile for document Dimensions.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionDiagnostics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionDiagnostics.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionDiagnostics",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionDiagnostics.yml\" sourcestartlinenumber=\"1\">Contains non-sensitive provider-instance dictionary/cache counters and optional retained-name cardinality.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionFilter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionFilter",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionFilter.yml\" sourcestartlinenumber=\"1\">An immutable leaf or bounded AND/OR expression.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionFilterJsonConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionFilterJsonConverter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionFilterJsonConverter",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionFilterJsonConverter.yml\" sourcestartlinenumber=\"1\">Reads and writes bounded document filters with explicitly typed operands.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionFilterValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionFilterValidator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionFilterValidator",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionFilterValidator.yml\" sourcestartlinenumber=\"1\">Validates bounded expression structure and backend operator support.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionHashCollisionError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionHashCollisionError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionHashCollisionError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionHashCollisionError.yml\" sourcestartlinenumber=\"1\">Reports a verified digest collision without exposing dimension values.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionLimits.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionLimits.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionLimits",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionLimits.yml\" sourcestartlinenumber=\"1\">Defines the portable document Dimensions limits.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionOperator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionOperator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionOperator",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionOperator.yml\" sourcestartlinenumber=\"1\">Defines the bounded document dimension predicate operators.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionPredicate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionPredicate.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionPredicate",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionPredicate.yml\" sourcestartlinenumber=\"1\">An immutable validated predicate over one logical dimension name.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionRegistrationContentionError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionRegistrationContentionError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionRegistrationContentionError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionRegistrationContentionError.yml\" sourcestartlinenumber=\"1\">Reports exhaustion of the bounded dictionary registration race budget.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionValue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionValue.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionValue",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionValue.yml\" sourcestartlinenumber=\"1\">An immutable validated scalar document dimension.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionValueType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionValueType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionValueType",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionValueType.yml\" sourcestartlinenumber=\"1\">Identifies the logical kind of a document dimension.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionValues.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionValues.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionValues",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionValues.yml\" sourcestartlinenumber=\"1\">Validates names and serializes independent typed document Dimensions snapshots.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensions.yml\" sourcestartlinenumber=\"1\">An immutable case-insensitive collection of explicitly supplied document dimensions.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionsJsonConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionsJsonConverter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionsJsonConverter",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionsJsonConverter.yml\" sourcestartlinenumber=\"1\">Reads and writes explicitly typed document Dimensions without numeric type loss.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionsNotSupportedError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionsNotSupportedError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionsNotSupportedError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionsNotSupportedError.yml\" sourcestartlinenumber=\"1\">Reports an explicit Dimensions operation on an unsupported provider.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionsUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionsUpdate.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentDimensionsUpdate",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentDimensionsUpdate.yml\" sourcestartlinenumber=\"1\">Replaces or clears Dimensions under the existing whole-item version.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentEntity.yml",
       "output": {
         ".html": {
@@ -19965,6 +20539,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentFilterQuery.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentFilterQuery.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentFilterQuery",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentFilterQuery.yml\" sourcestartlinenumber=\"1\">Represents a validated document filter query passed to a storage provider.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentFilterScope.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentFilterScope.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentFilterScope",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentFilterScope.yml\" sourcestartlinenumber=\"1\">Sets the mandatory storage boundaries for a document filter query.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentInfo.yml",
       "output": {
         ".html": {
@@ -19979,6 +20581,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentInfoPage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentInfoPage.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentInfoPage",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentInfoPage.yml\" sourcestartlinenumber=\"1\">Represents one page of matching document metadata.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentJsonEntry.yml",
       "output": {
         ".html": {
@@ -19989,7 +20605,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.DocumentJsonEntry",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentJsonEntry.yml\" sourcestartlinenumber=\"1\">Contains a dashboard-safe JSON representation and the metadata snapshot used for conditional actions.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentJsonEntry.yml\" sourcestartlinenumber=\"1\">Contains a JSON representation and the metadata snapshot used for conditional operational actions.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -20003,7 +20619,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.DocumentJsonPage",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentJsonPage.yml\" sourcestartlinenumber=\"1\">Contains one bounded page of dashboard-safe JSON document entries.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentJsonPage.yml\" sourcestartlinenumber=\"1\">Contains one bounded page of JSON document entries for operational presentation.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -20074,6 +20690,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.DocumentPropertiesUpdate",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentPropertiesUpdate.yml\" sourcestartlinenumber=\"1\">Describes an atomic custom-property and expiration update that leaves document content unchanged.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentPropertyValues.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentPropertyValues.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentPropertyValues",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentPropertyValues.yml\" sourcestartlinenumber=\"1\">Validates, copies, and persists scalar application properties for Document Storage.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -20395,7 +21025,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.DocumentStoreClientAccessor<T>",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreClientAccessor-1.yml\" sourcestartlinenumber=\"1\">Adapts a typed document client for dashboard operations.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreClientAccessor-1.yml\" sourcestartlinenumber=\"1\">Adapts a typed document client for operational endpoints and dashboards.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -20578,6 +21208,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.DocumentWriteOptions",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentWriteOptions.yml\" sourcestartlinenumber=\"1\">Configures concurrency, integrity, properties, and expiration for one document write.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentWriteValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentWriteValidator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentWriteValidator",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentWriteValidator.yml\" sourcestartlinenumber=\"1\">Validates optional document version conditions before persistence.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -21127,6 +21771,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IBlobDimensionDiagnosticsProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IBlobDimensionDiagnosticsProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.IBlobDimensionDiagnosticsProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.IBlobDimensionDiagnosticsProvider.yml\" sourcestartlinenumber=\"1\">Exposes cheap counters and opt-in dictionary cardinality for blob providers.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IBlobStorageDiagnosticsService.yml",
       "output": {
         ".html": {
@@ -21253,6 +21911,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IDocumentDimensionDiagnosticsAccessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IDocumentDimensionDiagnosticsAccessor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.IDocumentDimensionDiagnosticsAccessor",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.IDocumentDimensionDiagnosticsAccessor.yml\" sourcestartlinenumber=\"1\">Exposes scoped Dimension diagnostics through a typed document client accessor.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IDocumentDimensionDiagnosticsProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IDocumentDimensionDiagnosticsProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.IDocumentDimensionDiagnosticsProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.IDocumentDimensionDiagnosticsProvider.yml\" sourcestartlinenumber=\"1\">Exposes cheap counters and opt-in dictionary cardinality for document providers.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IDocumentPayloadTransform.yml",
       "output": {
         ".html": {
@@ -21333,7 +22019,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.yml\" sourcestartlinenumber=\"1\">Provides non-generic, JSON-oriented access to one selected typed document client for operational presentation surfaces.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.yml\" sourcestartlinenumber=\"1\">Provides non-generic, JSON-oriented access to one selected typed document client for operational endpoints and dashboards.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -22289,6 +22975,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StorageFilterCriterion-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StorageFilterCriterion-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.StorageFilterCriterion<TDimension>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.StorageFilterCriterion-1.yml\" sourcestartlinenumber=\"1\">Describes a validated key or Dimension criterion, or a group of criteria, for a storage provider.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StorageFilterOrder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StorageFilterOrder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.StorageFilterOrder",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.StorageFilterOrder.yml\" sourcestartlinenumber=\"1\">Describes a validated component of a storage seek order.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StorageFilterQuery.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StorageFilterQuery.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.StorageFilterQuery",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.StorageFilterQuery.yml\" sourcestartlinenumber=\"1\">Normalizes shared FilterModel criteria and continuation state for storage listing.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StoragePermalinkChangeHandler.yml",
       "output": {
         ".html": {
@@ -22636,6 +23364,76 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.StorageRetentionOptions",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.StorageRetentionOptions.yml\" sourcestartlinenumber=\"1\">Configures hosted storage-retention sweeping.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobDownload.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobDownload.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.StoredBlobDownload",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobDownload.yml\" sourcestartlinenumber=\"1\">Represents a downloaded blob stream and its provider-neutral metadata.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.StoredBlobInfo",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobInfo.yml\" sourcestartlinenumber=\"1\">Describes a stored blob with detached application properties and separate transform state.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobPage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobPage.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.StoredBlobPage",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobPage.yml\" sourcestartlinenumber=\"1\">Represents one page of blob information returned from listing.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobPropertiesUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobPropertiesUpdate.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.StoredBlobPropertiesUpdate",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobPropertiesUpdate.yml\" sourcestartlinenumber=\"1\">Describes a blob property update that does not upload content.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobUpload.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobUpload.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.StoredBlobUpload",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.StoredBlobUpload.yml\" sourcestartlinenumber=\"1\">Describes a provider-facing stream-first blob upload. The caller owns the input stream.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -23546,34 +24344,6 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Cli.DocsCliCommandModule",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.DocsCliCommandModule.yml\" sourcestartlinenumber=\"1\">Registers documentation commands.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.GitHubMcpDocumentationSource.yml",
-      "output": {
-        ".html": {
-          "relative_path": "obj/api/BridgingIT.DevKit.Cli.GitHubMcpDocumentationSource.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "BridgingIT.DevKit.Cli.GitHubMcpDocumentationSource",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.GitHubMcpDocumentationSource.yml\" sourcestartlinenumber=\"1\">Reads official DevKit documentation from GitHub.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.GitHubPagesMcpApiReferenceSource.yml",
-      "output": {
-        ".html": {
-          "relative_path": "obj/api/BridgingIT.DevKit.Cli.GitHubPagesMcpApiReferenceSource.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "BridgingIT.DevKit.Cli.GitHubPagesMcpApiReferenceSource",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.GitHubPagesMcpApiReferenceSource.yml\" sourcestartlinenumber=\"1\">Reads DevKit API reference metadata from local Pages output or GitHub Pages.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -32635,6 +33405,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IncrementalHashWriteStream.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IncrementalHashWriteStream.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IncrementalHashWriteStream",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IncrementalHashWriteStream.yml\" sourcestartlinenumber=\"1\">Appends bytes written to a stream directly to a caller-owned incremental hash.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.InstanceOrNone-1.yml",
       "output": {
         ".html": {
@@ -34620,6 +35404,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.OpaqueContinuationTokenCodec",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.OpaqueContinuationTokenCodec.yml\" sourcestartlinenumber=\"1\">Encodes versioned opaque continuation-token payloads with optional tamper protection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.OpaqueVersionETag.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.OpaqueVersionETag.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.OpaqueVersionETag",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.OpaqueVersionETag.yml\" sourcestartlinenumber=\"1\">Transports opaque provider version tokens in strong HTTP entity-tags.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -37619,6 +38417,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.PropertyBagSerialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.PropertyBagSerialization.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.PropertyBagSerialization",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.PropertyBagSerialization.yml\" sourcestartlinenumber=\"1\">Copies and persists scalar <xref href=\"BridgingIT.DevKit.Common.PropertyBag\" data-throw-if-not-resolved=\"false\"></xref> instances using the format defined by\n<xref href=\"BridgingIT.DevKit.Common.PropertyBagScalarCodec\" data-throw-if-not-resolved=\"false\"></xref> for each stored value.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.PublishOptions.yml",
       "output": {
         ".html": {
@@ -38427,7 +39239,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ResultExtensions",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ResultExtensions.yml\" sourcestartlinenumber=\"1\">Provides extension methods for manipulating and transforming <xref href=\"BridgingIT.DevKit.Common.Result%601\" data-throw-if-not-resolved=\"false\"></xref> resultb values.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ResultExtensions.yml\" sourcestartlinenumber=\"1\">Provides extension methods for manipulating and transforming <xref href=\"BridgingIT.DevKit.Common.Result%601\" data-throw-if-not-resolved=\"false\"></xref> values.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -38441,7 +39253,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ResultJsonConverter",
-      "Summary": "<p>\nA custom JSON converter for <xref href=\"BridgingIT.DevKit.Common.Result\" data-throw-if-not-resolved=\"false\"></xref> that writes a compact and\nclient-safe JSON representation.\n</p>\n<p>\nBehavior:\n- Writes the following top-level properties:\n  - <code>isSuccess</code> (boolean)\n  - <code>messages</code> (array of strings)\n  - <code>errors</code> (array of error objects)\n- For general errors, delegates to <xref href=\"System.Text.Json.JsonSerializer\" data-throw-if-not-resolved=\"false\"></xref> using the\n  error's type and the provided options.\n- For <xref href=\"BridgingIT.DevKit.Common.ExceptionError\" data-throw-if-not-resolved=\"false\"></xref>, emits a safe, flattened object and\n  deliberately excludes the raw <xref href=\"System.Exception\" data-throw-if-not-resolved=\"false\"></xref> instance to avoid\n  unsupported types (e.g., <code>MethodBase</code>) and oversized/PII payloads.\n</p>\n<p>\nNotes:\n- Deserialization is not supported and will throw <xref href=\"System.NotSupportedException\" data-throw-if-not-resolved=\"false\"></xref>.\n- This converter is intended for outbound API responses or logging, not for\n  round-tripping back into domain models.\n</p>\n"
+      "Summary": "<p>\nA custom JSON converter for <xref href=\"BridgingIT.DevKit.Common.Result\" data-throw-if-not-resolved=\"false\"></xref> that writes a compact and\nclient-safe JSON representation.\n</p>\n<p>\nBehavior:\n- Writes the following top-level properties:\n  - <code>isSuccess</code> (boolean)\n  - <code>messages</code> (array of strings)\n  - <code>errors</code> (array of error objects)\n- For general errors, delegates to <xref href=\"System.Text.Json.JsonSerializer\" data-throw-if-not-resolved=\"false\"></xref> using the\n  error's type and the provided options.\n- For <xref href=\"BridgingIT.DevKit.Common.ExceptionError\" data-throw-if-not-resolved=\"false\"></xref>, emits a safe, flattened object and\n  uses <code>type</code> for the exception type. It excludes the raw <xref href=\"System.Exception\" data-throw-if-not-resolved=\"false\"></xref> instance to avoid\n  unsupported types (e.g., <code>MethodBase</code>) and oversized/PII payloads.\n</p>\n<p>\nNotes:\n- Deserialization is not supported and will throw <xref href=\"System.NotSupportedException\" data-throw-if-not-resolved=\"false\"></xref>.\n- This converter is intended for outbound API responses or logging, not for\n  round-tripping back into domain models.\n</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -38609,7 +39421,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ResultPagedJsonConverter<T>",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ResultPagedJsonConverter-1.yml\" sourcestartlinenumber=\"1\">Converter for serializing ResultPaged{T} objects to JSON format.\nInherits from JsonConverter{ResultPaged{T}}.\nSerialization only; deserialization is not supported.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ResultPagedJsonConverter-1.yml\" sourcestartlinenumber=\"1\">Writes a paged result's values and pagination metadata to JSON.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -38763,7 +39575,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ResultValueJsonConverter<T>",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ResultValueJsonConverter-1.yml\" sourcestartlinenumber=\"1\">Provides functionality to convert Result{T} objects to and from JSON.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ResultValueJsonConverter-1.yml\" sourcestartlinenumber=\"1\">Writes a value result to JSON, including its payload on success.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -40447,6 +41259,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ScalarPropertyBagJson.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ScalarPropertyBagJson.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ScalarPropertyBagJson",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ScalarPropertyBagJson.yml\" sourcestartlinenumber=\"1\">Parses a plain JSON object into a case-insensitive bag of scalar values.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.SecurityError.yml",
       "output": {
         ".html": {
@@ -40555,7 +41381,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ServiceCollectionExtensions",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ServiceCollectionExtensions.yml\" sourcestartlinenumber=\"1\">Provides dependency-injection registration for Requester and Notifier services and behaviors.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ServiceCollectionExtensions.yml\" sourcestartlinenumber=\"1\">Provides helpers for inspecting service registrations.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -43076,6 +43902,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ValueCodecServiceCollectionExtensions",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ValueCodecServiceCollectionExtensions.yml\" sourcestartlinenumber=\"1\">Registers trusted reusable codecs independently of application/storage features.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ValueCodecsBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ValueCodecsBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ValueCodecsBuilder",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ValueCodecsBuilder.yml\" sourcestartlinenumber=\"1\">Registers trusted readers for declared value contracts and byte formats.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -47401,7 +48241,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Domain.ResultExtensions",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.ResultExtensions.yml\" sourcestartlinenumber=\"1\">Provides extension methods for handling instances of the <xref href=\"BridgingIT.DevKit.Common.Result\" data-throw-if-not-resolved=\"false\"></xref> class.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.ResultExtensions.yml\" sourcestartlinenumber=\"1\">Provides value access for results returned by domain policies.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -48959,6 +49799,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionValueEncoding.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionValueEncoding.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionValueEncoding",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionValueEncoding.yml\" sourcestartlinenumber=\"1\">Maps validated blob scalars to the three indexed search slots.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.BroadcastNodeRegistrationEntity.yml",
       "output": {
         ".html": {
@@ -50202,6 +51056,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceDatabaseAdapterBase",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceDatabaseAdapterBase.yml\" sourcestartlinenumber=\"1\">Base class of the database adapters that give each linked worktree its own database <code>&lt;database&gt;_wNN</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionValueEncoding.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionValueEncoding.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionValueEncoding",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionValueEncoding.yml\" sourcestartlinenumber=\"1\">Maps validated document scalars to the three indexed search slots.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -53719,6 +54587,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider.yml\" sourcestartlinenumber=\"1\">Shares bounded process coordination for nonrelational EF blob mutations across context types.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider-1.yml",
       "output": {
         ".html": {
@@ -53744,6 +54626,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProviderOptions",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProviderOptions.yml\" sourcestartlinenumber=\"1\">Defines runtime options for <xref href=\"BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkStorageFilterQuery.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkStorageFilterQuery.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkStorageFilterQuery",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkStorageFilterQuery.yml\" sourcestartlinenumber=\"1\">Combines storage criteria as SQL candidate sets and applies keyset paging.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -53817,6 +54713,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobDimension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobDimension.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobDimension",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobDimension.yml\" sourcestartlinenumber=\"1\">A typed, automatically indexed blob dimension value.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobDimensionName.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobDimensionName.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobDimensionName",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobDimensionName.yml\" sourcestartlinenumber=\"1\">A scoped, database-generated identity for an immutable blob dimension name.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.yml",
       "output": {
         ".html": {
@@ -53828,6 +54752,34 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.yml\" sourcestartlinenumber=\"1\">Represents a persisted document row for the Entity Framework document store provider.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocumentDimension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocumentDimension.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocumentDimension",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocumentDimension.yml\" sourcestartlinenumber=\"1\">A typed, automatically indexed document dimension value.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocumentDimensionName.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocumentDimensionName.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocumentDimensionName",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocumentDimensionName.yml\" sourcestartlinenumber=\"1\">A scoped, database-generated identity for an immutable document dimension name.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -55735,6 +56687,1140 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.ActiveEntityProviderConfiguratorExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.ActiveEntityProviderConfiguratorExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.ActiveEntityProviderConfiguratorExtensions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.ActiveEntityProviderConfiguratorExtensions.yml\" sourcestartlinenumber=\"1\">Selects LiteDB persistence through the existing ActiveEntity configurator.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbChangeHistoryAuthorizer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbChangeHistoryAuthorizer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbChangeHistoryAuthorizer",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbChangeHistoryAuthorizer.yml\" sourcestartlinenumber=\"1\">Evaluates configured host policies before history values are read or an entity is restored.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbEntityMutationObserver.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbEntityMutationObserver.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbEntityMutationObserver",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbEntityMutationObserver.yml\" sourcestartlinenumber=\"1\">Captures feature state inside the same native transaction as an entity mutation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbIndexedRecord.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbIndexedRecord.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbIndexedRecord",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbIndexedRecord.yml\" sourcestartlinenumber=\"1\">Supplies bounded native filter fields for durable work without indexing serialized payloads.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityMapping-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityMapping-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityMapping<TId>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityMapping-1.yml\" sourcestartlinenumber=\"1\">Maps primitive and generated EntityId identities to scalar BSON values.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityMapping.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityMapping.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityMapping",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityMapping.yml\" sourcestartlinenumber=\"1\">Identifies ActiveEntity types when configuring BSON mappings without modifying Domain code.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider-2.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider<TEntity, TId>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider-2.yml\" sourcestartlinenumber=\"1\">Persists ActiveEntity records directly through a shared LiteDB database and scoped transaction session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProviderOptions-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProviderOptions-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProviderOptions<TEntity>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProviderOptions-1.yml\" sourcestartlinenumber=\"1\">Configures LiteDB persistence for one ActiveEntity type.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.Selection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.Selection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery<TEntity>.Selection",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.Selection.yml\" sourcestartlinenumber=\"1\">Contains the detached selected rows and paging metadata.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery<TEntity>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.yml\" sourcestartlinenumber=\"1\">Applies ActiveEntity selection, projection inputs, paging, and scalar-count semantics over LiteDB.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditRecord.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditRecord.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditRecord",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditRecord.yml\" sourcestartlinenumber=\"1\">Stores the complete canonical audit graph separately from mutable lifecycle state.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditState.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditState",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditState.yml\" sourcestartlinenumber=\"1\">Persists extraction identity, ordering, lifecycle, and replay rejection boundaries.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditingInitializationService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditingInitializationService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditingInitializationService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditingInitializationService.yml\" sourcestartlinenumber=\"1\">Initializes owned native audit state at host startup while leaving readiness probes read-only.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditingStorageProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditingStorageProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditingStorageProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditingStorageProvider.yml\" sourcestartlinenumber=\"1\">Native provider query, retention, and committed-window operations.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.yml\" sourcestartlinenumber=\"1\">Persists node registrations, delivery observations, and leases within one local database owner.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.yml\" sourcestartlinenumber=\"1\">Represents a durable broker message row stored in native LiteDB persistence.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessageHandlerState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessageHandlerState.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessageHandlerState",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessageHandlerState.yml\" sourcestartlinenumber=\"1\">Stores the durable execution state of a single subscribed handler for a broker message.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBulkOutboxBehavior-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBulkOutboxBehavior-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBulkOutboxBehavior<TEntity>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBulkOutboxBehavior-1.yml\" sourcestartlinenumber=\"1\">Explicitly opts a bulk insertion into atomic pending-domain-event capture.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbCacheStoreProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbCacheStoreProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbCacheStoreProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbCacheStoreProvider.yml\" sourcestartlinenumber=\"1\">Stores Application Caching metadata, publication authority, quotas, operations and immutable payload chunks in one owned native database.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryAuthorizationContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryAuthorizationContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryAuthorizationContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryAuthorizationContext.yml\" sourcestartlinenumber=\"1\">Identifies a protected history operation without exposing stored values.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryCapture.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryCapture.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryCapture",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryCapture.yml\" sourcestartlinenumber=\"1\">Captures portable history from confirmed native mutations in the same transaction.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryOptions.yml\" sourcestartlinenumber=\"1\">Selects portable history policies and bounded LiteDB query settings.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryService-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryService-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryService<TEntity>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryService-1.yml\" sourcestartlinenumber=\"1\">Provides authorized history queries and transactional restore through portable DevKit contracts.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryStorage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryStorage.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryStorage",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryStorage.yml\" sourcestartlinenumber=\"1\">Stores immutable portable history DTOs with native filter and grouping metadata.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseExecutor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseExecutor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseExecutor",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseExecutor.yml\" sourcestartlinenumber=\"1\">Keeps native transaction locks and all cursors on one dedicated thread.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseOptions.yml\" sourcestartlinenumber=\"1\">Configures an application-owned, named LiteDB database.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseOwner.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseOwner.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseOwner",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseOwner.yml\" sourcestartlinenumber=\"1\">Owns one named LiteDB context, native worker, mapper, and transaction reservation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseRegistry.Registration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseRegistry.Registration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseRegistry.Registration",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseRegistry.Registration.yml\" sourcestartlinenumber=\"1\">Holds a connection snapshot and the mappings for one named database.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseRegistry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseRegistry.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseRegistry",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseRegistry.yml\" sourcestartlinenumber=\"1\">Records database ownership and entity mappings while the service collection is being configured.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseServiceCollectionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseServiceCollectionExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseServiceCollectionExtensions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseServiceCollectionExtensions.yml\" sourcestartlinenumber=\"1\">Registers shared LiteDB database ownership.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.yml\" sourcestartlinenumber=\"1\">Owns the transaction state shared by LiteDB providers in one dependency injection scope.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseTransaction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseTransaction.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseTransaction",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseTransaction.yml\" sourcestartlinenumber=\"1\">Runs delegates inside an existing session transaction without automatically committing or retrying them.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDocumentRecord.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDocumentRecord.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDocumentRecord",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDocumentRecord.yml\" sourcestartlinenumber=\"1\">Stores one original document and case-sensitive native query metadata.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDocumentStoreProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDocumentStoreProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDocumentStoreProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDocumentStoreProvider.yml\" sourcestartlinenumber=\"1\">Stores serialized documents with native paging, exact identities, conditional writes, and expiration.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventCapture.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventCapture.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventCapture",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventCapture.yml\" sourcestartlinenumber=\"1\">Captures pending aggregate and ActiveEntity events within their originating native transaction.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxOptions.yml\" sourcestartlinenumber=\"1\">Configures the existing domain-event outbox contract for an owned LiteDB database.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxService.yml\" sourcestartlinenumber=\"1\">Forwards immediate commit signals to the durable worker. DevKit's existing outbox service owns scheduled polling.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxWorker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxWorker.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxWorker",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxWorker.yml\" sourcestartlinenumber=\"1\">Delivers bounded durable event batches using expiring claims and fenced completion.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityMutation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityMutation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityMutation",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityMutation.yml\" sourcestartlinenumber=\"1\">Describes a committed-candidate mutation for atomic feature capture.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.yml\" sourcestartlinenumber=\"1\">Persists exact user and role grants while keeping authorization evaluation in the existing Identity feature.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.yml\" sourcestartlinenumber=\"1\">Executes bounded synchronous durable-record commands inside the named database's owned native transaction.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureOptions.yml\" sourcestartlinenumber=\"1\">Configures bounded native record storage for a durable DevKit feature.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileChunk.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileChunk.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileChunk",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileChunk.yml\" sourcestartlinenumber=\"1\">Stores one immutable bounded file chunk.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileContentStore.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileContentStore.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileContentStore",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileContentStore.yml\" sourcestartlinenumber=\"1\">Owns immutable file generations, bounded chunks, and native namespace transactions.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEntry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEntry.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEntry",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEntry.yml\" sourcestartlinenumber=\"1\">Stores one explicit directory or published file descriptor.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventRecord.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventRecord.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventRecord",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventRecord.yml\" sourcestartlinenumber=\"1\">Stores one immutable monitoring event with deterministic timestamp and arrival ordering.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventState.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventState",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventState.yml\" sourcestartlinenumber=\"1\">Stores the monotonic event arrival position.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventStore.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventStore.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventStore",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventStore.yml\" sourcestartlinenumber=\"1\">Persists monitoring events, processor outcomes, and location-scoped file presence atomically.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileGeneration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileGeneration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileGeneration",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileGeneration.yml\" sourcestartlinenumber=\"1\">Stores ownership, publication, and retention state for immutable file content.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFilePresenceRecord.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFilePresenceRecord.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFilePresenceRecord",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFilePresenceRecord.yml\" sourcestartlinenumber=\"1\">Stores the latest known presence of one location and opaque logical path.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileProcessingRecord.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileProcessingRecord.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileProcessingRecord",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileProcessingRecord.yml\" sourcestartlinenumber=\"1\">Stores a processing outcome independently of its event and other processors.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileReadStream.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileReadStream.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileReadStream",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileReadStream.yml\" sourcestartlinenumber=\"1\">Reads a protected immutable file generation with one bounded chunk buffer and seek support.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.yml\" sourcestartlinenumber=\"1\">Provides a native virtual filesystem with explicit directories and atomic chunked publication.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileWriteStream.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileWriteStream.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileWriteStream",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileWriteStream.yml\" sourcestartlinenumber=\"1\">Stages bounded chunks and publishes the complete file only after successful disposal.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbJobStoreProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbJobStoreProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbJobStoreProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbJobStoreProvider.yml\" sourcestartlinenumber=\"1\">Persists all Jobs stores as separately keyed native records under atomic LiteDB commands.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbKeyedCollection-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbKeyedCollection-2.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbKeyedCollection<TKey, TValue>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbKeyedCollection-2.yml\" sourcestartlinenumber=\"1\">Provides command-local keyed access to separately persisted native records.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbKeyedList-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbKeyedList-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbKeyedList<T>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbKeyedList-1.yml\" sourcestartlinenumber=\"1\">Persists appendable records individually while exposing bounded command-local sequence operations.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.yml\" sourcestartlinenumber=\"1\">Implements durable native message publication, fan-out progress, claims, and operational queries.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBrokerOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBrokerOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBrokerOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBrokerOptions.yml\" sourcestartlinenumber=\"1\">Configures durable messaging without changing the existing handler pipeline.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBrokerWorker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBrokerWorker.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBrokerWorker",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBrokerWorker.yml\" sourcestartlinenumber=\"1\">Runs the native durable messaging poller through the host lifecycle.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageTypeResolver.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageTypeResolver.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageTypeResolver",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageTypeResolver.yml\" sourcestartlinenumber=\"1\">Maps operational message type identifiers to the canonical tokens stored by LiteDB brokers.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMutationCaptureContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMutationCaptureContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMutationCaptureContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMutationCaptureContext.yml\" sourcestartlinenumber=\"1\">Attaches restore provenance to mutations in an existing scoped transaction.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationEmailClaim.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationEmailClaim.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationEmailClaim",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationEmailClaim.yml\" sourcestartlinenumber=\"1\">Retains immutable delivery ownership independently of mutable notification properties.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationEmailOutboxWorker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationEmailOutboxWorker.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationEmailOutboxWorker",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationEmailOutboxWorker.yml\" sourcestartlinenumber=\"1\">Claims emails at delivery time, renews their ownership, and purges through native status selection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationRecord.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationRecord.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationRecord",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationRecord.yml\" sourcestartlinenumber=\"1\">Stores a notification email, attachments, and its fenced delivery claim together.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.yml\" sourcestartlinenumber=\"1\">Persists email notifications and exposes existing storage and operational outbox contracts.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.yml\" sourcestartlinenumber=\"1\">Persists orchestration snapshots, ownership, signals, timers, histories, and administration atomically in LiteDB.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxDispatchMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxDispatchMessage.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxDispatchMessage",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxDispatchMessage.yml\" sourcestartlinenumber=\"1\">Stores a typed outgoing publication independently of the receiving broker.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxDomainEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxDomainEvent.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxDomainEvent",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxDomainEvent.yml\" sourcestartlinenumber=\"1\">Contains durable domain-event content and fenced processing state.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessageForwarder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessageForwarder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessageForwarder",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessageForwarder.yml\" sourcestartlinenumber=\"1\">Publishes one restored outgoing message to the configured downstream broker.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessagePublisher.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessagePublisher.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessagePublisher",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessagePublisher.yml\" sourcestartlinenumber=\"1\">Captures outgoing messages in the caller's scoped database transaction.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessageWorker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessageWorker.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessageWorker",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessageWorker.yml\" sourcestartlinenumber=\"1\">Forwards committed publications through an independently selected broker using the native fenced delivery protocol.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.yml\" sourcestartlinenumber=\"1\">Persists complete Runtime and Operation graphs, writer ownership, query boundaries, and clear fences.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProviderException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProviderException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProviderException",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProviderException.yml\" sourcestartlinenumber=\"1\">Carries recoverable persistence failures to the ActiveEntity result boundary.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.yml\" sourcestartlinenumber=\"1\">Implements durable native queue delivery, claims, and operational queries.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBrokerOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBrokerOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBrokerOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBrokerOptions.yml\" sourcestartlinenumber=\"1\">Configures durable queueing without changing the existing handler pipeline.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueMessage.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueMessage",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueMessage.yml\" sourcestartlinenumber=\"1\">Represents a durable broker message row stored in native LiteDB persistence.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.NativeId.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.NativeId.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.NativeId",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.NativeId.yml\" sourcestartlinenumber=\"1\">Provides a constructor-bound native surrogate for the validated public permalink identity.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.PrefixTombstone.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.PrefixTombstone.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.PrefixTombstone",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.PrefixTombstone.yml\" sourcestartlinenumber=\"1\">Persists a subtree deletion boundary against delayed events.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.StoredEntry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.StoredEntry.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.StoredEntry",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.StoredEntry.yml\" sourcestartlinenumber=\"1\">Stores one stable permalink and its lifecycle timestamps.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.yml\" sourcestartlinenumber=\"1\">Persists permalink identities, location ownership, and deletion fences in native transactions.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.Extensions.yml",
       "output": {
         ".html": {
@@ -55791,6 +57877,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbEntityBulkInserter-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbEntityBulkInserter-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbEntityBulkInserter<TEntity>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbEntityBulkInserter-1.yml\" sourcestartlinenumber=\"1\">Inserts a bounded native batch atomically without implicit entity behaviors.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbEntityIdentity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbEntityIdentity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbEntityIdentity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbEntityIdentity.yml\" sourcestartlinenumber=\"1\">Normalizes the declared entity identity for repository mapping and native allocation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbGenericRepository-1.yml",
       "output": {
         ".html": {
@@ -55801,7 +57915,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbGenericRepository<TEntity>",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbGenericRepository-1.yml\" sourcestartlinenumber=\"1\">Represents lite db generic repository.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbGenericRepository-1.yml\" sourcestartlinenumber=\"1\">Provides atomic LiteDB repository writes with scoped transactions, concurrency, and feature capture.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -55815,7 +57929,21 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbReadOnlyGenericRepository<TEntity>",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbReadOnlyGenericRepository-1.yml\" sourcestartlinenumber=\"1\">Represents lite db read only generic repository.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbReadOnlyGenericRepository-1.yml\" sourcestartlinenumber=\"1\">Provides detached LiteDB entity queries using a supplied context or shared database session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryOperationScope.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryOperationScope.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryOperationScope",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryOperationScope.yml\" sourcestartlinenumber=\"1\">Completes only its own repository transaction and rolls back an abandoned scope.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -55847,6 +57975,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryStore-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryStore-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryStore<TEntity>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryStore-1.yml\" sourcestartlinenumber=\"1\">Shares native entity selection and mutation mechanics between LiteDB repository adapters.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryTransaction-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryTransaction-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryTransaction<TEntity>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryTransaction-1.yml\" sourcestartlinenumber=\"1\">Preserves repository transaction ownership across awaited operations in one scoped session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.yml",
       "output": {
         ".html": {
@@ -55857,6 +58013,20 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.LiteDb.Repositories",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.LiteDb.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.LiteDb",
       "Summary": null
     },
     {
@@ -60617,7 +62787,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppState<TState>",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppState-1.yml\" sourcestartlinenumber=\"1\">Abstract base class for managing state with persistence, history, and change notification.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppState-1.yml\" sourcestartlinenumber=\"1\">Owns typed state, independent snapshots, bounded history, and optional persistence.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -60631,7 +62801,21 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateBuilder",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateBuilder.yml\" sourcestartlinenumber=\"1\">Builds configuration for a specific state type within the ManagedState system.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateBuilder.yml\" sourcestartlinenumber=\"1\">Configures persistence, history and identity for one registered AppState type.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateContext.yml\" sourcestartlinenumber=\"1\">Supplies host-established opaque identity and workspace partitions.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -60659,7 +62843,77 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateDebugger",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateDebugger.yml\" sourcestartlinenumber=\"1\">Provides debugging capabilities for the managed state system, logging changes to the browser console and in-memory storage.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateDebugger.yml\" sourcestartlinenumber=\"1\">Retains bounded owner-local diagnostic metadata with explicit value projection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateFactory.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateFactory",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateFactory.yml\" sourcestartlinenumber=\"1\">Creates independent component states using the originating runtime's dependencies.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateHandoff-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateHandoff-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateHandoff<TState>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateHandoff-1.yml\" sourcestartlinenumber=\"1\">Transfers copied model values under a logical instance, context and schema key.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateInstanceInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateInstanceInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateInstanceInfo",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateInstanceInfo.yml\" sourcestartlinenumber=\"1\">Describes a live owner-local registration without exposing its values.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateLease-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateLease-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateLease<TState>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateLease-1.yml\" sourcestartlinenumber=\"1\">Owns one explicitly created state, leaving injected services owned by DI.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateLifecycle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateLifecycle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateLifecycle",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateLifecycle.yml\" sourcestartlinenumber=\"1\">Owns an explicit connection between one AppState instance and native Blazor persistence.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -60673,7 +62927,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateManagementBuilder",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateManagementBuilder.yml\" sourcestartlinenumber=\"1\">Builds the ManagedState system configuration with a fluent API.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateManagementBuilder.yml\" sourcestartlinenumber=\"1\">Collects state registrations using ordinary DI lifetimes and explicit ownership.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -60687,7 +62941,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateManagementOptions",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateManagementOptions.yml\" sourcestartlinenumber=\"1\">Holds the overall configuration options for the ManagedState system.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateManagementOptions.yml\" sourcestartlinenumber=\"1\">Collects application-wide state configuration without retaining live state.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -60701,7 +62955,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateManager",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateManager.yml\" sourcestartlinenumber=\"1\">Manages all registered managed states and provides global operations like resetting all states.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateManager.yml\" sourcestartlinenumber=\"1\">Tracks and resets live state belonging only to the originating runtime scope.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -60719,6 +62973,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStatePersistenceStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStatePersistenceStatus.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStatePersistenceStatus",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStatePersistenceStatus.yml\" sourcestartlinenumber=\"1\">Reports state persistence readiness without implying business-operation success.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStatePersistenceType.yml",
       "output": {
         ".html": {
@@ -60730,6 +62998,62 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStatePersistenceType",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStatePersistenceType.yml\" sourcestartlinenumber=\"1\">Enumerates the possible persistence types for a app state.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateSelectionChange-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateSelectionChange-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateSelectionChange<TSelected>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateSelectionChange-1.yml\" sourcestartlinenumber=\"1\">Describes one selected-value transition and its originating version.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateStorageKey.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateStorageKey.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateStorageKey",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateStorageKey.yml\" sourcestartlinenumber=\"1\">Builds unambiguous versioned keys for safe optional preferences.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateSubscription.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateSubscription.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateSubscription",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateSubscription.yml\" sourcestartlinenumber=\"1\">Owns a subscription without owning its state or injected services.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateVersion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateVersion.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Client.AppStateVersion",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.AppStateVersion.yml\" sourcestartlinenumber=\"1\">Identifies one accepted state and context revision in a live instance.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -60757,7 +63081,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Client.CustomStorageStateStoreProvider",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.CustomStorageStateStoreProvider.yml\" sourcestartlinenumber=\"1\">A sample custom state store provider that persists state in memory with user context, serving as a placeholder for server-side implementations.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.CustomStorageStateStoreProvider.yml\" sourcestartlinenumber=\"1\">Provides the historical custom-storage example with owner-local copied memory values.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -60772,6 +63096,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Client.IAppState",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.IAppState.yml\" sourcestartlinenumber=\"1\">Defines the contract for a managed state instance, providing state management functionality.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.yml\" sourcestartlinenumber=\"1\">Connects managed state to its explicit runtime owner.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -60841,7 +63179,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Client.LocalStorageStateStoreProvider",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.LocalStorageStateStoreProvider.yml\" sourcestartlinenumber=\"1\">A state store provider that persists state in the browser's localStorage, surviving page refreshes.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.LocalStorageStateStoreProvider.yml\" sourcestartlinenumber=\"1\">Stores explicitly selected safe preferences in browser local storage.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -60855,7 +63193,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Client.LocalStorageUserContextProvider",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.LocalStorageUserContextProvider.yml\" sourcestartlinenumber=\"1\">Provides a user context ID stored in memory or optionally in localStorage for user isolation.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.LocalStorageUserContextProvider.yml\" sourcestartlinenumber=\"1\">Provides stable application-qualified anonymous or authenticated preference partitions.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -60897,7 +63235,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Client.SessionScopedStateStoreProvider",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.SessionScopedStateStoreProvider.yml\" sourcestartlinenumber=\"1\">A state store provider that persists state in memory for the duration of a user session.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Client.SessionScopedStateStoreProvider.yml\" sourcestartlinenumber=\"1\">Stores independent serialized preferences only within the resolving runtime scope.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -64079,6 +66417,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.HttpETag.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.HttpETag.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.HttpETag",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.HttpETag.yml\" sourcestartlinenumber=\"1\">Transports opaque version tokens through HTTP entity-tag headers without changing their quoting.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.HttpHeaderKeys.yml",
       "output": {
         ".html": {
@@ -64090,6 +66442,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.HttpHeaderKeys",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.HttpHeaderKeys.yml\" sourcestartlinenumber=\"1\">Represents http header keys.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.HttpMetadata.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.HttpMetadata.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.HttpMetadata",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.HttpMetadata.yml\" sourcestartlinenumber=\"1\">Converts HTTP JSON metadata into scalar properties and expiration changes.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -67929,6 +70295,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails.yml\" sourcestartlinenumber=\"1\">Represents a Result failure with exception diagnostics that the host can opt in to returning.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetailsOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetailsOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetailsOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetailsOptions.yml\" sourcestartlinenumber=\"1\">Controls exception disclosure in Result HTTP Problem Details.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.ResultHttpServiceCollectionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.ResultHttpServiceCollectionExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.ResultHttpServiceCollectionExtensions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.ResultHttpServiceCollectionExtensions.yml\" sourcestartlinenumber=\"1\">Configures HTTP Problem Details for failed Results.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.ResultMapErrorHandlerRegistry.yml",
       "output": {
         ".html": {
@@ -68191,7 +70599,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Storage.BlobStorageMaintenanceEndpoints",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.BlobStorageMaintenanceEndpoints.yml\" sourcestartlinenumber=\"1\">Exposes metadata-only REST endpoints for registered Blob Storage clients.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.BlobStorageMaintenanceEndpoints.yml\" sourcestartlinenumber=\"1\">Exposes content mutation and metadata REST endpoints for registered Blob Storage clients.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -68402,6 +70810,216 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Blobs.Dashboard",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DashboardDimensionQueryModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DashboardDimensionQueryModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DashboardDimensionQueryModel",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DashboardDimensionQueryModel.yml\" sourcestartlinenumber=\"1\">Presentation settings for the storage dashboard's typed condition editor.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionColumns.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionColumns.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionColumns",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionColumns.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Dashboard/Pages/DimensionColumns.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionExplorerScript.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionExplorerScript.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionExplorerScript",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionExplorerScript.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Dashboard/Pages/DimensionExplorerScript.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFields.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFields.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFields",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFields.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Dashboard/Pages/DimensionFields.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFieldsScript.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFieldsScript.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFieldsScript",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFieldsScript.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Dashboard/Pages/DimensionFieldsScript.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFilterNavigationScript.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFilterNavigationScript.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFilterNavigationScript",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFilterNavigationScript.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Dashboard/Pages/DimensionFilterNavigationScript.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQuery.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQuery.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQuery",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQuery.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Dashboard/Pages/DimensionQuery.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQueryScript.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQueryScript.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQueryScript",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQueryScript.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Dashboard/Pages/DimensionQueryScript.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageMaintenanceEndpoints.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageMaintenanceEndpoints.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageMaintenanceEndpoints",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageMaintenanceEndpoints.yml\" sourcestartlinenumber=\"1\">Exposes registered typed document clients through protected maintenance REST endpoints.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageMaintenanceEndpointsOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageMaintenanceEndpointsOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageMaintenanceEndpointsOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageMaintenanceEndpointsOptions.yml\" sourcestartlinenumber=\"1\">Configures the REST endpoint group exposed for Document Storage maintenance operations.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageMaintenanceEndpointsOptionsBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageMaintenanceEndpointsOptionsBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageMaintenanceEndpointsOptionsBuilder",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageMaintenanceEndpointsOptionsBuilder.yml\" sourcestartlinenumber=\"1\">Provides a fluent builder for <xref href=\"BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageMaintenanceEndpointsOptions\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageReadEndpoints.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageReadEndpoints.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageReadEndpoints",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageReadEndpoints.yml\" sourcestartlinenumber=\"1\">Exposes read-only REST endpoints for retrieving typed Document Storage content.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageReadEndpointsOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageReadEndpointsOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageReadEndpointsOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageReadEndpointsOptions.yml\" sourcestartlinenumber=\"1\">Configures the read-only REST endpoint group exposed for Document Storage content reads.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageReadEndpointsOptionsBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageReadEndpointsOptionsBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageReadEndpointsOptionsBuilder",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageReadEndpointsOptionsBuilder.yml\" sourcestartlinenumber=\"1\">Provides a fluent builder for <xref href=\"BridgingIT.DevKit.Presentation.Web.Storage.DocumentStorageReadEndpointsOptions\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -68769,6 +71387,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.BlobStorageDimensionsJson.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.BlobStorageDimensionsJson.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Models.BlobStorageDimensionsJson",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.BlobStorageDimensionsJson.yml\" sourcestartlinenumber=\"1\">Parses explicitly typed blob Dimensions independently of descriptive Properties.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.BlobStorageExistsResponseModel.yml",
       "output": {
         ".html": {
@@ -68783,6 +71415,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.BlobStorageUpdateDimensionsRequestModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.BlobStorageUpdateDimensionsRequestModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Models.BlobStorageUpdateDimensionsRequestModel",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.BlobStorageUpdateDimensionsRequestModel.yml\" sourcestartlinenumber=\"1\">Supplies an atomic replacement of blob Dimensions with an optional whole-item condition.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.BlobStorageUpdatePropertiesRequestModel.yml",
       "output": {
         ".html": {
@@ -68794,6 +71440,104 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Models.BlobStorageUpdatePropertiesRequestModel",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.BlobStorageUpdatePropertiesRequestModel.yml\" sourcestartlinenumber=\"1\">Represents a metadata-only blob property update request.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageClientInfoModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageClientInfoModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageClientInfoModel",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageClientInfoModel.yml\" sourcestartlinenumber=\"1\">Describes a registered typed Document Storage client exposed through maintenance endpoints.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageDimensionsJson.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageDimensionsJson.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageDimensionsJson",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageDimensionsJson.yml\" sourcestartlinenumber=\"1\">Parses explicitly typed document Dimensions independently of descriptive Properties.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageDocumentInfoModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageDocumentInfoModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageDocumentInfoModel",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageDocumentInfoModel.yml\" sourcestartlinenumber=\"1\">Represents provider-neutral document metadata returned from maintenance HTTP endpoints.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageDocumentInfoPageModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageDocumentInfoPageModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageDocumentInfoPageModel",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageDocumentInfoPageModel.yml\" sourcestartlinenumber=\"1\">Represents one filtered page of document metadata.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageUpdateDimensionsRequestModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageUpdateDimensionsRequestModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageUpdateDimensionsRequestModel",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageUpdateDimensionsRequestModel.yml\" sourcestartlinenumber=\"1\">Supplies an atomic replacement of document Dimensions with an optional whole-item condition.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageUpdatePropertiesRequestModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageUpdatePropertiesRequestModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageUpdatePropertiesRequestModel",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageUpdatePropertiesRequestModel.yml\" sourcestartlinenumber=\"1\">Changes document properties and expiration while retaining document content.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageWriteRequestModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageWriteRequestModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageWriteRequestModel",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.DocumentStorageWriteRequestModel.yml\" sourcestartlinenumber=\"1\">Supplies typed document JSON and optional metadata for a maintenance content write.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -68906,6 +71650,34 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Models.FileStorageProviderInfoModel",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.FileStorageProviderInfoModel.yml\" sourcestartlinenumber=\"1\">Describes a registered file storage provider exposed through the REST API.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.StorageFilterRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.StorageFilterRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Models.StorageFilterRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.StorageFilterRequest.yml\" sourcestartlinenumber=\"1\">Requests a metadata page using key and Dimension filters.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.StorageFilterSchema.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.StorageFilterSchema.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Models.StorageFilterSchema",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Models.StorageFilterSchema.yml\" sourcestartlinenumber=\"1\">Describes the storage-specific additions to the shared filter schema.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -69317,11 +72089,11 @@
       "type": "Toc",
       "source_relative_path": "obj/api/toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "obj/api/toc.json"
-        },
         ".html": {
           "relative_path": "obj/api/toc.html"
+        },
+        ".json": {
+          "relative_path": "obj/api/toc.json"
         }
       },
       "version": ""
@@ -69330,11 +72102,11 @@
       "type": "Toc",
       "source_relative_path": "toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "toc.json"
-        },
         ".html": {
           "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
         }
       },
       "version": ""

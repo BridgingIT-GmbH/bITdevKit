@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Namespace BridgingIT.DevKit.Infrastructure.LiteDb | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Namespace BridgingIT.DevKit.Infrastructure.LiteDb | bITdevKit API Reference ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb">
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb" class="text-break">Namespace BridgingIT.DevKit.Infrastructure.LiteDb</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.ActiveEntityProviderConfiguratorExtensions.html">ActiveEntityProviderConfiguratorExtensions</a></dt>
+      <dd><p>Selects LiteDB persistence through the existing ActiveEntity configurator.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityMapping.html">LiteDbActiveEntityMapping</a></dt>
+      <dd><p>Identifies ActiveEntity types when configuring BSON mappings without modifying Domain code.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityMapping-1.html">LiteDbActiveEntityMapping&lt;TId&gt;</a></dt>
+      <dd><p>Maps primitive and generated EntityId identities to scalar BSON values.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProviderOptions-1.html">LiteDbActiveEntityProviderOptions&lt;TEntity&gt;</a></dt>
+      <dd><p>Configures LiteDB persistence for one ActiveEntity type.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityProvider-2.html">LiteDbActiveEntityProvider&lt;TEntity, TId&gt;</a></dt>
+      <dd><p>Persists ActiveEntity records directly through a shared LiteDB database and scoped transaction session.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.html">LiteDbActiveEntityQuery&lt;TEntity&gt;</a></dt>
+      <dd><p>Applies ActiveEntity selection, projection inputs, paging, and scalar-count semantics over LiteDB.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.Selection.html">LiteDbActiveEntityQuery&lt;TEntity&gt;.Selection</a></dt>
+      <dd><p>Contains the detached selected rows and paging metadata.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditRecord.html">LiteDbAuditRecord</a></dt>
+      <dd><p>Stores the complete canonical audit graph separately from mutable lifecycle state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditState.html">LiteDbAuditState</a></dt>
+      <dd><p>Persists extraction identity, ordering, lifecycle, and replay rejection boundaries.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditingInitializationService.html">LiteDbAuditingInitializationService</a></dt>
+      <dd><p>Initializes owned native audit state at host startup while leaving readiness probes read-only.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbAuditingStorageProvider.html">LiteDbAuditingStorageProvider</a></dt>
+      <dd><p>Native provider query, retention, and committed-window operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.html">LiteDbBroadcastRegistryStore</a></dt>
+      <dd><p>Persists node registrations, delivery observations, and leases within one local database owner.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.html">LiteDbBrokerMessage</a></dt>
+      <dd><p>Represents a durable broker message row stored in native LiteDB persistence.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessageHandlerState.html">LiteDbBrokerMessageHandlerState</a></dt>
+      <dd><p>Stores the durable execution state of a single subscribed handler for a broker message.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBulkOutboxBehavior-1.html">LiteDbBulkOutboxBehavior&lt;TEntity&gt;</a></dt>
+      <dd><p>Explicitly opts a bulk insertion into atomic pending-domain-event capture.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbCacheStoreProvider.html">LiteDbCacheStoreProvider</a></dt>
+      <dd><p>Stores Application Caching metadata, publication authority, quotas, operations and immutable payload chunks in one owned native database.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryAuthorizationContext.html">LiteDbChangeHistoryAuthorizationContext</a></dt>
+      <dd><p>Identifies a protected history operation without exposing stored values.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryCapture.html">LiteDbChangeHistoryCapture</a></dt>
+      <dd><p>Captures portable history from confirmed native mutations in the same transaction.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryOptions.html">LiteDbChangeHistoryOptions</a></dt>
+      <dd><p>Selects portable history policies and bounded LiteDB query settings.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryService-1.html">LiteDbChangeHistoryService&lt;TEntity&gt;</a></dt>
+      <dd><p>Provides authorized history queries and transactional restore through portable DevKit contracts.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbChangeHistoryStorage.html">LiteDbChangeHistoryStorage</a></dt>
+      <dd><p>Stores immutable portable history DTOs with native filter and grouping metadata.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseExecutor.html">LiteDbDatabaseExecutor</a></dt>
+      <dd><p>Keeps native transaction locks and all cursors on one dedicated thread.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseOptions.html">LiteDbDatabaseOptions</a></dt>
+      <dd><p>Configures an application-owned, named LiteDB database.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseOwner.html">LiteDbDatabaseOwner</a></dt>
+      <dd><p>Owns one named LiteDB context, native worker, mapper, and transaction reservation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseRegistry.html">LiteDbDatabaseRegistry</a></dt>
+      <dd><p>Records database ownership and entity mappings while the service collection is being configured.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseRegistry.Registration.html">LiteDbDatabaseRegistry.Registration</a></dt>
+      <dd><p>Holds a connection snapshot and the mappings for one named database.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseServiceCollectionExtensions.html">LiteDbDatabaseServiceCollectionExtensions</a></dt>
+      <dd><p>Registers shared LiteDB database ownership.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.html">LiteDbDatabaseSession</a></dt>
+      <dd><p>Owns the transaction state shared by LiteDB providers in one dependency injection scope.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseTransaction.html">LiteDbDatabaseTransaction</a></dt>
+      <dd><p>Runs delegates inside an existing session transaction without automatically committing or retrying them.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDocumentRecord.html">LiteDbDocumentRecord</a></dt>
+      <dd><p>Stores one original document and case-sensitive native query metadata.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDocumentStoreProvider.html">LiteDbDocumentStoreProvider</a></dt>
+      <dd><p>Stores serialized documents with native paging, exact identities, conditional writes, and expiration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventCapture.html">LiteDbDomainEventCapture</a></dt>
+      <dd><p>Captures pending aggregate and ActiveEntity events within their originating native transaction.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxOptions.html">LiteDbDomainEventOutboxOptions</a></dt>
+      <dd><p>Configures the existing domain-event outbox contract for an owned LiteDB database.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxService.html">LiteDbDomainEventOutboxService</a></dt>
+      <dd><p>Forwards immediate commit signals to the durable worker. DevKit's existing outbox service owns scheduled polling.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDomainEventOutboxWorker.html">LiteDbDomainEventOutboxWorker</a></dt>
+      <dd><p>Delivers bounded durable event batches using expiring claims and fenced completion.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityMutation.html">LiteDbEntityMutation</a></dt>
+      <dd><p>Describes a committed-candidate mutation for atomic feature capture.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.html">LiteDbEntityPermissionProvider</a></dt>
+      <dd><p>Persists exact user and role grants while keeping authorization evaluation in the existing Identity feature.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.html">LiteDbFeatureDatabase</a></dt>
+      <dd><p>Executes bounded synchronous durable-record commands inside the named database's owned native transaction.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureOptions.html">LiteDbFeatureOptions</a></dt>
+      <dd><p>Configures bounded native record storage for a durable DevKit feature.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileChunk.html">LiteDbFileChunk</a></dt>
+      <dd><p>Stores one immutable bounded file chunk.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileContentStore.html">LiteDbFileContentStore</a></dt>
+      <dd><p>Owns immutable file generations, bounded chunks, and native namespace transactions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEntry.html">LiteDbFileEntry</a></dt>
+      <dd><p>Stores one explicit directory or published file descriptor.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventRecord.html">LiteDbFileEventRecord</a></dt>
+      <dd><p>Stores one immutable monitoring event with deterministic timestamp and arrival ordering.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventState.html">LiteDbFileEventState</a></dt>
+      <dd><p>Stores the monotonic event arrival position.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileEventStore.html">LiteDbFileEventStore</a></dt>
+      <dd><p>Persists monitoring events, processor outcomes, and location-scoped file presence atomically.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileGeneration.html">LiteDbFileGeneration</a></dt>
+      <dd><p>Stores ownership, publication, and retention state for immutable file content.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFilePresenceRecord.html">LiteDbFilePresenceRecord</a></dt>
+      <dd><p>Stores the latest known presence of one location and opaque logical path.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileProcessingRecord.html">LiteDbFileProcessingRecord</a></dt>
+      <dd><p>Stores a processing outcome independently of its event and other processors.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileReadStream.html">LiteDbFileReadStream</a></dt>
+      <dd><p>Reads a protected immutable file generation with one bounded chunk buffer and seek support.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileStorageProvider.html">LiteDbFileStorageProvider</a></dt>
+      <dd><p>Provides a native virtual filesystem with explicit directories and atomic chunked publication.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFileWriteStream.html">LiteDbFileWriteStream</a></dt>
+      <dd><p>Stages bounded chunks and publishes the complete file only after successful disposal.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbJobStoreProvider.html">LiteDbJobStoreProvider</a></dt>
+      <dd><p>Persists all Jobs stores as separately keyed native records under atomic LiteDB commands.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbKeyedCollection-2.html">LiteDbKeyedCollection&lt;TKey, TValue&gt;</a></dt>
+      <dd><p>Provides command-local keyed access to separately persisted native records.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbKeyedList-1.html">LiteDbKeyedList&lt;T&gt;</a></dt>
+      <dd><p>Persists appendable records individually while exposing bounded command-local sequence operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.html">LiteDbMessageBroker</a></dt>
+      <dd><p>Implements durable native message publication, fan-out progress, claims, and operational queries.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBrokerOptions.html">LiteDbMessageBrokerOptions</a></dt>
+      <dd><p>Configures durable messaging without changing the existing handler pipeline.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBrokerWorker.html">LiteDbMessageBrokerWorker</a></dt>
+      <dd><p>Runs the native durable messaging poller through the host lifecycle.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageTypeResolver.html">LiteDbMessageTypeResolver</a></dt>
+      <dd><p>Maps operational message type identifiers to the canonical tokens stored by LiteDB brokers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMutationCaptureContext.html">LiteDbMutationCaptureContext</a></dt>
+      <dd><p>Attaches restore provenance to mutations in an existing scoped transaction.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationEmailClaim.html">LiteDbNotificationEmailClaim</a></dt>
+      <dd><p>Retains immutable delivery ownership independently of mutable notification properties.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationEmailOutboxWorker.html">LiteDbNotificationEmailOutboxWorker</a></dt>
+      <dd><p>Claims emails at delivery time, renews their ownership, and purges through native status selection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationRecord.html">LiteDbNotificationRecord</a></dt>
+      <dd><p>Stores a notification email, attachments, and its fenced delivery claim together.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.html">LiteDbNotificationStorageProvider</a></dt>
+      <dd><p>Persists email notifications and exposes existing storage and operational outbox contracts.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOrchestrationStorageProvider.html">LiteDbOrchestrationStorageProvider</a></dt>
+      <dd><p>Persists orchestration snapshots, ownership, signals, timers, histories, and administration atomically in LiteDB.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxDispatchMessage.html">LiteDbOutboxDispatchMessage</a></dt>
+      <dd><p>Stores a typed outgoing publication independently of the receiving broker.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxDomainEvent.html">LiteDbOutboxDomainEvent</a></dt>
+      <dd><p>Contains durable domain-event content and fenced processing state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessageForwarder.html">LiteDbOutboxMessageForwarder</a></dt>
+      <dd><p>Publishes one restored outgoing message to the configured downstream broker.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessagePublisher.html">LiteDbOutboxMessagePublisher</a></dt>
+      <dd><p>Captures outgoing messages in the caller's scoped database transaction.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbOutboxMessageWorker.html">LiteDbOutboxMessageWorker</a></dt>
+      <dd><p>Forwards committed publications through an independently selected broker using the native fenced delivery protocol.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.html">LiteDbProfilingStorageProvider</a></dt>
+      <dd><p>Persists complete Runtime and Operation graphs, writer ownership, query boundaries, and clear fences.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProviderException.html">LiteDbProviderException</a></dt>
+      <dd><p>Carries recoverable persistence failures to the ActiveEntity result boundary.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.html">LiteDbQueueBroker</a></dt>
+      <dd><p>Implements durable native queue delivery, claims, and operational queries.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBrokerOptions.html">LiteDbQueueBrokerOptions</a></dt>
+      <dd><p>Configures durable queueing without changing the existing handler pipeline.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueMessage.html">LiteDbQueueMessage</a></dt>
+      <dd><p>Represents a durable broker message row stored in native LiteDB persistence.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.html">LiteDbStoragePermalinkRegistryProvider</a></dt>
+      <dd><p>Persists permalink identities, location ownership, and deletion fences in native transactions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.NativeId.html">LiteDbStoragePermalinkRegistryProvider.NativeId</a></dt>
+      <dd><p>Provides a constructor-bound native surrogate for the validated public permalink identity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.PrefixTombstone.html">LiteDbStoragePermalinkRegistryProvider.PrefixTombstone</a></dt>
+      <dd><p>Persists a subtree deletion boundary against delayed events.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.StoredEntry.html">LiteDbStoragePermalinkRegistryProvider.StoredEntry</a></dt>
+      <dd><p>Stores one stable permalink and its lifecycle timestamps.</p>
+</dd>
+    </dl>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbChangeHistoryAuthorizer.html">ILiteDbChangeHistoryAuthorizer</a></dt>
+      <dd><p>Evaluates configured host policies before history values are read or an entity is restored.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbEntityMutationObserver.html">ILiteDbEntityMutationObserver</a></dt>
+      <dd><p>Captures feature state inside the same native transaction as an entity mutation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbIndexedRecord.html">ILiteDbIndexedRecord</a></dt>
+      <dd><p>Supplies bounded native filter fields for durable work without indexing serialized payloads.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

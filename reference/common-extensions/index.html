@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
     
     
       
@@ -1631,6 +1631,17 @@
     <span class="md-ellipsis">
       
         Configuration and DI helpers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP helpers
       
     </span>
   </a>
@@ -3470,6 +3481,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-infrastructure-litedb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LiteDB Infrastructure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-startuptasks/" class="md-nav__link">
         
   
@@ -4985,6 +5024,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#http-helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP helpers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#practical-guidance" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5138,6 +5188,7 @@
 <li><a href="#stream-task-and-async-helpers">Stream, task, and async helpers</a></li>
 <li><a href="#reflection-type-and-expression-helpers"><span class="bdk-feature-name" data-feature-name="reflection"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="reflection" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="15" height="19" rx="2" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="21" cy="20" r="7" /><path d="m26 25 4 4M7 8h7M7 13h5" /></g></svg></span>Reflection</span>, type, and expression helpers</a></li>
 <li><a href="#configuration-and-di-helpers"><span class="bdk-feature-name" data-feature-name="configuration"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="configuration" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v26M16 3v26M25 3v26" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="6" height="5" rx="2" /><rect x="13" y="20" width="6" height="5" rx="2" /><rect x="22" y="5" width="6" height="5" rx="2" /></g></svg></span>Configuration</span> and DI helpers</a></li>
+<li><a href="#http-helpers">HTTP helpers</a></li>
 <li><a href="#practical-guidance">Practical guidance</a></li>
 <li><a href="#what-this-page-does-not-cover">What this page does not cover</a></li>
 <li><a href="#related-docs">Related docs</a></li>
@@ -5301,6 +5352,21 @@
 <li>checking whether a service has already been added to <code>IServiceCollection</code></li>
 <li>finding or locating a registered service descriptor during startup composition</li>
 </ul>
+<h2 id="http-helpers">HTTP helpers<a class="headerlink" href="#http-helpers" title="Permanent link">&para;</a></h2>
+<p><code>OpaqueVersionETag</code> is in the <code>BridgingIT.DevKit.Common.Extensions.Web</code> package, under the <code>BridgingIT.DevKit.Common</code> namespace. Use it in ASP.NET Core endpoints that exchange opaque versions with a provider. <code>Write</code> sets one strong ETag. It wraps the UTF-8 version in quotes with a <code>bdk.</code> prefix and canonical unpadded Base64Url. For example, the version <code>"v1"</code> including its quotes becomes <code>"bdk.InYxIg"</code>. A blank version leaves the response header as it is.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.AspNetCore.Http</span><span class="p">;</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DefaultHttpContext</span><span class="p">().</span><span class="n">Response</span><span class="p">;</span>
+<span class="n">OpaqueVersionETag</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s">"\"v1\""</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">condition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OpaqueVersionETag</span><span class="p">.</span><span class="n">ReadCondition</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="n">ETag</span><span class="p">,</span><span class="w"> </span><span class="n">bodyETag</span><span class="p">:</span><span class="w"> </span><span class="s">"\"v1\""</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">condition</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">condition</span><span class="p">.</span><span class="n">Value</span><span class="p">);</span><span class="w"> </span><span class="c1">// "v1"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>For an exact round-trip, use a nonblank provider version with well-formed UTF-16 and no control characters. UTF-8 encoding replaces unpaired surrogates. <code>ReadCondition</code> rejects decoded versions that contain control characters or become <code>*</code> after trimming surrounding double quotes.</p>
+<p><code>ReadCondition</code> preserves quotes and spaces in the decoded version. It also accepts raw versions, trimming surrounding whitespace and retaining the supplied quoting. Wildcards (<code>*</code> or <code>"*"</code>), header lists, and malformed transport tags produce a <code>ValidationError</code>. When both header and body supply a version, their decoded values must match ordinally. When both are missing or blank, the result is successful with a <code>null</code> value. The provider applies the version condition to the mutation.</p>
 <h2 id="practical-guidance">Practical guidance<a class="headerlink" href="#practical-guidance" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Use these helpers to reduce boilerplate, not to hide business logic.</li>

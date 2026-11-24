@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LiteDbQueueBroker | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LiteDbQueueBroker | bITdevKit API Reference ">
+      
+      <meta name="description" content="Implements durable native queue delivery, claims, and operational queries.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker" class="text-break">
+Class LiteDbQueueBroker  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.html">LiteDb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.LiteDb.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Implements durable native queue delivery, claims, and operational queries.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class LiteDbQueueBroker : QueueBrokerBase, IQueueBrokerRuntime, IQueueBroker, IQueueBrokerService, IQueueBrokerBackgroundProcessor</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueBrokerBase.html">QueueBrokerBase</a></div>
+      <div><span class="xref">LiteDbQueueBroker</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Queueing.IQueueBrokerRuntime.html">IQueueBrokerRuntime</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IQueueBroker.html">IQueueBroker</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Queueing.IQueueBrokerService.html">IQueueBrokerService</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Queueing.IQueueBrokerBackgroundProcessor.html">IQueueBrokerBackgroundProcessor</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueBrokerBase.html#BridgingIT_DevKit_Application_Queueing_QueueBrokerBase_Subscribe__2">QueueBrokerBase.Subscribe&lt;TMessage, THandler&gt;()</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueBrokerBase.html#BridgingIT_DevKit_Application_Queueing_QueueBrokerBase_Subscribe_System_Type_System_Type_">QueueBrokerBase.Subscribe(Type, Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueBrokerBase.html#BridgingIT_DevKit_Application_Queueing_QueueBrokerBase_Unsubscribe__2">QueueBrokerBase.Unsubscribe&lt;TMessage, THandler&gt;()</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueBrokerBase.html#BridgingIT_DevKit_Application_Queueing_QueueBrokerBase_Unsubscribe_System_Type_System_Type_">QueueBrokerBase.Unsubscribe(Type, Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueBrokerBase.html#BridgingIT_DevKit_Application_Queueing_QueueBrokerBase_Unsubscribe">QueueBrokerBase.Unsubscribe()</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueBrokerBase.html#BridgingIT_DevKit_Application_Queueing_QueueBrokerBase_Enqueue_BridgingIT_DevKit_Common_IQueueMessage_System_Threading_CancellationToken_">QueueBrokerBase.Enqueue(IQueueMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueBrokerBase.html#BridgingIT_DevKit_Application_Queueing_QueueBrokerBase_EnqueueAndWait_BridgingIT_DevKit_Common_IQueueMessage_System_Threading_CancellationToken_">QueueBrokerBase.EnqueueAndWait(IQueueMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueBrokerBase.html#BridgingIT_DevKit_Application_Queueing_QueueBrokerBase_Process_BridgingIT_DevKit_Application_Queueing_QueueMessageRequest_">QueueBrokerBase.Process(QueueMessageRequest)</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBrokerOptions_System_TimeProvider_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.#ctor(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase,BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBrokerOptions,System.TimeProvider)">
+  LiteDbQueueBroker(LiteDbFeatureDatabase, LiteDbQueueBrokerOptions, TimeProvider)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a native durable broker using existing publisher and handler behaviors.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbQueueBroker(LiteDbFeatureDatabase database, LiteDbQueueBrokerOptions options, TimeProvider clock = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>database</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.html">LiteDbFeatureDatabase</a></dt>
+    <dd><p>The queueing database and declared collections.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBrokerOptions.html">LiteDbQueueBrokerOptions</a></dt>
+    <dd><p>The frozen delivery settings and handler factory.</p>
+</dd>
+    <dt><code>clock</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The lease, expiry, and retry clock.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_ArchiveMessageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.ArchiveMessageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_ArchiveMessageAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.ArchiveMessageAsync(System.Guid,System.Threading.CancellationToken)">
+  ArchiveMessageAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Marks a terminal queue message as archived.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ArchiveMessageAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The queue message primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_GetMessageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.GetMessageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_GetMessageAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.GetMessageAsync(System.Guid,System.Threading.CancellationToken)">
+  GetMessageAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves a single queue message by its primary key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;QueueMessageInfo&gt; GetMessageAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The queue message primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageInfo.html">QueueMessageInfo</a>&gt;</dt>
+    <dd><p>The queue message details, or <code>null</code> if not found.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_GetMessageContentAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.GetMessageContentAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_GetMessageContentAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.GetMessageContentAsync(System.Guid,System.Threading.CancellationToken)">
+  GetMessageContentAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the stored serialized content for a single queue message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;QueueMessageContentInfo&gt; GetMessageContentAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The queue message primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageContentInfo.html">QueueMessageContentInfo</a>&gt;</dt>
+    <dd><p>The stored queue message content, or <code>null</code> if not found.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_GetMessageStatsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.GetMessageStatsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_GetMessageStatsAsync_System_Nullable_System_DateTimeOffset__System_Nullable_System_DateTimeOffset__System_Nullable_System_Boolean__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.GetMessageStatsAsync(System.Nullable{System.DateTimeOffset},System.Nullable{System.DateTimeOffset},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+  GetMessageStatsAsync(DateTimeOffset?, DateTimeOffset?, bool?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves aggregate queue message statistics.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;QueueMessageStats&gt; GetMessageStatsAsync(DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, bool? isArchived = false, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>startDate</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional lower processed/created date filter.</p>
+</dd>
+    <dt><code>endDate</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional upper processed/created date filter.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional archive-state filter.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageStats.html">QueueMessageStats</a>&gt;</dt>
+    <dd><p>The aggregated queue message statistics.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_GetMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.GetMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_GetMessagesAsync_System_Nullable_BridgingIT_DevKit_Application_Queueing_QueueMessageStatus__System_String_System_String_System_String_System_String_System_Nullable_System_Boolean__System_Nullable_System_DateTimeOffset__System_Nullable_System_DateTimeOffset__System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.GetMessagesAsync(System.Nullable{BridgingIT.DevKit.Application.Queueing.QueueMessageStatus},System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.Nullable{System.DateTimeOffset},System.Nullable{System.DateTimeOffset},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+  GetMessagesAsync(QueueMessageStatus?, string, string, string, string, bool?, DateTimeOffset?, DateTimeOffset?, int?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves queue messages with optional operational filters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;QueueMessageInfo&gt;&gt; GetMessagesAsync(QueueMessageStatus? status = null, string type = null, string queueName = null, string messageId = null, string lockedBy = null, bool? isArchived = false, DateTimeOffset? createdAfter = null, DateTimeOffset? createdBefore = null, int? take = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>status</code> <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageStatus.html">QueueMessageStatus</a>?</dt>
+    <dd><p>Optional queue message status filter.</p>
+</dd>
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd><p>Optional persisted queue message type filter.</p>
+</dd>
+    <dt><code>queueName</code> <span class="xref">string</span></dt>
+    <dd><p>Optional logical queue name filter.</p>
+</dd>
+    <dt><code>messageId</code> <span class="xref">string</span></dt>
+    <dd><p>Optional logical message identifier filter.</p>
+</dd>
+    <dt><code>lockedBy</code> <span class="xref">string</span></dt>
+    <dd><p>Optional lease-owner filter.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional archive-state filter. Defaults to <code>false</code>.</p>
+</dd>
+    <dt><code>createdAfter</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional lower creation-date filter.</p>
+</dd>
+    <dt><code>createdBefore</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional upper creation-date filter.</p>
+</dd>
+    <dt><code>take</code> <span class="xref">int</span>?</dt>
+    <dd><p>Optional result limit.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageInfo.html">QueueMessageInfo</a>&gt;&gt;</dt>
+    <dd><p>A collection of queue message summaries.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_GetSubscriptionsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.GetSubscriptionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_GetSubscriptionsAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.GetSubscriptionsAsync(System.Threading.CancellationToken)">
+  GetSubscriptionsAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the currently active queue subscriptions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;QueueSubscriptionInfo&gt;&gt; GetSubscriptionsAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueSubscriptionInfo.html">QueueSubscriptionInfo</a>&gt;&gt;</dt>
+    <dd><p>The registered queue message type to handler mappings.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_GetSummaryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.GetSummaryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_GetSummaryAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.GetSummaryAsync(System.Threading.CancellationToken)">
+  GetSummaryAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a summary of broker state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;QueueBrokerSummary&gt; GetSummaryAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueBrokerSummary.html">QueueBrokerSummary</a>&gt;</dt>
+    <dd><p>A runtime summary containing counts, pause state, and broker capabilities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_GetWaitingMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.GetWaitingMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_GetWaitingMessagesAsync_System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.GetWaitingMessagesAsync(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+  GetWaitingMessagesAsync(int?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets messages that are waiting because no compatible handler is currently registered.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;QueueMessageInfo&gt;&gt; GetWaitingMessagesAsync(int? take = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>take</code> <span class="xref">int</span>?</dt>
+    <dd><p>An optional maximum number of messages to return.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageInfo.html">QueueMessageInfo</a>&gt;&gt;</dt>
+    <dd><p>The waiting queue messages ordered by creation time.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_OnEnqueue_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.OnEnqueue*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_OnEnqueue_BridgingIT_DevKit_Common_IQueueMessage_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.OnEnqueue(BridgingIT.DevKit.Common.IQueueMessage,System.Threading.CancellationToken)">
+  OnEnqueue(IQueueMessage, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the on enqueue operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override Task OnEnqueue(IQueueMessage message, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <a class="xref" href="BridgingIT.DevKit.Common.IQueueMessage.html">IQueueMessage</a></dt>
+    <dd><p>The message associated with the operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_OnSubscribe_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.OnSubscribe*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_OnSubscribe_System_Type_System_Type_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.OnSubscribe(System.Type,System.Type)">
+  OnSubscribe(Type, Type)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the on subscribe operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override Task OnSubscribe(Type messageType, Type handlerType)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>messageType</code> <span class="xref">Type</span></dt>
+    <dd><p>The message type used by the operation.</p>
+</dd>
+    <dt><code>handlerType</code> <span class="xref">Type</span></dt>
+    <dd><p>The handler type used by the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_OnSubscribe_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.OnSubscribe*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_OnSubscribe__2" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.OnSubscribe``2">
+  OnSubscribe&lt;TMessage, THandler&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the on subscribe operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override Task OnSubscribe&lt;TMessage, THandler&gt;() where TMessage : IQueueMessage where THandler : IQueueMessageHandler&lt;TMessage&gt;</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TMessage</code></dt>
+    <dd><p>The message type.</p>
+</dd>
+    <dt><code>THandler</code></dt>
+    <dd><p>The handler type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_PauseMessageTypeAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.PauseMessageTypeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_PauseMessageTypeAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.PauseMessageTypeAsync(System.String,System.Threading.CancellationToken)">
+  PauseMessageTypeAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Pauses processing for the specified queue message type token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task PauseMessageTypeAsync(string type, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd><p>The queue message type token.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_PauseQueueAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.PauseQueueAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_PauseQueueAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.PauseQueueAsync(System.String,System.Threading.CancellationToken)">
+  PauseQueueAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Pauses processing for the specified logical queue.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task PauseQueueAsync(string queueName, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>queueName</code> <span class="xref">string</span></dt>
+    <dd><p>The logical queue name.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_ProcessPendingAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.ProcessPendingAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_ProcessPendingAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.ProcessPendingAsync(System.Threading.CancellationToken)">
+  ProcessPendingAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Claims a bounded batch and delivers each message outside its native transaction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ProcessPendingAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels acquisition and external delivery.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>The completed batch task.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_ProcessStoredMessageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.ProcessStoredMessageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_ProcessStoredMessageAsync_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueMessage_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.ProcessStoredMessageAsync(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueMessage,System.Threading.CancellationToken)">
+  ProcessStoredMessageAsync(LiteDbQueueMessage, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Delivers one claimed queue record through its existing single handler pipeline.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ProcessStoredMessageAsync(LiteDbQueueMessage storedMessage, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>storedMessage</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueMessage.html">LiteDbQueueMessage</a></dt>
+    <dd><p>The claimed record.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels external delivery.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_PurgeMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.PurgeMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_PurgeMessagesAsync_System_Nullable_System_DateTimeOffset__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Queueing_QueueMessageStatus__System_Nullable_System_Boolean__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.PurgeMessagesAsync(System.Nullable{System.DateTimeOffset},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Queueing.QueueMessageStatus},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+  PurgeMessagesAsync(DateTimeOffset?, IEnumerable&lt;QueueMessageStatus&gt;, bool?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes persisted queue messages matching the supplied filters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task PurgeMessagesAsync(DateTimeOffset? olderThan = null, IEnumerable&lt;QueueMessageStatus&gt; statuses = null, bool? isArchived = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>olderThan</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional upper age filter.</p>
+</dd>
+    <dt><code>statuses</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageStatus.html">QueueMessageStatus</a>&gt;</dt>
+    <dd><p>Optional status filter.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional archive-state filter.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_ReleaseLeaseAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.ReleaseLeaseAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_ReleaseLeaseAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.ReleaseLeaseAsync(System.Guid,System.Threading.CancellationToken)">
+  ReleaseLeaseAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases the current lease for a queue message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ReleaseLeaseAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The queue message primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_ResetMessageTypeCircuitAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.ResetMessageTypeCircuitAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_ResetMessageTypeCircuitAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.ResetMessageTypeCircuitAsync(System.String,System.Threading.CancellationToken)">
+  ResetMessageTypeCircuitAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resets the circuit state for the specified queue message type token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ResetMessageTypeCircuitAsync(string type, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd><p>The queue message type token.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_ResumeMessageTypeAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.ResumeMessageTypeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_ResumeMessageTypeAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.ResumeMessageTypeAsync(System.String,System.Threading.CancellationToken)">
+  ResumeMessageTypeAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resumes processing for the specified queue message type token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ResumeMessageTypeAsync(string type, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd><p>The queue message type token.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_ResumeQueueAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.ResumeQueueAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_ResumeQueueAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.ResumeQueueAsync(System.String,System.Threading.CancellationToken)">
+  ResumeQueueAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resumes processing for the specified logical queue.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ResumeQueueAsync(string queueName, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>queueName</code> <span class="xref">string</span></dt>
+    <dd><p>The logical queue name.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_RetryMessageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.RetryMessageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_RetryMessageAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.RetryMessageAsync(System.Guid,System.Threading.CancellationToken)">
+  RetryMessageAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resets a retryable queue message so it can be processed again.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RetryMessageAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The queue message primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_RunAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.RunAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_RunAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.RunAsync(System.Threading.CancellationToken)">
+  RunAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs broker-specific background processing until shutdown is requested.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RunAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token that signals host shutdown.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_SearchMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.SearchMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_SearchMessagesAsync_BridgingIT_DevKit_Common_FilterModel_System_Nullable_System_Boolean__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbQueueBroker.SearchMessagesAsync(BridgingIT.DevKit.Common.FilterModel,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+  SearchMessagesAsync(FilterModel, bool?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Searches retained queue message summaries with filtering, ordering, and paging.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;QueueMessageInfo&gt;&gt; SearchMessagesAsync(FilterModel filter, bool? isArchived = false, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd><p>The search criteria. Paging defaults to page 1 and 50 items, with a maximum of 1000.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>The archive scope. Use null to search active and archived messages.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageInfo.html">QueueMessageInfo</a>&gt;&gt;</dt>
+    <dd><p>A page of matching message summaries and the total match count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbQueueBroker_SearchMessagesAsync_BridgingIT_DevKit_Common_FilterModel_System_Nullable_System_Boolean__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await service.SearchMessagesAsync(new FilterModel { Page = 2, PageSize = 25 });</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

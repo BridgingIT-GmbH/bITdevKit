@@ -188,7 +188,8 @@ var result = await Result{User}.ExecuteAllAsync(operations);</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Executes multiple async operations in parallel with batching support.</p>
+  <div class="markdown level1 summary"><p>Executes multiple async operations in parallel with batching support.
+Reads one batch at a time and stops reading the source when the caller cancels.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -366,7 +367,8 @@ var result = await Result{User}.ExecuteAllBatchedAsync(operations, batchSize: 10
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Processes a sequence of items asynchronously with retry and error handling.</p>
+  <div class="markdown level1 summary"><p>Processes a sequence of items asynchronously with retry and error handling.
+Caller cancellation stops reading the source and preserves diagnostics already collected.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -423,36 +425,36 @@ var result = await Result{User}.ExecuteAllBatchedAsync(operations, batchSize: 10
 
   <a id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.WithRetryPolicy*"></a>
 
-  <h3 id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result__BridgingIT_DevKit_Common_RetryPolicy_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.WithRetryPolicy(System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result},BridgingIT.DevKit.Common.RetryPolicy,System.Threading.CancellationToken)">
-  WithRetryPolicy(Task&lt;Result&gt;, RetryPolicy, CancellationToken)
+  <h3 id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___BridgingIT_DevKit_Common_RetryPolicy_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.WithRetryPolicy(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result}},BridgingIT.DevKit.Common.RetryPolicy,System.Threading.CancellationToken)">
+  WithRetryPolicy(Func&lt;CancellationToken, Task&lt;Result&gt;&gt;, RetryPolicy, CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Executes an operation with retry logic according to the specified policy.</p>
+  <div class="markdown level1 summary"><p>Runs an operation factory again for each retry allowed by the policy.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static Task&lt;Result&gt; WithRetryPolicy(this Task&lt;Result&gt; operation, RetryPolicy policy, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&gt; WithRetryPolicy(this Func&lt;CancellationToken, Task&lt;Result&gt;&gt; operation, RetryPolicy policy, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>operation</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>The operation to execute.</p>
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;&gt;</dt>
+    <dd><p>The factory invoked on every attempt.</p>
 </dd>
     <dt><code>policy</code> <a class="xref" href="BridgingIT.DevKit.Common.RetryPolicy.html">RetryPolicy</a></dt>
-    <dd><p>The retry policy to apply.</p>
+    <dd><p>The policy used to match exceptions and schedule retries.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Optional cancellation token.</p>
+    <dd><p>The caller's cancellation token.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>The result of the operation.</p>
+    <dd><p>The final result, with cancellation represented as an <a class="xref" href="BridgingIT.DevKit.Common.OperationCancelledError.html">OperationCancelledError</a>.</p>
 </dd>
   </dl>
 
@@ -461,20 +463,9 @@ var result = await Result{User}.ExecuteAllBatchedAsync(operations, batchSize: 10
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result__BridgingIT_DevKit_Common_RetryPolicy_System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var policy = RetryPolicy.Create()
-    .RetryOn&lt;HttpRequestException&gt;()
-    .RetryOn&lt;TimeoutException&gt;()
-    .RetryWhen(ex =&gt; ex.Message.Contains("retry"))
-    .WithMaxRetries(3)
-    .WithInitialDelay(TimeSpan.FromSeconds(1))
-    .WithBackoffMultiplier(2)
-    .OnRetry(context =&gt; _logger.LogWarning(
-        $"Retry attempt {context.Attempt} after error: {context.Exception.Message}"));
-
-var result = await Result
-    .FromAsync(async () =&gt; await UpdateDataAsync())
-    .WithRetryPolicy(policy);</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___BridgingIT_DevKit_Common_RetryPolicy_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">Func&lt;CancellationToken, Task&lt;Result&gt;&gt; save = UpdateOrderAsync;
+var result = await save.WithRetryPolicy(RetryPolicy.Create().RetryOn&lt;TimeoutException&gt;());</code></pre>
 
 
 
@@ -483,36 +474,82 @@ var result = await Result
 
   <a id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.WithRetryPolicy*"></a>
 
-  <h3 id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy__1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0___BridgingIT_DevKit_Common_RetryPolicy_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.WithRetryPolicy``1(System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result{``0}},BridgingIT.DevKit.Common.RetryPolicy,System.Threading.CancellationToken)">
-  WithRetryPolicy&lt;TValue&gt;(Task&lt;Result&lt;TValue&gt;&gt;, RetryPolicy, CancellationToken)
+  <h3 id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result__BridgingIT_DevKit_Common_RetryPolicy_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.WithRetryPolicy(System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result},BridgingIT.DevKit.Common.RetryPolicy,System.Threading.CancellationToken)">
+  WithRetryPolicy(Task&lt;Result&gt;, RetryPolicy, CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Executes an operation with retry logic according to the specified policy.</p>
+  <div class="markdown level1 summary"><p>Observes an existing task once and converts thrown errors to a result.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TValue&gt;&gt; WithRetryPolicy&lt;TValue&gt;(this Task&lt;Result&lt;TValue&gt;&gt; operation, RetryPolicy policy, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use the overload that takes an operation factory so each retry can start a new attempt.&quot;)]
+public static Task&lt;Result&gt; WithRetryPolicy(this Task&lt;Result&gt; operation, RetryPolicy policy, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>operation</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
-    <dd><p>The operation to execute.</p>
+    <dt><code>operation</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>The existing task.</p>
 </dd>
     <dt><code>policy</code> <a class="xref" href="BridgingIT.DevKit.Common.RetryPolicy.html">RetryPolicy</a></dt>
-    <dd><p>The retry policy to apply.</p>
+    <dd><p>The legacy policy parameter.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Optional cancellation token.</p>
+    <dd><p>The legacy cancellation parameter.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>The observed outcome.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.WithRetryPolicy*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy__1_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0____BridgingIT_DevKit_Common_RetryPolicy_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.WithRetryPolicy``1(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result{``0}}},BridgingIT.DevKit.Common.RetryPolicy,System.Threading.CancellationToken)">
+  WithRetryPolicy&lt;TValue&gt;(Func&lt;CancellationToken, Task&lt;Result&lt;TValue&gt;&gt;&gt;, RetryPolicy, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs an operation factory again for each retry allowed by the policy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TValue&gt;&gt; WithRetryPolicy&lt;TValue&gt;(this Func&lt;CancellationToken, Task&lt;Result&lt;TValue&gt;&gt;&gt; operation, RetryPolicy policy, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;&gt;</dt>
+    <dd><p>The factory invoked on every attempt.</p>
+</dd>
+    <dt><code>policy</code> <a class="xref" href="BridgingIT.DevKit.Common.RetryPolicy.html">RetryPolicy</a></dt>
+    <dd><p>The policy used to match exceptions and schedule retries.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The caller's cancellation token.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
-    <dd><p>The result of the operation.</p>
+    <dd><p>The final result, with cancellation represented as an <a class="xref" href="BridgingIT.DevKit.Common.OperationCancelledError.html">OperationCancelledError</a>.</p>
 </dd>
   </dl>
 
@@ -527,20 +564,61 @@ var result = await Result
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy__1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0___BridgingIT_DevKit_Common_RetryPolicy_System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var policy = RetryPolicy.Create()
-    .RetryOn&lt;HttpRequestException&gt;()
-    .RetryOn&lt;TimeoutException&gt;()
-    .RetryWhen(ex =&gt; ex.Message.Contains("retry"))
-    .WithMaxRetries(3)
-    .WithInitialDelay(TimeSpan.FromSeconds(1))
-    .WithBackoffMultiplier(2)
-    .OnRetry(context =&gt; _logger.LogWarning(
-        $"Retry attempt {context.Attempt} after error: {context.Exception.Message}"));
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy__1_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0____BridgingIT_DevKit_Common_RetryPolicy_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">Func&lt;CancellationToken, Task&lt;Result&lt;Order&gt;&gt;&gt; fetch = LoadOrderAsync;
+var result = await fetch.WithRetryPolicy(RetryPolicy.Create().RetryOn&lt;TimeoutException&gt;());</code></pre>
 
-var result = await Result
-    .FromAsync(async () =&gt; await FetchDataAsync())
-    .WithRetryPolicy(policy);</code></pre>
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.WithRetryPolicy*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy__1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0___BridgingIT_DevKit_Common_RetryPolicy_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.WithRetryPolicy``1(System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result{``0}},BridgingIT.DevKit.Common.RetryPolicy,System.Threading.CancellationToken)">
+  WithRetryPolicy&lt;TValue&gt;(Task&lt;Result&lt;TValue&gt;&gt;, RetryPolicy, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Observes an existing value result task once and converts thrown errors to a result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use the overload that takes an operation factory so each retry can start a new attempt.&quot;)]
+public static Task&lt;Result&lt;TValue&gt;&gt; WithRetryPolicy&lt;TValue&gt;(this Task&lt;Result&lt;TValue&gt;&gt; operation, RetryPolicy policy, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>The existing task.</p>
+</dd>
+    <dt><code>policy</code> <a class="xref" href="BridgingIT.DevKit.Common.RetryPolicy.html">RetryPolicy</a></dt>
+    <dd><p>The legacy policy parameter.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The legacy cancellation parameter.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>The observed outcome.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
 
 
 

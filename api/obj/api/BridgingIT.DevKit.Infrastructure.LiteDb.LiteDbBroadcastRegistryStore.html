@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LiteDbBroadcastRegistryStore | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LiteDbBroadcastRegistryStore | bITdevKit API Reference ">
+      
+      <meta name="description" content="Persists node registrations, delivery observations, and leases within one local database owner.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore" class="text-break">
+Class LiteDbBroadcastRegistryStore  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.html">LiteDb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.LiteDb.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Persists node registrations, delivery observations, and leases within one local database owner.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class LiteDbBroadcastRegistryStore : IBroadcastRegistryStore</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">LiteDbBroadcastRegistryStore</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IBroadcastRegistryStore.html">IBroadcastRegistryStore</a></div>
+    </dd>
+  </dl>
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_examples">Examples</h2>
+  <pre><code class="lang-csharp">services.AddBroadcasting().WithLiteDbRegistry();</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_BridgingIT_DevKit_Common_BroadcastingOptions_System_TimeProvider_BridgingIT_DevKit_Common_IMetricsService_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore__" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.#ctor(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase,BridgingIT.DevKit.Common.BroadcastingOptions,System.TimeProvider,BridgingIT.DevKit.Common.IMetricsService,Microsoft.Extensions.Logging.ILogger{BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore})">
+  LiteDbBroadcastRegistryStore(LiteDbFeatureDatabase, BroadcastingOptions, TimeProvider, IMetricsService, ILogger&lt;LiteDbBroadcastRegistryStore&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Persists node registrations, delivery observations, and leases within one local database owner.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbBroadcastRegistryStore(LiteDbFeatureDatabase database, BroadcastingOptions options, TimeProvider timeProvider, IMetricsService metrics = null, ILogger&lt;LiteDbBroadcastRegistryStore&gt; logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>database</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.html">LiteDbFeatureDatabase</a></dt>
+    <dd><p>The owned native registry namespace.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Common.BroadcastingOptions.html">BroadcastingOptions</a></dt>
+    <dd><p>The shared Broadcasting options.</p>
+</dd>
+    <dt><code>timeProvider</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The clock used for delivery and lease timestamps.</p>
+</dd>
+    <dt><code>metrics</code> <a class="xref" href="BridgingIT.DevKit.Common.IMetricsService.html">IMetricsService</a></dt>
+    <dd><p>The optional metrics service.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.html">LiteDbBroadcastRegistryStore</a>&gt;</dt>
+    <dd><p>The optional structured logger.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_BridgingIT_DevKit_Common_BroadcastingOptions_System_TimeProvider_BridgingIT_DevKit_Common_IMetricsService_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore___examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddBroadcasting().WithLiteDbRegistry();</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_Capabilities_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.Capabilities*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_Capabilities" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.Capabilities">
+  Capabilities
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets provider capabilities used by the publishing lifecycle.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BroadcastRegistryCapabilities Capabilities { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastRegistryCapabilities.html">BroadcastRegistryCapabilities</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_ExpireLeasesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.ExpireLeasesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_ExpireLeasesAsync_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.ExpireLeasesAsync(System.DateTimeOffset,System.Threading.CancellationToken)">
+  ExpireLeasesAsync(DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Marks expired leased registrations inactive.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ExpireLeasesAsync(DateTimeOffset utcNow, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utcNow</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_FindAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.FindAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_FindAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.FindAsync(System.String,System.Threading.CancellationToken)">
+  FindAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a registration by node identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;BroadcastNodeRegistration&gt; FindAsync(string nodeIdentity, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>nodeIdentity</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.BroadcastNodeRegistration.html">BroadcastNodeRegistration</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_GetActiveAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.GetActiveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_GetActiveAsync_System_Collections_Generic_IReadOnlyCollection_System_String__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.GetActiveAsync(System.Collections.Generic.IReadOnlyCollection{System.String},System.Threading.CancellationToken)">
+  GetActiveAsync(IReadOnlyCollection&lt;string&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns one immutable active snapshot for the requested scopes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;BroadcastNodeRegistration&gt;&gt; GetActiveAsync(IReadOnlyCollection&lt;string&gt; scopes, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>scopes</code> <span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.BroadcastNodeRegistration.html">BroadcastNodeRegistration</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_ListAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.ListAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_ListAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.ListAsync(System.Threading.CancellationToken)">
+  ListAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns all registrations for privileged operational inspection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;BroadcastNodeRegistration&gt;&gt; ListAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.BroadcastNodeRegistration.html">BroadcastNodeRegistration</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_RecordDeliveryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.RecordDeliveryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_RecordDeliveryAsync_System_String_System_Boolean_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.RecordDeliveryAsync(System.String,System.Boolean,System.String,System.Threading.CancellationToken)">
+  RecordDeliveryAsync(string, bool, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records a successful or failed direct delivery.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RecordDeliveryAsync(string nodeIdentity, bool succeeded, string failure, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>nodeIdentity</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>succeeded</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+    <dt><code>failure</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_RemoveAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.RemoveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_RemoveAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.RemoveAsync(System.String,System.Threading.CancellationToken)">
+  RemoveAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes one node registration during graceful shutdown or maintenance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RemoveAsync(string nodeIdentity, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>nodeIdentity</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_RenewLeaseAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.RenewLeaseAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_RenewLeaseAsync_System_String_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.RenewLeaseAsync(System.String,System.DateTimeOffset,System.Threading.CancellationToken)">
+  RenewLeaseAsync(string, DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Renews the local registration lease.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RenewLeaseAsync(string nodeIdentity, DateTimeOffset leaseExpiresUtc, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>nodeIdentity</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>leaseExpiresUtc</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_UpsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.UpsertAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBroadcastRegistryStore_UpsertAsync_BridgingIT_DevKit_Common_BroadcastNodeRegistrationRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBroadcastRegistryStore.UpsertAsync(BridgingIT.DevKit.Common.BroadcastNodeRegistrationRequest,System.Threading.CancellationToken)">
+  UpsertAsync(BroadcastNodeRegistrationRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Upserts the complete registration and scope set for one node.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task UpsertAsync(BroadcastNodeRegistrationRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.BroadcastNodeRegistrationRequest.html">BroadcastNodeRegistrationRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

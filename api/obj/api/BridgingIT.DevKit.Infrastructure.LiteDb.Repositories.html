@@ -101,13 +101,28 @@ Classes
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbEntityBulkInserter-1.html">LiteDbEntityBulkInserter&lt;TEntity&gt;</a></dt>
+      <dd><p>Inserts a bounded native batch atomically without implicit entity behaviors.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbEntityIdentity.html">LiteDbEntityIdentity</a></dt>
+      <dd><p>Normalizes the declared entity identity for repository mapping and native allocation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbGenericRepository-1.html">LiteDbGenericRepository&lt;TEntity&gt;</a></dt>
-      <dd><p>Represents lite db generic repository.</p>
+      <dd><p>Provides atomic LiteDB repository writes with scoped transactions, concurrency, and feature capture.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbReadOnlyGenericRepository-1.html">LiteDbReadOnlyGenericRepository&lt;TEntity&gt;</a></dt>
-      <dd><p>Represents lite db read only generic repository.</p>
+      <dd><p>Provides detached LiteDB entity queries using a supplied context or shared database session.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryOperationScope.html">LiteDbRepositoryOperationScope</a></dt>
+      <dd><p>Completes only its own repository transaction and rolls back an abandoned scope.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -118,6 +133,16 @@ Classes
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryOptionsBuilder.html">LiteDbRepositoryOptionsBuilder</a></dt>
       <dd><p>Builds lite db repository options configuration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryStore-1.html">LiteDbRepositoryStore&lt;TEntity&gt;</a></dt>
+      <dd><p>Shares native entity selection and mutation mechanics between LiteDB repository adapters.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.Repositories.LiteDbRepositoryTransaction-1.html">LiteDbRepositoryTransaction&lt;TEntity&gt;</a></dt>
+      <dd><p>Preserves repository transaction ownership across awaited operations in one scoped session.</p>
 </dd>
     </dl>
     <h3 id="interfaces">

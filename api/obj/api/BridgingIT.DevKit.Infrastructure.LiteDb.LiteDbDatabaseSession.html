@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LiteDbDatabaseSession | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LiteDbDatabaseSession | bITdevKit API Reference ">
+      
+      <meta name="description" content="Owns the transaction state shared by LiteDB providers in one dependency injection scope.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession" class="text-break">
+Class LiteDbDatabaseSession  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.html">LiteDb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.LiteDb.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Owns the transaction state shared by LiteDB providers in one dependency injection scope.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class LiteDbDatabaseSession</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">LiteDbDatabaseSession</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_examples">Examples</h2>
+  <pre><code class="lang-csharp">var session = services.GetRequiredKeyedService&lt;LiteDbDatabaseSession&gt;("default");</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Dispose asynchronously to roll back unfinished work. Independent scopes use different sessions. Supplied callbacks may reenter their owning session.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseOwner_System_Func_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Infrastructure_LiteDb_ILiteDbEntityMutationObserver___" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.#ctor(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseOwner,System.Func{System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbEntityMutationObserver}})">
+  LiteDbDatabaseSession(LiteDbDatabaseOwner, Func&lt;IEnumerable&lt;ILiteDbEntityMutationObserver&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Owns the transaction state shared by LiteDB providers in one dependency injection scope.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbDatabaseSession(LiteDbDatabaseOwner owner, Func&lt;IEnumerable&lt;ILiteDbEntityMutationObserver&gt;&gt; observers = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>owner</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseOwner.html">LiteDbDatabaseOwner</a></dt>
+    <dd><p>The named database owner. The session never disposes this shared dependency.</p>
+</dd>
+    <dt><code>observers</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbEntityMutationObserver.html">ILiteDbEntityMutationObserver</a>&gt;&gt;</dt>
+    <dd><p>Lazy mutation observers in the same dependency injection scope.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseOwner_System_Func_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Infrastructure_LiteDb_ILiteDbEntityMutationObserver____examples">Examples</h4>
+  <pre><code class="lang-csharp">var session = services.GetRequiredKeyedService&lt;LiteDbDatabaseSession&gt;("default");</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseOwner_System_Func_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Infrastructure_LiteDb_ILiteDbEntityMutationObserver____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Dispose asynchronously to roll back unfinished work. Independent scopes use different sessions. Supplied callbacks may reenter their owning session.</p>
+</div>
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_CaptureBulkDomainEvents_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.CaptureBulkDomainEvents*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_CaptureBulkDomainEvents" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.CaptureBulkDomainEvents">
+  CaptureBulkDomainEvents
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets whether an explicit bulk outbox decorator has enabled domain-event capture.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CaptureBulkDomainEvents { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_CaptureContext_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.CaptureContext*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_CaptureContext" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.CaptureContext">
+  CaptureContext
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets provenance for an explicitly orchestrated restore in this session.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbMutationCaptureContext CaptureContext { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMutationCaptureContext.html">LiteDbMutationCaptureContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_HasTransaction_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.HasTransaction*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_HasTransaction" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.HasTransaction">
+  HasTransaction
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether this session owns a live explicit transaction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasTransaction { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_Mapper_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.Mapper*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_Mapper" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.Mapper">
+  Mapper
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the database's mapper. Configure it before opening the database and do not mutate it during operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BsonMapper Mapper { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">BsonMapper</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_AbortScopedAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.AbortScopedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_AbortScopedAsync_System_Exception_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.AbortScopedAsync(System.Exception)">
+  AbortScopedAsync(Exception)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Rolls back a failed scoped delegate while preserving logical state for the caller's explicit rollback.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task AbortScopedAsync(Exception exception)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>exception</code> <span class="xref">Exception</span></dt>
+    <dd><p>The original exception. A cleanup failure is attached to its data instead of replacing it.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing rollback and ownership release.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_BeginAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.BeginAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_BeginAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.BeginAsync(System.Threading.CancellationToken)">
+  BeginAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Starts an explicit transaction or joins this session's existing transaction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IDatabaseTransaction&gt; BeginAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels waiting for database ownership or a pending begin command.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IDatabaseTransaction.html">IDatabaseTransaction</a>&gt;</dt>
+    <dd><p>A non-null adapter for executing transaction delegates without automatic commit.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProviderException.html">LiteDbProviderException</a></dt>
+    <dd><p>The session is busy or requires rollback.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_CaptureMutation_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.CaptureMutation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_CaptureMutation__1_LiteDB_LiteDatabase___0_LiteDB_BsonDocument_LiteDB_BsonDocument_System_String_System_String_System_String_System_Nullable_System_Guid__System_Nullable_System_Int32__" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.CaptureMutation``1(LiteDB.LiteDatabase,``0,LiteDB.BsonDocument,LiteDB.BsonDocument,System.String,System.String,System.String,System.Nullable{System.Guid},System.Nullable{System.Int32})">
+  CaptureMutation&lt;TEntity&gt;(LiteDatabase, TEntity, BsonDocument, BsonDocument, string, string, string, Guid?, int?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captures feature data inside the current native write transaction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void CaptureMutation&lt;TEntity&gt;(LiteDatabase database, TEntity entity, BsonDocument before, BsonDocument after, string collection, string operation, string source, Guid? operationId = null, int? affectedEntityCount = null) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>database</code> <span class="xref">LiteDatabase</span></dt>
+    <dd><p>The owned native database.</p>
+</dd>
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The caller entity.</p>
+</dd>
+    <dt><code>before</code> <span class="xref">BsonDocument</span></dt>
+    <dd><p>Stored state before the mutation.</p>
+</dd>
+    <dt><code>after</code> <span class="xref">BsonDocument</span></dt>
+    <dd><p>Stored state after the mutation.</p>
+</dd>
+    <dt><code>collection</code> <span class="xref">string</span></dt>
+    <dd><p>The collection name.</p>
+</dd>
+    <dt><code>operation</code> <span class="xref">string</span></dt>
+    <dd><p>The mutation action.</p>
+</dd>
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd><p>The persistence source.</p>
+</dd>
+    <dt><code>operationId</code> <span class="xref">Guid</span>?</dt>
+    <dd><p>The shared multi-row operation identity.</p>
+</dd>
+    <dt><code>affectedEntityCount</code> <span class="xref">int</span>?</dt>
+    <dd><p>Optional selected set or batch size.</p>
+</dd>
+  </dl>
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The entity type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_CompleteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.CompleteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_CompleteAsync_System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.CompleteAsync(System.Boolean,System.Threading.CancellationToken)">
+  CompleteAsync(bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Commits or rolls back this session's explicit transaction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task CompleteAsync(bool commit, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>commit</code> <span class="xref">bool</span></dt>
+    <dd><p>True to commit, or false to roll back and clear failed state.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Checked before commit. Rollback always performs cleanup even when this token is canceled.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task that completes after native completion and ownership release.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProviderException.html">LiteDbProviderException</a></dt>
+    <dd><p>No transaction exists, the session is busy, or a failed transaction cannot commit.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_DisposeAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.DisposeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_DisposeAsync" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.DisposeAsync">
+  DisposeAsync()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Waits for the current operation and rolls back any unfinished session transaction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask DisposeAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd><p>A task representing session cleanup. The shared database remains open.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_EnsureTransaction_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.EnsureTransaction*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_EnsureTransaction" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.EnsureTransaction">
+  EnsureTransaction()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks that this session has an active transaction that has not failed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void EnsureTransaction()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProviderException.html">LiteDbProviderException</a></dt>
+    <dd><p>The transaction has completed or requires rollback.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_ExecuteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.ExecuteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_ExecuteAsync__1_System_Func_System_Threading_Tasks_Task___0___System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.ExecuteAsync``1(System.Func{System.Threading.Tasks.Task{``0}},System.Boolean,System.Threading.CancellationToken)">
+  ExecuteAsync&lt;T&gt;(Func&lt;Task&lt;T&gt;&gt;, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes a result-producing provider operation under session ownership and commits a standalone write on success.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;T&gt; ExecuteAsync&lt;T&gt;(Func&lt;Task&lt;T&gt;&gt; action, bool write, CancellationToken cancellationToken = default) where T : IResult</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;T&gt;&gt;</dt>
+    <dd><p>The operation, including awaited callbacks. This delegate runs outside the native worker.</p>
+</dd>
+    <dt><code>write</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether to start a native write transaction when no explicit transaction exists.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels admission or pending commands. Rollback ignores this token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;T&gt;</dt>
+    <dd><p>The operation result after required commit or rollback completes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The provider result type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProviderException.html">LiteDbProviderException</a></dt>
+    <dd><p>The session is busy, failed, or cannot complete its native transaction.</p>
+</dd>
+    <dt><span class="xref">OperationCanceledException</span></dt>
+    <dd><p>The operation was canceled. Its native writes are rolled back.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_NativeAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.NativeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_NativeAsync__1_System_Func_LiteDB_LiteDatabase___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.NativeAsync``1(System.Func{LiteDB.LiteDatabase,``0},System.Threading.CancellationToken)">
+  NativeAsync&lt;T&gt;(Func&lt;LiteDatabase, T&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs synchronous native work on the database thread while this session owns its reservation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;T&gt; NativeAsync&lt;T&gt;(Func&lt;LiteDatabase, T&gt; action, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <span class="xref">Func</span>&lt;<span class="xref">LiteDatabase</span>, T&gt;</dt>
+    <dd><p>Native database work. Materialize and close any cursors before returning.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels waiting or work that has not started, without interrupting an executing native call.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;T&gt;</dt>
+    <dd><p>The completed native command result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The command result type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProviderException.html">LiteDbProviderException</a></dt>
+    <dd><p>This session does not own a database reservation.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_OnCommitted_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.OnCommitted*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_OnCommitted_System_Action_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.OnCommitted(System.Action)">
+  OnCommitted(Action)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers a memory-only feature acknowledgement to run after successful native commit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnCommitted(Action acknowledge)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>acknowledge</code> <span class="xref">Action</span></dt>
+    <dd><p>An acknowledgement that must not perform external I/O or fail.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_TrackVersion_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.TrackVersion*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_TrackVersion_BridgingIT_DevKit_Domain_Model_IConcurrency_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.TrackVersion(BridgingIT.DevKit.Domain.Model.IConcurrency)">
+  TrackVersion(IConcurrency)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records a caller entity's current version so rollback can restore it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void TrackVersion(IConcurrency entity)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Domain.Model.IConcurrency.html">IConcurrency</a></dt>
+    <dd><p>The concurrency-aware entity about to change inside this session's write transaction.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

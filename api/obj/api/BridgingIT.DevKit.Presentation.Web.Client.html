@@ -97,7 +97,12 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateBuilder.html">AppStateBuilder</a></dt>
-      <dd><p>Builds configuration for a specific state type within the ManagedState system.</p>
+      <dd><p>Configures persistence, history and identity for one registered AppState type.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateContext.html">AppStateContext</a></dt>
+      <dd><p>Supplies host-established opaque identity and workspace partitions.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -107,22 +112,47 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateDebugger.html">AppStateDebugger</a></dt>
-      <dd><p>Provides debugging capabilities for the managed state system, logging changes to the browser console and in-memory storage.</p>
+      <dd><p>Retains bounded owner-local diagnostic metadata with explicit value projection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateFactory.html">AppStateFactory</a></dt>
+      <dd><p>Creates independent component states using the originating runtime's dependencies.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateHandoff-1.html">AppStateHandoff&lt;TState&gt;</a></dt>
+      <dd><p>Transfers copied model values under a logical instance, context and schema key.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateInstanceInfo.html">AppStateInstanceInfo</a></dt>
+      <dd><p>Describes a live owner-local registration without exposing its values.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateLease-1.html">AppStateLease&lt;TState&gt;</a></dt>
+      <dd><p>Owns one explicitly created state, leaving injected services owned by DI.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateLifecycle.html">AppStateLifecycle</a></dt>
+      <dd><p>Owns an explicit connection between one AppState instance and native Blazor persistence.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateManagementBuilder.html">AppStateManagementBuilder</a></dt>
-      <dd><p>Builds the ManagedState system configuration with a fluent API.</p>
+      <dd><p>Collects state registrations using ordinary DI lifetimes and explicit ownership.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateManagementOptions.html">AppStateManagementOptions</a></dt>
-      <dd><p>Holds the overall configuration options for the ManagedState system.</p>
+      <dd><p>Collects application-wide state configuration without retaining live state.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateManager.html">AppStateManager</a></dt>
-      <dd><p>Manages all registered managed states and provides global operations like resetting all states.</p>
+      <dd><p>Tracks and resets live state belonging only to the originating runtime scope.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -131,8 +161,23 @@ Classes
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateSelectionChange-1.html">AppStateSelectionChange&lt;TSelected&gt;</a></dt>
+      <dd><p>Describes one selected-value transition and its originating version.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateStorageKey.html">AppStateStorageKey</a></dt>
+      <dd><p>Builds unambiguous versioned keys for safe optional preferences.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateSubscription.html">AppStateSubscription</a></dt>
+      <dd><p>Owns a subscription without owning its state or injected services.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppState-1.html">AppState&lt;TState&gt;</a></dt>
-      <dd><p>Abstract base class for managing state with persistence, history, and change notification.</p>
+      <dd><p>Owns typed state, independent snapshots, bounded history, and optional persistence.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -142,7 +187,7 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.CustomStorageStateStoreProvider.html">CustomStorageStateStoreProvider</a></dt>
-      <dd><p>A sample custom state store provider that persists state in memory with user context, serving as a placeholder for server-side implementations.</p>
+      <dd><p>Provides the historical custom-storage example with owner-local copied memory values.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -152,12 +197,12 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.LocalStorageStateStoreProvider.html">LocalStorageStateStoreProvider</a></dt>
-      <dd><p>A state store provider that persists state in the browser's localStorage, surviving page refreshes.</p>
+      <dd><p>Stores explicitly selected safe preferences in browser local storage.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.LocalStorageUserContextProvider.html">LocalStorageUserContextProvider</a></dt>
-      <dd><p>Provides a user context ID stored in memory or optionally in localStorage for user isolation.</p>
+      <dd><p>Provides stable application-qualified anonymous or authenticated preference partitions.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -172,7 +217,7 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.SessionScopedStateStoreProvider.html">SessionScopedStateStoreProvider</a></dt>
-      <dd><p>A state store provider that persists state in memory for the duration of a user session.</p>
+      <dd><p>Stores independent serialized preferences only within the resolving runtime scope.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -185,12 +230,25 @@ Classes
       <dd><p>Represents token response.</p>
 </dd>
     </dl>
+    <h3 id="structs">
+Structs
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateVersion.html">AppStateVersion</a></dt>
+      <dd><p>Identifies one accepted state and context revision in a live instance.</p>
+</dd>
+    </dl>
     <h3 id="interfaces">
 Interfaces
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html">IAppState</a></dt>
       <dd><p>Defines the contract for a managed state instance, providing state management functionality.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.html">IAppStateRuntime</a></dt>
+      <dd><p>Connects managed state to its explicit runtime owner.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -211,6 +269,11 @@ Interfaces
     <h3 id="enums">
 Enums
 </h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStatePersistenceStatus.html">AppStatePersistenceStatus</a></dt>
+      <dd><p>Reports state persistence readiness without implying business-operation success.</p>
+</dd>
+    </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStatePersistenceType.html">AppStatePersistenceType</a></dt>
       <dd><p>Enumerates the possible persistence types for a app state.</p>

@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LiteDbProfilingStorageProvider | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LiteDbProfilingStorageProvider | bITdevKit API Reference ">
+      
+      <meta name="description" content="Persists complete Runtime and Operation graphs, writer ownership, query boundaries, and clear fences.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider" class="text-break">
+Class LiteDbProfilingStorageProvider  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.html">LiteDb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.LiteDb.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Persists complete Runtime and Operation graphs, writer ownership, query boundaries, and clear fences.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class LiteDbProfilingStorageProvider : IProfilingStorageProvider, IOperationProfilingStore</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">LiteDbProfilingStorageProvider</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IProfilingStorageProvider.html">IProfilingStorageProvider</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IOperationProfilingStore.html">IOperationProfilingStore</a></div>
+    </dd>
+  </dl>
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_examples">Examples</h2>
+  <pre><code class="lang-csharp">services.AddProfiling().WithLiteDbProvider();</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_System_String_BridgingIT_DevKit_Common_ProfilingOptions_System_TimeProvider_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.#ctor(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase,System.String,BridgingIT.DevKit.Common.ProfilingOptions,System.TimeProvider)">
+  LiteDbProfilingStorageProvider(LiteDbFeatureDatabase, string, ProfilingOptions, TimeProvider)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates the provider without opening or initializing the native file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbProfilingStorageProvider(LiteDbFeatureDatabase database, string scope, ProfilingOptions options = null, TimeProvider clock = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>database</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.html">LiteDbFeatureDatabase</a></dt>
+    <dd><p>The owned native namespace.</p>
+</dd>
+    <dt><code>scope</code> <span class="xref">string</span></dt>
+    <dd><p>A stable safe identity derived from the registered database file and namespace.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingOptions.html">ProfilingOptions</a></dt>
+    <dd><p>The existing profiling policies and bounds.</p>
+</dd>
+    <dt><code>clock</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The lease, query, and maintenance clock.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_Capabilities_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.Capabilities*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_Capabilities" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.Capabilities">
+  Capabilities
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets explicit backend identity, scope and optional capabilities.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ProfilingProviderCapabilities Capabilities { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingProviderCapabilities.html">ProfilingProviderCapabilities</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_Capabilities_examples">Examples</h4>
+  <pre><code class="lang-csharp">var scope = provider.Capabilities.Scope;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_Operations_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.Operations*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_Operations" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.Operations">
+  Operations
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets operation persistence and queries.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOperationProfilingStore Operations { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IOperationProfilingStore.html">IOperationProfilingStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_Operations_examples">Examples</h4>
+  <pre><code class="lang-csharp">var record = await provider.Operations.FindAsync(id, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_Runtime_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.Runtime*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_Runtime" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.Runtime">
+  Runtime
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the Runtime lifecycle store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IRuntimeProfilingStore Runtime { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRuntimeProfilingStore.html">IRuntimeProfilingStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_Runtime_examples">Examples</h4>
+  <pre><code class="lang-csharp">var sessions = await provider.Runtime.ListSessionsAsync();</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_AcknowledgeClearAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.AcknowledgeClearAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_AcknowledgeClearAsync_BridgingIT_DevKit_Common_ProfilingClearAcknowledgement_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.AcknowledgeClearAsync(BridgingIT.DevKit.Common.ProfilingClearAcknowledgement,System.Threading.CancellationToken)">
+  AcknowledgeClearAsync(ProfilingClearAcknowledgement, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores or returns the original acknowledgement, never widening the clear cutoff.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IResult&lt;ProfilingClearAcknowledgement&gt;&gt; AcknowledgeClearAsync(ProfilingClearAcknowledgement request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingClearAcknowledgement.html">ProfilingClearAcknowledgement</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingClearAcknowledgement.html">ProfilingClearAcknowledgement</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_AcknowledgeClearAsync_BridgingIT_DevKit_Common_ProfilingClearAcknowledgement_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cutoff = await store.AcknowledgeClearAsync(acknowledgement, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_AppendAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.AppendAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_AppendAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_ProfilingWriteEnvelope__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.AppendAsync(System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Common.ProfilingWriteEnvelope},System.Threading.CancellationToken)">
+  AppendAsync(IReadOnlyList&lt;ProfilingWriteEnvelope&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Appends atomic root graphs with original lease, settlement, fences and idempotency checks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IResult&lt;ProfilingBatchWriteResult&gt;&gt; AppendAsync(IReadOnlyList&lt;ProfilingWriteEnvelope&gt; records, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>records</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingWriteEnvelope.html">ProfilingWriteEnvelope</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingBatchWriteResult.html">ProfilingBatchWriteResult</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_AppendAsync_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_ProfilingWriteEnvelope__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var batch = await store.AppendAsync(envelopes, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_ClearAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.ClearAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_ClearAsync_BridgingIT_DevKit_Common_ProfilingClearRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.ClearAsync(BridgingIT.DevKit.Common.ProfilingClearRequest,System.Threading.CancellationToken)">
+  ClearAsync(ProfilingClearRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fences queued and remote late writes before clearing selected complete root graphs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IResult&lt;ProfilingClearResult&gt;&gt; ClearAsync(ProfilingClearRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingClearRequest.html">ProfilingClearRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingClearResult.html">ProfilingClearResult</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_ClearAsync_BridgingIT_DevKit_Common_ProfilingClearRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.ClearAsync(new ProfilingClearRequest(), cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_CloseWriterAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.CloseWriterAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_CloseWriterAsync_BridgingIT_DevKit_Common_ProfilingWriterLease_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.CloseWriterAsync(BridgingIT.DevKit.Common.ProfilingWriterLease,System.Threading.CancellationToken)">
+  CloseWriterAsync(ProfilingWriterLease, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retires an original lease permanently, including after coordination cleanup.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IResult&gt; CloseWriterAsync(ProfilingWriterLease lease, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>lease</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingWriterLease.html">ProfilingWriterLease</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_CloseWriterAsync_BridgingIT_DevKit_Common_ProfilingWriterLease_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await store.CloseWriterAsync(lease, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_FindAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.FindAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_FindAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.FindAsync(System.Guid,System.Threading.CancellationToken)">
+  FindAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Looks up one occurrence independently of list windows or default outcomes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IResult&lt;OperationProfilingRecord&gt;&gt; FindAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingRecord.html">OperationProfilingRecord</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_FindAsync_System_Guid_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var record = await store.FindAsync(id, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_GroupAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.GroupAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_GroupAsync_BridgingIT_DevKit_Common_OperationProfilingQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.GroupAsync(BridgingIT.DevKit.Common.OperationProfilingQuery,System.Threading.CancellationToken)">
+  GroupAsync(OperationProfilingQuery, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Counts and ranks groups in storage before applying a bounded group selection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IResult&lt;OperationProfilingGroupPage&gt;&gt; GroupAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingQuery.html">OperationProfilingQuery</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingGroupPage.html">OperationProfilingGroupPage</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_GroupAsync_BridgingIT_DevKit_Common_OperationProfilingQuery_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var groups = await store.GroupAsync(query, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_OpenWriterAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.OpenWriterAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_OpenWriterAsync_BridgingIT_DevKit_Common_ProfilingOpenWriterRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.OpenWriterAsync(BridgingIT.DevKit.Common.ProfilingOpenWriterRequest,System.Threading.CancellationToken)">
+  OpenWriterAsync(ProfilingOpenWriterRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opens a bounded writer lease idempotently under a stable client attempt ID.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IResult&lt;ProfilingWriterLease&gt;&gt; OpenWriterAsync(ProfilingOpenWriterRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingOpenWriterRequest.html">ProfilingOpenWriterRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingWriterLease.html">ProfilingWriterLease</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_OpenWriterAsync_BridgingIT_DevKit_Common_ProfilingOpenWriterRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var lease = await store.OpenWriterAsync(request, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_QueryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.QueryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_QueryAsync_BridgingIT_DevKit_Common_OperationProfilingQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.QueryAsync(BridgingIT.DevKit.Common.OperationProfilingQuery,System.Threading.CancellationToken)">
+  QueryAsync(OperationProfilingQuery, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filters and pages at a stable published boundary with validated typed predicates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IResult&lt;OperationProfilingPage&gt;&gt; QueryAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingQuery.html">OperationProfilingQuery</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingPage.html">OperationProfilingPage</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_QueryAsync_BridgingIT_DevKit_Common_OperationProfilingQuery_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await store.QueryAsync(query, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_ResumeMaintenanceAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.ResumeMaintenanceAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_ResumeMaintenanceAsync_BridgingIT_DevKit_Common_ProfilingMaintenanceRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.ResumeMaintenanceAsync(BridgingIT.DevKit.Common.ProfilingMaintenanceRequest,System.Threading.CancellationToken)">
+  ResumeMaintenanceAsync(ProfilingMaintenanceRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resumes sealed clears, safe coordination cleanup and bounded retention.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IResult&lt;ProfilingMaintenanceResult&gt;&gt; ResumeMaintenanceAsync(ProfilingMaintenanceRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingMaintenanceRequest.html">ProfilingMaintenanceRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingMaintenanceResult.html">ProfilingMaintenanceResult</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_ResumeMaintenanceAsync_BridgingIT_DevKit_Common_ProfilingMaintenanceRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await provider.ResumeMaintenanceAsync(new ProfilingMaintenanceRequest(), cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_SelectAnalysisAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.SelectAnalysisAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_SelectAnalysisAsync_BridgingIT_DevKit_Common_OperationProfilingQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.SelectAnalysisAsync(BridgingIT.DevKit.Common.OperationProfilingQuery,System.Threading.CancellationToken)">
+  SelectAnalysisAsync(OperationProfilingQuery, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Selects bounded exact analysis inputs; oversized selections fail without silent truncation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IResult&lt;OperationProfilingAnalysisSelection&gt;&gt; SelectAnalysisAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingQuery.html">OperationProfilingQuery</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingAnalysisSelection.html">OperationProfilingAnalysisSelection</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_SelectAnalysisAsync_BridgingIT_DevKit_Common_OperationProfilingQuery_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var records = await store.SelectAnalysisAsync(query, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_SynchronizeWriterAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.SynchronizeWriterAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_SynchronizeWriterAsync_BridgingIT_DevKit_Common_ProfilingWriterSynchronizationRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.SynchronizeWriterAsync(BridgingIT.DevKit.Common.ProfilingWriterSynchronizationRequest,System.Threading.CancellationToken)">
+  SynchronizeWriterAsync(ProfilingWriterSynchronizationRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Renews an unexpired lease and atomically settles non-replayable sequence numbers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IResult&lt;ProfilingWriterSynchronizationResult&gt;&gt; SynchronizeWriterAsync(ProfilingWriterSynchronizationRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingWriterSynchronizationRequest.html">ProfilingWriterSynchronizationRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingWriterSynchronizationResult.html">ProfilingWriterSynchronizationResult</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_SynchronizeWriterAsync_BridgingIT_DevKit_Common_ProfilingWriterSynchronizationRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var state = await store.SynchronizeWriterAsync(request, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_TimelineAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.TimelineAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_TimelineAsync_BridgingIT_DevKit_Common_OperationProfilingQuery_System_Int32_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbProfilingStorageProvider.TimelineAsync(BridgingIT.DevKit.Common.OperationProfilingQuery,System.Int32,System.Threading.CancellationToken)">
+  TimelineAsync(OperationProfilingQuery, int, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Aggregates retained starts into bounded time buckets at one published boundary; does not apply the page or analysis record limit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IResult&lt;OperationProfilingTimeline&gt;&gt; TimelineAsync(OperationProfilingQuery query, int bucketCount = 72, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingQuery.html">OperationProfilingQuery</a></dt>
+    <dd></dd>
+    <dt><code>bucketCount</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingTimeline.html">OperationProfilingTimeline</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbProfilingStorageProvider_TimelineAsync_BridgingIT_DevKit_Common_OperationProfilingQuery_System_Int32_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var timeline = await store.TimelineAsync(query, 72, cancellationToken);</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

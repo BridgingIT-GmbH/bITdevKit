@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
     
     
       
@@ -3876,6 +3876,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-infrastructure-litedb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LiteDB Infrastructure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-startuptasks/" class="md-nav__link">
         
   
@@ -6027,7 +6055,7 @@ contracts for different stores.</p>
 <li><strong>Generic <span class="bdk-feature-name" data-feature-name="repositories"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="repositories" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h26v20H3V8Z M3 8l4-5h18l4 5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14h10v7H11Z M14 24h4" /></g></svg></span>Repository</span> Interface</strong>: <code>IGenericRepository&lt;TEntity&gt;</code> for common CRUD operations</li>
 <li><strong>FindOptions</strong>: A fluent API for building complex queries with filtering, ordering, paging, and includes</li>
 <li><strong>Type-Safe Includes</strong>: <code>IncludeOption&lt;TEntity, TProperty&gt;</code> with <code>ThenInclude</code> support for nested navigation properties</li>
-<li><strong>Multiple Implementations</strong>: Entity Framework, Cosmos DB, LiteDB, and in-memory repositories</li>
+<li><strong>Multiple Implementations</strong>: Entity Framework, Cosmos DB, <a href="../features-infrastructure-litedb/#repositories">LiteDB</a>, and in-memory repositories</li>
 <li><strong>Specification Pattern</strong>: Reusable query specifications for complex business rules</li>
 </ul>
 <p>This page focuses on how repositories consume specifications. For the specification model itself, see <a href="../features-domain-specifications/"><span class="bdk-feature-name" data-feature-name="specifications"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="specifications" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3H7a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V11L19 3Z M19 3v8h8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m10 17 2 2 3-4M18 17h4M10 24h12" /></g></svg></span>Domain</span> Specifications</a>.</p>
@@ -6045,7 +6073,7 @@ contracts for different stores.</p>
 <p><code>IGenericReadOnlyRepository&lt;TEntity&gt;</code> owns query, projection, existence, and count operations.
 <code>IGenericRepository&lt;TEntity&gt;</code> adds insert, update, upsert, delete, and set-based mutation methods.
 <code>FindOptions&lt;TEntity&gt;</code> shapes queries while <code>ISpecification&lt;TEntity&gt;</code> supplies selection criteria.
-Infrastructure implementations translate these contracts to Entity Framework, Cosmos DB, LiteDB,
+Infrastructure implementations translate these contracts to Entity Framework, Cosmos DB, <a href="../features-infrastructure-litedb/#repositories">LiteDB</a>,
 or an in-memory context. <span class="bdk-feature-name" data-feature-name="repositories"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="repositories" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h26v20H3V8Z M3 8l4-5h18l4 5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14h10v7H11Z M14 24h4" /></g></svg></span>Repository</span> and bulk-inserter behaviors add cross-cutting semantics.</p>
 <h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
 <ul>

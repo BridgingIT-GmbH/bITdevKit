@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
     
     
       
@@ -2350,6 +2350,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Stream operations and temporary files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hash-output-as-it-is-written" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hash output as it is written
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -4331,6 +4348,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-infrastructure-litedb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LiteDB Infrastructure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -6538,6 +6583,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Stream operations and temporary files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hash-output-as-it-is-written" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hash output as it is written
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -6949,7 +7011,10 @@
 <li><a href="#hierarchical-operation-admission">Hierarchical operation admission</a></li>
 <li><a href="#fixed-and-transfer-deadlines">Fixed and transfer deadlines</a></li>
 <li><a href="#resource-lifetimes-and-owned-tasks">Resource lifetimes and owned tasks</a></li>
-<li><a href="#stream-operations-and-temporary-files">Stream operations and <span class="bdk-feature-name" data-feature-name="temporary-files"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="temporary-files" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3H5v25h12M19 3v8h8V11L19 3Z" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="23" cy="23" r="7" /><path d="M23 19v4l3 2" /></g></svg></span>temporary</span> files</a></li>
+<li><a href="#stream-operations-and-temporary-files">Stream operations and <span class="bdk-feature-name" data-feature-name="temporary-files"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="temporary-files" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3H5v25h12M19 3v8h8V11L19 3Z" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="23" cy="23" r="7" /><path d="M23 19v4l3 2" /></g></svg></span>temporary</span> files</a><ul>
+<li><a href="#hash-output-as-it-is-written">Hash output as it is written</a></li>
+</ul>
+</li>
 <li><a href="#base64url-encoding">Base64Url encoding</a></li>
 <li><a href="#property-scalar-encoding">Property scalar encoding</a></li>
 <li><a href="#opaque-continuation-tokens">Opaque continuation tokens</a></li>
@@ -8693,6 +8758,10 @@ constructed <code>new HttpClient()</code>.</p>
 <td><code>LimitedWriteStream</code></td>
 <td>Leaves its destination open, counts completed writes, and rejects writes beyond a finite byte limit with <code>StreamSizeLimitExceededException</code>.</td>
 </tr>
+<tr>
+<td><code>IncrementalHashWriteStream</code></td>
+<td>Appends writes to a caller-owned <code>IncrementalHash</code>.</td>
+</tr>
 </tbody>
 </table>
 <p>For a range view, position the source before creating the wrapper. This example copies only <code>REPORT</code> and leaves the source open:</p>
@@ -8724,6 +8793,22 @@ constructed <code>new HttpClient()</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">temporary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TemporaryFileHelper</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">"bdk-export-"</span><span class="p">);</span>
 <span class="k">await</span><span class="w"> </span><span class="n">source</span><span class="p">.</span><span class="n">CopyToAsync</span><span class="p">(</span><span class="n">temporary</span><span class="p">.</span><span class="n">Stream</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
+<h4 id="hash-output-as-it-is-written">Hash output as it is written<a class="headerlink" href="#hash-output-as-it-is-written" title="Permanent link">&para;</a></h4>
+<p>Use <code>IncrementalHashWriteStream</code> when a producer writes to a <code>Stream</code> and you need the digest of its output. The stream appends only the bytes supplied to each write and keeps no copy of the payload. It checks the token supplied at construction on each write and also checks the per-call token on asynchronous writes. Cancellation leaves previously appended bytes in the hash.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">System.Security.Cryptography</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">System.Text.Json</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">hash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IncrementalHash</span><span class="p">.</span><span class="n">CreateHash</span><span class="p">(</span><span class="n">HashAlgorithmName</span><span class="p">.</span><span class="n">SHA256</span><span class="p">);</span>
+<span class="k">using</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">IncrementalHashWriteStream</span><span class="p">(</span><span class="n">hash</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="n">JsonSerializer</span><span class="p">.</span><span class="n">SerializeAsync</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Station</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"North"</span><span class="p">,</span><span class="w"> </span><span class="n">SampleCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">fingerprint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Convert</span><span class="p">.</span><span class="n">ToHexStringLower</span><span class="p">(</span><span class="n">hash</span><span class="p">.</span><span class="n">GetHashAndReset</span><span class="p">());</span>
+</code></pre></div>
+<p>The caller owns and finalizes the hash. Flushing or disposing the stream leaves the hash and its accumulated bytes available. For hashing an existing input, see <a href="#hashhelper">HashHelper</a>.</p>
 <h3 id="base64url-encoding">Base64Url encoding<a class="headerlink" href="#base64url-encoding" title="Permanent link">&para;</a></h3>
 <p><code>Base64UrlHelper</code> converts binary values to canonical unpadded Base64Url text and back. <code>Encode</code> replaces the standard Base64 <code>+</code> and <code>/</code> characters with URL-safe characters and omits padding. <code>Decode</code> accepts only that canonical unpadded representation, rejecting malformed input, standard Base64 padding, and alternate encodings of the same bytes.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">encoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Base64UrlHelper</span><span class="p">.</span><span class="n">Encode</span><span class="p">(</span><span class="s">"payload"</span><span class="n">u8</span><span class="p">);</span>
@@ -8744,6 +8829,7 @@ constructed <code>new HttpClient()</code>.</p>
 </code></pre></div>
 <p>Use a distinct stable purpose for each feature and keep the HMAC secret consistent across application instances that exchange continuation tokens.</p>
 <h3 id="hashhelper"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="hashing" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 8 29M24 3l-4 26" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h25M3 21h25" /></g></svg></span> HashHelper<a class="headerlink" href="#hashhelper" title="Permanent link">&para;</a></h3>
+<p>For producers that write to a stream, use <a href="#hash-output-as-it-is-written"><code>IncrementalHashWriteStream</code></a>.</p>
 <p><code>HashHelper</code> computes lowercase hexadecimal hashes for:</p>
 <ul>
 <li>strings</li>

@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LiteDbStoragePermalinkRegistryProvider | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LiteDbStoragePermalinkRegistryProvider | bITdevKit API Reference ">
+      
+      <meta name="description" content="Persists permalink identities, location ownership, and deletion fences in native transactions.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider" class="text-break">
+Class LiteDbStoragePermalinkRegistryProvider  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.html">LiteDb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.LiteDb.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Persists permalink identities, location ownership, and deletion fences in native transactions.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class LiteDbStoragePermalinkRegistryProvider : IStoragePermalinkRegistryProvider</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">LiteDbStoragePermalinkRegistryProvider</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IStoragePermalinkRegistryProvider.html">IStoragePermalinkRegistryProvider</a></div>
+    </dd>
+  </dl>
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_examples">Examples</h2>
+  <pre><code class="lang-csharp">var provider = services.AddStoragePermalinks().UseLiteDb();</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_System_TimeProvider_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.#ctor(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase,System.TimeProvider)">
+  LiteDbStoragePermalinkRegistryProvider(LiteDbFeatureDatabase, TimeProvider)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Persists permalink identities, location ownership, and deletion fences in native transactions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbStoragePermalinkRegistryProvider(LiteDbFeatureDatabase database, TimeProvider timeProvider = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>database</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.html">LiteDbFeatureDatabase</a></dt>
+    <dd></dd>
+    <dt><code>timeProvider</code> <span class="xref">TimeProvider</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_System_TimeProvider__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = services.AddStoragePermalinks().UseLiteDb();</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_Name_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.Name*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_Name" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.Name">
+  Name
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the provider name used by diagnostics and metrics.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Name { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_DeleteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.DeleteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_DeleteAsync_BridgingIT_DevKit_Application_Storage_StoragePermalinkId_BridgingIT_DevKit_Application_Storage_StoragePermalinkDeleteOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.DeleteAsync(BridgingIT.DevKit.Application.Storage.StoragePermalinkId,BridgingIT.DevKit.Application.Storage.StoragePermalinkDeleteOptions,System.Threading.CancellationToken)">
+  DeleteAsync(StoragePermalinkId, StoragePermalinkDeleteOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tombstones a permalink without deleting its resource.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&gt; DeleteAsync(StoragePermalinkId id, StoragePermalinkDeleteOptions options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkId.html">StoragePermalinkId</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkDeleteOptions.html">StoragePermalinkDeleteOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_DeleteByLocationAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.DeleteByLocationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_DeleteByLocationAsync_BridgingIT_DevKit_Application_Storage_StorageResourceLocation_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.DeleteByLocationAsync(BridgingIT.DevKit.Application.Storage.StorageResourceLocation,System.DateTimeOffset,System.Threading.CancellationToken)">
+  DeleteByLocationAsync(StorageResourceLocation, DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tombstones the active mapping at a location.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&gt; DeleteByLocationAsync(StorageResourceLocation location, DateTimeOffset occurredAt, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>location</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageResourceLocation.html">StorageResourceLocation</a></dt>
+    <dd></dd>
+    <dt><code>occurredAt</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_DeletePrefixAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.DeletePrefixAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_DeletePrefixAsync_BridgingIT_DevKit_Application_Storage_StorageResourceLocation_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.DeletePrefixAsync(BridgingIT.DevKit.Application.Storage.StorageResourceLocation,System.DateTimeOffset,System.Threading.CancellationToken)">
+  DeletePrefixAsync(StorageResourceLocation, DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tombstones every active File Storage mapping below a prefix.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;long&gt;&gt; DeletePrefixAsync(StorageResourceLocation prefix, DateTimeOffset occurredAt, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>prefix</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageResourceLocation.html">StorageResourceLocation</a></dt>
+    <dd></dd>
+    <dt><code>occurredAt</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_GetByIdAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.GetByIdAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_GetByIdAsync_BridgingIT_DevKit_Application_Storage_StoragePermalinkId_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.GetByIdAsync(BridgingIT.DevKit.Application.Storage.StoragePermalinkId,System.Threading.CancellationToken)">
+  GetByIdAsync(StoragePermalinkId, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets one entry by permalink identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;StoragePermalinkEntry&gt;&gt; GetByIdAsync(StoragePermalinkId id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkId.html">StoragePermalinkId</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkEntry.html">StoragePermalinkEntry</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_GetByLocationAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.GetByLocationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_GetByLocationAsync_BridgingIT_DevKit_Application_Storage_StorageResourceLocation_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.GetByLocationAsync(BridgingIT.DevKit.Application.Storage.StorageResourceLocation,System.Threading.CancellationToken)">
+  GetByLocationAsync(StorageResourceLocation, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the active entry at an exact storage location.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;StoragePermalinkEntry&gt;&gt; GetByLocationAsync(StorageResourceLocation location, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>location</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageResourceLocation.html">StorageResourceLocation</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkEntry.html">StoragePermalinkEntry</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_GetOrCreateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.GetOrCreateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_GetOrCreateAsync_BridgingIT_DevKit_Application_Storage_StorageResourceLocation_BridgingIT_DevKit_Application_Storage_StoragePermalinkCreateOptions_System_Nullable_System_DateTimeOffset__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.GetOrCreateAsync(BridgingIT.DevKit.Application.Storage.StorageResourceLocation,BridgingIT.DevKit.Application.Storage.StoragePermalinkCreateOptions,System.Nullable{System.DateTimeOffset},System.Threading.CancellationToken)">
+  GetOrCreateAsync(StorageResourceLocation, StoragePermalinkCreateOptions, DateTimeOffset?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or creates the active entry at a location.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;StoragePermalinkEntry&gt;&gt; GetOrCreateAsync(StorageResourceLocation location, StoragePermalinkCreateOptions options = null, DateTimeOffset? occurredAt = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>location</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageResourceLocation.html">StorageResourceLocation</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkCreateOptions.html">StoragePermalinkCreateOptions</a></dt>
+    <dd></dd>
+    <dt><code>occurredAt</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkEntry.html">StoragePermalinkEntry</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_ListPageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.ListPageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_ListPageAsync_BridgingIT_DevKit_Application_Storage_StoragePermalinkQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.ListPageAsync(BridgingIT.DevKit.Application.Storage.StoragePermalinkQuery,System.Threading.CancellationToken)">
+  ListPageAsync(StoragePermalinkQuery, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists one bounded page for maintenance and dashboard surfaces.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;StoragePermalinkPage&gt;&gt; ListPageAsync(StoragePermalinkQuery query, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkQuery.html">StoragePermalinkQuery</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkPage.html">StoragePermalinkPage</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_MoveAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.MoveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_MoveAsync_BridgingIT_DevKit_Application_Storage_StorageResourceLocation_BridgingIT_DevKit_Application_Storage_StorageResourceLocation_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.MoveAsync(BridgingIT.DevKit.Application.Storage.StorageResourceLocation,BridgingIT.DevKit.Application.Storage.StorageResourceLocation,System.DateTimeOffset,System.Threading.CancellationToken)">
+  MoveAsync(StorageResourceLocation, StorageResourceLocation, DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Moves an active mapping within one configured registration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;StoragePermalinkEntry&gt;&gt; MoveAsync(StorageResourceLocation source, StorageResourceLocation target, DateTimeOffset occurredAt, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageResourceLocation.html">StorageResourceLocation</a></dt>
+    <dd></dd>
+    <dt><code>target</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageResourceLocation.html">StorageResourceLocation</a></dt>
+    <dd></dd>
+    <dt><code>occurredAt</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkEntry.html">StoragePermalinkEntry</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_MovePrefixAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.MovePrefixAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_MovePrefixAsync_BridgingIT_DevKit_Application_Storage_StorageResourceLocation_BridgingIT_DevKit_Application_Storage_StorageResourceLocation_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.MovePrefixAsync(BridgingIT.DevKit.Application.Storage.StorageResourceLocation,BridgingIT.DevKit.Application.Storage.StorageResourceLocation,System.DateTimeOffset,System.Threading.CancellationToken)">
+  MovePrefixAsync(StorageResourceLocation, StorageResourceLocation, DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Moves every active File Storage mapping below a source prefix.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;long&gt;&gt; MovePrefixAsync(StorageResourceLocation sourcePrefix, StorageResourceLocation targetPrefix, DateTimeOffset occurredAt, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>sourcePrefix</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageResourceLocation.html">StorageResourceLocation</a></dt>
+    <dd></dd>
+    <dt><code>targetPrefix</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageResourceLocation.html">StorageResourceLocation</a></dt>
+    <dd></dd>
+    <dt><code>occurredAt</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_UpdateExpirationAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.UpdateExpirationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbStoragePermalinkRegistryProvider_UpdateExpirationAsync_BridgingIT_DevKit_Application_Storage_StoragePermalinkId_BridgingIT_DevKit_Application_Storage_StoragePermalinkExpirationUpdate_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbStoragePermalinkRegistryProvider.UpdateExpirationAsync(BridgingIT.DevKit.Application.Storage.StoragePermalinkId,BridgingIT.DevKit.Application.Storage.StoragePermalinkExpirationUpdate,System.Threading.CancellationToken)">
+  UpdateExpirationAsync(StoragePermalinkId, StoragePermalinkExpirationUpdate, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Replaces or clears expiration for an existing permalink.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;StoragePermalinkEntry&gt;&gt; UpdateExpirationAsync(StoragePermalinkId id, StoragePermalinkExpirationUpdate update, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkId.html">StoragePermalinkId</a></dt>
+    <dd></dd>
+    <dt><code>update</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkExpirationUpdate.html">StoragePermalinkExpirationUpdate</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkEntry.html">StoragePermalinkEntry</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

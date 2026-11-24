@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LiteDbBrokerMessage | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LiteDbBrokerMessage | bITdevKit API Reference ">
+      
+      <meta name="description" content="Represents a durable broker message row stored in native LiteDB persistence.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage" class="text-break">
+Class LiteDbBrokerMessage  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.html">LiteDb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.LiteDb.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a durable broker message row stored in native LiteDB persistence.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class LiteDbBrokerMessage : ILiteDbIndexedRecord</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">LiteDbBrokerMessage</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.ILiteDbIndexedRecord.html">ILiteDbIndexedRecord</a></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>The entity keeps the serialized payload and a JSON-backed collection of handler states so the broker
+can coordinate multi-node leasing and handler-specific retry state without additional tables.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage__ctor" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.#ctor">
+  LiteDbBrokerMessage()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbBrokerMessage()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_ArchivedDate_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.ArchivedDate*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_ArchivedDate" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.ArchivedDate">
+  ArchivedDate
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the timestamp when the message was archived.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset? ArchivedDate { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_Content_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.Content*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_Content" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.Content">
+  Content
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the serialized message payload.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Content { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_ContentHash_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.ContentHash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_ContentHash" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.ContentHash">
+  ContentHash
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the payload hash for diagnostics and integrity checks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ContentHash { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_CreatedDate_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.CreatedDate*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_CreatedDate" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.CreatedDate">
+  CreatedDate
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the timestamp when the message was accepted by the broker transport.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset CreatedDate { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_ExpiresOn_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.ExpiresOn*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_ExpiresOn" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.ExpiresOn">
+  ExpiresOn
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the optional timestamp after which the broker should stop trying to process the message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset? ExpiresOn { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_HandlerStates_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.HandlerStates*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_HandlerStates" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.HandlerStates">
+  HandlerStates
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the strongly typed per-handler execution states.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IList&lt;LiteDbBrokerMessageHandlerState&gt; HandlerStates { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessageHandlerState.html">LiteDbBrokerMessageHandlerState</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_Id_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.Id*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_Id" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.Id">
+  Id
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the primary key for the persisted broker row.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid Id { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_IsArchived_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.IsArchived*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_IsArchived" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.IsArchived">
+  IsArchived
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the message has been moved out of the active working set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsArchived { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_LastError_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.LastError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_LastError" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.LastError">
+  LastError
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the latest aggregate failure summary for the message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string LastError { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_LeaseToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.LeaseToken*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_LeaseToken" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.LeaseToken">
+  LeaseToken
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the unique token fencing this processing claim.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid? LeaseToken { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_LockedBy_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.LockedBy*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_LockedBy" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.LockedBy">
+  LockedBy
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the worker instance identifier that currently owns the lease.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string LockedBy { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_LockedUntil_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.LockedUntil*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_LockedUntil" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.LockedUntil">
+  LockedUntil
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the lease expiration timestamp for this message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset? LockedUntil { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_MessageId_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.MessageId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_MessageId" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.MessageId">
+  MessageId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the logical message identifier copied from <a class="xref" href="BridgingIT.DevKit.Common.IMessage.html#BridgingIT_DevKit_Common_IMessage_MessageId">MessageId</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string MessageId { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_NextAttemptUtc_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.NextAttemptUtc*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_NextAttemptUtc" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.NextAttemptUtc">
+  NextAttemptUtc
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the next retry eligibility time.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset? NextAttemptUtc { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_ProcessedDate_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.ProcessedDate*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_ProcessedDate" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.ProcessedDate">
+  ProcessedDate
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the timestamp when the aggregate message state became terminal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset? ProcessedDate { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_ProcessingFailureCount_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.ProcessingFailureCount*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_ProcessingFailureCount" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.ProcessingFailureCount">
+  ProcessingFailureCount
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets persisted processing failures outside the normal handler outcome pipeline.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int ProcessingFailureCount { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_ProcessingStartedDate_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.ProcessingStartedDate*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_ProcessingStartedDate" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.ProcessingStartedDate">
+  ProcessingStartedDate
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the timestamp when processing began under the current lease.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset? ProcessingStartedDate { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_Properties_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.Properties*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_Properties" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.Properties">
+  Properties
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the strongly typed message properties.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IDictionary&lt;string, object&gt; Properties { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IDictionary</span>&lt;<span class="xref">string</span>, <span class="xref">object</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_Status_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.Status*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_Status" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.Status">
+  Status
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the aggregate processing status derived from the handler-state collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BrokerMessageStatus Status { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Messaging.BrokerMessageStatus.html">BrokerMessageStatus</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_Type_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.Type*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_Type" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.Type">
+  Type
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the persisted CLR type token used to restore the message payload.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Type { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_WaitingForHandler_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.WaitingForHandler*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_WaitingForHandler" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.WaitingForHandler">
+  WaitingForHandler
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets whether publication is awaiting its first handler registration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool WaitingForHandler { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_WriteIndexes_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.WriteIndexes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_WriteIndexes_LiteDB_BsonDocument_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.WriteIndexes(LiteDB.BsonDocument)">
+  WriteIndexes(BsonDocument)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes native scalar selection columns into a stored document.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void WriteIndexes(BsonDocument document)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>document</code> <span class="xref">BsonDocument</span></dt>
+    <dd><p>The document whose identity, key, and payload must be preserved.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

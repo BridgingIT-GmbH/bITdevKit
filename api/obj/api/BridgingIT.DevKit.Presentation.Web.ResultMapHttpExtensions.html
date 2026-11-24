@@ -378,7 +378,7 @@ using a function to generate the location URI.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Executes the map bad request error operation.</p>
+  <div class="markdown level1 summary"><p>Maps a failed result to the requested HTTP 400 response.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -399,14 +399,14 @@ using a function to generate the location URI.</p>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TResult</span></dt>
-    <dd><p>The result of the operation.</p>
+    <dd><p>The declared response with validation details when its type accepts them.</p>
 </dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TResult</code></dt>
-    <dd><p>The result type.</p>
+    <dd><p>The response type. Built-in mappings support <span class="xref">Microsoft.AspNetCore.Http.HttpResults.BadRequest</span>, <code>BadRequest&lt;string&gt;</code>, <code>BadRequest&lt;ProblemDetails&gt;</code>, and <span class="xref">Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult</span>.</p>
 </dd>
   </dl>
 
@@ -416,6 +416,12 @@ using a function to generate the location URI.</p>
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when a registered handler or the built-in mappings cannot provide the requested response type.</p>
+</dd>
+  </dl>
 
 
 
@@ -1437,7 +1443,7 @@ handling success, unauthorized, not found, bad request, validation, conflict, ru
     <dd><p>The type of the bad request HTTP result (e.g., <span class="xref">Microsoft.AspNetCore.Http.HttpResults.BadRequest</span>).</p>
 </dd>
     <dt><code>TProblem</code></dt>
-    <dd><p>The type of the problem HTTP result (e.g., <span class="xref">Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult</span>).</p>
+    <dd><p>The problem response type. Use <span class="xref">Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult</span> for error-specific statuses or <span class="xref">Microsoft.AspNetCore.Http.HttpResults.InternalServerError</span> for HTTP 500.</p>
 </dd>
   </dl>
 
@@ -1534,7 +1540,7 @@ handling success, unauthorized, not found, bad request, validation, conflict, ru
     <dd><p>The type of the bad request HTTP result (e.g., <span class="xref">Microsoft.AspNetCore.Http.HttpResults.BadRequest</span>).</p>
 </dd>
     <dt><code>TProblem</code></dt>
-    <dd><p>The type of the problem HTTP result (e.g., <span class="xref">Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult</span>).</p>
+    <dd><p>The problem response type. Use <span class="xref">Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult</span> for error-specific statuses or <span class="xref">Microsoft.AspNetCore.Http.HttpResults.InternalServerError</span> for HTTP 500.</p>
 </dd>
   </dl>
 
@@ -1628,10 +1634,10 @@ handling success, unauthorized, not found, bad request, validation, conflict, ru
     <dd><p>The type of the unauthorized HTTP result (e.g., <span class="xref">Microsoft.AspNetCore.Http.HttpResults.UnauthorizedHttpResult</span>).</p>
 </dd>
     <dt><code>TBadRequest</code></dt>
-    <dd><p>The type of the bad request HTTP result (e.g., <span class="xref">Microsoft.AspNetCore.Http.HttpResults.BadRequest</span> or <span class="xref">Microsoft.AspNetCore.Http.HttpResults.BadRequest&lt;TValue&gt;</span>).</p>
+    <dd><p>The HTTP 400 type, such as <span class="xref">Microsoft.AspNetCore.Http.HttpResults.BadRequest</span>, <code>BadRequest&lt;string&gt;</code>, or <code>BadRequest&lt;ProblemDetails&gt;</code>.</p>
 </dd>
     <dt><code>TProblem</code></dt>
-    <dd><p>The type of the problem HTTP result (e.g., <span class="xref">Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult</span>).</p>
+    <dd><p>The problem response type. Use <span class="xref">Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult</span> for error-specific statuses or <span class="xref">Microsoft.AspNetCore.Http.HttpResults.InternalServerError</span> for HTTP 500.</p>
 </dd>
     <dt><code>TValue</code></dt>
     <dd><p>The type of the result value, constrained to reference types (class) if used. Defaults to <span class="xref">object</span> for non-generic cases.</p>

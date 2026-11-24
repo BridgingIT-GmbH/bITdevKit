@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class StorageFilterQuery | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class StorageFilterQuery | bITdevKit API Reference ">
+      
+      <meta name="description" content="Normalizes shared FilterModel criteria and continuation state for storage listing.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery" class="text-break">
+Class StorageFilterQuery  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Storage.html">Storage</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Normalizes shared FilterModel criteria and continuation state for storage listing.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class StorageFilterQuery</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">StorageFilterQuery</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_DimensionOperator_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.DimensionOperator*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_DimensionOperator__1_BridgingIT_DevKit_Common_FilterCriteria_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.DimensionOperator``1(BridgingIT.DevKit.Common.FilterCriteria)">
+  DimensionOperator&lt;TOperator&gt;(FilterCriteria)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a supported comparison to the feature's Dimension operator.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TOperator DimensionOperator&lt;TOperator&gt;(FilterCriteria filter) where TOperator : struct, Enum</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterCriteria.html">FilterCriteria</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TOperator</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TOperator</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_Hash_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.Hash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_Hash__1_System_Object_System_Int32_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Storage_StorageFilterOrder__BridgingIT_DevKit_Application_Storage_StorageFilterCriterion___0__System_Func___0_System_String__" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.Hash``1(System.Object,System.Int32,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Storage.StorageFilterOrder},BridgingIT.DevKit.Application.Storage.StorageFilterCriterion{``0},System.Func{``0,System.String})">
+  Hash&lt;TDimension&gt;(object, int, IReadOnlyList&lt;StorageFilterOrder&gt;, StorageFilterCriterion&lt;TDimension&gt;, Func&lt;TDimension, string&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Computes the query identity from normalized scope, page size, order, and typed criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Hash&lt;TDimension&gt;(object scope, int pageSize, IReadOnlyList&lt;StorageFilterOrder&gt; order, StorageFilterCriterion&lt;TDimension&gt; criteria, Func&lt;TDimension, string&gt; canonical) where TDimension : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>scope</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>pageSize</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>order</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageFilterOrder.html">StorageFilterOrder</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>criteria</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageFilterCriterion-1.html">StorageFilterCriterion</a>&lt;TDimension&gt;</dt>
+    <dd></dd>
+    <dt><code>canonical</code> <span class="xref">Func</span>&lt;TDimension, <span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TDimension</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_IsHash_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.IsHash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_IsHash_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.IsHash(System.String)">
+  IsHash(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks that a seek component is a hexadecimal SHA-256 key hash.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsHash(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_IsKey_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.IsKey*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_IsKey_System_String_System_Int32_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.IsKey(System.String,System.Int32)">
+  IsKey(string, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks that a storage key is nonempty and within the provider's length limit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsKey(string value, int maximumLength)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>maximumLength</code> <span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_IsNull_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.IsNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_IsNull_System_Object_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.IsNull(System.Object)">
+  IsNull(object)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Recognizes both CLR and JSON null operands.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsNull(object value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_Order_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.Order*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_Order_BridgingIT_DevKit_Common_FilterModel_System_String___System_String___" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.Order(BridgingIT.DevKit.Common.FilterModel,System.String[],System.String[])">
+  Order(FilterModel, string[], params string[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the complete seek ordering from supported key fields and tie-breakers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;StorageFilterOrder&gt; Order(FilterModel model, string[] fields, params string[] tieBreakers)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>model</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd></dd>
+    <dt><code>fields</code> <span class="xref">string</span>[]</dt>
+    <dd></dd>
+    <dt><code>tieBreakers</code> <span class="xref">string</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageFilterOrder.html">StorageFilterOrder</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_PageSize_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.PageSize*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_PageSize_BridgingIT_DevKit_Common_FilterModel_System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.PageSize(BridgingIT.DevKit.Common.FilterModel,System.Int32,System.Int32)">
+  PageSize(FilterModel, int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates common page options and resolves the effective page size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int PageSize(FilterModel model, int defaultTake, int maxTake)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>model</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd></dd>
+    <dt><code>defaultTake</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>maxTake</code> <span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_Parse_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.Parse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_Parse__1_BridgingIT_DevKit_Common_FilterModel_System_Func_BridgingIT_DevKit_Common_FilterCriteria_BridgingIT_DevKit_Application_Storage_StorageFilterCriterion___0___" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.Parse``1(BridgingIT.DevKit.Common.FilterModel,System.Func{BridgingIT.DevKit.Common.FilterCriteria,BridgingIT.DevKit.Application.Storage.StorageFilterCriterion{``0}})">
+  Parse&lt;TDimension&gt;(FilterModel, Func&lt;FilterCriteria, StorageFilterCriterion&lt;TDimension&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates the criteria tree and combines leaves using the operational FilterModel grouping rules.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static StorageFilterCriterion&lt;TDimension&gt; Parse&lt;TDimension&gt;(FilterModel model, Func&lt;FilterCriteria, StorageFilterCriterion&lt;TDimension&gt;&gt; parseLeaf)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>model</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd></dd>
+    <dt><code>parseLeaf</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.FilterCriteria.html">FilterCriteria</a>, <a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageFilterCriterion-1.html">StorageFilterCriterion</a>&lt;TDimension&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageFilterCriterion-1.html">StorageFilterCriterion</a>&lt;TDimension&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TDimension</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_ReadKey_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.ReadKey*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_ReadKey_BridgingIT_DevKit_Common_FilterCriteria_System_Int32_System_Boolean_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.ReadKey(BridgingIT.DevKit.Common.FilterCriteria,System.Int32,System.Boolean)">
+  ReadKey(FilterCriteria, int, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates a key comparison and reads its string operand.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ReadKey(FilterCriteria filter, int maximumLength, bool supportsPrefix)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterCriteria.html">FilterCriteria</a></dt>
+    <dd></dd>
+    <dt><code>maximumLength</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>supportsPrefix</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_ReadPosition_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.ReadPosition*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_ReadPosition_System_String_System_String_System_String_System_String_System_String_System_String_BridgingIT_DevKit_Common_IContinuationTokenProtector_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.ReadPosition(System.String,System.String,System.String,System.String,System.String,System.String,BridgingIT.DevKit.Common.IContinuationTokenProtector)">
+  ReadPosition(string, string, string, string, string, string, IContinuationTokenProtector)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Verifies token protection and request identity before returning the seek position.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string[] ReadPosition(string token, string purpose, string provider, string client, string type, string hash, IContinuationTokenProtector protector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>token</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>purpose</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>provider</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>client</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>hash</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>protector</code> <a class="xref" href="BridgingIT.DevKit.Common.IContinuationTokenProtector.html">IContinuationTokenProtector</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_WrapPosition_" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.WrapPosition*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_StorageFilterQuery_WrapPosition_System_String_System_String_System_String_System_String_System_String_System_String_BridgingIT_DevKit_Common_IContinuationTokenProtector_System_Func_System_String___System_Boolean__" data-uid="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.WrapPosition(System.String,System.String,System.String,System.String,System.String,System.String,BridgingIT.DevKit.Common.IContinuationTokenProtector,System.Func{System.String[],System.Boolean})">
+  WrapPosition(string, string, string, string, string, string, IContinuationTokenProtector, Func&lt;string[], bool&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Wraps a provider seek position in a public token bound to the current filter query.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;string&gt; WrapPosition(string position, string purpose, string provider, string client, string type, string hash, IContinuationTokenProtector protector, Func&lt;string[], bool&gt; isValidPosition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>position</code> <span class="xref">string</span></dt>
+    <dd><p>The provider's JSON string array in seek order, or null on the final page.</p>
+</dd>
+    <dt><code>purpose</code> <span class="xref">string</span></dt>
+    <dd><p>The continuation token purpose.</p>
+</dd>
+    <dt><code>provider</code> <span class="xref">string</span></dt>
+    <dd><p>The provider identity bound to the token.</p>
+</dd>
+    <dt><code>client</code> <span class="xref">string</span></dt>
+    <dd><p>The client identity bound to the token.</p>
+</dd>
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd><p>The document type, or null for a blob query.</p>
+</dd>
+    <dt><code>hash</code> <span class="xref">string</span></dt>
+    <dd><p>The normalized query hash.</p>
+</dd>
+    <dt><code>protector</code> <a class="xref" href="BridgingIT.DevKit.Common.IContinuationTokenProtector.html">IContinuationTokenProtector</a></dt>
+    <dd><p>The optional continuation token protector.</p>
+</dd>
+    <dt><code>isValidPosition</code> <span class="xref">Func</span>&lt;<span class="xref">string</span>[], <span class="xref">bool</span>&gt;</dt>
+    <dd><p>Validates the decoded seek tuple for the storage feature.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>The public token, null on the final page, or a failure for a malformed provider position.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

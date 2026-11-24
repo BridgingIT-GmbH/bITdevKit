@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IAppStateRuntime | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IAppStateRuntime | bITdevKit API Reference ">
+      
+      <meta name="description" content="Connects managed state to its explicit runtime owner.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime">
+
+
+
+  <h1 id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime" data-uid="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime" class="text-break">
+Interface IAppStateRuntime  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.html">Web</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.html">Client</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.Client.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Connects managed state to its explicit runtime owner.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IAppStateRuntime : IAppState</code></pre>
+  </div>
+
+
+
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html#BridgingIT_DevKit_Presentation_Web_Client_IAppState_Save">IAppState.Save()</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html#BridgingIT_DevKit_Presentation_Web_Client_IAppState_Save_System_Threading_CancellationToken_">IAppState.Save(CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html#BridgingIT_DevKit_Presentation_Web_Client_IAppState_Load">IAppState.Load()</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html#BridgingIT_DevKit_Presentation_Web_Client_IAppState_Load_System_Threading_CancellationToken_">IAppState.Load(CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html#BridgingIT_DevKit_Presentation_Web_Client_IAppState_Undo">IAppState.Undo()</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html#BridgingIT_DevKit_Presentation_Web_Client_IAppState_Redo">IAppState.Redo()</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html#BridgingIT_DevKit_Presentation_Web_Client_IAppState_Reset">IAppState.Reset()</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html#BridgingIT_DevKit_Presentation_Web_Client_IAppState_Reset_System_Threading_CancellationToken_">IAppState.Reset(CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html#BridgingIT_DevKit_Presentation_Web_Client_IAppState_StateId">IAppState.StateId</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html#BridgingIT_DevKit_Presentation_Web_Client_IAppState_CurrentState">IAppState.CurrentState</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html#BridgingIT_DevKit_Presentation_Web_Client_IAppState_CanUndo">IAppState.CanUndo</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html#BridgingIT_DevKit_Presentation_Web_Client_IAppState_CanRedo">IAppState.CanRedo</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html#BridgingIT_DevKit_Presentation_Web_Client_IAppState_StateChanged">IAppState.StateChanged</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.IAppState.html#BridgingIT_DevKit_Presentation_Web_Client_IAppState_StateChangeWithMetadata">IAppState.StateChangeWithMetadata</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_examples">Examples</h2>
+  <pre><code class="lang-csharp">IAppStateRuntime runtime = state;
+var version = runtime.Version;
+Debug.Assert(version.InstanceId == runtime.InstanceId);</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Ordinary consumers use the state or a factory lease. Custom implementations can opt into owner lifecycle integration.</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_InstanceId_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.InstanceId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_InstanceId" data-uid="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.InstanceId">
+  InstanceId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the stable identity of this live instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Guid InstanceId { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_PersistenceIdentity_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.PersistenceIdentity*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_PersistenceIdentity" data-uid="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.PersistenceIdentity">
+  PersistenceIdentity
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the local identity used to reject competing active persisted registrations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string PersistenceIdentity { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_PersistenceStatus_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.PersistenceStatus*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_PersistenceStatus" data-uid="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.PersistenceStatus">
+  PersistenceStatus
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the persistence status of this owner.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">AppStatePersistenceStatus PersistenceStatus { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStatePersistenceStatus.html">AppStatePersistenceStatus</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_Version_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.Version*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_Version" data-uid="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.Version">
+  Version
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the current edit and context revisions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">AppStateVersion Version { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateVersion.html">AppStateVersion</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_AttachOwner_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.AttachOwner*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_AttachOwner_BridgingIT_DevKit_Presentation_Web_Client_AppStateManager_System_TimeProvider_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.AttachOwner(BridgingIT.DevKit.Presentation.Web.Client.AppStateManager,System.TimeProvider)">
+  AttachOwner(AppStateManager, TimeProvider)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attaches runtime services without transferring dependency ownership.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void AttachOwner(AppStateManager owner, TimeProvider timeProvider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>owner</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateManager.html">AppStateManager</a></dt>
+    <dd><p>The originating scoped manager.</p>
+</dd>
+    <dt><code>timeProvider</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The clock used for owned delays.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_AttachOwner_BridgingIT_DevKit_Presentation_Web_Client_AppStateManager_System_TimeProvider__examples">Examples</h4>
+  <pre><code class="lang-csharp">using var owned = new CatalogViewState(NullLogger&lt;CatalogViewState&gt;.Instance, new AppStateOptions());
+IAppStateRuntime runtime = owned;
+runtime.AttachOwner(manager, TimeProvider.System);
+manager.RegisterState(owned);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_ChangeContext_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.ChangeContext*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_ChangeContext_BridgingIT_DevKit_Presentation_Web_Client_AppStateContext_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.IAppStateRuntime.ChangeContext(BridgingIT.DevKit.Presentation.Web.Client.AppStateContext)">
+  ChangeContext(AppStateContext)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Invalidates old values before returning the asynchronous cleanup task.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task ChangeContext(AppStateContext context)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateContext.html">AppStateContext</a></dt>
+    <dd><p>The accepted host context.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>Cleanup of the old captured storage partition.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_ChangeContext_BridgingIT_DevKit_Presentation_Web_Client_AppStateContext__examples">Examples</h4>
+  <pre><code class="lang-csharp">await using var owned = new CatalogViewState(NullLogger&lt;CatalogViewState&gt;.Instance, new AppStateOptions());
+IAppStateRuntime runtime = owned;
+await runtime.ChangeContext(new AppStateContext(confirmedPrincipalKey, confirmedWorkspaceKey));</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_IAppStateRuntime_ChangeContext_BridgingIT_DevKit_Presentation_Web_Client_AppStateContext__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>For attached states, the manager supplies its accepted context instance. Superseded owner calls are ignored.
+Standalone states may change context directly.</p>
+</div>
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

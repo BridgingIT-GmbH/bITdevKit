@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LiteDbMessageBroker | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LiteDbMessageBroker | bITdevKit API Reference ">
+      
+      <meta name="description" content="Implements durable native message publication, fan-out progress, claims, and operational queries.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker" class="text-break">
+Class LiteDbMessageBroker  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.html">LiteDb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.LiteDb.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Implements durable native message publication, fan-out progress, claims, and operational queries.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class LiteDbMessageBroker : MessageBrokerBase, IMessageBrokerRuntime, IMessageBroker, IMessageBrokerService</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Messaging.MessageBrokerBase.html">MessageBrokerBase</a></div>
+      <div><span class="xref">LiteDbMessageBroker</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Messaging.IMessageBrokerRuntime.html">IMessageBrokerRuntime</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IMessageBroker.html">IMessageBroker</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Messaging.IMessageBrokerService.html">IMessageBrokerService</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Messaging.MessageBrokerBase.html#BridgingIT_DevKit_Application_Messaging_MessageBrokerBase_Subscribe__2">MessageBrokerBase.Subscribe&lt;TMessage, THandler&gt;()</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Messaging.MessageBrokerBase.html#BridgingIT_DevKit_Application_Messaging_MessageBrokerBase_Subscribe_System_Type_System_Type_">MessageBrokerBase.Subscribe(Type, Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Messaging.MessageBrokerBase.html#BridgingIT_DevKit_Application_Messaging_MessageBrokerBase_Unsubscribe__2">MessageBrokerBase.Unsubscribe&lt;TMessage, THandler&gt;()</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Messaging.MessageBrokerBase.html#BridgingIT_DevKit_Application_Messaging_MessageBrokerBase_Unsubscribe_System_Type_System_Type_">MessageBrokerBase.Unsubscribe(Type, Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Messaging.MessageBrokerBase.html#BridgingIT_DevKit_Application_Messaging_MessageBrokerBase_Unsubscribe">MessageBrokerBase.Unsubscribe()</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Messaging.MessageBrokerBase.html#BridgingIT_DevKit_Application_Messaging_MessageBrokerBase_Publish_BridgingIT_DevKit_Common_IMessage_System_Threading_CancellationToken_">MessageBrokerBase.Publish(IMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Messaging.MessageBrokerBase.html#BridgingIT_DevKit_Application_Messaging_MessageBrokerBase_Process_BridgingIT_DevKit_Application_Messaging_MessageRequest_">MessageBrokerBase.Process(MessageRequest)</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBrokerOptions_System_TimeProvider_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.#ctor(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase,BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBrokerOptions,System.TimeProvider)">
+  LiteDbMessageBroker(LiteDbFeatureDatabase, LiteDbMessageBrokerOptions, TimeProvider)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a native durable broker using existing publisher and handler behaviors.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbMessageBroker(LiteDbFeatureDatabase database, LiteDbMessageBrokerOptions options, TimeProvider clock = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>database</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.html">LiteDbFeatureDatabase</a></dt>
+    <dd><p>The messaging database and declared collections.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBrokerOptions.html">LiteDbMessageBrokerOptions</a></dt>
+    <dd><p>The frozen delivery settings and handler factory.</p>
+</dd>
+    <dt><code>clock</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The lease, expiry, and retry clock.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_ArchiveMessageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.ArchiveMessageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_ArchiveMessageAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.ArchiveMessageAsync(System.Guid,System.Threading.CancellationToken)">
+  ArchiveMessageAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Marks a terminal broker message as archived.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ArchiveMessageAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The broker message primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_CaptureAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.CaptureAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_CaptureAsync_BridgingIT_DevKit_Common_IMessage_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_System_IServiceProvider_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.CaptureAsync(BridgingIT.DevKit.Common.IMessage,BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession,System.IServiceProvider,System.Threading.CancellationToken)">
+  CaptureAsync(IMessage, LiteDbDatabaseSession, IServiceProvider, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captures a publication inside the caller's explicit entity transaction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task CaptureAsync(IMessage message, LiteDbDatabaseSession session, IServiceProvider services, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <a class="xref" href="BridgingIT.DevKit.Common.IMessage.html">IMessage</a></dt>
+    <dd><p>The validated message to capture.</p>
+</dd>
+    <dt><code>session</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.html">LiteDbDatabaseSession</a></dt>
+    <dd><p>The caller's database session.</p>
+</dd>
+    <dt><code>services</code> <span class="xref">IServiceProvider</span></dt>
+    <dd><p>The caller's scoped services.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels capture.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>The native capture task.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_GetMessageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.GetMessageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_GetMessageAsync_System_Guid_System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.GetMessageAsync(System.Guid,System.Boolean,System.Threading.CancellationToken)">
+  GetMessageAsync(Guid, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves a single broker message by its primary key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;BrokerMessageInfo&gt; GetMessageAsync(Guid id, bool includeHandlers = true, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The broker message primary key.</p>
+</dd>
+    <dt><code>includeHandlers</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether handler details should be included.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Messaging.BrokerMessageInfo.html">BrokerMessageInfo</a>&gt;</dt>
+    <dd><p>The broker message details, or <code>null</code> if not found.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_GetMessageContentAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.GetMessageContentAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_GetMessageContentAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.GetMessageContentAsync(System.Guid,System.Threading.CancellationToken)">
+  GetMessageContentAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the stored serialized content for a single broker message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;BrokerMessageContentInfo&gt; GetMessageContentAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The broker message primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Messaging.BrokerMessageContentInfo.html">BrokerMessageContentInfo</a>&gt;</dt>
+    <dd><p>The stored message content details, or <code>null</code> if not found.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_GetMessageStatsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.GetMessageStatsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_GetMessageStatsAsync_System_Nullable_System_DateTimeOffset__System_Nullable_System_DateTimeOffset__System_Nullable_System_Boolean__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.GetMessageStatsAsync(System.Nullable{System.DateTimeOffset},System.Nullable{System.DateTimeOffset},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+  GetMessageStatsAsync(DateTimeOffset?, DateTimeOffset?, bool?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves aggregate broker message statistics.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;BrokerMessageStats&gt; GetMessageStatsAsync(DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, bool? isArchived = false, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>startDate</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional lower processed/created date filter.</p>
+</dd>
+    <dt><code>endDate</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional upper processed/created date filter.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional archive-state filter.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Messaging.BrokerMessageStats.html">BrokerMessageStats</a>&gt;</dt>
+    <dd><p>The aggregated broker message statistics.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_GetMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.GetMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_GetMessagesAsync_System_Nullable_BridgingIT_DevKit_Application_Messaging_BrokerMessageStatus__System_String_System_String_System_String_System_Nullable_System_Boolean__System_Nullable_System_DateTimeOffset__System_Nullable_System_DateTimeOffset__System_Boolean_System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.GetMessagesAsync(System.Nullable{BridgingIT.DevKit.Application.Messaging.BrokerMessageStatus},System.String,System.String,System.String,System.Nullable{System.Boolean},System.Nullable{System.DateTimeOffset},System.Nullable{System.DateTimeOffset},System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+  GetMessagesAsync(BrokerMessageStatus?, string, string, string, bool?, DateTimeOffset?, DateTimeOffset?, bool, int?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves broker messages with optional filters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;BrokerMessageInfo&gt;&gt; GetMessagesAsync(BrokerMessageStatus? status = null, string type = null, string messageId = null, string lockedBy = null, bool? isArchived = false, DateTimeOffset? createdAfter = null, DateTimeOffset? createdBefore = null, bool includeHandlers = false, int? take = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>status</code> <a class="xref" href="BridgingIT.DevKit.Application.Messaging.BrokerMessageStatus.html">BrokerMessageStatus</a>?</dt>
+    <dd><p>Optional aggregate status filter.</p>
+</dd>
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd><p>Optional message type filter.</p>
+</dd>
+    <dt><code>messageId</code> <span class="xref">string</span></dt>
+    <dd><p>Optional logical message identifier filter.</p>
+</dd>
+    <dt><code>lockedBy</code> <span class="xref">string</span></dt>
+    <dd><p>Optional lease owner filter.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional archive-state filter. Defaults to <code>false</code>.</p>
+</dd>
+    <dt><code>createdAfter</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional lower creation-date filter.</p>
+</dd>
+    <dt><code>createdBefore</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional upper creation-date filter.</p>
+</dd>
+    <dt><code>includeHandlers</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether handler details should be included.</p>
+</dd>
+    <dt><code>take</code> <span class="xref">int</span>?</dt>
+    <dd><p>Optional limit for the number of results.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Messaging.BrokerMessageInfo.html">BrokerMessageInfo</a>&gt;&gt;</dt>
+    <dd><p>A collection of broker message summaries.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_GetSubscriptionsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.GetSubscriptionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_GetSubscriptionsAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.GetSubscriptionsAsync(System.Threading.CancellationToken)">
+  GetSubscriptionsAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the currently active message subscriptions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;BrokerMessageSubscriptionInfo&gt;&gt; GetSubscriptionsAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Messaging.BrokerMessageSubscriptionInfo.html">BrokerMessageSubscriptionInfo</a>&gt;&gt;</dt>
+    <dd><p>A collection of registered message subscription info.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_GetSummaryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.GetSummaryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_GetSummaryAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.GetSummaryAsync(System.Threading.CancellationToken)">
+  GetSummaryAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves a summary of broker runtime state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;BrokerMessageBrokerSummary&gt; GetSummaryAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Messaging.BrokerMessageBrokerSummary.html">BrokerMessageBrokerSummary</a>&gt;</dt>
+    <dd><p>The broker summary including counts, paused types, and capabilities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_GetWaitingMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.GetWaitingMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_GetWaitingMessagesAsync_System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.GetWaitingMessagesAsync(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+  GetWaitingMessagesAsync(int?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets messages that are waiting because no compatible handler was registered at publish time.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;BrokerMessageInfo&gt;&gt; GetWaitingMessagesAsync(int? take = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>take</code> <span class="xref">int</span>?</dt>
+    <dd><p>Optional limit for the number of results.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Messaging.BrokerMessageInfo.html">BrokerMessageInfo</a>&gt;&gt;</dt>
+    <dd><p>A collection of waiting broker messages.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_OnPublish_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.OnPublish*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_OnPublish_BridgingIT_DevKit_Common_IMessage_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.OnPublish(BridgingIT.DevKit.Common.IMessage,System.Threading.CancellationToken)">
+  OnPublish(IMessage, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Allows derived brokers to implement transport-specific publish behavior.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override Task OnPublish(IMessage message, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <a class="xref" href="BridgingIT.DevKit.Common.IMessage.html">IMessage</a></dt>
+    <dd><p>The message being published.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token for the publish operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task that completes when the transport has accepted the message.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_OnSubscribe_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.OnSubscribe*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_OnSubscribe_System_Type_System_Type_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.OnSubscribe(System.Type,System.Type)">
+  OnSubscribe(Type, Type)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Allows derived brokers to react when a subscription is added.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override Task OnSubscribe(Type messageType, Type handlerType)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>messageType</code> <span class="xref">Type</span></dt>
+    <dd><p>The subscribed message type.</p>
+</dd>
+    <dt><code>handlerType</code> <span class="xref">Type</span></dt>
+    <dd><p>The subscribed handler type.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task that completes when subscription side effects are done.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_OnSubscribe_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.OnSubscribe*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_OnSubscribe__2" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.OnSubscribe``2">
+  OnSubscribe&lt;TMessage, THandler&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Allows derived brokers to react when a typed subscription is added.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override Task OnSubscribe&lt;TMessage, THandler&gt;() where TMessage : IMessage where THandler : IMessageHandler&lt;TMessage&gt;</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task that completes when subscription side effects are done.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TMessage</code></dt>
+    <dd><p>The message type being subscribed.</p>
+</dd>
+    <dt><code>THandler</code></dt>
+    <dd><p>The handler type being subscribed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_PauseMessageTypeAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.PauseMessageTypeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_PauseMessageTypeAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.PauseMessageTypeAsync(System.String,System.Threading.CancellationToken)">
+  PauseMessageTypeAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Pauses processing for the specified message type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task PauseMessageTypeAsync(string type, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd><p>The message type identifier (assembly-qualified short name as stored in BrokerMessage.Type).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_ProcessPendingAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.ProcessPendingAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_ProcessPendingAsync_System_Threading_CancellationToken_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.ProcessPendingAsync(System.Threading.CancellationToken,System.String)">
+  ProcessPendingAsync(CancellationToken, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Claims a bounded batch and delivers each message outside its native transaction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ProcessPendingAsync(CancellationToken cancellationToken = default, string messageId = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels acquisition and external delivery.</p>
+</dd>
+    <dt><code>messageId</code> <span class="xref">string</span></dt>
+    <dd><p>An optional exact logical message identity.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>The completed batch task.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_ProcessStoredMessageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.ProcessStoredMessageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_ProcessStoredMessageAsync_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbBrokerMessage_System_Threading_CancellationToken_System_Func_System_Threading_Tasks_Task__" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.ProcessStoredMessageAsync(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage,System.Threading.CancellationToken,System.Func{System.Threading.Tasks.Task})">
+  ProcessStoredMessageAsync(LiteDbBrokerMessage, CancellationToken, Func&lt;Task&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Processes a persisted broker row and updates its handler states.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ProcessStoredMessageAsync(LiteDbBrokerMessage brokerMessage, CancellationToken cancellationToken = default, Func&lt;Task&gt; persistProgress = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>brokerMessage</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbBrokerMessage.html">LiteDbBrokerMessage</a></dt>
+    <dd><p>The broker message row to process.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+    <dt><code>persistProgress</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</dt>
+    <dd><p>Fenced persistence after each completed handler.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task that completes when processing and state mutation are done.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_PurgeMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.PurgeMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_PurgeMessagesAsync_System_Nullable_System_DateTimeOffset__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Messaging_BrokerMessageStatus__System_Nullable_System_Boolean__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.PurgeMessagesAsync(System.Nullable{System.DateTimeOffset},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Messaging.BrokerMessageStatus},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+  PurgeMessagesAsync(DateTimeOffset?, IEnumerable&lt;BrokerMessageStatus&gt;, bool?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes persisted broker messages matching the supplied filters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task PurgeMessagesAsync(DateTimeOffset? olderThan = null, IEnumerable&lt;BrokerMessageStatus&gt; statuses = null, bool? isArchived = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>olderThan</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional upper age filter.</p>
+</dd>
+    <dt><code>statuses</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Messaging.BrokerMessageStatus.html">BrokerMessageStatus</a>&gt;</dt>
+    <dd><p>Optional status filter.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional archive-state filter.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_RegisterOutboxHandler_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.RegisterOutboxHandler*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_RegisterOutboxHandler__2" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.RegisterOutboxHandler``2">
+  RegisterOutboxHandler&lt;TMessage, THandler&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Installs a fixed outbox forwarding subscription before the private broker accepts its first message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RegisterOutboxHandler&lt;TMessage, THandler&gt;() where TMessage : IMessage where THandler : IMessageHandler&lt;TMessage&gt;</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TMessage</code></dt>
+    <dd><p>The private durable envelope type.</p>
+</dd>
+    <dt><code>THandler</code></dt>
+    <dd><p>The forwarding handler type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_ReleaseLeaseAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.ReleaseLeaseAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_ReleaseLeaseAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.ReleaseLeaseAsync(System.Guid,System.Threading.CancellationToken)">
+  ReleaseLeaseAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases the current lease for a broker message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ReleaseLeaseAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The broker message primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_ResumeMessageTypeAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.ResumeMessageTypeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_ResumeMessageTypeAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.ResumeMessageTypeAsync(System.String,System.Threading.CancellationToken)">
+  ResumeMessageTypeAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resumes processing for the specified message type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ResumeMessageTypeAsync(string type, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd><p>The message type identifier (assembly-qualified short name as stored in BrokerMessage.Type).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_RetryMessageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.RetryMessageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_RetryMessageAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.RetryMessageAsync(System.Guid,System.Threading.CancellationToken)">
+  RetryMessageAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resets a broker message so retryable handler work can be processed again.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RetryMessageAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The broker message primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_RetryMessageHandlerAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.RetryMessageHandlerAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_RetryMessageHandlerAsync_System_Guid_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.RetryMessageHandlerAsync(System.Guid,System.String,System.Threading.CancellationToken)">
+  RetryMessageHandlerAsync(Guid, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resets a single handler entry for retry.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RetryMessageHandlerAsync(Guid id, string handlerType, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The broker message primary key.</p>
+</dd>
+    <dt><code>handlerType</code> <span class="xref">string</span></dt>
+    <dd><p>The fully qualified handler type to reset.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_SearchMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.SearchMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_SearchMessagesAsync_BridgingIT_DevKit_Common_FilterModel_System_Nullable_System_Boolean__System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbMessageBroker.SearchMessagesAsync(BridgingIT.DevKit.Common.FilterModel,System.Nullable{System.Boolean},System.Boolean,System.Threading.CancellationToken)">
+  SearchMessagesAsync(FilterModel, bool?, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Searches persisted messages by scalar operational fields, ordering and paging.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;BrokerMessageInfo&gt;&gt; SearchMessagesAsync(FilterModel filter, bool? isArchived = false, bool includeHandlers = false, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd><p>The filter model. Paging defaults to page 1 and 50 entries, with a maximum of 1000.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>The archive scope. Use null to search both active and archived entries.</p>
+</dd>
+    <dt><code>includeHandlers</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether to return handler details.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Messaging.BrokerMessageInfo.html">BrokerMessageInfo</a>&gt;&gt;</dt>
+    <dd><p>The matching page and total count before paging.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbMessageBroker_SearchMessagesAsync_BridgingIT_DevKit_Common_FilterModel_System_Nullable_System_Boolean__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await service.SearchMessagesAsync(new FilterModel { Page = 2, PageSize = 25 });</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

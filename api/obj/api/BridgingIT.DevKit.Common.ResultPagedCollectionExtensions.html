@@ -1445,7 +1445,8 @@ var allEmployees = await departmentTasks.FlattenItemsAsync(ProcessingOptions.Def
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Flattens a collection of paged Result collections into a single paged Result collection.</p>
+  <div class="markdown level1 summary"><p>Flattens a collection of paged Result collections into a single paged Result collection.
+Returns a failure when the combined total exceeds <span class="xref">long.MaxValue</span>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

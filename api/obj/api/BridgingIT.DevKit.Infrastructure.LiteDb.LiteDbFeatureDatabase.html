@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LiteDbFeatureDatabase | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LiteDbFeatureDatabase | bITdevKit API Reference ">
+      
+      <meta name="description" content="Executes bounded synchronous durable-record commands inside the named database&#39;s owned native transaction.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase" class="text-break">
+Class LiteDbFeatureDatabase  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.html">LiteDb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.LiteDb.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Executes bounded synchronous durable-record commands inside the named database's owned native transaction.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class LiteDbFeatureDatabase</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">LiteDbFeatureDatabase</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase__ctor_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureOptions_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.#ctor(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory,BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureOptions)">
+  LiteDbFeatureDatabase(IServiceScopeFactory, LiteDbFeatureOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes bounded synchronous durable-record commands inside the named database's owned native transaction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbFeatureDatabase(IServiceScopeFactory scopes, LiteDbFeatureOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>scopes</code> <span class="xref">IServiceScopeFactory</span></dt>
+    <dd><p>The root scope factory for independent feature operations.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureOptions.html">LiteDbFeatureOptions</a></dt>
+    <dd><p>Frozen feature namespace and materialization settings.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Options_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Options*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Options" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Options">
+  Options
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the frozen feature settings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbFeatureOptions Options { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureOptions.html">LiteDbFeatureOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Services_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Services*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Services" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Services">
+  Services
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the service provider of the current command scope for scoped actor accessors.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IServiceProvider Services { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IServiceProvider</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Collection_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Collection*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Collection__2_System_String_System_Boolean_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Collection``2(System.String,System.Boolean)">
+  Collection&lt;TKey, TValue&gt;(string, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a typed command-bound view over one feature collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbKeyedCollection&lt;TKey, TValue&gt; Collection&lt;TKey, TValue&gt;(string suffix, bool ignoreCase = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>suffix</code> <span class="xref">string</span></dt>
+    <dd><p>The collection suffix declared during registration.</p>
+</dd>
+    <dt><code>ignoreCase</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether string keys use ordinal case-insensitive lookup.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbKeyedCollection-2.html">LiteDbKeyedCollection</a>&lt;TKey, TValue&gt;</dt>
+    <dd><p>A view that can only be accessed within ExecuteAsync.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TKey</code></dt>
+    <dd><p>The stable record key type.</p>
+</dd>
+    <dt><code>TValue</code></dt>
+    <dd><p>The stored record type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_ExecuteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.ExecuteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_ExecuteAsync_System_Func_System_Threading_Tasks_Task__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.ExecuteAsync(System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+  ExecuteAsync(Func&lt;Task&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs a completed-task command and commits its record mutations atomically.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ExecuteAsync(Func&lt;Task&gt; action, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</dt>
+    <dd><p>Synchronous native record operations.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels admission and completion.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>The commit task.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_ExecuteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.ExecuteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_ExecuteAsync__1_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.ExecuteAsync``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken)">
+  ExecuteAsync&lt;T&gt;(Func&lt;Task&lt;T&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs a synchronous result-producing command without allowing asynchronous work on the native thread.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;T&gt; ExecuteAsync&lt;T&gt;(Func&lt;Task&lt;T&gt;&gt; action, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;T&gt;&gt;</dt>
+    <dd><p>A command returning an already completed task; external I/O is forbidden.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels admission and native completion.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;T&gt;</dt>
+    <dd><p>The command result after atomic commit.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The detached result type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_ExecuteInSessionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.ExecuteInSessionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_ExecuteInSessionAsync__1_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_System_IServiceProvider_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.ExecuteInSessionAsync``1(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession,System.IServiceProvider,System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken)">
+  ExecuteInSessionAsync&lt;T&gt;(LiteDbDatabaseSession, IServiceProvider, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes a durable command inside an explicitly supplied scoped entity transaction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;T&gt; ExecuteInSessionAsync&lt;T&gt;(LiteDbDatabaseSession session, IServiceProvider services, Func&lt;Task&lt;T&gt;&gt; action, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>session</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.html">LiteDbDatabaseSession</a></dt>
+    <dd><p>The caller's named database session.</p>
+</dd>
+    <dt><code>services</code> <span class="xref">IServiceProvider</span></dt>
+    <dd><p>Its scoped services for actor resolution.</p>
+</dd>
+    <dt><code>action</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;T&gt;&gt;</dt>
+    <dd><p>Synchronous native record operations.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels admission and completion.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;T&gt;</dt>
+    <dd><p>The command result without prematurely committing an existing transaction.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The detached result type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_InspectAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.InspectAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_InspectAsync__1_System_Func_LiteDB_LiteDatabase___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.InspectAsync``1(System.Func{LiteDB.LiteDatabase,``0},System.Threading.CancellationToken)">
+  InspectAsync&lt;T&gt;(Func&lt;LiteDatabase, T&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Inspects native state without starting a write transaction, tracking models, or creating indexes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;T&gt; InspectAsync&lt;T&gt;(Func&lt;LiteDatabase, T&gt; inspect, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>inspect</code> <span class="xref">Func</span>&lt;<span class="xref">LiteDatabase</span>, T&gt;</dt>
+    <dd><p>Synchronous inspection that does not mutate native state or return a cursor.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels admission and inspection.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;T&gt;</dt>
+    <dd><p>The detached inspection result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The fully materialized inspection result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Keys_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Keys*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Keys__1_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Keys``1(System.String)">
+  Keys&lt;TKey&gt;(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Materializes a bounded set of native keys for command-local enumeration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;(string Id, TKey Key)&gt; Keys&lt;TKey&gt;(string collection)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collection</code> <span class="xref">string</span></dt>
+    <dd><p>The declared collection.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;(<span class="xref">string</span> <span class="xref">Id</span>, TKey <span class="xref">Key</span>)&gt;</dt>
+    <dd><p>The fully materialized native identities and original keys.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TKey</code></dt>
+    <dd><p>The original key type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Query_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Query*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Query__1_System_String_LiteDB_BsonExpression_System_Int32_System_String_System_Boolean_System_Boolean_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Query``1(System.String,LiteDB.BsonExpression,System.Int32,System.String,System.Boolean,System.Boolean)">
+  Query&lt;T&gt;(string, BsonExpression, int, string, bool, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Selects indexed records natively before bounded payload materialization.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;T&gt; Query&lt;T&gt;(string suffix, BsonExpression predicate, int take, string order = &quot;$.CreatedTicks&quot;, bool descending = false, bool failOnOverflow = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>suffix</code> <span class="xref">string</span></dt>
+    <dd><p>The declared collection suffix.</p>
+</dd>
+    <dt><code>predicate</code> <span class="xref">BsonExpression</span></dt>
+    <dd><p>The native scalar predicate.</p>
+</dd>
+    <dt><code>take</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum selected records.</p>
+</dd>
+    <dt><code>order</code> <span class="xref">string</span></dt>
+    <dd><p>The native order expression.</p>
+</dd>
+    <dt><code>descending</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether native ordering is descending.</p>
+</dd>
+    <dt><code>failOnOverflow</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether one extra matching row must trigger an explicit selection-limit failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;T&gt;</dt>
+    <dd><p>Command-local tracked models, bounded after native filtering.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The stored record type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Read_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Read*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Read__1_System_String_System_String_System_Boolean__" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Read``1(System.String,System.String,System.Boolean@)">
+  Read&lt;T&gt;(string, string, out bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads one detached value or returns a command-local tracked value already loaded by this operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T Read&lt;T&gt;(string collection, string id, out bool found)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collection</code> <span class="xref">string</span></dt>
+    <dd><p>The declared collection.</p>
+</dd>
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd><p>The normalized identity.</p>
+</dd>
+    <dt><code>found</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether the native record exists.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The detached model or its default value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The stored model.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Remove_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Remove*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Remove_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Remove(System.String,System.String)">
+  Remove(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes one logical record without allowing later tracked flushes to resurrect it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Remove(string collection, string id)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collection</code> <span class="xref">string</span></dt>
+    <dd><p>The declared collection.</p>
+</dd>
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd><p>The normalized identity.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>Whether a record was removed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Write_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Write*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_Write__2_System_String_System_String___0___1_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.Write``2(System.String,System.String,``0,``1)">
+  Write&lt;TKey, T&gt;(string, string, TKey, T)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a logical record and tracks in-command mutations to its detached value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Write&lt;TKey, T&gt;(string collection, string id, TKey key, T value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collection</code> <span class="xref">string</span></dt>
+    <dd><p>The declared collection.</p>
+</dd>
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd><p>The normalized identity.</p>
+</dd>
+    <dt><code>key</code> <span class="xref">TKey</span></dt>
+    <dd><p>The original key retained for enumeration.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The model to persist.</p>
+</dd>
+  </dl>
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TKey</code></dt>
+    <dd><p>The key type.</p>
+</dd>
+    <dt><code>T</code></dt>
+    <dd><p>The stored value type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

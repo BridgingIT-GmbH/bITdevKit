@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LiteDbNotificationStorageProvider | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LiteDbNotificationStorageProvider | bITdevKit API Reference ">
+      
+      <meta name="description" content="Persists email notifications and exposes existing storage and operational outbox contracts.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider" class="text-break">
+Class LiteDbNotificationStorageProvider  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.html">LiteDb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.LiteDb.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Persists email notifications and exposes existing storage and operational outbox contracts.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class LiteDbNotificationStorageProvider : INotificationStorageProvider, INotificationEmailOutboxService</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">LiteDbNotificationStorageProvider</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Notifications.INotificationStorageProvider.html">INotificationStorageProvider</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Notifications.INotificationEmailOutboxService.html">INotificationEmailOutboxService</a></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_BridgingIT_DevKit_Application_Notifications_OutboxNotificationEmailOptions_System_TimeProvider_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.#ctor(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase,BridgingIT.DevKit.Application.Notifications.OutboxNotificationEmailOptions,System.TimeProvider)">
+  LiteDbNotificationStorageProvider(LiteDbFeatureDatabase, OutboxNotificationEmailOptions, TimeProvider)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Persists email notifications and exposes existing storage and operational outbox contracts.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbNotificationStorageProvider(LiteDbFeatureDatabase database, OutboxNotificationEmailOptions outboxOptions, TimeProvider clock)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>database</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.html">LiteDbFeatureDatabase</a></dt>
+    <dd><p>The notification database and declared collections.</p>
+</dd>
+    <dt><code>outboxOptions</code> <a class="xref" href="BridgingIT.DevKit.Application.Notifications.OutboxNotificationEmailOptions.html">OutboxNotificationEmailOptions</a></dt>
+    <dd><p>The existing notification worker settings.</p>
+</dd>
+    <dt><code>clock</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The claim and retention clock.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_ArchiveMessageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.ArchiveMessageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_ArchiveMessageAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.ArchiveMessageAsync(System.Guid,System.Threading.CancellationToken)">
+  ArchiveMessageAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Marks a persisted notification email as archived.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ArchiveMessageAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The notification email primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_AutoArchiveMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.AutoArchiveMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_AutoArchiveMessagesAsync_System_DateTimeOffset_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Notifications_EmailMessageStatus__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.AutoArchiveMessagesAsync(System.DateTimeOffset,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Notifications.EmailMessageStatus},System.Threading.CancellationToken)">
+  AutoArchiveMessagesAsync(DateTimeOffset, IEnumerable&lt;EmailMessageStatus&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Archives terminal notification emails that have aged beyond the supplied threshold.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;int&gt; AutoArchiveMessagesAsync(DateTimeOffset olderThan, IEnumerable&lt;EmailMessageStatus&gt; statuses = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>olderThan</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd><p>The age threshold expressed as the latest eligible sent or created timestamp.</p>
+</dd>
+    <dt><code>statuses</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Notifications.EmailMessageStatus.html">EmailMessageStatus</a>&gt;</dt>
+    <dd><p>The terminal statuses eligible for automatic archiving.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">int</span>&gt;</dt>
+    <dd><p>The number of notification emails archived by this operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_AutoArchiveMessagesAsync_System_DateTimeOffset_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Notifications_EmailMessageStatus__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await outboxService.AutoArchiveMessagesAsync(
+    DateTimeOffset.UtcNow.AddHours(-1),
+    [EmailMessageStatus.Sent, EmailMessageStatus.Failed],
+    cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_DeleteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.DeleteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_DeleteAsync__1___0_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.DeleteAsync``1(``0,System.Threading.CancellationToken)">
+  DeleteAsync&lt;TMessage&gt;(TMessage, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes a persisted notification message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&gt; DeleteAsync&lt;TMessage&gt;(TMessage message, CancellationToken cancellationToken) where TMessage : class, INotificationMessage</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">TMessage</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TMessage</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_GetMessageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.GetMessageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_GetMessageAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.GetMessageAsync(System.Guid,System.Threading.CancellationToken)">
+  GetMessageAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves a single notification email by its primary key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;NotificationEmailInfo&gt; GetMessageAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The notification email primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Notifications.NotificationEmailInfo.html">NotificationEmailInfo</a>&gt;</dt>
+    <dd><p>The notification email details, or <code>null</code> if the row was not found.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_GetMessageContentAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.GetMessageContentAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_GetMessageContentAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.GetMessageContentAsync(System.Guid,System.Threading.CancellationToken)">
+  GetMessageContentAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the stored email body content for a single notification email.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;NotificationEmailContentInfo&gt; GetMessageContentAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The notification email primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Notifications.NotificationEmailContentInfo.html">NotificationEmailContentInfo</a>&gt;</dt>
+    <dd><p>The persisted body content information, or <code>null</code> if the row was not found.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_GetMessageStatsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.GetMessageStatsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_GetMessageStatsAsync_System_Nullable_System_DateTimeOffset__System_Nullable_System_DateTimeOffset__System_Nullable_System_Boolean__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.GetMessageStatsAsync(System.Nullable{System.DateTimeOffset},System.Nullable{System.DateTimeOffset},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+  GetMessageStatsAsync(DateTimeOffset?, DateTimeOffset?, bool?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves aggregate statistics for persisted notification emails.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;NotificationEmailStats&gt; GetMessageStatsAsync(DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, bool? isArchived = false, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>startDate</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>The optional lower created/sent timestamp filter.</p>
+</dd>
+    <dt><code>endDate</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>The optional upper created/sent timestamp filter.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>The optional archive-state filter. Defaults to <code>false</code>.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Notifications.NotificationEmailStats.html">NotificationEmailStats</a>&gt;</dt>
+    <dd><p>The aggregated notification email statistics.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_GetMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.GetMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_GetMessagesAsync_System_Nullable_BridgingIT_DevKit_Application_Notifications_EmailMessageStatus__System_String_System_String_System_Nullable_System_Boolean__System_Nullable_System_DateTimeOffset__System_Nullable_System_DateTimeOffset__System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.GetMessagesAsync(System.Nullable{BridgingIT.DevKit.Application.Notifications.EmailMessageStatus},System.String,System.String,System.Nullable{System.Boolean},System.Nullable{System.DateTimeOffset},System.Nullable{System.DateTimeOffset},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+  GetMessagesAsync(EmailMessageStatus?, string, string, bool?, DateTimeOffset?, DateTimeOffset?, int?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves notification emails with optional operational filters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;NotificationEmailInfo&gt;&gt; GetMessagesAsync(EmailMessageStatus? status = null, string subject = null, string lockedBy = null, bool? isArchived = false, DateTimeOffset? createdAfter = null, DateTimeOffset? createdBefore = null, int? take = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>status</code> <a class="xref" href="BridgingIT.DevKit.Application.Notifications.EmailMessageStatus.html">EmailMessageStatus</a>?</dt>
+    <dd><p>The optional email status filter.</p>
+</dd>
+    <dt><code>subject</code> <span class="xref">string</span></dt>
+    <dd><p>The optional subject substring filter.</p>
+</dd>
+    <dt><code>lockedBy</code> <span class="xref">string</span></dt>
+    <dd><p>The optional lease owner filter.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>The optional archive-state filter. Defaults to <code>false</code>.</p>
+</dd>
+    <dt><code>createdAfter</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>The optional lower creation timestamp filter.</p>
+</dd>
+    <dt><code>createdBefore</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>The optional upper creation timestamp filter.</p>
+</dd>
+    <dt><code>take</code> <span class="xref">int</span>?</dt>
+    <dd><p>The optional maximum number of entries to return.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Notifications.NotificationEmailInfo.html">NotificationEmailInfo</a>&gt;&gt;</dt>
+    <dd><p>A collection of matching notification emails.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_GetPendingAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.GetPendingAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_GetPendingAsync__1_System_Int32_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.GetPendingAsync``1(System.Int32,System.Threading.CancellationToken)">
+  GetPendingAsync&lt;TMessage&gt;(int, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves a batch of pending notification messages, optionally claiming them for processing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;IEnumerable&lt;TMessage&gt;&gt;&gt; GetPendingAsync&lt;TMessage&gt;(int batchSize, CancellationToken cancellationToken) where TMessage : class, INotificationMessage</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>batchSize</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TMessage&gt;&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TMessage</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_GetPendingIdsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.GetPendingIdsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_GetPendingIdsAsync_System_Int32_System_Nullable_System_Guid__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.GetPendingIdsAsync(System.Int32,System.Nullable{System.Guid},System.Threading.CancellationToken)">
+  GetPendingIdsAsync(int, Guid?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Selects pending identities without reserving delivery leases for queued emails.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;Guid&gt;&gt; GetPendingIdsAsync(int batchSize, Guid? preferredId = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>batchSize</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum emails selected for this invocation.</p>
+</dd>
+    <dt><code>preferredId</code> <span class="xref">Guid</span>?</dt>
+    <dd><p>An optional pending identity to process first.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels native selection.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<span class="xref">Guid</span>&gt;&gt;</dt>
+    <dd><p>A bounded detached snapshot of eligible identities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_PurgeMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.PurgeMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_PurgeMessagesAsync_System_Nullable_System_DateTimeOffset__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Notifications_EmailMessageStatus__System_Nullable_System_Boolean__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.PurgeMessagesAsync(System.Nullable{System.DateTimeOffset},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Notifications.EmailMessageStatus},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+  PurgeMessagesAsync(DateTimeOffset?, IEnumerable&lt;EmailMessageStatus&gt;, bool?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Permanently deletes persisted notification emails matching the supplied filters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task PurgeMessagesAsync(DateTimeOffset? olderThan = null, IEnumerable&lt;EmailMessageStatus&gt; statuses = null, bool? isArchived = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>olderThan</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>The optional upper age filter. Archived rows are evaluated by <code>ArchivedDate</code> when available;
+otherwise the comparison falls back to the sent or created timestamp.</p>
+</dd>
+    <dt><code>statuses</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Notifications.EmailMessageStatus.html">EmailMessageStatus</a>&gt;</dt>
+    <dd><p>The optional status filters.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>The optional archive-state filter.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_RenewAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.RenewAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_RenewAsync_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationEmailClaim_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.RenewAsync(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationEmailClaim,System.Threading.CancellationToken)">
+  RenewAsync(LiteDbNotificationEmailClaim, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Extends an unexpired claim only while its original token still owns the email.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; RenewAsync(LiteDbNotificationEmailClaim claim, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>claim</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationEmailClaim.html">LiteDbNotificationEmailClaim</a></dt>
+    <dd><p>The immutable delivery ownership token.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels native renewal.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>Whether this claim remains current.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_RetryMessageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.RetryMessageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_RetryMessageAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.RetryMessageAsync(System.Guid,System.Threading.CancellationToken)">
+  RetryMessageAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resets a failed notification email so it can be processed again by the outbox worker.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RetryMessageAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The notification email primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_SaveAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.SaveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_SaveAsync__1___0_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.SaveAsync``1(``0,System.Threading.CancellationToken)">
+  SaveAsync&lt;TMessage&gt;(TMessage, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Saves a new notification message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&gt; SaveAsync&lt;TMessage&gt;(TMessage message, CancellationToken cancellationToken) where TMessage : class, INotificationMessage</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">TMessage</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TMessage</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_SearchMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.SearchMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_SearchMessagesAsync_BridgingIT_DevKit_Common_FilterModel_System_Nullable_System_Boolean__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.SearchMessagesAsync(BridgingIT.DevKit.Common.FilterModel,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+  SearchMessagesAsync(FilterModel, bool?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Searches persisted emails by scalar operational fields, ordering and paging.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;NotificationEmailInfo&gt;&gt; SearchMessagesAsync(FilterModel filter, bool? isArchived = false, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd><p>The filter model. Paging defaults to page 1 and 50 entries, with a maximum of 1000.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>The archive scope. Use null to search both active and archived entries.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Notifications.NotificationEmailInfo.html">NotificationEmailInfo</a>&gt;&gt;</dt>
+    <dd><p>The matching page and total count before paging.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_SearchMessagesAsync_BridgingIT_DevKit_Common_FilterModel_System_Nullable_System_Boolean__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await service.SearchMessagesAsync(new FilterModel { Page = 2, PageSize = 25 });</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_TryClaimAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.TryClaimAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_TryClaimAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.TryClaimAsync(System.Guid,System.Threading.CancellationToken)">
+  TryClaimAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Claims one still-eligible email immediately before its external delivery.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;LiteDbNotificationEmailClaim&gt; TryClaimAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The selected email identity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels native acquisition.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationEmailClaim.html">LiteDbNotificationEmailClaim</a>&gt;</dt>
+    <dd><p>The current claim, or null when another operation changed eligibility.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_UpdateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.UpdateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbNotificationStorageProvider_UpdateAsync__1___0_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbNotificationStorageProvider.UpdateAsync``1(``0,System.Threading.CancellationToken)">
+  UpdateAsync&lt;TMessage&gt;(TMessage, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates an existing notification message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&gt; UpdateAsync&lt;TMessage&gt;(TMessage message, CancellationToken cancellationToken) where TMessage : class, INotificationMessage</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">TMessage</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TMessage</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

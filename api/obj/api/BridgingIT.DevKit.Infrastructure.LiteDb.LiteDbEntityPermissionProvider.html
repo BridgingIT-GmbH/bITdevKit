@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LiteDbEntityPermissionProvider | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LiteDbEntityPermissionProvider | bITdevKit API Reference ">
+      
+      <meta name="description" content="Persists exact user and role grants while keeping authorization evaluation in the existing Identity feature.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider" class="text-break">
+Class LiteDbEntityPermissionProvider  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.html">LiteDb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.LiteDb.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Persists exact user and role grants while keeping authorization evaluation in the existing Identity feature.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class LiteDbEntityPermissionProvider : IEntityPermissionProvider</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">LiteDbEntityPermissionProvider</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.html">IEntityPermissionProvider</a></div>
+    </dd>
+  </dl>
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_examples">Examples</h2>
+  <pre><code class="lang-csharp">services.AddLiteDbEntityPermissions(options =&gt; options.AddEntity&lt;Ledger&gt;(Permission.Read));</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_BridgingIT_DevKit_Application_Identity_EntityPermissionOptions_System_Func_System_Type_System_String__BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_System_IServiceProvider_BridgingIT_DevKit_Common_ICacheProvider_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.#ctor(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase,BridgingIT.DevKit.Application.Identity.EntityPermissionOptions,System.Func{System.Type,System.String},BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession,System.IServiceProvider,BridgingIT.DevKit.Common.ICacheProvider)">
+  LiteDbEntityPermissionProvider(LiteDbFeatureDatabase, EntityPermissionOptions, Func&lt;Type, string&gt;, LiteDbDatabaseSession, IServiceProvider, ICacheProvider)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Persists exact user and role grants while keeping authorization evaluation in the existing Identity feature.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LiteDbEntityPermissionProvider(LiteDbFeatureDatabase database, EntityPermissionOptions options, Func&lt;Type, string&gt; collection, LiteDbDatabaseSession session, IServiceProvider services, ICacheProvider cache = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>database</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbFeatureDatabase.html">LiteDbFeatureDatabase</a></dt>
+    <dd><p>The named native permission namespace.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Identity.EntityPermissionOptions.html">EntityPermissionOptions</a></dt>
+    <dd><p>The existing entity and evaluator configuration.</p>
+</dd>
+    <dt><code>collection</code> <span class="xref">Func</span>&lt;<span class="xref">Type</span>, <span class="xref">string</span>&gt;</dt>
+    <dd><p>Resolves the selected database's registered entity collection.</p>
+</dd>
+    <dt><code>session</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbDatabaseSession.html">LiteDbDatabaseSession</a></dt>
+    <dd><p>The caller's scoped native session, including an active entity transaction.</p>
+</dd>
+    <dt><code>services</code> <span class="xref">IServiceProvider</span></dt>
+    <dd><p>The caller's scoped services.</p>
+</dd>
+    <dt><code>cache</code> <a class="xref" href="BridgingIT.DevKit.Common.ICacheProvider.html">ICacheProvider</a></dt>
+    <dd><p>Optional existing permission-result cache.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider__ctor_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbFeatureDatabase_BridgingIT_DevKit_Application_Identity_EntityPermissionOptions_System_Func_System_Type_System_String__BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbDatabaseSession_System_IServiceProvider_BridgingIT_DevKit_Common_ICacheProvider__examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddLiteDbEntityPermissions(options =&gt; options.AddEntity&lt;Ledger&gt;(Permission.Read));</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GetEntityIdsWithPermissionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GetEntityIdsWithPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GetEntityIdsWithPermissionAsync_System_String_System_String___System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GetEntityIdsWithPermissionAsync(System.String,System.String[],System.String,System.String,System.Threading.CancellationToken)">
+  GetEntityIdsWithPermissionAsync(string, string[], string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all entity IDs of a specific type for which a user has a certain permission.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;string&gt;&gt; GetEntityIdsWithPermissionAsync(string userId, string[] roles, string entityType, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>roles</code> <span class="xref">string</span>[]</dt>
+    <dd><p>The roles assigned to the user.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to check.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;&gt;</dt>
+    <dd><p>A list of entity IDs for which the user has the specified permission.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GetHierarchyPathAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GetHierarchyPathAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GetHierarchyPathAsync_System_Type_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GetHierarchyPathAsync(System.Type,System.Object,System.Threading.CancellationToken)">
+  GetHierarchyPathAsync(Type, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the hierarchy path for a specific entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;object&gt;&gt; GetHierarchyPathAsync(Type entityType, object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entityType</code> <span class="xref">Type</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>A list of objects representing the hierarchy path.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GetPermissionsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GetPermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GetPermissionsAsync_System_String_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GetPermissionsAsync(System.String,System.Object,System.Threading.CancellationToken)">
+  GetPermissionsAsync(string, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all granted permissions for all users and roles for a specific entity (id) or entity type (wildcard).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;EntityPermissionInfo&gt;&gt; GetPermissionsAsync(string entityType, object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Identity.EntityPermissionInfo.html">EntityPermissionInfo</a>&gt;&gt;</dt>
+    <dd><p>A read-only collection of entity permission information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GetRolePermissionsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GetRolePermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GetRolePermissionsAsync_System_String_System_String_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GetRolePermissionsAsync(System.String,System.String,System.Object,System.Threading.CancellationToken)">
+  GetRolePermissionsAsync(string, string, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all permissions for a role for a specific entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;string&gt;&gt; GetRolePermissionsAsync(string role, string entityType, object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>role</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the role.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">string</span>&gt;&gt;</dt>
+    <dd><p>A read-only collection of permissions.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GetRolesPermissionsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GetRolesPermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GetRolesPermissionsAsync_System_String_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GetRolesPermissionsAsync(System.String,System.Object,System.Threading.CancellationToken)">
+  GetRolesPermissionsAsync(string, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all granted permissions for all roles for a specific entity (id) or entity type (wildcard).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;EntityPermissionInfo&gt;&gt; GetRolesPermissionsAsync(string entityType, object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Identity.EntityPermissionInfo.html">EntityPermissionInfo</a>&gt;&gt;</dt>
+    <dd><p>A read-only collection of entity permission information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GetUserPermissionsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GetUserPermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GetUserPermissionsAsync_System_String_System_String_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GetUserPermissionsAsync(System.String,System.String,System.Object,System.Threading.CancellationToken)">
+  GetUserPermissionsAsync(string, string, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all permissions for a user for a specific entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;string&gt;&gt; GetUserPermissionsAsync(string userId, string entityType, object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">string</span>&gt;&gt;</dt>
+    <dd><p>A read-only collection of permissions.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GetUsersPermissionsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GetUsersPermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GetUsersPermissionsAsync_System_String_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GetUsersPermissionsAsync(System.String,System.Object,System.Threading.CancellationToken)">
+  GetUsersPermissionsAsync(string, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all granted permissions for all users for a specific entity (id) or entity type (wildcard).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;EntityPermissionInfo&gt;&gt; GetUsersPermissionsAsync(string entityType, object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Identity.EntityPermissionInfo.html">EntityPermissionInfo</a>&gt;&gt;</dt>
+    <dd><p>A read-only collection of entity permission information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GrantRolePermissionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GrantRolePermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GrantRolePermissionAsync_System_String_System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GrantRolePermissionAsync(System.String,System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  GrantRolePermissionAsync(string, string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Grants a specific permission to a role for a specific entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task GrantRolePermissionAsync(string role, string entityType, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>role</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the role.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to grant.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GrantUserPermissionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GrantUserPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_GrantUserPermissionAsync_System_String_System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.GrantUserPermissionAsync(System.String,System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  GrantUserPermissionAsync(string, string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Grants a specific permission to a user for a specific entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task GrantUserPermissionAsync(string userId, string entityType, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to grant.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_HasPermissionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.HasPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_HasPermissionAsync_System_String_System_String___System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.HasPermissionAsync(System.String,System.String[],System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  HasPermissionAsync(string, string[], string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if a user has a specific permission for an entity, either directly or through their roles.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; HasPermissionAsync(string userId, string[] roles, string entityType, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>roles</code> <span class="xref">string</span>[]</dt>
+    <dd><p>The roles assigned to the user.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to check.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>True if the user has the permission, false otherwise.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_HasPermissionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.HasPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_HasPermissionAsync_System_String_System_String___System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.HasPermissionAsync(System.String,System.String[],System.String,System.String,System.Threading.CancellationToken)">
+  HasPermissionAsync(string, string[], string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if a user has a wildcard permission (no id) for all entities of a specific type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; HasPermissionAsync(string userId, string[] roles, string entityType, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>roles</code> <span class="xref">string</span>[]</dt>
+    <dd><p>The roles assigned to the user.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to check.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>True if the user has the wildcard permission, false otherwise.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_RevokeRolePermissionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.RevokeRolePermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_RevokeRolePermissionAsync_System_String_System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.RevokeRolePermissionAsync(System.String,System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  RevokeRolePermissionAsync(string, string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Revokes a specific permission from a role for a specific entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RevokeRolePermissionAsync(string role, string entityType, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>role</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the role.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to revoke.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_RevokeRolePermissionsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.RevokeRolePermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_RevokeRolePermissionsAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.RevokeRolePermissionsAsync(System.String,System.Threading.CancellationToken)">
+  RevokeRolePermissionsAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Revokes all permissions from a role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RevokeRolePermissionsAsync(string role, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>role</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the role.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_RevokeUserPermissionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.RevokeUserPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_RevokeUserPermissionAsync_System_String_System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.RevokeUserPermissionAsync(System.String,System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  RevokeUserPermissionAsync(string, string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Revokes a specific permission from a user for a specific entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RevokeUserPermissionAsync(string userId, string entityType, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to revoke.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_RevokeUserPermissionsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.RevokeUserPermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbEntityPermissionProvider_RevokeUserPermissionsAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbEntityPermissionProvider.RevokeUserPermissionsAsync(System.String,System.Threading.CancellationToken)">
+  RevokeUserPermissionsAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Revokes all permissions from a user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RevokeUserPermissionsAsync(string userId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -203,6 +203,81 @@ Intended for inheritance by concrete providers, ensuring testability and consist
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionCapabilities.html">BlobDimensionCapabilities</a></dt>
+      <dd><p>Describes the storage and indexed query profile for blob Dimensions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionDiagnostics.html">BlobDimensionDiagnostics</a></dt>
+      <dd><p>Contains non-sensitive provider-instance dictionary/cache counters and optional retained-name cardinality.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionFilter.html">BlobDimensionFilter</a></dt>
+      <dd><p>An immutable leaf or bounded AND/OR expression.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionFilterJsonConverter.html">BlobDimensionFilterJsonConverter</a></dt>
+      <dd><p>Reads and writes bounded blob filters with explicitly typed operands.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionFilterValidator.html">BlobDimensionFilterValidator</a></dt>
+      <dd><p>Validates bounded expression structure and backend operator support.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionHashCollisionError.html">BlobDimensionHashCollisionError</a></dt>
+      <dd><p>Reports a verified digest collision without exposing dimension values.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionLimits.html">BlobDimensionLimits</a></dt>
+      <dd><p>Defines the portable blob Dimensions limits.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionPredicate.html">BlobDimensionPredicate</a></dt>
+      <dd><p>An immutable validated predicate over one logical dimension name.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionRegistrationContentionError.html">BlobDimensionRegistrationContentionError</a></dt>
+      <dd><p>Reports exhaustion of the bounded dictionary registration race budget.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionValue.html">BlobDimensionValue</a></dt>
+      <dd><p>An immutable validated scalar blob dimension.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionValues.html">BlobDimensionValues</a></dt>
+      <dd><p>Validates names and serializes independent typed blob Dimensions snapshots.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensions.html">BlobDimensions</a></dt>
+      <dd><p>An immutable case-insensitive collection of explicitly supplied blob dimensions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionsJsonConverter.html">BlobDimensionsJsonConverter</a></dt>
+      <dd><p>Reads and writes explicitly typed blob Dimensions without numeric type loss.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionsNotSupportedError.html">BlobDimensionsNotSupportedError</a></dt>
+      <dd><p>Reports an explicit Dimensions operation on an unsupported provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionsUpdate.html">BlobDimensionsUpdate</a></dt>
+      <dd><p>Replaces or clears Dimensions under the existing whole-item version.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDownload.html">BlobDownload</a></dt>
       <dd><p>Represents a downloaded blob stream and its provider-neutral metadata.</p>
 </dd>
@@ -252,6 +327,16 @@ travels through the complete client behavior pipeline on its own.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobFileUploadOptions.html">BlobFileUploadOptions</a></dt>
       <dd><p>Configures a file-to-blob transfer.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobFilterQuery.html">BlobFilterQuery</a></dt>
+      <dd><p>Represents a validated blob filter query passed to a storage provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobFilterScope.html">BlobFilterScope</a></dt>
+      <dd><p>Sets the mandatory storage boundaries for a blob filter query.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -307,6 +392,11 @@ travels through the complete client behavior pipeline on its own.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobPropertyStorageExtensions.html">BlobPropertyStorageExtensions</a></dt>
       <dd><p>Provides provider-neutral optimistic property patch helpers for blobs.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobPropertyValues.html">BlobPropertyValues</a></dt>
+      <dd><p>Validates, copies, and persists scalar application properties for Blob Storage.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -590,6 +680,26 @@ travels through the complete client behavior pipeline on its own.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobUploadBatchExecutor.html">BlobUploadBatchExecutor</a></dt>
+      <dd><p>Coordinates bounded blob uploads through an existing client's per-item pipeline.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobUploadBatchOptions.html">BlobUploadBatchOptions</a></dt>
+      <dd><p>Controls the bounded workers used by a blob upload batch.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobUploadBatchResult.html">BlobUploadBatchResult</a></dt>
+      <dd><p>Contains every completed item outcome in input order, independently of execution order.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobUploadOutcome.html">BlobUploadOutcome</a></dt>
+      <dd><p>Contains the outcome of one request, at its original zero-based input position.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobValidator.html">BlobValidator</a></dt>
       <dd><p>Validates provider-neutral blob operation models.</p>
 </dd>
@@ -745,6 +855,81 @@ travels through the complete client behavior pipeline on its own.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionCapabilities.html">DocumentDimensionCapabilities</a></dt>
+      <dd><p>Describes the storage and indexed query profile for document Dimensions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionDiagnostics.html">DocumentDimensionDiagnostics</a></dt>
+      <dd><p>Contains non-sensitive provider-instance dictionary/cache counters and optional retained-name cardinality.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionFilter.html">DocumentDimensionFilter</a></dt>
+      <dd><p>An immutable leaf or bounded AND/OR expression.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionFilterJsonConverter.html">DocumentDimensionFilterJsonConverter</a></dt>
+      <dd><p>Reads and writes bounded document filters with explicitly typed operands.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionFilterValidator.html">DocumentDimensionFilterValidator</a></dt>
+      <dd><p>Validates bounded expression structure and backend operator support.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionHashCollisionError.html">DocumentDimensionHashCollisionError</a></dt>
+      <dd><p>Reports a verified digest collision without exposing dimension values.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionLimits.html">DocumentDimensionLimits</a></dt>
+      <dd><p>Defines the portable document Dimensions limits.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionPredicate.html">DocumentDimensionPredicate</a></dt>
+      <dd><p>An immutable validated predicate over one logical dimension name.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionRegistrationContentionError.html">DocumentDimensionRegistrationContentionError</a></dt>
+      <dd><p>Reports exhaustion of the bounded dictionary registration race budget.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionValue.html">DocumentDimensionValue</a></dt>
+      <dd><p>An immutable validated scalar document dimension.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionValues.html">DocumentDimensionValues</a></dt>
+      <dd><p>Validates names and serializes independent typed document Dimensions snapshots.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensions.html">DocumentDimensions</a></dt>
+      <dd><p>An immutable case-insensitive collection of explicitly supplied document dimensions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionsJsonConverter.html">DocumentDimensionsJsonConverter</a></dt>
+      <dd><p>Reads and writes explicitly typed document Dimensions without numeric type loss.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionsNotSupportedError.html">DocumentDimensionsNotSupportedError</a></dt>
+      <dd><p>Reports an explicit Dimensions operation on an unsupported provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionsUpdate.html">DocumentDimensionsUpdate</a></dt>
+      <dd><p>Replaces or clears Dimensions under the existing whole-item version.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentEntity.html">DocumentEntity</a></dt>
       <dd><p>Represents a document persisted in the in-memory document-store provider.</p>
 </dd>
@@ -760,18 +945,33 @@ travels through the complete client behavior pipeline on its own.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentFilterQuery.html">DocumentFilterQuery</a></dt>
+      <dd><p>Represents a validated document filter query passed to a storage provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentFilterScope.html">DocumentFilterScope</a></dt>
+      <dd><p>Sets the mandatory storage boundaries for a document filter query.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentInfo.html">DocumentInfo</a></dt>
       <dd><p>Contains provider-neutral identity, concurrency, integrity, timestamp, expiration, and custom-property metadata.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentInfoPage.html">DocumentInfoPage</a></dt>
+      <dd><p>Represents one page of matching document metadata.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentJsonEntry.html">DocumentJsonEntry</a></dt>
-      <dd><p>Contains a dashboard-safe JSON representation and the metadata snapshot used for conditional actions.</p>
+      <dd><p>Contains a JSON representation and the metadata snapshot used for conditional operational actions.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentJsonPage.html">DocumentJsonPage</a></dt>
-      <dd><p>Contains one bounded page of dashboard-safe JSON document entries.</p>
+      <dd><p>Contains one bounded page of JSON document entries for operational presentation.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -787,6 +987,11 @@ travels through the complete client behavior pipeline on its own.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentPropertiesUpdate.html">DocumentPropertiesUpdate</a></dt>
       <dd><p>Describes an atomic custom-property and expiration update that leaves document content unchanged.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentPropertyValues.html">DocumentPropertyValues</a></dt>
+      <dd><p>Validates, copies, and persists scalar application properties for Document Storage.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -891,7 +1096,7 @@ travels through the complete client behavior pipeline on its own.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClientAccessor-1.html">DocumentStoreClientAccessor&lt;T&gt;</a></dt>
-      <dd><p>Adapts a typed document client for dashboard operations.</p>
+      <dd><p>Adapts a typed document client for operational endpoints and dashboards.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -947,6 +1152,11 @@ travels through the complete client behavior pipeline on its own.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentWriteOptions.html">DocumentWriteOptions</a></dt>
       <dd><p>Configures concurrency, integrity, properties, and expiration for one document write.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentWriteValidator.html">DocumentWriteValidator</a></dt>
+      <dd><p>Validates optional document version conditions before persistence.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -1354,6 +1564,21 @@ Uses structured logging with TypedLogger for consistent formatting, similar to R
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageFilterCriterion-1.html">StorageFilterCriterion&lt;TDimension&gt;</a></dt>
+      <dd><p>Describes a validated key or Dimension criterion, or a group of criteria, for a storage provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageFilterOrder.html">StorageFilterOrder</a></dt>
+      <dd><p>Describes a validated component of a storage seek order.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageFilterQuery.html">StorageFilterQuery</a></dt>
+      <dd><p>Normalizes shared FilterModel criteria and continuation state for storage listing.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkChangeHandler.html">StoragePermalinkChangeHandler</a></dt>
       <dd><p>Applies queued storage mutations to the configured registry provider.</p>
 </dd>
@@ -1459,6 +1684,31 @@ Uses structured logging with TypedLogger for consistent formatting, similar to R
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.StoredBlobDownload.html">StoredBlobDownload</a></dt>
+      <dd><p>Represents a downloaded blob stream and its provider-neutral metadata.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.StoredBlobInfo.html">StoredBlobInfo</a></dt>
+      <dd><p>Describes a stored blob with detached application properties and separate transform state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.StoredBlobPage.html">StoredBlobPage</a></dt>
+      <dd><p>Represents one page of blob information returned from listing.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.StoredBlobPropertiesUpdate.html">StoredBlobPropertiesUpdate</a></dt>
+      <dd><p>Describes a blob property update that does not upload content.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.StoredBlobUpload.html">StoredBlobUpload</a></dt>
+      <dd><p>Describes a provider-facing stream-first blob upload. The caller owns the input stream.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.StoredDocument.html">StoredDocument</a></dt>
       <dd><p>Represents one provider-neutral serialized document returned across the persistence boundary.</p>
 </dd>
@@ -1551,6 +1801,11 @@ Used with <span class="xref">System.IProgress&lt;T&gt;</span> to report progress
 Interfaces
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobDimensionDiagnosticsProvider.html">IBlobDimensionDiagnosticsProvider</a></dt>
+      <dd><p>Exposes cheap counters and opt-in dictionary cardinality for blob providers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStorageDiagnosticsService.html">IBlobStorageDiagnosticsService</a></dt>
       <dd><p>Provides provider-neutral Blob Storage diagnostics snapshots.</p>
 </dd>
@@ -1598,6 +1853,16 @@ regular client behavior pipeline (compression, encryption, caching, retry and so
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentDimensionDiagnosticsAccessor.html">IDocumentDimensionDiagnosticsAccessor</a></dt>
+      <dd><p>Exposes scoped Dimension diagnostics through a typed document client accessor.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentDimensionDiagnosticsProvider.html">IDocumentDimensionDiagnosticsProvider</a></dt>
+      <dd><p>Exposes cheap counters and opt-in dictionary cardinality for document providers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentPayloadTransform.html">IDocumentPayloadTransform</a></dt>
       <dd><p>Defines one reversible transformation in the serialized document payload pipeline.</p>
 </dd>
@@ -1619,7 +1884,7 @@ regular client behavior pipeline (compression, encryption, caching, retry and so
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.html">IDocumentStoreClientAccessor</a></dt>
-      <dd><p>Provides non-generic, JSON-oriented access to one selected typed document client for operational presentation surfaces.</p>
+      <dd><p>Provides non-generic, JSON-oriented access to one selected typed document client for operational endpoints and dashboards.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -1757,6 +2022,16 @@ Behaviors execute before and after processing, providing features like logging o
 Enums
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionOperator.html">BlobDimensionOperator</a></dt>
+      <dd><p>Defines the bounded blob dimension predicate operators.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionValueType.html">BlobDimensionValueType</a></dt>
+      <dd><p>Identifies the logical kind of a blob dimension.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobOverwriteMode.html">BlobOverwriteMode</a></dt>
       <dd><p>Defines how uploads behave when a target blob already exists.</p>
 </dd>
@@ -1764,6 +2039,16 @@ Enums
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobStoreChaosOperation.html">BlobStoreChaosOperation</a></dt>
       <dd><p>Identifies the blob-store operation that can receive injected chaos failures.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionOperator.html">DocumentDimensionOperator</a></dt>
+      <dd><p>Defines the bounded document dimension predicate operators.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionValueType.html">DocumentDimensionValueType</a></dt>
+      <dd><p>Identifies the logical kind of a document dimension.</p>
 </dd>
     </dl>
     <dl class="jumplist">

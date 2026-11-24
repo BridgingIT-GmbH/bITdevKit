@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
     
     
       
@@ -3301,6 +3301,45 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Documentation and API tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read-a-long-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read a long document
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-documentation-to-the-embedded-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Add documentation to the embedded set
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-api-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build API documentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3689,6 +3728,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-infrastructure-litedb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LiteDB Infrastructure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -5375,6 +5442,45 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Documentation and API tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read-a-long-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read a long document
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-documentation-to-the-embedded-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Add documentation to the embedded set
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-api-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build API documentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -5610,7 +5716,12 @@
 <li><a href="#documentation-aware-development">Documentation-aware development</a></li>
 <li><a href="#project-summary">Project summary</a></li>
 <li><a href="#project-owned-operations">Project-owned operations</a></li>
-<li><a href="#documentation-and-api-tools">Documentation and API tools</a></li>
+<li><a href="#documentation-and-api-tools">Documentation and API tools</a><ul>
+<li><a href="#read-a-long-document">Read a long document</a></li>
+<li><a href="#add-documentation-to-the-embedded-set">Add documentation to the embedded set</a></li>
+<li><a href="#build-api-documentation">Build API documentation</a></li>
+</ul>
+</li>
 <li><a href="#safety-model">Safety model</a></li>
 <li><a href="#troubleshooting">Troubleshooting</a><ul>
 <li><a href="#the-agent-says-no-runtime-was-found">The agent says no runtime was found</a></li>
@@ -5647,11 +5758,11 @@
 <h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
 <p>Coding agents need exact framework guidance and bounded runtime evidence, but application internals should not be exposed through an unrestricted remote administration endpoint. Multiple local hosts also make runtime selection ambiguous unless discovery is tied to the current workspace.</p>
 <h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
-<p><code>bdk mcp</code> hosts <span class="bdk-feature-name" data-feature-name="mcp"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>MCP</span> over standard input and output. Documentation, API-reference and guidance tools run in the CLI process. Runtime tools resolve a ready workspace host and forward a bounded DevKit request over user-local IPC to a registered <code>IMcpHandler</code>. Stable toolsets separate inspection, controlled operations and destructive administration.</p>
+<p><code>bdk mcp</code> hosts <span class="bdk-feature-name" data-feature-name="mcp"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>MCP</span> over standard input and output. Documentation, API-reference and guidance tools run in the CLI process. Markdown and generated API metadata are embedded in the CLI assembly, so documentation lookup requires no GitHub access. Runtime tools resolve a ready workspace host and forward a bounded DevKit request over user-local IPC to a registered <code>IMcpHandler</code>. Stable toolsets separate inspection, controlled operations and destructive administration.</p>
 <h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Stable <code>bdk_*</code> tool names and <span class="bdk-feature-name" data-feature-name="format-json"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="format-json" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4H8v9l-4 3 4 3v9h4M20 4h4v9l4 3-4 3v9h-4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="12" r="1" /><circle cx="16" cy="20" r="1" /></g></svg></span>JSON</span> schemas.</li>
-<li>Documentation, generated API-reference and curated guidance tools that do not require a running application.</li>
+<li>Embedded documentation, generated API-reference and curated guidance tools that work without a running application or documentation network access.</li>
 <li>Workspace-aware runtime discovery and selection.</li>
 <li>Feature-owned and project-owned app-side handlers without an <span class="bdk-feature-name" data-feature-name="mcp"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>MCP</span> SDK dependency.</li>
 <li>Diagnostics enabled by default, with explicit operations and admin toolsets.</li>
@@ -5666,8 +5777,8 @@
     Host["Running DevKit web host"]
     Handler["Feature or project IMcpHandler"]
     Service["Application service"]
-    Docs["Official DevKit docs"]
-    Api["API reference metadata"]
+    Docs["Embedded DevKit docs"]
+    Api["Embedded API reference metadata"]
 
     Developer --&gt; Agent
     Agent --&gt;|"tools/list and tools/call"| Cli
@@ -6278,8 +6389,38 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--host<span class="w"> </s
 <div class="highlight"><pre><span></span><code>Use bdk_project_operations to inspect project-owned operations, then call the operation that checks whether customer CUST-10042 has recent failed orders or account warnings.
 </code></pre></div>
 <h2 id="documentation-and-api-tools">Documentation and API tools<a class="headerlink" href="#documentation-and-api-tools" title="Permanent link">&para;</a></h2>
-<p><code>bdk_docs_search</code> and <code>bdk_docs_get</code> use official DevKit documentation from GitHub rather than local repository docs. <code>bdk_api_search</code> and <code>bdk_api_get</code> first read generated metadata from <code>.github/pages/api</code> in the resolved workspace when it exists, then fall back to the published DevKit GitHub Pages API reference.</p>
-<p>This matters because most developers use <code>bdk mcp</code> from consuming application repositories, not from the DevKit source repository. The local repository may have no DevKit docs at all.</p>
+<p><code>bdk_docs_search</code> and <code>bdk_docs_get</code> read public Markdown embedded in the installed CLI assembly. <code>bdk_api_search</code> and <code>bdk_api_get</code> read its embedded API index and symbol details. They make no documentation HTTP requests, use no checkout or writable documentation cache, and do not fall back to GitHub, GitHub Pages, or generated workspace files.</p>
+<p>The installed local tool determines which docs are available. <span class="bdk-feature-name" data-feature-name="mcp"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>MCP</span> ignores differences between the tool and application DevKit versions. GitHub blob and raw URLs are accepted as aliases for embedded document paths, regardless of the URL's branch, tag, or version. A returned URL is a reference link, not a retrieval source.</p>
+<p><code>bdk_mcp_status</code> reports documentation source <code>embedded</code>. Missing documents or symbol details return <code>documentation_unavailable</code> with a local reason. Guidance and unrelated runtime tools remain available.</p>
+<h3 id="read-a-long-document">Read a long document<a class="headerlink" href="#read-a-long-document" title="Permanent link">&para;</a></h3>
+<p>Documentation search defaults to five results and returns at most twenty. API search defaults to eight and returns at most twenty-five. Document get defaults to 6,000 characters and returns at most 20,000 per call.</p>
+<p>Start with a source returned by search, or a known public document path:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"docs/features-jobs.md"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"maxChars"</span><span class="p">:</span><span class="w"> </span><span class="mi">6000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"offset"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>bdk_docs_get</code> returns <code>offset</code>, <code>nextOffset</code>, and <code>totalChars</code> alongside its content. Follow the suggested <code>next</code> call while <code>nextOffset</code> is present. Offsets use .NET UTF-16 character indices. Negative, non-integer, or out-of-range offsets return <code>operation_failed</code>.</p>
+<h3 id="add-documentation-to-the-embedded-set">Add documentation to the embedded set<a class="headerlink" href="#add-documentation-to-the-embedded-set" title="Permanent link">&para;</a></h3>
+<p>The website and <span class="bdk-feature-name" data-feature-name="mcp"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>MCP</span> share <code>docs/public-documentation.props</code> for the public-documentation selection. It includes root-level <code>INDEX.md</code>, <code>introduction-ddd-guide.md</code>, <code>common-*.md</code>, <code>development-*.md</code>, <code>features-*.md</code>, <code>storage-*.md</code>, and <code>testing-*.md</code>. ADRs, specifications, PRDs, presentations, generated site content, and binary assets are excluded.</p>
+<ol>
+<li>Add or edit a matching public document under <code>docs/</code>.</li>
+<li>Build the CLI. Matching additions, edits, renames, and removals are embedded automatically, without a clean build, manual sync, or per-file registration.</li>
+<li>Reinstall the rebuilt local tool and restart the <span class="bdk-feature-name" data-feature-name="mcp"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>MCP</span> client. For source development, restart using the rebuilt CLI output.</li>
+</ol>
+<p>New documents become available through search and get. Curated guidance topics still require separate authoring. Add a new public filename category to the shared selection rather than maintaining an MCP-only file list.</p>
+<h3 id="build-api-documentation">Build API documentation<a class="headerlink" href="#build-api-documentation" title="Permanent link">&para;</a></h3>
+<p>Normal Debug builds skip API generation and can use existing generated API files. If those files are absent, API lookup returns <code>documentation_unavailable</code>, while Markdown and guidance still work.</p>
+<p>Release builds and packaging generate the API metadata before embedding it. Generation uses the pinned DocFX tool and PowerShell, without building the website or requiring Docker. Restore the repository tools before generating API metadata:</p>
+<div class="highlight"><pre><span></span><code>dotnet<span class="w"> </span>tool<span class="w"> </span>restore
+dotnet<span class="w"> </span>build<span class="w"> </span>src/Presentation.Cli/Presentation.Cli.csproj<span class="w"> </span>--configuration<span class="w"> </span>Release
+</code></pre></div>
+<p>For a Debug package prepared with <code>--no-build</code>, generate and embed the metadata first:</p>
+<div class="highlight"><pre><span></span><code>dotnet<span class="w"> </span>build<span class="w"> </span>src/Presentation.Cli/Presentation.Cli.csproj<span class="w"> </span>--configuration<span class="w"> </span>Debug<span class="w"> </span>-p:BdkGenerateMcpApiReference<span class="o">=</span><span class="nb">true</span>
+dotnet<span class="w"> </span>pack<span class="w"> </span>src/Presentation.Cli/Presentation.Cli.csproj<span class="w"> </span>--configuration<span class="w"> </span>Debug<span class="w"> </span>--no-build
+</code></pre></div>
+<p>Release builds and packaging check only for <code>api/agent-index.json</code> as the completeness marker. There is no validation pass over individual links or symbol-detail references. <code>--no-build</code> inspects the index resource in the already-built assembly and does not pick up later documentation edits.</p>
 <h2 id="safety-model">Safety model<a class="headerlink" href="#safety-model" title="Permanent link">&para;</a></h2>
 <ul>
 <li>App-side <span class="bdk-feature-name" data-feature-name="mcp"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="mcp" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="22" height="19" rx="3" /><path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" /><circle cx="16" cy="4" r="1.8" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16v3M21 16v3M12 23h8" /></g></svg></span>MCP</span> hosting is enabled only for local Development hosts by default.</li>

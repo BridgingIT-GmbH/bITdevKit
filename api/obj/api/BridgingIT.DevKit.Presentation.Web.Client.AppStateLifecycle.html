@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class AppStateLifecycle | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class AppStateLifecycle | bITdevKit API Reference ">
+      
+      <meta name="description" content="Owns an explicit connection between one AppState instance and native Blazor persistence.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Presentation.Web.Client.AppStateLifecycle">
+
+
+
+  <h1 id="BridgingIT_DevKit_Presentation_Web_Client_AppStateLifecycle" data-uid="BridgingIT.DevKit.Presentation.Web.Client.AppStateLifecycle" class="text-break">
+Class AppStateLifecycle  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.html">Web</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.html">Client</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.Client.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Owns an explicit connection between one AppState instance and native Blazor persistence.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class AppStateLifecycle</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">AppStateLifecycle</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Presentation_Web_Client_AppStateLifecycle_examples">Examples</h2>
+  <pre><code class="lang-csharp">using var lifecycle = AppStateLifecycle.Attach(state, persistentState,
+    CatalogJson.Default.CatalogViewModel, RenderMode.InteractiveServer);
+if (!lifecycle.Restored)
+{
+    var next = state.TakeSnapshot();
+    next.Page = 1;
+    await state.RestoreSnapshot(next);
+}</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Presentation_Web_Client_AppStateLifecycle_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Attach once per logical instance after establishing host context. Dispose before releasing a component-owned state.
+Only approved model values cross the render-mode boundary. This handle never owns the state or its injected services.</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Client_AppStateLifecycle_Restored_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.AppStateLifecycle.Restored*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Client_AppStateLifecycle_Restored" data-uid="BridgingIT.DevKit.Presentation.Web.Client.AppStateLifecycle.Restored">
+  Restored
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether native state successfully initialized this instance during attachment.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Restored { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateLifecycle_Restored_examples">Examples</h4>
+  <pre><code class="lang-csharp">if (lifecycle.Restored) { Console.WriteLine("The catalog filter was restored."); }</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Client_AppStateLifecycle_Attach_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.AppStateLifecycle.Attach*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Client_AppStateLifecycle_Attach__1_BridgingIT_DevKit_Presentation_Web_Client_AppState___0__Microsoft_AspNetCore_Components_PersistentComponentState_System_Text_Json_Serialization_Metadata_JsonTypeInfo___0__Microsoft_AspNetCore_Components_IComponentRenderMode_System_Boolean_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.AppStateLifecycle.Attach``1(BridgingIT.DevKit.Presentation.Web.Client.AppState{``0},Microsoft.AspNetCore.Components.PersistentComponentState,System.Text.Json.Serialization.Metadata.JsonTypeInfo{``0},Microsoft.AspNetCore.Components.IComponentRenderMode,System.Boolean)">
+  Attach&lt;TState&gt;(AppState&lt;TState&gt;, PersistentComponentState, JsonTypeInfo&lt;TState&gt;, IComponentRenderMode, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers native capture and restores matching prerender or circuit snapshots before feature initialization.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static AppStateLifecycle Attach&lt;TState&gt;(AppState&lt;TState&gt; state, PersistentComponentState persistentState, JsonTypeInfo&lt;TState&gt; jsonTypeInfo, IComponentRenderMode renderMode, bool restoreCircuit = true) where TState : class, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>state</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppState-1.html">AppState</a>&lt;TState&gt;</dt>
+    <dd><p>The originating state, resolved or leased from the current runtime.</p>
+</dd>
+    <dt><code>persistentState</code> <span class="xref">PersistentComponentState</span></dt>
+    <dd><p>Blazor's persistence service from the current component runtime.</p>
+</dd>
+    <dt><code>jsonTypeInfo</code> <span class="xref">JsonTypeInfo</span>&lt;TState&gt;</dt>
+    <dd><p>Generated metadata for the approved model.</p>
+</dd>
+    <dt><code>renderMode</code> <span class="xref">IComponentRenderMode</span></dt>
+    <dd><p>The native mode at this interactive boundary.</p>
+</dd>
+    <dt><code>restoreCircuit</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether a new circuit may restore its last native snapshot; false accepts prerender handoff only.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Client.AppStateLifecycle.html">AppStateLifecycle</a></dt>
+    <dd><p>A handle whose lifetime belongs to one component or runtime owner.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TState</code></dt>
+    <dd><p>The explicitly approved model type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateLifecycle_Attach__1_BridgingIT_DevKit_Presentation_Web_Client_AppState___0__Microsoft_AspNetCore_Components_PersistentComponentState_System_Text_Json_Serialization_Metadata_JsonTypeInfo___0__Microsoft_AspNetCore_Components_IComponentRenderMode_System_Boolean__examples">Examples</h4>
+  <pre><code class="lang-csharp">using var lifecycle = AppStateLifecycle.Attach(state, persistentState,
+    CatalogJson.Default.CatalogViewModel, RenderMode.InteractiveServer);
+// Recreate component subscriptions against this runtime's state after attachment.</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateLifecycle_Attach__1_BridgingIT_DevKit_Presentation_Web_Client_AppState___0__Microsoft_AspNetCore_Components_PersistentComponentState_System_Text_Json_Serialization_Metadata_JsonTypeInfo___0__Microsoft_AspNetCore_Components_IComponentRenderMode_System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Native Blazor's imperative string serialization requires JSON reflection to be enabled in the host.
+Feature model serialization uses the supplied metadata. Missing, corrupt or superseded snapshots retain current values.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Client_AppStateLifecycle_Dispose_" data-uid="BridgingIT.DevKit.Presentation.Web.Client.AppStateLifecycle.Dispose*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Client_AppStateLifecycle_Dispose" data-uid="BridgingIT.DevKit.Presentation.Web.Client.AppStateLifecycle.Dispose">
+  Dispose()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases native callbacks and the logical identity reservation without disposing the state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Client_AppStateLifecycle_Dispose_examples">Examples</h4>
+  <pre><code class="lang-csharp">this.lifecycle?.Dispose();
+this.subscription?.Dispose();
+// DI retains ownership of an injected state.</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

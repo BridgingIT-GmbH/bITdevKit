@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class IncrementalHashWriteStream | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class IncrementalHashWriteStream | bITdevKit API Reference ">
+      
+      <meta name="description" content="Appends bytes written to a stream directly to a caller-owned incremental hash.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream" class="text-break">
+Class IncrementalHashWriteStream  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Appends bytes written to a stream directly to a caller-owned incremental hash.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class IncrementalHashWriteStream : Stream</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">MarshalByRefObject</span></div>
+      <div><span class="xref">Stream</span></div>
+      <div><span class="xref">IncrementalHashWriteStream</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_examples">Examples</h2>
+  <pre><code class="lang-csharp">using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+using (var output = new IncrementalHashWriteStream(hash))
+{
+    output.Write("inspection report"u8);
+}
+
+var fingerprint = Convert.ToHexStringLower(hash.GetHashAndReset());</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>The caller owns and finalizes the hash. Flushing or disposing the stream leaves the hash and
+its accumulated bytes available. Writes complete inline and concurrent writes are unsupported.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream__ctor_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream__ctor_System_Security_Cryptography_IncrementalHash_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.#ctor(System.Security.Cryptography.IncrementalHash,System.Threading.CancellationToken)">
+  IncrementalHashWriteStream(IncrementalHash, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a write-only stream that appends to the supplied hash.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IncrementalHashWriteStream(IncrementalHash hash, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hash</code> <span class="xref">IncrementalHash</span></dt>
+    <dd><p>The hash to update. The caller retains ownership.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token checked before each write appends bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p><code class="paramref">hash</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_CanRead_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.CanRead*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_CanRead" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.CanRead">
+  CanRead
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanRead { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_CanSeek_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.CanSeek*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_CanSeek" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.CanSeek">
+  CanSeek
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanSeek { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_CanWrite_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.CanWrite*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_CanWrite" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.CanWrite">
+  CanWrite
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanWrite { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Length_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Length*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Length" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Length">
+  Length
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override long Length { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Position_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Position*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Position" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Position">
+  Position
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override long Position { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Dispose_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Dispose*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Dispose_System_Boolean_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Dispose(System.Boolean)">
+  Dispose(bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void Dispose(bool disposing)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>disposing</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Flush_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Flush*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Flush" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Flush">
+  Flush()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Flush()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_FlushAsync_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.FlushAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_FlushAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.FlushAsync(System.Threading.CancellationToken)">
+  FlushAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task FlushAsync(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Read_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Read*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Read_System_Byte___System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Read(System.Byte[],System.Int32,System.Int32)">
+  Read(byte[], int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int Read(byte[] buffer, int offset, int count)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>buffer</code> <span class="xref">byte</span>[]</dt>
+    <dd></dd>
+    <dt><code>offset</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Seek_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Seek*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Seek_System_Int64_System_IO_SeekOrigin_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Seek(System.Int64,System.IO.SeekOrigin)">
+  Seek(long, SeekOrigin)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override long Seek(long offset, SeekOrigin origin)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>offset</code> <span class="xref">long</span></dt>
+    <dd></dd>
+    <dt><code>origin</code> <span class="xref">SeekOrigin</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_SetLength_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.SetLength*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_SetLength_System_Int64_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.SetLength(System.Int64)">
+  SetLength(long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void SetLength(long value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Write_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Write*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Write_System_Byte___System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Write(System.Byte[],System.Int32,System.Int32)">
+  Write(byte[], int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Write(byte[] buffer, int offset, int count)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>buffer</code> <span class="xref">byte</span>[]</dt>
+    <dd></dd>
+    <dt><code>offset</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Write_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Write*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_Write_System_ReadOnlySpan_System_Byte__" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.Write(System.ReadOnlySpan{System.Byte})">
+  Write(ReadOnlySpan&lt;byte&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Write(ReadOnlySpan&lt;byte&gt; buffer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>buffer</code> <span class="xref">ReadOnlySpan</span>&lt;<span class="xref">byte</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_WriteAsync_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.WriteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_WriteAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+  WriteAsync(byte[], int, int, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>buffer</code> <span class="xref">byte</span>[]</dt>
+    <dd></dd>
+    <dt><code>offset</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_WriteAsync_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.WriteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_WriteAsync_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
+  WriteAsync(ReadOnlyMemory&lt;byte&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override ValueTask WriteAsync(ReadOnlyMemory&lt;byte&gt; buffer, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>buffer</code> <span class="xref">ReadOnlyMemory</span>&lt;<span class="xref">byte</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_WriteByte_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.WriteByte*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncrementalHashWriteStream_WriteByte_System_Byte_" data-uid="BridgingIT.DevKit.Common.IncrementalHashWriteStream.WriteByte(System.Byte)">
+  WriteByte(byte)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void WriteByte(byte value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">byte</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LiteDbActiveEntityQuery&lt;TEntity&gt;.Selection | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LiteDbActiveEntityQuery&lt;TEntity&gt;.Selection | bITdevKit API Reference ">
+      
+      <meta name="description" content="Contains the detached selected rows and paging metadata.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection" class="text-break">
+Class LiteDbActiveEntityQuery&lt;TEntity&gt;.Selection  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.html">LiteDb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.LiteDb.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Contains the detached selected rows and paging metadata.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed record LiteDbActiveEntityQuery&lt;TEntity&gt;.Selection</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">LiteDbActiveEntityQuery&lt;TEntity&gt;.Selection</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection__ctor_System_Collections_Generic_IReadOnlyList__0__System_Int64_System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.#ctor(System.Collections.Generic.IReadOnlyList{`0},System.Int64,System.Int32,System.Int32)">
+  Selection(IReadOnlyList&lt;TEntity&gt;, long, int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Contains the detached selected rows and paging metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Selection(IReadOnlyList&lt;TEntity&gt; Items, long Total, int Page, int PageSize)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>Items</code> <span class="xref">IReadOnlyList</span>&lt;TEntity&gt;</dt>
+    <dd><p>Rows selected after ordering and paging.</p>
+</dd>
+    <dt><code>Total</code> <span class="xref">long</span></dt>
+    <dd><p>Matching row count before paging.</p>
+</dd>
+    <dt><code>Page</code> <span class="xref">int</span></dt>
+    <dd><p>One-based page number.</p>
+</dd>
+    <dt><code>PageSize</code> <span class="xref">int</span></dt>
+    <dd><p>Effective page size, or selected count for an unpaged result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_Items_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.Items*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_Items" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.Items">
+  Items
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Rows selected after ordering and paging.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;TEntity&gt; Items { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;TEntity&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_Page_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.Page*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_Page" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.Page">
+  Page
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>One-based page number.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Page { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_PageSize_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.PageSize*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_PageSize" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.PageSize">
+  PageSize
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Effective page size, or selected count for an unpaged result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int PageSize { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_Total_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.Total*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_Total" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.Total">
+  Total
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Matching row count before paging.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long Total { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_Deconstruct_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.Deconstruct*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_Deconstruct_System_Collections_Generic_IReadOnlyList__0___System_Int64__System_Int32__System_Int32__" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.Deconstruct(System.Collections.Generic.IReadOnlyList{`0}@,System.Int64@,System.Int32@,System.Int32@)">
+  Deconstruct(out IReadOnlyList&lt;TEntity&gt;, out long, out int, out int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Deconstruct(out IReadOnlyList&lt;TEntity&gt; Items, out long Total, out int Page, out int PageSize)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>Items</code> <span class="xref">IReadOnlyList</span>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>Total</code> <span class="xref">long</span></dt>
+    <dd></dd>
+    <dt><code>Page</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>PageSize</code> <span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_Equals_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.Equals*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_Equals_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery__0__Selection_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.Equals(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery{`0}.Selection)">
+  Equals(Selection?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(LiteDbActiveEntityQuery&lt;TEntity&gt;.Selection? other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.html">LiteDbActiveEntityQuery</a>&lt;TEntity&gt;.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.Selection.html">Selection</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_Equals_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.Equals*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_Equals_System_Object_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.Equals(System.Object)">
+  Equals(object?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_GetHashCode_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.GetHashCode*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_GetHashCode" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.GetHashCode">
+  GetHashCode()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_ToString_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.ToString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_ToString" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.ToString">
+  ToString()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_op_Equality_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.op_Equality*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_op_Equality_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery__0__Selection_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery__0__Selection_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.op_Equality(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery{`0}.Selection,BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery{`0}.Selection)">
+  operator ==(Selection?, Selection?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(LiteDbActiveEntityQuery&lt;TEntity&gt;.Selection? left, LiteDbActiveEntityQuery&lt;TEntity&gt;.Selection? right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.html">LiteDbActiveEntityQuery</a>&lt;TEntity&gt;.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.Selection.html">Selection</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.html">LiteDbActiveEntityQuery</a>&lt;TEntity&gt;.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.Selection.html">Selection</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_op_Inequality_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.op_Inequality*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery_1_Selection_op_Inequality_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery__0__Selection_BridgingIT_DevKit_Infrastructure_LiteDb_LiteDbActiveEntityQuery__0__Selection_" data-uid="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery`1.Selection.op_Inequality(BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery{`0}.Selection,BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery{`0}.Selection)">
+  operator !=(Selection?, Selection?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(LiteDbActiveEntityQuery&lt;TEntity&gt;.Selection? left, LiteDbActiveEntityQuery&lt;TEntity&gt;.Selection? right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.html">LiteDbActiveEntityQuery</a>&lt;TEntity&gt;.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.Selection.html">Selection</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.html">LiteDbActiveEntityQuery</a>&lt;TEntity&gt;.<a class="xref" href="BridgingIT.DevKit.Infrastructure.LiteDb.LiteDbActiveEntityQuery-1.Selection.html">Selection</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

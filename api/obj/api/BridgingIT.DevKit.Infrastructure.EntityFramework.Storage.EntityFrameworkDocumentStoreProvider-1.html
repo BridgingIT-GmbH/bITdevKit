@@ -98,7 +98,7 @@ Class EntityFrameworkDocumentStoreProvider&lt;TContext&gt;
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class EntityFrameworkDocumentStoreProvider&lt;TContext&gt; : IDocumentStoreProvider, IDocumentStoreRetentionProvider, IDocumentStoreBatchGetProvider, IDocumentStoreBulkWriteProvider where TContext : DbContext, IDocumentStoreContext</code></pre>
+    <pre><code class="lang-csharp hljs">public class EntityFrameworkDocumentStoreProvider&lt;TContext&gt; : IDocumentStoreProvider, IDocumentStoreRetentionProvider, IDocumentStoreBatchGetProvider, IDocumentStoreBulkWriteProvider, IDocumentDimensionDiagnosticsProvider where TContext : DbContext, IDocumentStoreContext</code></pre>
   </div>
 
 
@@ -125,144 +125,12 @@ Class EntityFrameworkDocumentStoreProvider&lt;TContext&gt;
       <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreRetentionProvider.html">IDocumentStoreRetentionProvider</a></div>
       <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreBatchGetProvider.html">IDocumentStoreBatchGetProvider</a></div>
       <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreBulkWriteProvider.html">IDocumentStoreBulkWriteProvider</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentDimensionDiagnosticsProvider.html">IDocumentDimensionDiagnosticsProvider</a></div>
     </dd>
   </dl>
 
 
 
-  <dl class="typelist extensionMethods">
-    <dt>Extension Methods</dt>
-    <dd>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
-  </div>
-  <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
-  </div>
-  </dd></dl>
 
 
   <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_examples">Examples</h2>
@@ -367,6 +235,39 @@ on <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Storag
 </h2>
 
 
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_ClearDimensionNameCache_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.ClearDimensionNameCache*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_ClearDimensionNameCache" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.ClearDimensionNameCache">
+  ClearDimensionNameCache()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Clears cached dictionary identities after external resource recreation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ClearDimensionNameCache()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_ClearDimensionNameCache_examples">Examples</h4>
+  <pre><code class="lang-csharp">provider.ClearDimensionNameCache();</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_ClearDimensionNameCache_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Call when reusing this provider instance after recreating its database or Dimensions tables. This operation performs no database I/O.</p>
+</div>
+
+
+
+
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_CountAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.CountAsync*"></a>
 
   <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_CountAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentCountQuery_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.CountAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,BridgingIT.DevKit.Application.Storage.DocumentCountQuery,System.DateTimeOffset,System.Threading.CancellationToken)">
@@ -412,6 +313,44 @@ on <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Storag
 
   <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_CountAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentCountQuery_System_DateTimeOffset_System_Threading_CancellationToken__examples">Examples</h4>
   <pre><code class="lang-csharp">var count = await provider.CountAsync(type, query, cutoff, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_CreateCapabilities_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.CreateCapabilities*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_CreateCapabilities_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.CreateCapabilities(System.String)">
+  CreateCapabilities(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates immutable metadata for the configured EF engine.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DocumentStoreProviderCapabilities CreateCapabilities(string databaseProvider = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>databaseProvider</code> <span class="xref">string</span></dt>
+    <dd><p>The EF provider name, resolved without backend access.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.html">DocumentStoreProviderCapabilities</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
 
 
 
@@ -677,6 +616,84 @@ failure even when an expired physical record remains awaiting retention.</p>
 
 
 
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_GetCapabilities_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.GetCapabilities*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_GetCapabilities_System_IServiceProvider_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.GetCapabilities(System.IServiceProvider)">
+  GetCapabilities(IServiceProvider)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resolves engine metadata through an owned scope without opening a connection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DocumentStoreProviderCapabilities GetCapabilities(IServiceProvider services)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>services</code> <span class="xref">IServiceProvider</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.html">DocumentStoreProviderCapabilities</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_GetDimensionDiagnosticsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.GetDimensionDiagnosticsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_GetDimensionDiagnosticsAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.GetDimensionDiagnosticsAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,System.Boolean,System.Threading.CancellationToken)">
+  GetDimensionDiagnosticsAsync(DocumentTypeIdentity, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captures counters; dictionary counting requires explicit consent and performs backend I/O.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;DocumentDimensionDiagnostics&gt;&gt; GetDimensionDiagnosticsAsync(DocumentTypeIdentity type, bool includeDictionaryCount = false, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd></dd>
+    <dt><code>includeDictionaryCount</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionDiagnostics.html">DocumentDimensionDiagnostics</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_GetManyAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.GetManyAsync*"></a>
 
   <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_GetManyAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Storage_DocumentKey__System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.GetManyAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Storage.DocumentKey},System.DateTimeOffset,System.Threading.CancellationToken)">
@@ -725,6 +742,64 @@ results. A failure means the whole batch could not be read.</p>
   <pre><code class="lang-csharp">var result = await provider.GetManyAsync(type, keys, timeProvider.GetUtcNow(), cancellationToken);</code></pre>
 
 
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_ListPageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.ListPageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_ListPageAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentFilterQuery_System_DateTimeOffset_System_Int32_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.ListPageAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,BridgingIT.DevKit.Application.Storage.DocumentFilterQuery,System.DateTimeOffset,System.Int32,System.Threading.CancellationToken)">
+  ListPageAsync(DocumentTypeIdentity, DocumentFilterQuery, DateTimeOffset, int, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists one page of metadata matching key and Dimension criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;DocumentInfoPage&gt;&gt; ListPageAsync(DocumentTypeIdentity type, DocumentFilterQuery query, DateTimeOffset visibilityCutoff, int pageSize, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd><p>The stable persisted namespace for the document type.</p>
+</dd>
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentFilterQuery.html">DocumentFilterQuery</a></dt>
+    <dd><p>The validated scope, predicates, and seek order.</p>
+</dd>
+    <dt><code>visibilityCutoff</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd><p>The UTC instant used to exclude expired documents on this page.</p>
+</dd>
+    <dt><code>pageSize</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of metadata items to return.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel provider I/O.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentInfoPage.html">DocumentInfoPage</a>&gt;&gt;</dt>
+    <dd><p>A page with a JSON string array in <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentInfoPage.html#BridgingIT_DevKit_Application_Storage_DocumentInfoPage_ContinuationToken">ContinuationToken</a> when more items exist. The final page has a null token.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_ListPageAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentFilterQuery_System_DateTimeOffset_System_Int32_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await provider.ListPageAsync(type, query, cutoff, pageSize, cancellationToken);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_ListPageAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentFilterQuery_System_DateTimeOffset_System_Int32_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The continuation array contains the last returned partition and row keys in <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentFilterQuery.html#BridgingIT_DevKit_Application_Storage_DocumentFilterQuery_Order">Order</a> order,
+followed by their SHA-256 lookup hashes in partition-then-row order. The client validates and wraps this array.</p>
+</div>
 
 
 
@@ -824,6 +899,54 @@ as idempotent cleanup rather than failures.</p>
 
   <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_SweepExpiredAsync_BridgingIT_DevKit_Application_Storage_DocumentRetentionSweepRequest_System_Threading_CancellationToken__examples">Examples</h4>
   <pre><code class="lang-csharp">var result = await provider.SweepExpiredAsync(request, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_UpdateDimensionsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.UpdateDimensionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_UpdateDimensionsAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentDimensionsUpdate_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider`1.UpdateDimensionsAsync(BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,BridgingIT.DevKit.Application.Storage.DocumentDimensionsUpdate,System.Threading.CancellationToken)">
+  UpdateDimensionsAsync(DocumentTypeIdentity, DocumentDimensionsUpdate, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Replaces Dimensions under the existing whole-item ETag without rewriting content.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;DocumentInfo&gt;&gt; UpdateDimensionsAsync(DocumentTypeIdentity type, DocumentDimensionsUpdate update, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd><p>The stable document namespace.</p>
+</dd>
+    <dt><code>update</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDimensionsUpdate.html">DocumentDimensionsUpdate</a></dt>
+    <dd><p>The exact key, required replacement collection, and optional current whole-item ETag.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels provider I/O.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentInfo.html">DocumentInfo</a>&gt;&gt;</dt>
+    <dd><p>The acknowledged metadata snapshot or a typed failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProvider_1_UpdateDimensionsAsync_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_BridgingIT_DevKit_Application_Storage_DocumentDimensionsUpdate_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.UpdateDimensionsAsync(type, new() { Key = key, Dimensions = DocumentDimensions.Empty, IfMatchETag = current.ETag }, cancellationToken);</code></pre>
 
 
 

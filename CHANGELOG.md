@@ -2,6 +2,10 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.131] - 2026-11-24
+
+- Fixed `AddResponseProblemDetails()` to map `NotImplementedException` to HTTP 501 Not Implemented and `HttpRequestException` to HTTP 503 Service Unavailable by default. Host and module mappings take precedence.
+
 ## [10.0.130] - 2026-11-24
 
 - Removed Hellang from DevKit HTTP Problem Details. **Breaking change.** Replace `Configure.ProblemDetails(...)` with `AddResponseProblemDetails(...)` and `UseResponseProblemDetails()`, then rebuild. The new setup uses ASP.NET Core middleware and can limit automatic handling to API requests in mixed hosts. [Host migration](docs/adr/0046-shared-http-problem-details.md#host-registration)

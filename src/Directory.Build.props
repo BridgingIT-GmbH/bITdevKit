@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../../CHANGELOG.md"))</PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/BridgingIT-GmbH/bITdevKit/blob/main/CHANGELOG.md</PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>

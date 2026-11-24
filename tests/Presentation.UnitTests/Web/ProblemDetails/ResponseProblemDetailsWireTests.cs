@@ -679,7 +679,7 @@ public sealed class ResponseProblemDetailsWireTests
     [InlineData("aggregate", 404, "Aggregate Not Found", "The requested resource was not found.")]
     [InlineData("entity", 404, "Entity Not Found", "The requested resource was not found.")]
     [InlineData("module", 503, "Module Not Enabled", "The requested feature is unavailable.")]
-    [InlineData("http", 500, "Internal Server Error", "An unexpected error occurred.")]
+    [InlineData("unknown", 500, "Internal Server Error", "An unexpected error occurred.")]
     public async Task Get_BuiltInExceptionMapping_UsesFixedPublicFields(string kind, int status, string title, string detail)
     {
         var builder = CreateBuilder();
@@ -694,7 +694,7 @@ public sealed class ResponseProblemDetailsWireTests
             "aggregate" => new AggregateNotFoundException("fictional failure"),
             "entity" => new EntityNotFoundException("fictional failure"),
             "module" => new ModuleNotEnabledException("fictional failure"),
-            _ => new HttpRequestException("fictional failure")
+            _ => new InvalidOperationException("fictional failure")
         });
         await app.StartAsync();
 

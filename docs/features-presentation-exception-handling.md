@@ -131,7 +131,9 @@ When a registered writer accepts a problem, DevKit applies native customization 
 | `ShouldLogUnhandledException` | `true` | Writes a DevKit log for handled server exceptions. |
 | `ShouldLogResultErrors` | `true` | Logs mapped 5xx Problem Details and custom MVC Result responses when they execute. An explicit mapper logger takes precedence. Set to `false` to disable HTTP Result logging. |
 
-The default mappings preserve the established 400 validation, rule, and domain policy statuses, 401 security status, 404 not-found statuses, and 503 disabled-module status. Other exceptions return 500 unless an application or module maps them. An eligible empty 400–599 response uses its existing status and reason phrase. A declared body, content type, or content length keeps control with the endpoint.
+The default mappings return 400 for validation, rule, and domain policy failures, 401 for security exceptions, and 404 for missing aggregates and entities. `NotImplementedException` returns 501 Not Implemented. `HttpRequestException` and `ModuleNotEnabledException` return 503 Service Unavailable. Other exceptions return 500 unless an application or module maps them.
+
+An eligible empty 400–599 response uses its existing status and reason phrase. A declared body, content type, or content length keeps control with the endpoint.
 
 Call `Map<TException>(status, title, typeUri)` for a host override or `MapDefault<TException>(...)` for a reusable module. Overloads accept a factory receiving the exception and optionally the request, with an optional predicate for the context-aware factory. Host overrides run before module defaults, then built-ins and the 500 catch-all. Within each group, the first matching mapping wins. Register more specific exceptions before base types.
 

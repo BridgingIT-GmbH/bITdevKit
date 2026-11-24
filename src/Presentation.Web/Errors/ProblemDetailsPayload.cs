@@ -45,6 +45,8 @@ public static class ProblemDetailsPayload
             ValidationException => (400, "Validation Error", ValidationDetail),
             RuleException or DomainPolicyException => (400, "Bad Request", "The request could not be completed."),
             SecurityException => (401, "Unauthorized", "Access is not authorized."),
+            NotImplementedException => (501, "Not Implemented", UnexpectedDetail),
+            HttpRequestException => (503, "Service Unavailable", UnexpectedDetail),
             ModuleNotEnabledException => (503, "Module Not Enabled", "The requested feature is unavailable."),
             AggregateNotFoundException => (404, "Aggregate Not Found", "The requested resource was not found."),
             EntityNotFoundException => (404, "Entity Not Found", "The requested resource was not found."),

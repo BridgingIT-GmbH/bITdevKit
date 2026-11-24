@@ -17,7 +17,7 @@ public sealed class ProblemDetailsScenario(IConfiguration configuration)
     private const string ErrorPath = "/problem-details/error";
     private readonly string profile = configuration[Settings + ":Profile"] ?? "Disabled";
 
-    private bool Enabled => this.profile is "Api" or "Mixed";
+    private bool Enabled => this.profile is "Api" or "ApiDefaults" or "Mixed";
 
     /// <summary>Registers services for the selected profile.</summary>
     public void AddServices(IServiceCollection services)
@@ -32,6 +32,11 @@ public sealed class ProblemDetailsScenario(IConfiguration configuration)
         services.AddResponseProblemDetails(o =>
         {
             o.IncludeExceptionDetails = configuration.GetValue<bool>(Settings + ":IncludeExceptionDetails");
+            if (this.profile == "ApiDefaults")
+            {
+                return;
+            }
+
             o.Map<InventoryConflictException>(409, "Inventory item conflict", "https://inventory.example/problems/item-conflict");
             o.AllowedHeaderNames.Add("X-Inventory-Version");
             if (this.profile == "Mixed")
@@ -44,7 +49,7 @@ public sealed class ProblemDetailsScenario(IConfiguration configuration)
     /// <summary>Installs middleware for the selected profile.</summary>
     public void UseMiddleware(WebApplication app)
     {
-        if (this.profile == "Api")
+        if (this.profile is "Api" or "ApiDefaults")
         {
             app.UseResponseProblemDetails();
         }
@@ -78,7 +83,8 @@ public sealed class ProblemDetailsScenario(IConfiguration configuration)
         }).ProducesResultProblem(500);
         api.MapGet("/result/server", () => CreateServerResult().MapHttpNoContent()).ProducesResultProblem(500);
         api.MapGet("/throw/mapped", HttpResult () => throw new InventoryConflictException()).ProducesResultProblem(409);
-        api.MapGet("/throw/not-implemented", HttpResult () => throw new NotImplementedException());
+        api.MapGet("/throw/not-implemented", HttpResult () => throw new NotImplementedException("Fictional inventory failure."));
+        api.MapGet("/throw/upstream", HttpResult () => throw new HttpRequestException("Fictional inventory failure."));
         api.MapGet("/throw/not-supported", HttpResult () => throw new NotSupportedException());
         api.MapGet("/empty", () => TypedResults.StatusCode(404));
         api.MapGet("/explicit", () => TypedResults.Text("Inventory item unavailable.", statusCode: 404));

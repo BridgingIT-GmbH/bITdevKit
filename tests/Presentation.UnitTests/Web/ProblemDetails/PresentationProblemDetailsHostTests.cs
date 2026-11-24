@@ -70,13 +70,36 @@ public sealed class PresentationProblemDetailsHostTests
             }
         }
 
-        using var notImplemented = await client.GetAsync(Prefix + "/throw/not-implemented");
         using var notSupported = await client.GetAsync(Prefix + "/throw/not-supported");
         using var mapped = await client.GetAsync(Prefix + "/throw/mapped");
-        notImplemented.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
         notSupported.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
         using var mappedProblem = await ReadProblemAsync(mapped, HttpStatusCode.Conflict);
         mappedProblem.RootElement.GetProperty("type").GetString().ShouldBe("https://inventory.example/problems/item-conflict");
+    }
+
+    [Theory]
+    [InlineData("not-implemented", HttpStatusCode.NotImplemented, "Not Implemented", false)]
+    [InlineData("not-implemented", HttpStatusCode.NotImplemented, "Not Implemented", true)]
+    [InlineData("upstream", HttpStatusCode.ServiceUnavailable, "Service Unavailable", false)]
+    [InlineData("upstream", HttpStatusCode.ServiceUnavailable, "Service Unavailable", true)]
+    public async Task Get_BuiltInServerException_UsesMappedStatusAndConfiguredDiagnostics(
+        string route, HttpStatusCode expectedStatus, string expectedTitle, bool disclose)
+    {
+        await using var fixture = CreateHost("ApiDefaults", disclose);
+        using var client = fixture.CreateClient();
+
+        using var response = await client.GetAsync($"{Prefix}/throw/{route}");
+
+        using var problem = await ReadProblemAsync(response, expectedStatus);
+        problem.RootElement.GetProperty("title").GetString().ShouldBe(expectedTitle);
+        problem.RootElement.GetProperty("type").GetString().ShouldBe($"https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/{(int)expectedStatus}");
+        problem.RootElement.GetProperty("detail").GetString().ShouldBe("An unexpected error occurred.");
+        response.Headers.CacheControl.NoStore.ShouldBeTrue();
+        problem.RootElement.TryGetProperty("exceptionDetails", out var diagnostics).ShouldBe(disclose);
+        if (disclose)
+        {
+            diagnostics[0].GetProperty("message").GetString().ShouldBe("Fictional inventory failure.");
+        }
     }
 
     [Fact]
@@ -131,7 +154,7 @@ public sealed class PresentationProblemDetailsHostTests
         var captured = baseline.RootElement.GetProperty("profiles").GetProperty("Staging-False-False-False");
         await using var fixture = CreateHost("Api");
         using var client = fixture.CreateClient();
-        foreach (var entry in captured.EnumerateObject())
+        foreach (var entry in captured.EnumerateObject().Where(entry => entry.Name != "throw/not-implemented"))
         {
             using var response = await client.GetAsync(Prefix + "/" + entry.Name);
             ((int)response.StatusCode).ShouldBe(entry.Value.GetProperty("status").GetInt32());

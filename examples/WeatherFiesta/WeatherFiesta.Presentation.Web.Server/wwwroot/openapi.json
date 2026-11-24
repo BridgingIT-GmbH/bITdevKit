@@ -11514,6 +11514,226 @@
         }
       }
     },
+    "/_bdk/api/storage/documents/{clientId}/search": {
+      "post": {
+        "tags": [
+          "_bdk.Storage.Documents.Maintenance"
+        ],
+        "summary": "Filter document metadata by key and Dimensions",
+        "operationId": "_bdk.Storage.Documents.Maintenance.FilterSearch",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partitionKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rowKeyPrefix",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "allowFullScan",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "page": {
+                    "enum": [
+                      0,
+                      1
+                    ],
+                    "type": "integer"
+                  },
+                  "pageSize": {
+                    "type": "integer",
+                    "description": "Omit or use 0 for the client default. Explicit sizes are limited by the client's maximum and 1000."
+                  },
+                  "orderings": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "field": {
+                          "type": "string"
+                        },
+                        "direction": {
+                          "enum": [
+                            "asc",
+                            "desc"
+                          ],
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "filters": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "field": {
+                          "type": "string",
+                          "description": "PartitionKey, RowKey and Dimensions.<name>."
+                        },
+                        "operator": {
+                          "enum": [
+                            "eq",
+                            "neq",
+                            "startswith",
+                            "gt",
+                            "gte",
+                            "lt",
+                            "lte",
+                            "isnull",
+                            "isnotnull"
+                          ],
+                          "type": "string"
+                        },
+                        "value": {
+                          "oneOf": [
+                            {
+                              "type": "string",
+                              "description": "Logical storage key."
+                            },
+                            {
+                              "required": [
+                                "type",
+                                "value"
+                              ],
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "description": "integer, decimal, boolean, string, or datetime"
+                                },
+                                "value": {
+                                  "type": [
+                                    "boolean",
+                                    "number",
+                                    "string"
+                                  ]
+                                }
+                              },
+                              "description": "Typed Dimension operand. Omit the operand for null checks."
+                            }
+                          ]
+                        },
+                        "logic": {
+                          "enum": [
+                            "and",
+                            "or"
+                          ],
+                          "type": "string"
+                        },
+                        "filters": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      },
+                      "description": "Use a field for a comparison or nested filters for a group. Pick eq, neq, or startswith for supported keys. Dimensions support typed comparisons and isnull or isnotnull."
+                    }
+                  },
+                  "continuationToken": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Repeat the same query with the token from the previous page."
+                  }
+                },
+                "description": "FilterModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentStorageDocumentInfoPageModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/_bdk/api/storage/documents/clients": {
       "get": {
         "tags": [
@@ -12545,6 +12765,189 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/blobs/{storeName}/search": {
+      "post": {
+        "tags": [
+          "_bdk.Storage.Blobs.Maintenance"
+        ],
+        "summary": "Filter blob metadata by name and Dimensions",
+        "operationId": "_bdk.Storage.Blobs.Maintenance.FilterSearch",
+        "parameters": [
+          {
+            "name": "storeName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "container",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "prefix",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "allowFullScan",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "page": {
+                    "enum": [
+                      0,
+                      1
+                    ],
+                    "type": "integer"
+                  },
+                  "pageSize": {
+                    "type": "integer",
+                    "description": "Omit or use 0 for the client default. Explicit sizes are limited by the client's maximum and 1000."
+                  },
+                  "orderings": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "field": {
+                          "type": "string"
+                        },
+                        "direction": {
+                          "enum": [
+                            "asc",
+                            "desc"
+                          ],
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "filters": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "field": {
+                          "type": "string",
+                          "description": "Container, Name and Dimensions.<name>."
+                        },
+                        "operator": {
+                          "enum": [
+                            "eq",
+                            "neq",
+                            "startswith",
+                            "gt",
+                            "gte",
+                            "lt",
+                            "lte",
+                            "isnull",
+                            "isnotnull"
+                          ],
+                          "type": "string"
+                        },
+                        "value": {
+                          "oneOf": [
+                            {
+                              "type": "string",
+                              "description": "Logical storage key."
+                            },
+                            {
+                              "required": [
+                                "type",
+                                "value"
+                              ],
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "description": "integer, decimal, boolean, string, or datetime"
+                                },
+                                "value": {
+                                  "type": [
+                                    "boolean",
+                                    "number",
+                                    "string"
+                                  ]
+                                }
+                              },
+                              "description": "Typed Dimension operand. Omit the operand for null checks."
+                            }
+                          ]
+                        },
+                        "logic": {
+                          "enum": [
+                            "and",
+                            "or"
+                          ],
+                          "type": "string"
+                        },
+                        "filters": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      },
+                      "description": "Use a field for a comparison or nested filters for a group. Pick eq, neq, or startswith for supported keys. Dimensions support typed comparisons and isnull or isnotnull."
+                    }
+                  },
+                  "continuationToken": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Repeat the same query with the token from the previous page."
+                  }
+                },
+                "description": "FilterModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlobStorageBlobPageModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -14750,6 +15153,9 @@
       "BlobStoreProviderCapabilities": {
         "type": "object",
         "properties": {
+          "supportsFilterModel": {
+            "type": "boolean"
+          },
           "dimensions": {
             "$ref": "#/components/schemas/BlobDimensionCapabilities"
           },
@@ -15480,6 +15886,22 @@
           }
         }
       },
+      "CompositeSpecification": {
+        "type": "object",
+        "properties": {
+          "nodes": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/SpecificationNode"
+            },
+            "description": "List of specification nodes"
+          }
+        },
+        "description": "A tree structure containing specification nodes for complex filtering logic"
+      },
       "CurrentWeatherModel": {
         "type": "object",
         "properties": {
@@ -16010,6 +16432,29 @@
           }
         }
       },
+      "DocumentStorageDocumentInfoPageModel": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/DocumentStorageDocumentInfoModel"
+            }
+          },
+          "continuationToken": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        }
+      },
       "DocumentStorageUpdateDimensionsRequestModel": {
         "type": "object",
         "properties": {
@@ -16087,6 +16532,9 @@
       "DocumentStoreProviderCapabilities": {
         "type": "object",
         "properties": {
+          "supportsFilterModel": {
+            "type": "boolean"
+          },
           "dimensions": {
             "$ref": "#/components/schemas/DocumentDimensionCapabilities"
           },
@@ -16465,6 +16913,144 @@
           },
           "supportsNotifications": {
             "type": "boolean"
+          }
+        }
+      },
+      "FilterCriteria": {
+        "examples": [
+          {
+            "field": "status",
+            "operator": "eq",
+            "value": "active",
+            "logic": "and"
+          }
+        ],
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The field to filter on"
+          },
+          "operator": {
+            "enum": [
+              "eq",
+              "neq",
+              "isnull",
+              "isnotnull",
+              "isempty",
+              "isnotempty",
+              "gt",
+              "gte",
+              "lt",
+              "lte",
+              "contains",
+              "doesnotcontain",
+              "startswith",
+              "doesnotstartwith",
+              "endswith",
+              "doesnotendwith",
+              "any",
+              "all",
+              "none"
+            ],
+            "type": "string",
+            "description": "The operator to use for filtering"
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object"
+              }
+            ],
+            "description": "The value to compare against (any type)"
+          },
+          "logic": {
+            "enum": [
+              "and",
+              "or"
+            ],
+            "type": "string",
+            "description": "Logic operator for combining nested lofty filters",
+            "default": "and"
+          },
+          "filters": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/FilterCriteria"
+            },
+            "description": "Nested filter criteria"
+          },
+          "customType": {
+            "enum": [
+              "none",
+              "fulltextsearch",
+              "daterange",
+              "daterelative",
+              "timerange",
+              "timerelative",
+              "numericrange",
+              "isnull",
+              "isnotnull",
+              "enumvalues",
+              "textin",
+              "textnotin",
+              "numericin",
+              "numericnotin",
+              "namedspecification",
+              "compositespecification"
+            ],
+            "type": "string",
+            "description": "Custom filter type",
+            "default": "none"
+          },
+          "customParameters": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "description": "Custom parameters for the filter"
+          },
+          "specificationName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Name of a registered specification"
+          },
+          "specificationArguments": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": { },
+            "description": "Arguments for the specification"
+          },
+          "compositeSpecification": {
+            "$ref": "#/components/schemas/CompositeSpecification"
+          }
+        },
+        "description": "Represents a single filter criterion for filtering query results"
+      },
+      "FilterOrderCriteria": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "direction": {
+            "$ref": "#/components/schemas/OrderDirection"
           }
         }
       },
@@ -18276,6 +18862,17 @@
           }
         }
       },
+      "OrderDirection": {
+        "examples": [
+          "asc"
+        ],
+        "enum": [
+          "asc",
+          "desc"
+        ],
+        "type": "string",
+        "description": "Order direction"
+      },
       "ProblemDetails": {
         "type": "object",
         "properties": {
@@ -18821,6 +19418,74 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "SpecificationNode": {
+        "description": "Polymorphic specification node: either a leaf (named specification) or group (combining multiple nodes)"
+      },
+      "StorageFilterRequest": {
+        "type": "object",
+        "properties": {
+          "continuationToken": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "noTracking": {
+            "type": "boolean"
+          },
+          "orderings": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/FilterOrderCriteria"
+            }
+          },
+          "filters": {
+            "type": [
+              "null",
+              "array"
+            ]
+          },
+          "includes": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "hierarchy": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "hierarchyMaxDepth": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "_FilterCriteriaSchema": {
+            "$ref": "#/components/schemas/FilterCriteria"
+          },
+          "_CompositeSpecificationSchema": {
+            "$ref": "#/components/schemas/CompositeSpecification"
+          },
+          "_SpecificationNodeSchema": {
+            "$ref": "#/components/schemas/SpecificationNode"
           }
         }
       },

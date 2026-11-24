@@ -2,6 +2,12 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.129] - 2026-11-24
+
+- Fixed NuGet publishing by setting package release notes to the public GitHub changelog URL, which keeps them within NuGet's size limit.
+
+This release carries forward the changes listed under 10.0.125 through 10.0.128.
+
 ## [10.0.128] - 2026-11-24
 
 - Changed release packaging to omit `BridgingIT.DevKit.Infrastructure.LiteDb` until LiteDB 6 has a stable release.

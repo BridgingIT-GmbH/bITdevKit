@@ -10,7 +10,6 @@ global using BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server;
 global using BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
 global using BridgingIT.DevKit.Infrastructure.EntityFramework;
 global using BridgingIT.DevKit.Presentation.Web;
-global using Hellang.Middleware.ProblemDetails;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 global using Microsoft.AspNetCore.Mvc;

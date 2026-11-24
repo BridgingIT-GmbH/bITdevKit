@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed, 2026-11-23. The design allows breaking response changes. Implementation is pending.
+Accepted, 2026-11-24.
 
 ## Context
 
@@ -14,7 +14,7 @@ Removing Hellang reduces the number of dependencies DevKit maintains. The migrat
 
 Replace Hellang with ASP.NET Core exception handling and status-code pages. The quickstart uses `AddResponseProblemDetails()` and `UseResponseProblemDetails()`. The wrapper installs the native middleware in order. Hosts that need separate placement can use `UseExceptionHandler()` and `UseStatusCodePages()` directly. The distinct registration name avoids ambiguity at existing `AddProblemDetails(...)` call sites, and DevKit's `ProblemDetailsOptions` lives in `BridgingIT.DevKit.Presentation.Web.Errors`.
 
-Mixed hosts can scope automatic DevKit handling to API requests with `ShouldHandleRequest` and keep their native HTML exception and status pages. The original request identifies the API during exception-page re-execution. Explicit Result mappings remain available across the host.
+DevKit leaves native exception-page rewrites to the host by default. Mixed hosts can set `ShouldHandleRequest` to handle selected API failures before the native HTML exception page and to scope default status pages. The original request identifies the API during exception-page re-execution. Explicit Result mappings remain available across the host.
 
 Keep the effective default exception status mappings. Use the existing Minimal API Result mapper as the authority for Result classification and reuse its rules for MVC. Explicit host mappings take precedence over module defaults regardless of registration order. Both precede the built-in mappings. A custom exception handler can use the registered `IProblemDetailsService` to receive shared enrichment. Custom writers control how the prepared problem is serialized.
 
@@ -30,7 +30,8 @@ The selected status drives the HTTP response, the body, and DevKit logging. Enri
 - Choose either the existing full DevKit `AddExceptionHandler(...)` chain or the new combined registration. A host that registers both fails at startup. Individual native `AddExceptionHandler<THandler>()` registrations still work with the new setup.
 - Move custom exception mappings into DevKit options. During migration, check whether a legacy mapping was shadowed before enabling it in the new setup.
 - Configure a common diagnostic disclosure policy when adopting the combined registration. If the old host used different settings for exceptions and Results, the combined setting replaces that split. Result-only hosts can still use `AddResultHttpProblemDetails(bool)` and receive the shared diagnostic format.
-- Hosts that use a native HTML error page alongside DevKit should configure the API request scope. DevKit's default handler would otherwise handle exceptions before the native page.
+- The combined registration logs mapped 5xx Problem Details and custom MVC Result responses by default. Set `ShouldLogResultErrors = false` to disable this log. An explicit mapper logger takes precedence and can also log failures mapped to the native `InternalServerError` arm.
+- Hosts that use one native exception middleware for HTML and API requests can configure the API request scope to give DevKit first refusal for API exceptions.
 - Move status changes from response customization hooks into mappings or handlers. Enrichment can change the other Problem Details fields.
 
 #### Before migration

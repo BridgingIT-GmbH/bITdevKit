@@ -38,7 +38,7 @@ public class DefaultActionResultMapperTests
     }
 
     [Fact]
-    public void Ok_WhenGivenFailureResult_ReturnsMappedErrorResult()
+    public async Task Ok_WhenGivenFailureResult_ReturnsMappedErrorResult()
     {
         // Arrange
         var model = PersonStub.Create(DateTime.UtcNow.Ticks);
@@ -48,8 +48,7 @@ public class DefaultActionResultMapperTests
         var response = sut.Ok(this.failureResult, model);
 
         // Assert
-        response.Result.ShouldBeAssignableTo<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
+        _ = await ResultActionResultExecution.ExecuteAsync(response.Result, 500);
     }
 
     [Fact]
@@ -69,7 +68,7 @@ public class DefaultActionResultMapperTests
     }
 
     [Fact]
-    public void OkWithAction_WhenGivenFailureResult_ReturnsMappedErrorResult()
+    public async Task OkWithAction_WhenGivenFailureResult_ReturnsMappedErrorResult()
     {
         // Arrange
         var sut = new DefaultActionResultMapper();
@@ -78,12 +77,11 @@ public class DefaultActionResultMapperTests
         var response = sut.Ok<PersonStub>(this.failureResult, m => m = PersonStub.Create(DateTime.UtcNow.Ticks));
 
         // Assert
-        response.Result.ShouldBeAssignableTo<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
+        _ = await ResultActionResultExecution.ExecuteAsync(response.Result, 500);
     }
 
     [Fact]
-    public void Ok_FailureWithoutTypedErrors_SkipsModelAction()
+    public async Task Ok_FailureWithoutTypedErrors_SkipsModelAction()
     {
         var sut = new DefaultActionResultMapper();
         var called = false;
@@ -91,12 +89,13 @@ public class DefaultActionResultMapperTests
         var response = sut.Ok<PersonStub>(this.failureResult, _ => called = true);
 
         called.ShouldBeFalse();
-        var problem = response.Result.ShouldBeAssignableTo<ObjectResult>().Value.ShouldBeOfType<ProblemDetails>();
-        problem.Extensions["Messages"].ShouldBe("Unable to complete the operation");
+        var body = await ResultActionResultExecution.ExecuteAsync(response.Result, 500);
+        body.GetProperty("data").GetProperty("result").GetProperty("messages")[0].GetString()
+            .ShouldBe("Unable to complete the operation");
     }
 
     [Fact]
-    public void Ok_FluentValidationError_ReturnsValidationProblemWithWholeMessages()
+    public async Task Ok_FluentValidationError_ReturnsValidationProblemWithWholeMessages()
     {
         var sut = new DefaultActionResultMapper();
         var failure = new ValidationFailure(nameof(PersonStub.FirstName), "Must not be empty");
@@ -104,12 +103,9 @@ public class DefaultActionResultMapperTests
 
         var response = sut.Ok(Result.Failure().WithError(error));
 
-        var body = response.ShouldBeAssignableTo<ObjectResult>();
-        body.StatusCode.ShouldBe(400);
-        var problem = body.Value.ShouldBeOfType<ProblemDetails>();
-        problem.Detail.ShouldContain(failure.PropertyName);
-        problem.Detail.ShouldContain(failure.ErrorMessage);
-        problem.Extensions["Errors"].ShouldBe(error.Message);
+        var body = await ResultActionResultExecution.ExecuteAsync(response, 400);
+        body.GetProperty("detail").GetString().ShouldBe("One or more validation errors occurred.");
+        body.GetProperty("data").GetProperty("errors").GetProperty(failure.PropertyName)[0].GetString().ShouldBe(failure.ErrorMessage);
     }
 
     [Fact]
@@ -147,7 +143,7 @@ public class DefaultActionResultMapperTests
     }
 
     [Fact]
-    public void Created_WhenGivenFailureResult_ReturnsMappedErrorResult()
+    public async Task Created_WhenGivenFailureResult_ReturnsMappedErrorResult()
     {
         // Arrange
         var model = PersonStub.Create(DateTime.UtcNow.Ticks);
@@ -157,8 +153,7 @@ public class DefaultActionResultMapperTests
         var response = sut.Created(this.failureResult, model, "test-route-name");
 
         // Assert
-        response.Result.ShouldBeAssignableTo<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
+        _ = await ResultActionResultExecution.ExecuteAsync(response.Result, 500);
     }
 
     [Fact]
@@ -195,7 +190,7 @@ public class DefaultActionResultMapperTests
     }
 
     [Fact]
-    public void CreatedWithAction_WhenGivenFailureResult_ReturnsMappedErrorResult()
+    public async Task CreatedWithAction_WhenGivenFailureResult_ReturnsMappedErrorResult()
     {
         // Arrange
         var sut = new DefaultActionResultMapper();
@@ -204,8 +199,7 @@ public class DefaultActionResultMapperTests
         var response = sut.Created<PersonStub>(this.failureResult, m => m = PersonStub.Create(DateTime.UtcNow.Ticks), "test-route-name");
 
         // Assert
-        response.Result.ShouldBeAssignableTo<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
+        _ = await ResultActionResultExecution.ExecuteAsync(response.Result, 500);
     }
 
     [Fact]
@@ -242,7 +236,7 @@ public class DefaultActionResultMapperTests
     }
 
     [Fact]
-    public void Updated_WhenGivenFailureResult_ReturnsMappedErrorResult()
+    public async Task Updated_WhenGivenFailureResult_ReturnsMappedErrorResult()
     {
         // Arrange
         var model = PersonStub.Create(DateTime.UtcNow.Ticks);
@@ -252,8 +246,7 @@ public class DefaultActionResultMapperTests
         var response = sut.Updated(this.failureResult, model, "test-route-name");
 
         // Assert
-        response.Result.ShouldBeAssignableTo<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
+        _ = await ResultActionResultExecution.ExecuteAsync(response.Result, 500);
     }
 
     [Fact]
@@ -289,7 +282,7 @@ public class DefaultActionResultMapperTests
     }
 
     [Fact]
-    public void UpdatedWithAction_WhenGivenFailureResult_ReturnsMappedErrorResult()
+    public async Task UpdatedWithAction_WhenGivenFailureResult_ReturnsMappedErrorResult()
     {
         // Arrange
         var sut = new DefaultActionResultMapper();
@@ -298,8 +291,7 @@ public class DefaultActionResultMapperTests
         var response = sut.Updated<PersonStub>(this.failureResult, m => m = PersonStub.Create(DateTime.UtcNow.Ticks), "test-route-name");
 
         // Assert
-        response.Result.ShouldBeAssignableTo<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
+        _ = await ResultActionResultExecution.ExecuteAsync(response.Result, 500);
     }
 
     [Fact]
@@ -336,7 +328,7 @@ public class DefaultActionResultMapperTests
     }
 
     [Fact]
-    public void Accepted_WhenGivenFailureResult_ReturnsMappedErrorResult()
+    public async Task Accepted_WhenGivenFailureResult_ReturnsMappedErrorResult()
     {
         // Arrange
         var model = PersonStub.Create(DateTime.UtcNow.Ticks);
@@ -346,8 +338,7 @@ public class DefaultActionResultMapperTests
         var response = sut.Accepted(this.failureResult, model, "test-route-name");
 
         // Assert
-        response.Result.ShouldBeAssignableTo<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
+        _ = await ResultActionResultExecution.ExecuteAsync(response.Result, 500);
     }
 
     [Fact]
@@ -381,7 +372,7 @@ public class DefaultActionResultMapperTests
     }
 
     [Fact]
-    public void AcceptedWithAction_WhenGivenFailureResult_ReturnsMappedErrorResult()
+    public async Task AcceptedWithAction_WhenGivenFailureResult_ReturnsMappedErrorResult()
     {
         // Arrange
         var sut = new DefaultActionResultMapper();
@@ -390,8 +381,7 @@ public class DefaultActionResultMapperTests
         var response = sut.Accepted<PersonStub>(this.failureResult, m => m = PersonStub.Create(DateTime.UtcNow.Ticks), "test-route-name");
 
         // Assert
-        response.Result.ShouldBeAssignableTo<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
+        _ = await ResultActionResultExecution.ExecuteAsync(response.Result, 500);
     }
 
     [Fact]
@@ -408,7 +398,7 @@ public class DefaultActionResultMapperTests
     }
 
     [Fact]
-    public void NoContent_WhenGivenFailureResult_ReturnsMappedErrorResult()
+    public async Task NoContent_WhenGivenFailureResult_ReturnsMappedErrorResult()
     {
         // Arrange
         var sut = new DefaultActionResultMapper();
@@ -417,7 +407,7 @@ public class DefaultActionResultMapperTests
         var response = sut.NoContent<PersonStub>(this.failureResult);
 
         // Assert
-        response.Result.ShouldBeAssignableTo<ObjectResult>().StatusCode.ShouldBe(500);
+        _ = await ResultActionResultExecution.ExecuteAsync(response.Result, 500);
     }
 
     [Fact]
@@ -437,7 +427,7 @@ public class DefaultActionResultMapperTests
     }
 
     [Fact]
-    public void Object_WhenGivenFailureResult_ReturnsMappedErrorResult()
+    public async Task Object_WhenGivenFailureResult_ReturnsMappedErrorResult()
     {
         // Arrange
         var model = PersonStub.Create(DateTime.UtcNow.Ticks);
@@ -447,8 +437,7 @@ public class DefaultActionResultMapperTests
         var response = sut.Object(this.failureResult, model, 201);
 
         // Assert
-        response.Result.ShouldBeAssignableTo<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
+        _ = await ResultActionResultExecution.ExecuteAsync(response.Result, 500);
     }
 
     [Fact]
@@ -537,7 +526,7 @@ public class DefaultActionResultMapperTests
     }
 
     [Fact]
-    public void Ok_WhenGivenNotFoundError_ReturnsNotFoundProblem()
+    public async Task Ok_WhenGivenNotFoundError_ReturnsNotFoundProblem()
     {
         // Arrange
         var sut = new DefaultActionResultMapper();
@@ -547,11 +536,11 @@ public class DefaultActionResultMapperTests
         var response = sut.Ok(result);
 
         // Assert
-        response.ShouldBeAssignableTo<ObjectResult>().StatusCode.ShouldBe(404);
+        _ = await ResultActionResultExecution.ExecuteAsync(response, 404);
     }
 
     [Fact]
-    public void Ok_WhenGivenEntityNotFoundError_ReturnsNotFoundProblem()
+    public async Task Ok_WhenGivenEntityNotFoundError_ReturnsNotFoundProblem()
     {
         // Arrange
         var sut = new DefaultActionResultMapper();
@@ -561,11 +550,11 @@ public class DefaultActionResultMapperTests
         var response = sut.Ok(result);
 
         // Assert
-        response.ShouldBeAssignableTo<ObjectResult>().StatusCode.ShouldBe(404);
+        _ = await ResultActionResultExecution.ExecuteAsync(response, 404);
     }
 
     [Fact]
-    public void Ok_WhenGivenValidationError_ReturnsBadRequestProblemDetails()
+    public async Task Ok_WhenGivenValidationError_ReturnsBadRequestProblemDetails()
     {
         // Arrange
         var sut = new DefaultActionResultMapper();
@@ -575,15 +564,13 @@ public class DefaultActionResultMapperTests
         var response = sut.Ok(result);
 
         // Assert
-        var objectResult = response.ShouldBeAssignableTo<ObjectResult>();
-        objectResult.StatusCode.ShouldBe(400);
-        var problemDetails = objectResult.Value.ShouldBeOfType<ProblemDetails>();
-        problemDetails.Title.ShouldBe("Bad Request");
-        problemDetails.Detail.ShouldContain("[ValidationError] Invalid person data");
+        var body = await ResultActionResultExecution.ExecuteAsync(response, 400);
+        body.GetProperty("title").GetString().ShouldBe("Validation Error");
+        body.GetProperty("data").GetProperty("errors").GetProperty("validation")[0].GetString().ShouldBe("Invalid person data");
     }
 
     [Fact]
-    public void Ok_WhenGivenUnhandledError_ReturnsInternalServerErrorProblemDetails()
+    public async Task Ok_WhenGivenUnhandledError_ReturnsInternalServerErrorProblemDetails()
     {
         // Arrange
         var sut = new DefaultActionResultMapper();
@@ -593,11 +580,9 @@ public class DefaultActionResultMapperTests
         var response = sut.Ok(result);
 
         // Assert
-        var objectResult = response.ShouldBeAssignableTo<ObjectResult>();
-        objectResult.StatusCode.ShouldBe(500);
-        var problemDetails = objectResult.Value.ShouldBeOfType<ProblemDetails>();
-        problemDetails.Title.ShouldBe("Unhandled Result Error");
-        problemDetails.Detail.ShouldContain("[Error] boom");
+        var body = await ResultActionResultExecution.ExecuteAsync(response, 500);
+        body.GetProperty("title").GetString().ShouldBe("Unexpected Error");
+        body.GetProperty("data").GetProperty("result").GetProperty("errors")[0].GetProperty("message").GetString().ShouldBe("boom");
     }
 
     [Fact]

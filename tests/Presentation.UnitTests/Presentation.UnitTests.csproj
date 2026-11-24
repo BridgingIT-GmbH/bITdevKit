@@ -70,9 +70,11 @@
     <ProjectReference Include="..\..\src\Presentation.Cli\Presentation.Cli.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web.Auditing\Presentation.Web.Auditing.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web.Caching\Presentation.Web.Caching.csproj" />
+    <ProjectReference Include="..\Presentation.TestHost\Presentation.TestHost.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Web/ProblemDetails/Fixtures/legacy-http-responses.json" />
     <EmbeddedResource Include="Cli/Fixtures/EmbeddedDocumentation/docs/*.md"
                       LogicalName="BridgingIT.DevKit.Presentation.UnitTests.EmbeddedDocumentation/docs/%(Filename)%(Extension)" />
     <EmbeddedResource Include="Cli/Fixtures/EmbeddedDocumentation/api/agent-index.json"

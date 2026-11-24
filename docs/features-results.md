@@ -2293,22 +2293,22 @@ The default minimal API helpers and MVC result mapper return Problem Details for
 `EntityNotFoundError` (404). This includes paged results and create or accept
 operations.
 
-Register `AddResultHttpProblemDetails` to populate the `correlationId` extension
-from each request. The mapper uses the ID established by the DevKit correlation
-middleware when available and falls back to the request trace ID.
-
-Result responses hide exception messages and stack traces by default. To include
-full exception text in the `exceptionDetails` extension, enable it for a trusted
-development environment by name.
+Use DevKit's combined Problem Details setup to handle both thrown exceptions and
+failed Results. `correlationId` identifies the request and `data.errors` groups
+validation messages by field. [Exception handling and HTTP Problem Details](features-presentation-exception-handling.md)
 
 ```csharp
-builder.Services.AddResultHttpProblemDetails(
-    includeExceptionDetails: builder.Environment.IsEnvironment("LocalDebug"));
+builder.Services.AddResponseProblemDetails(options =>
+    options.IncludeExceptionDetails = builder.Environment.IsDevelopment());
 ```
 
-This applies to the default MVC mapper and minimal API responses written through
-ASP.NET Core's Problem Details service. A typed response arm with no body has no
-Problem Details extensions.
+Exception messages and stacks are hidden by default. When enabled and accepted
+by a writer, `exceptionDetails` contains objects with `type`, `message`, and
+optional `stackTrace` and `innerExceptions` fields. A typed response arm that
+returns an empty body has no Problem Details extensions.
+
+Hosts that only need Result responses can use `AddResultHttpProblemDetails(bool)`
+with the same diagnostic format.
 
 ### Custom error handling
 

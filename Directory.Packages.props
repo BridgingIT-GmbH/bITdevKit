@@ -21,7 +21,6 @@
     <PackageVersion Include="Dapper" Version="2.1.100" />
     <PackageVersion Include="Ensure.That" Version="10.1.0" />
     <PackageVersion Include="FluentValidation" Version="12.2.0" />
-    <PackageVersion Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
     <PackageVersion Include="Humanizer.Core" Version="3.0.10" />
     <!-- The LiteDB providers use the v6 API. The v6 release line has no stable release yet. -->
     <PackageVersion Include="LiteDB" Version="6.0.0-prerelease.355" />

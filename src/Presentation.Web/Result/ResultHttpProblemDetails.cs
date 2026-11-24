@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using System.Diagnostics;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Presentation.Web.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -22,7 +22,7 @@ public sealed class ResultHttpProblemDetails : ProblemDetails
     private ResultHttpProblemDetails(IResultError[] exceptionErrors)
     {
         this.exceptionErrors = exceptionErrors;
-        this.Detail = "An unexpected error occurred.";
+        this.Detail = ProblemDetailsPayload.UnexpectedDetail;
     }
 
     /// <summary>Creates a Problem Details response with exception details hidden and ambient correlation when available.</summary>
@@ -43,8 +43,8 @@ public sealed class ResultHttpProblemDetails : ProblemDetails
 
         problem.Status = status;
         problem.Title = title ?? ReasonPhrases.GetReasonPhrase(status);
-        problem.Type = $"https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/{status}";
-        SetCorrelationId(problem);
+        problem.Type = ProblemDetailsPayload.StatusType(status);
+        ProblemDetailsPayload.SetCorrelation(problem, null, automatic: false);
         return problem;
     }
 
@@ -58,50 +58,28 @@ public sealed class ResultHttpProblemDetails : ProblemDetails
         ArgumentNullException.ThrowIfNull(problem);
         ArgumentNullException.ThrowIfNull(context);
 
-        if (problem is ResultHttpProblemDetails exceptionProblem)
+        var prepared = ProblemDetailsPayload.Copy(problem);
+        var services = context.RequestServices;
+        var include = services.GetService<CombinedProblemDetailsRegistration>() is not null
+            ? services.GetRequiredService<IOptions<Errors.ProblemDetailsOptions>>().Value.IncludeExceptionDetails
+            : services.GetService<IOptions<ResultHttpProblemDetailsOptions>>()?.Value.IncludeExceptionDetails is true;
+        if (include && problem is ResultHttpProblemDetails exceptionProblem)
         {
-            var options = context.RequestServices.GetService<IOptions<ResultHttpProblemDetailsOptions>>();
-            problem = options?.Value.IncludeExceptionDetails == true
-                ? exceptionProblem.WithExceptionDetails()
-                : Copy(problem);
-        }
-        else if (problem.GetType() == typeof(ProblemDetails))
-        {
-            problem = Copy(problem);
+            exceptionProblem.AddDiagnostics(prepared);
         }
 
-        SetCorrelationId(problem, context);
-        return problem;
+        ProblemDetailsPayload.SetCorrelation(prepared, context, automatic: false);
+        return prepared;
     }
 
-    private static void SetCorrelationId(ProblemDetails problem, HttpContext context = null)
+    /// <summary>Adds the opt-in structured Result diagnostics to a response problem.</summary>
+    public void AddDiagnostics(ProblemDetails problem)
     {
-        var id = context?.TryGetCorrelationId() ?? CorrelationId.Current
-            ?? Activity.Current?.TraceId.ToHexString() ?? context?.TraceIdentifier;
-        if (id is not null)
-        {
-            problem.Extensions["correlationId"] = id;
-        }
-    }
-
-    private static ProblemDetails Copy(ProblemDetails problem) => new()
-    {
-        Detail = problem.Detail,
-        Instance = problem.Instance,
-        Status = problem.Status,
-        Title = problem.Title,
-        Type = problem.Type,
-        Extensions = new Dictionary<string, object>(problem.Extensions)
-    };
-
-    private ProblemDetails WithExceptionDetails()
-    {
-        var response = Copy(this);
-        response.Extensions["exceptionDetails"] = this.exceptionErrors.Select(error =>
-            GetException(error)?.ToString() ??
-            (error is FileSystemPermissionError permission ? permission.Details : error.Message)).ToArray();
-
-        return response;
+        problem.Extensions.TryAdd("exceptionDetails", this.exceptionErrors.Select(error =>
+            GetException(error) is { } exception
+                ? ProblemDetailsPayload.BuildDiagnostic(exception)
+                : new ProblemDetailsPayload.DiagnosticEntry(error.GetType().FullName,
+                    (error is FileSystemPermissionError permission ? permission.Details : error.Message) ?? string.Empty)).ToArray());
     }
 
     private static Exception GetException(IResultError error) => error switch

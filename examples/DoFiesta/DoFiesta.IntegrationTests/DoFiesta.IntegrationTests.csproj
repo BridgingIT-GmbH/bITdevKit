@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="../../../tests/Shared/Presentation/SampleHostProblemDetailsTests.cs" Link="Shared/SampleHostProblemDetailsTests.cs" />
     <ProjectReference Include="..\DoFiesta.Presentation.Web.Server\DoFiesta.Presentation.Web.Server.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
   </ItemGroup>

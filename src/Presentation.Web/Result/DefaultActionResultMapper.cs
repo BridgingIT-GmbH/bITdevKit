@@ -5,11 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using System.Net;
+using BridgingIT.DevKit.Presentation.Web.Errors;
 using Common;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Represents default action result mapper.
@@ -602,66 +601,20 @@ public class DefaultActionResultMapper : IActionResultMapper
 
     private static ActionResult MapError(IResult result)
     {
-        var errors = result.Errors ?? [];
-
-        var status = errors switch
-        {
-            _ when errors.Has<ForbiddenError>() => HttpStatusCode.Forbidden,
-            _ when errors.Has<UnauthorizedError>() => HttpStatusCode.Unauthorized,
-            _ when errors.Has<NotFoundError>() || errors.Has<EntityNotFoundError>() => HttpStatusCode.NotFound,
-            _ => (HttpStatusCode?)null
-        };
-        if (status is { } knownStatus)
-        {
-            return ToProblemResult(ResultHttpProblemDetails.Create((int)knownStatus, result: result));
-        }
-
-        var validationDetails = errors.SelectMany<IResultError, string>(error => error switch
-        {
-            ValidationError validation => [$"[{validation.GetType().Name}] {validation.Message}"],
-            FluentValidationError { Errors.Count: > 0 } fluent => fluent.Errors.Select(
-                failure => $"[FluentValidationError] {failure.PropertyName}: {failure.ErrorMessage}"),
-            FluentValidationError fluent => [$"[FluentValidationError] {fluent.Message}"],
-            _ => []
-        }).ToArray();
-        var isValidationFailure = validationDetails.Length > 0;
-        var problem = ResultHttpProblemDetails.Create(
-            (int)(isValidationFailure ? HttpStatusCode.BadRequest : HttpStatusCode.InternalServerError),
-            isValidationFailure ? "Bad Request" : "Unhandled Result Error",
-            result);
-        if (problem is not ResultHttpProblemDetails)
-        {
-            problem.Detail = string.Join("; ", isValidationFailure
-                ? validationDetails
-                : errors.Select(error => $"[{error.GetType().Name}] {error.Message}"));
-            problem.Extensions["IsSuccess"] = result.IsSuccess;
-            problem.Extensions["Messages"] = string.Join(Environment.NewLine, result.Messages.SafeNull());
-            problem.Extensions["Errors"] = string.Join(Environment.NewLine, errors.Select(error => error.Message));
-        }
-        else if (isValidationFailure)
-        {
-            problem.Detail = string.Join("; ", validationDetails);
-        }
-
-        return ToProblemResult(problem);
+        var failure = result is Result mapped ? mapped : Result.Failure(result.Messages, result.Errors);
+        return new ResultFailureActionResult(ResultMapHttpExtensions.MapDefaultFailure(failure), failure);
     }
 
-    private static ObjectResult ToProblemResult(ProblemDetails problem) =>
-        new ResultProblemObjectResult(problem) { StatusCode = problem.Status };
-
-    private sealed class ResultProblemObjectResult(ProblemDetails problem) : ObjectResult(problem)
+    private sealed class ResultFailureActionResult(Microsoft.AspNetCore.Http.IResult response, Result failure) : ActionResult
     {
-        public override Task ExecuteResultAsync(ActionContext context)
+        public override async Task ExecuteResultAsync(ActionContext context)
         {
-            if (this.Value is not ProblemDetails details)
+            var http = context.HttpContext;
+            await response.ExecuteAsync(http);
+            if (response is not ProblemHttpResult)
             {
-                return base.ExecuteResultAsync(context);
+                ResponseProblemDetailsService.LogCustomResult(http, failure);
             }
-
-            var response = (ResultProblemObjectResult)this.MemberwiseClone();
-            response.Value = ResultHttpProblemDetails.PrepareResponse(details, context.HttpContext);
-            return context.HttpContext.RequestServices.GetRequiredService<IActionResultExecutor<ObjectResult>>()
-                .ExecuteAsync(context, response);
         }
     }
 }

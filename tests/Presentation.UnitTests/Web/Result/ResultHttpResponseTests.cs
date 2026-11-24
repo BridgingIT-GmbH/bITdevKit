@@ -66,6 +66,8 @@ public class ResultHttpResponseTests : IAsyncLifetime
         minimal.MapGet("/not-found-created", () => Result<PersonStub>.Failure(new NotFoundError()).MapHttpCreated("/items/1"));
         minimal.MapGet("/not-found-accepted", () => Result.Failure(new NotFoundError()).MapHttpAccepted("/jobs/1"));
         minimal.MapGet("/conflict", () => Result.Failure(new ConflictError()).MapHttpNoContent());
+        minimal.MapGet("/concurrency", () => Result.Failure(new ConcurrencyError()).MapHttpNoContent());
+        minimal.MapGet("/canceled", () => Result.Failure(new OperationCancelledError()).MapHttpNoContent());
         minimal.MapGet("/timeout", () => Result.Failure(new TimeoutError()).MapHttpNoContent());
         minimal.MapGet("/mixed", () => ResultHttpTestController.CreateExceptionFailure()
             .WithError(new ValidationError(ResultHttpTestController.ValidationMessage, "name")).MapHttpNoContent());
@@ -93,20 +95,10 @@ public class ResultHttpResponseTests : IAsyncLifetime
         var body = json.RootElement;
 
         AssertProblem(response, body, HttpStatusCode.InternalServerError);
-        if (useMvc)
-        {
-            body.GetProperty("IsSuccess").GetBoolean().ShouldBeFalse();
-            body.GetProperty("Messages").GetString().ShouldBe(ResultHttpTestController.FailureMessage);
-            body.GetProperty("Errors").GetString().ShouldBeEmpty();
-        }
-        else
-        {
-            var result = body.GetProperty("data").GetProperty("result");
-            result.GetProperty("isSuccess").GetBoolean().ShouldBeFalse();
-            result.GetProperty("messages").EnumerateArray().Single().GetString()
-                .ShouldBe(ResultHttpTestController.FailureMessage);
-            result.GetProperty("errors").GetArrayLength().ShouldBe(0);
-        }
+        var result = body.GetProperty("data").GetProperty("result");
+        result.GetProperty("isSuccess").GetBoolean().ShouldBeFalse();
+        result.GetProperty("messages")[0].GetString().ShouldBe(ResultHttpTestController.FailureMessage);
+        result.GetProperty("errors").GetArrayLength().ShouldBe(0);
     }
 
     [Theory]
@@ -119,18 +111,9 @@ public class ResultHttpResponseTests : IAsyncLifetime
         var body = json.RootElement;
 
         AssertProblem(response, body, HttpStatusCode.BadRequest);
-        if (useMvc)
-        {
-            body.GetProperty("IsSuccess").GetBoolean().ShouldBeFalse();
-            body.GetProperty("Errors").GetString().ShouldBe(ResultHttpTestController.ValidationMessage);
-        }
-        else
-        {
-            var data = body.GetProperty("data");
-            data.GetProperty("result").GetProperty("isSuccess").GetBoolean().ShouldBeFalse();
-            data.GetProperty("errors").GetProperty("name").EnumerateArray().Single().GetString()
-                .ShouldBe(ResultHttpTestController.ValidationMessage);
-        }
+        var data = body.GetProperty("data");
+        data.GetProperty("result").GetProperty("isSuccess").GetBoolean().ShouldBeFalse();
+        data.GetProperty("errors").GetProperty("name")[0].GetString().ShouldBe(ResultHttpTestController.ValidationMessage);
     }
 
     [Theory]
@@ -164,10 +147,10 @@ public class ResultHttpResponseTests : IAsyncLifetime
         var body = json.RootElement;
 
         AssertProblem(response, body, HttpStatusCode.InternalServerError);
-        var exception = body.GetProperty("exceptionDetails")[0].GetString();
-        exception.ShouldContain(typeof(InvalidOperationException).FullName);
-        exception.ShouldContain(ResultHttpTestController.ExceptionMessage);
-        exception.ShouldContain(nameof(ResultHttpTestController.CreateExceptionFailure));
+        var exception = body.GetProperty("exceptionDetails")[0];
+        exception.GetProperty("type").GetString().ShouldBe(typeof(InvalidOperationException).FullName);
+        exception.GetProperty("message").GetString().ShouldBe(ResultHttpTestController.ExceptionMessage);
+        exception.GetProperty("stackTrace").GetString().ShouldContain(nameof(ResultHttpTestController.CreateExceptionFailure));
     }
 
     [Fact]
@@ -211,7 +194,13 @@ public class ResultHttpResponseTests : IAsyncLifetime
     [InlineData(false, "not-found-created", HttpStatusCode.NotFound)]
     [InlineData(false, "not-found-accepted", HttpStatusCode.NotFound)]
     [InlineData(false, "conflict", HttpStatusCode.Conflict)]
+    [InlineData(true, "conflict", HttpStatusCode.Conflict)]
+    [InlineData(false, "concurrency", HttpStatusCode.Conflict)]
+    [InlineData(true, "concurrency", HttpStatusCode.Conflict)]
+    [InlineData(false, "canceled", (HttpStatusCode)499)]
+    [InlineData(true, "canceled", (HttpStatusCode)499)]
     [InlineData(false, "timeout", HttpStatusCode.GatewayTimeout)]
+    [InlineData(true, "timeout", HttpStatusCode.GatewayTimeout)]
     public async Task Get_KnownFailure_ReturnsMappedStatusAndCorrelationId(
         bool useMvc, string endpoint, HttpStatusCode status)
     {
@@ -306,6 +295,22 @@ public sealed class ResultHttpTestController : ControllerBase
 
     [HttpGet("not-found")]
     public ActionResult MissingFailure() => Result.Failure(new NotFoundError()).ToOkActionResult();
+
+    /// <summary>Returns the default MVC mapping for a conflict failure.</summary>
+    [HttpGet("conflict")]
+    public ActionResult ConflictFailure() => Result.Failure(new ConflictError()).ToOkActionResult();
+
+    /// <summary>Returns the default MVC mapping for a concurrency failure.</summary>
+    [HttpGet("concurrency")]
+    public ActionResult ConcurrencyFailure() => Result.Failure(new ConcurrencyError()).ToOkActionResult();
+
+    /// <summary>Returns the default MVC mapping for a canceled operation.</summary>
+    [HttpGet("canceled")]
+    public ActionResult CanceledFailure() => Result.Failure(new OperationCancelledError()).ToOkActionResult();
+
+    /// <summary>Returns the default MVC mapping for a timeout.</summary>
+    [HttpGet("timeout")]
+    public ActionResult TimeoutFailure() => Result.Failure(new TimeoutError()).ToOkActionResult();
 
     [HttpGet("page")]
     public ActionResult<ResultPaged<PersonStub>> Page() => CreateEmptyPage().ToOkActionResult();

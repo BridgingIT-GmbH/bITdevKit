@@ -17,7 +17,6 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Components;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation.Web;
-using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
@@ -178,8 +177,11 @@ builder.Services.AddHealthChecks();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllers(); // needed for openapi gen, even with no controllers
-#pragma warning disable CS0618 // Type or member is obsolete
-builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
+builder.Services.AddResponseProblemDetails(o =>
+{
+    o.IncludeExceptionDetails = builder.Environment.IsDevelopment();
+});
+// To use the standalone exception handler chain, replace the combined registration above.
 //builder.Services.AddExceptionHandler(o =>
 //{
 //    // Configuration
@@ -215,7 +217,6 @@ builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
 //        problem.Extensions["timestamp"] = DateTimeOffset.UtcNow;
 //    };
 //});
-#pragma warning restore CS0618 // Type or member is obsolete
 builder.Services.AddAppOpenApi();
 
 // Add services to the container.
@@ -278,7 +279,7 @@ app.UseModules();
 //app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuditing();
-app.UseProblemDetails();
+app.UseResponseProblemDetails();
 app.UseAuthorization();
 
 app.UseCurrentUserLogging();

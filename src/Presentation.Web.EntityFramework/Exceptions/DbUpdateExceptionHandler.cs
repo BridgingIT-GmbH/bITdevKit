@@ -24,6 +24,8 @@ public class DbUpdateExceptionHandler(
     GlobalExceptionHandlerOptions options)
     : ExceptionHandlerBase<DbUpdateException>(logger, options)
 {
+    private const string PublicDetail = "A database error occurred while saving changes.";
+
     /// <inheritdoc />
     protected override int StatusCode => StatusCodes.Status422UnprocessableEntity;
 
@@ -31,11 +33,20 @@ public class DbUpdateExceptionHandler(
     protected override string Title => "Database Update Failed";
 
     /// <inheritdoc />
+    protected override ProblemDetails CreateSharedProblemDetails(HttpContext httpContext, DbUpdateException exception)
+    {
+        var problem = this.CreateProblemDetails(httpContext, exception);
+        problem.Detail = PublicDetail;
+        problem.Extensions.Remove("affectedEntities");
+        return problem;
+    }
+
+    /// <inheritdoc />
     protected override string GetDetail(DbUpdateException exception)
     {
         if (!this.Options.IncludeExceptionDetails)
         {
-            return "A database error occurred while saving changes.";
+            return PublicDetail;
         }
 
         var innerMessage = exception.InnerException?.Message ?? exception.Message;

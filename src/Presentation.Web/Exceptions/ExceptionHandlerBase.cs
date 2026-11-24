@@ -5,10 +5,13 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using BridgingIT.DevKit.Presentation.Web.Errors;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 /// <summary>
 ///     Abstract base class for exception handlers that provides common functionality
@@ -92,6 +95,12 @@ public abstract class ExceptionHandlerBase<TException>(
             return false;
         }
 
+        var combined = httpContext.RequestServices?.GetService<CombinedProblemDetailsRegistration>() is not null;
+        if (combined && ResponseProblemDetailsService.HasFailedWrite(httpContext))
+        {
+            return false;
+        }
+
         if (this.ShouldIgnore(exception))
         {
             return true;
@@ -102,18 +111,40 @@ public abstract class ExceptionHandlerBase<TException>(
             throw exception;
         }
 
-        if (this.Options.EnableLogging)
+        if (!combined && this.Options.EnableLogging)
         {
             this.LogException(typedException);
         }
 
-        var problemDetails = this.CreateProblemDetails(httpContext, typedException);
+        var problemDetails = combined
+            ? this.CreateSharedProblemDetails(httpContext, typedException)
+            : this.CreateProblemDetails(httpContext, typedException);
 
         this.Options.EnrichProblemDetails?.Invoke(httpContext, problemDetails, typedException);
 
         httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status500InternalServerError;
 
-        await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+        if (combined)
+        {
+            var options = httpContext.RequestServices.GetRequiredService<IOptions<Errors.ProblemDetailsOptions>>().Value;
+            ResponseProblemDetailsExceptionHandler.LogHandledException(this.Logger, options, exception, httpContext.Response.StatusCode);
+            ResponseProblemDetailsHeaderSnapshot.Restore(httpContext);
+            var written = await httpContext.RequestServices.GetRequiredService<IProblemDetailsService>().TryWriteAsync(new ProblemDetailsContext
+            {
+                HttpContext = httpContext,
+                ProblemDetails = problemDetails,
+                Exception = exception,
+                AdditionalMetadata = httpContext.Features.Get<IExceptionHandlerFeature>()?.Endpoint?.Metadata
+            });
+            if (!written)
+            {
+                await ResponseProblemDetailsStatusCodeHandler.WriteFallbackAsync(httpContext, problemDetails, cancellationToken);
+            }
+        }
+        else
+        {
+            await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+        }
 
         return true;
     }
@@ -149,6 +180,21 @@ public abstract class ExceptionHandlerBase<TException>(
             Type = this.TypeUri,
             Instance = httpContext.Request.Path
         };
+    }
+
+    /// <summary>Creates the public problem for the combined DevKit response policy.</summary>
+    /// <param name="httpContext">The request that raised the exception.</param>
+    /// <param name="exception">The exception handled by this instance.</param>
+    /// <returns>A problem with public detail and the handler's selected status, title and type.</returns>
+    /// <remarks>Override this method to customize public fields for the combined registration.</remarks>
+    protected virtual ProblemDetails CreateSharedProblemDetails(HttpContext httpContext, TException exception)
+    {
+        var problem = ProblemDetailsPayload.CreateExceptionProblem(exception);
+        problem.Status = this.StatusCode;
+        problem.Title = this.Title;
+        problem.Type = this.TypeUri;
+        problem.Instance = httpContext.Request.Path;
+        return problem;
     }
 
     /// <summary>

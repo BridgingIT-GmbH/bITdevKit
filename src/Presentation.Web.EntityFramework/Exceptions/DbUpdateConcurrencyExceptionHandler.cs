@@ -20,6 +20,8 @@ public class DbUpdateConcurrencyExceptionHandler(
     GlobalExceptionHandlerOptions options)
     : ExceptionHandlerBase<DbUpdateConcurrencyException>(logger, options)
 {
+    private const string PublicDetail = "The record was modified by another user. Please refresh and try again.";
+
     /// <inheritdoc />
     protected override int StatusCode => StatusCodes.Status409Conflict;
 
@@ -27,11 +29,20 @@ public class DbUpdateConcurrencyExceptionHandler(
     protected override string Title => "Concurrency Conflict";
 
     /// <inheritdoc />
+    protected override ProblemDetails CreateSharedProblemDetails(HttpContext httpContext, DbUpdateConcurrencyException exception)
+    {
+        var problem = this.CreateProblemDetails(httpContext, exception);
+        problem.Detail = PublicDetail;
+        problem.Extensions.Remove("affectedEntities");
+        return problem;
+    }
+
+    /// <inheritdoc />
     protected override string GetDetail(DbUpdateConcurrencyException exception)
     {
         if (!this.Options.IncludeExceptionDetails)
         {
-            return "The record was modified by another user. Please refresh and try again.";
+            return PublicDetail;
         }
 
         var entityNames = exception.Entries

@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Host;
 
 using System.Data.Common;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -24,6 +25,8 @@ public class DbExceptionHandler(
     GlobalExceptionHandlerOptions options)
     : ExceptionHandlerBase<DbException>(logger, options)
 {
+    private const string PublicDetail = "A database error occurred. Please try again later.";
+
     /// <inheritdoc />
     protected override int StatusCode => StatusCodes.Status503ServiceUnavailable;
 
@@ -31,11 +34,19 @@ public class DbExceptionHandler(
     protected override string Title => "Database Error";
 
     /// <inheritdoc />
+    protected override ProblemDetails CreateSharedProblemDetails(HttpContext httpContext, DbException exception)
+    {
+        var problem = this.CreateProblemDetails(httpContext, exception);
+        problem.Detail = PublicDetail;
+        return problem;
+    }
+
+    /// <inheritdoc />
     protected override string GetDetail(DbException exception)
     {
         if (!this.Options.IncludeExceptionDetails)
         {
-            return "A database error occurred. Please try again later.";
+            return PublicDetail;
         }
 
         return $"[{exception.GetType().Name}] {exception.Message}";

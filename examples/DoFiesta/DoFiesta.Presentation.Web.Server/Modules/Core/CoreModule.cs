@@ -30,6 +30,8 @@ using JobsCronExpressions = BridgingIT.DevKit.Application.Jobs.CronExpressions;
 
 public class CoreModule : WebModuleBase
 {
+    private static readonly object SpecificationRegistrationLock = new();
+
     public override IServiceCollection Register(
         IServiceCollection services,
         IConfiguration configuration = null,
@@ -96,8 +98,16 @@ public class CoreModule : WebModuleBase
                             .Data(new EchoJobData { Message = "First echo" })))
             .AddConsoleCommands();
 
-        // filter
-        SpecificationResolver.Register<TodoItem, TodoItemIsNotDeletedSpecification>("TodoItemIsNotDeleted");
+        // The specification registry is shared by all hosts in the process.
+        const string specificationName = "TodoItemIsNotDeleted";
+        lock (SpecificationRegistrationLock)
+        {
+            if (!SpecificationResolver.IsRegistered(specificationName) ||
+                SpecificationResolver.GetType(specificationName) != typeof(TodoItemIsNotDeletedSpecification))
+            {
+                SpecificationResolver.Register<TodoItem, TodoItemIsNotDeletedSpecification>(specificationName);
+            }
+        }
 
         // messaging
         services.AddMessaging(configuration)

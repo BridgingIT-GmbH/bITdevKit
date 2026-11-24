@@ -2317,6 +2317,30 @@
         },
         "description": "A tree structure containing specification nodes for complex filtering logic"
       },
+      "DiagnosticEntry": {
+        "required": [
+          "type",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "stackTrace": {
+            "type": "string"
+          },
+          "innerExceptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiagnosticEntry"
+            }
+          }
+        }
+      },
       "EnumerationModel": {
         "type": "object",
         "properties": {
@@ -2775,11 +2799,6 @@
           }
         }
       },
-      "ProblemError": {
-        "type": "object",
-        "additionalProperties": { },
-        "description": "Represents an individual error entry with flexible structure for additional data"
-      },
       "ResultProblemData": {
         "type": "object",
         "properties": {
@@ -2787,14 +2806,14 @@
             "$ref": "#/components/schemas/ResultProblemResult"
           },
           "errors": {
-            "type": [
-              "null",
-              "array"
-            ],
-            "items": {
-              "$ref": "#/components/schemas/ProblemError"
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             },
-            "description": "Collection of additional errors outside the result object"
+            "description": "Validation messages grouped by field name"
           }
         },
         "additionalProperties": { },
@@ -2841,6 +2860,19 @@
           },
           "data": {
             "$ref": "#/components/schemas/ResultProblemData"
+          },
+          "exceptionDetails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiagnosticEntry"
+            },
+            "description": "Optional exception diagnostics, when enabled by the host"
+          },
+          "correlationId": {
+            "type": "string"
+          },
+          "traceId": {
+            "type": "string"
           }
         },
         "additionalProperties": { },

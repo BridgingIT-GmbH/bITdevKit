@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Presentation.Web.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -92,11 +93,11 @@ public static class ResultMapHttpExtensions
     /// <typeparam name="TNotFound">The type of the not found HTTP result (e.g., <see cref="NotFound"/>).</typeparam>
     /// <typeparam name="TUnauthorized">The type of the unauthorized HTTP result (e.g., <see cref="UnauthorizedHttpResult"/>).</typeparam>
     /// <typeparam name="TBadRequest">The HTTP 400 type, such as <see cref="BadRequest"/>, <c>BadRequest&lt;string&gt;</c>, or <c>BadRequest&lt;ProblemDetails&gt;</c>.</typeparam>
-    /// <typeparam name="TProblem">The problem response type. Use <see cref="ProblemHttpResult"/> for error-specific statuses or <see cref="InternalServerError"/> for HTTP 500.</typeparam>
+    /// <typeparam name="TProblem">The problem response type. Use <see cref="ProblemHttpResult"/> for error-specific statuses or <see cref="InternalServerError"/> for a native HTTP 500. Supply a mapper logger to log failures mapped to the native arm.</typeparam>
     /// <typeparam name="TValue">The type of the result value, constrained to reference types (class) if used. Defaults to <see cref="object"/> for non-generic cases.</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> struct containing the operation outcome.</param>
     /// <param name="successFunc">A function to generate the success HTTP result when the operation succeeds. Must return <typeparamref name="TSuccess"/>.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A <see cref="Results{TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem}"/> representing the HTTP response.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="result"/> or <paramref name="successFunc"/> is null.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the result value is null for a reference type in <see cref="Result{T}"/>.</exception>
@@ -148,7 +149,7 @@ public static class ResultMapHttpExtensions
         ArgumentNullException.ThrowIfNull(successFunc);
 
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             switch (customResult)
             {
@@ -191,10 +192,10 @@ public static class ResultMapHttpExtensions
     /// <typeparam name="TNotFound">The type of the not found HTTP result (e.g., <see cref="NotFound"/>).</typeparam>
     /// <typeparam name="TUnauthorized">The type of the unauthorized HTTP result (e.g., <see cref="UnauthorizedHttpResult"/>).</typeparam>
     /// <typeparam name="TBadRequest">The type of the bad request HTTP result (e.g., <see cref="BadRequest"/>).</typeparam>
-    /// <typeparam name="TProblem">The problem response type. Use <see cref="ProblemHttpResult"/> for error-specific statuses or <see cref="InternalServerError"/> for HTTP 500.</typeparam>
+    /// <typeparam name="TProblem">The problem response type. Use <see cref="ProblemHttpResult"/> for error-specific statuses or <see cref="InternalServerError"/> for a native HTTP 500. Supply a mapper logger to log failures mapped to the native arm.</typeparam>
     /// <param name="result">The <see cref="Result"/> struct containing the operation outcome.</param>
     /// <param name="successFunc">A function to generate the success HTTP result when the operation succeeds. Must return <typeparamref name="TSuccess"/>.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A <see cref="Results{TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem}"/> representing the HTTP response.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="result"/> or <paramref name="successFunc"/> is null.</exception>
     /// <example>
@@ -243,7 +244,7 @@ public static class ResultMapHttpExtensions
         ArgumentNullException.ThrowIfNull(successFunc);
 
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             switch (customResult)
             {
@@ -285,10 +286,10 @@ public static class ResultMapHttpExtensions
     /// <typeparam name="TSuccess">The type of the successful HTTP result (e.g., <see cref="Ok{T}"/>, <see cref="NoContent"/>, <see cref="Created{T}"/>).</typeparam>
     /// <typeparam name="TUnauthorized">The type of the unauthorized HTTP result (e.g., <see cref="UnauthorizedHttpResult"/>).</typeparam>
     /// <typeparam name="TBadRequest">The type of the bad request HTTP result (e.g., <see cref="BadRequest"/>).</typeparam>
-    /// <typeparam name="TProblem">The problem response type. Use <see cref="ProblemHttpResult"/> for error-specific statuses or <see cref="InternalServerError"/> for HTTP 500.</typeparam>
+    /// <typeparam name="TProblem">The problem response type. Use <see cref="ProblemHttpResult"/> for error-specific statuses or <see cref="InternalServerError"/> for a native HTTP 500. Supply a mapper logger to log failures mapped to the native arm.</typeparam>
     /// <param name="result">The <see cref="Result"/> struct containing the operation outcome.</param>
     /// <param name="successFunc">A function to generate the success HTTP result when the operation succeeds. Must return <typeparamref name="TSuccess"/>.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A <see cref="Results{TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem}"/> representing the HTTP response.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="result"/> or <paramref name="successFunc"/> is null.</exception>
     /// <example>
@@ -336,7 +337,7 @@ public static class ResultMapHttpExtensions
         ArgumentNullException.ThrowIfNull(successFunc);
 
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             switch (customResult)
             {
@@ -374,7 +375,7 @@ public static class ResultMapHttpExtensions
     /// such as DELETE operations. Handles success, unauthorized, not found, bad request, and other error cases.
     /// </summary>
     /// <param name="result">The <see cref="Result"/> struct containing the operation outcome.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A <see cref="Results{NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
     /// <example>
     /// Usage in an endpoint:
@@ -393,7 +394,7 @@ public static class ResultMapHttpExtensions
         ILogger logger = null)
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             switch (customResult)
             {
@@ -410,7 +411,7 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return WrapCustomResult(customResult);
+                    return WrapCustomResult(customResult, result, logger);
             }
         }
 
@@ -427,7 +428,7 @@ public static class ResultMapHttpExtensions
     /// </summary>
     /// <typeparam name="T">The type of the result value, constrained to reference types (class).</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> struct containing the operation outcome.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A typed HTTP result containing the value on success or the mapped failure response.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the result value is null for a reference type.</exception>
     /// <example>
@@ -453,7 +454,7 @@ public static class ResultMapHttpExtensions
         //}
 
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             switch (customResult)
             {
@@ -470,7 +471,7 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return WrapCustomResult(customResult);
+                    return WrapCustomResult(customResult, result, logger);
             }
         }
 
@@ -486,7 +487,7 @@ public static class ResultMapHttpExtensions
     /// such as GET or PUT operations. Handles success, unauthorized, not found, bad request, and other error cases.
     /// </summary>
     /// <param name="result">The <see cref="Result"/> struct containing the operation outcome.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A <see cref="Results{Ok, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
     /// <example>
     /// Usage in an endpoint:
@@ -505,7 +506,7 @@ public static class ResultMapHttpExtensions
         ILogger logger = null)
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             switch (customResult)
             {
@@ -522,7 +523,7 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return WrapCustomResult(customResult);
+                    return WrapCustomResult(customResult, result, logger);
             }
         }
 
@@ -539,7 +540,7 @@ public static class ResultMapHttpExtensions
     /// </summary>
     /// <typeparam name="T">The type of the result value, constrained to reference types (class).</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> struct containing the operation outcome.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A typed HTTP result containing the value on success or the mapped failure response.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the result value is null for a reference type.</exception>
     /// <example>
@@ -565,7 +566,7 @@ public static class ResultMapHttpExtensions
         //}
 
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             switch (customResult)
             {
@@ -580,7 +581,7 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return WrapCustomResult(customResult);
+                    return WrapCustomResult(customResult, result, logger);
             }
         }
 
@@ -598,7 +599,7 @@ public static class ResultMapHttpExtensions
     /// <typeparam name="T">The type of the result value, constrained to reference types (class).</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> struct containing the operation outcome.</param>
     /// <param name="uri">The URI of the newly created resource, used in the Created response.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A typed HTTP result containing the created value on success or the mapped failure response.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="uri"/> is null or empty.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the result value is null for a reference type.</exception>
@@ -625,7 +626,7 @@ public static class ResultMapHttpExtensions
             throw new ArgumentException("URI cannot be null or empty", nameof(uri));
         }
 
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             switch (customResult)
             {
@@ -640,7 +641,7 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return WrapCustomResult(customResult);
+                    return WrapCustomResult(customResult, result, logger);
             }
         }
 
@@ -656,7 +657,7 @@ public static class ResultMapHttpExtensions
     /// </summary>
     /// <param name="result">The <see cref="Result"/> to map.</param>
     /// <param name="location">The location URI where the status of the operation can be monitored.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A <see cref="Results{Accepted, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
     public static Results<Accepted, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapAccepted(
         Result result,
@@ -666,7 +667,7 @@ public static class ResultMapHttpExtensions
         ArgumentNullException.ThrowIfNull(location);
 
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             switch (customResult)
             {
@@ -681,7 +682,7 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return WrapCustomResult(customResult);
+                    return WrapCustomResult(customResult, result, logger);
             }
         }
 
@@ -698,7 +699,7 @@ public static class ResultMapHttpExtensions
     /// <typeparam name="T">The type of the result value, constrained to reference types (class).</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
     /// <param name="location">The location URI where the status of the operation can be monitored.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A typed HTTP result containing the accepted value on success or the mapped failure response.</returns>
     public static Results<Accepted<T>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapAccepted<T>(
         this Result<T> result,
@@ -714,7 +715,7 @@ public static class ResultMapHttpExtensions
         }
 
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             switch (customResult)
             {
@@ -729,7 +730,7 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return WrapCustomResult(customResult);
+                    return WrapCustomResult(customResult, result, logger);
             }
         }
 
@@ -747,7 +748,7 @@ public static class ResultMapHttpExtensions
     /// <typeparam name="T">The type of the result value, constrained to reference types (class).</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
     /// <param name="locationFactory">A function that generates the location URI based on the result value.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A typed HTTP result containing the accepted value on success or the mapped failure response.</returns>
     public static Results<Accepted<T>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapAccepted<T>(
         this Result<T> result,
@@ -778,7 +779,7 @@ public static class ResultMapHttpExtensions
     /// </summary>
     /// <typeparam name="T">The type of items in the paged collection.</typeparam>
     /// <param name="result">The <see cref="ResultPaged{T}"/> to map.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A typed HTTP result containing the paged response on success or the mapped failure response.</returns>
     public static Results<Ok<PagedResponse<T>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapOkPaged<T>(
         ResultPaged<T> result,
@@ -786,7 +787,7 @@ public static class ResultMapHttpExtensions
         where T : class
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             switch (customResult)
             {
@@ -801,7 +802,7 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return WrapCustomResult(customResult);
+                    return WrapCustomResult(customResult, result, logger);
             }
         }
 
@@ -831,14 +832,14 @@ public static class ResultMapHttpExtensions
     /// Maps a <see cref="Result{FileContent}"/> to HTTP results for file download operations.
     /// </summary>
     /// <param name="result">The <see cref="Result{FileContent}"/> to map.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A <see cref="Results{FileContentHttpResult, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
     public static Results<FileContentHttpResult, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapFile(
         Result<FileContent> result,
         ILogger logger = null)
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             switch (customResult)
             {
@@ -855,7 +856,7 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return WrapCustomResult(customResult);
+                    return WrapCustomResult(customResult, result, logger);
             }
         }
 
@@ -917,7 +918,7 @@ public static class ResultMapHttpExtensions
         where TResult : IResult
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             if (customResult is TResult unauthorizedResult)
             {
@@ -943,7 +944,7 @@ public static class ResultMapHttpExtensions
         where TResult : IResult
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             if (customResult is TResult notFoundResult)
             {
@@ -970,7 +971,7 @@ public static class ResultMapHttpExtensions
         where TResult : IResult
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             if (customResult is TResult badRequestResult)
             {
@@ -988,8 +989,8 @@ public static class ResultMapHttpExtensions
         return MatchResponse<TResult>(typeof(TResult) switch
         {
             var type when type == typeof(BadRequest) => TypedResults.BadRequest(),
-            var type when type == typeof(BadRequest<string>) => TypedResults.BadRequest(CreateBadRequestDetails(result).Detail),
-            var type when type == typeof(BadRequest<ProblemDetails>) => TypedResults.BadRequest(CreateBadRequestDetails(result)),
+            var type when type == typeof(BadRequest<string>) => TypedResults.BadRequest(CreateBadRequestDetails(result, shared: false).Detail),
+            var type when type == typeof(BadRequest<ProblemDetails>) => TypedResults.BadRequest(CreateBadRequestDetails(result, shared: false)),
             _ => TypedResults.Problem(CreateBadRequestDetails(result))
         });
     }
@@ -1005,7 +1006,7 @@ public static class ResultMapHttpExtensions
         where TResult : IResult
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             if (customResult is TResult problemResult)
             {
@@ -1031,7 +1032,7 @@ public static class ResultMapHttpExtensions
         where TResult : IResult
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             if (customResult is TResult problemResult)
             {
@@ -1057,7 +1058,7 @@ public static class ResultMapHttpExtensions
         where TResult : IResult
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             if (customResult is TResult problemResult)
             {
@@ -1083,7 +1084,7 @@ public static class ResultMapHttpExtensions
         where TResult : IResult
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             if (customResult is TResult problemResult)
             {
@@ -1109,7 +1110,7 @@ public static class ResultMapHttpExtensions
         where TResult : IResult
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             if (customResult is TResult problemResult)
             {
@@ -1121,7 +1122,7 @@ public static class ResultMapHttpExtensions
         }
 
         logger?.LogWarning("result - timeout error occurred: {Error}", result.ToString());
-        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 504, "Timeout Error")));
+        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 504, "Timeout Error", logger: logger)));
     }
 
     /// <summary>
@@ -1135,7 +1136,7 @@ public static class ResultMapHttpExtensions
         where TResult : IResult
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             if (customResult is TResult problemResult)
             {
@@ -1148,7 +1149,7 @@ public static class ResultMapHttpExtensions
 
         logger?.LogError(result.Errors.OfType<ExceptionError>().FirstOrDefault()?.Exception,
             "result - exception error occurred: {Error}", result.ToString());
-        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 500, "Exception Error")));
+        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 500, "Exception Error", logger: logger)));
     }
 
     /// <summary>
@@ -1162,7 +1163,7 @@ public static class ResultMapHttpExtensions
         where TResult : IResult
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             if (customResult is TResult problemResult)
             {
@@ -1174,7 +1175,7 @@ public static class ResultMapHttpExtensions
         }
 
         logger?.LogWarning("result - rule error occurred: {Error}", result.ToString());
-        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 500, "Rule Error")));
+        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 500, "Rule Error", logger: logger)));
     }
 
     /// <summary>
@@ -1188,7 +1189,7 @@ public static class ResultMapHttpExtensions
         where TResult : IResult
     {
         // Check for custom handlers first
-        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        if (TryMapCustomError(result, logger, out var customResult))
         {
             if (customResult is TResult problemResult)
             {
@@ -1201,7 +1202,7 @@ public static class ResultMapHttpExtensions
 
         logger?.LogError(result.Errors.OfType<RuleExceptionError>().FirstOrDefault()?.Exception,
             "result - rule exception error occurred: {Error}", result.ToString());
-        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 500, "Rule Exception Error")));
+        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 500, "Rule Exception Error", logger: logger)));
     }
 
     /// <summary>
@@ -1229,7 +1230,7 @@ public static class ResultMapHttpExtensions
         //}
 
         logger?.LogError("result - unexpected error occurred: {Error}", result.ToString());
-        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 500, "Unexpected Error", instance: Guid.NewGuid().ToString())));
+        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 500, "Unexpected Error", instance: Guid.NewGuid().ToString(), logger: logger)));
     }
 
     ///// <summary>
@@ -1262,14 +1263,39 @@ public static class ResultMapHttpExtensions
     //    return (TResult)(IResult)problem;
     //}
 
-    private static ProblemHttpResult WrapCustomResult(IResult customResult)
+    private static bool TryMapCustomError(Result result, ILogger logger, out IResult customResult)
+    {
+        if (!ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out customResult))
+        {
+            return false;
+        }
+
+        if (logger is null && customResult is ProblemHttpResult { StatusCode: >= 500 } customProblem)
+        {
+            // A handler can reuse its response across failures. Keep logging metadata on this mapping only.
+            var problem = ProblemDetailsPayload.Copy(customProblem.ProblemDetails, retainResultDetails: true);
+            ResponseProblemDetailsService.TrackResult(problem, result, logger);
+            customResult = TypedResults.Problem(problem);
+        }
+
+        return true;
+    }
+
+    private static ProblemHttpResult WrapCustomResult(IResult customResult, Result result, ILogger logger)
     {
         var status = (customResult as IStatusCodeHttpResult)?.StatusCode ?? StatusCodes.Status500InternalServerError;
         var problem = ResultHttpProblemDetails.Create(status, "Custom Error");
         problem.Detail = "A custom error handler was executed. See extensions for details.";
         problem.Extensions["customResultType"] = customResult.GetType().Name;
+        ResponseProblemDetailsService.TrackResult(problem, result, logger);
         return TypedResults.Problem(problem);
     }
+
+    /// <summary>Maps a failed Result through the custom handlers and default HTTP failure classification.</summary>
+    public static IResult MapDefaultFailure(Result result) =>
+        TryMapCustomError(result, null, out var custom)
+            ? custom
+            : MapFailureProblem<ProblemHttpResult>(null, result);
 
     private static TResult MapFailureProblem<TResult>(ILogger logger, Result result)
         where TResult : IResult => result.Errors switch
@@ -1297,10 +1323,11 @@ public static class ResultMapHttpExtensions
     }
 
     private static ProblemDetails CreateProblem(
-        Result result, int statusCode, string title, string instance = null, Dictionary<string, string[]> errors = null)
+        Result result, int statusCode, string title, string instance = null, Dictionary<string, string[]> errors = null, ILogger logger = null)
     {
         var problem = ResultHttpProblemDetails.Create(statusCode, title, result);
         problem.Instance = instance;
+        ResponseProblemDetailsService.TrackResult(problem, result, logger);
 
         if (problem is not ResultHttpProblemDetails)
         {
@@ -1309,7 +1336,7 @@ public static class ResultMapHttpExtensions
         }
         else if (errors is not null)
         {
-            problem.Detail = "One or more validation errors occurred.";
+            problem.Detail = ProblemDetailsPayload.ValidationDetail;
             problem.Extensions["data"] = new { errors };
         }
 
@@ -1330,17 +1357,17 @@ public static class ResultMapHttpExtensions
                 $"The built-in response {response.GetType()} cannot be returned as {typeof(TResult)}. " +
                 "Declare a supported response type or register a custom error handler that returns the requested type.");
 
-    private static ProblemDetails CreateBadRequestDetails(Result result)
+    private static ProblemDetails CreateBadRequestDetails(Result result, bool shared = true)
     {
         if (result.Errors.Has<ValidationError>() || result.Errors.Has<FluentValidationError>())
         {
-            return CreateValidationDetails(result);
+            return CreateValidationDetails(result, shared);
         }
 
         return CreateProblem(result, StatusCodes.Status400BadRequest, "Bad Request");
     }
 
-    private static ProblemDetails CreateValidationDetails(Result result)
+    private static ProblemDetails CreateValidationDetails(Result result, bool shared)
     {
         var validationErrors = new List<(string PropertyName, string Message)>();
 
@@ -1359,10 +1386,14 @@ public static class ResultMapHttpExtensions
             }
         }
 
-        var errors = validationErrors
-            .GroupBy(e => string.IsNullOrWhiteSpace(e.PropertyName) ? "validation" : e.PropertyName)
-            .ToDictionary(g => g.Key, g => g.Select(e => e.Message).ToArray());
+        var errors = ProblemDetailsPayload.GroupValidation(validationErrors);
+        var problem = CreateProblem(result, StatusCodes.Status400BadRequest, "Validation Error",
+            errors: errors.Count > 0 ? errors : null);
+        if (shared)
+        {
+            problem.Detail = ProblemDetailsPayload.ValidationDetail;
+        }
 
-        return CreateProblem(result, StatusCodes.Status400BadRequest, "Validation Error", errors: errors);
+        return problem;
     }
 }

@@ -15,13 +15,13 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Collection of additional errors outside the result object</summary>
+        /// <summary>Validation messages grouped by field name</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ProblemError>? Errors { get; set; }
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemData_errors? Errors { get; set; }
 #nullable restore
 #else
-        public List<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ProblemError> Errors { get; set; }
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemData_errors Errors { get; set; }
 #endif
         /// <summary>Represents the operation outcome with success status, messages, and errors</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -56,7 +56,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
-                { "errors", n => { Errors = n.GetCollectionOfObjectValues<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ProblemError>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ProblemError.CreateFromDiscriminatorValue)?.AsList(); } },
+                { "errors", n => { Errors = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemData_errors>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemData_errors.CreateFromDiscriminatorValue); } },
                 { "result", n => { Result = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemResult>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemResult.CreateFromDiscriminatorValue); } },
             };
         }
@@ -67,7 +67,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-            writer.WriteCollectionOfObjectValues<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ProblemError>("errors", Errors);
+            writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemData_errors>("errors", Errors);
             writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemResult>("result", Result);
             writer.WriteAdditionalData(AdditionalData);
         }

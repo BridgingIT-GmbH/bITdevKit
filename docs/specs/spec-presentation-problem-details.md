@@ -1,6 +1,6 @@
 ---
 created: 2026-11-23
-status: draft
+status: implemented
 ---
 
 # DevKit HTTP Problem Details
@@ -19,7 +19,7 @@ The architecture decision records the trade-off and the breaking changes for hos
 
 The existing host setup registers two different systems:
 
-- Hellang's `AddProblemDetails` configures exceptions through [`Configure.ProblemDetails`](../../src/Presentation.Web/Exceptions/Configure.ProblemDetails.cs). Its `UseProblemDetails()` middleware catches downstream exceptions and fills eligible empty error responses. Its final write hook adds `correlationId`.
+- Hellang's `AddProblemDetails` configures exceptions through the former `Configure.ProblemDetails` helper. Its `UseProblemDetails()` middleware catches downstream exceptions and fills eligible empty error responses. Its final write hook adds `correlationId`.
 - [`AddResultHttpProblemDetails`](../../src/Presentation.Web/Result/ResultHttpServiceCollectionExtensions.cs) registers Microsoft's Problem Details service, configures Result diagnostic disclosure, and composes the native customization callback. It is part of the Problem Details feature, not an unrelated Result registration to remove.
 
 Minimal API Result processing follows [`ResultMapHttpExtensions`](../../src/Presentation.Web/Result/Map/ResultMapHttpExtensions.cs), [`ResultHttpProblemDetails`](../../src/Presentation.Web/Result/ResultHttpProblemDetails.cs), and the native `ProblemHttpResult` writer. MVC Result processing follows [`DefaultActionResultMapper`](../../src/Presentation.Web/Result/DefaultActionResultMapper.cs), prepares the response explicitly, and invokes MVC's `ObjectResult` executor.
@@ -30,7 +30,7 @@ Hellang leaves already-written Result responses alone. Its callback is therefore
 
 ### Current exception mappings
 
-`Configure.ProblemDetails.cs` is the authoritative baseline for hosts using the helper. Its effective mappings are:
+The former `Configure.ProblemDetails.cs` defined these effective mappings for hosts using the helper.
 
 - `ValidationException` returns 400, title `Validation Error`, detail `[ValidationException] A validation error has occurred`, and `data.errors`. Messages are sorted and grouped by property, with the case-insensitive `Entity.` prefix removed.
 - `RuleException` and `DomainPolicyException` return 400 with title `Bad Request`, a type-prefixed exception message in `detail`, and empty `data`.
@@ -267,7 +267,9 @@ Service registration does not install middleware. Hosts activate unhandled excep
 
 ### Mixed API and HTML hosts
 
-Use the two-call quickstart when automatic Problem Details should apply across the host. In a host with both APIs and HTML pages, use `ShouldHandleRequest` to scope the DevKit exception handler and default status-code pages. When the predicate returns `false`, the DevKit exception handler declines before running any mappings or DevKit exception logs, and DevKit's status-code handler leaves the response to the host. Other registered exception handlers and host-supplied status pages still follow the native pipeline. Explicit Result mapping and MVC automatic model validation remain available at any route.
+Use the two-call quickstart when automatic Problem Details should apply across the host. If native exception middleware rewrites the request to an error page, DevKit leaves that exception to the page by default. A host can therefore retain an outer native error page and use `UseResponseProblemDetails()` at its existing error boundary with default options.
+
+Use `ShouldHandleRequest` to override exception handling and scope default status-code pages when a host uses one native exception middleware for both APIs and HTML pages. When the predicate returns `false`, the DevKit exception handler declines before running any mappings or DevKit exception logs, and DevKit's status-code handler leaves the response to the host. Other registered exception handlers and host-supplied status pages still follow the native pipeline. Explicit Result mapping and MVC automatic model validation remain available at any route.
 
 Use a request property that identifies the API even when routing finds no endpoint. The example uses the original request path so that `/api` exceptions still match when ASP.NET Core dispatches to `/Error`. A host that checks endpoint metadata can read the original endpoint from `IExceptionHandlerFeature.Endpoint`, and needs a rule for unmatched routes. Use `Accept` for representation selection on requests in scope.
 
@@ -284,6 +286,7 @@ app.UseExceptionHandler("/Error");
 app.UseWhen(IsApiRequest, api => api.UseStatusCodePages());
 app.UseWhen(context => !IsApiRequest(context), ui =>
 	ui.UseStatusCodePages("text/html; charset=utf-8", "<h1>HTTP {0}</h1>"));
+app.UseRouting();
 
 static bool IsApiRequest(HttpContext context)
 {
@@ -300,11 +303,11 @@ In this example, the application provides an HTML `/Error` endpoint for the orig
 The new options expose these settings:
 
 - `IncludeExceptionDetails` is a `bool` with a default of `false`. It controls whether the shared `exceptionDetails` extension appears for thrown exceptions and exception-bearing Results when diagnostic preparation applies. Public detail and validation messages are independent of this flag.
-- `ShouldHandleRequest` is an optional `Func<HttpContext, bool>`, default `null`, which allows all requests. It scopes automatic DevKit exception and empty-status handling. [Mixed API and HTML hosts](#mixed-api-and-html-hosts)
+- `ShouldHandleRequest` is an optional `Func<HttpContext, bool>`, default `null`. The default handles eligible requests and leaves native exception-page rewrites to the host. An explicit predicate controls automatic exception and empty-status handling. [Mixed API and HTML hosts](#mixed-api-and-html-hosts)
 - `OnBeforeWriteDetails` is an optional `Action<HttpContext, ProblemDetails>`, default `null`. It enriches a problem immediately before serialization, after applicable default preparation and native customization. It applies during normal writer or MVC formatter preparation for exceptions, failed Results, and eligible framework-generated problems managed by the feature. [Writer fallback](#writer-fallback)
 - `AllowedHeaderNames` is a case-insensitive `ISet<string>` initialized with the compatibility header allowlist. Adding a name retains an existing response header across exception-response clearing. It does not copy a request header into the response.
-- `ShouldLogUnhandledException` is a `bool` with a default of `true`. When enabled, DevKit logs a handled exception if its selected status is 500 or higher or the mapping omits a status. Set it to `false` to disable the DevKit exception log. ASP.NET Core diagnostics and Result mapper logging have separate settings.
-- `ShouldLogResultErrors` is a `bool` with a default of `false`. Enable it to log failed Results mapped by DevKit to 5xx responses in Minimal APIs and MVC. An explicit logger passed to the Result mapper takes precedence.
+- `ShouldLogUnhandledException` is a `bool` with a default of `true`. When enabled, DevKit logs handled exceptions with a selected 5xx status, including those handled by individually registered `ExceptionHandlerBase<TException>` implementations in the combined setup. Set it to `false` to disable the DevKit exception log. ASP.NET Core diagnostics and standalone handlers have separate settings.
+- `ShouldLogResultErrors` is a `bool` with a default of `true`. It logs mapped 5xx Problem Details and custom MVC Result responses at execution. An explicit logger passed to the Result mapper takes precedence.
 
 Set `IncludeExceptionDetails` explicitly to select an environment policy. Hosts that previously configured the legacy diagnostic switches differently choose a common value when migrating. Standalone `GlobalExceptionHandlerOptions` retains its disclosure behavior. Result-only hosts keep their existing disclosure option and use the shared diagnostic format.
 
@@ -398,6 +401,7 @@ Assign an application-owned `type` URI and the same status to equivalent failure
 ```csharp
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
+using HttpResult = Microsoft.AspNetCore.Http.IResult;
 
 const string conflictType = "https://inventory.example/problems/item-conflict";
 const string conflictTitle = "Inventory item conflict";
@@ -416,7 +420,7 @@ ResultMapHttpExtensions.RegisterErrorHandler<InventoryConflictError>((_, _) =>
 var app = builder.Build();
 app.UseResponseProblemDetails();
 
-app.MapPost("/api/items/reserve", IResult () => throw new InventoryConflictException())
+app.MapPost("/api/items/reserve", HttpResult () => throw new InventoryConflictException())
 	.ProducesResultProblem(StatusCodes.Status409Conflict);
 app.MapPost("/api/items/release", () =>
 		Result.Failure(new InventoryConflictError()).MapHttpNoContent())
@@ -455,7 +459,6 @@ Database handlers remain explicit. Preserve existing `AddEntityFrameworkHandlers
 ```csharp
 builder.Services.AddSingleton(new GlobalExceptionHandlerOptions
 {
-	IncludeExceptionDetails = builder.Environment.IsDevelopment(),
 	EnableLogging = true
 });
 builder.Services.AddExceptionHandler<DbUpdateConcurrencyExceptionHandler>();
@@ -529,16 +532,20 @@ app.UseStatusCodePages();
 
 Returning `true` suppresses framework diagnostics. Enabling framework diagnostics while leaving DevKit exception logging enabled can log the same exception twice.
 
-Enable HTTP Result logging separately. DevKit emits one structured `Error` entry for a failed Result mapped to a 5xx response, with the HTTP status, Result error types, and correlation ID when available. Record it at response execution so writer fallback and repeated preparation produce a single entry. This setting is independent of `IncludeExceptionDetails`. Expected 4xx Result failures can use the existing mapper logger or request logging.
+`AddResponseProblemDetails()` enables HTTP Result logging by default. DevKit records one structured `Error` entry when a mapped 5xx Problem Details response executes, including when JSON fallback runs. The entry includes the HTTP status, Result error types, and the response's correlation ID when available. A custom MVC result that writes its own body uses its executed status and request correlation for logging. This setting is independent of `IncludeExceptionDetails`. Expected 4xx Result failures can use the existing mapper logger or request logging.
+
+For a Minimal API endpoint that declares the native `InternalServerError` arm, pass an explicit logger to the mapper to log the failure. The framework executes that arm directly. Declare `ProblemHttpResult` to use shared HTTP Result logging.
+
+Set `ShouldLogResultErrors` to `false` to disable HTTP Result logging.
 
 ```csharp
 builder.Services.AddResponseProblemDetails(options =>
 {
-	options.ShouldLogResultErrors = true;
+	options.ShouldLogResultErrors = false;
 });
 ```
 
-Hosts that pass an explicit logger to the Result mapper keep that logger for the mapped failure. `UseResultLogger()` remains a separate source of application Result logs. Enable HTTP Result logging when you need a log at the response boundary.
+Hosts that pass an explicit logger to the Result mapper keep that logger for the mapped failure. The Result-only registration and `UseResultLogger()` have separate logging behavior.
 
 Applications with custom propagation requirements can use a standard `IExceptionHandler` and native fallback. A handler that declines an exception returns `false` so the next handler or framework fallback can handle it. The combined setup uses standard propagation after the response starts.
 
@@ -581,6 +588,8 @@ Remove the direct Hellang reference, its central version, obsolete helper overlo
 
 Removing the Hellang-specific public helper is a source and binary API change. Document how to migrate mapping delegates, consolidate diagnostic settings, retain allowed response headers, and migrate write hooks. The generic `Hellang*` assembly-scan exclusion can remain for consumer applications.
 
+Both hosts migrated by this specification set `IncludeExceptionDetails = builder.Environment.IsDevelopment()` for thrown exceptions and exception-bearing Results. Verify the policy in Development, Staging, and Production.
+
 Release notes and migration guidance must identify the client-facing changes.
 
 - Read `exceptionDetails` as an array of objects. Replace reads of Result diagnostic strings, Hellang's `raw` and `stackFrames` fields, and any catch-all diagnostics formerly read from `detail` or `data.errors`.
@@ -606,7 +615,7 @@ Update the Results guide's HTTP diagnostics example and link it to the Exception
 
 ## Acceptance stories
 
-All stories are pending. Verify mixed-host routing and the generated OpenAPI contract in the first test-host pass. Both are required before removing Hellang.
+The implementation verifies mixed-host routing and the generated OpenAPI contract in the shared server test host.
 
 ### 1. Align exception and Result payloads
 
@@ -650,7 +659,7 @@ As a host developer, I want explicit defaults and override rules so that I can m
 3. Given either value of `IncludeExceptionDetails`, when diagnostic preparation runs, then both responses include or omit the shared `exceptionDetails` array as configured. Catch-all exception detail stays generic and `data.errors` contains validation messages only. A legacy Result-only registration cannot override the combined value.
 4. Given header extensions, native writer or status-page overrides, and logging configuration, when handling runs, then the selected framework extension points remain effective.
 5. Given invalid configuration or a failing callback, when startup or response execution occurs, then the failure is explicit and cannot become an empty successful response or a second write.
-6. Given HTTP Result logging is enabled, when a DevKit-mapped Result produces a 5xx response, then either the explicit mapper logger handles the failure or the HTTP layer logs it once. Successful Results and expected 4xx Results produce zero entries from this policy.
+6. Given the default combined registration, when a DevKit-mapped Result produces a 5xx problem or a custom MVC 5xx response, then either the explicit mapper logger handles the failure or the HTTP layer logs it once. Successful Results, expected 4xx Results, and responses with HTTP Result logging disabled produce zero entries from this policy. An explicit Minimal API `InternalServerError` arm uses the mapper logger when supplied.
 7. Given an enrichment callback assigns a different status, when a DevKit-managed problem is written, then the HTTP status, JSON `status`, and DevKit log use the selected status. Other callback edits appear in the response.
 
 ### 5. Publish the shared response contract in OpenAPI
@@ -700,7 +709,7 @@ Keep the Minimal API Result mapper in place, integrate its response preparation,
 
 ## Sources
 
-- [`Configure.ProblemDetails.cs`](../../src/Presentation.Web/Exceptions/Configure.ProblemDetails.cs), [`ResultMapHttpExtensions.cs`](../../src/Presentation.Web/Result/Map/ResultMapHttpExtensions.cs), and [`DefaultActionResultMapper.cs`](../../src/Presentation.Web/Result/DefaultActionResultMapper.cs) define the repository behavior to preserve or align.
+- The [legacy HTTP fixture](../../tests/Presentation.UnitTests/Web/ProblemDetails/Fixtures/legacy-http-responses.json) records the baseline commit and observed wire behavior. [`ResultMapHttpExtensions.cs`](../../src/Presentation.Web/Result/Map/ResultMapHttpExtensions.cs) and [`DefaultActionResultMapper.cs`](../../src/Presentation.Web/Result/DefaultActionResultMapper.cs) define the current adapters.
 - [Hellang middleware at the commit shipped in 6.5.1](https://github.com/khellang/Middleware/tree/2c41d08ca65c2ac62b47e5420f9be083033f430e/src/ProblemDetails) defines mapping order, response clearing, diagnostics, status handling, formatter execution, and post-write rethrow. Use this pinned version rather than assuming the default branch matches the deployed package.
 - [ASP.NET Core `ProblemHttpResult`](https://github.com/dotnet/aspnetcore/blob/v10.0.0/src/Http/Http.Results/src/ProblemHttpResult.cs) defines native service execution and JSON fallback.
 - [ASP.NET Core MVC `DefaultProblemDetailsFactory`](https://github.com/dotnet/aspnetcore/blob/v10.0.0/src/Mvc/Mvc.Core/src/Infrastructure/DefaultProblemDetailsFactory.cs) defines model-state defaults, trace identifiers, and native customization for framework-generated MVC problems.

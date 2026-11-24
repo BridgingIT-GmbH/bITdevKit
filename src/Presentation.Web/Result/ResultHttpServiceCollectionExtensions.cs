@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>Configures HTTP Problem Details for failed Results.</summary>
@@ -28,19 +27,7 @@ public static class ResultHttpServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         services.Configure<ResultHttpProblemDetailsOptions>(options => options.IncludeExceptionDetails = includeExceptionDetails);
-        services.AddProblemDetails();
-        services.PostConfigure<ProblemDetailsOptions>(options =>
-        {
-            var customize = options.CustomizeProblemDetails;
-            options.CustomizeProblemDetails = context =>
-            {
-                customize?.Invoke(context);
-                if (context.ProblemDetails.Status >= 400)
-                {
-                    context.ProblemDetails = ResultHttpProblemDetails.PrepareResponse(context.ProblemDetails, context.HttpContext);
-                }
-            };
-        });
+        services.AddSharedProblemDetails();
         return services;
     }
 }

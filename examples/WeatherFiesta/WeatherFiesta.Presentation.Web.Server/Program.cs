@@ -240,16 +240,10 @@ builder.Services.AddResponseCompression(options =>
 
 builder.Services.AddControllers(); // needed for openapi gen, even with no controllers
 
-#pragma warning disable CS0618
-builder.Services.AddProblemDetails(o =>
+builder.Services.AddResponseProblemDetails(o =>
 {
-    Configure.ProblemDetails(o, includeExceptionDetails: builder.Environment.IsDevelopment());
-    o.IncludeExceptionDetails = (_, _) => builder.Environment.IsDevelopment();
-    o.OnBeforeWriteDetails = (context, problem) =>
-        problem.Extensions["correlationId"] = context.TryGetCorrelationId() ?? context.TraceIdentifier;
+    o.IncludeExceptionDetails = builder.Environment.IsDevelopment();
 });
-builder.Services.AddResultHttpProblemDetails(builder.Environment.IsDevelopment());
-#pragma warning restore CS0618
 
 builder.Services.AddAppOpenApi();
 
@@ -284,6 +278,12 @@ else
 {
     app.UseExceptionHandler("/Error", true);
     app.UseHsts();
+    app.Map("/Error", () => TypedResults.Content(
+            "<!doctype html><html lang=\"en\"><title>Server error</title><h1>An error occurred while processing your request.</h1></html>",
+            "text/html; charset=utf-8",
+            statusCode: StatusCodes.Status500InternalServerError))
+        .AllowAnonymous()
+        .ExcludeFromDescription();
 }
 
 app.UseRuleLogger();
@@ -310,7 +310,7 @@ app.UseActiveEntity(app.Services);
 
 app.UseAuthentication();
 app.UseAuditing();
-app.UseProblemDetails();
+app.UseResponseProblemDetails();
 app.UseAuthorization();
 
 app.UseCurrentUserLogging();

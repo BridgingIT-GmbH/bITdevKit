@@ -8,29 +8,29 @@ using System;
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
 {
     /// <summary>
-    /// Represents an individual error entry with flexible structure for additional data
+    /// Validation messages grouped by field name
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public partial class ProblemError : IAdditionalDataHolder, IParsable
+    public partial class ResultProblemData_errors : IAdditionalDataHolder, IParsable
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
         /// <summary>
-        /// Instantiates a new <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ProblemError"/> and sets the default values.
+        /// Instantiates a new <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemData_errors"/> and sets the default values.
         /// </summary>
-        public ProblemError()
+        public ResultProblemData_errors()
         {
             AdditionalData = new Dictionary<string, object>();
         }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ProblemError"/></returns>
+        /// <returns>A <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemData_errors"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ProblemError CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemData_errors CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ProblemError();
+            return new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemData_errors();
         }
         /// <summary>
         /// The deserialization information for the current model

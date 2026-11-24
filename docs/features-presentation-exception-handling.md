@@ -1,6 +1,6 @@
 <img class="bdk-doc-icon" src="assets/features/exception-handling.svg" width="32" height="32" alt="" align="right">
 
-# Exception Handler Configuration
+# Exception handling and HTTP Problem Details
 
 > Convert exceptions into consistent Problem Details responses with configurable handlers and mappings.
 
@@ -8,20 +8,7 @@
 
 ## Overview
 
-The Exception Handler is a configuration-driven system for handling exceptions in ASP.NET Core applications. It provides a unified approach to converting exceptions into consistent HTTP responses that use the [Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html) format.
-
-> Builds on the standard [ASP.NET Core Exception Handler Middleware](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling) and provides a fluent, extensible configuration system for managing application and infrastructure exceptions.
-
-This feature supports:
-
-- **Multiple exception handlers** with priority-based execution
-- **Fluent exception mapping** for quick configuration
-- **Problem Details enrichment** for consistent API responses
-- **Environment-specific configuration** (Development vs Production)
-- **Custom exception handlers** for domain-specific logic
-- **Exception filtering** (ignore, rethrow)
-- **Audit logging** with user and request context
-- **Entity Framework Core database exception handling**
+DevKit converts unhandled exceptions and failed Results into HTTP Problem Details in Minimal APIs and MVC. The combined feature uses ASP.NET Core's standard exception middleware, status-code pages, and Problem Details writers. [Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html)
 
 ## Challenges
 
@@ -29,10 +16,12 @@ Unhandled exceptions need consistent HTTP responses without disclosing stack tra
 
 ## Solution
 
-`AddExceptionHandler(...)` registers an ordered ASP.NET Core `IExceptionHandler` chain. Custom handlers run by configured priority, fluent mappings run next, built-in handlers cover common DevKit exceptions, and `GlobalExceptionHandler` provides the final 500 response. `UseExceptionHandler()` adds the middleware that invokes the chain.
+`AddResponseProblemDetails(...)` configures automatic exception mapping, eligible empty-status responses, and failed Result responses. Use `UseResponseProblemDetails()` to activate both native middleware components. The standalone DevKit handler chain is available through `AddExceptionHandler(...)`.
 
 ## Key Features
 
+- shared validation and opt-in exception diagnostics for Minimal APIs and MVC
+- request scope for automatic API handling in mixed API and HTML hosts
 - built-in handlers for validation, domain, security, module, and infrastructure exceptions
 - fluent exception-to-status or exception-to-`ProblemDetails` mappings
 - priority-ordered custom handlers and conditional registration
@@ -43,7 +32,28 @@ Unhandled exceptions need consistent HTTP responses without disclosing stack tra
 
 ## Architecture
 
-ASP.NET Core's exception-handler middleware calls registered `IExceptionHandler` implementations in order. Each handler either declines the exception or writes a `ProblemDetails` response and stops the chain. DevKit registers additional handlers first, followed by mappings, built-in handlers, and the global catch-all handler.
+ASP.NET Core invokes registered `IExceptionHandler` implementations in order and stops at the first handler that returns true. In the combined setup, the DevKit handler evaluates mappings and writes the response through the same Problem Details service as failed Results. Native status-code pages invoke DevKit's default response for eligible empty statuses.
+
+```mermaid
+flowchart TD
+    accTitle: How DevKit handles HTTP errors
+    accDescr: Exceptions, empty error responses, and failed Results can reach the shared writer. ASP.NET Core can serve a configured HTML error page. If every writer declines, the response uses public JSON.
+
+    Thrown["Unhandled exception"] --> Exceptions["UseExceptionHandler()"]
+    Empty["Eligible empty<br/>4xx or 5xx"] --> StatusPages["UseStatusCodePages()"]
+    Failed["Failed Result"] --> ResultMap["Result HTTP<br/>mapping"]
+
+    Exceptions -->|DevKit handles it| ExceptionMap["DevKit exception<br/>mapping"]
+    Exceptions -->|Native rewrite| Html["Configured HTML<br/>error page"]
+    ExceptionMap --> Service["IProblemDetailsService"]
+    StatusPages --> Service
+    ResultMap -->|Problem response| Service
+
+    Service -->|Writer accepts| Written["Enrich and write<br/>Problem Details"]
+    Service -->|All writers decline| Fallback["Public JSON fallback"]
+```
+
+In a mixed host, `ShouldHandleRequest` can give DevKit first refusal for API exceptions even when ASP.NET Core has rewritten the request to an HTML error page. [Mixed-host setup](#preserve-html-error-pages-in-mixed-hosts)
 
 ## Use Cases
 
@@ -55,37 +65,152 @@ ASP.NET Core's exception-handler middleware calls registered `IExceptionHandler`
 
 ## Basic Usage
 
-This example maps `KeyNotFoundException` to 404, hides details outside Development, enriches the response with a trace identifier, and exposes a route that demonstrates the result.
+Register the combined feature and activate its middleware. This inventory API shows a thrown exception and a validation failure returned as a Result.
 
 ```csharp
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
+using HttpResult = Microsoft.AspNetCore.Http.IResult;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddExceptionHandler(options =>
+builder.Services.AddResponseProblemDetails(options =>
 {
     options.IncludeExceptionDetails = builder.Environment.IsDevelopment();
-    options.EnableLogging = true;
-    options.Map<KeyNotFoundException>(
-        StatusCodes.Status404NotFound,
-        "Resource Not Found");
-    options.EnrichProblemDetails = (context, problem, _) =>
-        problem.Extensions["traceId"] = context.TraceIdentifier;
+    options.Map<KeyNotFoundException>(404, "Inventory item not found");
 });
 
 var app = builder.Build();
-app.UseExceptionHandler();
+app.UseRouting();
+app.UseRequestCorrelation();
+app.UseResponseProblemDetails();
 
-app.MapGet("/products/{id:int}", GetProduct);
+app.MapGet("/api/inventory/{id:int}", HttpResult (int id) =>
+    throw new KeyNotFoundException($"Inventory item {id} was not found."));
+app.MapPost("/api/inventory", () =>
+    Result.Failure(new ValidationError("Name is required.", "Name")).MapHttpNoContent());
+
 app.Run();
-
-static IResult GetProduct(int id) =>
-    throw new KeyNotFoundException($"Product {id} was not found.");
 ```
 
-`GET /products/42` returns a 404 Problem Details response titled `Resource Not Found`. In production, the response omits the exception message; the server still logs the exception.
+The GET returns 404. The POST returns 400 with validation messages at `data.errors.Name`. For an MVC controller, register and map controllers, then use `result.ToOkActionResult()` for a failed Result or let a mapped exception propagate. Both paths use the same HTTP mapping. Automatic `[ApiController]` model validation retains its top-level `errors` object.
+
+`UseResponseProblemDetails()` calls `UseExceptionHandler()` followed by `UseStatusCodePages()`. Call the native methods directly to control pipeline placement or enable either behavior independently. For Results alone, register `AddResultHttpProblemDetails(bool)` and use the HTTP mapping helpers.
+
+## Shared response format
+
+A DevKit validation problem can return the following body. A failed Result can also include its public messages and typed errors at `data.result`.
+
+```json
+{
+  "type": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+  "title": "Validation Error",
+  "status": 400,
+  "detail": "One or more validation errors occurred.",
+  "data": {
+    "errors": { "Name": ["Name is required."] }
+  },
+  "correlationId": "inventory-request",
+  "traceId": "request-trace"
+}
+```
+
+The validation map strips a leading `Entity.` and groups blank field names under `validation`. Exception-bearing Results omit `data.result`. A developer can opt in to `exceptionDetails`, an array of objects with string `type` and `message` fields and optional `stackTrace` and `innerExceptions` fields. Default exception messages stay fixed in public `detail`.
+
+DevKit adds `correlationId` when it prepares a response. Request correlation middleware establishes the ID from the request. Exceptions otherwise use the request trace identifier. Failed Results can also use the ambient correlation ID or the current activity trace ID. `traceId` identifies the trace separately.
+
+When a registered writer accepts a problem, DevKit applies native customization and then `OnBeforeWriteDetails`. Choose the status in a mapping or handler. Enrichment can change the other response fields. When all writers decline, a mapped exception or empty status still returns public `application/problem+json` with request identifiers. A mapped Result uses the native JSON fallback, which retains fields already on the mapper's problem. Both fallbacks skip write hooks and omit optional diagnostics.
+
+## Configure response Problem Details
+
+| Option | Default | Behavior |
+| --- | --- | --- |
+| `IncludeExceptionDetails` | `false` | Enables the shared diagnostic array for exceptions and exception-bearing Results. |
+| `ShouldHandleRequest` | Unset | Overrides which requests get automatic exception or empty-status handling. By default, DevKit honors native exception-page rewrites. |
+| `OnBeforeWriteDetails` | None | Enriches an accepted write after native customization and shared preparation. |
+| `AllowedHeaderNames` | Correlation, authentication challenge, HSTS, and standard CORS headers | Retains selected response headers after native exception handling clears them. |
+| `ShouldLogUnhandledException` | `true` | Writes a DevKit log for handled server exceptions. |
+| `ShouldLogResultErrors` | `true` | Logs mapped 5xx Problem Details and custom MVC Result responses when they execute. An explicit mapper logger takes precedence. Set to `false` to disable HTTP Result logging. |
+
+The default mappings preserve the established 400 validation, rule, and domain policy statuses, 401 security status, 404 not-found statuses, and 503 disabled-module status. Other exceptions return 500 unless an application or module maps them. An eligible empty 400–599 response uses its existing status and reason phrase. A declared body, content type, or content length keeps control with the endpoint.
+
+Call `Map<TException>(status, title, typeUri)` for a host override or `MapDefault<TException>(...)` for a reusable module. Overloads accept a factory receiving the exception and optionally the request, with an optional predicate for the context-aware factory. Host overrides run before module defaults, then built-ins and the 500 catch-all. Within each group, the first matching mapping wins. Register more specific exceptions before base types.
+
+Register an application `AddExceptionHandler<THandler>()` before `AddResponseProblemDetails()` when it should have first refusal. Return `false` to continue. To share DevKit enrichment, set the response status and write through `IProblemDetailsService` with the exception in `ProblemDetailsContext.Exception`. A handler that writes directly owns its response. ASP.NET Core handlers are singletons. Resolve scoped services from the current request.
+
+An individually registered `ExceptionHandlerBase<TException>` uses public problem fields with the combined registration. Override `CreateSharedProblemDetails` to provide custom public fields. The combined options control the diagnostic extension and 5xx logging. Set `GlobalExceptionHandlerOptions.EnableLogging` for standalone handler logging.
+
+For optional Entity Framework handlers, register `GlobalExceptionHandlerOptions` as a singleton for their constructor, then register `DbUpdateConcurrencyExceptionHandler`, `DbUpdateExceptionHandler`, and `DbExceptionHandler` individually before `AddResponseProblemDetails()`. The concurrency handler must precede the broader update handler. The combined feature and DevKit's full standalone `AddExceptionHandler(...)` chain are mutually exclusive.
+
+The host can configure native `Microsoft.AspNetCore.Http.ProblemDetailsOptions.CustomizeProblemDetails`. Install a custom `IProblemDetailsWriter` ahead of the framework JSON writer if it should handle an accepted format first. DevKit logs through `ILogger` subject to host log levels. ASP.NET Core diagnostics for a handled exception are controlled separately by native `ExceptionHandlerOptions.SuppressDiagnosticsCallback`. If using framework logging for handled server errors, set `ShouldLogUnhandledException = false` to avoid double logging.
+
+Use `ProblemHttpResult` as the Minimal API server error arm to get HTTP Result logging. If the endpoint declares the native `InternalServerError` arm, pass a logger to the mapper to log the failure.
+
+### Preserve HTML error pages in mixed hosts
+
+By default, DevKit leaves exceptions rewritten by `UseExceptionHandler("/Error")` to the native page. A host can keep that middleware and use `UseResponseProblemDetails()` at its API error boundary with the default options.
+
+Set `ShouldHandleRequest` if one native exception middleware should handle both API and HTML routes. Use the original request path to identify an API request when ASP.NET Core substitutes the error page path. The application must serve `/Error` for the original HTTP methods it handles.
+
+```csharp
+using Microsoft.AspNetCore.Diagnostics;
+
+builder.Services.AddResponseProblemDetails(options => options.ShouldHandleRequest = IsApiRequest);
+
+var app = builder.Build();
+app.UseExceptionHandler("/Error");
+app.UseWhen(IsApiRequest, api => api.UseStatusCodePages());
+app.UseWhen(context => !IsApiRequest(context), ui =>
+    ui.UseStatusCodePages("text/html; charset=utf-8", "<h1>Request failed ({0})</h1>"));
+app.UseRouting();
+
+static bool IsApiRequest(HttpContext context)
+{
+    var original = context.Features.Get<IExceptionHandlerPathFeature>()?.Path;
+    return (original is null ? context.Request.Path : new PathString(original)).StartsWithSegments("/api");
+}
+```
+
+The API prefix controls scope independently of `Accept`. Place status-page re-execution before routing so the rewritten UI path is routed again. Explicitly mapped Result problems still use the shared policy outside the API prefix.
+
+### Share a problem type URI
+
+Register the same application-owned URI and status for two equivalent failure paths. Return `Result.Failure(new InventoryConflictError())` from a use case that reports an expected conflict.
+
+```csharp
+const string conflict = "https://inventory.example/problems/item-conflict";
+const string title = "Inventory item conflict";
+
+builder.Services.AddResponseProblemDetails(options =>
+    options.Map<InventoryConflictException>(409, title, conflict));
+
+ResultMapHttpExtensions.RegisterErrorHandler<InventoryConflictError>((_, _) =>
+    TypedResults.Problem(statusCode: 409, type: conflict, title: title));
+```
+
+Here `InventoryConflictException` derives from `Exception`, and `InventoryConflictError` derives from `ResultErrorBase`. Clients can branch on the problem type URI even if the server changes the human-readable title.
+
+### Document the response in OpenAPI
+
+Register the shared schema transformer and declare the statuses the endpoint exposes. DevKit's schema describes grouped validation and optional recursive diagnostics. Use MVC's native validation schema for automatic model errors.
+
+```csharp
+builder.Services.AddOpenApi(options =>
+    options.AddSchemaTransformer<ResultProblemDetailsSchemaTransformer>());
+
+// After Build()
+app.MapOpenApi();
+app.MapPost("/api/inventory", CreateInventoryItem)
+    .ProducesResultProblem(400)
+    .ProducesResultProblem(500);
+```
+
+### Migrate from Hellang
+
+Replace the Hellang service registration, `Configure.ProblemDetails(...)`, and `UseProblemDetails()` with the combined DevKit registration and middleware. The combined registration also supplies Result HTTP preparation. Set one disclosure policy, move exception mappings into `Map<TException>`, and transfer any custom header names and response enrichment into DevKit options. Use request scope for hosts with native HTML error pages. Update tests and generated clients for grouped validation, structured diagnostics, and the MVC Result status changes. [ADR-0046](adr/0046-shared-http-problem-details.md#breaking-changes)
 
 ## Key concepts
+
+The sections below cover the standalone `AddExceptionHandler(...)` chain and its `GlobalExceptionHandlerOptions`.
 
 - **Exception Handler**: A service that attempts to handle a specific exception type and produce an HTTP response
 - **Handler Chain**: A sequence of handlers executed in priority order; the first to handle stops the chain

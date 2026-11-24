@@ -1,0 +1,343 @@
+{
+  "commit": "fe0b3345f883d437c7c77a589fcfaa5928f6a53c",
+  "settingsOrder": [
+    "environment",
+    "helperDisclosure",
+    "hellangDisclosure",
+    "resultDisclosure"
+  ],
+  "profiles": {
+    "Development-True-True-True": {
+      "throw/validation": {
+        "status": 400,
+        "type": "application/problem+json",
+        "title": "Validation Error",
+        "correlation": true,
+        "trace": true,
+        "data": [
+          "errors"
+        ],
+        "diagnostic": "Object",
+        "noCache": true
+      },
+      "result/validation": {
+        "status": 400,
+        "type": "application/problem+json",
+        "title": "Validation Error",
+        "correlation": true,
+        "trace": true,
+        "data": [
+          "result",
+          "errors"
+        ],
+        "diagnostic": null,
+        "noCache": false
+      },
+      "throw/server": {
+        "status": 500,
+        "type": "application/problem+json",
+        "title": "Internal Server Error",
+        "correlation": true,
+        "trace": true,
+        "data": [
+          "errors"
+        ],
+        "diagnostic": "Object",
+        "noCache": true
+      },
+      "result/server": {
+        "status": 500,
+        "type": "application/problem+json",
+        "title": "Exception Error",
+        "correlation": true,
+        "trace": true,
+        "data": null,
+        "diagnostic": "String",
+        "noCache": false
+      },
+      "mvc/result/validation": {
+        "status": 400,
+        "type": "application/problem+json",
+        "title": "Bad Request",
+        "correlation": true,
+        "trace": false,
+        "data": null,
+        "diagnostic": null,
+        "noCache": false
+      },
+      "throw/not-implemented": {
+        "status": 500,
+        "type": "application/problem+json",
+        "title": "Internal Server Error",
+        "correlation": true,
+        "trace": true,
+        "data": [
+          "errors"
+        ],
+        "diagnostic": "Object",
+        "noCache": true
+      },
+      "empty": {
+        "status": 404,
+        "type": "application/problem+json",
+        "title": "Not Found",
+        "correlation": true,
+        "trace": true,
+        "data": null,
+        "diagnostic": null,
+        "noCache": true
+      },
+      "explicit": {
+        "status": 404,
+        "type": "text/plain"
+      }
+    },
+    "Production-False-True-False": {
+      "throw/validation": {
+        "status": 400,
+        "type": "application/problem+json",
+        "title": "Validation Error",
+        "correlation": true,
+        "trace": true,
+        "data": [
+          "errors"
+        ],
+        "diagnostic": "Object",
+        "noCache": true
+      },
+      "result/validation": {
+        "status": 400,
+        "type": "application/problem+json",
+        "title": "Validation Error",
+        "correlation": true,
+        "trace": true,
+        "data": [
+          "result",
+          "errors"
+        ],
+        "diagnostic": null,
+        "noCache": false
+      },
+      "throw/server": {
+        "status": 500,
+        "type": "application/problem+json",
+        "title": "Internal Server Error",
+        "correlation": true,
+        "trace": true,
+        "data": [],
+        "diagnostic": "Object",
+        "noCache": true
+      },
+      "result/server": {
+        "status": 500,
+        "type": "application/problem+json",
+        "title": "Exception Error",
+        "correlation": true,
+        "trace": true,
+        "data": null,
+        "diagnostic": null,
+        "noCache": false
+      },
+      "mvc/result/validation": {
+        "status": 400,
+        "type": "application/problem+json",
+        "title": "Bad Request",
+        "correlation": true,
+        "trace": false,
+        "data": null,
+        "diagnostic": null,
+        "noCache": false
+      },
+      "throw/not-implemented": {
+        "status": 500,
+        "type": "application/problem+json",
+        "title": "Internal Server Error",
+        "correlation": true,
+        "trace": true,
+        "data": [],
+        "diagnostic": "Object",
+        "noCache": true
+      },
+      "empty": {
+        "status": 404,
+        "type": "application/problem+json",
+        "title": "Not Found",
+        "correlation": true,
+        "trace": true,
+        "data": null,
+        "diagnostic": null,
+        "noCache": true
+      },
+      "explicit": {
+        "status": 404,
+        "type": "text/plain"
+      }
+    },
+    "Production-True-False-True": {
+      "throw/validation": {
+        "status": 400,
+        "type": "application/problem+json",
+        "title": "Validation Error",
+        "correlation": true,
+        "trace": true,
+        "data": [
+          "errors"
+        ],
+        "diagnostic": null,
+        "noCache": true
+      },
+      "result/validation": {
+        "status": 400,
+        "type": "application/problem+json",
+        "title": "Validation Error",
+        "correlation": true,
+        "trace": true,
+        "data": [
+          "result",
+          "errors"
+        ],
+        "diagnostic": null,
+        "noCache": false
+      },
+      "throw/server": {
+        "status": 500,
+        "type": "application/problem+json",
+        "title": "Internal Server Error",
+        "correlation": true,
+        "trace": true,
+        "data": [
+          "errors"
+        ],
+        "diagnostic": null,
+        "noCache": true
+      },
+      "result/server": {
+        "status": 500,
+        "type": "application/problem+json",
+        "title": "Exception Error",
+        "correlation": true,
+        "trace": true,
+        "data": null,
+        "diagnostic": "String",
+        "noCache": false
+      },
+      "mvc/result/validation": {
+        "status": 400,
+        "type": "application/problem+json",
+        "title": "Bad Request",
+        "correlation": true,
+        "trace": false,
+        "data": null,
+        "diagnostic": null,
+        "noCache": false
+      },
+      "throw/not-implemented": {
+        "status": 500,
+        "type": "application/problem+json",
+        "title": "Internal Server Error",
+        "correlation": true,
+        "trace": true,
+        "data": [
+          "errors"
+        ],
+        "diagnostic": null,
+        "noCache": true
+      },
+      "empty": {
+        "status": 404,
+        "type": "application/problem+json",
+        "title": "Not Found",
+        "correlation": true,
+        "trace": true,
+        "data": null,
+        "diagnostic": null,
+        "noCache": true
+      },
+      "explicit": {
+        "status": 404,
+        "type": "text/plain"
+      }
+    },
+    "Staging-False-False-False": {
+      "throw/validation": {
+        "status": 400,
+        "type": "application/problem+json",
+        "title": "Validation Error",
+        "correlation": true,
+        "trace": true,
+        "data": [
+          "errors"
+        ],
+        "diagnostic": null,
+        "noCache": true
+      },
+      "result/validation": {
+        "status": 400,
+        "type": "application/problem+json",
+        "title": "Validation Error",
+        "correlation": true,
+        "trace": true,
+        "data": [
+          "result",
+          "errors"
+        ],
+        "diagnostic": null,
+        "noCache": false
+      },
+      "throw/server": {
+        "status": 500,
+        "type": "application/problem+json",
+        "title": "Internal Server Error",
+        "correlation": true,
+        "trace": true,
+        "data": [],
+        "diagnostic": null,
+        "noCache": true
+      },
+      "result/server": {
+        "status": 500,
+        "type": "application/problem+json",
+        "title": "Exception Error",
+        "correlation": true,
+        "trace": true,
+        "data": null,
+        "diagnostic": null,
+        "noCache": false
+      },
+      "mvc/result/validation": {
+        "status": 400,
+        "type": "application/problem+json",
+        "title": "Bad Request",
+        "correlation": true,
+        "trace": false,
+        "data": null,
+        "diagnostic": null,
+        "noCache": false
+      },
+      "throw/not-implemented": {
+        "status": 500,
+        "type": "application/problem+json",
+        "title": "Internal Server Error",
+        "correlation": true,
+        "trace": true,
+        "data": [],
+        "diagnostic": null,
+        "noCache": true
+      },
+      "empty": {
+        "status": 404,
+        "type": "application/problem+json",
+        "title": "Not Found",
+        "correlation": true,
+        "trace": true,
+        "data": null,
+        "diagnostic": null,
+        "noCache": true
+      },
+      "explicit": {
+        "status": 404,
+        "type": "text/plain"
+      }
+    }
+  }
+}

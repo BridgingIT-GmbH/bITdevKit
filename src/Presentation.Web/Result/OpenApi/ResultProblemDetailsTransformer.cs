@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using System.Collections.Concurrent;
+using BridgingIT.DevKit.Presentation.Web.Errors;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
@@ -72,9 +73,13 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
         {
             this.TransformResultProblemErrorSchema(schema);
         }
-        else if (type == typeof(ProblemError))
+        else if (type == typeof(ProblemError) && schema.Type != JsonSchemaType.Array)
         {
             this.TransformProblemErrorSchema(schema);
+        }
+        else if (type == typeof(ProblemDetailsPayload.DiagnosticEntry))
+        {
+            ConfigureDiagnosticSchema(schema);
         }
 
         return Task.CompletedTask;
@@ -122,6 +127,16 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
                 instanceSchema.Description = "A URI reference that identifies the specific occurrence of the problem";
             }
 
+            schema.Properties["correlationId"] = new OpenApiSchema { Type = JsonSchemaType.String };
+            schema.Properties["traceId"] = new OpenApiSchema { Type = JsonSchemaType.String };
+            if (schema.Properties.TryGetValue("exceptionDetails", out var diagnosticSchema) && diagnosticSchema is OpenApiSchema diagnostics)
+            {
+                diagnostics.Type = JsonSchemaType.Array;
+                diagnostics.Description = "Optional exception diagnostics, when enabled by the host";
+            }
+
+            schema.Required?.Remove("data");
+
             // Add description to the custom data property
             if (schema.Properties.TryGetValue("data", out var dataSchema))
             {
@@ -153,10 +168,19 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
                 resultSchema.Description = "The serialized operation result containing outcome and diagnostic information";
             }
 
-            if (schema.Properties.TryGetValue("errors", out var errorsSchema))
+            schema.Properties["errors"] = new OpenApiSchema
             {
-                errorsSchema.Description = "Collection of additional errors outside the result object";
-            }
+                Description = "Validation messages grouped by field name",
+                Type = JsonSchemaType.Object,
+                AdditionalPropertiesAllowed = true,
+                AdditionalProperties = new OpenApiSchema
+                {
+                    Type = JsonSchemaType.Array,
+                    Items = new OpenApiSchema { Type = JsonSchemaType.String }
+                }
+            };
+            schema.Required?.Remove("errors");
+            schema.Required?.Remove("result");
         }
 
         this.LogAdjustment(nameof(ResultProblemData));
@@ -237,6 +261,27 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
         schema.Description = "Represents an individual error entry with flexible structure for additional data";
 
         this.LogAdjustment(nameof(ProblemError));
+    }
+
+    private static void ConfigureDiagnosticSchema(OpenApiSchema schema)
+    {
+        schema.Type = JsonSchemaType.Object;
+        schema.Required = new HashSet<string> { "type", "message" };
+        if (schema.Properties is { } fields)
+        {
+            foreach (var name in new[] { "type", "message", "stackTrace" })
+            {
+                if (fields.TryGetValue(name, out var property) && property is OpenApiSchema field)
+                {
+                    field.Type = JsonSchemaType.String;
+                }
+            }
+
+            if (fields.TryGetValue("innerExceptions", out var innerSchema) && innerSchema is OpenApiSchema innerExceptions)
+            {
+                innerExceptions.Type = JsonSchemaType.Array;
+            }
+        }
     }
 
     /// <summary>

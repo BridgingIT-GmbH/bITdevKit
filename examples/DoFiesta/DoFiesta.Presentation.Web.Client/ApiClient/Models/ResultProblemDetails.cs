@@ -16,6 +16,14 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
+        /// <summary>The correlationId property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? CorrelationId { get; set; }
+#nullable restore
+#else
+        public string CorrelationId { get; set; }
+#endif
         /// <summary>Data section included within a problem details response</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -31,6 +39,14 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
 #nullable restore
 #else
         public string Detail { get; set; }
+#endif
+        /// <summary>Optional exception diagnostics, when enabled by the host</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public List<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.DiagnosticEntry>? ExceptionDetails { get; set; }
+#nullable restore
+#else
+        public List<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.DiagnosticEntry> ExceptionDetails { get; set; }
 #endif
         /// <summary>A URI reference that identifies the specific occurrence of the problem</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -51,6 +67,14 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
 #nullable restore
 #else
         public string Title { get; set; }
+#endif
+        /// <summary>The traceId property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? TraceId { get; set; }
+#nullable restore
+#else
+        public string TraceId { get; set; }
 #endif
         /// <summary>A URI reference that identifies the problem type</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -85,11 +109,14 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
+                { "correlationId", n => { CorrelationId = n.GetStringValue(); } },
                 { "data", n => { DataEscaped = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemData>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemData.CreateFromDiscriminatorValue); } },
                 { "detail", n => { Detail = n.GetStringValue(); } },
+                { "exceptionDetails", n => { ExceptionDetails = n.GetCollectionOfObjectValues<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.DiagnosticEntry>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.DiagnosticEntry.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "instance", n => { Instance = n.GetStringValue(); } },
                 { "status", n => { Status = n.GetIntValue(); } },
                 { "title", n => { Title = n.GetStringValue(); } },
+                { "traceId", n => { TraceId = n.GetStringValue(); } },
                 { "type", n => { Type = n.GetStringValue(); } },
             };
         }
@@ -100,11 +127,14 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
+            writer.WriteStringValue("correlationId", CorrelationId);
             writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ResultProblemData>("data", DataEscaped);
             writer.WriteStringValue("detail", Detail);
+            writer.WriteCollectionOfObjectValues<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.DiagnosticEntry>("exceptionDetails", ExceptionDetails);
             writer.WriteStringValue("instance", Instance);
             writer.WriteIntValue("status", Status);
             writer.WriteStringValue("title", Title);
+            writer.WriteStringValue("traceId", TraceId);
             writer.WriteStringValue("type", Type);
             writer.WriteAdditionalData(AdditionalData);
         }

@@ -6,7 +6,9 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Presentation.Web;
+using BridgingIT.DevKit.Presentation.Web.Errors;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 /// <summary>
 ///     Extension methods for configuring exception handling services.
@@ -172,6 +174,7 @@ public static partial class ServiceCollectionExtensions
 
         options ??= new GlobalExceptionHandlerOptions();
 
+        services.TryAddSingleton<StandaloneExceptionHandlerRegistration>();
         services.AddSingleton(options);
 
         // Register additional custom handlers sorted by priority (highest first)

@@ -65,7 +65,7 @@ We use the **MADR (Markdown Architectural Decision Records)** format for consist
 | [ADR-0043](0043-native-blazor-appstate-lifecycle.md) | Integrate AppState With Native Blazor Persistence | Accepted |
 | [ADR-0044](0044-independent-storage-dimensions.md) | Add Feature-Owned Storage Dimensions | Accepted |
 | [ADR-0045](0045-bounded-attempt-all-blob-upload-batches.md) | Coordinate Bounded Blob Upload Batches | Accepted |
-| [ADR-0046](0046-shared-http-problem-details.md) | Use a Shared HTTP Problem Details Format | Proposed |
+| [ADR-0046](0046-shared-http-problem-details.md) | Use a Shared HTTP Problem Details Format | Accepted |
 
 ## When to Write an ADR
 

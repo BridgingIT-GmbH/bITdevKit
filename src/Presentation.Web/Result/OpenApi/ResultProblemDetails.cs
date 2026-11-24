@@ -6,6 +6,8 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using BridgingIT.DevKit.Presentation.Web.Errors;
 using Microsoft.AspNetCore.Mvc;
 
 /// <summary>
@@ -18,6 +20,11 @@ public class ResultProblemDetails : ProblemDetails
     /// Additional contextual data attached to this problem.
     /// </summary>
     public ResultProblemData Data { get; set; } = new ResultProblemData();
+
+    /// <summary>Optional recursive diagnostics describing the exceptions that caused the failure.</summary>
+    [JsonPropertyName("exceptionDetails")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public ProblemDetailsPayload.DiagnosticEntry[] ExceptionDetails { get; set; }
 
     ///// <summary>
     ///// Holds arbitrary extension members that are not explicitly declared.

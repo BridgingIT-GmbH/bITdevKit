@@ -19,7 +19,7 @@ public static class ResultMapExtensions
     /// Maps a non-generic <see cref="Result"/> to HTTP results for operations returning no content.
     /// </summary>
     /// <param name="result">The <see cref="Result"/> to map.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A <see cref="Results{NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
     public static Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpNoContent(
         this Result result,
@@ -47,7 +47,7 @@ public static class ResultMapExtensions
     /// </summary>
     /// <typeparam name="T">The type of the result value, constrained to reference types (class).</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A typed HTTP result containing the value on success or the mapped failure response.</returns>
     public static Results<Ok<T>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpOk<T>(
         this Result<T> result,
@@ -62,7 +62,7 @@ public static class ResultMapExtensions
     /// </summary>
     /// <typeparam name="T">The type of the result value, constrained to reference types (class).</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A typed HTTP result containing the value on success or the mapped failure response.</returns>
     public static Results<Ok<T>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpOkAll<T>(
         this Result<T> result,
@@ -76,7 +76,7 @@ public static class ResultMapExtensions
     /// Maps a non-generic <see cref="Result"/> to HTTP results for operations returning data.
     /// </summary>
     /// <param name="result">The <see cref="Result"/> to map.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A <see cref="Results{Ok, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
     public static Results<Ok, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpOk(
         this Result result,
@@ -91,7 +91,7 @@ public static class ResultMapExtensions
     /// <typeparam name="T">The type of the result value, constrained to reference types (class).</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
     /// <param name="uri">The URI of the newly created resource, used in the Created response.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A typed HTTP result containing the created value on success or the mapped failure response.</returns>
     public static Results<Created<T>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpCreated<T>(
         this Result<T> result,
@@ -108,7 +108,7 @@ public static class ResultMapExtensions
     /// <typeparam name="T">The type of the result value, constrained to reference types (class).</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
     /// <param name="uriFactory">A function that generates the URI based on the result value.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A typed HTTP result containing the created value on success or the mapped failure response.</returns>
     public static Results<Created<T>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpCreated<T>(
         this Result<T> result,
@@ -134,7 +134,7 @@ public static class ResultMapExtensions
     /// </summary>
     /// <param name="result">The <see cref="Result"/> to map.</param>
     /// <param name="location">The location URI where the status of the operation can be monitored.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A <see cref="Results{Accepted, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
     public static Results<Accepted, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpAccepted(
         this Result result,
@@ -150,7 +150,7 @@ public static class ResultMapExtensions
     /// <typeparam name="T">The type of the result value, constrained to reference types (class).</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
     /// <param name="location">The location URI where the status of the operation can be monitored.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A typed HTTP result containing the accepted value on success or the mapped failure response.</returns>
     public static Results<Accepted<T>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpAccepted<T>(
         this Result<T> result,
@@ -168,7 +168,7 @@ public static class ResultMapExtensions
     /// <typeparam name="T">The type of the result value, constrained to reference types (class).</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
     /// <param name="locationFactory">A function that generates the location URI based on the result value.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A typed HTTP result containing the accepted value on success or the mapped failure response.</returns>
     public static Results<Accepted<T>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpAccepted<T>(
         this Result<T> result,
@@ -184,7 +184,7 @@ public static class ResultMapExtensions
     /// </summary>
     /// <typeparam name="T">The type of items in the paged collection.</typeparam>
     /// <param name="result">The <see cref="ResultPaged{T}"/> to map.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A typed HTTP result containing the paged response on success or the mapped failure response.</returns>
     public static Results<Ok<PagedResponse<T>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpOkPaged<T>(
         this ResultPaged<T> result,
@@ -198,7 +198,7 @@ public static class ResultMapExtensions
     /// Maps a <see cref="Result{FileContent}"/> to HTTP results for file download operations.
     /// </summary>
     /// <param name="result">The <see cref="Result{FileContent}"/> to map.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A <see cref="Results{FileContentHttpResult, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
     public static Results<FileContentHttpResult, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpFile(
         this Result<FileContent> result,
@@ -232,7 +232,7 @@ public static class ResultMapExtensions
     /// <typeparam name="TValue">The type of the result value.</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
     /// <param name="successFunc">A function to generate the success HTTP result when the operation succeeds.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A <see cref="Results{TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem}"/> representing the HTTP response.</returns>
     public static Results<TSuccess, TUnauthorized, TBadRequest, TProblem> MapHttp<TSuccess, TUnauthorized, TBadRequest, TProblem, TValue>(
         this Result<TValue> result,
@@ -258,7 +258,7 @@ public static class ResultMapExtensions
     /// <typeparam name="TValue">The type of the result value.</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
     /// <param name="successFunc">A function to generate the success HTTP result when the operation succeeds.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A <see cref="Results{TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem}"/> representing the HTTP response.</returns>
     public static Results<TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem> MapHttp<TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem, TValue>(
         this Result<TValue> result,
@@ -284,7 +284,7 @@ public static class ResultMapExtensions
     /// <typeparam name="TProblem">The type of the problem HTTP result.</typeparam>
     /// <param name="result">The <see cref="Result"/> to map.</param>
     /// <param name="successFunc">A function to generate the success HTTP result when the operation succeeds.</param>
-    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <param name="logger">An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</param>
     /// <returns>A <see cref="Results{TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem}"/> representing the HTTP response.</returns>
     public static Results<TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem> MapHttp<TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem>(
         this Result result,

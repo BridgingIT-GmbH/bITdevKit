@@ -10,8 +10,10 @@ using System.Linq;
 using Bogus;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Shouldly;
@@ -69,7 +71,7 @@ public class ResultMapExtensionsGenericTests
         // Assert
         response.ShouldBeOfType<Results<Ok<PersonStub>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
         var innerResult = response.Result;
-        innerResult.ShouldBeOfType<NotFound>();
+        innerResult.ShouldBeOfType<ProblemHttpResult>().StatusCode.ShouldBe(StatusCodes.Status404NotFound);
     }
 
     [Fact]
@@ -380,5 +382,106 @@ public class ResultMapExtensionsGenericTests
         var messages = (Dictionary<string, string[]>)errorsProperty.GetValue(data);
         messages.ShouldContainKey("FirstName");
         messages["FirstName"].ShouldContain("Invalid firstname");
+    }
+
+    [Fact]
+    public void MapHttp_ValidationFailure_UsesDeclaredProblemResult()
+    {
+        var sut = Result<string>.Failure().WithError(new ValidationError("Invalid name", "name"));
+
+        var response = sut.MapHttp<Ok<string>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult, string>(
+            name => TypedResults.Ok(name), this.logger);
+
+        var problem = response.Result.ShouldBeOfType<ProblemHttpResult>();
+        problem.StatusCode.ShouldBe(400);
+        problem.ProblemDetails.Title.ShouldBe("Validation Error");
+        problem.ProblemDetails.Extensions.Keys.ShouldContain("data");
+    }
+
+    [Fact]
+    public void MapHttp_GeneralAndFieldValidationErrorsWithSameKey_PreservesAllMessages()
+    {
+        var sut = Result<string>.Failure()
+            .WithError(new ValidationError("General error"))
+            .WithError(new FluentValidationError(new FluentValidation.Results.ValidationResult([
+                new ValidationFailure("validation", "Invalid validation field"),
+                new ValidationFailure(" ", "General FluentValidation error"),
+                new ValidationFailure("name", "Invalid name")
+            ])));
+
+        var response = sut.MapHttp<Ok<string>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult, string>(
+            name => TypedResults.Ok(name), this.logger);
+
+        var problem = response.Result.ShouldBeOfType<ProblemHttpResult>();
+        problem.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+        var data = problem.ProblemDetails.Extensions["data"];
+        var messages = data.GetType().GetProperty("errors").GetValue(data).ShouldBeOfType<Dictionary<string, string[]>>();
+        messages.Count.ShouldBe(2);
+        messages["validation"].ShouldBe(["General error", "Invalid validation field", "General FluentValidation error"]);
+        messages["name"].ShouldBe(["Invalid name"]);
+    }
+
+    [Fact]
+    public void MapHttp_ValidationFailureWithNoProblemArm_ReturnsBadRequest()
+    {
+        var sut = Result.Failure().WithError(new ValidationError("Invalid name", "name"));
+
+        var response = sut.MapHttp<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, InternalServerError>(
+            TypedResults.NoContent, this.logger);
+
+        response.Result.ShouldBeOfType<BadRequest>();
+    }
+
+    [Fact]
+    public void MapHttp_ValidationFailureWithStringBadRequestArm_ReturnsValidationMessage()
+    {
+        var sut = Result<string>.Failure().WithError(new ValidationError("Invalid name", "name"));
+
+        var response = sut.MapHttp<Ok<string>, NotFound, UnauthorizedHttpResult, BadRequest<string>, InternalServerError, string>(
+            TypedResults.Ok, this.logger);
+
+        var badRequest = response.Result.ShouldBeOfType<BadRequest<string>>();
+        badRequest.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+        badRequest.Value.ShouldContain("Invalid name");
+    }
+
+    [Fact]
+    public void Map_ValidationFailureWithProblemDetailsBadRequestArm_ReturnsStructuredValidation()
+    {
+        var sut = Result.Failure().WithError(new CollectionValidationError("Invalid name", 0, "name"));
+
+        var response = ResultMapHttpExtensions.Map<NoContent, UnauthorizedHttpResult, BadRequest<ProblemDetails>, InternalServerError>(
+            sut, TypedResults.NoContent, this.logger);
+
+        var badRequest = response.Result.ShouldBeOfType<BadRequest<ProblemDetails>>();
+        badRequest.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+        badRequest.Value.Status.ShouldBe(StatusCodes.Status400BadRequest);
+        var data = badRequest.Value.Extensions["data"];
+        var messages = data.GetType().GetProperty("errors").GetValue(data).ShouldBeOfType<Dictionary<string, string[]>>();
+        messages["name"].ShouldBe(["Invalid name"]);
+    }
+
+    [Fact]
+    public void MapHttp_ValidationFailureWithUnsupportedBadRequestArm_ReportsMissingMapping()
+    {
+        var sut = Result.Failure().WithError(new ValidationError("Invalid name", "name"));
+
+        var error = Should.Throw<InvalidOperationException>(() =>
+            sut.MapHttp<NoContent, NotFound, UnauthorizedHttpResult, BadRequest<int>, InternalServerError>(
+                TypedResults.NoContent, this.logger));
+
+        error.Message.ShouldContain(typeof(BadRequest<int>).ToString());
+        error.Message.ShouldContain("custom error handler");
+    }
+
+    [Fact]
+    public void MapHttp_UnexpectedFailureWithInternalServerErrorArm_ReturnsDeclaredResponse()
+    {
+        var sut = Result<string>.Failure().WithMessage("Person service unavailable");
+
+        var response = sut.MapHttp<Ok<string>, NotFound, UnauthorizedHttpResult, BadRequest<string>, InternalServerError, string>(
+            TypedResults.Ok, this.logger);
+
+        response.Result.ShouldBeOfType<InternalServerError>().StatusCode.ShouldBe(StatusCodes.Status500InternalServerError);
     }
 }

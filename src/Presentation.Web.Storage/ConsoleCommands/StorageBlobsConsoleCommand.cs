@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Presentation;
 using System.Globalization;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Presentation.Web.Storage.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 
@@ -24,6 +25,13 @@ using Spectre.Console;
 /// </example>
 public sealed class StorageBlobsConsoleCommand() : StorageConsoleCommandBase("blobs", "Blob Storage operations")
 {
+    private BlobDimensionFilter dimensionFilter;
+
+    /// <summary>Gets or sets optional typed Dimensions filter JSON for list operations.</summary>
+    /// <example><code>storage blobs list --dimension-filter '{"name":"year","operator":"Equal","operand":{"type":"integer","value":2026}}'</code></example>
+    [ConsoleCommandOption("dimension-filter", Description = "Typed Dimensions filter JSON (list only)")]
+    public string DimensionFilterJson { get; set; }
+
     /// <summary>
     /// Gets or sets the blob operation: clients, list, read, delete, or delete-all.
     /// </summary>
@@ -177,6 +185,21 @@ public sealed class StorageBlobsConsoleCommand() : StorageConsoleCommandBase("bl
             return;
         }
 
+        if (this.DimensionFilterJson is not null && !string.Equals(this.Operation, "list", StringComparison.OrdinalIgnoreCase))
+        {
+            console.MarkupLine("[red]--dimension-filter is supported only by list operations.[/]");
+            return;
+        }
+
+        var dimensions = BlobStorageDimensionsJson.ParseFilter(this.DimensionFilterJson);
+        if (dimensions.IsFailure)
+        {
+            WriteErrors(console, dimensions);
+            return;
+        }
+
+        this.dimensionFilter = dimensions.Value;
+
         switch ((this.Operation ?? "clients").ToLowerInvariant())
         {
             case "clients":
@@ -215,13 +238,15 @@ public sealed class StorageBlobsConsoleCommand() : StorageConsoleCommandBase("bl
         table.AddColumn("Client");
         table.AddColumn("Provider");
         table.AddColumn("Capabilities");
+        table.AddColumn("Dimensions");
 
         foreach (var registration in registrations.OrderBy(registration => registration.Name, StringComparer.OrdinalIgnoreCase))
         {
             table.AddRow(
                 Markup.Escape(registration.Name),
                 Markup.Escape(registration.ProviderName ?? string.Empty),
-                Markup.Escape(registration.Capabilities?.ToString() ?? string.Empty));
+                Markup.Escape(registration.Capabilities?.ToString() ?? string.Empty),
+                Markup.Escape(DimensionProfile(registration.Capabilities?.Dimensions)));
         }
 
         console.Write(table);
@@ -244,6 +269,7 @@ public sealed class StorageBlobsConsoleCommand() : StorageConsoleCommandBase("bl
         var query = new BlobQuery
         {
             Container = this.Container,
+            DimensionFilter = this.dimensionFilter,
             Prefix = this.Prefix,
             Take = this.Take > 0 ? this.Take : null,
             ContinuationToken = this.ContinuationToken,
@@ -422,4 +448,8 @@ public sealed class StorageBlobsConsoleCommand() : StorageConsoleCommandBase("bl
             return null;
         }
     }
+    private static string DimensionProfile(BlobDimensionCapabilities capabilities) => capabilities?.SupportsDimensions == true
+        ? $"{capabilities.MaximumCount}/record, {capabilities.MaximumPredicates} predicates, {capabilities.MaximumGroups} groups, depth {capabilities.MaximumGroupDepth}, names {capabilities.MaximumNameLength} ASCII, {capabilities.MaximumStringBytes}B UTF8, queries={capabilities.SupportsQueries}, decimal={(capabilities.SupportsDecimalComparisons ? "equality/ranges" : "equality")}"
+        : "Unsupported";
+
 }

@@ -79,12 +79,15 @@ public sealed partial class CacheBlobStoreClientBehavior : IBlobStoreClient
     public string StoreName { get; }
 
     /// <inheritdoc />
+    public BlobDimensionCapabilities DimensionCapabilities => this.inner.DimensionCapabilities;
+
+    /// <inheritdoc />
     public async Task<Result<BlobInfo>> UploadAsync(
         BlobUpload upload,
         CancellationToken cancellationToken = default)
     {
         var result = await this.inner.UploadAsync(upload, cancellationToken).ConfigureAwait(false);
-        if (result.IsSuccess)
+        if (result.IsSuccess || result.HasError<BlobStoreIndeterminateOperationError>())
         {
             await this.InvalidateAsync(upload?.Key, cancellationToken).ConfigureAwait(false);
         }
@@ -117,8 +120,10 @@ public sealed partial class CacheBlobStoreClientBehavior : IBlobStoreClient
 
             return Result<BlobDownload>.Success(new BlobDownload
             {
-                Content = new MemoryStream(cached.Content ?? [], writable: false),
-                Info = cached.Info
+                Content = new MemoryStream(cached.Content?.ToArray() ?? [], writable: false),
+                Info = BlobStoredModelMapper.CloneInfo(cached.Info,
+                    BlobPropertyValues.Deserialize(cached.PropertiesJson),
+                    BlobPropertyValues.Deserialize(cached.TransformMetadataJson))
             });
         }
 
@@ -143,12 +148,20 @@ public sealed partial class CacheBlobStoreClientBehavior : IBlobStoreClient
         this.inner.GetPropertiesAsync(key, cancellationToken);
 
     /// <inheritdoc />
+    public async Task<Result<BlobInfo>> UpdateDimensionsAsync(BlobDimensionsUpdate update, CancellationToken cancellationToken = default)
+    {
+        var result = await this.inner.UpdateDimensionsAsync(update, cancellationToken).ConfigureAwait(false);
+        if (result.IsSuccess || result.HasError<BlobStoreIndeterminateOperationError>()) await this.InvalidateAsync(update.Key, cancellationToken).ConfigureAwait(false);
+        return result;
+    }
+
+    /// <inheritdoc />
     public async Task<Result<BlobInfo>> UpdatePropertiesAsync(
         BlobPropertiesUpdate update,
         CancellationToken cancellationToken = default)
     {
         var result = await this.inner.UpdatePropertiesAsync(update, cancellationToken).ConfigureAwait(false);
-        if (result.IsSuccess)
+        if (result.IsSuccess || result.HasError<BlobStoreIndeterminateOperationError>())
         {
             await this.InvalidateAsync(update?.Key, cancellationToken).ConfigureAwait(false);
         }
@@ -165,13 +178,17 @@ public sealed partial class CacheBlobStoreClientBehavior : IBlobStoreClient
         this.inner.ListPageAsync(query, cancellationToken);
 
     /// <inheritdoc />
+    public Task<Result<BlobPage>> ListPageAsync(BlobFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) => this.inner.ListPageAsync(scope, filter, continuationToken, cancellationToken);
+
+    /// <inheritdoc />
     public async Task<Result> DeleteAsync(
         BlobKey key,
         BlobDeleteOptions options = null,
         CancellationToken cancellationToken = default)
     {
         var result = await this.inner.DeleteAsync(key, options, cancellationToken).ConfigureAwait(false);
-        if (result.IsSuccess)
+        if (result.IsSuccess || result.HasError<BlobStoreIndeterminateOperationError>())
         {
             await this.InvalidateAsync(key, cancellationToken).ConfigureAwait(false);
         }
@@ -218,8 +235,10 @@ public sealed partial class CacheBlobStoreClientBehavior : IBlobStoreClient
                 cacheKey,
                 new CacheBlobDownloadEntry
                 {
-                    Info = download.Info,
-                    Content = bytes
+                    Info = BlobStoredModelMapper.CloneInfo(download.Info, null, null),
+                    PropertiesJson = BlobPropertyValues.Serialize(download.Info.Properties),
+                    TransformMetadataJson = BlobPropertyValues.Serialize(download.Info.TransformMetadata),
+                    Content = bytes.ToArray()
                 },
                 this.Options.SlidingExpiration,
                 this.Options.AbsoluteExpiration,
@@ -239,7 +258,7 @@ public sealed partial class CacheBlobStoreClientBehavior : IBlobStoreClient
         $"{this.CreateCachePrefix()}download-{HashHelper.ComputeSha256($"{key?.Container}\n{key?.Name}")}";
 
     private string CreateCachePrefix() =>
-        $"storage-blobs-{HashHelper.ComputeSha256(this.StoreName)}-";
+        $"storage-blobs-v2-{HashHelper.ComputeSha256(this.StoreName)}-";
 
     private async Task InvalidateAsync(BlobKey key, CancellationToken cancellationToken)
     {
@@ -249,7 +268,6 @@ public sealed partial class CacheBlobStoreClientBehavior : IBlobStoreClient
         }
 
         await this.cacheProvider.RemoveAsync(this.CreateExactCacheKey(key), cancellationToken).ConfigureAwait(false);
-        await this.cacheProvider.RemoveStartsWithAsync(this.CreateCachePrefix(), cancellationToken).ConfigureAwait(false);
         TypedLogger.LogCacheInvalidated(this.Logger, this.StoreName);
     }
 

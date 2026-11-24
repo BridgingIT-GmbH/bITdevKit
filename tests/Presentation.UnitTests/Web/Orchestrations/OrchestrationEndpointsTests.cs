@@ -68,7 +68,7 @@ public class OrchestrationEndpointsApplication(ITestOutputHelper output) : WebAp
     }
 }
 
-public class OrchestrationEndpointsTests : IAsyncDisposable
+public class OrchestrationEndpointsTests : IAsyncLifetime
 {
     private readonly OrchestrationEndpointsApplication factory;
     private readonly HttpClient client;
@@ -89,7 +89,11 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
         this.registrations = this.factory.Registrations;
     }
 
-    public async ValueTask DisposeAsync()
+    /// <inheritdoc />
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    /// <inheritdoc />
+    public async Task DisposeAsync()
     {
         await this.factory.DisposeAsync();
     }

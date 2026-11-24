@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using Application.Storage;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
@@ -29,6 +30,13 @@ using System.Text.Json;
 [Index(nameof(ExpiresAt))]
 public sealed class StorageBlob
 {
+    /// <summary>Gets or sets the original-name, typed Dimensions snapshot.</summary>
+    [Column("Dimensions")]
+    public string DimensionsJson { get; set; }
+
+    /// <summary>Gets or sets independently indexed dimension values discovered by EF conventions.</summary>
+    public ICollection<StorageBlobDimension> DimensionValues { get; set; } = [];
+
     /// <summary>
     /// Defines the fixed maximum length for persisted raw container values in the EF provider.
     /// </summary>
@@ -236,13 +244,22 @@ public sealed class StorageBlob
     [Column("Properties")]
     public string PropertiesJson
     {
-        get => this.Properties.IsNullOrEmpty()
-            ? null
-            : JsonSerializer.Serialize(this.Properties, DefaultJsonSerializerOptions.Create());
-        set => this.Properties = value.IsNullOrEmpty()
-            ? []
-            : (JsonSerializer.Deserialize<PropertyBag>(value, DefaultJsonSerializerOptions.Create()) ?? new())
-                .ToDictionary(item => item.Key, item => item.Value, StringComparer.OrdinalIgnoreCase);
+        get => BlobPropertyValues.Serialize(new PropertyBag(this.Properties));
+        set => this.Properties = BlobPropertyValues.Deserialize(value).ToDictionary(item => item.Key, item => item.Value, StringComparer.OrdinalIgnoreCase);
+    }
+
+    /// <summary>Gets or sets provider-owned transform metadata separate from application properties.</summary>
+    /// <example><code>var metadata = blob.TransformMetadata;</code></example>
+    [NotMapped]
+    public IDictionary<string, object> TransformMetadata { get; set; } = new Dictionary<string, object>();
+
+    /// <summary>Gets or sets the scalar-preserving transform metadata persistence column.</summary>
+    /// <example><code>var json = blob.TransformMetadataJson;</code></example>
+    [Column("TransformMetadata")]
+    public string TransformMetadataJson
+    {
+        get => BlobPropertyValues.Serialize(new PropertyBag(this.TransformMetadata));
+        set => this.TransformMetadata = BlobPropertyValues.Deserialize(value).ToDictionary(item => item.Key, item => item.Value, StringComparer.OrdinalIgnoreCase);
     }
 
     /// <summary>

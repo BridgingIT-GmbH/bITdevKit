@@ -58,6 +58,46 @@ Presentation    →  Minimal API endpoints, CoreModule registration
 | **Configuration** | `CoreModuleConfiguration` with `OpenMeteoOptions` |
 | **Mapping** | `CoreModuleMapperRegister` (Mapster profiles) |
 
+## Application caching
+
+`CitySuggestionQuery` uses `CitySuggestionService` to read public geocoding results from the `city-suggestions` collection. The key combines the optional two-letter country code and trimmed search text. Matching is case-insensitive, and searches accept three to 200 characters. Successful empty searches are ordinary cached empty results; source failures are returned as failures and are retried by a later request.
+
+The `core` provider stores entries in SQL Server through `CoreDbContext`. Shared-store coordination admits one source owner for matching requests across application nodes using that database. The default absolute lifetime is six hours, with a collection ceiling of 1,000 entries and 16 MiB. Every response receives new model and list instances, so callers can edit their responses without changing another request's result.
+
+```csharp
+// Search text and country are normalized before collection lookup.
+var result = await suggestions.SearchAsync(" Haarlem ", "nl", cancellationToken);
+if (result.IsSuccess)
+{
+    // This list and its models belong to this caller.
+    foreach (var city in result.Value)
+    {
+        Console.WriteLine($"{city.Name}, {city.CountryCode}");
+    }
+}
+```
+
+Host configuration overrides collection settings under `Caching:Application`:
+
+```json
+{
+  "Caching": {
+    "Application": {
+      "Collections": {
+        "city-suggestions": {
+          "Expiration": { "AbsoluteTtl": "01:00:00" },
+          "Limits": { "MaxEntries": 500 }
+        }
+      }
+    }
+  }
+}
+```
+
+In local development, the administrator dashboard exposes **Caching** at `/_bdk/dashboard/caching`, with collections, entry keys, diagnostics, shared loads and operations. Key and dimension display is enabled within the administrator dashboard. Metric history is enabled with finite retention. The geocoding endpoint at `/api/core/cities/suggestions` retains its normal authentication requirement.
+
+`CoreDbContext` implements `IApplicationCachingContext`, which enriches the model with the annotated `__Caching_*` tables. Local database creation includes those tables. Persistent deployments deploy the consumer context's EF schema before signaling its named `CoreDbContext` readiness gate. `AddSqlServerDbContext(...).WithDbContextFactory()` supplies an independently owned context for each native cache call from the shared SQL Server configuration, without request transactions or scoped save interceptors.
+
 ## Key Patterns
 
 ### ActiveEntity (not IGenericRepository)

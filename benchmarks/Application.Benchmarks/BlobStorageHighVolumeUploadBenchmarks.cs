@@ -61,7 +61,7 @@ public class BlobStorageHighVolumeUploadBenchmarks
     [Benchmark]
     public async Task<long> UploadFourMegabytes()
     {
-        var result = await this.provider.UploadAsync(new BlobUpload
+        var result = await this.provider.UploadAsync(new StoredBlobUpload
         {
             Key = new BlobKey("benchmarks", "upload.bin"),
             Content = new MemoryStream(this.payload, writable: false)

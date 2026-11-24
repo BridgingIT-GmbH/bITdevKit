@@ -20,6 +20,9 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class BlobInfo
 {
+    /// <summary>Gets optional explicitly queryable Dimensions.</summary>
+    public BlobDimensions Dimensions { get; init; } = BlobDimensions.Empty;
+
     /// <summary>
     /// Gets the key that identifies the blob.
     /// </summary>
@@ -109,4 +112,6 @@ public sealed class BlobInfo
     /// </code>
     /// </example>
     public PropertyBag Properties { get; init; } = new();
+
+    internal PropertyBag TransformMetadata { get; init; }
 }

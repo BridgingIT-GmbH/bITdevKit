@@ -25,55 +25,17 @@ public static class ResultResilientExtensions
     /// );
     /// </code>
     /// </example>
-    public static async Task<Result<TValue>> ExecuteAsync<TValue>(
+    public static Task<Result<TValue>> ExecuteAsync<TValue>(
         Func<CancellationToken, Task<TValue>> operation,
         ResultExecuteOptions options = null,
         CancellationToken cancellationToken = default)
     {
-        options ??= ResultExecuteOptions.Default;
-        var retryCount = 0;
-
-        while (true)
-        {
-            try
-            {
-                using var timeoutCts = new CancellationTokenSource();
-                using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
-                    cancellationToken,
-                    timeoutCts.Token);
-
-                if (options.Timeout.HasValue)
-                {
-                    timeoutCts.CancelAfter(options.Timeout.Value);
-                }
-
-                var value = await operation(linkedCts.Token);
-                return Result<TValue>.Success(value);
-            }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-            {
-                return Result<TValue>.Failure()
-                    .WithError(new OperationCancelledError());
-            }
-            catch (OperationCanceledException)
-            {
-                return Result<TValue>.Failure()
-                    .WithError(new TimeoutError($"Operation timed out after {options.Timeout?.TotalSeconds} seconds."));
-            }
-            catch (Exception ex)
-            {
-                if (retryCount < options.MaxRetries &&
-                    (options.RetryableException?.Invoke(ex) ?? false))
-                {
-                    retryCount++;
-                    await Task.Delay(options.RetryDelay, cancellationToken);
-                    continue;
-                }
-
-                return Result<TValue>.Failure()
-                    .WithError(new ExceptionError(ex));
-            }
-        }
+        ArgumentNullException.ThrowIfNull(operation);
+        return ResultAsyncExtensions.ExecuteCoreAsync(
+            async ct => Result<TValue>.Success(await operation(ct).AnyContext()),
+            static error => Result<TValue>.Failure(error),
+            options,
+            cancellationToken);
     }
 
     /// <summary>
@@ -114,6 +76,7 @@ public static class ResultResilientExtensions
 
     /// <summary>
     ///     Executes multiple async operations in parallel with batching support.
+    ///     Reads one batch at a time and stops reading the source when the caller cancels.
     /// </summary>
     /// <typeparam name="TValue">The type of the result values.</typeparam>
     /// <param name="operations">The collection of async operations to execute.</param>
@@ -135,28 +98,59 @@ public static class ResultResilientExtensions
         ResultExecuteOptions options = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(batchSize);
+        ArgumentNullException.ThrowIfNull(operations);
         var results = new List<TValue>();
-        var operationsList = operations.ToList();
 
-        for (var i = 0; i < operationsList.Count; i += batchSize)
+        try
         {
-            var batch = operationsList
-                .Skip(i)
-                .Take(batchSize);
-
-            var batchResults = await ExecuteAllAsync(batch, options, cancellationToken);
-
-            if (batchResults.IsFailure)
+            cancellationToken.ThrowIfCancellationRequested();
+            using var source = operations.GetEnumerator();
+            var batch = new List<Func<CancellationToken, Task<TValue>>>();
+            bool hasNext;
+            do
             {
-                return Result<IEnumerable<TValue>>.Failure()
-                    .WithErrors(batchResults.Errors)
-                    .WithMessages(batchResults.Messages);
+                cancellationToken.ThrowIfCancellationRequested();
+                hasNext = source.MoveNext();
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (hasNext)
+                {
+                    batch.Add(source.Current);
+                    if (batch.Count < batchSize)
+                    {
+                        continue;
+                    }
+                }
+                else if (batch.Count == 0)
+                {
+                    break;
+                }
+
+                var batchResults = await ExecuteAllAsync(batch, options, cancellationToken).AnyContext();
+                if (batchResults.IsFailure)
+                {
+                    return batchResults;
+                }
+
+                results.AddRange(batchResults.Value);
+                batch.Clear();
             }
+            while (hasNext);
 
-            results.AddRange(batchResults.Value);
+            cancellationToken.ThrowIfCancellationRequested();
+            return Result<IEnumerable<TValue>>.Success(results);
         }
-
-        return Result<IEnumerable<TValue>>.Success(results);
+        catch (OperationCanceledException)
+        {
+            return Result<IEnumerable<TValue>>.Failure(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return Result<IEnumerable<TValue>>.Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
     }
 
     /// <summary>
@@ -176,41 +170,17 @@ public static class ResultResilientExtensions
     /// );
     /// </code>
     /// </example>
-    public static async Task<Result<TValue>> ExecuteWithBackgroundAsync<TValue>(
+    public static Task<Result<TValue>> ExecuteWithBackgroundAsync<TValue>(
         Func<CancellationToken, Task<TValue>> operation,
         Func<CancellationToken, Task> backgroundWork,
         ResultExecuteOptions options = null,
-        CancellationToken cancellationToken = default)
-    {
-        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        var backgroundTask = Task.Run(async () =>
-        {
-            try
-            {
-                await backgroundWork(cts.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                // Background task cancellation is expected
-            }
-        }, cts.Token);
-
-        try
-        {
-            var result = await ExecuteAsync(operation, options, cts.Token);
-            cts.Cancel(); // Cancel background work when main operation completes
-            await backgroundTask; // Wait for background task to complete
-            return result;
-        }
-        finally
-        {
-            cts.Cancel(); // Ensure background work is cancelled
-            await backgroundTask; // Wait for background task to complete
-        }
-    }
+        CancellationToken cancellationToken = default) =>
+        ResultAsyncExtensions.ExecuteWithBackgroundCoreAsync(
+            ct => ExecuteAsync(operation, options, ct), backgroundWork, cancellationToken);
 
     /// <summary>
     ///     Processes a sequence of items asynchronously with retry and error handling.
+    ///     Caller cancellation stops reading the source and preserves diagnostics already collected.
     /// </summary>
     /// <typeparam name="TInput">The type of input items.</typeparam>
     /// <typeparam name="TOutput">The type of output items.</typeparam>
@@ -235,204 +205,210 @@ public static class ResultResilientExtensions
         var results = new List<TOutput>();
         var errors = new List<IResultError>();
         var messages = new List<string>();
+        var hasFailure = false;
 
-        foreach (var item in items)
+        try
         {
-            var result = await ExecuteAsync(
-                async ct => await operation(item, ct),
-                options,
-                cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            using var source = items.GetEnumerator();
+            while (!cancellationToken.IsCancellationRequested && source.MoveNext())
+            {
+                var item = source.Current;
+                var result = await ExecuteAsync(
+                    ct => operation(item, ct),
+                    options,
+                    cancellationToken).AnyContext();
 
-            if (result.IsSuccess)
-            {
-                results.Add(result.Value);
+                if (result.IsSuccess)
+                {
+                    results.Add(result.Value);
+                }
+                else
+                {
+                    hasFailure = true;
+                    errors.AddRange(result.Errors);
+                    messages.AddRange(result.Messages);
+                }
             }
-            else
+
+            cancellationToken.ThrowIfCancellationRequested();
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            hasFailure = true;
+            if (!errors.Any(static error => error is OperationCancelledError))
             {
-                errors.AddRange(result.Errors);
-                messages.AddRange(result.Messages);
+                errors.Add(new OperationCancelledError());
             }
         }
 
-        return errors.Any()
+        return hasFailure
             ? Result<IEnumerable<TOutput>>.Failure()
                 .WithErrors(errors)
                 .WithMessages(messages)
             : Result<IEnumerable<TOutput>>.Success(results);
     }
 
-    /// <summary>
-    ///     Executes an operation with retry logic according to the specified policy.
-    /// </summary>
-    /// <param name="operation">The operation to execute.</param>
-    /// <param name="policy">The retry policy to apply.</param>
-    /// <param name="cancellationToken">Optional cancellation token.</param>
-    /// <returns>The result of the operation.</returns>
-    /// <example>
-    /// <code>
-    /// var policy = RetryPolicy.Create()
-    ///     .RetryOn&lt;HttpRequestException&gt;()
-    ///     .RetryOn&lt;TimeoutException&gt;()
-    ///     .RetryWhen(ex => ex.Message.Contains("retry"))
-    ///     .WithMaxRetries(3)
-    ///     .WithInitialDelay(TimeSpan.FromSeconds(1))
-    ///     .WithBackoffMultiplier(2)
-    ///     .OnRetry(context => _logger.LogWarning(
-    ///         $"Retry attempt {context.Attempt} after error: {context.Exception.Message}"));
-    ///
-    /// var result = await Result
-    ///     .FromAsync(async () => await UpdateDataAsync())
-    ///     .WithRetryPolicy(policy);
-    /// </code>
-    /// </example>
-    public static async Task<Result> WithRetryPolicy(
+    /// <summary>Observes an existing task once and converts thrown errors to a result.</summary>
+    /// <param name="operation">The existing task.</param>
+    /// <param name="policy">The legacy policy parameter.</param>
+    /// <param name="cancellationToken">The legacy cancellation parameter.</param>
+    /// <returns>The observed outcome.</returns>
+    [Obsolete("Use the overload that takes an operation factory so each retry can start a new attempt.")]
+    public static Task<Result> WithRetryPolicy(
         this Task<Result> operation,
         RetryPolicy policy,
-        CancellationToken cancellationToken = default)
-    {
-        policy ??= new RetryPolicy();
-        var attempt = 0;
-        var exceptions = new List<Exception>();
+        CancellationToken cancellationToken = default) =>
+        ObserveAsync(operation, static error => Result.Failure(error));
 
-        while (true)
+    /// <summary>Observes an existing value result task once and converts thrown errors to a result.</summary>
+    /// <typeparam name="TValue">The type of the result value.</typeparam>
+    /// <param name="operation">The existing task.</param>
+    /// <param name="policy">The legacy policy parameter.</param>
+    /// <param name="cancellationToken">The legacy cancellation parameter.</param>
+    /// <returns>The observed outcome.</returns>
+    [Obsolete("Use the overload that takes an operation factory so each retry can start a new attempt.")]
+    public static Task<Result<TValue>> WithRetryPolicy<TValue>(
+        this Task<Result<TValue>> operation,
+        RetryPolicy policy,
+        CancellationToken cancellationToken = default) =>
+        ObserveAsync(operation, static error => Result<TValue>.Failure(error));
+
+    /// <summary>Runs an operation factory again for each retry allowed by the policy.</summary>
+    /// <param name="operation">The factory invoked on every attempt.</param>
+    /// <param name="policy">The policy used to match exceptions and schedule retries.</param>
+    /// <param name="cancellationToken">The caller's cancellation token.</param>
+    /// <returns>The final result, with cancellation represented as an <see cref="OperationCancelledError"/>.</returns>
+    /// <example>
+    /// <code>
+    /// Func&lt;CancellationToken, Task&lt;Result&gt;&gt; save = UpdateOrderAsync;
+    /// var result = await save.WithRetryPolicy(RetryPolicy.Create().RetryOn&lt;TimeoutException&gt;());
+    /// </code>
+    /// </example>
+    public static Task<Result> WithRetryPolicy(
+        this Func<CancellationToken, Task<Result>> operation,
+        RetryPolicy policy,
+        CancellationToken cancellationToken = default) =>
+        ExecuteWithRetryAsync(operation, static (result, error) => result.WithError(error), policy, cancellationToken);
+
+    /// <summary>Runs an operation factory again for each retry allowed by the policy.</summary>
+    /// <typeparam name="TValue">The type of the result value.</typeparam>
+    /// <param name="operation">The factory invoked on every attempt.</param>
+    /// <param name="policy">The policy used to match exceptions and schedule retries.</param>
+    /// <param name="cancellationToken">The caller's cancellation token.</param>
+    /// <returns>The final result, with cancellation represented as an <see cref="OperationCancelledError"/>.</returns>
+    /// <example>
+    /// <code>
+    /// Func&lt;CancellationToken, Task&lt;Result&lt;Order&gt;&gt;&gt; fetch = LoadOrderAsync;
+    /// var result = await fetch.WithRetryPolicy(RetryPolicy.Create().RetryOn&lt;TimeoutException&gt;());
+    /// </code>
+    /// </example>
+    public static Task<Result<TValue>> WithRetryPolicy<TValue>(
+        this Func<CancellationToken, Task<Result<TValue>>> operation,
+        RetryPolicy policy,
+        CancellationToken cancellationToken = default) =>
+        ExecuteWithRetryAsync(operation, static (result, error) => result.WithError(error), policy, cancellationToken);
+
+    private static async Task<TResult> ExecuteWithRetryAsync<TResult>(
+        Func<CancellationToken, Task<TResult>> operation,
+        Func<TResult, IResultError, TResult> withError,
+        RetryPolicy policy,
+        CancellationToken cancellationToken)
+        where TResult : struct, IResult
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+        policy ??= RetryPolicy.Create();
+
+        for (var retries = 0; ; retries++)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return withError(default, new OperationCancelledError());
+            }
+
+            TResult result = default;
+            Exception operationException = null;
             try
             {
-                var result = await operation;
-
-                // If the result has errors that are retryable exceptions, handle them
-                if (!result.IsSuccess &&
-                    result.Errors.OfType<ExceptionError>()
-                        .Any(e => policy.ShouldRetry(e.Exception)))
-                {
-                    exceptions.AddRange(result.Errors
-                        .OfType<ExceptionError>()
-                        .Select(e => e.Exception));
-
-                    throw new AggregateException(exceptions);
-                }
-
-                return result;
+                result = await operation(cancellationToken).AnyContext();
             }
-            catch (Exception ex) when (attempt < policy.MaxRetries &&
-                                     !cancellationToken.IsCancellationRequested)
+            catch (OperationCanceledException)
             {
-                var actualException = ex is AggregateException agg
-                    ? agg.InnerExceptions.First()
-                    : ex;
-
-                if (!policy.ShouldRetry(actualException))
-                {
-                    return Result.Failure()
-                        .WithError(new ExceptionError(ex))
-                        .WithMessage($"Operation failed: {ex.Message}");
-                }
-
-                exceptions.Add(actualException);
-                attempt++;
-
-                var delay = policy.GetDelayForAttempt(attempt);
-                var context = new RetryContext(actualException, attempt, delay);
-                policy.OnRetryAction?.Invoke(context);
-
-                await Task.Delay(delay, cancellationToken);
+                return withError(default, new OperationCancelledError());
             }
             catch (Exception ex)
             {
-                exceptions.Add(ex);
-
-                return Result.Failure()
-                    .WithError(new ExceptionError(new AggregateException(exceptions)))
-                    .WithMessage($"Operation failed after {attempt} retries");
+                operationException = ex;
             }
+
+            if (result.IsSuccess || retries >= policy.MaxRetries || result.HasError<OperationCancelledError>())
+            {
+                return CompleteResult();
+            }
+
+            var exception = operationException is not null
+                ? FindRetryableException(operationException, policy)
+                : result.Errors.OfType<ExceptionError>()
+                    .Select(error => FindRetryableException(error.Exception, policy))
+                    .FirstOrDefault(match => match is not null);
+            if (exception is null)
+            {
+                return CompleteResult();
+            }
+
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var attempt = retries + 1;
+                var delay = policy.GetDelayForAttempt(attempt);
+                policy.OnRetryAction?.Invoke(new RetryContext(exception, attempt, delay));
+                await Task.Delay(delay, cancellationToken).AnyContext();
+            }
+            catch (OperationCanceledException)
+            {
+                return withError(CompleteResult(), new OperationCancelledError());
+            }
+
+            TResult CompleteResult() => operationException is null
+                ? result
+                : withError(result, Result.Settings.ExceptionErrorFactory(operationException));
         }
     }
 
-    /// <summary>
-    ///     Executes an operation with retry logic according to the specified policy.
-    /// </summary>
-    /// <typeparam name="TValue">The type of the result value.</typeparam>
-    /// <param name="operation">The operation to execute.</param>
-    /// <param name="policy">The retry policy to apply.</param>
-    /// <param name="cancellationToken">Optional cancellation token.</param>
-    /// <returns>The result of the operation.</returns>
-    /// <example>
-    /// <code>
-    /// var policy = RetryPolicy.Create()
-    ///     .RetryOn&lt;HttpRequestException&gt;()
-    ///     .RetryOn&lt;TimeoutException&gt;()
-    ///     .RetryWhen(ex => ex.Message.Contains("retry"))
-    ///     .WithMaxRetries(3)
-    ///     .WithInitialDelay(TimeSpan.FromSeconds(1))
-    ///     .WithBackoffMultiplier(2)
-    ///     .OnRetry(context => _logger.LogWarning(
-    ///         $"Retry attempt {context.Attempt} after error: {context.Exception.Message}"));
-    ///
-    /// var result = await Result
-    ///     .FromAsync(async () => await FetchDataAsync())
-    ///     .WithRetryPolicy(policy);
-    /// </code>
-    /// </example>
-    public static async Task<Result<TValue>> WithRetryPolicy<TValue>(
-        this Task<Result<TValue>> operation,
-        RetryPolicy policy,
-        CancellationToken cancellationToken = default)
+    private static Exception FindRetryableException(Exception exception, RetryPolicy policy)
     {
-        policy ??= new RetryPolicy();
-        var attempt = 0;
-        var exceptions = new List<Exception>();
-
-        while (true)
+        if (exception is null or OperationCanceledException)
         {
-            try
-            {
-                var result = await operation;
+            return null;
+        }
 
-                // If the result has errors that are retryable exceptions, handle them
-                if (!result.IsSuccess &&
-                    result.Errors.OfType<ExceptionError>()
-                        .Any(e => policy.ShouldRetry(e.Exception)))
-                {
-                    exceptions.AddRange(result.Errors
-                        .OfType<ExceptionError>()
-                        .Select(e => e.Exception));
+        if (policy.ShouldRetry(exception))
+        {
+            return exception;
+        }
 
-                    throw new AggregateException(exceptions);
-                }
+        return exception is AggregateException aggregate
+            ? aggregate.InnerExceptions
+                .Select(inner => FindRetryableException(inner, policy))
+                .FirstOrDefault(match => match is not null)
+            : null;
+    }
 
-                return result;
-            }
-            catch (Exception ex) when (attempt < policy.MaxRetries &&
-                                     !cancellationToken.IsCancellationRequested)
-            {
-                var actualException = ex is AggregateException agg
-                    ? agg.InnerExceptions.First()
-                    : ex;
+    private static async Task<TResult> ObserveAsync<TResult>(Task<TResult> task, Func<IResultError, TResult> failure)
+    {
+        ArgumentNullException.ThrowIfNull(task);
 
-                if (!policy.ShouldRetry(actualException))
-                {
-                    return Result<TValue>.Failure()
-                        .WithError(new ExceptionError(ex))
-                        .WithMessage($"Operation failed: {ex.Message}");
-                }
-
-                exceptions.Add(actualException);
-                attempt++;
-
-                var delay = policy.GetDelayForAttempt(attempt);
-                var context = new RetryContext(actualException, attempt, delay);
-                policy.OnRetryAction?.Invoke(context);
-
-                await Task.Delay(delay, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                exceptions.Add(ex);
-
-                return Result<TValue>.Failure()
-                    .WithError(new ExceptionError(new AggregateException(exceptions)))
-                    .WithMessage($"Operation failed after {attempt} retries");
-            }
+        try
+        {
+            return await task.AnyContext();
+        }
+        catch (OperationCanceledException)
+        {
+            return failure(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return failure(Result.Settings.ExceptionErrorFactory(ex));
         }
     }
 }

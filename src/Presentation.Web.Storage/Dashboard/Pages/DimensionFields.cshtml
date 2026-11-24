@@ -1,0 +1,34 @@
+@inherits RazorSlices.RazorSlice
+
+<fieldset class="mb-3" data-storage-dimension-fields hidden disabled>
+    <legend class="form-label small mb-1">Dimensions</legend>
+    <div data-dimension-rows></div>
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-add-dimension>Add dimension</button>
+    <template>
+        <div class="row g-2 align-items-start mb-2">
+            <div class="col-7 col-sm-4">
+                <input class="form-control form-control-sm font-monospace" aria-label="Dimension key"
+                       placeholder="Key" autocomplete="off" maxlength="128" required>
+            </div>
+            <div class="col-5 col-sm-3">
+                <select class="form-select form-select-sm" aria-label="Dimension type">
+                    <option value="string">String</option>
+                    <option value="integer">Integer</option>
+                    <option value="decimal">Decimal</option>
+                    <option value="boolean">Boolean</option>
+                    <option value="datetime">Date/time (UTC)</option>
+                    <option value="null">Null</option>
+                </select>
+            </div>
+            <div class="col col-sm">
+                <textarea class="form-control form-control-sm font-monospace" aria-label="Dimension value"
+                          rows="1" spellcheck="false"></textarea>
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-secondary btn-sm" title="Remove dimension" aria-label="Remove dimension">
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </template>
+</fieldset>

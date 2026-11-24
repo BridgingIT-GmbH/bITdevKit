@@ -79,6 +79,29 @@ Typical use cases:
 
 If you want the conceptual guidance for these fluent patterns, start with [Extensions](./features-extensions.md). This page is the package-level map of where those helpers live.
 
+## Text pattern matching
+
+`GlobPatternMatcher` prepares a whole-text pattern once for repeated string or span matching. `*` matches zero or more Unicode scalars, and `?` matches one scalar, including a supplementary character represented by two UTF-16 code units. Both wildcards include line breaks. Backslash escapes only `*`, `?`, or backslash itself. Literals use invariant case folding by default; pass `ignoreCase: false` for exact case.
+
+```csharp
+using BridgingIT.DevKit.Common;
+
+var matcher = new GlobPatternMatcher(@"report:\?*");
+var matches = matcher.IsMatch("REPORT:?42"); // true
+var singleScalar = new GlobPatternMatcher("?").IsMatch("😀"); // true
+```
+
+The matcher has no cache-key or path policy. An empty pattern matches empty text. Patterns must contain valid UTF-16; matching rejects invalid UTF-16 when it is encountered. Each instance retains state proportional to the prepared pattern and can be shared between callers. Apply input and pattern limits at the consuming feature's boundary. Application Caching adds its nonempty, UTF-8 byte, and identifier checks before using the shared matcher.
+
+The existing `Match` and `MatchAny` extensions provide a simpler contract. Only `*` is a wildcard; `?` and backslash are literal characters. Wildcards match both carriage returns and line feeds. Ignore-case comparisons follow the current culture, and the regex end-anchor convention permits a final line feed after an otherwise exact match. Use `GlobPatternMatcher` when whole-text anchoring and portable scalar semantics are required.
+
+```csharp
+var multiline = "first\nsecond".Match("first*second"); // true
+var literalQuestionMark = "report?".Match("report?"); // true
+```
+
+Request Profiling reuses prepared glob matchers for ASCII path segments. Its path-specific `**` handling and existing UTF-16 comparisons for non-ASCII segments remain part of the request-path contract; a general text glob does not define path separators.
+
 ## Date and time helpers
 
 These extensions provide common date and time calculations and parsing helpers.
@@ -167,6 +190,27 @@ Typical use cases:
 - reading configuration sections while replacing placeholder values such as `{{Some:Key}}`
 - checking whether a service has already been added to `IServiceCollection`
 - finding or locating a registered service descriptor during startup composition
+
+## HTTP helpers
+
+`OpaqueVersionETag` is in the `BridgingIT.DevKit.Common.Extensions.Web` package, under the `BridgingIT.DevKit.Common` namespace. Use it in ASP.NET Core endpoints that exchange opaque versions with a provider. `Write` sets one strong ETag. It wraps the UTF-8 version in quotes with a `bdk.` prefix and canonical unpadded Base64Url. For example, the version `"v1"` including its quotes becomes `"bdk.InYxIg"`. A blank version leaves the response header as it is.
+
+```csharp
+using BridgingIT.DevKit.Common;
+using Microsoft.AspNetCore.Http;
+
+var response = new DefaultHttpContext().Response;
+OpaqueVersionETag.Write(response, "\"v1\"");
+var condition = OpaqueVersionETag.ReadCondition(response.Headers.ETag, bodyETag: "\"v1\"");
+if (condition.IsSuccess)
+{
+    Console.WriteLine(condition.Value); // "v1"
+}
+```
+
+For an exact round-trip, use a nonblank provider version with well-formed UTF-16 and no control characters. UTF-8 encoding replaces unpaired surrogates. `ReadCondition` rejects decoded versions that contain control characters or become `*` after trimming surrounding double quotes.
+
+`ReadCondition` preserves quotes and spaces in the decoded version. It also accepts raw versions, trimming surrounding whitespace and retaining the supplied quoting. Wildcards (`*` or `"*"`), header lists, and malformed transport tags produce a `ValidationError`. When both header and body supply a version, their decoded values must match ordinally. When both are missing or blank, the result is successful with a `null` value. The provider applies the version condition to the mutation.
 
 ## Practical guidance
 

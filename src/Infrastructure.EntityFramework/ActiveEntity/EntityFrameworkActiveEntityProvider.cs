@@ -619,14 +619,8 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
     /// </code>
     /// </example>
-    public async Task<ResultPaged<TEntity>> FindAllPagedAsync(IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
-    {
-        var entities = await this.FindAllAsync(options, cancellationToken).AnyContext();
-        var totalCount = await this.CountAsync(options, cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
-
-        return ResultPaged<TEntity>.Success(entities.Value, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
-    }
+    public Task<ResultPaged<TEntity>> FindAllPagedAsync(IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.FindAllPagedAsync([], options, cancellationToken);
 
     /// <summary>
     /// Finds all entities matching the given specification with pagination.
@@ -643,14 +637,8 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
     /// </code>
     /// </example>
-    public async Task<ResultPaged<TEntity>> FindAllPagedAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
-    {
-        var entities = await this.FindAllAsync(specification, options, cancellationToken).AnyContext();
-        var totalCount = await this.CountAsync(specification, options, cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
-
-        return ResultPaged<TEntity>.Success(entities.Value, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
-    }
+    public Task<ResultPaged<TEntity>> FindAllPagedAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.FindAllPagedAsync([specification], options, cancellationToken);
 
     /// <summary>
     /// Finds all entities matching the given specifications with pagination.
@@ -667,14 +655,11 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
     /// </code>
     /// </example>
-    public async Task<ResultPaged<TEntity>> FindAllPagedAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
-    {
-        var entities = await this.FindAllAsync(specifications, options, cancellationToken).AnyContext();
-        var totalCount = await this.CountAsync(specifications, options, cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
-
-        return ResultPaged<TEntity>.Success(entities.Value, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
-    }
+    public Task<ResultPaged<TEntity>> FindAllPagedAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.FindPageAsync(
+            specifications, options,
+            static (query, ct) => query.ToListAsync(ct),
+            cancellationToken);
 
     /// <summary>
     /// Projects all entities to a specified type.
@@ -778,14 +763,8 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
     /// </code>
     /// </example>
-    public async Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
-    {
-        var entities = await this.ProjectAllAsync(projection, options, cancellationToken).AnyContext();
-        var totalCount = await this.CountAsync(options, cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
-
-        return ResultPaged<TProjection>.Success(entities.Value, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
-    }
+    public Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.ProjectAllPagedAsync([], projection, options, cancellationToken);
 
     /// <summary>
     /// Projects all entities matching the given specification to a specified type with pagination.
@@ -804,14 +783,8 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
     /// </code>
     /// </example>
-    public async Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(ISpecification<TEntity> specification, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
-    {
-        var entities = await this.ProjectAllAsync(specification, projection, options, cancellationToken).AnyContext();
-        var totalCount = await this.CountAsync(specification, options, cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
-
-        return ResultPaged<TProjection>.Success(entities.Value, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
-    }
+    public Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(ISpecification<TEntity> specification, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.ProjectAllPagedAsync([specification], projection, options, cancellationToken);
 
     /// <summary>
     /// Projects all entities matching the given specifications to a specified type with pagination.
@@ -830,14 +803,11 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
     /// </code>
     /// </example>
-    public async Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(IEnumerable<ISpecification<TEntity>> specifications, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
-    {
-        var entities = await this.ProjectAllAsync(specifications, projection, options, cancellationToken).AnyContext();
-        var totalCount = await this.CountAsync(specifications, options, cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
-
-        return ResultPaged<TProjection>.Success(entities.Value, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
-    }
+    public Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(IEnumerable<ISpecification<TEntity>> specifications, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.FindPageAsync(
+            specifications, options,
+            (query, ct) => query.Select(projection).ToListAsync(ct),
+            cancellationToken);
 
     /// <summary>
     /// Checks if any entities exist matching the given options.
@@ -947,7 +917,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// </example>
     public async Task<Result<long>> CountAsync(CancellationToken cancellationToken = default)
     {
-        return await this.CountAsync(null, cancellationToken).AnyContext();
+        return await this.CountAsync(specifications: null, cancellationToken: cancellationToken).AnyContext();
     }
 
     /// <summary>
@@ -1081,15 +1051,8 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
     /// </code>
     /// </example>
-    public async Task<ResultPaged<TId>> FindAllIdsPagedAsync(IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
-    {
-        var entities = await this.FindAllAsync(options, cancellationToken).AnyContext();
-        var totalCount = await this.CountAsync(options, cancellationToken).AnyContext();
-        var ids = entities.Value.Select(e => (TId)e.Id);
-        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
-
-        return ResultPaged<TId>.Success(ids, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
-    }
+    public Task<ResultPaged<TId>> FindAllIdsPagedAsync(IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.FindAllIdsPagedAsync([], options, cancellationToken);
 
     /// <summary>
     /// Finds all entity IDs matching the given specification with pagination.
@@ -1106,15 +1069,8 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
     /// </code>
     /// </example>
-    public async Task<ResultPaged<TId>> FindAllIdsPagedAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
-    {
-        var entities = await this.FindAllAsync(specification, options, cancellationToken).AnyContext();
-        var totalCount = await this.CountAsync(specification, options, cancellationToken).AnyContext();
-        var ids = entities.Value.Select(e => (TId)e.Id);
-        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
-
-        return ResultPaged<TId>.Success(ids, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
-    }
+    public Task<ResultPaged<TId>> FindAllIdsPagedAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.FindAllIdsPagedAsync([specification], options, cancellationToken);
 
     /// <summary>
     /// Finds all entity IDs matching the given specifications with pagination.
@@ -1131,15 +1087,11 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
     /// </code>
     /// </example>
-    public async Task<ResultPaged<TId>> FindAllIdsPagedAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
-    {
-        var entities = await this.FindAllAsync(specifications, options, cancellationToken).AnyContext();
-        var totalCount = await this.CountAsync(specifications, options, cancellationToken).AnyContext();
-        var ids = entities.Value.Select(e => (TId)e.Id);
-        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
-
-        return ResultPaged<TId>.Success(ids, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
-    }
+    public Task<ResultPaged<TId>> FindAllIdsPagedAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default) =>
+        this.FindPageAsync(
+            specifications, options,
+            static async (query, ct) => (await query.ToListAsync(ct).AnyContext()).Select(entity => (TId)entity.Id).ToList(),
+            cancellationToken);
 
     /// <summary>
     /// Begins a database transaction.
@@ -1238,17 +1190,32 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
         }
     }
 
-    private async Task<Result<long>> CountAsync(IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
+    private async Task<ResultPaged<TValue>> FindPageAsync<TValue>(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        IFindOptions<TEntity> options,
+        Func<IQueryable<TEntity>, CancellationToken, Task<List<TValue>>> readPage,
+        CancellationToken cancellationToken)
     {
+        var skip = Math.Max(0, options?.Skip ?? 0);
+        var pageSize = options?.Take is > 0 ? options.Take.Value : 10;
+        var page = (int)Math.Min((long)skip / pageSize + 1, int.MaxValue);
+        var totalCount = 0L;
+
         try
         {
-            var query = this.BuildQuery(this.context.Set<TEntity>(), options);
-            var count = await query.LongCountAsync(cancellationToken).AnyContext();
-            return Result<long>.Success(count);
+            cancellationToken.ThrowIfCancellationRequested();
+            var selection = this.BuildQuery(this.context.Set<TEntity>(), options, specifications, applyPaging: false);
+            totalCount = await selection.LongCountAsync(cancellationToken).AnyContext();
+            var query = skip > 0 ? selection.Skip(skip) : selection;
+            var values = await readPage(query.Take(pageSize), cancellationToken).AnyContext();
+
+            return ResultPaged<TValue>.Success(values, totalCount, page, pageSize);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
-            return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+            return ResultPaged<TValue>.Success([], totalCount, page, pageSize)
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.GetFullMessage());
         }
     }
 
@@ -1351,7 +1318,11 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
         return value;
     }
 
-    private IQueryable<TEntity> BuildQuery(IQueryable<TEntity> query, IFindOptions<TEntity> options, IEnumerable<ISpecification<TEntity>> specifications = null)
+    private IQueryable<TEntity> BuildQuery(
+        IQueryable<TEntity> query,
+        IFindOptions<TEntity> options,
+        IEnumerable<ISpecification<TEntity>> specifications = null,
+        bool applyPaging = true)
     {
         if (specifications != null)
         {
@@ -1366,9 +1337,9 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
             query = query.AsNoTracking();
         }
 
-        if (options?.Distinct?.Expression != null)
+        if (options?.Distinct?.Expression is { } distinctExpression)
         {
-            query = query.GroupBy(options.Distinct.Expression).Select(g => g.FirstOrDefault());
+            query = this.SelectDistinctRows(query, distinctExpression);
         }
         else if (options?.Distinct != null)
         {
@@ -1394,6 +1365,11 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
 
         // Apply stable ordering to the complete selection before choosing a page.
         query = orderedQuery ?? query;
+        if (!applyPaging)
+        {
+            return query;
+        }
+
         if (options?.Skip.HasValue == true && options.Skip.Value > 0)
         {
             query = query.Skip(options.Skip.Value);
@@ -1405,6 +1381,24 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
         }
 
         return query;
+    }
+
+    private IQueryable<TEntity> SelectDistinctRows(
+        IQueryable<TEntity> query,
+        Expression<Func<TEntity, object>> groupingKey)
+    {
+        if (this.context.Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite"
+            && this.context.Model.FindEntityType(typeof(TEntity))?.FindPrimaryKey()?.Properties is [var primaryKey])
+        {
+            // EF Core 10 can fail when composing a query over a grouped entity projection.
+            // Select one scalar primary key per group so the outer entity query stays composable.
+            var keyName = primaryKey.Name;
+            var selectedKeys = query.GroupBy(groupingKey)
+                .Select(group => group.Min(entity => EF.Property<object>(entity, keyName)));
+            return query.Where(entity => selectedKeys.Contains(EF.Property<object>(entity, keyName)));
+        }
+
+        return query.GroupBy(groupingKey).Select(group => group.FirstOrDefault());
     }
 
     /// <summary>

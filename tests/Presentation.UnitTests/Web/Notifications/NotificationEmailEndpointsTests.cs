@@ -40,7 +40,7 @@ public class NotificationEmailEndpointsApplication : WebApplicationFactory<Notif
     }
 }
 
-public class NotificationEmailEndpointsTests : IAsyncDisposable
+public class NotificationEmailEndpointsTests : IAsyncLifetime
 {
     [Fact]
     public async Task SearchMessages_ShouldPassFilterToService()
@@ -78,7 +78,11 @@ public class NotificationEmailEndpointsTests : IAsyncDisposable
         this.outboxService = this.factory.OutboxService;
     }
 
-    public async ValueTask DisposeAsync()
+    /// <inheritdoc />
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    /// <inheritdoc />
+    public async Task DisposeAsync()
     {
         await this.factory.DisposeAsync();
     }

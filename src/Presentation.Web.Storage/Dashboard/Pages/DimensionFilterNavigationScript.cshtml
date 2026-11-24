@@ -1,0 +1,85 @@
+@inherits RazorSlices.RazorSlice
+
+<script>
+(() => {
+    const dashboard = window.bdkDashboard;
+    const maxDrafts = 12;
+
+    dashboard.createDimensionFilterNavigation = ({ root, buildQuery }) => {
+        const storage = dashboard.state.session;
+        const key = dashboard.state.key('storage', 'dimensionFilterNavigation', location.pathname);
+        let resuming = false;
+        let resetEditor;
+
+        function appliedSearch() {
+            const parameters = buildQuery().searchParams;
+            for (const name of ['continuationToken', 'selectedPartitionKey', 'selectedRowKey']) {
+                parameters.delete(name);
+            }
+            parameters.sort();
+            return parameters.toString();
+        }
+
+        function read() {
+            const saved = storage.getJson(key, {});
+            const drafts = Array.isArray(saved?.drafts) ? saved.drafts : [];
+            return {
+                last: typeof saved?.last === 'string' ? saved.last : null,
+                drafts: drafts.filter(draft => typeof draft?.search === 'string' &&
+                    typeof draft.text === 'string' && typeof draft.open === 'boolean').slice(0, maxDrafts)
+            };
+        }
+
+        window.addEventListener('pagehide', () => {
+            const current = root();
+            const editor = current?.querySelector('[data-storage-dimension-editor]');
+            if (!editor || resuming || editor === resetEditor) return;
+            const search = appliedSearch();
+            const saved = read();
+            const drafts = saved.drafts.filter(draft => draft.search !== search);
+            const text = editor.querySelector('[name=dimensionFilter]').value;
+            const applied = current.dataset.dimensionFilter || '';
+            const open = editor.querySelector('details').open;
+            const hasEntries = editor.dataset.initialized === 'true' && (applied || text);
+            if (hasEntries) drafts.unshift({ search, text, open });
+            const last = hasEntries && (!applied || current.dataset.dimensionFilterValid === 'true') ? search : null;
+            storage.setJson(key, { last, drafts: drafts.slice(0, maxDrafts) });
+        });
+
+        return {
+            resume() {
+                const url = new URL(location.href);
+                if ([...url.searchParams.keys()].some(name => name !== 'dashboardView') ||
+                    window.performance.getEntriesByType('navigation')[0]?.type === 'back_forward') return false;
+                const { last, drafts } = read();
+                if (!last || last === appliedSearch() || !drafts.some(draft => draft.search === last)) return false;
+                const registration = root()?.querySelector('select[name=store], select[name=clientId]');
+                const remembered = new URLSearchParams(last);
+                if (!registration || ![...registration.options].some(option => option.value === remembered.get(registration.name))) {
+                    return false;
+                }
+                const view = url.searchParams.get('dashboardView');
+                url.search = last;
+                if (view) url.searchParams.set('dashboardView', view);
+                resuming = true;
+                location.replace(url.href);
+                return true;
+            },
+            restoreDraft() {
+                const editor = root()?.querySelector('[data-storage-dimension-editor]');
+                if (editor?.dataset.supported !== 'true' || editor.dataset.initialized === 'true') return false;
+                const search = appliedSearch();
+                const draft = read().drafts.find(item => item.search === search);
+                if (!draft) return false;
+                editor.querySelector('[name=dimensionFilter]').value = draft.text;
+                editor.querySelector('details').open = draft.open;
+                return true;
+            },
+            reset() {
+                resetEditor = root()?.querySelector('[data-storage-dimension-editor]');
+                storage.remove(key);
+            }
+        };
+    };
+})();
+</script>

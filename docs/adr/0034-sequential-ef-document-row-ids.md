@@ -36,7 +36,7 @@ Existing rows keep their ids and no migration is needed. The id is internal and 
 
 ### Measured
 
-SQL Server, 100,000 parallel inserts into a 1,000,000 row table built in id order: clustered index fragmentation 34.6% with random ids against 15.3% with sequential ids, 766,676 against 722,319 pages, page fullness 72.8% against 77.3%. A table that was already fragmented only improved on the new pages (99.3% to 86.3% against 99.3%). See the [appendix](../features-storage-documents.md#appendix-ef-performance-and-indexes).
+SQL Server, 100,000 parallel inserts into a 1,000,000 row table built in id order: clustered index fragmentation 34.6% with random ids against 15.3% with sequential ids, 766,676 against 722,319 pages, page fullness 72.8% against 77.3%. A table that was already fragmented only improved on the new pages (99.3% to 86.3% against 99.3%). For read behavior, see the [scaling guidance](../features-storage-documents.md#appendix-a-read-performance-and-scaling).
 
 ## References
 

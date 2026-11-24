@@ -32,7 +32,7 @@ Implemented on this branch:
 * `Presentation.Web` hosts the MCP IPC bridge in local development, validates the runtime nonce, dispatches `mcp.capabilities`, and routes operations to registered `IMcpHandler` implementations.
 * `RuntimeDiagnosticsMcpHandler` provides `health.snapshot` when ASP.NET Core health checks are registered and returns a structured unavailable result otherwise.
 * project-owned handlers can be registered with `DevKitWebApplicationBuilder.AddMcp(...)` using `WithHandler<THandler>()` or `WithHandlersFromAssembly<TMarker>()`.
-* documentation tools search bounded official DevKit documentation and return official source links.
+* documentation and API tools read bounded content from embedded CLI assembly resources and return reference links without online fallback.
 
 Feature-owned handlers for logs, jobs, messaging, queueing, and orchestrations are intentionally separate extension points. Until those feature packages register handlers for their operations, the stable CLI tools return structured `feature_unavailable` responses from the selected runtime.
 
@@ -1385,7 +1385,7 @@ bdk_docs_search
 bdk_docs_get
 ```
 
-Documentation tools use online DevKit documentation sources and do not require a selected runtime.
+Documentation and API tools read embedded CLI assembly resources and do not require a selected runtime, repository checkout, or documentation network access.
 
 ## Project operations
 
@@ -1427,15 +1427,24 @@ Correlation investigation targets the selected runtime. Cross-runtime correlatio
 
 ## Documentation tool behavior
 
-Documentation tools query official DevKit documentation sources.
+Documentation tools read public Markdown and generated API metadata embedded in the CLI assembly. The [Bundled MCP Documentation specification](spec-presentation-cli-mcp-documentation.md) defines the resource and build contracts.
 
 Expected behavior:
 
-* `bdk_docs_search` searches documentation by query text and returns bounded ranked results.
-* `bdk_docs_get` retrieves a specific documentation page or section by source identifier or URL.
-* results include source title, URL, and concise content.
-* responses indicate when online documentation is unreachable.
-* documentation tools do not require a runtime selection or IPC connection.
+* `bdk_docs_search` searches embedded Markdown by query text and returns bounded ranked results.
+* `bdk_docs_get` reads an embedded document by repository-relative identifier or official GitHub URL alias. The URL's branch, tag, or version does not select different content.
+* `bdk_api_search` and `bdk_api_get` use the embedded API index and symbol details.
+* results include existing source fields and reference links. A URL never causes an HTTP request.
+* missing content returns `documentation_unavailable` with a local reason, without fallback or refresh.
+* documentation tools do not require runtime selection, IPC, a checkout, or writable documentation cache.
+
+`bdk_docs_get` accepts optional non-negative `offset`, defaulting to zero. Its existing `maxChars` default is 6,000 and maximum is 20,000. Responses include `offset`, `nextOffset`, and `totalChars`. Follow the suggested next call until `nextOffset` is null. Invalid types, negative offsets, and offsets beyond the document length return `operation_failed`.
+
+The CLI embeds matching root-level public Markdown on every build using the same selection as the website. New matching files require no per-file registration or manual sync. ADRs, specifications, PRDs, presentations, and generated website content remain excluded. Rebuild, reinstall the local tool, and restart MCP to expose updated embedded content.
+
+API generation runs for Release builds or packaging. Ordinary Debug builds skip it and can reuse existing generated files. When API metadata is absent, Markdown, curated guidance, and runtime operations remain usable. Release builds and packaging require only the `api/agent-index.json` marker. They do not validate individual document links or symbol details. `--no-build` checks that marker in the already-built assembly.
+
+The installed local tool determines the documentation content. Tool/application DevKit version differences are ignored.
 
 ## Project-Specific MCP Tools
 
@@ -1864,7 +1873,7 @@ IPC bind failed in the app
 capabilities operation is unavailable
 a feature handler is not registered
 a handler returns feature_unavailable
-online documentation is unreachable
+embedded documentation or API metadata is absent
 ```
 
 Common failures:
@@ -1875,12 +1884,12 @@ Common failures:
 | Multiple runtimes found | Return `runtime_selection_required`. |
 | Descriptor stale | Mark runtime `Stale`; suggest runtime cleanup or app restart. |
 | IPC unreachable | Return `selected_runtime_unavailable`. |
-| Version mismatch | Return `version_mismatch`. |
+| IPC protocol mismatch | Return `version_mismatch`. |
 | Feature unavailable | Return `feature_unavailable`. |
 | Unauthorized toolset | Return `unauthorized_toolset`. |
 | Timeout | Return `timeout`. |
 | Handler exception | Return sanitized `operation_failed`. |
-| Documentation unavailable | Return `documentation_unavailable` with source and retry hints. |
+| Documentation unavailable | Return `documentation_unavailable` with the missing local source and rebuild/reinstall hints. |
 
 ## Self-diagnostics
 
@@ -1899,7 +1908,7 @@ protocol version compatibility
 enabled toolsets
 available capabilities
 last runtime validation error
-documentation source reachability
+embedded documentation availability
 ```
 
 These tools should work even when no application runtime is running.
@@ -2043,10 +2052,10 @@ jobs trigger requires operations toolset
 purge operations require admin toolset
 missing feature returns feature_unavailable
 bdk_mcp_status works without a running host
-bdk_mcp_self_test reports descriptor and IPC status
+bdk_mcp_self_test reports embedded documentation, descriptor and IPC status
 bdk_investigate_correlation aggregates related feature data
-bdk_docs_search returns bounded official documentation results
-bdk_docs_get returns bounded documentation content with source link
+bdk_docs_search returns bounded embedded documentation results
+bdk_docs_get returns bounded embedded content with source link and continuation
 project operations are listed through bdk_project_operations
 project operations are invoked through bdk_project_call
 project CRUD-style operations are not included in examples or templates

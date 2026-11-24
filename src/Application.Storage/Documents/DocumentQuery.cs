@@ -19,6 +19,9 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class DocumentQuery
 {
+    /// <summary>Gets optional predicates over explicitly indexed Dimensions.</summary>
+    public DocumentDimensionFilter DimensionFilter { get; init; }
+
     /// <summary>
     /// Gets the optional partition and row key seed for the query.
     /// </summary>

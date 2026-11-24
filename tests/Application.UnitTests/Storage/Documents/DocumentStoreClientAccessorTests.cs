@@ -30,6 +30,70 @@ public sealed class DocumentStoreClientAccessorTests
         result.Value.ContinuationToken.ShouldNotBeNullOrWhiteSpace();
     }
 
+    [Fact]
+    public async Task UpsertJsonAsync_WithStaleVersion_PreservesConflictAndCurrentDocument()
+    {
+        // Arrange
+        var client = new DocumentStoreClient<TestDocument>(new InMemoryDocumentStoreProvider());
+        var key = new DocumentKey("records", "42");
+        var original = await client.UpsertAsync(key, new() { Value = "original" });
+        original.IsSuccess.ShouldBeTrue();
+        var replacement = await client.UpsertAsync(key, new() { Value = "replacement" }, new() { IfMatchETag = original.Value.ETag });
+        replacement.IsSuccess.ShouldBeTrue();
+        var sut = CreateAccessor(client);
+
+        // Act
+        var result = await sut.UpsertJsonAsync(key, "{\"Value\":\"stale\"}", new() { IfMatchETag = original.Value.ETag });
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldContain(error => error is DocumentStoreConflictError);
+        var current = await client.GetAsync(key);
+        current.IsSuccess.ShouldBeTrue();
+        current.Value.Value.Value.ShouldBe("replacement");
+        current.Value.ETag.ShouldBe(replacement.Value.ETag);
+    }
+
+    [Fact]
+    public async Task UpsertJsonAsync_CreateOnlyWithExistingDocument_PreservesConflict()
+    {
+        // Arrange
+        var client = new DocumentStoreClient<TestDocument>(new InMemoryDocumentStoreProvider());
+        var key = new DocumentKey("records", "42");
+        var original = await client.UpsertAsync(key, new() { Value = "original" });
+        original.IsSuccess.ShouldBeTrue();
+        var sut = CreateAccessor(client);
+
+        // Act
+        var result = await sut.UpsertJsonAsync(key, "{\"Value\":\"duplicate\"}", new() { CreateOnly = true });
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldContain(error => error is DocumentStoreConflictError);
+        var current = await client.GetAsync(key);
+        current.IsSuccess.ShouldBeTrue();
+        current.Value.Value.Value.ShouldBe("original");
+        current.Value.ETag.ShouldBe(original.Value.ETag);
+    }
+
+    [Fact]
+    public async Task UpsertJsonAsync_WithCanceledOperation_PropagatesCancellation()
+    {
+        // Arrange
+        var client = new DocumentStoreClient<TestDocument>(new InMemoryDocumentStoreProvider());
+        var sut = CreateAccessor(client);
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+
+        // Act and assert
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => sut.UpsertJsonAsync(
+            new("records", "42"), "{\"Value\":\"replacement\"}", cancellationToken: cancellation.Token));
+        (await client.ExistsAsync(new("records", "42"))).Value.ShouldBeFalse();
+    }
+
+    private static DocumentStoreClientAccessor<TestDocument> CreateAccessor(IDocumentStoreClient<TestDocument> client) => new(
+        new DocumentStoreClientDescriptor("test", typeof(TestDocument), "Test", "In-memory", new DocumentStoreProviderCapabilities()), client);
+
     public sealed class TestDocument
     {
         public string Value { get; set; }

@@ -108,4 +108,49 @@ public class QueryResultTests
         response.Result.Value.ShouldBe(outputValue);
         response.Result.Messages.ShouldBe(result.Messages);
     }
+
+    [Fact]
+    public void Failure_WithTypedErrorAndNoInstance_CreatesTypedError()
+    {
+        var sut = QueryResult.Failure<int, DomainPolicyError>(42, "Missing item").Result;
+
+        sut.IsFailure.ShouldBeTrue();
+        sut.Value.ShouldBe(42);
+        sut.Messages.ShouldContain("Missing item");
+        sut.HasError<DomainPolicyError>().ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Failure_WithExplicitError_PreservesSuppliedError()
+    {
+        var error = new ValidationError("Invalid filter");
+
+        var sut = QueryResult.Failure<int, DomainPolicyError>(42, error: error).Result;
+
+        sut.Errors.ShouldHaveSingleItem().ShouldBeSameAs(error);
+    }
+
+    [Fact]
+    public void For_WithNonGenericResultAsValue_PreservesInferredResponseType()
+    {
+        var result = Result.Failure("Missing item");
+
+        var sut = CreateResponse();
+
+        sut.Result.IsSuccess.ShouldBeTrue();
+        sut.Result.Value.ShouldBe(result);
+
+        QueryResponse<Result<Result>> CreateResponse() => QueryResult.For(result);
+    }
+
+    [Fact]
+    public void QueryResponseFor_WithNonGenericFailure_PreservesFailure()
+    {
+        var result = Result.Failure("Missing item");
+
+        var sut = QueryResponse.For(result).Result;
+
+        sut.IsFailure.ShouldBeTrue();
+        sut.Messages.ShouldContain("Missing item");
+    }
 }

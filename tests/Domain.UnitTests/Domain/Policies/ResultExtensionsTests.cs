@@ -58,4 +58,26 @@ public class ResultExtensionsTests
         // Assert
         result.ShouldBe(null);
     }
+
+    [Fact]
+    public void GetValue_PagedResult_ReturnsPageValues()
+    {
+        var values = new[] { 1, 2 };
+        IResult source = ResultPaged<int>.Success(values, count: 20, page: 2, pageSize: 2);
+
+        var result = source.GetValue();
+
+        result.ShouldBeSameAs(values);
+    }
+
+    [Fact]
+    public void GetValue_CustomGenericResult_ReturnsInterfaceValue()
+    {
+        var source = Substitute.For<IResult<int>>();
+        source.Value.Returns(0);
+
+        var result = source.GetValue();
+
+        result.ShouldBe(0);
+    }
 }

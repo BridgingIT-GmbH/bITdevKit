@@ -9,9 +9,14 @@ use_directory_urls: true
 
 nav:
   - Home: index.md
-  - Quickstart:
-      - Quickstart: getting-started.md
-      - Templates: templates.md
+  - Get started:
+      - Overview: getting-started.md
+      - "Path A: New solution":
+          - Create a solution from templates: getting-started-template.md
+          - Templates reference: templates.md
+      - "Path B: Step by step":
+          - Build an app with DevKit: getting-started-existing-app.md
+          - Add features: getting-started-existing-app-features.md
   - Docs:
       - Documentation Overview: docs.md
       - Feature Icons: feature-icons.md
@@ -29,6 +34,7 @@ nav:
               - Profiling: reference/features-profiling.md
               - Utilities: reference/features-utilities.md
           - Core Domain and Application:
+              - Application Caching: reference/features-application-caching.md
               - Domain: reference/features-domain.md
               - Domain Events: reference/features-domain-events.md
               - Domain Change History: reference/features-domain-change-history.md
@@ -76,6 +82,7 @@ nav:
               - Exception Handling: reference/features-presentation-exception-handling.md
               - AppState: reference/features-presentation-appstate.md
           - Storage, Scheduling and Utilities:
+              - LiteDB Infrastructure: reference/features-infrastructure-litedb.md
               - Startup Tasks: reference/features-startuptasks.md
               - Jobs: reference/features-jobs.md
               - Job Scheduling: reference/features-jobscheduling.md
@@ -119,6 +126,7 @@ nav:
       - "Result&lt;T&gt; or plain return type": decisions-results.md
   - API: api/index.md
   - Examples: examples.md
+  - FAQ: faq.md
 
 theme:
   name: material
@@ -128,6 +136,7 @@ theme:
   font: false
   features:
     - navigation.instant
+    - navigation.footer
     - navigation.path
     - navigation.sections
     - navigation.tabs

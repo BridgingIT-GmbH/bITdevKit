@@ -15,6 +15,164 @@ public abstract class BlobStoreProviderContractTests
 
     protected abstract IBlobStoreProvider CreateProvider(BlobStoreOptions options = null);
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task UploadAsync_WithMatchingETag_ReplacesContentAndInvalidatesPreviousVersion(bool identicalContent)
+    {
+        // Arrange
+        var sut = this.CreateProvider();
+        var key = CreateKey("conditional-match.txt");
+        var original = await sut.UploadAsync(CreateStoredUpload(key, "original"));
+        original.IsSuccess.ShouldBeTrue();
+        var replacement = identicalContent ? "original" : "replacement";
+
+        // Act
+        var result = await sut.UploadAsync(CreateStoredUpload(key, replacement, ifMatchETag: original.Value.ETag));
+        var downloaded = await sut.DownloadAsync(key);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(error => error.Message)));
+        result.Value.ETag.ShouldNotBe(original.Value.ETag);
+        downloaded.IsSuccess.ShouldBeTrue();
+        await using var download = downloaded.Value;
+        download.Info.ETag.ShouldBe(result.Value.ETag);
+        (await ReadAllTextAsync(download.Content)).ShouldBe(replacement);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task UploadAsync_AfterContentOrMetadataChanged_RejectsStaleVersionWithoutMutation(bool metadataOnly)
+    {
+        // Arrange
+        var sut = this.CreateProvider();
+        var key = CreateKey("conditional-stale.txt");
+        var original = await sut.UploadAsync(CreateStoredUpload(key, "original"));
+        original.IsSuccess.ShouldBeTrue();
+        var change = metadataOnly
+            ? await sut.UpdatePropertiesAsync(new() { Key = key, IfMatchETag = original.Value.ETag, Properties = new() { ["status"] = "current" }, ExpiresAt = DateTimeOffset.UtcNow.AddHours(1) })
+            : await sut.UploadAsync(CreateStoredUpload(key, "current", ifMatchETag: original.Value.ETag));
+        change.IsSuccess.ShouldBeTrue();
+        var persisted = await sut.GetPropertiesAsync(key);
+        persisted.IsSuccess.ShouldBeTrue();
+
+        // Act
+        var result = await sut.UploadAsync(CreateStoredUpload(key, "stale", ifMatchETag: original.Value.ETag));
+        var downloaded = await sut.DownloadAsync(key);
+
+        // Assert
+        result.HasError<BlobStoreConflictError>().ShouldBeTrue();
+        downloaded.IsSuccess.ShouldBeTrue();
+        await using var download = downloaded.Value;
+        download.Info.ETag.ShouldBe(change.Value.ETag);
+        download.Info.ContentHash.ShouldBe(change.Value.ContentHash);
+        download.Info.ExpiresAt.ShouldBe(persisted.Value.ExpiresAt);
+        download.Info.Properties.Get<string>(metadataOnly ? "status" : "source").ShouldBe(metadataOnly ? "current" : "contract");
+        (await ReadAllTextAsync(download.Content)).ShouldBe(metadataOnly ? "original" : "current");
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task UploadAsync_WithExpectedVersionAndMissingTarget_ReturnsConflictWithoutCreating(bool deleted)
+    {
+        // Arrange
+        var sut = this.CreateProvider();
+        var key = CreateKey("conditional-missing.txt");
+        var condition = "missing-version";
+        if (deleted)
+        {
+            var original = await sut.UploadAsync(CreateStoredUpload(key, "original"));
+            original.IsSuccess.ShouldBeTrue();
+            condition = original.Value.ETag;
+            (await sut.DeleteAsync(key)).IsSuccess.ShouldBeTrue();
+        }
+
+        // Act
+        var result = await sut.UploadAsync(CreateStoredUpload(key, "replacement", ifMatchETag: condition));
+        var exists = await sut.ExistsAsync(key);
+
+        // Assert
+        result.HasError<BlobStoreConflictError>().ShouldBeTrue();
+        exists.IsSuccess.ShouldBeTrue();
+        exists.Value.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task UploadAsync_AfterDeleteAndRecreate_RejectsPreviousItemsVersion()
+    {
+        // Arrange
+        var sut = this.CreateProvider();
+        var key = CreateKey("conditional-recreated.txt");
+        var original = await sut.UploadAsync(CreateStoredUpload(key, "original"));
+        original.IsSuccess.ShouldBeTrue();
+        (await sut.DeleteAsync(key)).IsSuccess.ShouldBeTrue();
+        var recreated = await sut.UploadAsync(CreateStoredUpload(key, "new item"));
+        recreated.IsSuccess.ShouldBeTrue();
+
+        // Act
+        var result = await sut.UploadAsync(CreateStoredUpload(key, "stale", ifMatchETag: original.Value.ETag));
+        var downloaded = await sut.DownloadAsync(key);
+
+        // Assert
+        result.HasError<BlobStoreConflictError>().ShouldBeTrue();
+        await using var download = downloaded.Value;
+        download.Info.ETag.ShouldBe(recreated.Value.ETag);
+        (await ReadAllTextAsync(download.Content)).ShouldBe("new item");
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("  ")]
+    public async Task UploadAsync_WithOmittedCondition_CreatesAndReplacesUnconditionally(string condition)
+    {
+        // Arrange
+        var sut = this.CreateProvider();
+        var key = CreateKey("conditional-omitted.txt");
+
+        // Act
+        var created = await sut.UploadAsync(CreateStoredUpload(key, "original", ifMatchETag: condition));
+        var replaced = await sut.UploadAsync(CreateStoredUpload(key, "replacement", ifMatchETag: condition));
+        var downloaded = await sut.DownloadAsync(key);
+
+        // Assert
+        created.IsSuccess.ShouldBeTrue();
+        replaced.IsSuccess.ShouldBeTrue();
+        replaced.Value.ETag.ShouldNotBe(created.Value.ETag);
+        await using var download = downloaded.Value;
+        (await ReadAllTextAsync(download.Content)).ShouldBe("replacement");
+    }
+
+    [Theory]
+    [InlineData("version", BlobOverwriteMode.FailIfExists)]
+    [InlineData("*", BlobOverwriteMode.Overwrite)]
+    public async Task UploadAsync_WithInvalidVersionCondition_RejectsRawProviderMutation(string condition, BlobOverwriteMode mode)
+    {
+        // Arrange
+        var sut = this.CreateProvider();
+        var key = CreateKey("conditional-invalid.txt");
+        var original = await sut.UploadAsync(CreateStoredUpload(key, "original"));
+        original.IsSuccess.ShouldBeTrue();
+
+        // Act
+        var result = await sut.UploadAsync(new()
+        {
+            Key = key,
+            Content = new MemoryStream(Encoding.UTF8.GetBytes("replacement")),
+            IfMatchETag = condition,
+            OverwriteMode = mode
+        });
+        var downloaded = await sut.DownloadAsync(key);
+
+        // Assert
+        result.HasError<BlobStoreValidationError>().ShouldBeTrue();
+        await using var download = downloaded.Value;
+        download.Info.ETag.ShouldBe(original.Value.ETag);
+        (await ReadAllTextAsync(download.Content)).ShouldBe("original");
+    }
+
     [Fact]
     public async Task UploadAsync_WithValidContent_ReturnsBlobInfo()
     {
@@ -686,6 +844,49 @@ public abstract class BlobStoreProviderContractTests
         methodNames.ShouldNotContain(name => name.Contains("Chunk", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task Properties_WithPreserveClearAndReplace_UsesAlignedContract()
+    {
+        var sut = this.CreateClient();
+        var key = CreateKey("property-mutations");
+        (await sut.UploadAsync(CreateUpload(key, "one"))).IsSuccess.ShouldBeTrue();
+        var replaced = await sut.UploadAsync(new() { Key = key, Content = new MemoryStream([2]) });
+        replaced.IsSuccess.ShouldBeTrue();
+        replaced.Value.Properties.Get<string>("source").ShouldBe("contract");
+        var preserved = await sut.UpdatePropertiesAsync(new() { Key = key });
+        preserved.Value.Properties.Get<string>("source").ShouldBe("contract");
+        var cleared = await sut.UpdatePropertiesAsync(new() { Key = key, Properties = new() });
+        cleared.Value.Properties.Count.ShouldBe(0);
+        var explicitNull = await sut.UpdatePropertiesAsync(new() { Key = key, Properties = new() { ["present"] = null } });
+        explicitNull.Value.Properties.Count.ShouldBe(1);
+        explicitNull.Value.Properties.Contains("present").ShouldBeTrue();
+        (await sut.UploadAsync(new() { Key = key, Content = new MemoryStream([3]), Properties = new() })).Value.Properties.Count.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task Properties_WithAllScalarTypes_RoundTripsDetachedSnapshots()
+    {
+        var sut = this.CreateClient();
+        var key = CreateKey("scalar-properties");
+        var expected = StoragePropertySamples.Create();
+        var input = StoragePropertySamples.Create();
+        var upload = await sut.UploadAsync(new() { Key = key, Content = new MemoryStream([1]), Properties = input });
+        upload.IsSuccess.ShouldBeTrue(string.Join("; ", upload.Errors.Select(error => error.Message)));
+        ((byte[])input.Get("Bytes"))[0] = 99;
+        StoragePropertySamples.AssertEqual(upload.Value.Properties, expected);
+        ((byte[])upload.Value.Properties.Get("Bytes"))[0] = 98;
+        var properties = await sut.GetPropertiesAsync(key);
+        StoragePropertySamples.AssertEqual(properties.Value.Properties, expected);
+        properties.Value.Properties["String"] = "changed";
+        var page = await sut.ListPageAsync(new() { Container = key.Container, Prefix = key.Name });
+        StoragePropertySamples.AssertEqual(page.Value.Items.Single().Properties, expected);
+        var download = await sut.DownloadAsync(key);
+        await using var content = download.Value;
+        StoragePropertySamples.AssertEqual(download.Value.Info.Properties, expected);
+        var updated = await sut.UpdatePropertiesAsync(new() { Key = key, Properties = StoragePropertySamples.Create() });
+        StoragePropertySamples.AssertEqual(updated.Value.Properties, expected);
+    }
+
     protected IBlobStoreClient CreateClient(BlobStoreOptions options = null)
     {
         options ??= new BlobStoreOptions();
@@ -705,14 +906,24 @@ public abstract class BlobStoreProviderContractTests
     protected static BlobUpload CreateUpload(
         BlobKey key,
         string content,
-        ContentType? contentType = null) =>
+        ContentType? contentType = null,
+        string ifMatchETag = null) =>
         new()
         {
             Key = key,
             Content = new MemoryStream(Encoding.UTF8.GetBytes(content)),
             ContentType = contentType,
+            IfMatchETag = ifMatchETag,
             Properties = new PropertyBag { ["source"] = "contract" }
         };
+
+    private static StoredBlobUpload CreateStoredUpload(BlobKey key, string content, string ifMatchETag = null) => new()
+    {
+        Key = key,
+        Content = new MemoryStream(Encoding.UTF8.GetBytes(content)),
+        IfMatchETag = ifMatchETag,
+        Properties = new() { ["source"] = "contract" }
+    };
 
     protected static async Task<string> ReadAllTextAsync(Stream stream)
     {

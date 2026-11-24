@@ -149,6 +149,24 @@ public sealed class OperationProfilingQueryTests
         segment.MaximumInvocationMilliseconds.ShouldBe(100);
     }
 
+    /// <summary>Exact analysis keeps midpoint medians separate from nearest-rank tail percentiles.</summary>
+    [Theory]
+    [InlineData(1, 1, 1, 1)]
+    [InlineData(2, 1.5, 2, 2)]
+    [InlineData(20, 10.5, 19, 20)]
+    [InlineData(100, 50.5, 95, 99)]
+    public void Distribution_UnsortedSamples_PreservesMidpointMedianAndNearestRanks(int count, double median, double p95, double p99)
+    {
+        var observations = Enumerable.Range(1, count).Reverse().Select(value => TimeSpan.FromMilliseconds(value));
+
+        var sut = OperationProfilingAnalysis.Distribution(observations);
+
+        sut.Count.ShouldBe(count);
+        sut.P50Milliseconds.ShouldBe(median);
+        sut.P95Milliseconds.ShouldBe(p95);
+        sut.P99Milliseconds.ShouldBe(p99);
+    }
+
     /// <summary>Public aggregate entrypoints reject oversized selections instead of truncating them.</summary>
     [Fact]
     public void Analysis_RejectsOversizedSelection()

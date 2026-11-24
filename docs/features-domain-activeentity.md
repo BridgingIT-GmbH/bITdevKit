@@ -876,6 +876,10 @@ services.AddActiveEntity(cfg =>
 });
 ```
 
+## Provider guides
+
+- [LiteDB Infrastructure](features-infrastructure-litedb.md#active-entities)
+
 ## Advanced usage
 
 `[ActiveEntityFeatures]` enables source-generated query members on a `partial` entity class. With no argument, the attribute enables `ActiveEntityFeatures.All`. Pass one or more enum values to limit generation.

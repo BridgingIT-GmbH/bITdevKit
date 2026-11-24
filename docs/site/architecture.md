@@ -2,6 +2,8 @@
 title: Architecture
 ---
 
+<!-- markdownlint-disable-file MD033 -->
+
 # Architecture
 
 `bITdevKit` applies clean architecture through modular vertical slices. Domain and application code depend only on inner layers. Infrastructure and presentation provide integrations and entry points.
@@ -50,13 +52,13 @@ flowchart TB
 
 A modular monolith can group each module's domain, application, infrastructure, and presentation code.
 
-```text
-Module/
-├── Module.Domain
-├── Module.Application
-├── Module.Infrastructure
-└── Module.Presentation
-```
+<div class="solution-tree" role="img" aria-label="Module structure">
+  <div><span class="br"></span><span class="dir">Module/</span></div>
+  <div><span class="br">├─ </span><span class="dir">Module.Domain</span><span class="fill"></span><span class="layer layer-domain">domain</span></div>
+  <div><span class="br">├─ </span><span class="dir">Module.Application</span><span class="fill"></span><span class="layer layer-application">application</span></div>
+  <div><span class="br">├─ </span><span class="dir">Module.Infrastructure</span><span class="fill"></span><span class="layer layer-infrastructure">infrastructure</span></div>
+  <div><span class="br">└─ </span><span class="dir">Module.Presentation</span><span class="fill"></span><span class="layer layer-presentation">presentation</span></div>
+</div>
 
 A single host application can compose multiple modules without merging their layer boundaries.
 

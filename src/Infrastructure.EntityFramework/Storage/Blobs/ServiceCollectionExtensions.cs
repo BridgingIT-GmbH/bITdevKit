@@ -89,6 +89,7 @@ public static partial class ServiceCollectionExtensions
             configure,
             EntityFrameworkBlobStoreProvider<TContext>.ProviderName,
             EntityFrameworkBlobStoreProvider<TContext>.CreateCapabilities(),
-            lifetime);
+            lifetime,
+            EntityFrameworkBlobStoreProvider<TContext>.GetCapabilities);
     }
 }

@@ -12,6 +12,7 @@ using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 
 [Collection(ProcessWideStateTestCollection.Name)]
@@ -33,12 +34,30 @@ public sealed class StorageDashboardMetricsTests
         app.MapEndpoints();
         await app.StartAsync();
         using var client = app.GetTestClient();
-        var response = await client.GetAsync("/ops/storage/" + feature + "/diagnostics");
+        const string filter = """{"name":"Region","operator":"Equal","operand":{"type":"string","value":"Western Europe"}}""";
+        var explorer = "/ops/storage/" + feature;
+        var context = feature == "blobs" ? "store=reports&container=weather&prefix=demo%2F" : "clientId=test&partitionKey=demo";
+        var response = await client.GetAsync(explorer + "/diagnostics?" + context + "&dimensionFilter=" + Uri.EscapeDataString(filter) + "&continuationToken=next");
         response.EnsureSuccessStatusCode();
         var html = await response.Content.ReadAsStringAsync();
         html.ShouldContain("storage-throughput-chart");
         html.ShouldContain("storage-items-chart");
         html.ShouldContain("data-dashboard-view=\"diagnostics\"");
+        var href = System.Text.RegularExpressions.Regex.Match(html, """<a class="nav-link" href="([^"]+)">Explorer</a>""").Groups[1].Value;
+        var destination = new Uri(new Uri("http://localhost"), WebUtility.HtmlDecode(href));
+        destination.AbsolutePath.ShouldBe(explorer);
+        var query = QueryHelpers.ParseQuery(destination.Query);
+        if (feature == "files")
+        {
+            query.ShouldBeEmpty();
+        }
+        else
+        {
+            query["dimensionFilter"].ToString().ShouldBe(filter);
+            query[feature == "blobs" ? "container" : "partitionKey"].ToString().ShouldBe(feature == "blobs" ? "weather" : "demo");
+            query.ShouldNotContainKey("continuationToken");
+        }
+
         html.ShouldContain("/ops/storage/" + feature + "/diagnostics/data");
         var data = await client.GetAsync("/ops/storage/" + feature + "/diagnostics/data");
         data.EnsureSuccessStatusCode();

@@ -1,0 +1,1945 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Getting started paths: visual mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   Mockup scaffolding. Not part of the proposal.
+   ========================================================================== */
+html { font-size: 20px; }
+body {
+  background: #0b0c11;
+  color: #c7cbe0;
+  font-family: "IBM Plex Sans", sans-serif;
+  margin: 0;
+  padding: 0 0 40px;
+}
+.board-index {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  margin: 0 auto;
+  max-width: 1240px;
+  padding: 28px 0 8px;
+}
+.board-index h1 { font-size: 15px; margin: 0 0 6px; }
+.board-index p { color: #8a90ad; margin: 0 0 10px; }
+.board-index a { color: #7da4f7; margin-right: 14px; }
+.artboard { padding: 26px 0 10px; }
+.artboard-label {
+  color: #8a90ad;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: .08em;
+  margin: 0 auto 10px;
+  max-width: 1240px;
+  text-transform: uppercase;
+}
+.frame {
+  background: var(--bdk-bg);
+  border: 1px solid var(--bdk-panel-border);
+  color: var(--bdk-text);
+  color-scheme: var(--scheme);
+  margin: 0 auto;
+  overflow: hidden;
+  width: 1240px;
+}
+.topbar {
+  align-items: center;
+  border-bottom: 1px solid var(--bdk-panel-border);
+  display: flex;
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .6rem;
+  gap: 1.1rem;
+  height: 2.3rem;
+  padding: 0 1.1rem;
+}
+.topbar .logo { color: var(--bdk-text); font-weight: 700; margin-right: .6rem; }
+.topbar .logo::before { color: var(--bdk-active-fg); content: "> "; }
+.topbar span { color: var(--bdk-muted); }
+.topbar .on { border-bottom: 2px solid var(--bdk-active-fg); color: var(--bdk-active-fg); padding: .62rem 0 .5rem; }
+.topbar .search {
+  border: 1px solid var(--bdk-panel-border);
+  color: var(--bdk-muted);
+  margin-left: auto;
+  padding: .2rem .5rem;
+  width: 8rem;
+}
+.page {
+  display: grid;
+  gap: 1.4rem;
+  grid-template-columns: 10.5rem minmax(0, 1fr) 8.5rem;
+  padding: 1.2rem 1.2rem 1.6rem;
+}
+.page.no-sidebar { display: block; margin: 0 auto; max-width: 50rem; padding: 1.4rem 1.2rem 1.8rem; }
+.nav { font-size: .6rem; }
+.nav .group {
+  color: var(--bdk-muted);
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .5rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  margin: .9rem 0 .3rem;
+  text-transform: uppercase;
+}
+.nav .group:first-child { margin-top: 0; }
+.nav a {
+  border-left: 2px solid transparent;
+  color: var(--bdk-text);
+  display: block;
+  padding: .22rem .5rem;
+  text-decoration: none;
+}
+.nav a.on { background: var(--bdk-active-bg); border-left-color: var(--bdk-active-fg); color: var(--bdk-active-fg); }
+.nav .nav-badge {
+  border: 1px solid currentColor;
+  display: inline-grid;
+  font-size: .45rem;
+  height: .7rem;
+  margin-right: .3rem;
+  place-items: center;
+  vertical-align: .08em;
+  width: .7rem;
+}
+.toc { border-left: 1px solid var(--bdk-panel-border); font-size: .56rem; padding-left: .7rem; }
+.toc b { color: var(--bdk-muted); display: block; font-family: var(--bdk-heading-font), monospace; font-size: .5rem; letter-spacing: .08em; margin-bottom: .35rem; text-transform: uppercase; }
+.toc a { color: var(--bdk-muted); display: block; padding: .14rem 0; text-decoration: none; }
+.toc a.on { color: var(--bdk-active-fg); }
+
+/* Theme tokens copied from docs/site/assets/stylesheets/themes.css */
+[data-theme="tokyo-night"] {
+  --scheme: dark;
+  --bdk-primary: #7da4f7; --bdk-primary-rgb: 122, 162, 247; --bdk-on-primary: #1a1b26;
+  --bdk-secondary: #b295e8; --bdk-secondary-rgb: 173, 142, 230;
+  --bdk-success: #9ece6a; --bdk-success-rgb: 158, 206, 106;
+  --bdk-info: #62adb8; --bdk-info-rgb: 68, 157, 171;
+  --bdk-warning: #e0af68; --bdk-warning-rgb: 224, 175, 104;
+  --bdk-danger: #f77d94;
+  --bdk-bg: #1a1b26; --bdk-surface: #24283b; --bdk-surface-muted: #1f2231;
+  --bdk-text: #a9b1d6; --bdk-muted: #b4bee6;
+  --bdk-border: rgba(169, 177, 214, .4); --bdk-border-rgb: 169, 177, 214;
+  --bdk-panel-border: rgba(169, 177, 214, .18); --bdk-panel-border-hover: rgba(169, 177, 214, .4);
+  --bdk-code-bg: #13141c; --bdk-code-text: #7aa2f7;
+  --bdk-active-bg: #272e43; --bdk-active-fg: #7aa2f7;
+}
+[data-theme="white"] {
+  --scheme: light;
+  --bdk-primary: #464646; --bdk-primary-rgb: 110, 110, 110; --bdk-on-primary: #ffffff;
+  --bdk-secondary: #2e2e2e; --bdk-secondary-rgb: 46, 46, 46;
+  --bdk-success: #3a3a3a; --bdk-success-rgb: 58, 58, 58;
+  --bdk-info: #3e3e3e; --bdk-info-rgb: 62, 62, 62;
+  --bdk-warning: #424242; --bdk-warning-rgb: 74, 74, 74;
+  --bdk-danger: #2a2a2a;
+  --bdk-bg: #ffffff; --bdk-surface: #c0c0c0; --bdk-surface-muted: #e0e0e0;
+  --bdk-text: #000000; --bdk-muted: #000000;
+  --bdk-border: rgba(0, 0, 0, .4); --bdk-border-rgb: 0, 0, 0;
+  --bdk-panel-border: rgba(0, 0, 0, .18); --bdk-panel-border-hover: rgba(0, 0, 0, .4);
+  --bdk-code-bg: #f5f5f5; --bdk-code-text: #6e6e6e;
+  --bdk-active-bg: #ebebeb; --bdk-active-fg: #474747;
+}
+[data-theme="retro-82"] {
+  --scheme: dark;
+  --bdk-primary: #faa968; --bdk-primary-rgb: 250, 169, 104; --bdk-on-primary: #05182e;
+  --bdk-secondary: #65a5a1; --bdk-secondary-rgb: 63, 143, 138;
+  --bdk-success: #46a4af; --bdk-success-rgb: 2, 131, 145;
+  --bdk-info: #8cbfb8; --bdk-info-rgb: 140, 191, 184;
+  --bdk-warning: #e97b3c; --bdk-warning-rgb: 233, 123, 60;
+  --bdk-danger: #f9663b;
+  --bdk-bg: #05182e; --bdk-surface: #0a2540; --bdk-surface-muted: #081f37;
+  --bdk-text: #f6dcac; --bdk-muted: #a7c9c6;
+  --bdk-border: rgba(246, 220, 172, .4); --bdk-border-rgb: 246, 220, 172;
+  --bdk-panel-border: rgba(246, 220, 172, .18); --bdk-panel-border-hover: rgba(246, 220, 172, .4);
+  --bdk-code-bg: #031222; --bdk-code-text: #faa968;
+  --bdk-active-bg: #272c36; --bdk-active-fg: #faa968;
+}
+[data-theme] { --bdk-heading-font: "IBM Plex Mono"; --bdk-radius: .1rem; }
+
+/* Subset of existing extra.css so the mockup reads like the site */
+.md-typeset { color: var(--bdk-text); font-size: .8rem; line-height: 1.7; }
+.md-typeset p { margin: 0 0 .7rem; }
+.md-typeset h1, .md-typeset h2, .md-typeset h3 {
+  color: var(--bdk-text);
+  font-family: var(--bdk-heading-font), monospace;
+  font-weight: 700;
+}
+.md-typeset h1 { border-bottom: 1px solid var(--bdk-border); font-size: 1.6rem; line-height: 1.25; margin: 0 0 .8rem; padding-bottom: .45rem; }
+.md-typeset h1::before { color: var(--bdk-active-fg); content: "> "; }
+.md-typeset h2 { border-bottom: 1px solid var(--bdk-panel-border); font-size: 1.08rem; line-height: 1.3; margin: 1.5rem 0 .6rem; padding-bottom: .3rem; }
+.md-typeset h2::before { color: var(--bdk-muted); content: "## "; font-weight: 500; }
+.md-typeset h3 { font-size: .9rem; margin: 1.15rem 0 .45rem; }
+.md-typeset a { color: var(--bdk-primary); }
+.md-typeset code {
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: .85em;
+  padding: .04rem .22rem;
+}
+.md-typeset pre {
+  background: var(--bdk-code-bg);
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  color: var(--bdk-text);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: .62rem;
+  line-height: 1.65;
+  margin: 0 0 .8rem;
+  overflow: hidden;
+  padding: .6rem 0;
+}
+.md-typeset pre code { border: 0; font-size: inherit; padding: 0; }
+/* Mockup stand-in for Material's div.highlight spacing */
+.md-typeset .highlight { margin: 0 0 .8rem; }
+.md-typeset pre .ln { display: block; padding: 0 .8rem 0 0; white-space: pre; }
+.md-typeset pre .ln::before {
+  color: var(--bdk-muted);
+  content: attr(data-n);
+  display: inline-block;
+  margin-right: .8rem;
+  opacity: .45;
+  text-align: right;
+  width: 1.6rem;
+}
+.tok-k { color: var(--bdk-secondary); }
+.tok-t { color: var(--bdk-info); }
+.tok-m { color: var(--bdk-primary); }
+.tok-s { color: var(--bdk-success); }
+.tok-c { color: var(--bdk-muted); font-style: italic; opacity: .7; }
+.tok-p { color: var(--bdk-muted); opacity: .75; }
+/* Mockup stand-in for Material's --md-code-hl-color--light on .hll */
+.md-typeset .hll { background: var(--bdk-active-bg); }
+/* Mockup stand-in for span.bdk-feature-icon from feature_icons.py */
+.md-typeset h1 img, .md-typeset h2 img, .md-typeset h3 img { height: 1.2em; margin-right: .2em; vertical-align: -.2em; width: 1.2em; }
+/* Mockup stand-ins for Material's navigation.path breadcrumb, footer and .md-ellipsis */
+.md-path { color: var(--bdk-muted); font-family: var(--bdk-heading-font), monospace; font-size: .55rem; margin: 0 0 .55rem; }
+.md-path span + span::before { content: "\203A"; margin: 0 .35rem; opacity: .6; }
+.md-footer { background: var(--bdk-bg); border-top: 1px solid var(--bdk-panel-border); }
+.md-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.md-typeset table { border-collapse: collapse; font-size: .64rem; width: 100%; }
+.md-typeset th { border-bottom: 1px solid var(--bdk-border); font-family: var(--bdk-heading-font), monospace; text-align: left; }
+.md-typeset th, .md-typeset td { padding: .42rem .6rem; }
+.md-typeset td { border-bottom: 1px solid var(--bdk-panel-border); }
+
+.md-typeset .admonition {
+  --bdk-admonition-color: var(--bdk-info);
+  --bdk-admonition-rgb: var(--bdk-info-rgb);
+  border: 1px solid var(--bdk-panel-border);
+  border-left: .15rem solid var(--bdk-admonition-color);
+  border-radius: var(--bdk-radius);
+  font-size: .64rem;
+  margin: .75rem 0;
+}
+.md-typeset .admonition > p:not(.admonition-title) { margin: .55rem .6rem; }
+.md-typeset .admonition-title {
+  background: rgba(var(--bdk-admonition-rgb), .09);
+  border-bottom: 1px solid var(--bdk-panel-border);
+  color: var(--bdk-admonition-color);
+  font-weight: 700;
+  margin: 0;
+  padding: .4rem .6rem .4rem 2rem;
+  position: relative;
+}
+.md-typeset .admonition-title::before {
+  background-color: var(--bdk-admonition-color);
+  content: "";
+  height: 1rem;
+  left: .6rem;
+  -webkit-mask-image: var(--md-admonition-icon--note);
+  mask-image: var(--md-admonition-icon--note);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  position: absolute;
+  top: .42rem;
+  width: 1rem;
+}
+.md-typeset details.admonition > summary.admonition-title { cursor: pointer; display: block; list-style: none; }
+.md-typeset details.admonition > summary.admonition-title::after {
+  content: "›";
+  font-size: .9rem;
+  position: absolute;
+  right: .6rem;
+  top: .18rem;
+}
+.md-typeset .abstract { --bdk-admonition-color: var(--bdk-secondary); --bdk-admonition-rgb: var(--bdk-secondary-rgb); }
+
+.md-typeset .tabbed-labels { border-bottom: 1px solid var(--bdk-border); display: flex; }
+.md-typeset .tabbed-labels > label {
+  color: var(--bdk-muted);
+  font-size: .61rem;
+  padding: .45rem .6rem;
+}
+.md-typeset .tabbed-labels > label.on { box-shadow: inset 0 -2px var(--bdk-active-fg); color: var(--bdk-active-fg); }
+.md-typeset .tabbed-content { padding-top: .35rem; }
+
+.cta-button {
+  align-items: center;
+  border: 1px solid var(--bdk-border);
+  border-radius: var(--bdk-radius);
+  color: var(--bdk-text) !important;
+  display: inline-flex;
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .58rem;
+  font-weight: 700;
+  min-height: 1.7rem;
+  padding: .28rem .52rem;
+  text-decoration: none !important;
+}
+.cta-button::before { color: var(--bdk-active-fg); content: "> "; margin-right: .25rem; }
+
+.next-step-strip {
+  border-bottom: 1px solid var(--bdk-border);
+  border-top: 1px solid var(--bdk-border);
+  display: grid;
+  font-family: var(--bdk-heading-font), monospace;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: .6rem 0 0;
+}
+.next-step-strip a {
+  color: var(--bdk-text);
+  font-size: .64rem;
+  font-weight: 600;
+  padding: .7rem;
+  text-align: center;
+  text-decoration: none;
+}
+.next-step-strip a + a { border-left: 1px solid var(--bdk-border); }
+
+/* ==========================================================================
+   PROPOSED: "Site components" block for extra.css
+   ========================================================================== */
+
+/* Admonition icons (stroke SVGs work as masks) */
+:root {
+  --md-admonition-icon--note: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 8v.01M12 11v5'/%3E%3C/svg%3E");
+  --md-admonition-icon--path-a: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 3v5h5M12 11v6M9 14h6'/%3E%3C/svg%3E");
+  --md-admonition-icon--path-b: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3 3 7.5l9 4.5 9-4.5z'/%3E%3Cpath d='m3 12 9 4.5 9-4.5M3 16.5 12 21l9-4.5'/%3E%3C/svg%3E");
+  --md-admonition-icon--verify: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='m8 12.5 2.8 2.8L16.5 9'/%3E%3C/svg%3E");
+  --md-admonition-icon--prompt: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='8' width='14' height='11' rx='2'/%3E%3Cpath d='M12 8V5M12 3.5v.01M9.5 12.5v.01M14.5 12.5v.01M10 15.5h4M2.5 12v3M21.5 12v3'/%3E%3C/svg%3E");
+  --md-clipboard-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='8' y='8' width='12' height='12' rx='2'/%3E%3Cpath d='M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2'/%3E%3C/svg%3E");
+}
+
+/* Accent defaults. The frame stands in for .md-container */
+.frame, .md-container { --bdk-accent: var(--bdk-primary); --bdk-accent-rgb: var(--bdk-primary-rgb); --bdk-on-accent: var(--bdk-on-primary); }
+
+/* Titled code blocks: Material's span.filename */
+.md-typeset .highlight > .filename {
+  background: var(--bdk-code-bg);
+  border: 1px solid var(--bdk-panel-border);
+  border-bottom-color: var(--bdk-border);
+  border-radius: var(--bdk-radius) var(--bdk-radius) 0 0;
+  display: block;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: .6rem;
+  font-weight: 700;
+  padding: .38rem .8rem;
+}
+.md-typeset .highlight > .filename + pre { border-radius: 0 0 var(--bdk-radius) var(--bdk-radius); border-top: 0; margin: 0; }
+
+/* Highlighted lines */
+.md-typeset .hll { box-shadow: inset .12rem 0 var(--bdk-accent); }
+
+/* Comparison table wrapper (md_in_html div around a markdown table) */
+.cmp table th:not(:first-child) { white-space: nowrap; }
+.cmp table td:first-child { color: var(--bdk-muted); font-family: var(--bdk-heading-font), monospace; font-size: .58rem; white-space: nowrap; }
+
+/* Verify admonition */
+.md-typeset .admonition.verify { --bdk-admonition-color: var(--bdk-success); --bdk-admonition-rgb: var(--bdk-success-rgb); }
+.md-typeset .verify > .admonition-title::before { -webkit-mask-image: var(--md-admonition-icon--verify); mask-image: var(--md-admonition-icon--verify); }
+.md-typeset .verify pre { border: 0; border-top: 1px solid var(--bdk-panel-border); margin: 0; }
+.md-typeset .verify .out { color: var(--bdk-success); }
+
+/* Agent prompt admonition: ??? prompt "Agent prompt", always collapsed in the source */
+.md-typeset .admonition.prompt { border-left-style: dashed; border-left-width: .2rem; }
+.md-typeset .prompt > .admonition-title::before { -webkit-mask-image: var(--md-admonition-icon--prompt); mask-image: var(--md-admonition-icon--prompt); }
+.md-typeset details.admonition[open] > summary.admonition-title::after { transform: rotate(90deg); }
+.md-typeset details.admonition:not([open]) > summary.admonition-title { border-bottom: 0; }
+.md-typeset .prompt .highlight { margin: 0; position: relative; }
+.md-typeset .prompt pre { border: 0; margin: 0; padding-right: 2rem; }
+.md-typeset .prompt pre .ln { overflow-wrap: anywhere; padding-left: .8rem; white-space: pre-wrap; }
+.md-typeset .prompt pre .ln::before { display: none; }
+/* Mockup stand-in for Material's button.md-clipboard from content.code.copy */
+.md-typeset .md-clipboard {
+  background-color: var(--bdk-muted);
+  border: 0;
+  height: .9rem;
+  -webkit-mask-image: var(--md-clipboard-icon);
+  mask-image: var(--md-clipboard-icon);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  opacity: .7;
+  padding: 0;
+  position: absolute;
+  right: .55rem;
+  top: .55rem;
+  width: .9rem;
+}
+.agent-before { margin: .2rem 0 .6rem; padding-left: 1.1rem; }
+.agent-before li { margin: .15rem 0; }
+
+/* Prompt list: <div class="prompt-list" markdown> around a prompt library */
+.md-typeset .prompt-list .highlight { margin: 0 0 .6rem; position: relative; }
+.md-typeset .prompt-list .highlight::before {
+  background-color: var(--bdk-info);
+  content: "";
+  height: .85rem;
+  -webkit-mask: var(--md-admonition-icon--prompt) center / contain no-repeat;
+  mask: var(--md-admonition-icon--prompt) center / contain no-repeat;
+  opacity: .8;
+  position: absolute;
+  right: 1.75rem;
+  top: .55rem;
+  width: .85rem;
+}
+.md-typeset .prompt-list pre { border-left: .2rem dashed var(--bdk-info); margin: 0; padding-right: 2.6rem; }
+.md-typeset .prompt-list pre, .md-typeset .prompt-list pre code { overflow-wrap: anywhere; white-space: pre-wrap; }
+.md-typeset .prompt-list pre .ln { padding-left: .8rem; white-space: pre-wrap; }
+.md-typeset .prompt-list pre .ln::before { display: none; }
+
+/* Numbered step headings: ## Title { #step-4 .tutorial-step data-step="04" } */
+.md-typeset h2.tutorial-step { align-items: baseline; display: flex; gap: .55rem; }
+.md-typeset h2.tutorial-step::before {
+  border: 1px solid var(--bdk-accent);
+  border-radius: var(--bdk-radius);
+  color: var(--bdk-accent);
+  content: attr(data-step);
+  font-size: .6rem;
+  font-weight: 700;
+  padding: .06rem .3rem;
+  transform: translateY(-.12em);
+}
+.md-typeset h2.tutorial-step .opt { color: var(--bdk-muted); font-size: .55rem; font-weight: 500; }
+
+/* Step meta chips */
+.step-meta { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0 0 .9rem; }
+.step-meta span {
+  align-items: center;
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  display: inline-flex;
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .55rem;
+  gap: .35rem;
+  padding: .16rem .45rem;
+}
+.step-meta span b { color: var(--bdk-muted); font-size: .44rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.step-meta span img { height: .8rem; width: .8rem; }
+.step-meta span.is-feature { border-color: rgba(var(--bdk-accent-rgb), .55); }
+
+/* Flow strip */
+.flow-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  list-style: none;
+  margin: .9rem 0 1.1rem;
+  padding: 0;
+}
+.flow-strip li {
+  border: 1px solid var(--bdk-panel-border);
+  padding: .55rem .8rem .55rem 1rem;
+  position: relative;
+}
+.flow-strip li + li { border-left: 0; }
+.flow-strip li:not(:last-child)::after {
+  background: var(--bdk-bg);
+  border-right: 1px solid var(--bdk-panel-border-hover);
+  border-top: 1px solid var(--bdk-panel-border-hover);
+  content: "";
+  height: .6rem;
+  position: absolute;
+  right: -.32rem;
+  top: calc(50% - .3rem);
+  transform: rotate(45deg);
+  width: .6rem;
+  z-index: 1;
+}
+.flow-strip a { color: var(--bdk-text) !important; display: block; text-decoration: none !important; }
+.flow-strip b { color: var(--bdk-accent); display: block; font-family: var(--bdk-heading-font), monospace; font-size: .9rem; line-height: 1.1; }
+.flow-strip span { display: block; font-family: var(--bdk-heading-font), monospace; font-size: .62rem; font-weight: 700; }
+.flow-strip code { border: 0 !important; color: var(--bdk-muted); display: block; font-size: .5rem !important; line-height: 1.45; margin-top: .3rem; padding: 0 !important; }
+.flow-strip li.is-current { background: color-mix(in srgb, var(--bdk-accent) 8%, var(--bdk-bg)); box-shadow: inset 0 -2px var(--bdk-accent); }
+.flow-strip li.is-current::after { background: color-mix(in srgb, var(--bdk-accent) 8%, var(--bdk-bg)); }
+
+/* Solution tree with layer tags */
+.solution-tree {
+  background: var(--bdk-code-bg);
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: .58rem;
+  line-height: 1.85;
+  margin: .2rem 0 .9rem;
+  padding: .55rem .8rem;
+}
+.solution-tree div { align-items: center; display: flex; white-space: pre; }
+.solution-tree .br { color: var(--bdk-muted); opacity: .55; }
+.solution-tree .dir { color: var(--bdk-text); }
+.solution-tree .fill { border-bottom: 1px dotted var(--bdk-panel-border-hover); flex: 1; margin: 0 .5rem; transform: translateY(.1em); }
+.solution-tree .layer {
+  border-left: .12rem solid var(--layer, var(--bdk-muted));
+  color: var(--bdk-muted);
+  font-size: .48rem;
+  letter-spacing: .06em;
+  padding: 0 .35rem;
+  text-transform: uppercase;
+  width: 5.6rem;
+}
+.layer-domain { --layer: var(--bdk-secondary); }
+.layer-application { --layer: var(--bdk-primary); }
+.layer-infrastructure { --layer: var(--bdk-info); }
+.layer-presentation { --layer: var(--bdk-warning); }
+.layer-host { --layer: var(--bdk-success); }
+.layer-tests { --layer: var(--bdk-muted); }
+
+/* Feature guide lede: the hook adds .bdk-lede to the blockquote after the H1 */
+.md-typeset blockquote.bdk-lede {
+  border-left: .2rem solid var(--bdk-accent);
+  color: var(--bdk-text);
+  font-size: .9rem;
+  line-height: 1.55;
+  margin: 0 0 .7rem;
+  padding: .1rem 0 .1rem .8rem;
+}
+.md-typeset blockquote.bdk-lede p { margin: 0; }
+
+/* Facts strip: <dl class="bdk-facts"> the hook inserts after the lede */
+.md-typeset .bdk-facts { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 1.1rem; }
+.md-typeset .bdk-facts > div {
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  font-family: var(--bdk-heading-font), monospace;
+  padding: .22rem .5rem .26rem;
+}
+.md-typeset .bdk-facts dt { color: var(--bdk-muted); font-size: .44rem; font-weight: 600; letter-spacing: .08em; margin: 0; text-transform: uppercase; }
+.md-typeset .bdk-facts dd { display: flex; flex-wrap: wrap; font-size: .56rem; margin: 0; }
+.md-typeset .bdk-facts a { color: var(--bdk-accent); text-decoration: none; }
+.md-typeset .bdk-facts a + a { border-left: 1px solid var(--bdk-panel-border); margin-left: .45rem; padding-left: .45rem; }
+
+/* Decision pages: the hook wraps the two "Choose X when" sections in cards */
+.md-typeset .choice-fork { display: grid; gap: 1.6rem; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 1rem 0 1.4rem; }
+.md-typeset .choice-card {
+  background: rgba(var(--bdk-accent-rgb), .04);
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  border-top: 2px solid var(--bdk-accent);
+  padding: .7rem .85rem .4rem;
+  position: relative;
+}
+.md-typeset .choice-card h2 { align-items: center; border: 0; display: flex; font-size: .95rem; gap: .45rem; margin: 0 0 .5rem; padding: 0; }
+.md-typeset .choice-card h2::before { content: none; }
+.md-typeset .choice-card h2 img, .md-typeset .choice-card h2 .bdk-feature-icon { height: 1.1rem; margin: 0; width: 1.1rem; }
+.md-typeset .choice-card ul { font-size: .68rem; padding-left: 1rem; }
+.md-typeset .choice-card li { margin: .2rem 0; }
+.md-typeset .choice-card p { color: var(--bdk-muted); font-size: .64rem; }
+.md-typeset .choice-card + .choice-card::before {
+  background: var(--bdk-bg);
+  border: 1px solid var(--bdk-panel-border-hover);
+  border-radius: 50%;
+  color: var(--bdk-muted);
+  content: "or" / "";
+  display: grid;
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .5rem;
+  height: 1.3rem;
+  left: -1.45rem;
+  place-items: center;
+  position: absolute;
+  top: .75rem;
+  width: 1.3rem;
+}
+
+/* Related strip: the hook turns the "Related features" list into chips */
+.md-typeset ul.related-strip { display: flex; flex-wrap: wrap; gap: .4rem; list-style: none; margin: 0 0 .9rem; padding: 0; }
+.md-typeset ul.related-strip li { margin: 0; }
+.md-typeset .related-strip a {
+  align-items: center;
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  color: var(--bdk-text);
+  display: inline-flex;
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .6rem;
+  font-weight: 600;
+  gap: .35rem;
+  padding: .2rem .5rem;
+  text-decoration: none;
+}
+.md-typeset .related-strip a:hover { border-color: var(--bdk-accent); color: var(--bdk-accent); }
+.md-typeset .related-strip img, .md-typeset .related-strip .bdk-feature-icon { height: .85rem; margin: 0; width: .85rem; }
+
+/* Mermaid: Material's variables on DevKit tokens. Declared on .md-typeset so --bdk-accent-rgb resolves per page. */
+.md-typeset {
+  --md-mermaid-font-family: var(--bdk-heading-font), monospace;
+  --md-mermaid-node-bg-color: rgba(var(--bdk-accent-rgb), .08);
+  --md-mermaid-node-fg-color: var(--bdk-accent);
+  --md-mermaid-edge-color: var(--bdk-muted);
+  --md-mermaid-label-bg-color: var(--bdk-code-bg);
+  --md-mermaid-label-fg-color: var(--bdk-text);
+  --md-mermaid-sequence-actor-bg-color: var(--md-mermaid-label-bg-color);
+  --md-mermaid-sequence-actor-fg-color: var(--md-mermaid-label-fg-color);
+  --md-mermaid-sequence-actor-border-color: var(--md-mermaid-node-fg-color);
+  --md-mermaid-sequence-actorman-bg-color: var(--md-mermaid-label-bg-color);
+  --md-mermaid-sequence-actorman-line-color: var(--md-mermaid-node-fg-color);
+  --md-mermaid-sequence-box-bg-color: var(--md-mermaid-node-bg-color);
+  --md-mermaid-sequence-box-fg-color: var(--md-mermaid-edge-color);
+  --md-mermaid-sequence-label-bg-color: var(--md-mermaid-node-bg-color);
+  --md-mermaid-sequence-label-fg-color: var(--md-mermaid-node-fg-color);
+  --md-mermaid-sequence-loop-bg-color: var(--md-mermaid-node-bg-color);
+  --md-mermaid-sequence-loop-fg-color: var(--md-mermaid-edge-color);
+  --md-mermaid-sequence-loop-border-color: var(--md-mermaid-node-fg-color);
+  --md-mermaid-sequence-message-fg-color: var(--md-mermaid-edge-color);
+  --md-mermaid-sequence-message-line-color: var(--md-mermaid-edge-color);
+  --md-mermaid-sequence-note-bg-color: var(--md-mermaid-label-bg-color);
+  --md-mermaid-sequence-note-fg-color: var(--md-mermaid-edge-color);
+  --md-mermaid-sequence-note-border-color: var(--md-mermaid-label-fg-color);
+  --md-mermaid-sequence-number-bg-color: var(--md-mermaid-node-fg-color);
+}
+.md-typeset .mermaid {
+  background: var(--bdk-code-bg);
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  margin: 0 0 .9rem;
+  padding: .8rem;
+}
+
+/* Footer pager: navigation.footer */
+.md-footer__inner:not([hidden]) { display: grid; gap: .8rem; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: .8rem 1.2rem; }
+.md-footer__link {
+  align-items: center;
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  color: var(--bdk-text);
+  display: flex;
+  flex-grow: 0;
+  gap: .6rem;
+  margin: 0;
+  max-width: none;
+  opacity: 1;
+  padding: .55rem .75rem;
+  text-decoration: none;
+}
+.md-footer__link:is(:focus, :hover) { border-color: rgba(var(--bdk-accent-rgb), .55); opacity: 1; }
+.md-footer__link--next { grid-column: 2; justify-content: flex-end; text-align: right; }
+.md-footer__title {
+  flex-grow: 0;
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .66rem;
+  font-weight: 700;
+  margin: 0;
+  max-width: none;
+  min-width: 0;
+  padding: 0;
+}
+.md-footer__direction {
+  color: var(--bdk-muted);
+  display: block;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: .46rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  opacity: 1;
+  text-transform: uppercase;
+}
+.md-footer__button { color: var(--bdk-accent); display: flex; margin: 0; padding: 0; transition: transform .15s ease-out; }
+.md-footer__button svg { fill: currentColor; height: .9rem; width: .9rem; }
+.md-footer__link--prev:is(:hover, :focus-visible) .md-footer__button { transform: translateX(-.18rem); }
+.md-footer__link--next:is(:hover, :focus-visible) .md-footer__button { transform: translateX(.18rem); }
+
+/* Next-step strip: kicker above the label, arrow after it */
+.next-step-strip a small { color: var(--bdk-muted); display: block; font-size: .5rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
+.next-step-strip a::after {
+  color: var(--bdk-accent);
+  content: "\2192" / "";
+  display: inline-block;
+  margin-left: .4rem;
+  transition: transform .15s ease-out;
+}
+.next-step-strip a:hover::after, .next-step-strip a:focus-visible::after { transform: translateX(.18rem); }
+
+/* Site motion */
+@media (prefers-reduced-motion: reduce) {
+  .md-footer__button, .next-step-strip a::after { transition: none; }
+}
+
+/* Site focus */
+.flow-strip a:focus-visible, .bdk-facts a:focus-visible, .related-strip a:focus-visible,
+.md-footer__link:focus-visible, .next-step-strip a:focus-visible {
+  outline: 2px solid var(--bdk-accent);
+  outline-offset: 2px;
+}
+
+/* Site responsive */
+@media screen and (max-width: 45em) {
+  .flow-strip, .md-typeset .choice-fork { grid-template-columns: 1fr; }
+  .flow-strip li + li { border-left: 1px solid var(--bdk-panel-border); border-top: 0; }
+  .flow-strip li::after { display: none; }
+  .md-typeset .choice-card + .choice-card::before { left: 50%; top: -1.45rem; transform: translateX(-50%); }
+  .md-footer__inner:not([hidden]) { grid-template-columns: 1fr; }
+  .md-footer__link--next { grid-column: auto; }
+  .md-footer__link--prev .md-footer__title { display: block; }
+}
+
+/* ==========================================================================
+   PROPOSED: "Getting started paths" block for extra.css
+   ========================================================================== */
+
+/* Path identity: accent token per path. Pages inherit it from their banner. */
+.md-content:has(.admonition.path-a),
+.path-card.path-a,
+.path-a-scope {
+  --bdk-accent: var(--bdk-primary);
+  --bdk-accent-rgb: var(--bdk-primary-rgb);
+  --bdk-on-accent: var(--bdk-on-primary);
+}
+.md-content:has(.admonition.path-b),
+.path-card.path-b,
+.path-b-scope {
+  --bdk-accent: var(--bdk-secondary);
+  --bdk-accent-rgb: var(--bdk-secondary-rgb);
+  --bdk-on-accent: var(--bdk-bg);
+}
+
+/* Badge: A is filled, B is outlined with a double ring. Shape works without color. */
+.path-badge {
+  border: 1px solid var(--bdk-accent);
+  border-radius: var(--bdk-radius);
+  display: inline-grid;
+  flex: none;
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .7rem;
+  font-weight: 700;
+  height: 1.45rem;
+  line-height: 1;
+  place-items: center;
+  width: 1.45rem;
+}
+.path-a .path-badge, .path-badge.is-a { background: var(--bdk-accent); color: var(--bdk-on-accent); }
+.path-b .path-badge, .path-badge.is-b {
+  background: transparent;
+  box-shadow: 0 0 0 2px var(--bdk-bg), 0 0 0 3px var(--bdk-accent);
+  color: var(--bdk-accent);
+}
+.path-badge.is-sm { font-size: .5rem; height: .95rem; width: .95rem; }
+.path-badge.is-sm.is-b { box-shadow: 0 0 0 1.5px var(--bdk-bg), 0 0 0 2.5px var(--bdk-accent); }
+.cmp table th .path-badge { margin-right: .35rem; vertical-align: -.2em; }
+
+/* Entry page: two equal cards */
+.path-fork {
+  display: grid;
+  gap: .9rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 1.1rem 0 .9rem;
+}
+.path-card {
+  animation: path-rise .5s cubic-bezier(.2, .7, .2, 1) both;
+  background:
+    linear-gradient(180deg, rgba(var(--bdk-accent-rgb), .08), transparent 8.5rem),
+    var(--bdk-bg);
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  border-top: .15rem solid var(--bdk-accent);
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  overflow: hidden;
+  padding: 1rem 1rem .95rem;
+  position: relative;
+}
+.path-card.path-b { animation-delay: .09s; border-top-style: double; border-top-width: .2rem; }
+.path-card:hover { border-color: var(--bdk-panel-border-hover); border-top-color: var(--bdk-accent); }
+.path-card__head { align-items: center; display: flex; gap: .6rem; position: relative; z-index: 1; }
+.path-card__kicker {
+  color: var(--bdk-accent);
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .53rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.md-typeset .path-card h3 { font-size: .98rem; line-height: 1.3; margin: 0; position: relative; z-index: 1; }
+.md-typeset .path-card p { color: var(--bdk-muted); font-size: .66rem; line-height: 1.6; margin: 0; max-width: 40ch; position: relative; z-index: 1; }
+.path-card__art {
+  color: rgba(var(--bdk-accent-rgb), .5);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: .46rem;
+  line-height: 1.4;
+  pointer-events: none;
+  position: absolute;
+  right: .8rem;
+  top: .75rem;
+  white-space: pre;
+}
+.path-card__art--stack { display: grid; gap: .16rem; justify-items: end; top: 1rem; }
+.path-card__art--stack span {
+  border: 1px dashed rgba(var(--bdk-accent-rgb), .45);
+  border-radius: var(--bdk-radius);
+  display: block;
+  height: .32rem;
+}
+.path-card__art--stack span:last-child { background: rgba(var(--bdk-accent-rgb), .45); border-style: solid; }
+/* Path A: generated all at once, so every node is solid; Path B: dashed layers on a solid base */
+.path-card__art--tree { display: grid; gap: .16rem; justify-items: start; top: 1rem; width: 6.4rem; }
+.path-card__art--tree span {
+  background: rgba(var(--bdk-accent-rgb), .3);
+  border: 1px solid rgba(var(--bdk-accent-rgb), .55);
+  border-radius: var(--bdk-radius);
+  display: block;
+  height: .32rem;
+  margin-left: calc(var(--i) * .8rem);
+  position: relative;
+}
+.path-card__art--tree span:not([style*="--i:0"])::before {
+  border-bottom: 1px solid rgba(var(--bdk-accent-rgb), .55);
+  border-left: 1px solid rgba(var(--bdk-accent-rgb), .55);
+  content: "";
+  height: .4rem;
+  left: -.55rem;
+  position: absolute;
+  top: -.25rem;
+  width: .45rem;
+}
+.path-card__cmd {
+  background: var(--bdk-code-bg);
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  color: var(--bdk-code-text);
+  display: flex;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: .56rem;
+  overflow: hidden;
+  padding: .48rem .6rem;
+  white-space: nowrap;
+}
+.path-card__cmd::before { color: var(--bdk-muted); content: "$\00a0"; opacity: .7; }
+.path-card__cmd::after {
+  animation: path-cursor 1.1s steps(1) infinite;
+  background: var(--bdk-accent);
+  content: "";
+  display: inline-block;
+  height: 1.1em;
+  margin-left: .25em;
+  vertical-align: -.15em;
+  width: .5em;
+}
+.path-card__fit { font-size: .62rem; list-style: none; margin: 0; padding: 0; }
+.path-card__fit li { padding: .08rem 0 .08rem 1rem; position: relative; }
+.path-card__fit li::before {
+  color: var(--bdk-accent);
+  content: ">";
+  font-family: var(--bdk-heading-font), monospace;
+  font-weight: 700;
+  left: 0;
+  position: absolute;
+}
+.path-card__meta {
+  border-bottom: 1px dashed var(--bdk-panel-border-hover);
+  border-top: 1px dashed var(--bdk-panel-border-hover);
+  display: grid;
+  gap: .6rem;
+  grid-template-columns: auto auto 1fr;
+  margin: .1rem 0 0;
+  padding: .45rem 0;
+}
+.path-card__meta dt {
+  color: var(--bdk-muted);
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .46rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.path-card__meta dd { font-family: var(--bdk-heading-font), monospace; font-size: .62rem; margin: 0; }
+.path-card__cta { align-self: flex-start; border-color: var(--bdk-accent) !important; margin-top: auto; }
+.path-card__cta::before { color: var(--bdk-accent) !important; }
+.path-card__cta span { display: inline-block; margin-left: .35rem; transition: transform .15s ease-out; }
+.path-card__cta:hover { background: rgba(var(--bdk-accent-rgb), .12); }
+.path-card__cta:hover span { transform: translateX(.18rem); }
+
+/* "Not sure?" decision strip */
+.path-decide {
+  border: 1px dashed var(--bdk-panel-border-hover);
+  border-radius: var(--bdk-radius);
+  display: grid;
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .62rem;
+  gap: .9rem;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  margin: 0 0 1.2rem;
+  padding: .7rem .9rem;
+}
+.path-decide__label { color: var(--bdk-muted); font-size: .53rem; font-weight: 700; letter-spacing: .08em; padding-top: .12rem; text-transform: uppercase; }
+.path-decide ul { list-style: none; margin: 0; padding: 0; }
+.path-decide a { align-items: center; color: var(--bdk-text); display: grid; grid-template-columns: auto minmax(1rem, 1fr) 8.6rem; padding: .12rem 0; text-decoration: none; }
+.path-decide a::after { display: none; }
+.path-decide .leader { border-bottom: 1px dotted var(--bdk-border); margin: 0 .5rem; transform: translateY(.2em); }
+.path-decide .target { align-items: center; color: var(--bdk-accent); display: inline-flex; font-weight: 700; gap: .35rem; }
+.path-decide a:hover .target { text-decoration: underline; }
+
+/* Path banner admonition */
+.md-typeset .admonition.path-a,
+.md-typeset .admonition.path-b {
+  --bdk-admonition-color: var(--bdk-accent);
+  --bdk-admonition-rgb: var(--bdk-accent-rgb);
+  margin-top: 0;
+}
+.md-typeset .admonition.path-b { border-left-style: double; border-left-width: .25rem; }
+.md-typeset .path-a > .admonition-title::before { -webkit-mask-image: var(--md-admonition-icon--path-a); mask-image: var(--md-admonition-icon--path-a); }
+.md-typeset .path-b > .admonition-title::before { -webkit-mask-image: var(--md-admonition-icon--path-b); mask-image: var(--md-admonition-icon--path-b); }
+.path-pager {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .58rem;
+  gap: .3rem;
+  margin: .5rem .6rem;
+}
+.path-pager a { border: 1px solid transparent; color: var(--bdk-muted) !important; padding: .1rem .35rem; text-decoration: none; }
+.path-pager a b { color: var(--bdk-accent); font-weight: 600; margin-right: .3rem; opacity: .8; }
+.path-pager a[aria-current="page"] { background: rgba(var(--bdk-accent-rgb), .1); border-color: rgba(var(--bdk-accent-rgb), .5); color: var(--bdk-text) !important; }
+.path-pager .sep { color: var(--bdk-muted); opacity: .5; }
+.path-pager .switch { color: var(--bdk-muted); font-family: "IBM Plex Sans", sans-serif; font-size: .6rem; margin-left: auto; }
+
+/* Progress meter: <div class="stack-meter" data-step="7"> */
+.stack-meter {
+  align-items: center;
+  display: flex;
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .52rem;
+  gap: .7rem;
+  margin: 1.5rem 0 -.9rem;
+}
+.stack-meter__label { color: var(--bdk-muted); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.stack-meter ol { display: grid; flex: 1; gap: .2rem; grid-auto-columns: minmax(0, 1fr); grid-auto-flow: column; list-style: none; margin: 0; padding: 0; }
+.stack-meter li { color: var(--bdk-muted); font-size: .44rem; letter-spacing: .03em; opacity: .75; white-space: nowrap; }
+.stack-meter li::before {
+  border: 1px dashed var(--bdk-panel-border-hover);
+  border-radius: var(--bdk-radius);
+  content: "";
+  display: block;
+  height: .26rem;
+  margin-bottom: .2rem;
+}
+.stack-meter li.is-done::before { background: rgba(var(--bdk-accent-rgb), .55); border: 1px solid transparent; }
+.stack-meter li[aria-current="step"] { color: var(--bdk-accent); opacity: 1; }
+.stack-meter li[aria-current="step"]::before { background: var(--bdk-accent); border: 1px solid var(--bdk-accent); outline: 1px solid rgba(var(--bdk-accent-rgb), .5); outline-offset: 2px; }
+
+/* Path B route map */
+.host-stack {
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  counter-reset: none;
+  list-style: none;
+  margin: .9rem 0 1.2rem;
+  padding: 0;
+  position: relative;
+}
+.host-stack__caption {
+  align-items: center;
+  border-bottom: 1px solid var(--bdk-panel-border);
+  color: var(--bdk-muted);
+  display: flex;
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .5rem;
+  justify-content: space-between;
+  letter-spacing: .08em;
+  padding: .4rem .7rem;
+  text-transform: uppercase;
+}
+.host-stack ol { list-style: none; margin: 0; padding: .35rem 0; position: relative; }
+.host-stack ol::before {
+  background: linear-gradient(to top, var(--bdk-accent), rgba(var(--bdk-accent-rgb), .2));
+  bottom: 1.1rem;
+  content: "";
+  left: 1.62rem;
+  position: absolute;
+  top: 1.1rem;
+  width: 1px;
+}
+.host-stack li a {
+  align-items: center;
+  border: 1px solid transparent;
+  color: var(--bdk-text);
+  display: grid;
+  gap: .7rem;
+  grid-template-columns: 1.9rem 1.1rem minmax(0, 9rem) minmax(0, 1fr) auto;
+  margin: .12rem .4rem;
+  padding: .32rem .5rem;
+  text-decoration: none;
+}
+.host-stack li a:hover { background: var(--bdk-active-bg); border-color: var(--bdk-panel-border); }
+.host-stack__n {
+  background: var(--bdk-bg);
+  border: 1px solid rgba(var(--bdk-accent-rgb), .7);
+  border-radius: var(--bdk-radius);
+  color: var(--bdk-accent);
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .52rem;
+  font-weight: 700;
+  padding: .06rem 0;
+  position: relative;
+  text-align: center;
+  z-index: 1;
+}
+.host-stack li img { height: 1.1rem; width: 1.1rem; }
+.host-stack__name { font-family: var(--bdk-heading-font), monospace; font-size: .64rem; font-weight: 700; }
+.host-stack__api { color: var(--bdk-code-text); font-family: "IBM Plex Mono", monospace; font-size: .54rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.host-stack__tag { color: var(--bdk-muted); font-family: var(--bdk-heading-font), monospace; font-size: .48rem; letter-spacing: .06em; text-transform: uppercase; }
+.host-stack li.is-base a { background: rgba(var(--bdk-accent-rgb), .1); border-color: rgba(var(--bdk-accent-rgb), .45); }
+.host-stack li.is-base .host-stack__n { background: var(--bdk-accent); color: var(--bdk-bg); }
+.host-stack li.is-next a { border: 1px dashed var(--bdk-panel-border-hover); color: var(--bdk-muted); }
+.host-stack li.is-next a:hover { color: var(--bdk-text); }
+.host-stack li.is-next .host-stack__n { border-style: dashed; color: var(--bdk-muted); }
+.host-stack li.is-next > a > img { opacity: .6; }
+.host-stack__icons { align-items: center; display: flex; gap: .35rem; }
+.host-stack__icons img { height: .78rem !important; opacity: .7; width: .78rem !important; }
+
+/* DbContext opt-in board */
+.context-board {
+  align-items: start;
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  display: grid;
+  gap: 0;
+  grid-template-columns: minmax(0, 1fr) 2.2rem minmax(0, 1.05fr);
+  margin: .9rem 0 1rem;
+  padding: .9rem;
+}
+.context-board__class {
+  background: var(--bdk-code-bg);
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: .56rem;
+  line-height: 1.75;
+}
+.context-board__class header {
+  border-bottom: 1px solid var(--bdk-panel-border);
+  color: var(--bdk-muted);
+  font-size: .46rem;
+  letter-spacing: .08em;
+  padding: .35rem .6rem;
+  text-transform: uppercase;
+}
+.context-board__class .sig { padding: .45rem .6rem .2rem; }
+.context-board__class .row { padding: 0 .6rem 0 1.4rem; }
+.context-board__class .row.is-new { background: rgba(var(--bdk-accent-rgb), .14); box-shadow: inset .12rem 0 var(--bdk-accent); }
+.context-board__class .row.is-new::before { color: var(--bdk-accent); content: "+"; margin-left: -.8rem; position: absolute; }
+.context-board__class .end { padding: .1rem .6rem .5rem; }
+.context-board__wire { height: 100%; position: relative; }
+.context-board__wire::before {
+  border-top: 1px solid var(--bdk-accent);
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 2.4rem;
+}
+.context-board__wire::after {
+  background: var(--bdk-accent);
+  border-radius: 50%;
+  content: "";
+  height: .32rem;
+  left: -.16rem;
+  position: absolute;
+  top: calc(2.4rem - .15rem);
+  width: .32rem;
+}
+.context-board__ports { display: grid; gap: .24rem; }
+.context-board__ports > div {
+  align-items: center;
+  border: 1px dashed var(--bdk-panel-border-hover);
+  border-radius: var(--bdk-radius);
+  display: grid;
+  gap: .45rem;
+  grid-template-columns: .8rem auto minmax(0, 1fr);
+  opacity: .72;
+  padding: .22rem .45rem;
+}
+.context-board__ports img { height: .8rem; width: .8rem; }
+.context-board__ports code { border: 0 !important; font-size: .5rem !important; padding: 0 !important; }
+.context-board__ports small { color: var(--bdk-muted); font-size: .48rem; justify-self: end; text-align: right; }
+.context-board__ports > div.is-plugged {
+  background: rgba(var(--bdk-accent-rgb), .1);
+  border: 1px solid var(--bdk-accent);
+  opacity: 1;
+  padding-block: .4rem;
+}
+.context-board__ports > div.is-plugged small { color: var(--bdk-accent); font-family: var(--bdk-heading-font), monospace; letter-spacing: .06em; text-transform: uppercase; }
+.context-board__foot {
+  color: var(--bdk-muted);
+  font-size: .58rem;
+  grid-column: 1 / -1;
+  margin: .8rem 0 0 !important;
+}
+
+/* Add features: picker */
+.feature-picker {
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: .9rem 0 1.2rem;
+}
+.feature-picker > div { padding: .55rem .7rem .6rem; }
+.feature-picker > div + div { border-left: 1px solid var(--bdk-panel-border); }
+.feature-picker__group {
+  align-items: baseline;
+  border-bottom: 1px solid var(--bdk-panel-border);
+  display: flex;
+  font-family: var(--bdk-heading-font), monospace;
+  font-size: .56rem !important;
+  font-weight: 700;
+  justify-content: space-between;
+  letter-spacing: .06em;
+  margin: 0 0 .4rem !important;
+  padding-bottom: .35rem;
+  text-transform: uppercase;
+}
+.feature-picker__group a { color: var(--bdk-text) !important; text-decoration: none !important; }
+.feature-picker__group span { color: var(--bdk-accent); font-size: .52rem; }
+.feature-picker ul { list-style: none; margin: 0 !important; padding: 0; }
+.feature-picker li { margin: 0 !important; }
+.feature-picker li a {
+  align-items: center;
+  border: 1px solid transparent;
+  color: var(--bdk-text) !important;
+  display: flex;
+  font-size: .58rem;
+  gap: .45rem;
+  padding: .12rem .3rem;
+  text-decoration: none !important;
+}
+.feature-picker li a:hover { background: var(--bdk-active-bg); border-color: var(--bdk-panel-border); }
+.feature-picker li a img { height: .85rem; width: .85rem; }
+.feature-picker li a.is-worked { border-color: rgba(var(--bdk-accent-rgb), .45); }
+.feature-picker li a.is-worked::after { color: var(--bdk-accent); content: "worked example"; font-family: var(--bdk-heading-font), monospace; font-size: .42rem; letter-spacing: .06em; margin-left: auto; text-transform: uppercase; }
+
+/* Add features: recipe heading */
+.md-typeset h3.feature-recipe {
+  align-items: center;
+  border-top: 2px solid rgba(var(--bdk-accent-rgb), .55);
+  display: flex;
+  gap: .5rem;
+  margin: 1.5rem 0 .55rem;
+  padding-top: .65rem;
+}
+.md-typeset h3.feature-recipe img { height: 1.1rem; width: 1.1rem; }
+.md-typeset h3.feature-recipe.is-worked { border-top-color: var(--bdk-accent); }
+.md-typeset h3.feature-recipe.is-worked::after {
+  border: 1px solid rgba(var(--bdk-accent-rgb), .6);
+  border-radius: var(--bdk-radius);
+  color: var(--bdk-accent);
+  content: "Worked example";
+  font-size: .45rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  margin-left: .2rem;
+  padding: .1rem .4rem;
+  text-transform: uppercase;
+}
+.md-typeset h2.feature-group { align-items: center; display: flex; gap: .55rem; }
+.md-typeset h2.feature-group img { height: 1.25rem; width: 1.25rem; }
+
+/* Path motion */
+@keyframes path-rise { from { opacity: 0; transform: translateY(.5rem); } to { opacity: 1; transform: none; } }
+@keyframes path-cursor { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .path-card, .path-card__cmd::after { animation: none; }
+  .path-card__cta span { transition: none; }
+}
+
+/* Path focus */
+.path-card__cta:focus-visible, .path-decide a:focus-visible, .host-stack li a:focus-visible,
+.feature-picker a:focus-visible, .path-pager a:focus-visible {
+  outline: 2px solid var(--bdk-accent);
+  outline-offset: 2px;
+}
+
+/* Path responsive */
+@media screen and (max-width: 45em) {
+  .path-fork, .feature-picker { grid-template-columns: 1fr; }
+  .feature-picker > div + div { border-left: 0; border-top: 1px solid var(--bdk-panel-border); }
+  .host-stack li a { grid-template-columns: 1.9rem 1.1rem minmax(0, 1fr); }
+  .host-stack__api, .host-stack__tag { grid-column: 3; }
+  .context-board { grid-template-columns: 1fr; }
+  .context-board__wire { display: none; }
+  .path-decide { grid-template-columns: 1fr; }
+}
+
+/* Themes artboard */
+.theme-row { display: grid; gap: 20px; grid-template-columns: repeat(3, 1fr); margin: 0 auto; width: 1240px; }
+.theme-row .frame { width: auto; }
+.pair-row { display: grid; gap: 20px; grid-template-columns: repeat(2, 1fr); margin: 0 auto; width: 1240px; }
+.pair-row .frame { width: auto; }
+.pair-row .md-typeset { padding: .9rem 1rem 1rem; }
+.theme-row .theme-name, .pair-row .theme-name { border-bottom: 1px solid var(--bdk-panel-border); color: var(--bdk-muted); font-family: "IBM Plex Mono", monospace; font-size: .5rem; letter-spacing: .08em; padding: .45rem .8rem; text-transform: uppercase; }
+.theme-row .md-typeset { padding: .8rem; }
+.theme-row .path-fork { grid-template-columns: 1fr; margin: 0 0 .6rem; }
+.theme-row .path-card { gap: .45rem; padding: .75rem; }
+.theme-row .path-card__art { display: none; }
+.theme-row .stack-meter { margin: .7rem 0 0; }
+.theme-row .theme-facts { padding-top: 0; }
+.theme-facts .bdk-facts { margin: 0; }
+</style>
+</head>
+<body>
+
+<header class="board-index">
+  <h1>Getting started paths: visual mockup</h1>
+  <p>Nine artboards for docs/specs/spec-docs-getting-started-paths.md. Open with #entry, #path-b, #context, #path-a, #features, #feature-guide, #decision, #site-pages or #themes to isolate one.</p>
+    <nav><a href="#entry">01 entry</a><a href="#path-b">02 path b basics</a><a href="#context">03 queueing recipe</a><a href="#path-a">04 path a walkthrough</a><a href="#features">05 add features</a><a href="#feature-guide">07 feature guide</a><a href="#decision">08 decision page</a><a href="#site-pages">09 curated guides</a><a href="#themes">06 theme check</a></nav>
+</header>
+
+<!-- ======================================================================
+     01 ENTRY PAGE
+     ====================================================================== -->
+<section class="artboard" id="entry" data-theme="tokyo-night">
+  <p class="artboard-label">01 / getting-started.md / entry page / tokyo night</p>
+  <div class="frame">
+    <div class="topbar"><span class="logo">bITdevKit</span><span>Home</span><span class="on">Get started</span><span>Why</span><span>Architecture</span><span>Docs</span><span>Guides</span><span>Examples</span><span class="search">Search</span></div>
+    <div class="page no-sidebar">
+      <article class="md-content md-typeset">
+        <h1>Get started</h1>
+        <p>There are two ways in. Generate a new solution from the templates, or add DevKit packages to an ASP.NET Core app you already have. Both use the same packages and registrations.</p>
+
+        <div class="path-fork">
+          <section class="path-card path-a">
+            <div class="path-card__art path-card__art--tree" aria-hidden="true"><span style="--i:0;width:4.6rem"></span><span style="--i:1;width:3.8rem"></span><span style="--i:2;width:3rem"></span><span style="--i:2;width:3rem"></span><span style="--i:1;width:3.8rem"></span></div>
+            <div class="path-card__head"><span class="path-badge" aria-hidden="true">A</span><span class="path-card__kicker">Path A / new solution</span></div>
+            <h3>Start from the templates</h3>
+            <p>Generate a modular solution with one module, a web host and test projects. The layers and the wiring come generated.</p>
+            <div class="path-card__cmd">dotnet new install BridgingIT.DevKit.Templates</div>
+            <ul class="path-card__fit">
+              <li>No code yet</li>
+              <li>You want the module layout from day one</li>
+              <li>You want to see the full stack running</li>
+            </ul>
+            <dl class="path-card__meta">
+              <div><dt>Steps</dt><dd>4</dd></div>
+              <div><dt>Time</dt><dd>~10 min</dd></div>
+              <div><dt>You get</dt><dd>solution, module, host, tests</dd></div>
+            </dl>
+            <a class="cta-button path-card__cta" href="#">Create a solution<span aria-hidden="true">-&gt;</span></a>
+          </section>
+
+          <section class="path-card path-b">
+            <div class="path-card__art path-card__art--stack" aria-hidden="true"><span style="width:3.2rem"></span><span style="width:4rem"></span><span style="width:4.8rem"></span><span style="width:5.6rem"></span><span style="width:6.4rem"></span></div>
+            <div class="path-card__head"><span class="path-badge" aria-hidden="true">B</span><span class="path-card__kicker">Path B / existing app</span></div>
+            <h3>Add DevKit to your app</h3>
+            <p>Keep the project, the <code>DbContext</code> and the routes. Start with one line in <code>Program.cs</code>, then add only the features you need.</p>
+            <div class="path-card__cmd">dotnet add package BridgingIT.DevKit.Presentation.Web</div>
+            <ul class="path-card__fit">
+              <li>An ASP.NET Core app already in development or production</li>
+              <li>You need one feature, such as queueing or jobs</li>
+              <li>You can't restructure the solution</li>
+            </ul>
+            <dl class="path-card__meta">
+              <div><dt>Steps</dt><dd>10</dd></div>
+              <div><dt>Time</dt><dd>~30 min</dd></div>
+              <div><dt>You get</dt><dd>a DevKit host, then the features you pick</dd></div>
+            </dl>
+            <a class="cta-button path-card__cta" href="#">Add DevKit to an app<span aria-hidden="true">-&gt;</span></a>
+          </section>
+        </div>
+
+        <div class="path-decide">
+          <div class="path-decide__label">Not sure?</div>
+          <ul>
+            <li><a href="#" class="path-a-scope">Starting a new application<span class="leader"></span><span class="target"><span class="path-badge is-sm is-a">A</span>New solution</span></a></li>
+            <li><a href="#" class="path-b-scope">Running app, no DevKit yet<span class="leader"></span><span class="target"><span class="path-badge is-sm is-b">B</span>Basics</span></a></li>
+            <li><a href="#" class="path-b-scope">DevKit host, need one more feature<span class="leader"></span><span class="target"><span class="path-badge is-sm is-b">B</span>Add features</span></a></li>
+          </ul>
+        </div>
+
+        <div class="cmp">
+          <table>
+            <thead><tr><th></th><th class="path-a-scope"><span class="path-badge is-sm is-a">A</span>New solution</th><th class="path-b-scope"><span class="path-badge is-sm is-b">B</span>Existing app</th></tr></thead>
+            <tbody>
+              <tr><td>starting point</td><td>Empty directory</td><td>Running ASP.NET Core application</td></tr>
+              <tr><td>first command</td><td><code>dotnet new install BridgingIT.DevKit.Templates</code></td><td><code>dotnet add package BridgingIT.DevKit.Presentation.Web</code></td></tr>
+              <tr><td>project layout</td><td>Generated module projects per layer</td><td>Unchanged</td></tr>
+              <tr><td>database</td><td>Generated module <code>DbContext</code></td><td>Your <code>DbContext</code> implements one interface per durable feature</td></tr>
+              <tr><td>modules</td><td>Present from the start</td><td>Basics step 7 adds one module to the existing project</td></tr>
+              <tr><td>features</td><td>Preconfigured set</td><td>Added one recipe at a time, after the basics</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     02 PATH B BASICS (top of page plus step 7)
+     ====================================================================== -->
+<section class="artboard" id="path-b" data-theme="tokyo-night">
+  <p class="artboard-label">02 / getting-started-existing-app.md / route map, scope, agent prompts and step 7 / tokyo night</p>
+  <div class="frame">
+    <div class="topbar"><span class="logo">bITdevKit</span><span>Home</span><span class="on">Get started</span><span>Why</span><span>Architecture</span><span>Docs</span><span>Guides</span><span>Examples</span><span class="search">Search</span></div>
+    <div class="page">
+      <nav class="nav">
+        <div class="group">Get started</div>
+        <a href="#">Overview</a>
+        <div class="group"><span class="nav-badge">A</span>Path A: New solution</div>
+        <a href="#">Create a solution from templates</a>
+        <a href="#">Templates reference</a>
+        <div class="group"><span class="nav-badge">B</span>Path B: Existing app</div>
+        <a href="#" class="on">Add DevKit to an existing app</a>
+        <a href="#">Add features</a>
+      </nav>
+      <article class="md-content md-typeset">
+        <div class="admonition path-b">
+          <p class="admonition-title">Path B: existing app</p>
+          <div class="path-pager">
+            <a href="#" aria-current="page"><b>01</b>Basics</a><span class="sep">/</span><a href="#"><b>02</b>Add features</a>
+            <span class="switch">Starting from scratch? Use <a href="#" style="color:var(--bdk-primary)!important;border:0;padding:0">Path A: new solution</a>.</span>
+          </div>
+        </div>
+
+        <h1>Add DevKit to an existing app</h1>
+        <p>This page starts with a plain minimal API called <code>Parcels</code> and makes it a DevKit host in ten steps. The first four change only <code>Program.cs</code>. Steps 5 and 6 move the routes into an endpoints class and the logic into command and query handlers. Step 7 groups the feature into a module. Steps 8 and 9 hand the <code>DbContext</code> to DevKit and put a repository in front of it. Step 10 gives <code>Parcel</code> a factory that records a domain event, and the repository publishes it after the save. The app builds and runs after each step.</p>
+
+        <div class="host-stack">
+          <div class="host-stack__caption"><span>Your host, built from the bottom up</span><span>Each row links to its step</span></div>
+          <ol>
+            <li class="is-next"><a href="#"><span class="host-stack__n">+</span><span></span><span class="host-stack__name">Features</span><span class="host-stack__icons"><img src="../../../assets/features/notifications.svg" alt=""><img src="../../../assets/features/queueing.svg" alt=""><img src="../../../assets/features/messaging.svg" alt=""><img src="../../../assets/features/orchestrations.svg" alt=""><img src="../../../assets/features/jobs.svg" alt=""><img src="../../../assets/features/storage.svg" alt="">            <img src="../../../assets/features/dashboard.svg" alt=""></span><span class="host-stack__tag">on the next page</span></a></li>
+            <li><a href="#"><span class="host-stack__n">10</span><img src="../../../assets/features/domain.svg" alt=""><span class="host-stack__name">Domain</span><span class="host-stack__api">Parcel.Create(...), AddNotifier().AddHandlers()</span><span class="host-stack__tag">2 files</span></a></li>
+            <li><a href="#"><span class="host-stack__n">09</span><img src="../../../assets/features/repositories.svg" alt=""><span class="host-stack__name">Repository</span><span class="host-stack__api">AddEntityFrameworkRepository&lt;Parcel, ParcelsDbContext&gt;()</span><span class="host-stack__tag">4 files</span></a></li>
+            <li><a href="#"><span class="host-stack__n">08</span><img src="../../../assets/features/provider-entityframework.svg" alt=""><span class="host-stack__name">DbContext</span><span class="host-stack__api">AddSqliteDbContext(...).WithDatabaseMigratorService()</span><span class="host-stack__tag">1 package</span></a></li>
+            <li><a href="#"><span class="host-stack__n">07</span><img src="../../../assets/features/modules.svg" alt=""><span class="host-stack__name">Module</span><span class="host-stack__api">AddModules(...), UseModules(), MapModules()</span><span class="host-stack__tag">1 file</span></a></li>
+            <li><a href="#"><span class="host-stack__n">06</span><img src="../../../assets/features/requester.svg" alt=""><span class="host-stack__name">Handlers</span><span class="host-stack__api">AddRequester(), IRequester.SendAsync</span><span class="host-stack__tag">2 files</span></a></li>
+            <li><a href="#"><span class="host-stack__n">05</span><img src="../../../assets/features/endpoints.svg" alt=""><span class="host-stack__name">Endpoints</span><span class="host-stack__api">AddEndpoints&lt;ParcelEndpoints&gt;(), MapEndpoints()</span><span class="host-stack__tag">1 file</span></a></li>
+            <li><a href="#"><span class="host-stack__n">04</span><img src="../../../assets/features/correlation-ids.svg" alt=""><span class="host-stack__name">Requests</span><span class="host-stack__api">UseRequestCorrelation(), UseRequestLogging()</span><span class="host-stack__tag">no package</span></a></li>
+            <li><a href="#"><span class="host-stack__n">03</span><img src="../../../assets/features/logging.svg" alt=""><span class="host-stack__name">Logging</span><span class="host-stack__api">.AddLogging()</span><span class="host-stack__tag">1 package</span></a></li>
+            <li><a href="#"><span class="host-stack__n">02</span><img src="../../../assets/features/web-host.svg" alt=""><span class="host-stack__name">DevKit host</span><span class="host-stack__api">DevKitWebApplication.CreateBuilder(args)</span><span class="host-stack__tag">1 line</span></a></li>
+            <li class="is-base"><a href="#"><span class="host-stack__n">01</span><img src="../../../assets/features/host.svg" alt=""><span class="host-stack__name">Your app</span><span class="host-stack__api">minimal APIs, ParcelsDbContext, SQLite</span><span class="host-stack__tag">start</span></a></li>
+          </ol>
+        </div>
+
+        <table>
+          <thead><tr><th></th><th>Change</th><th>Package</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>Required</td><td>Replace <code>WebApplication.CreateBuilder</code> with <code>DevKitWebApplication.CreateBuilder</code></td><td><code>Presentation.Web</code></td><td>DevKit builder extensions and the <code>bdk</code> CLI need it</td></tr>
+            <tr><td>Recommended</td><td>Chain <code>.AddLogging()</code> and add a <code>Serilog</code> section</td><td><code>Presentation.Serilog</code></td><td>Structured logs for the app and every feature added later</td></tr>
+            <tr><td>Recommended</td><td>Add <code>UseRequestCorrelation()</code> and <code>UseRequestLogging()</code></td><td>none new</td><td>Each request gets a correlation ID in its headers and log lines</td></tr>
+            <tr><td>Recommended</td><td>Move the routes into an <code>EndpointsBase</code> class and call <code>app.MapEndpoints()</code></td><td>none new</td><td>Routes live next to their feature, and <code>Program.cs</code> stops growing</td></tr>
+            <tr><td>Recommended</td><td>Register the requester and give each route a command or query handler</td><td>none new</td><td>Handlers return a <code>Result</code>, validation runs first, and the endpoint maps the result to 201, 400 or 404</td></tr>
+            <tr><td>Recommended</td><td>Move the feature's registrations into a <code>WebModuleBase</code> class and add it with <code>AddModules(...)</code></td><td>none new</td><td><code>Program.cs</code> adds each feature area with one line, and responses name the module</td></tr>
+            <tr><td>Recommended</td><td>Register the <code>DbContext</code> with <code>AddSqliteDbContext</code> and <code>.WithDatabaseMigratorService()</code></td><td><code>Infrastructure.<wbr>EntityFramework.<wbr>Sqlite</code></td><td>The dashboard lists the context, and pending migrations run at startup</td></tr>
+            <tr><td>Recommended</td><td>Register a repository and let the handlers use <code>IGenericRepository&lt;Parcel&gt;</code></td><td>none new</td><td>Handlers stop depending on EF Core, and repository behaviors add logging now and the outbox later</td></tr>
+                        <tr><td>Recommended</td><td>Give <code>Parcel</code> a <code>Create</code> factory that records a domain event, and publish the event with <code>RepositoryDomainEventPublisherBehavior</code> and the notifier</td><td>none new</td><td>The rules for a new parcel live in one place, and side effects run in event handlers once the save has succeeded</td></tr>          </tbody>
+        </table>
+
+        <h2 id="hand-to-an-agent">Hand the basics to an agent</h2>
+        <p>An agent that can edit files and run <code>dotnet</code> commands can apply the ten steps to your app, with your names in place of the sample's. It plans first and waits for your approval, then commits each step on its own so you can review it.</p>
+        <p>Before you start, you need:</p>
+        <ul class="agent-before">
+          <li>a branch from a clean working tree</li>
+          <li>a local development database, because step 8 applies migrations at startup</li>
+          <li>an agent with file and shell access, such as GitHub Copilot in agent mode, Claude Code or Codex</li>
+        </ul>
+        <details class="admonition note"><summary class="admonition-title">Give the agent the DevKit docs tools</summary></details>
+        <details class="admonition prompt"><summary class="admonition-title">1. Plan the change</summary></details>
+        <details class="admonition prompt"><summary class="admonition-title">2. Apply the steps</summary></details>
+        <p>Each step below ends with its own prompt for that step alone.</p>
+
+        <div class="stack-meter" data-step="7" role="img" aria-label="Step 7 of 10">
+          <span class="stack-meter__label">Step 7 of 10</span>
+          <ol>
+            <li class="is-done">app</li><li class="is-done">host</li><li class="is-done">logging</li><li class="is-done">requests</li><li class="is-done">endpoints</li><li class="is-done">handlers</li><li aria-current="step">module</li><li>dbcontext</li><li>repository</li><li>domain</li>
+          </ol>
+        </div>
+        <h2 class="tutorial-step" data-step="07">Group the feature into a module</h2>
+        <div class="step-meta">
+          <span class="is-feature"><b>Adds</b><img src="../../../assets/features/modules.svg" alt="">Modules</span>
+          <span><b>Packages</b>none new</span>
+          <span><b>Touches</b>Program.cs</span>
+          <span><b>Time</b>~5 min</span>
+        </div>
+        <p><code>Program.cs</code> still registers the <code>DbContext</code> and the endpoints for Parcels. A module takes over those two lines, and the host adds the whole feature area with one call. The next feature area gets its own module and one more <code>WithModule</code> line.</p>
+
+        <div class="tabbed-set">
+          <div class="tabbed-labels"><label class="on">After</label><label>Before</label></div>
+          <div class="tabbed-content">
+<div class="highlight"><span class="filename">Program.cs</span><pre><code><span class="ln" data-n="1"><span class="tok-k">using</span> BridgingIT.DevKit.Common;</span><span class="ln" data-n="2"><span class="tok-k">using</span> BridgingIT.DevKit.Presentation.Web;</span><span class="ln" data-n="3"><span class="tok-k">using</span> Parcels.Web.Parcels;</span><span class="ln" data-n="4"></span><span class="ln" data-n="5"><span class="tok-k">var</span> builder = <span class="tok-t">DevKitWebApplication</span>.<span class="tok-m">CreateBuilder</span>(args)</span><span class="ln" data-n="6">    .<span class="tok-m">AddLogging</span>();</span><span class="ln" data-n="7"></span><span class="ln hll" data-n="8">builder.Services.<span class="tok-m">AddModules</span>(builder.Configuration, builder.Environment, m =&gt; m</span><span class="ln hll" data-n="9">    .<span class="tok-m">WithModule</span>&lt;<span class="tok-t">ParcelsModule</span>&gt;());</span><span class="ln" data-n="10">builder.Services.<span class="tok-m">AddRequester</span>()</span><span class="ln" data-n="11">    .<span class="tok-m">AddHandlers</span>()</span><span class="ln" data-n="12">    .<span class="tok-m">WithBehavior</span>(<span class="tok-k">typeof</span>(<span class="tok-t">ValidationPipelineBehavior</span>&lt;,&gt;));</span><span class="ln" data-n="13"></span><span class="ln" data-n="14"><span class="tok-k">var</span> app = builder.<span class="tok-m">Build</span>();</span><span class="ln" data-n="15"></span><span class="ln" data-n="16">app.<span class="tok-m">UseRequestCorrelation</span>();</span><span class="ln hll" data-n="17">app.<span class="tok-m">UseRequestModuleContext</span>();</span><span class="ln" data-n="18">app.<span class="tok-m">UseRequestLogging</span>();</span><span class="ln hll" data-n="19">app.<span class="tok-m">UseModules</span>();</span><span class="ln hll" data-n="20">app.<span class="tok-m">MapModules</span>();</span><span class="ln" data-n="21">app.<span class="tok-m">MapEndpoints</span>();</span><span class="ln" data-n="22"></span><span class="ln" data-n="23">app.<span class="tok-m">Run</span>();</span></code></pre></div>
+          </div>
+        </div>
+
+<div class="highlight"><span class="filename">Parcels/ParcelsModule.cs</span><pre><code><span class="ln" data-n="1"><span class="tok-k">namespace</span> Parcels.Web.Parcels;</span><span class="ln" data-n="2"></span><span class="ln" data-n="3"><span class="tok-k">using</span> BridgingIT.DevKit.Common;</span><span class="ln" data-n="4"><span class="tok-k">using</span> Microsoft.EntityFrameworkCore;</span><span class="ln" data-n="5"></span><span class="ln" data-n="6"><span class="tok-k">public class</span> <span class="tok-t">ParcelsModule</span> : <span class="tok-t">WebModuleBase</span></span><span class="ln" data-n="7">{</span><span class="ln" data-n="8">    <span class="tok-k">public override</span> <span class="tok-t">IServiceCollection</span> <span class="tok-m">Register</span>(</span><span class="ln" data-n="9">        <span class="tok-t">IServiceCollection</span> services,</span><span class="ln" data-n="10">        <span class="tok-t">IConfiguration</span>? configuration = <span class="tok-k">null</span>,</span><span class="ln" data-n="11">        <span class="tok-t">IWebHostEnvironment</span>? environment = <span class="tok-k">null</span>)</span><span class="ln" data-n="12">    {</span><span class="ln" data-n="13">        services.<span class="tok-m">AddDbContext</span>&lt;<span class="tok-t">ParcelsDbContext</span>&gt;(options =&gt;</span><span class="ln" data-n="14">            options.<span class="tok-m">UseSqlite</span>(configuration?.<span class="tok-m">GetConnectionString</span>(<span class="tok-s">"Parcels"</span>)));</span><span class="ln" data-n="15">        services.<span class="tok-m">AddEndpoints</span>&lt;<span class="tok-t">ParcelEndpoints</span>&gt;();</span><span class="ln" data-n="16"></span><span class="ln" data-n="17">        <span class="tok-k">return</span> services;</span><span class="ln" data-n="18">    }</span><span class="ln" data-n="19"></span><span class="ln" data-n="20">    <span class="tok-k">public override</span> <span class="tok-t">IApplicationBuilder</span> <span class="tok-m">Use</span>(</span><span class="ln" data-n="21">        <span class="tok-t">IApplicationBuilder</span> app,</span><span class="ln" data-n="22">        <span class="tok-t">IConfiguration</span>? configuration = <span class="tok-k">null</span>,</span><span class="ln" data-n="23">        <span class="tok-t">IWebHostEnvironment</span>? environment = <span class="tok-k">null</span>)</span><span class="ln" data-n="24">    {</span><span class="ln" data-n="25">        <span class="tok-k">return</span> app;</span><span class="ln" data-n="26">    }</span><span class="ln" data-n="27"></span><span class="ln" data-n="28">    <span class="tok-k">public override</span> <span class="tok-t">IEndpointRouteBuilder</span> <span class="tok-m">Map</span>(</span><span class="ln" data-n="29">        <span class="tok-t">IEndpointRouteBuilder</span> app,</span><span class="ln" data-n="30">        <span class="tok-t">IConfiguration</span>? configuration = <span class="tok-k">null</span>,</span><span class="ln" data-n="31">        <span class="tok-t">IWebHostEnvironment</span>? environment = <span class="tok-k">null</span>)</span><span class="ln" data-n="32">    {</span><span class="ln" data-n="33">        <span class="tok-k">return</span> app;</span><span class="ln" data-n="34">    }</span><span class="ln" data-n="35">}</span></code></pre></div>
+
+        <p><code>AddModules</code> calls <code>Register</code> while the host builds. <code>UseModules()</code> and <code>MapModules()</code> call <code>Use</code> and <code>Map</code>. Both return <code>app</code> here, because the routes already live in <code>ParcelEndpoints</code>. The module takes its name from the class, so it is <code>parcels</code>.</p>
+
+        <div class="admonition verify">
+          <p class="admonition-title">Check it</p>
+          <p>Start the app. The module logs each lifecycle call before Kestrel listens.</p>
+<pre><code><span class="ln" data-n="$"><span class="tok-m">dotnet</span> run</span><span class="ln out" data-n=" ">[MOD] register (module=parcels, enabled=True, priority=99)</span><span class="ln out" data-n=" ">[MOD] use (module=parcels, enabled=True, priority=99)</span><span class="ln out" data-n=" ">[MOD] map (module=parcels, enabled=True, priority=99)</span><span class="ln out" data-n=" ">Now listening on: https://localhost:5001</span></code></pre>
+          <p>Send the step 1 request again. The response names the module, and so does the first console line.</p>
+<pre><code><span class="ln" data-n="$"><span class="tok-m">curl</span> -i -H <span class="tok-s">"CorrelationId: parcels-test-5"</span> -X POST https://localhost:5001/api/parcels ...</span><span class="ln out" data-n=" ">HTTP/1.1 201 Created</span><span class="ln out" data-n=" ">Location: /api/parcels/371ee757-8e79-48cb-bbfb-b67fc27a6c70</span><span class="ln out" data-n=" ">CorrelationId: parcels-test-5</span><span class="ln out" data-n=" ">ModuleName: parcels</span><span class="ln out" data-n=" "></span><span class="ln out" data-n=" "><span class="tok-c">console</span></span><span class="ln out" data-n=" ">[REQ] request module: parcels cid:parcels-test-5</span><span class="ln out" data-n=" ">[REQ] starting HTTP POST /api/parcels cid:parcels-test-5</span></code></pre>
+          <p>The empty recipient and the unknown ID from step 6 still return 400 and 404.</p>
+        </div>
+
+        <details class="admonition prompt" open>
+          <summary class="admonition-title">Agent prompt</summary>
+          <div class="highlight"><button class="md-clipboard" type="button" title="Copy to clipboard" aria-label="Copy to clipboard"></button><pre><code><span class="ln">Do step 7, "Group the feature into a module", of the guide "Add DevKit to an existing app" in this application, and nothing else.</span><span class="ln">Read the step at https://bridgingit-gmbh.github.io/bITdevKit/getting-started-existing-app/#step-7, or with bdk_docs_get and source docs/site/getting-started-existing-app.md if the bdk MCP tools are available.</span><span class="ln">If the bdk MCP tools are available, call bdk_guidance_get with topic modules.</span><span class="ln">Read devkit-basics-plan.md for this app's names and rules. If it does not exist, run the planning prompt from the section "Hand the basics to an agent" in the guide, and wait for my approval.</span><span class="ln">If an earlier step is unchecked in the plan, stop and tell me.</span><span class="ln">Make the change with this app's names from the plan. Build the solution, run the step's check from the plan, and stop the app.</span><span class="ln">Tick step 7 in the plan and report the result. Leave the changes uncommitted for my review.</span></code></pre></div>
+        </details>
+      </article>
+      <aside class="toc">
+        <b>On this page</b>
+        <a href="#">Route map</a><a href="#">Hand to an agent</a><a href="#">01 App</a><a href="#">02 Host</a><a href="#">03 Logging</a><a href="#">04 Requests</a><a href="#">05 Endpoints</a><a href="#">06 Handlers</a><a href="#" class="on">07 Module</a><a href="#">08 DbContext</a><a href="#">09 Repository</a><a href="#">10 Domain</a><a href="#">What you have now</a><a href="#">Add features</a><a href="#">Next steps</a>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     03 ADD FEATURES: QUEUEING WORKED EXAMPLE
+     ====================================================================== -->
+<section class="artboard" id="context" data-theme="tokyo-night">
+  <p class="artboard-label">03 / getting-started-existing-app-features.md / queueing worked example / tokyo night</p>
+  <div class="frame">
+    <div class="topbar"><span class="logo">bITdevKit</span><span>Home</span><span class="on">Get started</span><span>Why</span><span>Architecture</span><span>Docs</span><span>Guides</span><span>Examples</span><span class="search">Search</span></div>
+    <div class="page">
+      <nav class="nav">
+        <div class="group">Get started</div>
+        <a href="#">Overview</a>
+        <div class="group"><span class="nav-badge">A</span>Path A: New solution</div>
+        <a href="#">Create a solution from templates</a>
+        <a href="#">Templates reference</a>
+        <div class="group"><span class="nav-badge">B</span>Path B: Existing app</div>
+        <a href="#">Add DevKit to an existing app</a>
+        <a href="#" class="on">Add features</a>
+      </nav>
+      <article class="md-content md-typeset">
+        <div class="admonition path-b" style="display:none"><p class="admonition-title">Path B</p></div>
+        <h2 class="feature-group" style="margin-top:0"><img src="../../../assets/features/storage.svg" alt="">Backed by your DbContext</h2>
+        <p>These features keep their state in your database. Each one adds an interface to <code>ParcelsDbContext</code> and one migration.</p>
+
+        <h3 class="feature-recipe is-worked"><img src="../../../assets/features/queueing.svg" alt="">Queueing</h3>
+        <p>Run work in the background after the request returns.</p>
+        <div class="step-meta">
+          <span><b>Packages</b>Application.Queueing, Infrastructure.EntityFramework</span>
+          <span><b>Pipeline</b>none</span>
+          <span class="is-feature"><b>DbContext</b>IQueueingContext + migration</span>
+          <span><b>Guide</b><a href="#">Queueing</a></span>
+        </div>
+
+        <div class="context-board">
+          <div class="context-board__class">
+            <header>ParcelsDbContext.cs</header>
+            <div class="sig"><span class="tok-k">public class</span> <span class="tok-t">ParcelsDbContext</span>(...)<br>&nbsp;&nbsp;: <span class="tok-t">DbContext</span>, <span class="tok-t" style="color:var(--bdk-accent);font-weight:600">IQueueingContext</span></div>
+            <div class="row"><span class="tok-k">public</span> <span class="tok-t">DbSet</span>&lt;<span class="tok-t">Parcel</span>&gt; Parcels { <span class="tok-k">get</span>; <span class="tok-k">set</span>; }</div>
+            <div class="row is-new" style="position:relative"><span class="tok-k">public</span> <span class="tok-t">DbSet</span>&lt;<span class="tok-t">QueueMessage</span>&gt; QueueMessages { <span class="tok-k">get</span>; <span class="tok-k">set</span>; }</div>
+            <div class="end">}</div>
+          </div>
+          <div class="context-board__wire" aria-hidden="true"></div>
+          <div class="context-board__ports">
+            <div class="is-plugged"><img src="../../../assets/features/queueing.svg" alt=""><code>IQueueingContext</code><small>this recipe</small></div>
+            <div><img src="../../../assets/features/messaging.svg" alt=""><code>IMessagingContext</code><small>Messaging</small></div>
+            <div><img src="../../../assets/features/orchestrations.svg" alt=""><code>IOrchestrationContext</code><small>Orchestrations</small></div>
+            <div><img src="../../../assets/features/jobs.svg" alt=""><code>IJobsContext</code><small>Jobs</small></div>
+            <div><img src="../../../assets/features/storage-files.svg" alt=""><code>IFileStorageContext</code><small>File storage</small></div>
+            <div><img src="../../../assets/features/auditing.svg" alt=""><code>IAuditingDbContext</code><small>Auditing</small></div>
+            <div><img src="../../../assets/features/outbox.svg" alt=""><code>IOutboxDomainEventContext</code><small>Domain event outbox</small></div>
+          </div>
+          <p class="context-board__foot">Solid: implemented by <code>ParcelsDbContext</code>. Dashed: one interface and one migration away.</p>
+        </div>
+
+        <div class="tabbed-set">
+          <div class="tabbed-labels"><label>Migration</label><label class="on">Registration</label></div>
+          <div class="tabbed-content">
+<pre><code><span class="ln hll" data-n="1">builder.Services.<span class="tok-m">AddQueueing</span>(builder.Configuration)</span><span class="ln hll" data-n="2">    .<span class="tok-m">WithSubscription</span>&lt;<span class="tok-t">ParcelRegisteredMessage</span>, <span class="tok-t">ParcelRegisteredHandler</span>&gt;()</span><span class="ln hll" data-n="3">    .<span class="tok-m">WithEntityFrameworkBroker</span>&lt;<span class="tok-t">ParcelsDbContext</span>&gt;();</span><span class="ln" data-n="4"></span><span class="ln" data-n="5"><span class="tok-c">// in MapPost, after SaveChangesAsync</span></span><span class="ln hll" data-n="6"><span class="tok-k">await</span> queueBroker.<span class="tok-m">Enqueue</span>(<span class="tok-k">new</span> <span class="tok-t">ParcelRegisteredMessage</span>(parcel.Id), cancellationToken);</span></code></pre>
+          </div>
+        </div>
+        <p>The Migration tab holds <code>dotnet ef migrations add AddQueueing</code> and <code>dotnet ef database update</code>. Together they create the <code>__Queueing_BrokerMessages</code> table.</p>
+
+        <div class="admonition verify">
+          <p class="admonition-title">Check it</p>
+          <p>POST a parcel. The handler's line appears shortly after the request finishes.</p>
+<pre><code><span class="ln out" data-n=" ">[REQ] finished HTTP POST /api/parcels [201] -&gt; took 16 ms</span><span class="ln out" data-n=" ">ParcelRegisteredHandler handled parcel 3f2a9c1e...</span></code></pre>
+        </div>
+        <p>Every recipe below repeats these steps with its own interface and registration.</p>
+      </article>
+      <aside class="toc">
+        <b>On this page</b>
+        <a href="#">No infrastructure needed</a><a href="#">Backed by your DbContext</a><a href="#" class="on" style="padding-left:.6rem">Queueing</a><a href="#" style="padding-left:.6rem">Messaging</a><a href="#" style="padding-left:.6rem">Orchestrations</a><a href="#" style="padding-left:.6rem">Jobs</a><a href="#">Operations and tooling</a><a href="#">Pipeline order</a><a href="#">Next steps</a>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     04 PATH A WALKTHROUGH
+     ====================================================================== -->
+<section class="artboard" id="path-a" data-theme="tokyo-night">
+  <p class="artboard-label">04 / getting-started-template.md / walkthrough / tokyo night</p>
+  <div class="frame">
+    <div class="topbar"><span class="logo">bITdevKit</span><span>Home</span><span class="on">Get started</span><span>Why</span><span>Architecture</span><span>Docs</span><span>Guides</span><span>Examples</span><span class="search">Search</span></div>
+    <div class="page">
+      <nav class="nav">
+        <div class="group">Get started</div>
+        <a href="#">Overview</a>
+        <div class="group"><span class="nav-badge">A</span>Path A: New solution</div>
+        <a href="#" class="on">Create a solution from templates</a>
+        <a href="#">Templates reference</a>
+        <div class="group"><span class="nav-badge">B</span>Path B: Existing app</div>
+        <a href="#">Add DevKit to an existing app</a>
+        <a href="#">Add features</a>
+      </nav>
+      <article class="md-content md-typeset">
+        <div class="admonition path-a">
+          <p class="admonition-title">Path A: new solution</p>
+          <div class="path-pager">
+            <a href="#" aria-current="page"><b>01</b>Walkthrough</a><span class="sep">/</span><a href="#"><b>02</b>Templates reference</a>
+            <span class="switch">Have an app already? Use <a href="#" style="color:var(--bdk-secondary)!important;border:0;padding:0">Path B: existing app</a>.</span>
+          </div>
+        </div>
+        <h1>Create a solution from templates</h1>
+        <p>Create a <code>bITdevKit</code> solution, build it, and confirm that the generated projects compile.</p>
+
+        <ol class="flow-strip">
+          <li><a href="#"><b>01</b><span>Check the SDK</span><code>dotnet --version</code></a></li>
+          <li><a href="#"><b>02</b><span>Install templates</span><code>dotnet new install</code></a></li>
+          <li class="is-current"><a href="#"><b>03</b><span>Create a solution</span><code>dotnet new bdksolution</code></a></li>
+          <li><a href="#"><b>04</b><span>Build</span><code>dotnet build</code></a></li>
+        </ol>
+
+        <h2 class="tutorial-step" data-step="03">Create a solution</h2>
+        <p>Create a solution named <code>SolutionName</code> with an initial <code>Core</code> module:</p>
+<pre><code><span class="ln" data-n="$"><span class="tok-m">dotnet</span> new bdksolution --SolutionName SolutionName --ModuleName Core --allow-scripts yes -o ./projects/SolutionName</span></code></pre>
+        <p>The command creates <code>./projects/SolutionName/SolutionName.slnx</code> and these projects:</p>
+        <div class="solution-tree" role="img" aria-label="Generated solution tree">
+          <div><span class="dir">projects/SolutionName/</span></div>
+          <div><span class="br">├─ </span><span class="dir">SolutionName.slnx</span></div>
+          <div><span class="br">├─ </span><span class="dir">src/Modules/Core/</span></div>
+          <div><span class="br">│  ├─ </span><span class="dir">Core.Domain</span><span class="fill"></span><span class="layer layer-domain">domain</span></div>
+          <div><span class="br">│  ├─ </span><span class="dir">Core.Application</span><span class="fill"></span><span class="layer layer-application">application</span></div>
+          <div><span class="br">│  ├─ </span><span class="dir">Core.Infrastructure</span><span class="fill"></span><span class="layer layer-infrastructure">infrastructure</span></div>
+          <div><span class="br">│  └─ </span><span class="dir">Core.Presentation</span><span class="fill"></span><span class="layer layer-presentation">presentation</span></div>
+          <div><span class="br">├─ </span><span class="dir">src/Presentation.Web.Server</span><span class="fill"></span><span class="layer layer-host">host</span></div>
+          <div><span class="br">└─ </span><span class="dir">tests/Core/</span></div>
+          <div><span class="br">   ├─ </span><span class="dir">Core.UnitTests</span><span class="fill"></span><span class="layer layer-tests">tests</span></div>
+          <div><span class="br">   └─ </span><span class="dir">Core.IntegrationTests</span><span class="fill"></span><span class="layer layer-tests">tests</span></div>
+        </div>
+
+        <h2 class="tutorial-step" data-step="04">Build the generated project</h2>
+<pre><code><span class="ln" data-n="$"><span class="tok-m">dotnet</span> build ./projects/SolutionName/SolutionName.slnx</span></code></pre>
+        <div class="admonition verify">
+          <p class="admonition-title">Check it</p>
+<pre><code><span class="ln out" data-n=" ">Build succeeded.</span><span class="ln out" data-n=" ">    0 Error(s)</span></code></pre>
+        </div>
+
+        <h2>Choose the next step</h2>
+        <nav class="next-step-strip">
+          <a href="#"><small>understand</small>Architecture</a>
+          <a href="#"><small>configure</small>Templates reference</a>
+          <a href="#"><small>what each registration does</small>Add features (Path B)</a>
+        </nav>
+      </article>
+      <aside class="toc">
+        <b>On this page</b>
+        <a href="#">01 Before you start</a><a href="#">02 Install the templates</a><a href="#" class="on">03 Create a solution</a><a href="#">04 Build</a><a href="#">Next step</a>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     05 ADD FEATURES
+     ====================================================================== -->
+<section class="artboard" id="features" data-theme="tokyo-night">
+  <p class="artboard-label">05 / getting-started-existing-app-features.md / add features / tokyo night</p>
+  <div class="frame">
+    <div class="topbar"><span class="logo">bITdevKit</span><span>Home</span><span class="on">Get started</span><span>Why</span><span>Architecture</span><span>Docs</span><span>Guides</span><span>Examples</span><span class="search">Search</span></div>
+    <div class="page">
+      <nav class="nav">
+        <div class="group">Get started</div>
+        <a href="#">Overview</a>
+        <div class="group"><span class="nav-badge">A</span>Path A: New solution</div>
+        <a href="#">Create a solution from templates</a>
+        <a href="#">Templates reference</a>
+        <div class="group"><span class="nav-badge">B</span>Path B: Existing app</div>
+        <a href="#">Add DevKit to an existing app</a>
+        <a href="#" class="on">Add features</a>
+      </nav>
+      <article class="md-content md-typeset">
+        <div class="admonition path-b">
+          <p class="admonition-title">Path B: existing app</p>
+          <div class="path-pager">
+            <a href="#"><b>01</b>Basics</a><span class="sep">/</span><a href="#" aria-current="page"><b>02</b>Add features</a>
+            <span class="switch">Starting from scratch? Use <a href="#" style="color:var(--bdk-primary)!important;border:0;padding:0">Path A: new solution</a>.</span>
+          </div>
+        </div>
+        <h1>Add features</h1>
+        <p>Every recipe starts from the host the basics page built. Recipes don't depend on each other unless they say so.</p>
+
+        <ol class="flow-strip">
+          <li><a href="#"><b>01</b><span>Package</span><code>dotnet add package</code></a></li>
+          <li><a href="#"><b>02</b><span>Register</span><code>builder.Services.Add...()</code></a></li>
+          <li><a href="#"><b>03</b><span>Pipeline</span><code>app.Use...(), if any</code></a></li>
+          <li><a href="#"><b>04</b><span>DbContext + migration</span><code>durable features only</code></a></li>
+        </ol>
+
+        <nav class="feature-picker" aria-label="Features on this page">
+          <div>
+            <p class="feature-picker__group"><a href="#">No infrastructure needed</a> <span>3</span></p>
+            <ul>
+              <li><a href="#"><img src="../../../assets/features/notifications.svg" alt="">Notifications and more behaviors</a></li>
+              <li><a href="#"><img src="../../../assets/features/mapping.svg" alt="">Mapping</a></li>
+              <li><a href="#"><img src="../../../assets/features/startup-tasks.svg" alt="">Startup tasks</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="feature-picker__group"><a href="#">Backed by your DbContext</a> <span>12</span></p>
+            <ul>
+              <li><a href="#" class="is-worked"><img src="../../../assets/features/queueing.svg" alt="">Queueing</a></li>
+              <li><a href="#"><img src="../../../assets/features/messaging.svg" alt="">Messaging</a></li>
+              <li><a href="#"><img src="../../../assets/features/orchestrations.svg" alt="">Orchestrations</a></li>
+              <li><a href="#"><img src="../../../assets/features/jobs.svg" alt="">Jobs</a></li>
+              <li><a href="#"><img src="../../../assets/features/storage-files.svg" alt="">File storage</a></li>
+              <li><a href="#"><img src="../../../assets/features/storage-documents.svg" alt="">Document storage</a></li>
+              <li><a href="#"><img src="../../../assets/features/storage-blobs.svg" alt="">Blob storage</a></li>
+              <li><a href="#"><img src="../../../assets/features/storage-permalinks.svg" alt="">Storage permalinks</a></li>
+              <li><a href="#"><img src="../../../assets/features/auditing.svg" alt="">Auditing</a></li>
+              <li><a href="#"><img src="../../../assets/features/broadcasting.svg" alt="">Broadcasting</a></li>
+              <li><a href="#"><img src="../../../assets/features/outbox.svg" alt="">Domain event outbox</a></li>
+              <li><a href="#"><img src="../../../assets/features/log-entries.svg" alt="">Log entries</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="feature-picker__group"><a href="#">Operations and tooling</a> <span>5</span></p>
+            <ul>
+              <li><a href="#"><img src="../../../assets/features/profiling.svg" alt="">Profiling</a></li>
+              <li><a href="#"><img src="../../../assets/features/metrics.svg" alt="">Metrics</a></li>
+              <li><a href="#"><img src="../../../assets/features/dashboard.svg" alt="">Dashboard</a></li>
+              <li><a href="#"><img src="../../../assets/features/console-commands.svg" alt="">Console commands</a></li>
+              <li><a href="#"><img src="../../../assets/features/mcp.svg" alt="">MCP</a></li>
+            </ul>
+          </div>
+        </nav>
+
+        <h2 class="feature-group"><img src="../../../assets/features/notifications.svg" alt="">No infrastructure needed</h2>
+        <h3 class="feature-recipe"><img src="../../../assets/features/notifications.svg" alt="">Notifications and more behaviors</h3>
+        <p>Tell other parts of the app that a parcel was registered, and let the requester retry and time out handlers.</p>
+        <div class="step-meta">
+          <span><b>Packages</b>none new</span>
+          <span><b>Pipeline</b>none</span>
+          <span><b>DbContext</b>none</span>
+          <span><b>Guide</b><a href="#">Requester and notifier</a></span>
+        </div>
+<div class="highlight"><span class="filename">Program.cs</span><pre><code><span class="ln" data-n="1">builder.Services.<span class="tok-m">AddRequester</span>()</span><span class="ln" data-n="2">    .<span class="tok-m">AddHandlers</span>()</span><span class="ln" data-n="3">    .<span class="tok-m">WithBehavior</span>(<span class="tok-k">typeof</span>(<span class="tok-t">ValidationPipelineBehavior</span>&lt;,&gt;))</span><span class="ln hll" data-n="4">    .<span class="tok-m">WithBehavior</span>(<span class="tok-k">typeof</span>(<span class="tok-t">RetryPipelineBehavior</span>&lt;,&gt;))</span><span class="ln hll" data-n="5">    .<span class="tok-m">WithBehavior</span>(<span class="tok-k">typeof</span>(<span class="tok-t">TimeoutPipelineBehavior</span>&lt;,&gt;));</span><span class="ln" data-n="6"></span><span class="ln" data-n="7">builder.Services.<span class="tok-m">AddNotifier</span>().<span class="tok-m">AddHandlers</span>();</span></code></pre></div>
+        <div class="admonition verify">
+          <p class="admonition-title">Check it</p>
+          <p>POST a parcel. After the domain event handler logs the parcel, the notifier runs the notification handler under the same correlation ID.</p>
+<pre><code><span class="ln out" data-n=" ">parcel 3d4fa7a4-... registered cid:parcels-test-4</span><span class="ln out" data-n=" ">[NOT] notification processing (type=ParcelRegisteredNotification, id=...) cid:parcels-test-4</span><span class="ln out" data-n=" ">parcel 3d4fa7a4-... ready for pickup cid:parcels-test-4</span></code></pre>
+        </div>
+
+        <h2 class="feature-group"><img src="../../../assets/features/dashboard.svg" alt="">Operations and tooling</h2>
+        <h3 class="feature-recipe"><img src="../../../assets/features/dashboard.svg" alt="">Dashboard</h3>
+        <p>See jobs, queues, messages and logs for this host in the browser.</p>
+        <div class="step-meta">
+          <span><b>Packages</b>none new</span>
+          <span><b>Pipeline</b>app.MapEndpoints() from basics step 5</span>
+          <span><b>DbContext</b>none</span>
+          <span><b>Guide</b><a href="#">Dashboard</a></span>
+        </div>
+<pre><code><span class="ln hll" data-n="1">builder.Services.<span class="tok-m">AddDashboard</span>(o =&gt; o.<span class="tok-m">Enabled</span>(builder.Environment.<span class="tok-m">IsDevelopment</span>()));</span><span class="ln" data-n="2"></span><span class="ln" data-n="3">app.<span class="tok-m">MapEndpoints</span>(); <span class="tok-c">// already there since basics step 5</span></span></code></pre>
+        <div class="admonition verify">
+          <p class="admonition-title">Check it</p>
+          <p>Open <code>/_bdk/dashboard</code>. The overview lists the features this host registered.</p>
+        </div>
+
+        <details class="admonition abstract">
+          <summary class="admonition-title">All features as one table</summary>
+        </details>
+      </article>
+      <aside class="toc">
+        <b>On this page</b>
+        <a href="#" class="on">No infrastructure needed</a><a href="#">Backed by your DbContext</a><a href="#">Operations and tooling</a><a href="#">Pipeline order</a><a href="#">All features as one table</a><a href="#">Next steps</a>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     07 FEATURE GUIDE
+     ====================================================================== -->
+<section class="artboard" id="feature-guide" data-theme="tokyo-night">
+  <p class="artboard-label">07 / reference/features-queueing.md / feature guide / tokyo night</p>
+  <div class="frame">
+    <div class="topbar"><span class="logo">bITdevKit</span><span>Home</span><span>Get started</span><span>Why</span><span>Architecture</span><span class="on">Docs</span><span>Guides</span><span>Examples</span><span class="search">Search</span></div>
+    <div class="page">
+      <nav class="nav">
+        <div class="group">Execution, Messaging and Modularity</div>
+        <a href="#">Requester and Notifier</a>
+        <a href="#">Messaging</a>
+        <a href="#" class="on">Queueing</a>
+        <a href="#">Broadcasting</a>
+        <a href="#">Notifications</a>
+        <a href="#">Modules</a>
+      </nav>
+      <article class="md-content md-typeset">
+        <div class="md-path"><span>Docs</span><span>Feature Guides</span><span>Execution, Messaging and Modularity</span></div>
+        <h1><img src="../../../assets/features/queueing.svg" alt="">Queueing</h1>
+        <blockquote class="bdk-lede"><p>Process single-consumer work items through in-process or durable queue brokers with retained-message inspection, retry/archive controls, and queue/type pause-resume control.</p></blockquote>
+        <dl class="bdk-facts">
+          <div><dt>Decide</dt><dd><a href="#">Messaging or Queueing</a><a href="#">Queueing or Jobs</a></dd></div>
+          <div><dt>Existing app</dt><dd><a href="#">Queueing recipe</a></dd></div>
+          <div><dt>Dashboard</dt><dd><a href="#">Dashboard guide</a></dd></div>
+        </dl>
+        <h2>Overview</h2>
+        <p>Queueing provides an application-level abstraction for background work that must be processed by exactly one logical handler per queued message type. It complements Messaging rather than replacing it.</p>
+        <h2>Architecture</h2>
+        <div class="mermaid"><svg viewBox="0 0 990 430" style="display:block;width:100%;height:auto;font-family:var(--md-mermaid-font-family)" role="img" aria-label="Queueing sequence: a producer enqueues a message, the broker provider stores it, and a worker hands it to the handler"><defs><marker id="seq-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--md-mermaid-sequence-message-line-color)"/></marker></defs><line x1="36" y1="68" x2="36" y2="420" style="stroke:var(--md-mermaid-sequence-actor-line-color, var(--bdk-border));stroke-dasharray:3 3"/><line x1="160" y1="50" x2="160" y2="420" style="stroke:var(--md-mermaid-sequence-actor-line-color, var(--bdk-border));stroke-dasharray:3 3"/><line x1="331" y1="50" x2="331" y2="420" style="stroke:var(--md-mermaid-sequence-actor-line-color, var(--bdk-border));stroke-dasharray:3 3"/><line x1="534" y1="50" x2="534" y2="420" style="stroke:var(--md-mermaid-sequence-actor-line-color, var(--bdk-border));stroke-dasharray:3 3"/><line x1="712" y1="50" x2="712" y2="420" style="stroke:var(--md-mermaid-sequence-actor-line-color, var(--bdk-border));stroke-dasharray:3 3"/><line x1="884" y1="50" x2="884" y2="420" style="stroke:var(--md-mermaid-sequence-actor-line-color, var(--bdk-border));stroke-dasharray:3 3"/><circle cx="36" cy="15" r="7" style="fill:var(--md-mermaid-sequence-actorman-bg-color);stroke:var(--md-mermaid-sequence-actorman-line-color);stroke-width:1.5"/><path d="M36 22v16M24 28h24M36 38l-10 12M36 38l10 12" style="fill:none;stroke:var(--md-mermaid-sequence-actorman-line-color);stroke-width:1.5"/><text x="36" y="60" text-anchor="middle" dominant-baseline="central" style="font-size:12px;fill:var(--md-mermaid-sequence-actor-fg-color)">Producer</text><rect x="110" y="10" width="100" height="40" rx="3" style="fill:var(--md-mermaid-sequence-actor-bg-color);stroke:var(--md-mermaid-sequence-actor-border-color)"/><rect x="265" y="10" width="132" height="40" rx="3" style="fill:var(--md-mermaid-sequence-actor-bg-color);stroke:var(--md-mermaid-sequence-actor-border-color)"/><rect x="474" y="10" width="120" height="40" rx="3" style="fill:var(--md-mermaid-sequence-actor-bg-color);stroke:var(--md-mermaid-sequence-actor-border-color)"/><rect x="646" y="10" width="132" height="40" rx="3" style="fill:var(--md-mermaid-sequence-actor-bg-color);stroke:var(--md-mermaid-sequence-actor-border-color)"/><rect x="798" y="10" width="172" height="40" rx="3" style="fill:var(--md-mermaid-sequence-actor-bg-color);stroke:var(--md-mermaid-sequence-actor-border-color)"/><text x="160" y="30" text-anchor="middle" dominant-baseline="central" style="font-size:12px;fill:var(--md-mermaid-sequence-actor-fg-color)">IQueueBroker</text><text x="331" y="30" text-anchor="middle" dominant-baseline="central" style="font-size:12px;fill:var(--md-mermaid-sequence-actor-fg-color)">Enqueue Behaviors</text><text x="534" y="30" text-anchor="middle" dominant-baseline="central" style="font-size:12px;fill:var(--md-mermaid-sequence-actor-fg-color)">Broker Provider</text><text x="712" y="23" text-anchor="middle" dominant-baseline="central" style="font-size:12px;fill:var(--md-mermaid-sequence-actor-fg-color)">QueueingService /</text><text x="712" y="38" text-anchor="middle" dominant-baseline="central" style="font-size:12px;fill:var(--md-mermaid-sequence-actor-fg-color)">Provider Worker</text><text x="884" y="30" text-anchor="middle" dominant-baseline="central" style="font-size:12px;fill:var(--md-mermaid-sequence-actor-fg-color)">IQueueMessageHandler&lt;T&gt;</text><line x1="36" y1="100" x2="158" y2="100" marker-end="url(#seq-arrow)" style="stroke:var(--md-mermaid-sequence-message-line-color);stroke-width:1.3"/><text x="98" y="88" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:var(--md-mermaid-sequence-message-fg-color)">Enqueue(message)</text><line x1="160" y1="135" x2="329" y2="135" marker-end="url(#seq-arrow)" style="stroke:var(--md-mermaid-sequence-message-line-color);stroke-width:1.3"/><text x="245.5" y="123" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:var(--md-mermaid-sequence-message-fg-color)">Execute enqueue pipeline</text><line x1="331" y1="170" x2="532" y2="170" marker-end="url(#seq-arrow)" style="stroke:var(--md-mermaid-sequence-message-line-color);stroke-width:1.3"/><text x="432.5" y="158" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:var(--md-mermaid-sequence-message-fg-color)">Persist or dispatch work item</text><line x1="712" y1="205" x2="536" y2="205" marker-end="url(#seq-arrow)" style="stroke:var(--md-mermaid-sequence-message-line-color);stroke-width:1.3"/><text x="623" y="193" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:var(--md-mermaid-sequence-message-fg-color)">Claim item (if durable)</text><line x1="712" y1="240" x2="882" y2="240" marker-end="url(#seq-arrow)" style="stroke:var(--md-mermaid-sequence-message-line-color);stroke-width:1.3"/><text x="798" y="228" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:var(--md-mermaid-sequence-message-fg-color)">Handle(message)</text><rect x="460" y="258" width="330" height="154" style="fill:var(--md-mermaid-sequence-loop-bg-color);stroke:var(--md-mermaid-sequence-loop-border-color)"/><path d="M460 258h40v12l-6 6h-34z" style="fill:var(--md-mermaid-sequence-label-bg-color);stroke:var(--md-mermaid-sequence-loop-border-color)"/><text x="478" y="267" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:var(--md-mermaid-sequence-label-fg-color)">alt</text><text x="560" y="267" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:var(--md-mermaid-sequence-loop-fg-color)">[success]</text><line x1="712" y1="300" x2="536" y2="300" marker-end="url(#seq-arrow)" style="stroke:var(--md-mermaid-sequence-message-line-color);stroke-width:1.3"/><text x="623" y="288" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:var(--md-mermaid-sequence-message-fg-color)">Mark succeeded</text><line x1="460" y1="312" x2="790" y2="312" style="stroke:var(--md-mermaid-sequence-loop-border-color);stroke-dasharray:3 3"/><text x="625" y="324" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:var(--md-mermaid-sequence-loop-fg-color)">[no handler yet]</text><line x1="712" y1="350" x2="536" y2="350" marker-end="url(#seq-arrow)" style="stroke:var(--md-mermaid-sequence-message-line-color);stroke-width:1.3"/><text x="623" y="338" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:var(--md-mermaid-sequence-message-fg-color)">Leave waiting for handler</text><line x1="460" y1="362" x2="790" y2="362" style="stroke:var(--md-mermaid-sequence-loop-border-color);stroke-dasharray:3 3"/><text x="625" y="374" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:var(--md-mermaid-sequence-loop-fg-color)">[failure]</text><line x1="712" y1="400" x2="536" y2="400" marker-end="url(#seq-arrow)" style="stroke:var(--md-mermaid-sequence-message-line-color);stroke-width:1.3"/><text x="623" y="388" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:var(--md-mermaid-sequence-message-fg-color)">Retry or dead-letter</text></svg></div>
+        <h2>Basic usage</h2>
+        <h3><img src="../../../assets/features/provider-inmemory.svg" alt="">In-process broker</h3>
+<div class="highlight"><span class="filename">Program.cs</span><pre><code><span class="ln" data-n="1">builder.Services.<span class="tok-m">AddQueueing</span>(builder.Configuration)</span><span class="ln hll" data-n="2">  .<span class="tok-m">WithSubscription</span>&lt;<span class="tok-t">OrderQueuedMessage</span>, <span class="tok-t">OrderQueuedHandler</span>&gt;()</span><span class="ln hll" data-n="3">  .<span class="tok-m">WithInProcessBroker</span>(<span class="tok-k">new</span> <span class="tok-t">InProcessQueueBrokerConfiguration</span></span><span class="ln" data-n="4">  {</span><span class="ln" data-n="5">    MaxDegreeOfParallelism = <span class="tok-s">1</span>,</span><span class="ln" data-n="6">    EnsureOrdered = <span class="tok-k">true</span></span><span class="ln" data-n="7">  })</span><span class="ln" data-n="8">  .<span class="tok-m">AddEndpoints</span>();</span></code></pre></div>
+      </article>
+      <aside class="toc">
+        <b>On this page</b>
+        <a href="#">Overview</a><a href="#">Challenges</a><a href="#">Solution</a><a href="#">Key features</a><a href="#" class="on">Architecture</a><a href="#">Use cases</a><a href="#">Basic usage</a><a href="#">Dashboard guide</a>
+      </aside>
+    </div>
+    <footer class="md-footer">
+      <nav class="md-footer__inner" aria-label="Footer">
+        <a class="md-footer__link md-footer__link--prev" href="#" aria-label="Previous: Messaging"><div class="md-footer__button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg></div><div class="md-footer__title"><span class="md-footer__direction">Previous</span><div class="md-ellipsis">Messaging</div></div></a>
+        <a class="md-footer__link md-footer__link--next" href="#" aria-label="Next: Broadcasting"><div class="md-footer__title"><span class="md-footer__direction">Next</span><div class="md-ellipsis">Broadcasting</div></div><div class="md-footer__button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg></div></a>
+      </nav>
+    </footer>
+  </div>
+</section>
+
+<!-- ======================================================================
+     08 DECISION PAGE
+     ====================================================================== -->
+<section class="artboard" id="decision" data-theme="tokyo-night">
+  <p class="artboard-label">08 / decisions-queueing-vs-jobs.md / decision page / tokyo night</p>
+  <div class="frame">
+    <div class="topbar"><span class="logo">bITdevKit</span><span>Home</span><span>Get started</span><span>Why</span><span>Architecture</span><span>Docs</span><span class="on">Guides</span><span>Examples</span><span class="search">Search</span></div>
+    <div class="page">
+      <nav class="nav">
+        <div class="group">Guides</div>
+        <a href="#">Guides</a>
+        <a href="#">Messaging or Queueing</a>
+        <a href="#">Repository or ActiveEntity</a>
+        <a href="#">Pipeline or Orchestration</a>
+        <a href="#">Blob Storage or Document Storage</a>
+        <a href="#">Jobs or Startup Tasks</a>
+        <a href="#">Where to Put Business Logic</a>
+        <a href="#">When to Use Domain Events</a>
+        <a href="#">Requester or Notifier</a>
+        <a href="#" class="on">Queueing or Jobs</a>
+        <a href="#">Domain Events or Application Events</a>
+        <a href="#">Change History or Event Sourcing</a>
+        <a href="#">Repository or Document Storage</a>
+        <a href="#">Direct Call or Requester</a>
+        <a href="#">Retry or Compensation</a>
+        <a href="#">Result&lt;T&gt; or plain return type</a>
+      </nav>
+      <article class="md-content md-typeset">
+        <h1><img src="../../../assets/features/queueing.svg" alt=""><img src="../../../assets/features/jobs.svg" alt="">Queueing or Jobs</h1>
+        <p>Queueing dispatches work items to a logical consumer. Jobs manages job definitions, triggers, occurrences, and execution attempts. Both can run background work.</p>
+        <div class="choice-fork">
+          <section class="choice-card">
+            <h2><img src="../../../assets/features/queueing.svg" alt="">Choose Queueing when</h2>
+            <ul>
+              <li>a producer sends a work item that one registered handler owns</li>
+              <li>producers and consumers communicate through a queue contract</li>
+              <li>a queue transport or competing workers fit the deployment</li>
+              <li>waiting work, subscriptions, and queue controls are the main operational concerns</li>
+            </ul>
+            <p><code>IQueueBroker</code> enqueues messages for <code>IQueueMessageHandler&lt;TMessage&gt;</code> implementations. Each queued message type has one logical handler registration, even when several workers compete for work.</p>
+          </section>
+          <section class="choice-card">
+            <h2><img src="../../../assets/features/jobs.svg" alt="">Choose Jobs when</h2>
+            <ul>
+              <li>work runs on a recurring schedule, calendar, delay, or manual trigger</li>
+              <li>operators need to inspect occurrences, attempts, and execution history</li>
+              <li>job-level concurrency, chaining, batches, or interruption matter</li>
+              <li>accepted events should create scheduler-managed work</li>
+            </ul>
+            <p><code>IJobSchedulerService</code> dispatches registered jobs. A manual job can fit even without a recurring schedule when execution history and scheduler controls matter.</p>
+          </section>
+        </div>
+        <h2>Comparison</h2>
+        <div class="cmp">
+          <table>
+            <thead><tr><th>Concern</th><th>Queueing</th><th>Jobs</th></tr></thead>
+            <tbody>
+              <tr><td>Main contract</td><td>Work message and its consumer</td><td>Job definition and triggers</td></tr>
+              <tr><td>Unit of work</td><td>Queued message</td><td>Occurrence with execution attempts</td></tr>
+              <tr><td>Timing</td><td>Consumer processes available work according to broker semantics</td><td>Trigger and scheduler determine when work becomes due</td></tr>
+              <tr><td>Operations</td><td>Waiting messages, subscriptions, retry, archive, and pause controls</td><td>Run history, statistics, trigger, pause, resume, and interrupt</td></tr>
+              <tr><td>Typical use</td><td>Generate a report from an incoming work item</td><td>Run nightly cleanup or a scheduled import</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h2>Related features</h2>
+        <ul class="related-strip">
+          <li><a href="#"><img src="../../../assets/features/queueing.svg" alt="">Queueing</a></li>
+          <li><a href="#"><img src="../../../assets/features/jobs.svg" alt="">Jobs</a></li>
+          <li><a href="#"><img src="../../../assets/features/messaging.svg" alt=""><img src="../../../assets/features/queueing.svg" alt="">Messaging or Queueing</a></li>
+          <li><a href="#"><img src="../../../assets/features/jobs.svg" alt=""><img src="../../../assets/features/startup-tasks.svg" alt="">Jobs or Startup Tasks</a></li>
+        </ul>
+      </article>
+      <aside class="toc">
+        <b>On this page</b>
+        <a href="#" class="on">Choose Queueing when</a><a href="#">Choose Jobs when</a><a href="#">Comparison</a><a href="#">Persistence and repeated execution</a><a href="#">Example</a><a href="#">Related features</a>
+      </aside>
+    </div>
+    <footer class="md-footer">
+      <nav class="md-footer__inner" aria-label="Footer">
+        <a class="md-footer__link md-footer__link--prev" href="#" aria-label="Previous: Requester or Notifier"><div class="md-footer__button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg></div><div class="md-footer__title"><span class="md-footer__direction">Previous</span><div class="md-ellipsis">Requester or Notifier</div></div></a>
+        <a class="md-footer__link md-footer__link--next" href="#" aria-label="Next: Domain Events or Application Events"><div class="md-footer__title"><span class="md-footer__direction">Next</span><div class="md-ellipsis">Domain Events or Application Events</div></div><div class="md-footer__button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg></div></a>
+      </nav>
+    </footer>
+  </div>
+</section>
+
+<!-- ======================================================================
+     09 CURATED GUIDES
+     ====================================================================== -->
+<section class="artboard" id="site-pages" data-theme="tokyo-night">
+  <p class="artboard-label">09 / agent-support-guide.md, templates.md / curated guides / tokyo night</p>
+  <div class="pair-row">
+    <div class="frame" data-theme="tokyo-night">
+      <div class="theme-name">agent-support-guide.md</div>
+      <div class="md-typeset">
+        <h2>Prompt library</h2>
+        <p>State what the agent must inspect first, what it can change, and when it must wait for approval. Runtime prompts require the application and <code>bdk mcp</code> to be running. Documentation, API reference, and guidance prompts work without a running application.</p>
+        <div class="prompt-list">
+          <h3>Runtime orientation</h3>
+          <div class="highlight"><button class="md-clipboard" type="button" title="Copy to clipboard" aria-label="Copy to clipboard"></button><pre><code><span class="ln">Use the bdk MCP tools to verify the selected runtime. Run the MCP self-test, inspect the available capabilities, and summarize which diagnostics are available before changing code.</span></code></pre></div>
+          <div class="highlight"><button class="md-clipboard" type="button" title="Copy to clipboard" aria-label="Copy to clipboard"></button><pre><code><span class="ln">Use bdk MCP to check whether this application exposes logs, operation and request profiling, Blob Storage diagnostics, jobs, messaging, queueing, orchestrations, and project-owned operations. Tell me which areas are available and which are not.</span></code></pre></div>
+          <h3>Work in a Git worktree</h3>
+          <div class="highlight"><button class="md-clipboard" type="button" title="Copy to clipboard" aria-label="Copy to clipboard"></button><pre><code><span class="ln">Start the application of this worktree with bdk dev run. Use bdk_runtimes_current to get its URL, and confirm the selected runtime belongs to this worktree before testing in the browser.</span></code></pre></div>
+          <h3>Debug a local feature</h3>
+          <div class="highlight"><button class="md-clipboard" type="button" title="Copy to clipboard" aria-label="Copy to clipboard"></button><pre><code><span class="ln">Use bdk MCP to inspect the latest errors from the running app. For the newest error, use bdk_investigate_correlation to inspect related logs and operation recordings. Summarize the evidence and point me to the most likely code area.</span></code></pre></div>
+          <div class="highlight"><button class="md-clipboard" type="button" title="Copy to clipboard" aria-label="Copy to clipboard"></button><pre><code><span class="ln">I just reproduced a bug locally. Use bdk MCP to tail recent warning and error logs from the last 10 minutes, then suggest the smallest code change to investigate first.</span></code></pre></div>
+        </div>
+      </div>
+    </div>
+    <div class="frame" data-theme="tokyo-night">
+      <div class="theme-name">templates.md</div>
+      <div class="md-typeset path-a-scope">
+        <div class="admonition path-a">
+          <p class="admonition-title">Path A: new solution</p>
+          <div class="path-pager"><a href="#"><b>01</b>Walkthrough</a><span class="sep">/</span><a href="#" aria-current="page"><b>02</b>Templates reference</a></div>
+        </div>
+        <div class="admonition verify">
+          <p class="admonition-title">Check it</p>
+          <p>You should see entries for the <code>bITdevKit Solution</code> and <code>bITdevKit Module</code> templates.</p>
+        </div>
+        <h2>Project structure</h2>
+        <div class="solution-tree" role="img" aria-label="Solution template structure">
+          <div><span class="br"></span><span class="dir">SolutionName/</span></div>
+          <div><span class="br">├─ </span><span class="dir">src/Modules/ModuleName/</span></div>
+          <div><span class="br">│  ├─ </span><span class="dir">ModuleName.Application</span><span class="fill"></span><span class="layer layer-application">application</span></div>
+          <div><span class="br">│  ├─ </span><span class="dir">ModuleName.Domain</span><span class="fill"></span><span class="layer layer-domain">domain</span></div>
+          <div><span class="br">│  ├─ </span><span class="dir">ModuleName.Infrastructure</span><span class="fill"></span><span class="layer layer-infrastructure">infrastructure</span></div>
+          <div><span class="br">│  └─ </span><span class="dir">ModuleName.Presentation</span><span class="fill"></span><span class="layer layer-presentation">presentation</span></div>
+          <div><span class="br">├─ </span><span class="dir">src/Presentation.Web.Server</span><span class="fill"></span><span class="layer layer-host">host</span></div>
+          <div><span class="br">├─ </span><span class="dir">tests/ModuleName/</span></div>
+          <div><span class="br">│  ├─ </span><span class="dir">ModuleName.IntegrationTests</span><span class="fill"></span><span class="layer layer-tests">tests</span></div>
+          <div><span class="br">│  └─ </span><span class="dir">ModuleName.UnitTests</span><span class="fill"></span><span class="layer layer-tests">tests</span></div>
+          <div><span class="br">└─ </span><span class="dir">SolutionName.slnx</span></div>
+        </div>
+        <h2>Onboarding path</h2>
+        <ol class="flow-strip">
+          <li><a href="#"><b>01</b><span>Read the walkthrough</span></a></li>
+          <li><a href="#"><b>02</b><span>Install templates</span><code>dotnet new install</code></a></li>
+          <li><a href="#"><b>03</b><span>Create a solution or module</span><code>dotnet new bdksolution</code></a></li>
+          <li><a href="#"><b>04</b><span>Continue to the docs</span><code>reference/</code></a></li>
+        </ol>
+        <nav class="next-step-strip">
+          <a href="#">Architecture</a>
+          <a href="#">Feature guides</a>
+          <a href="#">Agent support</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     06 THEME CHECK
+     ====================================================================== -->
+<section class="artboard" id="themes">
+  <p class="artboard-label">06 / theme check / tokyo night, white, retro 82</p>
+  <div class="theme-row">
+    <div class="frame" data-theme="tokyo-night">
+      <div class="theme-name">tokyo night</div>
+      <div class="md-content md-typeset">
+        <div class="path-fork">
+          <section class="path-card path-a"><div class="path-card__head"><span class="path-badge">A</span><span class="path-card__kicker">Path A / new solution</span></div><h3>Start from the templates</h3><div class="path-card__cmd">dotnet new bdksolution</div><a class="cta-button path-card__cta" href="#">Create a solution<span>-&gt;</span></a></section>
+          <section class="path-card path-b"><div class="path-card__head"><span class="path-badge">B</span><span class="path-card__kicker">Path B / existing app</span></div><h3>Add DevKit to your app</h3><div class="path-card__cmd">dotnet add package ...Web</div><a class="cta-button path-card__cta" href="#">Add DevKit to an app<span>-&gt;</span></a></section>
+        </div>
+        <div class="path-b-scope">
+          <div class="admonition path-b"><p class="admonition-title">Path B: existing app</p><div class="path-pager"><a href="#" aria-current="page"><b>01</b>Basics</a><span class="sep">/</span><a href="#"><b>02</b>Add features</a></div></div>
+          <div class="stack-meter"><span class="stack-meter__label">Step 7 of 10</span><ol><li class="is-done"></li><li class="is-done"></li><li class="is-done"></li><li class="is-done"></li><li class="is-done"></li><li class="is-done"></li><li aria-current="step"></li><li></li><li></li><li></li></ol></div>
+        </div>
+      </div>
+      <div class="md-typeset theme-facts"><dl class="bdk-facts">
+        <div><dt>Decide</dt><dd><a href="#">Messaging or Queueing</a><a href="#">Queueing or Jobs</a></dd></div>
+        <div><dt>Existing app</dt><dd><a href="#">Queueing recipe</a></dd></div>
+        <div><dt>Dashboard</dt><dd><a href="#">Dashboard guide</a></dd></div>
+      </dl></div>
+    </div>
+    <div class="frame" data-theme="white">
+      <div class="theme-name">white (monochrome)</div>
+      <div class="md-content md-typeset">
+        <div class="path-fork">
+          <section class="path-card path-a"><div class="path-card__head"><span class="path-badge">A</span><span class="path-card__kicker">Path A / new solution</span></div><h3>Start from the templates</h3><div class="path-card__cmd">dotnet new bdksolution</div><a class="cta-button path-card__cta" href="#">Create a solution<span>-&gt;</span></a></section>
+          <section class="path-card path-b"><div class="path-card__head"><span class="path-badge">B</span><span class="path-card__kicker">Path B / existing app</span></div><h3>Add DevKit to your app</h3><div class="path-card__cmd">dotnet add package ...Web</div><a class="cta-button path-card__cta" href="#">Add DevKit to an app<span>-&gt;</span></a></section>
+        </div>
+        <div class="path-b-scope">
+          <div class="admonition path-b"><p class="admonition-title">Path B: existing app</p><div class="path-pager"><a href="#" aria-current="page"><b>01</b>Basics</a><span class="sep">/</span><a href="#"><b>02</b>Add features</a></div></div>
+          <div class="stack-meter"><span class="stack-meter__label">Step 7 of 10</span><ol><li class="is-done"></li><li class="is-done"></li><li class="is-done"></li><li class="is-done"></li><li class="is-done"></li><li class="is-done"></li><li aria-current="step"></li><li></li><li></li><li></li></ol></div>
+        </div>
+      </div>
+      <div class="md-typeset theme-facts"><dl class="bdk-facts">
+        <div><dt>Decide</dt><dd><a href="#">Messaging or Queueing</a><a href="#">Queueing or Jobs</a></dd></div>
+        <div><dt>Existing app</dt><dd><a href="#">Queueing recipe</a></dd></div>
+        <div><dt>Dashboard</dt><dd><a href="#">Dashboard guide</a></dd></div>
+      </dl></div>
+    </div>
+    <div class="frame" data-theme="retro-82">
+      <div class="theme-name">retro 82</div>
+      <div class="md-content md-typeset">
+        <div class="path-fork">
+          <section class="path-card path-a"><div class="path-card__head"><span class="path-badge">A</span><span class="path-card__kicker">Path A / new solution</span></div><h3>Start from the templates</h3><div class="path-card__cmd">dotnet new bdksolution</div><a class="cta-button path-card__cta" href="#">Create a solution<span>-&gt;</span></a></section>
+          <section class="path-card path-b"><div class="path-card__head"><span class="path-badge">B</span><span class="path-card__kicker">Path B / existing app</span></div><h3>Add DevKit to your app</h3><div class="path-card__cmd">dotnet add package ...Web</div><a class="cta-button path-card__cta" href="#">Add DevKit to an app<span>-&gt;</span></a></section>
+        </div>
+        <div class="path-b-scope">
+          <div class="admonition path-b"><p class="admonition-title">Path B: existing app</p><div class="path-pager"><a href="#" aria-current="page"><b>01</b>Basics</a><span class="sep">/</span><a href="#"><b>02</b>Add features</a></div></div>
+          <div class="stack-meter"><span class="stack-meter__label">Step 7 of 10</span><ol><li class="is-done"></li><li class="is-done"></li><li class="is-done"></li><li class="is-done"></li><li class="is-done"></li><li class="is-done"></li><li aria-current="step"></li><li></li><li></li><li></li></ol></div>
+        </div>
+      </div>
+      <div class="md-typeset theme-facts"><dl class="bdk-facts">
+        <div><dt>Decide</dt><dd><a href="#">Messaging or Queueing</a><a href="#">Queueing or Jobs</a></dd></div>
+        <div><dt>Existing app</dt><dd><a href="#">Queueing recipe</a></dd></div>
+        <div><dt>Dashboard</dt><dd><a href="#">Dashboard guide</a></dd></div>
+      </dl></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    function apply() {
+      var id = location.hash.replace('#', '');
+      var boards = document.querySelectorAll('.artboard');
+      var match = id && document.getElementById(id) && document.getElementById(id).classList.contains('artboard');
+      document.querySelector('.board-index').style.display = match ? 'none' : '';
+      boards.forEach(function (b) { b.style.display = !match || b.id === id ? '' : 'none'; });
+    }
+    window.addEventListener('hashchange', apply);
+    apply();
+  })();
+</script>
+</body>
+</html>

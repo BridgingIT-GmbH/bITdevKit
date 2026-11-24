@@ -57,15 +57,31 @@ dlldata.c
 
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
+*-artifacts/
+# Generated benchmark measurements, collections, baselines and evidence
+/benchmarks/**/*.json
+/benchmarks/**/collections/
+/benchmarks/**/evidence/
+/benchmarks/**/results/
+# Local verification helpers
+/tests/Presentation.UnitTests/Web/Client/AppState/verify-appstate-package.*
+/tests/Presentation.UnitTests/Web/Client/AppState/appstate-browser.test.cjs
+/benchmarks/Presentation.Benchmarks/AppState/compare-appstate-benchmarks.*
+*.trx
+*-report.csv
+*-report-full*.json
+*-report.html
+*-report-github.md
 .github/pages/
 docs/site/reference/
+docs/site/assets/appstate/
 docs/site/assets/dashboard/
 docs/site/assets/features/
 
 # .NET Core
 project.lock.json
 project.fragment.lock.json
-artifacts/
+[Aa]rtifacts/
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt

@@ -12,6 +12,90 @@ using Microsoft.Extensions.DependencyInjection;
 [UnitTest("Application")]
 public sealed class BlobStoreTransformBehaviorTests
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task TransformBehavior_WithUnsupportedProperties_FailsBeforeReadingProvider(bool encrypt)
+    {
+        var inner = Substitute.For<IBlobStoreClient>();
+        IBlobStoreClient sut = encrypt
+            ? new EncryptionBlobStoreClientBehavior(inner, new DictionaryEncryptionKeyProvider("key", new Dictionary<string, byte[]> { ["key"] = CreateKey() }))
+            : new CompressionBlobStoreClientBehavior(inner);
+        var result = await sut.UpdatePropertiesAsync(new() { Key = new("reports", "invalid"), Properties = new() { ["bad"] = new object() } });
+        result.HasError<BlobStoreValidationError>().ShouldBeTrue();
+        await inner.DidNotReceiveWithAnyArgs().GetPropertiesAsync(null, CancellationToken.None);
+    }
+
+    [Theory]
+    [InlineData("compression", false)]
+    [InlineData("compression", true)]
+    [InlineData("encryption", false)]
+    [InlineData("encryption", true)]
+    [InlineData("content-type", false)]
+    [InlineData("content-type", true)]
+    [InlineData("combined", false)]
+    [InlineData("combined", true)]
+    public async Task UploadAsync_ThroughTransforms_PreservesWholeItemVersionCondition(string transform, bool stale)
+    {
+        // Arrange
+        var key = new BlobKey("reports", "conditional.txt");
+        var provider = new InMemoryBlobStoreProvider();
+        var inner = new BlobStoreClient(InMemoryBlobStoreProvider.ProviderName, provider);
+        var keys = new DictionaryEncryptionKeyProvider("unit-key", new Dictionary<string, byte[]> { ["unit-key"] = CreateKey() });
+        IBlobStoreClient sut = transform switch
+        {
+            "compression" => new CompressionBlobStoreClientBehavior(inner),
+            "encryption" => new EncryptionBlobStoreClientBehavior(inner, keys),
+            "content-type" => new ContentTypeDetectionBlobStoreClientBehavior(inner),
+            _ => new ContentTypeDetectionBlobStoreClientBehavior(new CompressionBlobStoreClientBehavior(new EncryptionBlobStoreClientBehavior(inner, keys)))
+        };
+        var original = await sut.UploadAsync(new()
+        {
+            Key = key,
+            Content = new MemoryStream(Encoding.UTF8.GetBytes("original"))
+        });
+        original.IsSuccess.ShouldBeTrue();
+        var current = await sut.UpdatePropertiesAsync(new()
+        {
+            Key = key,
+            IfMatchETag = original.Value.ETag,
+            ContentType = ContentType.TXT,
+            Properties = new() { ["reviewed"] = true }
+        });
+        current.IsSuccess.ShouldBeTrue();
+        var before = await provider.GetPropertiesAsync(key);
+
+        // Act
+        var result = await sut.UploadAsync(new()
+        {
+            Key = key,
+            Content = new MemoryStream(Encoding.UTF8.GetBytes("replacement")),
+            IfMatchETag = stale ? original.Value.ETag : current.Value.ETag
+        });
+        var downloaded = await sut.DownloadAsync(key);
+        var after = await provider.GetPropertiesAsync(key);
+
+        // Assert
+        result.IsSuccess.ShouldBe(!stale);
+        downloaded.IsSuccess.ShouldBeTrue();
+        await using var download = downloaded.Value;
+        using var reader = new StreamReader(download.Content, Encoding.UTF8);
+        (await reader.ReadToEndAsync()).ShouldBe(stale ? "original" : "replacement");
+        if (stale)
+        {
+            result.HasError<BlobStoreConflictError>().ShouldBeTrue();
+            after.Value.ETag.ShouldBe(before.Value.ETag);
+            after.Value.ContentHash.ShouldBe(before.Value.ContentHash);
+            after.Value.Length.ShouldBe(before.Value.Length);
+            download.Info.Properties.Get<bool>("reviewed").ShouldBeTrue();
+        }
+        else
+        {
+            result.Value.ETag.ShouldNotBe(current.Value.ETag);
+            download.Info.ETag.ShouldBe(result.Value.ETag);
+        }
+    }
+
     [Fact]
     public async Task CompressionBehavior_WithUploadAndDownload_RoundtripsLogicalContentAndScrubsMetadata()
     {
@@ -44,8 +128,8 @@ public sealed class BlobStoreTransformBehaviorTests
         upload.Value.Properties.Contains("bdk_compression_algorithm").ShouldBeFalse();
 
         rawProperties.Value.ContentType.ShouldBe(ContentType.BIN);
-        rawProperties.Value.Properties.Contains("bdk_compression_algorithm").ShouldBeTrue();
-        rawProperties.Value.Properties.Get<string>("bdk_compression_content_hash").ShouldBe(expectedHash);
+        rawProperties.Value.TransformMetadata.Contains("bdk_compression_algorithm").ShouldBeTrue();
+        rawProperties.Value.TransformMetadata.Get<string>("bdk_compression_content_hash").ShouldBe(expectedHash);
 
         await using (rawDownload.Value)
         {
@@ -102,9 +186,9 @@ public sealed class BlobStoreTransformBehaviorTests
         upload.Value.Properties.Contains("bdk_encryption_algorithm").ShouldBeFalse();
 
         rawProperties.Value.ContentType.ShouldBe(ContentType.BIN);
-        rawProperties.Value.Properties.Contains("bdk_encryption_algorithm").ShouldBeTrue();
-        rawProperties.Value.Properties.Get<string>("bdk_encryption_content_hash").ShouldBe(expectedHash);
-        rawProperties.Value.Properties.Get<string>("bdk_encryption_key_id").ShouldBe("unit-key");
+        rawProperties.Value.TransformMetadata.Contains("bdk_encryption_algorithm").ShouldBeTrue();
+        rawProperties.Value.TransformMetadata.Get<string>("bdk_encryption_content_hash").ShouldBe(expectedHash);
+        rawProperties.Value.TransformMetadata.Get<string>("bdk_encryption_key_id").ShouldBe("unit-key");
 
         await using (rawDownload.Value)
         {
@@ -259,7 +343,7 @@ public sealed class BlobStoreTransformBehaviorTests
         update.Value.ContentType.ShouldBe(ContentType.JSON);
         update.Value.Properties.Get<bool>("reviewed").ShouldBeTrue();
         update.Value.Properties.Contains("bdk_compression_algorithm").ShouldBeFalse();
-        rawProperties.Value.Properties.Contains("bdk_compression_algorithm").ShouldBeTrue();
+        rawProperties.Value.TransformMetadata.Contains("bdk_compression_algorithm").ShouldBeTrue();
 
         await using (download.Value)
         {
@@ -269,6 +353,38 @@ public sealed class BlobStoreTransformBehaviorTests
             download.Value.Info.ContentType.ShouldBe(ContentType.JSON);
             download.Value.Info.Properties.Get<bool>("reviewed").ShouldBeTrue();
         }
+    }
+
+    [Fact]
+    public async Task TransformedProperties_WithClearPreserveAndFormerReservedNames_RemainIndependent()
+    {
+        var provider = new InMemoryBlobStoreProvider();
+        var inner = new BlobStoreClient(InMemoryBlobStoreProvider.ProviderName, provider);
+        var keys = new DictionaryEncryptionKeyProvider("key", new Dictionary<string, byte[]> { ["key"] = CreateKey() });
+        IBlobStoreClient sut = new CompressionBlobStoreClientBehavior(new EncryptionBlobStoreClientBehavior(inner, keys));
+        var key = new BlobKey("reports", "independent");
+        var source = Encoding.UTF8.GetBytes(new string('a', 1024));
+        var upload = await sut.UploadAsync(new() { Key = key, Content = new MemoryStream(source), Properties = new() { ["bdk_encryption_algorithm"] = "user-value" } });
+        upload.IsSuccess.ShouldBeTrue();
+        upload.Value.Properties.Get<string>("bdk_encryption_algorithm").ShouldBe("user-value");
+        (await sut.UpdatePropertiesAsync(new() { Key = key })).Value.Properties.Get<string>("bdk_encryption_algorithm").ShouldBe("user-value");
+        (await sut.UpdatePropertiesAsync(new() { Key = key, Properties = new() })).Value.Properties.Count.ShouldBe(0);
+        (await provider.GetPropertiesAsync(key)).Value.TransformMetadata.Count.ShouldBeGreaterThan(0);
+        var page = await sut.ListPageAsync(new() { Container = key.Container, Prefix = key.Name });
+        page.Value.Items.Single().Properties.Count.ShouldBe(0);
+        var batch = await sut.DownloadBytesManyAsync([key, key]);
+        batch.IsSuccess.ShouldBeTrue();
+        batch.Value.ShouldAllBe(item => item.Result.Value.Bytes.SequenceEqual(source));
+        var read = await sut.DownloadAsync(key);
+        read.IsSuccess.ShouldBeTrue();
+        await using var download = read.Value;
+        using var buffer = new MemoryStream();
+        await download.Content.CopyToAsync(buffer);
+        buffer.ToArray().ShouldBe(source);
+        download.Info.Properties.Count.ShouldBe(0);
+        System.Text.Json.JsonSerializer.Serialize(download.Info).ShouldNotContain("TransformMetadata");
+        (await inner.UploadAsync(new() { Key = key, Content = new MemoryStream([7]) })).IsSuccess.ShouldBeTrue();
+        (await provider.GetPropertiesAsync(key)).Value.TransformMetadata.Count.ShouldBe(0);
     }
 
     private static byte[] CreateKey() =>

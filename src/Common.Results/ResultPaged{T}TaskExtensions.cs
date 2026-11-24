@@ -115,16 +115,15 @@ public static class ResultPagedFunctionTaskExtensions
         this Task<ResultPaged<T>> resultTask,
         Func<T, Result<TOutput>> operation)
     {
-        if (operation is null)
-        {
-            return ResultPaged<TOutput>.Failure()
-                .WithError(new Error("Operation cannot be null"));
-        }
-
         try
         {
-            var result = await resultTask;
+            var result = await resultTask.AnyContext();
             return result.Collect(operation);
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultPaged<TOutput>.Failure()
+                .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
@@ -186,16 +185,10 @@ public static class ResultPagedFunctionTaskExtensions
         Func<T, CancellationToken, Task<Result<TOutput>>> operation,
         CancellationToken cancellationToken = default)
     {
-        if (operation is null)
-        {
-            return ResultPaged<TOutput>.Failure()
-                .WithError(new Error("Operation cannot be null"));
-        }
-
         try
         {
-            var result = await resultTask;
-            return await result.CollectAsync(operation, cancellationToken);
+            var result = await resultTask.AnyContext();
+            return await result.CollectAsync(operation, cancellationToken).AnyContext();
         }
         catch (OperationCanceledException)
         {
@@ -230,17 +223,15 @@ public static class ResultPagedFunctionTaskExtensions
         this Task<ResultPaged<T>> resultTask,
         Func<IEnumerable<T>, IEnumerable<TNew>> mapper)
     {
-        if (mapper is null)
-        {
-            return ResultPaged<TNew>.Failure()
-                .WithError(new Error("Mapper cannot be null"));
-        }
-
         try
         {
-            var result = await resultTask;
+            var result = await resultTask.AnyContext();
 
             return result.Map(mapper);
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultPaged<TNew>.Failure().WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
@@ -277,17 +268,11 @@ public static class ResultPagedFunctionTaskExtensions
         Func<IEnumerable<T>, CancellationToken, Task<IEnumerable<TNew>>> mapper,
         CancellationToken cancellationToken = default)
     {
-        if (mapper is null)
-        {
-            return ResultPaged<TNew>.Failure()
-                .WithError(new Error("Mapper cannot be null"));
-        }
-
         try
         {
-            var result = await resultTask;
+            var result = await resultTask.AnyContext();
 
-            return await result.MapAsync(mapper, cancellationToken);
+            return await result.MapAsync(mapper, cancellationToken).AnyContext();
         }
         catch (OperationCanceledException)
         {
@@ -556,17 +541,15 @@ public static class ResultPagedFunctionTaskExtensions
         this Task<ResultPaged<T>> resultTask,
         Func<IEnumerable<T>, ResultPaged<TNew>> binder)
     {
-        if (binder is null)
-        {
-            return ResultPaged<TNew>.Failure()
-                .WithError(new Error("Binder cannot be null"));
-        }
-
         try
         {
-            var result = await resultTask;
+            var result = await resultTask.AnyContext();
 
             return result.Bind(binder);
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultPaged<TNew>.Failure().WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
@@ -611,17 +594,11 @@ public static class ResultPagedFunctionTaskExtensions
         Func<IEnumerable<T>, CancellationToken, Task<ResultPaged<TNew>>> binder,
         CancellationToken cancellationToken = default)
     {
-        if (binder is null)
-        {
-            return ResultPaged<TNew>.Failure()
-                .WithError(new Error("Binder cannot be null"));
-        }
-
         try
         {
-            var result = await resultTask;
+            var result = await resultTask.AnyContext();
 
-            return await result.BindAsync(binder, cancellationToken);
+            return await result.BindAsync(binder, cancellationToken).AnyContext();
         }
         catch (OperationCanceledException)
         {
@@ -667,6 +644,10 @@ public static class ResultPagedFunctionTaskExtensions
             var result = await resultTask;
 
             return result.AndThen(operation);
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultPaged<T>.Failure().WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
@@ -1302,42 +1283,14 @@ public static class ResultPagedFunctionTaskExtensions
         IValidator<T> validator,
         Action<ValidationStrategy<T>> options = null)
     {
-        if (validator is null)
-        {
-            return ResultPaged<T>.Failure()
-                .WithError(new Error("Validator cannot be null"));
-        }
-
         try
         {
-            var result = await resultTask;
-
-            if (!result.IsSuccess)
-            {
-                return result;
-            }
-
-            var errors = new List<IResultError>();
-            foreach (var item in result.Value)
-            {
-                var validationResult = options is null
-                    ? validator.Validate(item)
-                    : validator.Validate(item, options);
-
-                if (!validationResult.IsValid)
-                {
-                    errors.Add(new FluentValidationError(validationResult));
-                }
-            }
-
-            if (errors.Any())
-            {
-                return ResultPaged<T>.Failure(result.Value)
-                    .WithErrors(errors)
-                    .WithMessages(result.Messages);
-            }
-
-            return result;
+            var result = await resultTask.AnyContext();
+            return result.Validate(validator, options);
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultPaged<T>.Failure().WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
@@ -1404,44 +1357,10 @@ public static class ResultPagedFunctionTaskExtensions
         Action<ValidationStrategy<T>> options = null,
         CancellationToken cancellationToken = default)
     {
-        if (validator is null)
-        {
-            return ResultPaged<T>.Failure()
-                .WithError(new Error("Validator cannot be null"));
-        }
-
         try
         {
-            var result = await resultTask;
-
-            if (!result.IsSuccess)
-            {
-                return result;
-            }
-
-            var errors = new List<IResultError>();
-            foreach (var item in result.Value)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var validationResult = options is null
-                    ? await validator.ValidateAsync(item, cancellationToken)
-                    : await validator.ValidateAsync(item, opt => options(opt), cancellationToken);
-
-                if (!validationResult.IsValid)
-                {
-                    errors.Add(new FluentValidationError(validationResult));
-                }
-            }
-
-            if (errors.Any())
-            {
-                return ResultPaged<T>.Failure(result.Value)
-                    .WithErrors(errors)
-                    .WithMessages(result.Messages);
-            }
-
-            return result;
+            var result = await resultTask.AnyContext();
+            return await result.ValidateAsync(validator, options, cancellationToken).AnyContext();
         }
         catch (OperationCanceledException)
         {

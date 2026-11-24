@@ -18,7 +18,10 @@ public sealed class DocumentStorageDiagnosticsService(
     : IDocumentStorageDiagnosticsService
 {
     /// <inheritdoc />
-    public async Task<Result<DocumentStorageDiagnosticsSnapshot>> CaptureAsync(CancellationToken cancellationToken = default)
+    public Task<Result<DocumentStorageDiagnosticsSnapshot>> CaptureAsync(CancellationToken cancellationToken = default) => this.CaptureAsync(false, cancellationToken);
+
+    /// <inheritdoc />
+    public async Task<Result<DocumentStorageDiagnosticsSnapshot>> CaptureAsync(bool includeDimensionNameCounts, CancellationToken cancellationToken = default)
     {
         var clients = new List<DocumentStorageClientDiagnostics>();
         foreach (var descriptor in factory.GetDescriptors())
@@ -27,8 +30,19 @@ public sealed class DocumentStorageDiagnosticsService(
             var health = accessor is null
                 ? Result<bool>.Failure(new DocumentStoreProviderError("The keyed client accessor is unavailable."))
                 : await accessor.ExistsAsync(new("__bdk/healthcheck", "probe"), cancellationToken);
+            DocumentDimensionDiagnostics dimensions = null;
+            string dimensionError = null;
+            if (descriptor.Capabilities.Dimensions.SupportsDimensions && accessor is IDocumentDimensionDiagnosticsAccessor inspector)
+            {
+                var inspection = await inspector.GetDimensionDiagnosticsAsync(includeDimensionNameCounts, cancellationToken).ConfigureAwait(false);
+                if (inspection.IsSuccess) dimensions = inspection.Value;
+                else dimensionError = "Dimension diagnostics are unavailable.";
+            }
+
             clients.Add(new()
             {
+                DimensionDiagnostics = dimensions,
+                DimensionDiagnosticsError = dimensionError,
                 Name = descriptor.Name,
                 ProviderName = descriptor.ProviderName,
                 DocumentType = descriptor.TypeIdentity.Value,

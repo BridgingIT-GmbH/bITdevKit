@@ -56,6 +56,17 @@ We use the **MADR (Markdown Architectural Decision Records)** format for consist
 | [ADR-0034](0034-sequential-ef-document-row-ids.md) | Let EF Core Generate Sequential Row Ids for Documents | Accepted |
 | [ADR-0035](0035-batched-ef-document-reads-and-bulk-writes.md) | Batch EF Document Reads and Writes Behind Optional Provider Interfaces | Accepted |
 | [ADR-0036](0036-keyset-and-filtered-indexes-for-ef-documents.md) | Add a Keyset Index and a Filtered Expiration Index for EF Documents | Accepted |
+| [ADR-0037](0037-filesystem-storage-provider-composition.md) | Use Direct File I/O for Filesystem Storage Providers | Accepted; deployment qualification separate |
+| [ADR-0038](0038-shared-filesystem-infrastructure-for-file-storage.md) | Share filesystem infrastructure across storage features | Accepted |
+| [ADR-0039](0039-independent-advanced-application-caching.md) | Keep Advanced Application Caching Independent | Accepted |
+| [ADR-0040](0040-complete-cache-provider-per-collection.md) | Keep Cache Publication and Resource Guarantees in One Provider | Accepted |
+| [ADR-0041](0041-strict-authoritative-hot-cache-validation.md) | Validate Every Hot Cache Reuse Authoritatively | Accepted |
+| [ADR-0042](0042-cache-owned-background-workers.md) | Keep Cache Scheduling in Cache-Owned Workers | Accepted |
+| [ADR-0043](0043-native-blazor-appstate-lifecycle.md) | Integrate AppState With Native Blazor Persistence | Accepted |
+| [ADR-0044](0044-independent-storage-dimensions.md) | Add Feature-Owned Storage Dimensions | Accepted |
+| [ADR-0045](0045-bounded-attempt-all-blob-upload-batches.md) | Coordinate Bounded Blob Upload Batches | Accepted |
+| [ADR-0046](0046-shared-http-problem-details.md) | Use a Shared HTTP Problem Details Format | Proposed |
+
 ## When to Write an ADR
 
 Create an ADR when making decisions about:

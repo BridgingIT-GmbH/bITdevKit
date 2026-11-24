@@ -1,6 +1,5 @@
 namespace BridgingIT.DevKit.Cli;
 
-using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using BridgingIT.DevKit.Common;
@@ -52,7 +51,7 @@ public sealed class McpApiReferenceTools(IMcpApiReferenceSource source)
                 .Where(result => result.Score > 0)
                 .OrderByDescending(result => result.Score)
                 .ThenBy(result => result.Symbol.FullName, StringComparer.OrdinalIgnoreCase)
-                .Take(limit)
+                .Take(limit + 1)
                 .Select(result => new
                 {
                     result.Symbol.Uid,
@@ -71,15 +70,15 @@ public sealed class McpApiReferenceTools(IMcpApiReferenceSource source)
                 .ToArray();
 
             return McpResponse.Success(
-                results.Length == 0 ? $"No DevKit API reference symbols matched '{query}'." : $"Found {results.Length} DevKit API reference symbol(s) for '{query}'.",
+                results.Length == 0 ? $"No DevKit API reference symbols matched '{query}'." : $"Found {Math.Min(results.Length, limit)} DevKit API reference symbol(s) for '{query}'.",
                 new
                 {
                     query,
                     source = source.Name,
                     schemaVersion = index.SchemaVersion,
-                    results
+                    results = results.Take(limit).ToArray()
                 },
-                truncated: results.Length == limit,
+                truncated: results.Length > limit,
                 next: results.Length > 0
                     ? [new McpNextCall("bdk_api_get", new { uid = results[0].Uid })]
                     : [new McpNextCall("bdk_docs_search", new { query })]);
@@ -89,8 +88,8 @@ public sealed class McpApiReferenceTools(IMcpApiReferenceSource source)
             return McpResponse.Unavailable(
                 McpErrorCode.DocumentationUnavailable,
                 "DevKit API reference search is unavailable.",
-                exception.Message,
-                [new McpNextCall("bdk_docs_search", new { query })]);
+                exception.Message + " Rebuild the CLI with API generation enabled or reinstall the local bdk tool.",
+                [new McpNextCall("bdk_mcp_status", new { })]);
         }
     }
 
@@ -153,8 +152,8 @@ public sealed class McpApiReferenceTools(IMcpApiReferenceSource source)
             return McpResponse.Unavailable(
                 McpErrorCode.DocumentationUnavailable,
                 "DevKit API reference content is unavailable.",
-                exception.Message,
-                [new McpNextCall("bdk_api_search", new { query = uid })]);
+                exception.Message + " Rebuild the CLI with API generation enabled or reinstall the local bdk tool.",
+                [new McpNextCall("bdk_mcp_status", new { })]);
         }
     }
 
@@ -498,127 +497,6 @@ public sealed record McpApiReferenceReturn
     /// Gets or initializes the return description.
     /// </summary>
     public string Description { get; init; }
-}
-
-/// <summary>
-/// Reads DevKit API reference metadata from local Pages output or GitHub Pages.
-/// </summary>
-/// <example>
-/// <code>
-/// services.AddSingleton&lt;IMcpApiReferenceSource, GitHubPagesMcpApiReferenceSource&gt;();
-/// </code>
-/// </example>
-public sealed class GitHubPagesMcpApiReferenceSource(HttpClient httpClient, CliRuntimeContext context) : IMcpApiReferenceSource
-{
-    private const string BaseUrl = "https://bridgingit-gmbh.github.io/bITdevKit/api/";
-    private readonly SemaphoreSlim cacheLock = new(1, 1);
-    private McpApiReferenceIndex cache;
-    private DateTimeOffset cacheCreatedAt;
-
-    /// <inheritdoc />
-    public string Name => "official GitHub Pages API reference";
-
-    /// <inheritdoc />
-    public async Task<McpApiReferenceIndex> GetIndexAsync(CancellationToken cancellationToken)
-    {
-        await this.cacheLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-        try
-        {
-            if (this.cache is not null && DateTimeOffset.UtcNow - this.cacheCreatedAt < TimeSpan.FromMinutes(10))
-            {
-                return this.cache;
-            }
-
-            var indexJson = await this.GetIndexJsonAsync(cancellationToken).ConfigureAwait(false);
-            this.cache = JsonSerializer.Deserialize<McpApiReferenceIndex>(indexJson, CliJson.Options) ??
-                new McpApiReferenceIndex { SchemaVersion = 1, SiteUrl = BaseUrl };
-            this.cacheCreatedAt = DateTimeOffset.UtcNow;
-
-            return this.cache;
-        }
-        finally
-        {
-            this.cacheLock.Release();
-        }
-    }
-
-    /// <inheritdoc />
-    public async Task<McpApiReferenceSymbol> GetSymbolAsync(string uid, CancellationToken cancellationToken)
-    {
-        var index = await this.GetIndexAsync(cancellationToken).ConfigureAwait(false);
-        var entry = index.Symbols.FirstOrDefault(symbol => string.Equals(symbol.Uid, uid, StringComparison.OrdinalIgnoreCase));
-        if (entry is null)
-        {
-            return null;
-        }
-
-        var json = await this.GetDetailJsonAsync(entry.Detail, cancellationToken).ConfigureAwait(false);
-        using var document = JsonDocument.Parse(json);
-        if (document.RootElement.ValueKind == JsonValueKind.Object &&
-            document.RootElement.TryGetProperty("symbols", out _))
-        {
-            var page = JsonSerializer.Deserialize<McpApiReferenceSymbolPage>(json, CliJson.Options);
-            return page?.Symbols.FirstOrDefault(symbol => string.Equals(symbol.Uid, uid, StringComparison.OrdinalIgnoreCase)) ??
-                CreateSymbolFromIndex(index, entry);
-        }
-
-        var symbol = JsonSerializer.Deserialize<McpApiReferenceSymbol>(json, CliJson.Options);
-        return string.Equals(symbol?.Uid, uid, StringComparison.OrdinalIgnoreCase)
-            ? symbol
-            : CreateSymbolFromIndex(index, entry);
-    }
-
-    private static McpApiReferenceSymbol CreateSymbolFromIndex(McpApiReferenceIndex index, McpApiReferenceIndexSymbol entry)
-        => new()
-        {
-            Uid = entry.Uid,
-            Name = entry.Name,
-            FullName = entry.FullName,
-            Kind = entry.Kind,
-            Namespace = entry.Namespace,
-            Assembly = entry.Assembly,
-            Summary = entry.Summary,
-            Url = CombineUrl(index.SiteUrl, entry.Href),
-            Topics = entry.Topics
-        };
-
-    private async Task<string> GetIndexJsonAsync(CancellationToken cancellationToken)
-    {
-        var localPath = Path.Combine(context.Workspace.Path, ".github", "pages", "api", "agent-index.json");
-        if (File.Exists(localPath))
-        {
-            return await File.ReadAllTextAsync(localPath, cancellationToken).ConfigureAwait(false);
-        }
-
-        return await this.GetStringAsync(BaseUrl + "agent-index.json", cancellationToken).ConfigureAwait(false);
-    }
-
-    private async Task<string> GetDetailJsonAsync(string detail, CancellationToken cancellationToken)
-    {
-        var normalized = (detail ?? string.Empty).Replace('/', Path.DirectorySeparatorChar);
-        var localPath = Path.Combine(context.Workspace.Path, ".github", "pages", "api", normalized);
-        if (File.Exists(localPath))
-        {
-            return await File.ReadAllTextAsync(localPath, cancellationToken).ConfigureAwait(false);
-        }
-
-        return await this.GetStringAsync(CombineUrl(BaseUrl, detail), cancellationToken).ConfigureAwait(false);
-    }
-
-    private async Task<string> GetStringAsync(string url, CancellationToken cancellationToken)
-    {
-        using var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.UserAgent.Add(new ProductInfoHeaderValue("bdk-mcp", typeof(CliApplication).Assembly.GetName().Version?.ToString() ?? "1.0"));
-        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-        using var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-        response.EnsureSuccessStatusCode();
-
-        return await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-    }
-
-    private static string CombineUrl(string root, string relative)
-        => $"{(root ?? string.Empty).TrimEnd('/')}/{(relative ?? string.Empty).TrimStart('/')}";
 }
 
 /// <summary>

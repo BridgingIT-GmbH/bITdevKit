@@ -102,6 +102,13 @@ public partial class AzureBlobStoreProvider
             AzureBlobUploadRequest request,
             CancellationToken cancellationToken)
         {
+            if (!string.IsNullOrWhiteSpace(request.IfMatchETag) &&
+                (request.FailIfExists || request.IfMatchETag.Trim() == "*"))
+            {
+                throw new AzureBlobStoreBackendException(new BlobStoreValidationError(
+                    "An upload ETag must identify one version and cannot be combined with create-only."));
+            }
+
             var containerClient = this.GetContainerClient(key.Container);
             await containerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             var blobClient = containerClient.GetBlockBlobClient(key.Name);
@@ -136,25 +143,81 @@ public partial class AzureBlobStoreProvider
                     "ExpectedContentHash does not match uploaded content."));
             }
 
-            var metadata = new Dictionary<string, string>(request.Metadata, StringComparer.OrdinalIgnoreCase)
+            Dictionary<string, string> metadata = null;
+            Response<BlobContentInfo> response = null;
+            for (var attempt = 0; attempt < 3; attempt++)
             {
-                [request.ContentHashMetadataKey] = contentHash
-            };
-            var response = await blobClient.CommitBlockListAsync(
-                    staging.BlockIds,
-                    new CommitBlockListOptions
+                metadata = new Dictionary<string, string>(request.Metadata, StringComparer.OrdinalIgnoreCase)
+                {
+                    [request.ContentHashMetadataKey] = contentHash
+                };
+                BlobRequestConditions conditions = request.FailIfExists
+                    ? new() { IfNoneMatch = ETag.All }
+                    : string.IsNullOrWhiteSpace(request.IfMatchETag) ? null : new() { IfMatch = new ETag(request.IfMatchETag) };
+                if (request.PreservePropertiesMetadataKey is not null && !request.FailIfExists)
+                {
+                    try
+                    {
+                        var current = await blobClient.GetPropertiesAsync(conditions, cancellationToken).ConfigureAwait(false);
+                        conditions = new() { IfMatch = current.Value.ETag };
+                        if (current.Value.Metadata.TryGetValue(request.PreservePropertiesMetadataKey, out var preserved))
+                        {
+                            metadata[request.PreservePropertiesMetadataKey] = preserved;
+                        }
+                    }
+                    catch (RequestFailedException exception) when (exception.Status == 404 && string.IsNullOrWhiteSpace(request.IfMatchETag))
+                    {
+                        conditions = new() { IfNoneMatch = ETag.All };
+                    }
+                }
+
+                var metadataBytes = metadata.Sum(item => Encoding.UTF8.GetByteCount(item.Key) + Encoding.UTF8.GetByteCount(item.Value));
+                if (metadataBytes > 8192)
+                {
+                    throw new AzureBlobStoreBackendException(new BlobStoreSizeLimitExceededError(metadataBytes, 8192));
+                }
+
+                try
+                {
+                    response = await blobClient.CommitBlockListAsync(staging.BlockIds, new CommitBlockListOptions
                     {
                         HttpHeaders = new BlobHttpHeaders { ContentType = request.ContentType },
                         Metadata = metadata,
                         Tags = request.Tags,
-                        Conditions = request.FailIfExists
-                            ? new BlobRequestConditions { IfNoneMatch = ETag.All }
-                            : null
-                    },
-                    cancellationToken)
-                .ConfigureAwait(false);
+                        Conditions = conditions
+                    }, cancellationToken).ConfigureAwait(false);
+                    break;
+                }
+                catch (RequestFailedException exception) when (exception.Status == 412 && request.PreservePropertiesMetadataKey is not null && !request.FailIfExists && string.IsNullOrWhiteSpace(request.IfMatchETag))
+                {
+                    if (attempt == 2)
+                    {
+                        throw new AzureBlobStoreBackendException(new BlobStoreConflictError("Properties changed during blob publication."));
+                    }
+                }
+            }
 
-            return new AzureBlobUploadResult(response.Value.ETag.ToString(), contentHash);
+            DateTimeOffset? createdAt = null;
+            try
+            {
+                var committed = await blobClient.GetPropertiesAsync(
+                        new BlobRequestConditions { IfMatch = response.Value.ETag }, cancellationToken)
+                    .ConfigureAwait(false);
+                createdAt = committed.Value.CreatedOn;
+            }
+            catch (RequestFailedException)
+            {
+                // The acknowledged commit remains successful when its optional timestamp lookup fails.
+            }
+            catch (OperationCanceledException)
+            {
+                // Cancellation after acknowledgement does not undo the committed upload.
+            }
+
+            return new AzureBlobUploadResult(response.Value.ETag.ToString(), contentHash,
+                new AzureBlobProperties(key, copy.Length, new BlobHttpHeaders { ContentType = request.ContentType },
+                    response.Value.ETag.ToString(), createdAt, response.Value.LastModified, metadata,
+                    new Dictionary<string, string>(request.Tags ?? new Dictionary<string, string>(), StringComparer.OrdinalIgnoreCase)));
         }
 
         public async Task<Stream> OpenReadAsync(BlobKey key, CancellationToken cancellationToken) =>
@@ -163,11 +226,19 @@ public partial class AzureBlobStoreProvider
                 .OpenReadAsync(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-        public async Task<AzureBlobProperties> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken)
+        public Task<AzureBlobProperties> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken) =>
+            this.GetPropertiesSnapshotAsync(key, null, cancellationToken);
+
+        private async Task<AzureBlobProperties> GetPropertiesSnapshotAsync(
+            BlobKey key, string ifMatchETag, CancellationToken cancellationToken)
         {
             var blobClient = this.GetContainerClient(key.Container).GetBlobClient(key.Name);
-            var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-            var tags = await blobClient.GetTagsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+            var conditions = string.IsNullOrWhiteSpace(ifMatchETag)
+                ? null
+                : new BlobRequestConditions { IfMatch = new ETag(ifMatchETag) };
+            var properties = await blobClient.GetPropertiesAsync(conditions, cancellationToken).ConfigureAwait(false);
+            var tags = await blobClient.GetTagsAsync(
+                new BlobRequestConditions { IfMatch = properties.Value.ETag }, cancellationToken).ConfigureAwait(false);
             return ToProperties(key, properties.Value, tags.Value.Tags);
         }
 
@@ -179,42 +250,69 @@ public partial class AzureBlobStoreProvider
             string ifMatchETag,
             CancellationToken cancellationToken)
         {
+            var metadataBytes = metadata.Sum(item => Encoding.UTF8.GetByteCount(item.Key) + Encoding.UTF8.GetByteCount(item.Value));
+            if (metadataBytes > 8192)
+            {
+                throw new AzureBlobStoreBackendException(new BlobStoreSizeLimitExceededError(metadataBytes, 8192));
+            }
+
             var blobClient = this.GetContainerClient(key.Container).GetBlobClient(key.Name);
-            var before = await this.GetPropertiesAsync(key, cancellationToken).ConfigureAwait(false);
-            var initialETag = string.IsNullOrWhiteSpace(ifMatchETag) ? before.ETag : ifMatchETag;
-            var mutationApplied = false;
+            var before = await this.GetPropertiesSnapshotAsync(key, ifMatchETag, cancellationToken).ConfigureAwait(false);
+            var requestedMetadata = new Dictionary<string, string>(metadata, StringComparer.OrdinalIgnoreCase);
+            if (before.Metadata?.TryGetValue(ContentHashMetadataKey, out var contentHash) == true)
+            {
+                requestedMetadata[ContentHashMetadataKey] = contentHash;
+            }
+
+            string lastWrittenETag = null;
 
             try
             {
                 var headers = await blobClient.SetHttpHeadersAsync(
                         CopyHeaders(before.HttpHeaders, contentType),
-                        new BlobRequestConditions { IfMatch = new ETag(initialETag) },
+                        new BlobRequestConditions { IfMatch = new ETag(before.ETag) },
                         cancellationToken)
                     .ConfigureAwait(false);
-                mutationApplied = true;
+                lastWrittenETag = headers.Value.ETag.ToString();
                 var metadataResponse = await blobClient.SetMetadataAsync(
-                        metadata,
-                        new BlobRequestConditions { IfMatch = headers.Value.ETag },
+                        requestedMetadata,
+                        new BlobRequestConditions { IfMatch = new ETag(lastWrittenETag) },
                         cancellationToken)
                     .ConfigureAwait(false);
+                lastWrittenETag = metadataResponse.Value.ETag.ToString();
                 await blobClient.SetTagsAsync(
                         tags ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
-                        new BlobRequestConditions { IfMatch = metadataResponse.Value.ETag },
+                        new BlobRequestConditions { IfMatch = new ETag(lastWrittenETag) },
                         cancellationToken)
                     .ConfigureAwait(false);
 
-                return await this.GetPropertiesAsync(key, cancellationToken).ConfigureAwait(false);
+                return before with
+                {
+                    HttpHeaders = CopyHeaders(before.HttpHeaders, contentType),
+                    Metadata = requestedMetadata,
+                    Tags = new Dictionary<string, string>(tags ?? new Dictionary<string, string>(), StringComparer.OrdinalIgnoreCase),
+                    ETag = lastWrittenETag,
+                    LastModifiedAt = metadataResponse.Value.LastModified
+                };
             }
             catch (Exception operationException)
             {
-                if (!mutationApplied && operationException is RequestFailedException { Status: 412 })
+                if (lastWrittenETag is null && operationException is RequestFailedException { Status: >= 400 and < 500 and not 408 })
                 {
                     throw;
                 }
 
+                if (lastWrittenETag is null)
+                {
+                    throw new AzureBlobStoreBackendException(new BlobStorePartialUpdateError(
+                        $"Azure blob properties for '{key.Container}/{key.Name}' have an unconfirmed mutation outcome.",
+                        operationException.Message,
+                        "No acknowledged mutation ETag is available for safe restoration."));
+                }
+
                 try
                 {
-                    await RestoreAsync(blobClient, before).ConfigureAwait(false);
+                    await RestoreAsync(blobClient, before, lastWrittenETag).ConfigureAwait(false);
                 }
                 catch (Exception restoreException)
                 {
@@ -222,11 +320,6 @@ public partial class AzureBlobStoreProvider
                         $"Azure blob properties for '{key.Container}/{key.Name}' could not be restored.",
                         operationException.Message,
                         restoreException.Message));
-                }
-
-                if (operationException is OperationCanceledException)
-                {
-                    throw;
                 }
 
                 throw;
@@ -293,12 +386,11 @@ public partial class AzureBlobStoreProvider
             return new AzureBlobRetentionPage([], null);
         }
 
-        private static async Task RestoreAsync(BlobClient blobClient, AzureBlobProperties before)
+        private static async Task RestoreAsync(BlobClient blobClient, AzureBlobProperties before, string lastWrittenETag)
         {
-            var current = await blobClient.GetPropertiesAsync(cancellationToken: CancellationToken.None).ConfigureAwait(false);
             var headers = await blobClient.SetHttpHeadersAsync(
                     CopyHeaders(before.HttpHeaders, before.HttpHeaders?.ContentType),
-                    new BlobRequestConditions { IfMatch = current.Value.ETag },
+                    new BlobRequestConditions { IfMatch = new ETag(lastWrittenETag) },
                     CancellationToken.None)
                 .ConfigureAwait(false);
             var metadata = await blobClient.SetMetadataAsync(
@@ -414,7 +506,9 @@ public partial class AzureBlobStoreProvider
         bool FailIfExists,
         string ExpectedContentHash,
         long? MaxBlobSize,
-        string ContentHashMetadataKey);
+        string ContentHashMetadataKey,
+        string IfMatchETag = null,
+        string PreservePropertiesMetadataKey = null);
 
     /// <summary>
     /// Describes a committed Azure blob upload.
@@ -424,7 +518,7 @@ public partial class AzureBlobStoreProvider
     /// var result = new AzureBlobUploadResult(etag, contentHash);
     /// </code>
     /// </example>
-    protected sealed record AzureBlobUploadResult(string ETag, string ContentHash);
+    protected sealed record AzureBlobUploadResult(string ETag, string ContentHash, AzureBlobProperties CommittedProperties = null);
 
     /// <summary>
     /// Describes Azure blob properties used by the provider boundary.

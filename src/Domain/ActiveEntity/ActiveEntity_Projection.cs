@@ -544,13 +544,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
             context,
             async ctx =>
             {
-                var result = ResultPaged<TProjection>.Success([], 0, 0, 0);
+                var result = Result.Success().ToResultPaged<TProjection>();
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TProjection>.Merge(result,
-                        (await behavior.BeforeProjectAllPagedAsync(projection, options, cancellationToken).AnyContext()).ToResultPaged<TProjection>());
+                    result = result.WithOutcome(await behavior.BeforeProjectAllPagedAsync(projection, options, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -562,8 +561,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 // after behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TProjection>.Merge(result,
-                        (await behavior.AfterProjectAllPagedAsync(projection, options, result, result.IsSuccess, cancellationToken).AnyContext()).ToResultPaged<TProjection>());
+                    result = result.WithOutcome(await behavior.AfterProjectAllPagedAsync(projection, options, result, result.IsSuccess, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -640,14 +638,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
             context,
             async ctx =>
             {
-                var result = ResultPaged<TProjection>.Success([], 0, 0, 0);
+                var result = Result.Success().ToResultPaged<TProjection>();
                 var specification = new Specification<TEntity>(expression);
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TProjection>.Merge(result,
-                        (await behavior.BeforeProjectAllPagedAsync(projection, options, cancellationToken).AnyContext()).ToResultPaged<TProjection>());
+                    result = result.WithOutcome(await behavior.BeforeProjectAllPagedAsync(projection, options, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -659,8 +656,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 // after behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TProjection>.Merge(result,
-                        (await behavior.AfterProjectAllPagedAsync(projection, options, result, result.IsSuccess, cancellationToken).AnyContext()).ToResultPaged<TProjection>());
+                    result = result.WithOutcome(await behavior.AfterProjectAllPagedAsync(projection, options, result, result.IsSuccess, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -739,13 +735,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
             context,
             async ctx =>
             {
-                var result = ResultPaged<TProjection>.Success([], 0, 0, 0);
+                var result = Result.Success().ToResultPaged<TProjection>();
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TProjection>.Merge(result,
-                        (await behavior.BeforeProjectAllPagedAsync(projection, options, cancellationToken).AnyContext()).ToResultPaged<TProjection>());
+                    result = result.WithOutcome(await behavior.BeforeProjectAllPagedAsync(projection, options, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -757,8 +752,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 // after behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TProjection>.Merge(result,
-                        (await behavior.AfterProjectAllPagedAsync(projection, options, result, result.IsSuccess, cancellationToken).AnyContext()).ToResultPaged<TProjection>());
+                    result = result.WithOutcome(await behavior.AfterProjectAllPagedAsync(projection, options, result, result.IsSuccess, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -837,13 +831,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
             context,
             async ctx =>
             {
-                var result = ResultPaged<TProjection>.Success([], 0, 0, 0);
+                var result = Result.Success().ToResultPaged<TProjection>();
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TProjection>.Merge(result,
-                        (await behavior.BeforeProjectAllPagedAsync(projection, options, cancellationToken).AnyContext()).ToResultPaged<TProjection>());
+                    result = result.WithOutcome(await behavior.BeforeProjectAllPagedAsync(projection, options, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -855,8 +848,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 // after behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TProjection>.Merge(result,
-                        (await behavior.AfterProjectAllPagedAsync(projection, options, result, result.IsSuccess, cancellationToken).AnyContext()).ToResultPaged<TProjection>());
+                    result = result.WithOutcome(await behavior.AfterProjectAllPagedAsync(projection, options, result, result.IsSuccess, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -939,16 +931,21 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
             context,
             async ctx =>
             {
-                var result = ResultPaged<TProjection>.Success([], 0, 0, 0);
+                var result = Result.Success().ToResultPaged<TProjection>();
 
+                var pagedOptions = FindOptionsBuilder.BuildPagedResult<TEntity>(filter);
+                if (pagedOptions.IsFailure)
+                {
+                    return pagedOptions.Unwrap().ToResultPaged<TProjection>();
+                }
+
+                var options = pagedOptions.Value;
                 var specifications = SpecificationBuilder.Build(filter, additionalSpecifications).ToArray();
-                var options = FindOptionsBuilder.Build<TEntity>(filter);
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TProjection>.Merge(result,
-                        (await behavior.BeforeProjectAllPagedAsync(projection, options, cancellationToken).AnyContext()).ToResultPaged<TProjection>());
+                    result = result.WithOutcome(await behavior.BeforeProjectAllPagedAsync(projection, options, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 
@@ -960,8 +957,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 // after behaviors
                 foreach (var behavior in ctx.Behaviors)
                 {
-                    result = ResultPaged<TProjection>.Merge(result,
-                        (await behavior.AfterProjectAllPagedAsync(projection, options, result, result.IsSuccess, cancellationToken).AnyContext()).ToResultPaged<TProjection>());
+                    result = result.WithOutcome(await behavior.AfterProjectAllPagedAsync(projection, options, result, result.IsSuccess, cancellationToken).AnyContext());
                     if (result.IsFailure) return result;
                 }
 

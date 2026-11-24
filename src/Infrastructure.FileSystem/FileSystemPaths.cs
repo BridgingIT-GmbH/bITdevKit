@@ -4,6 +4,20 @@ namespace BridgingIT.DevKit.Infrastructure.FileSystem;
 /// <example><code>var path = FileSystemPaths.Combine(root, "reports/daily.txt");</code></example>
 public static class FileSystemPaths
 {
+    /// <summary>Adds the Windows extended-length prefix to an already fully qualified Windows path.</summary>
+    /// <param name="path">The normalized absolute Windows path.</param>
+    /// <returns>The existing extended path, an extended UNC path for a leading double backslash, or an extended local path.</returns>
+    /// <remarks>This pure conversion does not normalize, validate or access the path. It preserves native publication's leading-double-backslash conversion, including device paths. Use FileSystemKindProbe.IsUncPath to classify UNC paths separately.</remarks>
+    /// <exception cref="ArgumentNullException">The path is null.</exception>
+    /// <example><code>var nativePath = FileSystemPaths.ToExtendedWindowsPath(@"C:\reports\daily.txt");</code></example>
+    public static string ToExtendedWindowsPath(string path)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+
+        return path.StartsWith(@"\\?\", StringComparison.Ordinal) ? path
+            : path.StartsWith(@"\\", StringComparison.Ordinal) ? @"\\?\UNC\" + path[2..] : @"\\?\" + path;
+    }
+
     /// <summary>Combines a root with a file-provider path, accepting either logical separator.</summary>
     /// <remarks>Preserves the existing File Storage path semantics, including leading separators. This is normalization, not a containment or authorization check.</remarks>
     /// <example><code>var path = FileSystemPaths.Combine(root, "reports/daily.txt");</code></example>

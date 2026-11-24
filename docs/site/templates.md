@@ -1,6 +1,17 @@
 ---
 title: Templates
+hide:
+  - footer
 ---
+
+<!-- markdownlint-disable-file MD033 -->
+
+!!! path-a "Path A: new solution"
+
+    [**01** Walkthrough](getting-started-template.md)
+    [**02** Templates reference](templates.md){ aria-current="page" }
+    <span class="switch">Want to choose each feature? Use [Path B: step by step](getting-started-existing-app.md).</span>
+    { .path-pager }
 
 # Templates
 
@@ -37,7 +48,7 @@ Generated module structure:
 
 Prerequisite:
 
-- .NET 9 SDK or later
+- .NET 10 SDK or later
 
 Install from NuGet:
 
@@ -51,7 +62,9 @@ Verify installation:
 dotnet new list
 ```
 
-You should see entries for the `bITdevKit Solution` and `bITdevKit Module` templates.
+!!! verify "Check it"
+
+    You should see entries for the `bITdevKit Solution` and `bITdevKit Module` templates.
 
 ## Create a new solution
 
@@ -110,31 +123,30 @@ Add the module configuration in `appsettings.json`:
 
 The solution template creates a structure like this:
 
-```text
-SolutionName/
-├── src/
-│   ├── Modules/
-│   │   ├── ModuleName/
-│   │   │   ├── ModuleName.Application/
-│   │   │   ├── ModuleName.Domain/
-│   │   │   ├── ModuleName.Infrastructure/
-│   │   │   └── ModuleName.Presentation/
-│   └── Presentation.Web.Server/
-├── tests/
-│   └── ModuleName/
-│       ├── ModuleName.IntegrationTests/
-│       └── ModuleName.UnitTests/
-└── SolutionName.slnx
-```
+<div class="solution-tree" role="img" aria-label="Solution template structure">
+  <div><span class="br"></span><span class="dir">SolutionName/</span></div>
+  <div><span class="br">├─ </span><span class="dir">src/Modules/ModuleName/</span></div>
+  <div><span class="br">│  ├─ </span><span class="dir">ModuleName.Application</span><span class="fill"></span><span class="layer layer-application">application</span></div>
+  <div><span class="br">│  ├─ </span><span class="dir">ModuleName.Domain</span><span class="fill"></span><span class="layer layer-domain">domain</span></div>
+  <div><span class="br">│  ├─ </span><span class="dir">ModuleName.Infrastructure</span><span class="fill"></span><span class="layer layer-infrastructure">infrastructure</span></div>
+  <div><span class="br">│  └─ </span><span class="dir">ModuleName.Presentation</span><span class="fill"></span><span class="layer layer-presentation">presentation</span></div>
+  <div><span class="br">├─ </span><span class="dir">src/Presentation.Web.Server</span><span class="fill"></span><span class="layer layer-host">host</span></div>
+  <div><span class="br">├─ </span><span class="dir">tests/ModuleName/</span></div>
+  <div><span class="br">│  ├─ </span><span class="dir">ModuleName.IntegrationTests</span><span class="fill"></span><span class="layer layer-tests">tests</span></div>
+  <div><span class="br">│  └─ </span><span class="dir">ModuleName.UnitTests</span><span class="fill"></span><span class="layer layer-tests">tests</span></div>
+  <div><span class="br">└─ </span><span class="dir">SolutionName.slnx</span></div>
+</div>
 
 ## Onboarding path
 
 Use this sequence:
 
-1. Start with the [GettingStarted example](https://github.com/BridgingIT-GmbH/bITdevKit.Examples.GettingStarted).
-2. Read the [Getting Started](getting-started.md) page on this site.
-3. Use the templates to create a solution or add modules to an existing one.
-4. Continue to the [Documentation](reference/index.md) for the APIs used by the generated projects.
+<ol class="flow-strip">
+  <li><a href="../getting-started-template/"><b>01</b><span>Read the walkthrough</span></a></li>
+  <li><a href="#install-the-templates"><b>02</b><span>Install templates</span><code>dotnet new install</code></a></li>
+  <li><a href="#create-a-new-solution"><b>03</b><span>Create a solution or module</span><code>dotnet new bdksolution</code></a></li>
+  <li><a href="../reference/"><b>04</b><span>Continue to the docs</span><code>reference/</code></a></li>
+</ol>
 
 ## Update or uninstall
 

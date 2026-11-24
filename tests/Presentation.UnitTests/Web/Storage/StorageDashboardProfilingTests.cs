@@ -49,7 +49,7 @@ public sealed class StorageDashboardProfilingTests
         var descriptor = app.Services.GetServices<DocumentStoreClientDescriptor>().Single();
         using var document = await client.PostAsync("/_bdk/dashboard/storage/documents/actions/save", new FormUrlEncodedContent(new Dictionary<string, string>
         {
-            ["clientId"] = descriptor.ClientId, ["partitionKey"] = "test", ["rowKey"] = "one", ["content"] = "{\"Name\":\"test\"}"
+            ["mode"] = "new", ["clientId"] = descriptor.ClientId, ["partitionKey"] = "test", ["rowKey"] = "one", ["content"] = "{\"Name\":\"test\"}"
         }));
         document.EnsureSuccessStatusCode();
         document.Headers.Contains(RequestProfilingMiddleware.HeaderName).ShouldBeFalse();

@@ -5,11 +5,14 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Storage.Blobs.Dashboard;
 
+using System.Buffers;
 using System.Globalization;
 using System.Net;
+using System.Text.Json;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
+using BridgingIT.DevKit.Presentation.Web.Storage.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +33,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
     private const string BlobsPath = "/storage/blobs";
     private const string BlobsContentPath = "/storage/blobs/content";
     private const string BlobsDownloadPath = "/storage/blobs/download";
+    private const int MaximumPreviewBytes = 1024 * 1024;
 
     private const string ActionsPath = "/storage/blobs/actions";
 
@@ -81,6 +85,16 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             .WithSummary("Download blob storage blob")
             .ExcludeFromDescription();
 
+        group.MapGet(BlobStorageDashboardRoutes.BlobsPreviewPath, async (
+            HttpContext context,
+            [FromQuery] string store,
+            [FromQuery] string container,
+            [FromQuery] string name,
+            CancellationToken cancellationToken) =>
+            await PreviewBlobAsync(context, store, new BlobKey(container, name), cancellationToken))
+            .WithName("_bdk.Dashboard.Storage.Blobs.Preview")
+            .ExcludeFromDescription();
+
         group.MapPost($"{ActionsPath}/upload", async (HttpContext context, CancellationToken cancellationToken) =>
             await ExecuteFormActionAsync(context, async (client, form) =>
             {
@@ -91,35 +105,87 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
                 }
 
                 var container = GetFormValue(form, "container");
-                var name = CombineBlobName(GetFormValue(form, "prefix"), GetFormValue(form, "name"));
+                var name = NormalizeBlobPath(GetFormValue(form, "name"));
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    name = CombineBlobName(GetFormValue(form, "prefix"), file.FileName);
+                    name = NormalizeBlobPath(file.FileName);
+                }
+
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    return Result.Failure(new ValidationError("Blob name or file name is required."));
+                }
+
+                var prefix = NormalizeBlobPath(GetFormValue(form, "prefix"));
+                if (!string.IsNullOrWhiteSpace(prefix))
+                {
+                    name = $"{prefix}/{name}";
+                }
+
+                var key = new BlobKey(container, name);
+                var isEdit = string.Equals(GetFormValue(form, "mode"), "edit", StringComparison.OrdinalIgnoreCase);
+                var forceOverwrite = GetBoolean(form, "forceOverwrite");
+                var properties = new PropertyBag();
+                BlobDimensions dimensions = null;
+                DateTimeOffset? expiration = null;
+                if (isEdit)
+                {
+                    var current = await client.GetPropertiesAsync(key, cancellationToken).ConfigureAwait(false);
+                    if (current.IsSuccess)
+                    {
+                        properties = current.Value.Properties.Clone();
+                        expiration = current.Value.ExpiresAt;
+                    }
+                    else if (!current.HasError<BlobStoreNotFoundError>())
+                    {
+                        return Result.Failure(current.Messages, current.Errors);
+                    }
+                    else if (!forceOverwrite)
+                    {
+                        return Result.Failure(new BlobStoreConflictError("The blob was deleted before replacement."));
+                    }
+                }
+                else
+                {
+                    var metadata = HttpMetadata.ParseProperties(GetFormValue(form, "properties"));
+                    if (metadata.IsFailure)
+                    {
+                        return Result.Failure(metadata.Messages, metadata.Errors);
+                    }
+
+                    var dimensionInput = GetFormValue(form, "dimensions");
+                    var parsedDimensions = BlobStorageDimensionsJson.Parse(string.IsNullOrWhiteSpace(dimensionInput) ? null : dimensionInput);
+                    if (parsedDimensions.IsFailure)
+                    {
+                        return Result.Failure(parsedDimensions.Messages, parsedDimensions.Errors);
+                    }
+
+                    properties = metadata.Value;
+                    dimensions = parsedDimensions.Value;
+                    var expiresAt = GetFormValue(form, "expiresAt");
+                    if (!string.IsNullOrWhiteSpace(expiresAt))
+                    {
+                        if (!DateTimeOffset.TryParse(expiresAt, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var parsed))
+                        {
+                            return Result.Failure(new ValidationError("Expiration must be an ISO-8601 timestamp."));
+                        }
+
+                        expiration = parsed;
+                    }
                 }
 
                 await using var stream = file.OpenReadStream();
-                var expiresAt = GetFormValue(form, "expiresAt");
-                DateTimeOffset? expiration = null;
-                if (!string.IsNullOrWhiteSpace(expiresAt))
-                {
-                    if (!DateTimeOffset.TryParse(expiresAt, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var parsed))
-                    {
-                        return Result.Failure(new ValidationError("Expiration must be an ISO-8601 timestamp."));
-                    }
-
-                    expiration = parsed;
-                }
-
                 var result = await client.UploadAsync(
                     new BlobUpload
                     {
-                        Key = new BlobKey(container, name),
+                        Key = key,
                         Content = stream,
+                        IfMatchETag = forceOverwrite ? null : GetFormValue(form, "etag"),
                         ContentType = ResolveContentType(file.ContentType, name),
                         ExpiresAt = expiration,
-                        OverwriteMode = GetBoolean(form, "overwrite")
-                            ? BlobOverwriteMode.Overwrite
-                            : BlobOverwriteMode.FailIfExists
+                        Properties = properties,
+                        Dimensions = dimensions,
+                        OverwriteMode = isEdit ? BlobOverwriteMode.Overwrite : BlobOverwriteMode.FailIfExists
                     },
                     cancellationToken);
 
@@ -150,9 +216,16 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             .ExcludeFromDescription();
 
         group.MapPost($"{ActionsPath}/expiration", async (HttpContext context, CancellationToken cancellationToken) =>
-            await ExecuteFormActionAsync(context, (client, form) => UpdateExpirationAsync(client, form, cancellationToken)))
+            await ExecuteFormActionAsync(context, (client, form) => UpdateMetadataAsync(client, form, clearOmittedExpiration: true, cancellationToken)))
             .WithName("_bdk.Dashboard.Storage.Blobs.UpdateExpiration")
             .WithSummary("Update blob storage expiration")
+            .DisableAntiforgery()
+            .ExcludeFromDescription();
+
+        group.MapPost($"{ActionsPath}/metadata", async (HttpContext context, CancellationToken cancellationToken) =>
+            await ExecuteFormActionAsync(context, (client, form) => UpdateMetadataAsync(client, form, clearOmittedExpiration: false, cancellationToken)))
+            .WithName("_bdk.Dashboard.Storage.Blobs.UpdateMetadata")
+            .WithSummary("Update blob storage metadata")
             .DisableAntiforgery()
             .ExcludeFromDescription();
     }
@@ -160,16 +233,26 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
     private static bool IsBlobStorageEnabled(IServiceProvider services) =>
         services.GetServices<BlobStoreClientRegistration>().Any();
 
-    private static async Task<Result> UpdateExpirationAsync(
+    private static async Task<Result> UpdateMetadataAsync(
         IBlobStoreClient client,
         IFormCollection form,
+        bool clearOmittedExpiration,
         CancellationToken cancellationToken)
     {
-        var key = new BlobKey(GetFormValue(form, "container"), GetFormValue(form, "name"));
-        var propertiesResult = await client.GetPropertiesAsync(key, cancellationToken).ConfigureAwait(false);
-        if (propertiesResult.IsFailure)
+        var propertiesText = GetFormValue(form, "properties");
+        var properties = form.ContainsKey("properties")
+            ? HttpMetadata.ParseProperties(propertiesText)
+            : Result<PropertyBag>.Success(null);
+        if (properties.IsFailure)
         {
-            return Result.Failure(propertiesResult.Messages, propertiesResult.Errors);
+            return Result.Failure(properties.Messages, properties.Errors);
+        }
+
+        var dimensionInput = GetFormValue(form, "dimensions");
+        var dimensions = BlobStorageDimensionsJson.Parse(string.IsNullOrWhiteSpace(dimensionInput) ? null : dimensionInput);
+        if (dimensions.IsFailure)
+        {
+            return Result.Failure(dimensions.Messages, dimensions.Errors);
         }
 
         var expiresAtText = GetFormValue(form, "expiresAt");
@@ -184,19 +267,41 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             expiresAt = parsedExpiresAt;
         }
 
+        var key = new BlobKey(GetFormValue(form, "container"), GetFormValue(form, "name"));
+        var current = await client.GetPropertiesAsync(key, cancellationToken).ConfigureAwait(false);
+        if (current.IsFailure)
+        {
+            return Result.Failure(current.Messages, current.Errors);
+        }
+
+        if (properties.Value?.Count > 0 && current.Value.Properties?.Count > 0)
+        {
+            using var edited = JsonDocument.Parse(propertiesText);
+            // JSON scalars may have originated as more specific .NET property types.
+            foreach (var entry in edited.RootElement.EnumerateObject().Reverse().DistinctBy(entry => entry.Name, StringComparer.OrdinalIgnoreCase))
+            {
+                if (current.Value.Properties.TryGetValue(entry.Name, out var stored) &&
+                    JsonElement.DeepEquals(entry.Value, JsonSerializer.SerializeToElement(stored)))
+                {
+                    properties.Value.Set(entry.Name, stored);
+                }
+            }
+        }
+
         var updateResult = await client.UpdatePropertiesAsync(
             new BlobPropertiesUpdate
             {
                 Key = key,
-                ContentType = propertiesResult.Value.ContentType,
-                Properties = propertiesResult.Value.Properties,
-                ExpiresAt = expiresAt,
-                IfMatchETag = GetFormValue(form, "etag")
+                ContentType = current.Value.ContentType,
+                Properties = properties.Value,
+                Dimensions = dimensions.Value,
+                ExpiresAt = clearOmittedExpiration || form.ContainsKey("expiresAt") ? expiresAt : current.Value.ExpiresAt,
+                IfMatchETag = GetBoolean(form, "forceOverwrite") ? null : GetFormValue(form, "etag")
             },
             cancellationToken).ConfigureAwait(false);
 
         return updateResult.IsSuccess
-            ? Result.Success().WithMessage("Blob expiration updated.")
+            ? Result.Success().WithMessage(clearOmittedExpiration ? "Blob expiration updated." : "Blob metadata saved.")
             : Result.Failure(updateResult.Messages, updateResult.Errors);
     }
 
@@ -234,6 +339,92 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             CreateDownloadFileName(name));
     }
 
+    private static async Task<HttpResult> PreviewBlobAsync(
+        HttpContext context,
+        string storeName,
+        BlobKey key,
+        CancellationToken cancellationToken)
+    {
+        if (!TryCreateClient(context, storeName, out var client, out var failure))
+        {
+            return failure;
+        }
+
+        var properties = await client.GetPropertiesAsync(key, cancellationToken);
+        if (properties.IsFailure)
+        {
+            return MapFailure(properties);
+        }
+
+        var contentType = PreviewContentType(properties.Value, key.Name);
+        if (GetPreviewError(properties.Value.Length, contentType) is { } preflightError)
+        {
+            return preflightError;
+        }
+
+        var result = await client.DownloadAsync(key, cancellationToken);
+        if (result.IsFailure)
+        {
+            return MapFailure(result);
+        }
+
+        await using var download = result.Value;
+        var info = download.Info ?? properties.Value;
+        contentType = PreviewContentType(info, key.Name);
+        if (GetPreviewError(info.Length, contentType) is { } downloadError)
+        {
+            return downloadError;
+        }
+
+        var buffer = ArrayPool<byte>.Shared.Rent(MaximumPreviewBytes + 1);
+        try
+        {
+            var length = await download.Content.ReadAtLeastAsync(
+                buffer.AsMemory(0, MaximumPreviewBytes + 1),
+                MaximumPreviewBytes + 1,
+                throwOnEndOfStream: false,
+                cancellationToken);
+            if (GetPreviewError(length, contentType) is { } sizeError)
+            {
+                return sizeError;
+            }
+
+            context.Response.Headers.CacheControl = "no-store";
+            context.Response.Headers.XContentTypeOptions = "nosniff";
+            return Results.Bytes(buffer.AsSpan(0, length).ToArray(), contentType);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer, clearArray: true);
+        }
+    }
+
+    private static HttpResult GetPreviewError(long length, string contentType)
+    {
+        if (length > MaximumPreviewBytes)
+        {
+            return Results.Problem("Previews are available for blobs up to 1 MiB.", statusCode: StatusCodes.Status413PayloadTooLarge);
+        }
+
+        return contentType is null
+            ? Results.Problem("This file type cannot be previewed.", statusCode: StatusCodes.Status415UnsupportedMediaType)
+            : null;
+    }
+
+    private static string PreviewContentType(BlobInfo info, string name)
+    {
+        var mediaType = info.ContentType?.MimeType() ?? ContentTypeExtensions.FromFileName(name, ContentType.DEFAULT).MimeType();
+        mediaType = mediaType.Split(';', 2)[0].Trim().ToLowerInvariant();
+        return mediaType switch
+        {
+            "image/png" or "image/jpeg" or "image/gif" or "image/webp" => mediaType,
+            "application/json" => "text/plain; charset=utf-8",
+            _ when mediaType.StartsWith("text/", StringComparison.Ordinal) || mediaType.EndsWith("+json", StringComparison.Ordinal) =>
+                "text/plain; charset=utf-8",
+            _ => null
+        };
+    }
+
     private static async Task<HttpResult> ExecuteFormActionAsync(
         HttpContext context,
         Func<IBlobStoreClient, IFormCollection, Task<Result>> action)
@@ -247,6 +438,12 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
         try
         {
+            var isDelete = context.Request.Path.Value?.EndsWith("/delete", StringComparison.OrdinalIgnoreCase) == true;
+            var isUpload = context.Request.Path.Value?.EndsWith("/upload", StringComparison.OrdinalIgnoreCase) == true;
+            var isNew = isUpload && !string.Equals(GetFormValue(form, "mode"), "edit", StringComparison.OrdinalIgnoreCase);
+            var force = GetBoolean(form, "forceOverwrite");
+            if ((isNew && force) || (!isNew && (!force || isDelete) && string.IsNullOrWhiteSpace(GetFormValue(form, "etag"))))
+                return Results.Problem("An original ETag is required for an edit; use Force overwrite explicitly to omit it.", statusCode: 400);
             var result = await action(client, form);
             return result.IsSuccess
                 ? Results.Ok(new { message = result.Messages?.LastOrDefault() ?? "Blob action completed." })
@@ -303,6 +500,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
         {
             ValidationError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             BlobStoreValidationError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
+            BlobDimensionsNotSupportedError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             BlobStoreQueryTooBroadError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             BlobStorePageSizeExceededError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             BlobStoreInvalidContinuationTokenError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
@@ -332,21 +530,6 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
     private static bool GetBoolean(IFormCollection form, string key) =>
         form.TryGetValue(key, out var value) &&
         string.Equals(value.ToString(), "true", StringComparison.OrdinalIgnoreCase);
-
-    private static string CombineBlobName(string prefix, string name)
-    {
-        var normalizedPrefix = NormalizeBlobPath(prefix);
-        var normalizedName = NormalizeBlobPath(name);
-
-        if (string.IsNullOrWhiteSpace(normalizedName))
-        {
-            return normalizedPrefix;
-        }
-
-        return string.IsNullOrWhiteSpace(normalizedPrefix)
-            ? normalizedName
-            : $"{normalizedPrefix}/{normalizedName}";
-    }
 
     private static string NormalizeBlobPath(string value) =>
         string.IsNullOrWhiteSpace(value)

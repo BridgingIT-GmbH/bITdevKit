@@ -66,10 +66,20 @@ public sealed class EncryptionBlobStoreClientBehavior : IBlobStoreClient
     public string StoreName { get; }
 
     /// <inheritdoc />
+    public BlobDimensionCapabilities DimensionCapabilities => this.inner.DimensionCapabilities;
+
+    /// <inheritdoc />
     public async Task<Result<BlobInfo>> UploadAsync(
         BlobUpload upload,
         CancellationToken cancellationToken = default)
     {
+        upload = BlobStoredModelMapper.Snapshot(upload);
+        var propertiesValidation = BlobPropertyValues.Validate(upload?.Properties);
+        if (propertiesValidation.IsFailure)
+        {
+            return Result<BlobInfo>.Failure(propertiesValidation);
+        }
+
         var activeKey = await this.keyProvider.GetActiveKeyAsync(cancellationToken).ConfigureAwait(false);
         if (activeKey is null)
         {
@@ -111,7 +121,7 @@ public sealed class EncryptionBlobStoreClientBehavior : IBlobStoreClient
             }
 
             transformed.Position = 0;
-            var properties = BlobBehaviorTransform.CloneProperties(upload.Properties);
+            var properties = BlobBehaviorTransform.CloneProperties(upload.TransformMetadata);
             properties[BlobBehaviorTransform.EncryptionAlgorithmKey] = Algorithm;
             properties[BlobBehaviorTransform.EncryptionLengthKey] = copy.Length.ToString(CultureInfo.InvariantCulture);
             properties[BlobBehaviorTransform.EncryptionContentTypeKey] = upload.ContentType?.ToString() ?? string.Empty;
@@ -122,11 +132,14 @@ public sealed class EncryptionBlobStoreClientBehavior : IBlobStoreClient
             var result = await this.inner.UploadAsync(new BlobUpload
             {
                 Key = upload.Key,
+                Dimensions = upload.Dimensions,
                 Content = transformed,
                 ContentType = this.options.StoredContentType,
                 ExpectedContentHash = null,
                 ExpiresAt = upload.ExpiresAt,
-                Properties = properties,
+                Properties = BlobPropertyValues.Clone(upload.Properties),
+                TransformMetadata = properties,
+                IfMatchETag = upload.IfMatchETag,
                 OverwriteMode = upload.OverwriteMode
             }, cancellationToken).ConfigureAwait(false);
 
@@ -175,7 +188,7 @@ public sealed class EncryptionBlobStoreClientBehavior : IBlobStoreClient
             return Result<BlobDownload>.Failure(ivResult);
         }
 
-        var keyId = result.Value.Info?.Properties?.Get<string>(BlobBehaviorTransform.EncryptionKeyIdKey);
+        var keyId = result.Value.Info?.TransformMetadata?.Get<string>(BlobBehaviorTransform.EncryptionKeyIdKey);
         if (string.IsNullOrWhiteSpace(keyId))
         {
             await result.Value.DisposeAsync().ConfigureAwait(false);
@@ -240,10 +253,24 @@ public sealed class EncryptionBlobStoreClientBehavior : IBlobStoreClient
     }
 
     /// <inheritdoc />
+    public async Task<Result<BlobInfo>> UpdateDimensionsAsync(BlobDimensionsUpdate update, CancellationToken cancellationToken = default)
+    {
+        var result = await this.inner.UpdateDimensionsAsync(update, cancellationToken).ConfigureAwait(false);
+        return result.IsSuccess ? Result<BlobInfo>.Success(this.ToLogicalInfo(result.Value)) : result;
+    }
+
+    /// <inheritdoc />
     public async Task<Result<BlobInfo>> UpdatePropertiesAsync(
         BlobPropertiesUpdate update,
         CancellationToken cancellationToken = default)
     {
+        update = BlobStoredModelMapper.Snapshot(update);
+        var propertiesValidation = BlobValidator.Validate(update);
+        if (propertiesValidation.IsFailure)
+        {
+            return Result<BlobInfo>.Failure(propertiesValidation);
+        }
+
         var current = await this.inner.GetPropertiesAsync(update.Key, cancellationToken).ConfigureAwait(false);
         if (current.IsFailure)
         {
@@ -282,6 +309,16 @@ public sealed class EncryptionBlobStoreClientBehavior : IBlobStoreClient
     }
 
     /// <inheritdoc />
+    public async Task<Result<BlobPage>> ListPageAsync(BlobFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await this.inner.ListPageAsync(scope, filter, continuationToken, cancellationToken).ConfigureAwait(false);
+        return result.IsSuccess
+            ? Result<BlobPage>.Success(BlobBehaviorTransform.ApplyLogicalPage(result.Value, info => this.ToLogicalInfo(info)))
+            : result;
+    }
+
+    /// <inheritdoc />
     public Task<Result> DeleteAsync(
         BlobKey key,
         BlobDeleteOptions options = null,
@@ -290,13 +327,13 @@ public sealed class EncryptionBlobStoreClientBehavior : IBlobStoreClient
 
     private static bool IsEncrypted(BlobInfo info) =>
         string.Equals(
-            info?.Properties?.Get<string>(BlobBehaviorTransform.EncryptionAlgorithmKey),
+            info?.TransformMetadata?.Get<string>(BlobBehaviorTransform.EncryptionAlgorithmKey),
             Algorithm,
             StringComparison.OrdinalIgnoreCase);
 
     private static Result<byte[]> GetIv(BlobInfo info)
     {
-        var value = info?.Properties?.Get<string>(BlobBehaviorTransform.EncryptionIvKey);
+        var value = info?.TransformMetadata?.Get<string>(BlobBehaviorTransform.EncryptionIvKey);
         if (string.IsNullOrWhiteSpace(value))
         {
             return Result<byte[]>.Failure(new BlobStoreIntegrityError("Encrypted blob metadata does not contain an initialization vector."));
@@ -328,6 +365,7 @@ public sealed class EncryptionBlobStoreClientBehavior : IBlobStoreClient
             : new BlobInfo
             {
                 Key = mapped.Key,
+                Dimensions = mapped.Dimensions,
                 Length = copy.Length,
                 ContentType = mapped.ContentType,
                 ContentHash = copy.ContentHash,
@@ -335,7 +373,8 @@ public sealed class EncryptionBlobStoreClientBehavior : IBlobStoreClient
                 CreatedAt = mapped.CreatedAt,
                 LastModifiedAt = mapped.LastModifiedAt,
                 ExpiresAt = mapped.ExpiresAt,
-                Properties = mapped.Properties
+                Properties = mapped.Properties,
+                TransformMetadata = mapped.TransformMetadata
             };
     }
 

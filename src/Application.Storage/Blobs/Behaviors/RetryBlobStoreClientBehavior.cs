@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -107,6 +107,7 @@ public sealed class RetryBlobStoreClientBehavior(
 
     private bool ShouldRetry(IResult result, BlobStoreOperationContext context, int attempt)
     {
+        if (context.Upload?.Dimensions is not null) return false;
         if (attempt >= this.Options.Attempts)
         {
             return false;
@@ -161,7 +162,8 @@ public sealed class RetryBlobStoreClientBehavior(
 
     private static bool IsTransient(IResult result)
     {
-        if (result.HasError<BlobStoreIndeterminateOperationError>() ||
+        if (result.HasError<BlobStorePartialUpdateError>() ||
+            result.HasError<BlobStoreIndeterminateOperationError>() ||
             result.HasError<BlobStoreValidationError>() ||
             result.HasError<BlobStoreNotFoundError>() ||
             result.HasError<BlobStoreConflictError>() ||

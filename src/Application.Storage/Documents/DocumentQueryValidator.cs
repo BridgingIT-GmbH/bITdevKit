@@ -74,7 +74,10 @@ public static class DocumentQueryValidator
             return Result<DocumentQueryValidation>.Failure(new DocumentStorePageSizeExceededError($"Take cannot exceed {options.MaxTake}."));
         }
 
-        var supportResult = ValidateShape(query.DocumentKey, query.Filter, query.AllowFullScan, capabilities, options);
+        var dimensions = DocumentDimensionFilterValidator.Validate(query.DimensionFilter, capabilities.Dimensions);
+        if (dimensions.IsFailure) return Result<DocumentQueryValidation>.Failure(dimensions);
+        var supportResult = query.DocumentKey is null && query.DimensionFilter?.HasPositiveAnchor == true
+            ? Result.Success() : ValidateShape(query.DocumentKey, query.Filter, query.AllowFullScan, capabilities, options);
         if (supportResult.IsFailure)
         {
             return Result<DocumentQueryValidation>.Failure(supportResult);
@@ -140,7 +143,10 @@ public static class DocumentQueryValidator
             return Result<DocumentCountQueryValidation>.Failure(optionsResult);
         }
 
-        var supportResult = ValidateShape(query.DocumentKey, query.Filter, query.AllowFullScan, capabilities, options);
+        var dimensions = DocumentDimensionFilterValidator.Validate(query.DimensionFilter, capabilities.Dimensions);
+        if (dimensions.IsFailure) return Result<DocumentCountQueryValidation>.Failure(dimensions);
+        var supportResult = query.DocumentKey is null && query.DimensionFilter?.HasPositiveAnchor == true
+            ? Result.Success() : ValidateShape(query.DocumentKey, query.Filter, query.AllowFullScan, capabilities, options);
         if (supportResult.IsFailure)
         {
             return Result<DocumentCountQueryValidation>.Failure(supportResult);
@@ -149,7 +155,8 @@ public static class DocumentQueryValidator
         return Result<DocumentCountQueryValidation>.Success(new DocumentCountQueryValidation(DocumentQueryHash.Compute<T>(operation, query)));
     }
 
-    private static Result ValidateShape(
+    /// <summary>Validates storage key scope and applies the client's full-scan policy.</summary>
+    public static Result ValidateShape(
         DocumentKey? documentKey,
         DocumentKeyFilter filter,
         bool allowFullScan,

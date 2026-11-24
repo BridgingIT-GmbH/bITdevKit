@@ -25,6 +25,8 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
     /// </summary>
     public const string ProviderName = "Azure Blob Storage";
 
+    private const string PropertiesMetadataKey = "bdk_properties";
+    private const string TransformsMetadataKey = "bdk_transforms";
     private const string ContentHashMetadataKey = "bdk_contenthash";
     private const string ExpiresAtMetadataKey = "bdk_expiresat";
     private const string ExpiresAtTagKey = "bdk_expiresat";
@@ -122,29 +124,31 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
     };
 
     /// <inheritdoc />
-    public async Task<Result<BlobInfo>> UploadAsync(
-        BlobUpload upload,
+    public async Task<Result<StoredBlobInfo>> UploadAsync(
+        StoredBlobUpload upload,
         CancellationToken cancellationToken = default)
     {
+        if (upload?.Dimensions is not null) return Result<StoredBlobInfo>.Failure(new BlobDimensionsNotSupportedError());
+
         cancellationToken.ThrowIfCancellationRequested();
 
         var validation = BlobValidator.Validate(upload, this.options);
         if (validation.IsFailure)
         {
-            return Result<BlobInfo>.Failure(validation);
+            return Result<StoredBlobInfo>.Failure(validation);
         }
 
-        var metadataResult = ToMetadata(upload.Properties);
+        var metadataResult = ToMetadata(upload.Properties, upload.TransformMetadata);
         if (metadataResult.IsFailure)
         {
-            return Result<BlobInfo>.Failure(metadataResult);
+            return Result<StoredBlobInfo>.Failure(metadataResult);
         }
 
         ApplyExpiration(metadataResult.Value, upload.ExpiresAt);
 
         try
         {
-            await this.backend.UploadAsync(
+            var committed = await this.backend.UploadAsync(
                     upload.Key,
                     upload.Content,
                     new AzureBlobUploadRequest(
@@ -154,29 +158,43 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
                         upload.OverwriteMode == BlobOverwriteMode.FailIfExists,
                         upload.ExpectedContentHash,
                         this.options.MaxBlobSize,
-                        ContentHashMetadataKey),
+                        ContentHashMetadataKey,
+                        upload.IfMatchETag, upload.Properties is null ? PropertiesMetadataKey : null),
                     cancellationToken)
                 .ConfigureAwait(false);
 
-            var properties = await this.backend.GetPropertiesAsync(upload.Key, cancellationToken).ConfigureAwait(false);
-            return Result<BlobInfo>.Success(ToInfo(properties));
+            var properties = committed.CommittedProperties
+                ?? await this.backend.GetPropertiesAsync(upload.Key, cancellationToken).ConfigureAwait(false);
+            if (!string.Equals(properties.ETag, committed.ETag, StringComparison.Ordinal))
+            {
+                return Result<StoredBlobInfo>.Failure(new BlobStorePartialUpdateError(
+                    "The Azure backend did not return properties for the committed upload version.",
+                    "The upload was committed, but its properties are unavailable.",
+                    "A later version cannot be used to describe the committed upload."));
+            }
+
+            return Result<StoredBlobInfo>.Success(ToInfo(properties));
         }
         catch (AzureBlobStoreBackendException exception)
         {
-            return Result<BlobInfo>.Failure(exception.Error);
+            return Result<StoredBlobInfo>.Failure(exception.Error);
         }
         catch (OperationCanceledException)
         {
             throw;
         }
+        catch (RequestFailedException exception) when (exception.Status == 404 && !string.IsNullOrWhiteSpace(upload.IfMatchETag))
+        {
+            return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError("The conditional upload target no longer exists."));
+        }
         catch (Exception exception)
         {
-            return Result<BlobInfo>.Failure(MapException(exception, upload.Key));
+            return Result<StoredBlobInfo>.Failure(MapException(exception, upload.Key));
         }
     }
 
     /// <inheritdoc />
-    public async Task<Result<BlobDownload>> DownloadAsync(
+    public async Task<Result<StoredBlobDownload>> DownloadAsync(
         BlobKey key,
         CancellationToken cancellationToken = default)
     {
@@ -185,7 +203,7 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
         var validation = BlobValidator.Validate(key);
         if (validation.IsFailure)
         {
-            return Result<BlobDownload>.Failure(validation);
+            return Result<StoredBlobDownload>.Failure(validation);
         }
 
         try
@@ -193,7 +211,7 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
             var properties = await this.backend.GetPropertiesAsync(key, cancellationToken).ConfigureAwait(false);
             var content = await this.backend.OpenReadAsync(key, cancellationToken).ConfigureAwait(false);
 
-            return Result<BlobDownload>.Success(new BlobDownload
+            return Result<StoredBlobDownload>.Success(new StoredBlobDownload
             {
                 Info = ToInfo(properties),
                 Content = content
@@ -205,12 +223,12 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
         }
         catch (Exception exception)
         {
-            return Result<BlobDownload>.Failure(MapException(exception, key));
+            return Result<StoredBlobDownload>.Failure(MapException(exception, key));
         }
     }
 
     /// <inheritdoc />
-    public async Task<Result<BlobInfo>> GetPropertiesAsync(
+    public async Task<Result<StoredBlobInfo>> GetPropertiesAsync(
         BlobKey key,
         CancellationToken cancellationToken = default)
     {
@@ -219,12 +237,12 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
         var validation = BlobValidator.Validate(key);
         if (validation.IsFailure)
         {
-            return Result<BlobInfo>.Failure(validation);
+            return Result<StoredBlobInfo>.Failure(validation);
         }
 
         try
         {
-            return Result<BlobInfo>.Success(ToInfo(await this.backend.GetPropertiesAsync(key, cancellationToken).ConfigureAwait(false)));
+            return Result<StoredBlobInfo>.Success(ToInfo(await this.backend.GetPropertiesAsync(key, cancellationToken).ConfigureAwait(false)));
         }
         catch (OperationCanceledException)
         {
@@ -232,34 +250,36 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
         }
         catch (Exception exception)
         {
-            return Result<BlobInfo>.Failure(MapException(exception, key));
+            return Result<StoredBlobInfo>.Failure(MapException(exception, key));
         }
     }
 
     /// <inheritdoc />
-    public async Task<Result<BlobInfo>> UpdatePropertiesAsync(
-        BlobPropertiesUpdate update,
+    public async Task<Result<StoredBlobInfo>> UpdatePropertiesAsync(
+        StoredBlobPropertiesUpdate update,
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        if (update?.Dimensions is not null) return Result<StoredBlobInfo>.Failure(new BlobDimensionsNotSupportedError());
 
         var validation = BlobValidator.Validate(update);
         if (validation.IsFailure)
         {
-            return Result<BlobInfo>.Failure(validation);
+            return Result<StoredBlobInfo>.Failure(validation);
         }
-
-        var metadataResult = ToMetadata(update.Properties);
-        if (metadataResult.IsFailure)
-        {
-            return Result<BlobInfo>.Failure(metadataResult);
-        }
-
-        ApplyExpiration(metadataResult.Value, update.ExpiresAt);
 
         try
         {
             var current = await this.backend.GetPropertiesAsync(update.Key, cancellationToken).ConfigureAwait(false);
+            var currentInfo = ToInfo(current);
+            var metadataResult = ToMetadata(update.Properties ?? currentInfo.Properties,
+                update.TransformMetadata ?? currentInfo.TransformMetadata);
+            if (metadataResult.IsFailure)
+            {
+                return Result<StoredBlobInfo>.Failure(metadataResult);
+            }
+
+            ApplyExpiration(metadataResult.Value, update.ExpiresAt);
             if (!string.IsNullOrWhiteSpace(current.Metadata?.GetValueOrDefault(ContentHashMetadataKey)))
             {
                 metadataResult.Value[ContentHashMetadataKey] = current.Metadata[ContentHashMetadataKey];
@@ -270,11 +290,11 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
                     update.ContentType?.MimeType(),
                     metadataResult.Value,
                     ToTags(update.ExpiresAt),
-                    update.IfMatchETag,
+                    update.IfMatchETag ?? current.ETag,
                     cancellationToken)
                 .ConfigureAwait(false);
 
-            return Result<BlobInfo>.Success(ToInfo(updated));
+            return Result<StoredBlobInfo>.Success(ToInfo(updated));
         }
         catch (OperationCanceledException)
         {
@@ -282,7 +302,7 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
         }
         catch (Exception exception)
         {
-            return Result<BlobInfo>.Failure(MapException(exception, update.Key));
+            return Result<StoredBlobInfo>.Failure(MapException(exception, update.Key));
         }
     }
 
@@ -318,10 +338,12 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
     }
 
     /// <inheritdoc />
-    public async Task<Result<BlobPage>> ListPageAsync(
+    public async Task<Result<StoredBlobPage>> ListPageAsync(
         BlobQuery query,
         CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Result<StoredBlobPage>.Failure(new BlobDimensionsNotSupportedError());
+
         cancellationToken.ThrowIfCancellationRequested();
 
         var validation = BlobQueryValidator.NormalizeAndValidate(
@@ -332,7 +354,7 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
             this.continuationTokenProtector);
         if (validation.IsFailure)
         {
-            return Result<BlobPage>.Failure(validation);
+            return Result<StoredBlobPage>.Failure(validation);
         }
 
         try
@@ -346,7 +368,7 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
                     cancellationToken)
                 .ConfigureAwait(false);
 
-            return Result<BlobPage>.Success(new BlobPage
+            return Result<StoredBlobPage>.Success(new StoredBlobPage
             {
                 Items = page.Items.Select(ToInfo).ToList(),
                 ContinuationToken = this.CreateContinuationToken(validation.Value.QueryHash, page.ContinuationToken)
@@ -358,7 +380,7 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
         }
         catch (Exception exception)
         {
-            return Result<BlobPage>.Failure(MapException(exception));
+            return Result<StoredBlobPage>.Failure(MapException(exception));
         }
     }
 
@@ -371,6 +393,12 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
         cancellationToken.ThrowIfCancellationRequested();
 
         var validation = BlobValidator.Validate(key);
+        if (validation.IsFailure)
+        {
+            return validation;
+        }
+
+        validation = BlobValidator.Validate(options);
         if (validation.IsFailure)
         {
             return validation;
@@ -462,7 +490,7 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
         }
     }
 
-    private static BlobInfo ToInfo(AzureBlobProperties properties) => new()
+    private static StoredBlobInfo ToInfo(AzureBlobProperties properties) => new()
     {
         Key = properties.Key,
         Length = properties.Length,
@@ -474,7 +502,8 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
         CreatedAt = properties.CreatedAt,
         LastModifiedAt = properties.LastModifiedAt,
         ExpiresAt = ToUtc(ParseExpiresAt(properties.Metadata?.GetValueOrDefault(ExpiresAtMetadataKey))),
-        Properties = ToPropertyBag(properties.Metadata)
+        Properties = ReadBag(properties.Metadata, PropertiesMetadataKey),
+        TransformMetadata = ReadBag(properties.Metadata, TransformsMetadataKey)
     };
 
     private static void ApplyExpiration(IDictionary<string, string> metadata, DateTimeOffset? expiresAt)
@@ -518,90 +547,37 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
                 : null;
     }
 
-    private static Result<Dictionary<string, string>> ToMetadata(PropertyBag properties)
-    {
-        var metadata = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var (key, value) in properties.SafeNull())
-        {
-            if (string.Equals(key, ContentHashMetadataKey, StringComparison.OrdinalIgnoreCase))
-            {
-                return Result<Dictionary<string, string>>.Failure(new BlobStoreSerializationError(
-                    $"Azure Blob metadata key '{key}' is reserved."));
-            }
-
-            if (string.Equals(key, ExpiresAtMetadataKey, StringComparison.OrdinalIgnoreCase))
-            {
-                return Result<Dictionary<string, string>>.Failure(new BlobStoreSerializationError(
-                    $"Azure Blob metadata key '{key}' is reserved."));
-            }
-
-            if (!IsValidMetadataKey(key))
-            {
-                return Result<Dictionary<string, string>>.Failure(new BlobStoreSerializationError(
-                    $"Azure Blob metadata key '{key}' is invalid."));
-            }
-
-            var valueResult = ToMetadataValue(key, value);
-            if (valueResult.IsFailure)
-            {
-                return Result<Dictionary<string, string>>.Failure(valueResult);
-            }
-
-            metadata[key] = valueResult.Value;
-        }
-
-        return Result<Dictionary<string, string>>.Success(metadata);
-    }
-
-    private static PropertyBag ToPropertyBag(IDictionary<string, string> metadata)
-    {
-        var values = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-        foreach (var (key, value) in metadata.SafeNull())
-        {
-            if (string.Equals(key, ContentHashMetadataKey, StringComparison.OrdinalIgnoreCase))
-            {
-                continue;
-            }
-
-            if (string.Equals(key, ExpiresAtMetadataKey, StringComparison.OrdinalIgnoreCase))
-            {
-                continue;
-            }
-
-            values[key] = FromMetadataValue(value);
-        }
-
-        return new PropertyBag(values);
-    }
-
-    private static Result<string> ToMetadataValue(string key, object value)
+    private static Result<Dictionary<string, string>> ToMetadata(PropertyBag properties, PropertyBag transforms)
     {
         try
         {
-            return Result<string>.Success(PropertyBagScalarCodec.Encode(value));
+            var metadata = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            WriteBag(metadata, PropertiesMetadataKey, properties);
+            WriteBag(metadata, TransformsMetadataKey, transforms);
+            var bytes = metadata.Sum(item => Encoding.UTF8.GetByteCount(item.Key) + Encoding.UTF8.GetByteCount(item.Value));
+            return bytes > 8192
+                ? Result<Dictionary<string, string>>.Failure(new BlobStoreSizeLimitExceededError(bytes, 8192))
+                : Result<Dictionary<string, string>>.Success(metadata);
         }
         catch (ArgumentException exception)
         {
-            return Result<string>.Failure(new BlobStoreSerializationError(
-                $"Azure Blob metadata value for key '{key}' is not supported: {exception.Message}"));
+            return Result<Dictionary<string, string>>.Failure(new BlobStoreSerializationError(exception.Message));
         }
     }
 
-    private static object FromMetadataValue(string value)
+    private static void WriteBag(IDictionary<string, string> metadata, string key, PropertyBag values)
     {
-        try
+        var json = BlobPropertyValues.Serialize(values);
+        if (json is not null)
         {
-            return PropertyBagScalarCodec.Decode(value);
-        }
-        catch (FormatException exception)
-        {
-            throw new AzureBlobStoreBackendException(new BlobStoreSerializationError(
-                $"Azure Blob metadata contains an invalid typed value: {exception.Message}"));
+            metadata[key] = Base64UrlHelper.Encode(Encoding.UTF8.GetBytes(json));
         }
     }
 
-    private static bool IsValidMetadataKey(string key) =>
-        !string.IsNullOrWhiteSpace(key) && MetadataKeyRegex().IsMatch(key);
+    private static PropertyBag ReadBag(IDictionary<string, string> metadata, string key) =>
+        metadata?.TryGetValue(key, out var value) == true
+            ? BlobPropertyValues.Deserialize(Encoding.UTF8.GetString(Base64UrlHelper.Decode(value)))
+            : new PropertyBag();
 
     private string CreateContinuationToken(string queryHash, string nativeToken)
     {

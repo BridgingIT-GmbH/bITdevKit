@@ -25,6 +25,14 @@ public sealed class CacheBlobDownloadEntry
     /// </example>
     public BlobInfo Info { get; init; }
 
+    /// <summary>Gets the scalar-encoded application properties.</summary>
+    /// <example><code>var properties = BlobPropertyValues.Deserialize(entry.PropertiesJson);</code></example>
+    public string PropertiesJson { get; init; }
+
+    /// <summary>Gets the scalar-encoded private transform state for the cached payload.</summary>
+    /// <example><code>var metadata = BlobPropertyValues.Deserialize(entry.TransformMetadataJson);</code></example>
+    public string TransformMetadataJson { get; init; }
+
     /// <summary>
     /// Gets the cached blob content bytes.
     /// </summary>

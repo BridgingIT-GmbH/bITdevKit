@@ -74,7 +74,7 @@ public static class ServiceCollectionExtensions
 
         RegisterInterceptors(services, options, lifetime);
 
-        services.AddDbContext<TContext>(ConfigureDbContext(services, options, sqlServerOptionsBuilder), lifetime);
+        services.AddDbContext<TContext>(ConfigureDbContext(options, sqlServerOptionsBuilder, includeInterceptors: true), lifetime);
         services.AddDbContextRegistration<TContext>(Provider.SqlServer);
         services.AddScoped<IDbContextResolver, DbContextResolver>(); // needed for DatabaseTransactionPipelineBehavior to resolve DbContext by name (e.g., "Core" or "CoreDbContext")
         TryAddSqlServerEntityBulkInsertProvider(services);
@@ -82,16 +82,19 @@ public static class ServiceCollectionExtensions
         return new SqlServerDbContextBuilderContext<TContext>(services,
             lifetime,
             connectionString: options.ConnectionString,
-            provider: Provider.SqlServer);
+            provider: Provider.SqlServer)
+        {
+            NativeFactoryOptions = ConfigureDbContext(options, sqlServerOptionsBuilder, includeInterceptors: false)
+        };
 
         static Action<IServiceProvider, DbContextOptionsBuilder> ConfigureDbContext(
-            IServiceCollection services,
             SqlServerOptions options,
-            Action<SqlServerDbContextOptionsBuilder> sqlServerOptionsBuilder)
+            Action<SqlServerDbContextOptionsBuilder> sqlServerOptionsBuilder,
+            bool includeInterceptors)
         {
             return (sp, o) =>
             {
-                if (options.InterceptorTypes.SafeAny())
+                if (includeInterceptors && options.InterceptorTypes.SafeAny())
                 {
                     o.AddInterceptors(options.InterceptorTypes.Select(i => sp.GetRequiredService(i) as IInterceptor));
                 }
@@ -126,7 +129,7 @@ public static class ServiceCollectionExtensions
 
                 if (options.LoggerEnabled)
                 {
-                    o.UseLoggerFactory(services.BuildServiceProvider().GetRequiredService<ILoggerFactory>());
+                    o.UseLoggerFactory(sp.GetRequiredService<ILoggerFactory>());
                     o.EnableSensitiveDataLogging(options.SensitiveDataLoggingEnabled);
                 }
 
@@ -170,14 +173,18 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNullOrEmpty(connectionString, nameof(connectionString));
         connectionString = DevAppInstanceSession.ResolveConnectionString(services, SqlServerDevAppInstanceAdapter.Instance, connectionString, typeof(TContext).Name);
 
-        services.AddDbContext<TContext>(o => o.UseSqlServer(connectionString, sqlServerOptionsBuilder), lifetime);
+        var configure = (IServiceProvider _, DbContextOptionsBuilder options) => { options.UseSqlServer(connectionString, sqlServerOptionsBuilder); };
+        services.AddDbContext<TContext>(configure, lifetime);
         services.AddDbContextRegistration<TContext>(Provider.SqlServer);
         TryAddSqlServerEntityBulkInsertProvider(services);
 
         return new SqlServerDbContextBuilderContext<TContext>(services,
             lifetime,
             connectionString: connectionString,
-            provider: Provider.SqlServer);
+            provider: Provider.SqlServer)
+        {
+            NativeFactoryOptions = configure
+        };
     }
 
     /// <summary>

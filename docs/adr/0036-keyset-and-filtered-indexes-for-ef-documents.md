@@ -40,4 +40,4 @@ Paging over a full document type sorted by `PartitionKey, RowKey` and continued 
 ## References
 
 - [Specification](../specs/spec-application-storage-documents-ef-performance.md)
-- [Document Storage appendix](../features-storage-documents.md#appendix-ef-performance-and-indexes)
+- [Document Storage appendix](../features-storage-documents.md#appendix-a-read-performance-and-scaling)

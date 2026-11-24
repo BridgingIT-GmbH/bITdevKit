@@ -66,7 +66,7 @@ public class FileStorageEndpointsApplication : WebApplicationFactory<FileStorage
         => this.Services.CreateScope();
 }
 
-public class FileStorageEndpointsTests : IAsyncDisposable
+public class FileStorageEndpointsTests : IAsyncLifetime
 {
     private readonly FileStorageEndpointsApplication factory;
     private readonly HttpClient client;
@@ -77,7 +77,11 @@ public class FileStorageEndpointsTests : IAsyncDisposable
         this.client = this.factory.CreateClient();
     }
 
-    public async ValueTask DisposeAsync()
+    /// <inheritdoc />
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    /// <inheritdoc />
+    public async Task DisposeAsync()
     {
         this.client.Dispose();
         await this.factory.DisposeAsync();

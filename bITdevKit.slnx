@@ -158,6 +158,7 @@
   <Folder Name="/src/">
     <File Path="src/Directory.Build.props" />
     <Project Path="src/Application.Auditing/Application.Auditing.csproj" />
+    <Project Path="src/Application.Caching/Application.Caching.csproj" />
     <Project Path="src/Application.Commands.EventSourcing/Application.Commands.EventSourcing.csproj" />
     <Project Path="src/Application.Commands.Outbox/Application.Commands.Outbox.csproj" />
     <Project Path="src/Application.Commands/Application.Commands.csproj" />
@@ -216,6 +217,7 @@
     <Project Path="src/Presentation.Configuration/Presentation.Configuration.csproj" />
     <Project Path="src/Presentation.Serilog/Presentation.Serilog.csproj" />
     <Project Path="src/Presentation.Web.Auditing/Presentation.Web.Auditing.csproj" />
+    <Project Path="src/Presentation.Web.Caching/Presentation.Web.Caching.csproj" />
     <Project Path="src/Presentation.Web.Client/Presentation.Web.Client.csproj" />
     <Project Path="src/Presentation.Web.EntityFramework/Presentation.Web.EntityFramework.csproj" />
     <Project Path="src/Presentation.Web.Jobs/Presentation.Web.Jobs.csproj" />
@@ -238,6 +240,8 @@
     <Project Path="tests/Infrastructure.IntegrationTests/Infrastructure.IntegrationTests.csproj" />
     <Project Path="tests/Infrastructure.UnitTests/Infrastructure.UnitTests.csproj" />
     <Project Path="tests/Presentation.UnitTests/Presentation.UnitTests.csproj" />
+    <Project Path="tests/Presentation.TestHost/Presentation.TestHost.csproj" />
     <Project Path="tests/Presentation.UnitTests.ModulesFixtures/Presentation.UnitTests.ModulesFixtures.csproj" />
+    <Project Path="tests/Presentation.WasmTestHost/Presentation.WasmTestHost.csproj" />
   </Folder>
 </Solution>

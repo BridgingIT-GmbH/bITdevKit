@@ -49,7 +49,7 @@ public class ResultMapExtensionsNonGenericTests
         // Assert
         response.ShouldBeOfType<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
         var innerResult = (response).Result;
-        innerResult.ShouldBeOfType<UnauthorizedHttpResult>();
+        innerResult.ShouldBeOfType<ProblemHttpResult>().StatusCode.ShouldBe(StatusCodes.Status401Unauthorized);
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public class ResultMapExtensionsNonGenericTests
         // Assert
         response.ShouldBeOfType<Results<Ok, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
         var innerResult = (response).Result;
-        innerResult.ShouldBeOfType<NotFound>();
+        innerResult.ShouldBeOfType<ProblemHttpResult>().StatusCode.ShouldBe(StatusCodes.Status404NotFound);
     }
 
     [Fact]

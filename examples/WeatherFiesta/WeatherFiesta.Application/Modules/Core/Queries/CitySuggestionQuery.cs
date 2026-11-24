@@ -9,15 +9,20 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 /// Query to search for city suggestions using the Open-Meteo geocoding API.
 /// Returns up to 10 matching cities for autocomplete/typeahead use.
 /// </summary>
+/// <example><code>await requester.SendAsync(new CitySuggestionQuery("Haarlem", "NL"), cancellationToken);</code></example>
 [Query]
 [HandlerRetry(2, 300)]
 [HandlerTimeout(5000)]
 public partial class CitySuggestionQuery
 {
+    /// <summary>Creates a city-suggestion query for request binding.</summary>
     public CitySuggestionQuery()
     {
     }
 
+    /// <summary>Creates a public geocoding search.</summary>
+    /// <param name="search">The city-search text.</param>
+    /// <param name="countryCode">The optional two-letter country filter.</param>
     public CitySuggestionQuery(string search, string countryCode = null)
     {
         this.Search = search;
@@ -34,38 +39,16 @@ public partial class CitySuggestionQuery
     [Validate]
     private static void Validate(InlineValidator<CitySuggestionQuery> validator)
     {
-        validator.RuleFor(q => q.Search).MinimumLength(3).WithMessage("Search term must be at least 3 characters.");
+        validator.RuleFor(q => q.Search).Must(search => search?.Trim().Length is >= 3 and <= CitySuggestionService.MaximumSearchLength)
+            .WithMessage("Search term must contain three to 200 characters after trimming.");
+        validator.RuleFor(q => q.CountryCode).Must(code => string.IsNullOrWhiteSpace(code) ||
+            code.Trim().Length == 2 && code.Trim().All(char.IsAsciiLetter))
+            .WithMessage("Country code must contain two letters.");
     }
 
     [Handle]
     private async Task<Result<List<CitySuggestionModel>>> HandleAsync(
-        IWeatherGeocodingClient geocodingClient,
-        CancellationToken cancellationToken)
-    {
-        var response = await geocodingClient.SearchCitiesAsync(
-            this.Search,
-            this.CountryCode,
-            cancellationToken);
-
-        if (response?.Results is null || response.Results.Count == 0)
-        {
-            return Result<List<CitySuggestionModel>>.Success([]);
-        }
-
-        // Return up to 10 results
-        var suggestions = response.Results.Take(10).Select(r => new CitySuggestionModel
-        {
-            ExternalId = r.ExternalId,
-            Name = r.Name,
-            Country = r.Country,
-            CountryCode = r.CountryCode,
-            Admin1 = r.Admin1,
-            Latitude = r.Latitude,
-            Longitude = r.Longitude,
-            TimeZone = r.TimeZone,
-            Elevation = r.Elevation
-        }).ToList();
-
-        return Result<List<CitySuggestionModel>>.Success(suggestions);
-    }
+        CitySuggestionService suggestions,
+        CancellationToken cancellationToken) =>
+        await suggestions.SearchAsync(this.Search, this.CountryCode, cancellationToken);
 }

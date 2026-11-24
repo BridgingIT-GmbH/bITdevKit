@@ -160,7 +160,7 @@ public static class BlobBehaviorTransform
     /// var properties = BlobBehaviorTransform.CloneProperties(info.Properties);
     /// </code>
     /// </example>
-    public static PropertyBag CloneProperties(PropertyBag properties) => properties?.Clone() ?? new PropertyBag();
+    public static PropertyBag CloneProperties(PropertyBag properties) => BlobPropertyValues.Clone(properties) ?? new PropertyBag();
 
     /// <summary>
     /// Resolves a content type from a MIME type string.
@@ -207,7 +207,7 @@ public static class BlobBehaviorTransform
             return null;
         }
 
-        var properties = CloneProperties(info.Properties);
+        var properties = CloneProperties(info.TransformMetadata);
         var isTransformed = properties.Contains(algorithmKey);
         var length = info.Length;
         var contentType = info.ContentType;
@@ -238,6 +238,7 @@ public static class BlobBehaviorTransform
         return new BlobInfo
         {
             Key = info.Key,
+            Dimensions = info.Dimensions,
             Length = length,
             ContentType = contentType,
             ContentHash = contentHash,
@@ -245,7 +246,8 @@ public static class BlobBehaviorTransform
             CreatedAt = info.CreatedAt,
             LastModifiedAt = info.LastModifiedAt,
             ExpiresAt = info.ExpiresAt,
-            Properties = properties
+            Properties = CloneProperties(info.Properties),
+            TransformMetadata = properties
         };
     }
 
@@ -301,13 +303,13 @@ public static class BlobBehaviorTransform
         string contentHashKey,
         params string[] additionalInternalKeys)
     {
-        var currentProperties = current?.Properties;
+        var currentProperties = current?.TransformMetadata;
         if (currentProperties is null || !currentProperties.Contains(algorithmKey))
         {
             return update;
         }
 
-        var properties = CloneProperties(update.Properties);
+        var properties = CloneProperties(update.TransformMetadata ?? currentProperties);
         properties[algorithmKey] = currentProperties.Get<string>(algorithmKey);
         properties[lengthKey] = currentProperties.Get<string>(lengthKey);
         properties[contentHashKey] = currentProperties.Get<string>(contentHashKey);
@@ -324,10 +326,12 @@ public static class BlobBehaviorTransform
         return new BlobPropertiesUpdate
         {
             Key = update.Key,
+            Dimensions = update.Dimensions,
             ContentType = current.ContentType,
             ExpiresAt = update.ExpiresAt,
-            Properties = properties,
-            IfMatchETag = update.IfMatchETag
+            Properties = BlobPropertyValues.Clone(update.Properties),
+            TransformMetadata = properties,
+            IfMatchETag = update.IfMatchETag ?? current.ETag
         };
     }
 }

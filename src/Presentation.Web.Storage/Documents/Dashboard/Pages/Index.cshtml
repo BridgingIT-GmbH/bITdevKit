@@ -97,6 +97,9 @@
                         <label class="form-label small mb-1" for="documents-details-properties">Properties JSON</label>
                         <textarea id="documents-details-properties" class="form-control form-control-sm font-monospace" name="properties" rows="5" spellcheck="false"></textarea>
                     </div>
+                    <div class="col-12">
+                        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFields>())
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -118,10 +121,19 @@
     </div>
 </div>
 
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQueryScript>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFieldsScript>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionExplorerScript>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionFilterNavigationScript>())
+
 <script>
     (() => {
         const shellElement = document.getElementById('dashboard-documents-shell');
         const baseContentUrl = '@contentPath';
+        const dimensionNavigation = window.bdkDashboard.createDimensionFilterNavigation({
+            root: currentRoot,
+            buildQuery: () => buildContentUrl(stateFromRoot())
+        });
         const deleteActionUrl = '@($"{actionBase}/delete")';
         const pageSizeStorageKey = 'bdk.documentStorage.pageSize';
         const clientStorageKey = 'bdk.documentStorage.clientId';
@@ -134,6 +146,14 @@
             ? window.bootstrap.Modal.getOrCreateInstance(detailsModalElement)
             : null;
         const detailsForm = document.getElementById('documents-details-form');
+        const detailsDimensions = window.bdkDashboard.createDimensionFields(detailsForm);
+        const dimensionExplorer = window.bdkDashboard.createDimensionExplorer({
+            owner: shellElement,
+            root: currentRoot,
+            scope: () => stateFromRoot().clientId,
+            applyFilter: dimensionFilter =>
+                refresh(clearPagingAndSelection({ ...stateFromRoot(), dimensionFilter }), true, true)
+        });
         const detailsTitle = document.getElementById('documents-details-title');
         const detailsSubtitle = document.getElementById('documents-details-subtitle');
         const detailsClient = document.getElementById('documents-details-client');
@@ -214,6 +234,7 @@
             const root = currentRoot();
             return {
                 clientId: root?.dataset.clientId || '',
+                dimensionFilter: root?.dataset.dimensionFilter || '',
                 partitionKey: root?.dataset.partitionKey || '',
                 rowKey: root?.dataset.rowKey || '',
                 rowKeyMode: root?.dataset.rowKeyMode || 'prefix',
@@ -351,6 +372,7 @@
                 rowKey: metadata.dataset.rowKey || '',
                 content: content.value || '',
                 properties: properties?.value || '{}',
+                dimensions: root.querySelector('[data-documents-selected-dimensions]')?.value,
                 etag: metadata.dataset.etag || '',
                 contentHash: metadata.dataset.contentHash || '',
                 createdAt: metadata.dataset.createdAt || '',
@@ -366,6 +388,7 @@
             }
 
             detailsForm.dataset.documentsMode = 'edit';
+            detailsForm.querySelector('[data-etag-conflict-actions]')?.remove();
             clearDetailsAlert();
             detailsForm.elements.mode.value = 'edit';
             detailsForm.elements.clientId.value = document.clientId;
@@ -381,6 +404,8 @@
             detailsContent.value = document.content;
             detailsExpires.value = toDateTimeLocal(document.expiresAt);
             detailsProperties.value = document.properties;
+            detailsDimensions.load(document.dimensions, currentRoot()?.dataset.supportsDimensions === 'true',
+                (key, value) => dimensionExplorer.filterAction(key, value, detailsModalElement));
             detailsMetadata.textContent = `${document.contentHash || '-'} | created ${document.createdAt || '-'} | modified ${document.modifiedAt || '-'}`;
             validateDetailsForm();
             detailsModal.show();
@@ -394,6 +419,7 @@
             }
 
             detailsForm.dataset.documentsMode = 'new';
+            detailsForm.querySelector('[data-etag-conflict-actions]')?.remove();
             clearDetailsAlert();
             detailsForm.elements.mode.value = 'new';
             detailsForm.elements.clientId.value = state.clientId;
@@ -409,6 +435,7 @@
             detailsContent.value = '{\n  \n}';
             detailsExpires.value = '';
             detailsProperties.value = '{}';
+            detailsDimensions.load(null, currentRoot()?.dataset.supportsDimensions === 'true');
             detailsMetadata.textContent = '-';
             validateDetailsForm();
             detailsModal.show();
@@ -519,7 +546,21 @@
             }
         }
 
-        async function submitDocumentAction(actionForm, submitter) {
+        function showConflictActions() {
+            detailsForm.querySelector('[data-etag-conflict-actions]')?.remove();
+            const actions = document.createElement('div'); actions.dataset.etagConflictActions = ''; actions.className = 'd-flex flex-wrap gap-2 mb-3';
+            const reload = document.createElement('button'); reload.type = 'button'; reload.className = 'btn btn-outline-secondary btn-sm'; reload.textContent = 'Reload current item';
+            reload.onclick = async () => {
+                if (!await window.bdkDashboard.confirmAction({ title: 'Reload current item', message: 'Discard your changes and reload the current item?', confirmText: 'Reload' })) return;
+                await refresh(stateFromRoot());
+                if (getSelectedDocument()) showDetailsDialog(); else showDetailsAlert('danger', 'The document was deleted.');
+            };
+            const force = document.createElement('button'); force.type = 'button'; force.className = 'btn btn-outline-danger btn-sm'; force.textContent = 'Force overwrite';
+            force.onclick = () => submitDocumentAction(detailsForm, detailsSaveButton, true);
+            actions.append(reload, force); detailsForm.querySelector('.modal-body').prepend(actions);
+        }
+
+        async function submitDocumentAction(actionForm, submitter, forceOverwrite = false) {
             clearDetailsAlert();
             const actionUrl = submitter?.dataset.documentsAction ||
                 submitter?.getAttribute('formaction') ||
@@ -537,6 +578,7 @@
 
                 return;
             }
+            if (actionForm === detailsForm && !isDeleteAction && !actionForm.reportValidity()) return;
 
             if (isDeleteAction) {
                 const partitionKey = actionForm.elements.partitionKey?.value || '';
@@ -554,16 +596,20 @@
             setBusy(true, isDeleteAction ? 'Deleting document...' : 'Saving document...');
 
             try {
+                const payload = new FormData(actionForm);
+                if (actionForm === detailsForm && !isDeleteAction) detailsDimensions.write(payload);
+                payload.set('forceOverwrite', String(forceOverwrite && !isDeleteAction));
                 const response = await fetch(actionUrl, {
                     method: 'POST',
-                    body: new FormData(actionForm),
+                    body: payload,
                     headers: { 'X-Requested-With': 'fetch' }
                 });
 
                 if (!response.ok) {
                     const message = await readResponseMessage(response, 'Document action failed.');
                     if (actionForm === detailsForm) {
-                        showDetailsAlert('danger', message);
+                        showDetailsAlert('danger', response.status === 409 ? 'The stored item changed. Your changes have been kept.' : message);
+                        if (response.status === 409 && !isDeleteAction && detailsForm.elements.mode.value === 'edit') showConflictActions();
                     } else {
                         await window.bdkDashboard.showMessage({ title: 'Document action failed', message, kind: 'danger' });
                     }
@@ -589,7 +635,7 @@
 
         function setPageUrl(state) {
             const url = new URL(window.location.href);
-            ['clientId', 'partitionKey', 'rowKey', 'rowKeyMode', 'pageSize', 'continuationToken', 'selectedPartitionKey', 'selectedRowKey']
+            ['clientId', 'partitionKey', 'rowKey', 'rowKeyMode', 'dimensionFilter', 'pageSize', 'continuationToken', 'selectedPartitionKey', 'selectedRowKey']
                 .forEach(key => {
                     if (state[key]) {
                         url.searchParams.set(key, state[key]);
@@ -601,14 +647,14 @@
         }
 
         let contentController = null;
-        async function refresh(state, updateUrl = true, preserveDraft = false) {
+        async function refresh(state, updateUrl = true, preserveDraft = false, acceptQueryError = false) {
             listPending = !state.selectedPartitionKey && !state.selectedRowKey;
             growingList.cancel();
             refresher.cancel();
             contentController?.abort();
             const controller = new AbortController(); contentController = controller;
             const previous = stateFromRoot();
-            const sameSelection = ['clientId', 'partitionKey', 'rowKey', 'rowKeyMode', 'pageSize'].every(key => String(state[key] ?? '') === String(previous[key] ?? ''));
+            const sameSelection = ['clientId', 'partitionKey', 'rowKey', 'rowKeyMode', 'dimensionFilter', 'pageSize'].every(key => String(state[key] ?? '') === String(previous[key] ?? ''));
             setBusy(true, 'Loading documents...');
             try {
                 const response = await fetch(buildContentUrl(state).toString(), {
@@ -617,11 +663,19 @@
                 if (!response.ok || response.redirected || !(response.headers.get('content-type') || '').includes('text/html')) throw new Error('Documents could not be loaded.');
                 const html = await response.text();
                 if (controller.signal.aborted || contentController !== controller) return;
-                const draft = (sameSelection || preserveDraft) ? window.bdkDashboard.captureFilterDraft(shellElement, '[data-documents-filter-form]') : null;
                 const validation = document.createElement('template'); validation.innerHTML = html;
-                if (validation.content.querySelector('[data-dashboard-query-error]')) throw new Error('Query failed');
+                const queryError = validation.content.querySelector('[data-dashboard-query-error]');
+                if (queryError && !acceptQueryError && state.clientId === previous.clientId) {
+                    dimensionExplorer.showQueryError(queryError);
+                    document.getElementById('documents-refresh-status').textContent = 'Filters could not be applied';
+                    return;
+                }
+                const editedDimensionFilter = shellElement.querySelector('[name="dimensionFilter"]')?.value || '';
+                const keepDimensionDraft = editedDimensionFilter !== (state.dimensionFilter || '');
+                const draft = (sameSelection || preserveDraft || keepDimensionDraft) ? window.bdkDashboard.captureFilterDraft(shellElement, '[data-documents-filter-form]') : null;
                 growingList.applyResponse(shellElement, html);
                 if (draft) window.bdkDashboard.restoreFilterDraft(shellElement, '[data-documents-filter-form]', draft);
+                dimensionExplorer.mount();
                 if (updateUrl) setPageUrl(state);
                 populateFilterHistory();
                 window.bdkDashboard.clearRefreshError(shellElement);
@@ -641,6 +695,8 @@
             owner: shellElement, root: () => shellElement,
             appliedUrl: () => buildContentUrl(stateFromRoot()), hasPending: () => listPending,
             lists: [{ key: 'documents', cursor: 'continuationToken', boundary: 'listBoundary', size: 'pageSize' }],
+            onAppended: dimensionExplorer.renderColumns,
+            onRestored: dimensionExplorer.renderColumns,
             onSizeChange: (list, value) => {
                 const state = stateFromRoot(); state.pageSize = value; state.continuationToken = '';
                 clearPagingAndSelection(state); rememberPageSize(value);
@@ -658,8 +714,8 @@
             refreshButtonSelector: '#documents-refresh-now',
             storageKey: 'bdk.dashboard.documents.refreshInterval',
             shouldRefresh: () => !growingList.busy() && detailsModalElement?.classList.contains('show') !== true &&
-                shellElement.getAttribute('aria-busy') !== 'true',
-            onSuccess: () => populateFilterHistory()
+                shellElement.getAttribute('aria-busy') !== 'true' && !shellElement.querySelector('[data-dimension-columns][open]'),
+            onSuccess: () => { populateFilterHistory(); dimensionExplorer.mount(); }
         });
 
         shellElement.addEventListener('change', async event => {
@@ -673,6 +729,7 @@
                 form.elements.partitionKey.value = '';
                 form.elements.rowKey.value = '';
                 form.elements.rowKeyMode.value = 'prefix';
+                window.bdkDashboard.storageDimensions.clear(form);
             }
 
             if (event.target.name === 'pageSize') {
@@ -761,8 +818,11 @@
                 state.partitionKey = '';
                 state.rowKey = '';
                 state.rowKeyMode = 'prefix';
+                state.dimensionFilter = '';
                 clearPagingAndSelection(state);
-                await refresh(state);
+                dimensionNavigation.reset();
+                window.bdkDashboard.storageDimensions.clear(currentFilterForm());
+                await refresh(state, true, false, true);
                 return;
             }
 
@@ -773,6 +833,8 @@
 
         });
 
+        if (dimensionNavigation.resume()) return;
+        const restoredDimensionDraft = dimensionNavigation.restoreDraft();
         const state = stateFromRoot();
         const url = new URL(window.location.href);
         const urlClientId = url.searchParams.get('clientId');
@@ -783,7 +845,7 @@
 
         if (urlPageSize) {
             rememberPageSize(urlPageSize);
-        } else {
+        } else if (!restoredDimensionDraft) {
             const storedPageSize = normalizePageSize(window.bdkDashboard.state.get(pageSizeStorageKey));
             if (storedPageSize !== state.pageSize) {
                 state.pageSize = storedPageSize;
@@ -794,13 +856,14 @@
             }
         }
 
-        if (!urlClientId) {
+        if (!urlClientId && !restoredDimensionDraft && !url.searchParams.has('dimensionFilter')) {
             const storedClientId = window.bdkDashboard.state.get(clientStorageKey);
             if (storedClientId && knownClientIds().includes(storedClientId) && storedClientId !== state.clientId) {
                 state.clientId = storedClientId;
                 state.partitionKey = '';
                 state.rowKey = '';
                 state.rowKeyMode = 'prefix';
+                state.dimensionFilter = '';
                 clearPagingAndSelection(state);
                 refresh(state);
             }
@@ -820,6 +883,7 @@
         });
 
         populateFilterHistory();
+        dimensionExplorer.mount();
     })();
 </script>
 

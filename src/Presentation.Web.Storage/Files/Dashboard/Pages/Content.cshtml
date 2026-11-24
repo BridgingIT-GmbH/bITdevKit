@@ -779,25 +779,7 @@
     private static string FormatTimestamp(DateTime? value) =>
         value?.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) ?? "-";
 
-    private static string FormatSize(long? value)
-    {
-        if (value is null)
-        {
-            return "-";
-        }
-
-        const long kiloByte = 1024;
-        const long megaByte = kiloByte * 1024;
-        const long gigaByte = megaByte * 1024;
-
-        return value.Value switch
-        {
-            >= gigaByte => $"{value.Value / (double)gigaByte:0.##} GB",
-            >= megaByte => $"{value.Value / (double)megaByte:0.##} MB",
-            >= kiloByte => $"{value.Value / (double)kiloByte:0.##} KB",
-            _ => $"{value.Value} B"
-        };
-    }
+    private static string FormatSize(long? value) => value.HasValue ? ByteSize.FormatBinary(value.Value) : "-";
 
     private static string BuildDownloadUrl(string basePath, string providerName, string path)
     {

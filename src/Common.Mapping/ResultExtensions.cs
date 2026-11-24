@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Common;
 
 /// <summary>
-///     Provides extension methods for manipulating and transforming <see cref="Result{TValue}" /> resultb values.
+///     Provides extension methods for manipulating and transforming <see cref="Result{TValue}" /> values.
 /// </summary>
 public static class ResultExtensions
 {
@@ -28,20 +28,21 @@ public static class ResultExtensions
     public static Result<TNew> MapResult<T, TNew>(this Result<T> result, IMapper mapper)
         where TNew : class
     {
-        if (!result.IsSuccess || mapper is null)
+        return result.Bind<T, TNew>(value =>
         {
-            return Result<TNew>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
-        }
+            if (mapper is null)
+            {
+                return Result<TNew>.Failure(new Error("Mapper cannot be null"));
+            }
 
-        if (result.IsFailure)
-        {
-            return Result<TNew>.Failure().WithMessages(result.Messages).WithErrors(result.Errors);
-        }
-
-        return mapper.MapResult<T, TNew>(result.Value)
-            .WithMessages(result.Messages)
-            .WithErrors(result.Errors);
+            try
+            {
+                return mapper.MapResult<T, TNew>(value);
+            }
+            catch (OperationCanceledException)
+            {
+                return Result<TNew>.Failure(new OperationCancelledError());
+            }
+        });
     }
 }

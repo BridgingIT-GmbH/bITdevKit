@@ -9,9 +9,9 @@ Browse the [feature icon catalog](./site/feature-icons.md) for the complete set 
 ## Common Infrastructure
 
 - <img class="bdk-doc-icon" src="assets/features/common-extensions.svg" width="20" height="20" alt=""> [Common Extensions](./common-extensions.md): Reuse a broad set of shared helper extensions for composition, collections, async flows and more.
-- <img class="bdk-doc-icon" src="assets/features/common-utilities.svg" width="20" height="20" alt=""> [Common Utilities](./common-utilities.md): Collect low-level utility building blocks for resiliency, activity helpers, ids, hashing, cloning and more.
-- <img class="bdk-doc-icon" src="assets/features/serialization.svg" width="20" height="20" alt=""> [Common Serialization](./common-serialization.md): Share consistent serializer abstractions and JSON conventions across the devkit.
-- <img class="bdk-doc-icon" src="assets/features/options-builders.svg" width="20" height="20" alt=""> [Common Options Builders](./common-options-builders.md): Use a lightweight fluent builder convention for feature-specific configuration objects.
+- <img class="bdk-doc-icon" src="assets/features/common-utilities.svg" width="20" height="20" alt=""> [Common Utilities](./common-utilities.md): Resource budgets and admission, deadlines, task ownership, bounded history, stream wrappers, byte sizes, resilience, identifiers, hashing, and cloning.
+- <img class="bdk-doc-icon" src="assets/features/serialization.svg" width="20" height="20" alt=""> [Common Serialization](./common-serialization.md): Serializers, JSON conventions, value codecs, streaming payload transforms, and authenticated or encrypted continuation tokens.
+- <img class="bdk-doc-icon" src="assets/features/options-builders.svg" width="20" height="20" alt=""> [Common Options Builders](./common-options-builders.md): Fluent option builders, explicit assignment patches, and configuration overlays with provenance.
 - <img class="bdk-doc-icon" src="assets/features/mapping.svg" width="20" height="20" alt=""> [Common Mapping](./common-mapping.md): Keep boundary mapping explicit and testable through a small mapper abstraction with Mapster integration.
 - <img class="bdk-doc-icon" src="assets/features/caching.svg" width="20" height="20" alt=""> [Common Caching](./common-caching.md): Provide a small, shared in-process caching abstraction with a default memory-cache implementation.
 - <img class="bdk-doc-icon" src="assets/features/tracing.svg" width="20" height="20" alt=""> [Common Observability Tracing](./common-observability-tracing.md): Add lightweight `Activity`-based tracing around services without pulling in a full observability framework.
@@ -22,6 +22,7 @@ Browse the [feature icon catalog](./site/feature-icons.md) for the complete set 
 ## Core Domain and Application
 
 - <img class="bdk-doc-icon" src="assets/features/auditing.svg" width="20" height="20" alt=""> [Application Auditing](./features-application-auditing.md): Record finite business executions, selected contributors, confirmed source evidence, and scoped review/export.
+- <img class="bdk-doc-icon" src="assets/features/application-caching.svg" width="20" height="20" alt=""> [Application Caching](./features-application-caching.md): Cache derived values and binary payloads through bounded collections, source coalescing, safe publication, and complete providers. Use Common Caching for basic cache access and Key/Value Storage for application-owned state.
 
 - <img class="bdk-doc-icon" src="assets/features/domain.svg" width="20" height="20" alt=""> [Domain](./features-domain.md): Build domain models with the core tactical patterns of DDD, from aggregates to typed ids and value objects.
 - <img class="bdk-doc-icon" src="assets/features/domain-events.svg" width="20" height="20" alt=""> [Domain Events](./features-domain-events.md): Capture business-significant events in aggregates and publish side effects outside the domain model.
@@ -67,20 +68,24 @@ Browse the [feature icon catalog](./site/feature-icons.md) for the complete set 
 - <img class="bdk-doc-icon" src="assets/features/cli.svg" width="20" height="20" alt=""> [DevKit CLI](./features-cli.md): Use the `bdk` command-line tool for host discovery, workspace-scoped host selection and host Console Command forwarding.
 - <img class="bdk-doc-icon" src="assets/features/mcp.svg" width="20" height="20" alt=""> [DevKit MCP](./features-cli-mcp.md): Use `bdk mcp` from local coding agents to inspect and operate running DevKit applications.
 - <img class="bdk-doc-icon" src="assets/features/mcp-clients.svg" width="20" height="20" alt=""> [MCP Client Configuration](./features-cli-mcp-clients.md): Configure common MCP clients to start the `bdk mcp` STDIO server.
+- [Bundled MCP Documentation specification](./specs/spec-presentation-cli-mcp-documentation.md): Embedded documentation and API lookups shipped with the CLI, with no fallback source.
 - <img class="bdk-doc-icon" src="assets/features/dashboard.svg" width="20" height="20" alt=""> [Presentation Dashboard](./features-presentation-dashboard.md): Host modular developer dashboard pages with RazorSlice content, grouped navigation and live cards.
 - <img class="bdk-doc-icon" src="assets/features/entities.svg" width="20" height="20" alt=""> [Entities Dashboard](./features-presentation-dashboard-entities.md): Browse and maintain discovered repository and ActiveEntity records from the dashboard under explicit edit authorization.
 - <img class="bdk-doc-icon" src="assets/features/console-commands.svg" width="20" height="20" alt=""> [Console Commands](./features-presentation-console-commands.md): Expose operational and administrative actions through discoverable console commands and an interactive shell.
 - <img class="bdk-doc-icon" src="assets/features/cors.svg" width="20" height="20" alt=""> [CORS Configuration](./features-presentation-cors.md): Configure browser cross-origin access through fluent, settings-driven CORS policies.
 - <img class="bdk-doc-icon" src="assets/features/exception-handling.svg" width="20" height="20" alt=""> [Exception Handling](./features-presentation-exception-handling.md): Convert exceptions into consistent Problem Details responses with configurable handlers and mappings.
-- <img class="bdk-doc-icon" src="assets/features/app-state.svg" width="20" height="20" alt=""> [AppState](./features-presentation-appstate.md): Manage Blazor application state with persistence, history and change notifications.
+- <img class="bdk-doc-icon" src="assets/features/app-state.svg" width="20" height="20" alt=""> [AppState](./features-presentation-appstate.md): Add typed feature-state policies to Blazor with snapshots, selector subscriptions, component leases, optional preferences and native lifecycle handoff.
 
 ## Storage, Scheduling and Utilities
 
+- [LiteDB Infrastructure](./features-infrastructure-litedb.md)
+- [LiteDB Storage Providers specification](./specs/spec-infrastructure-litedb-providers.md)
 - <img class="bdk-doc-icon" src="assets/features/startup-tasks.svg" width="20" height="20" alt=""> [StartupTasks](./features-startuptasks.md): Run application startup work in a structured, observable and dependency-aware way.
 - <img class="bdk-doc-icon" src="assets/features/jobs.svg" width="20" height="20" alt=""> [Jobs](./features-jobs.md): Schedule durable background work through code-first jobs, triggers, batches, history and source-level integrations.
 - <img class="bdk-doc-icon" src="assets/features/job-scheduling.svg" width="20" height="20" alt=""> [JobScheduling](./features-jobscheduling.md): Legacy Quartz-backed scheduling feature for existing applications that have not migrated yet.
 - <img class="bdk-doc-icon" src="assets/features/storage-blobs.svg" width="20" height="20" alt=""> [BlobStorage](./features-storage-blobs.md): Store binary content through Result-native, stream-first, named blob clients.
 - <img class="bdk-doc-icon" src="assets/features/storage-documents.svg" width="20" height="20" alt=""> [DocumentStorage](./features-storage-documents.md): Store typed documents with metadata, ETags, integrity, transforms, expiration/retention, named clients, and managed provider resources.
+- [Storage Dimensions specification](./specs/spec-storage-dimensions.md): EF-only Dimensions with independent blob/document dictionaries, three search columns, and bounded typed queries. Implementation is in progress; volume qualification remains incomplete. Usage is documented in the [blob](./features-storage-blobs.md#queryable-dimensions) and [document](./features-storage-documents.md#queryable-dimensions) guides.
 - <img class="bdk-doc-icon" src="assets/features/storage-permalinks.svg" width="20" height="20" alt=""> [StoragePermalinks](./features-storage-permalinks.md): Give Blob, Document, and File Storage resources stable opaque download links with optional expiration.
 - <img class="bdk-doc-icon" src="assets/features/storage-files.svg" width="20" height="20" alt=""> [FileStorage](./features-storage-files.md): Read, write, move and monitor files through extensible providers, with local files and watchers in the optional Infrastructure.FileSystem package.
 - [Filesystem storage providers](./storage-filesystem-providers.md): Implementation status, native persistence, operator recovery, local tests and disabled-by-default share qualification.

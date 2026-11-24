@@ -693,8 +693,7 @@ public sealed partial class RuntimeProfilingEvaluator
             return null;
         }
 
-        var rank = (int)Math.Ceiling(0.95 * ordered.Length);
-        return ordered[Math.Max(0, rank - 1)];
+        return SampleStatistics.NearestRank(ordered, 0.95);
     }
 
     private static double? MaxValue(IEnumerable<double?> source)

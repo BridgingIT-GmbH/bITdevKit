@@ -79,6 +79,21 @@ public interface IDocumentStoreProvider
     /// <example><code>var page = await provider.ListPageAsync(type, query, cutoff, cancellationToken);</code></example>
     Task<Result<DocumentKeyPage>> ListPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default);
 
+    /// <summary>Lists one page of metadata matching key and Dimension criteria.</summary>
+    /// <param name="type">The stable persisted namespace for the document type.</param>
+    /// <param name="query">The validated scope, predicates, and seek order.</param>
+    /// <param name="visibilityCutoff">The UTC instant used to exclude expired documents on this page.</param>
+    /// <param name="pageSize">The maximum number of metadata items to return.</param>
+    /// <param name="cancellationToken">The token used to cancel provider I/O.</param>
+    /// <returns>A page with a JSON string array in <see cref="DocumentInfoPage.ContinuationToken"/> when more items exist. The final page has a null token.</returns>
+    /// <remarks>
+    /// The continuation array contains the last returned partition and row keys in <see cref="DocumentFilterQuery.Order"/> order,
+    /// followed by their SHA-256 lookup hashes in partition-then-row order. The client validates and wraps this array.
+    /// </remarks>
+    /// <example><code>var page = await provider.ListPageAsync(type, query, cutoff, pageSize, cancellationToken);</code></example>
+    Task<Result<DocumentInfoPage>> ListPageAsync(DocumentTypeIdentity type, DocumentFilterQuery query, DateTimeOffset visibilityCutoff, int pageSize, CancellationToken cancellationToken) =>
+        Task.FromResult(Result<DocumentInfoPage>.Failure(new DocumentStoreQueryNotSupportedError("Provider does not support FilterModel queries.")));
+
     /// <summary>
     /// Counts matching documents that are logically visible at the supplied cutoff.
     /// </summary>
@@ -167,4 +182,14 @@ public interface IDocumentStoreProvider
     /// <remarks>Deletion addresses physical records and can therefore remove an expired document hidden from logical reads.</remarks>
     /// <example><code>var result = await provider.DeleteAsync(type, key, options, cancellationToken);</code></example>
     Task<Result> DeleteAsync(DocumentTypeIdentity type, DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default);
+
+    /// <summary>Replaces Dimensions under the existing whole-item ETag without rewriting content.</summary>
+    /// <param name="type">The stable document namespace.</param>
+    /// <param name="update">The exact key, required replacement collection, and optional current whole-item ETag.</param>
+    /// <param name="cancellationToken">Cancels provider I/O.</param>
+    /// <returns>The acknowledged metadata snapshot or a typed failure.</returns>
+    /// <example><code>var result = await provider.UpdateDimensionsAsync(type, new() { Key = key, Dimensions = DocumentDimensions.Empty, IfMatchETag = current.ETag }, cancellationToken);</code></example>
+    Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentTypeIdentity type, DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Result<DocumentInfo>.Failure(new DocumentDimensionsNotSupportedError()));
+
 }

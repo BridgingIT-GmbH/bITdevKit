@@ -72,6 +72,25 @@ var counters = FileSystemMetrics.Snapshot();
 
 `Fault` invokes synchronous diagnostic callbacks within operations and can simulate failures. Leave it null for normal use. Writable instrumentation counters support isolated diagnostic resets through `Interlocked`; they never control storage correctness. Do not reset counters during a measurement. Public maintenance access does not establish global quiescence, qualify shared storage or make uncertain mutations safe to replay.
 
+### Filesystem observations and Windows paths
+
+`FileSystemKindProbe.Probe(root)` observes the filesystem containing an absolute path without creating that path. It returns `FileSystemKind.Local`, `Smb`, `Nfs` or `Unsupported`. Linux uses the longest matching mount from `/proc/self/mountinfo`. Windows recognizes local drives and inspects the nearest existing directory on a network drive for SMB 3 or later. Unknown filesystem names, unrecognized remote protocols and other host operating systems return `Unsupported`. Native access can block or throw I/O and access exceptions.
+
+```csharp
+using BridgingIT.DevKit.Infrastructure.FileSystem;
+
+var root = Path.Combine(Path.GetTempPath(), "report-store");
+var observed = FileSystemKindProbe.Probe(root);
+var linuxKind = FileSystemKindProbe.ClassifyLinux("nfs4");
+var isUnc = FileSystemKindProbe.IsUncPath(@"\\server\reports\archive");
+```
+
+`ClassifyLinux` and `IsUncPath` are pure classifications that work on either host OS. Linux names are case-sensitive; unknown names return `Unsupported`. UNC classification recognizes ordinary and extended UNC syntax and excludes local extended paths and device namespaces. It does not contact the named server.
+
+The observation describes the current filesystem. It does not prove durability, locking behavior, permissions or deployment qualification. Applications choose their own protocol policy. Application Caching uses this shared observation and applies its cache-specific compatibility checks through `CacheFileSystemAccess`. File Storage, Blob Storage and Document Storage retain their own configuration and ownership policies.
+
+`FileSystemPaths.ToExtendedWindowsPath(path)` converts an already normalized absolute Windows path to the extended form used by native calls. Both native publication and filesystem probing use it. The method performs no I/O, normalization or validation. It preserves an existing `\\?\` prefix and converts any other leading double backslash to `\\?\UNC\`. That conversion also preserves the native helpers' existing device-path handling. Use `IsUncPath` separately when classifying a path.
+
 ## Shared ownership and uncertain outcomes
 
 Local access uses stable per-key exclusive file handles across cooperating processes. SMB/NFS uses a persistent namespace owner marker installed by atomic no-replace publication. Marker ownership does not expire and is not transferred when a network lock handle is revoked. Publication requires the live owner object; disposed authority cannot publish. Different keys have separate authority. Normal acquisition polls for up to five seconds by default, supports zero wait and cancellation. An outstanding native filesystem call may exceed that polling budget.
@@ -103,19 +122,19 @@ Errors distinguish configuration/unsupported primitives, corruption, permissions
 Run commands sequentially from the repository root with .NET 10:
 
 ```text
-dotnet test tests/Infrastructure.FileSystem.Tests/Infrastructure.FileSystem.Tests.csproj
+dotnet test tests/Infrastructure.UnitTests/Infrastructure.UnitTests.csproj
 dotnet test tests/Application.UnitTests/Application.UnitTests.csproj --filter FullyQualifiedName~Storage
 dotnet run --project tests/Infrastructure.FileSystem.Probes -c Release -- local-probe
 ```
 
-Local tests use `Path.GetTempPath()` and uniquely marked owned roots. Cleanup verifies exact ownership, containment and links. Windows/Linux applicability is decided at discovery; unsupported cases report skips before fixtures or share access. Common contracts run on both OSes. The focused project compile-links the same source tests and avoids unrelated Domain dependencies. Broad solution validation remains a separate check. Containers on one kernel are Linux runtime checks, not independent client hosts or network evidence. `local-probe` intentionally reports overall qualification unavailable even when its local cases pass.
+Local tests use `Path.GetTempPath()` and uniquely marked owned roots. Cleanup verifies exact ownership, containment and links. Windows/Linux applicability is decided at discovery; unsupported cases report skips before fixtures or share access. Common contracts run on both OSes. Filesystem tests live in the existing `Infrastructure.UnitTests` project. Use `--filter FullyQualifiedName~FileSystem` for filesystem storage cases or `--filter FullyQualifiedName~Caching` for advanced caching cases. Broad solution validation is a separate check. Containers on one kernel are Linux runtime checks, not independent client hosts or network evidence. `local-probe` intentionally reports overall qualification unavailable even when its local cases pass.
 
-## Enable share tests later
+## Enable share tests
 
 Copy `tests/Infrastructure.FileSystem.Probes/qualification.example.json` outside the repository and fill actual host/protocol/server/mount descriptors and disposable share scratch roots. Keep credentials in OS-managed storage. Set `BDK_FILESYSTEM_SHARE_TESTS=1` and `BDK_FILESYSTEM_QUALIFICATION_CONFIG` to the absolute external config. Run:
 
 ```text
-dotnet test tests/Infrastructure.FileSystem.Tests/Infrastructure.FileSystem.Tests.csproj --filter Category=FileSystemShare
+dotnet test tests/Infrastructure.UnitTests/Infrastructure.UnitTests.csproj --filter Category=FileSystemShare
 ```
 
 Without opt-in, discovery skips before share I/O. Enabled supported cases with missing, malformed or unmatched OS/protocol configuration fail. Scratch roots must already exist on observable SMB 3.x or Linux NFSv4.1+ filesystems. Qualification validates Windows remote protocol information or Linux filesystem type and mount version; a local/temp root declared as a share is refused before creating a workspace. Mount credentials/options are never copied into evidence. Windows NFS always skips. Single-host share races, ETag/readers and TTL cases are distinct from independent-host scenarios. The latter require the same `BDK_FILESYSTEM_SHARE_RUN_ID` GUID and `BDK_FILESYSTEM_SHARE_ROLE=controller` or `peer` on separately launched machines. Matching profiles use the same `environment.sharedProfileId` and actual machine names; launch both roles within 15 seconds. The controller verifies distinct OS machine identities and one create versus one conflict for both providers. Linux boot identities reject same-kernel containers. It also holds an independent peer reader through replace, metadata update and delete. Physical/VM placement, including Windows kernel independence, still needs external host qualification; machine names or container counts alone do not establish it. Missing peers fail. Marked share artifacts are retained for inspection.

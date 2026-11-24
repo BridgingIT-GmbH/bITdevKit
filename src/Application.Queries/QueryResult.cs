@@ -218,19 +218,15 @@ public static class QueryResult
     /// Creates a query response indicating a failure with a specified value, message, and error.
     /// </summary>
     /// <typeparam name="TValue">Type of the value associated with the result.</typeparam>
-    /// <typeparam name="TError">Type of the error associated with the result, implementing IResultError.</typeparam>
+    /// <typeparam name="TError">The error type created when an explicit error is not supplied.</typeparam>
     /// <param name="value">The value to be associated with the result.</param>
     /// <param name="message">An optional message describing the failure.</param>
-    /// <param name="error">An optional error instance providing additional failure details.</param>
+    /// <param name="error">An optional error instance to use in place of a new <typeparamref name="TError"/>.</param>
     /// <returns>A <c>QueryResponse&lt;Result&lt;TValue&gt;&gt;</c> containing the failed result.</returns>
     public static QueryResponse<Result<TValue>> Failure<TValue, TError>(TValue value = default, string message = null, IResultError error = null)
         where TError : IResultError, new()
     {
-        return new QueryResponse<Result<TValue>>
-        {
-            Result = Result<TValue>.Failure(value)
-                .WithMessage(message).WithError(error)
-        };
+        return For(Result<TValue>.Failure(value, message, error ?? new TError()));
     }
 }
 

@@ -138,22 +138,22 @@ public static class ShouldBeResultExtensions
         }
     }
 
-    /// <summary>Asserts that a non-null result value equals an expected value.</summary>
+    /// <summary>Asserts that a result value equals the expected value, including null values.</summary>
     /// <typeparam name="T">The result value type.</typeparam>
     /// <param name="actual">The result to inspect.</param>
     /// <param name="expected">The expected value.</param>
     /// <param name="customMessage">An optional assertion message.</param>
-    /// <exception cref="ShouldAssertException">The current non-null value does not equal the expected value.</exception>
+    /// <exception cref="ShouldAssertException">The current value does not equal the expected value.</exception>
     [DebuggerStepThrough]
     public static void ShouldBeValue<T>(
         [DoesNotReturnIf(false)] this Result<T> actual,
         T expected,
         string customMessage = null)
     {
-        if (actual.Value?.Equals(expected) == false)
+        if (!EqualityComparer<T>.Default.Equals(actual.Value, expected))
         {
             throw new ShouldAssertException(
-                new ExpectedActualShouldlyMessage(expected, actual, customMessage).ToString());
+                new ExpectedActualShouldlyMessage(expected, actual.Value, customMessage).ToString());
         }
     }
 
@@ -169,10 +169,10 @@ public static class ShouldBeResultExtensions
         T expected,
         string customMessage = null)
     {
-        if (actual.Value?.Equals(expected) == true)
+        if (EqualityComparer<T>.Default.Equals(actual.Value, expected))
         {
             throw new ShouldAssertException(
-                new ExpectedActualShouldlyMessage(expected, actual, customMessage).ToString());
+                new ExpectedActualShouldlyMessage(expected, actual.Value, customMessage).ToString());
         }
     }
 }

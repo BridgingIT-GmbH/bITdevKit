@@ -28,7 +28,7 @@ public interface IBlobStoreProvider
     BlobStoreProviderCapabilities Capabilities { get; }
 
     /// <summary>
-    /// Uploads one blob from a caller-owned stream.
+    /// Uploads one blob from a caller-owned stream, conditionally replacing the whole item when IfMatchETag is supplied.
     /// </summary>
     /// <param name="upload">The upload model.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
@@ -38,7 +38,7 @@ public interface IBlobStoreProvider
     /// var result = await provider.UploadAsync(upload, cancellationToken);
     /// </code>
     /// </example>
-    Task<Result<BlobInfo>> UploadAsync(BlobUpload upload, CancellationToken cancellationToken = default);
+    Task<Result<StoredBlobInfo>> UploadAsync(StoredBlobUpload upload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Downloads one blob by exact key.
@@ -51,7 +51,7 @@ public interface IBlobStoreProvider
     /// var result = await provider.DownloadAsync(key, cancellationToken);
     /// </code>
     /// </example>
-    Task<Result<BlobDownload>> DownloadAsync(BlobKey key, CancellationToken cancellationToken = default);
+    Task<Result<StoredBlobDownload>> DownloadAsync(BlobKey key, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets blob properties without downloading content.
@@ -64,7 +64,7 @@ public interface IBlobStoreProvider
     /// var result = await provider.GetPropertiesAsync(key, cancellationToken);
     /// </code>
     /// </example>
-    Task<Result<BlobInfo>> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken = default);
+    Task<Result<StoredBlobInfo>> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates blob properties without downloading content.
@@ -77,7 +77,7 @@ public interface IBlobStoreProvider
     /// var result = await provider.UpdatePropertiesAsync(update, cancellationToken);
     /// </code>
     /// </example>
-    Task<Result<BlobInfo>> UpdatePropertiesAsync(BlobPropertiesUpdate update, CancellationToken cancellationToken = default);
+    Task<Result<StoredBlobInfo>> UpdatePropertiesAsync(StoredBlobPropertiesUpdate update, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Checks exact-key existence.
@@ -103,7 +103,20 @@ public interface IBlobStoreProvider
     /// var result = await provider.ListPageAsync(query, cancellationToken);
     /// </code>
     /// </example>
-    Task<Result<BlobPage>> ListPageAsync(BlobQuery query, CancellationToken cancellationToken = default);
+    Task<Result<StoredBlobPage>> ListPageAsync(BlobQuery query, CancellationToken cancellationToken = default);
+
+    /// <summary>Lists one page of metadata matching key and Dimension criteria.</summary>
+    /// <param name="query">The validated scope, predicates, and seek order.</param>
+    /// <param name="pageSize">The maximum number of metadata items to return.</param>
+    /// <param name="cancellationToken">The token used to cancel provider I/O.</param>
+    /// <returns>A page with a JSON string array in <see cref="StoredBlobPage.ContinuationToken"/> when more items exist. The final page has a null token.</returns>
+    /// <remarks>
+    /// The continuation array contains the last returned name and its SHA-256 lookup hash in that order.
+    /// The client validates and wraps the array before returning a public token.
+    /// </remarks>
+    /// <example><code>var page = await provider.ListPageAsync(query, pageSize, cancellationToken);</code></example>
+    Task<Result<StoredBlobPage>> ListPageAsync(BlobFilterQuery query, int pageSize, CancellationToken cancellationToken) =>
+        Task.FromResult(Result<StoredBlobPage>.Failure(new BlobStoreQueryNotSupportedError("Provider does not support FilterModel queries.")));
 
     /// <summary>
     /// Deletes a blob by exact key.
@@ -121,4 +134,13 @@ public interface IBlobStoreProvider
         BlobKey key,
         BlobDeleteOptions options = null,
         CancellationToken cancellationToken = default);
+
+    /// <summary>Replaces Dimensions under the existing whole-item ETag without rewriting content.</summary>
+    /// <param name="update">The exact key, required replacement collection, and optional current whole-item ETag.</param>
+    /// <param name="cancellationToken">Cancels provider I/O.</param>
+    /// <returns>The acknowledged metadata snapshot or a typed failure.</returns>
+    /// <example><code>var result = await provider.UpdateDimensionsAsync(new() { Key = key, Dimensions = BlobDimensions.Empty, IfMatchETag = current.ETag }, cancellationToken);</code></example>
+    Task<Result<StoredBlobInfo>> UpdateDimensionsAsync(BlobDimensionsUpdate update, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Result<StoredBlobInfo>.Failure(new BlobDimensionsNotSupportedError()));
+
 }

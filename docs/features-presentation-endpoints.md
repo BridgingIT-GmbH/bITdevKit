@@ -510,6 +510,30 @@ ResultMapHttpExtensions.RegisterErrorHandler<CustomBusinessError>((logger, resul
 - Generic `Map` overloads return typed `Results<...>` unions suitable for Minimal API signatures and OpenAPI.
 - All helpers accept an optional `ILogger` to enrich error logging without changing the HTTP shape.
 
+## HTTP representation conditions and byte ranges
+
+`HttpRepresentationConditions` in `Presentation.Web` evaluates conditional headers against a representation snapshot supplied by the endpoint. It has no dependency on a cache or storage provider:
+
+```csharp
+var decision = HttpRepresentationConditions.Evaluate(
+    httpContext.Request, exists, entityTag, lastModified, read: true);
+if (decision == HttpPreconditionOutcome.NotModified)
+{
+    return Results.StatusCode(StatusCodes.Status304NotModified);
+}
+
+if (decision == HttpPreconditionOutcome.Failed)
+{
+    return Results.StatusCode(StatusCodes.Status412PreconditionFailed);
+}
+```
+
+`Evaluate` checks If-Match before If-Unmodified-Since, then If-None-Match before If-Modified-Since. Date comparisons use whole seconds. Reads use weak comparison for If-None-Match and can return `NotModified`; mutations return `Failed` for that match. `MatchesEntityTag` compares a comma-separated validator list against the supplied strong current tag.
+
+`SelectRange(request, length, entityTag, lastModified)` selects a single contiguous bytes range. `HttpRangeSelection` reports `Full`, `Partial`, `Unsupported` or `Unsatisfiable`, with the selected offset and length. It supports open-ended and suffix ranges. An If-Range mismatch selects the full representation before parsing the Range header. Invalid units and multiple ranges report `Unsupported`; ranges outside the representation report `Unsatisfiable`.
+
+The endpoint owns snapshot acquisition, ETag creation, authorization, status mapping and atomic mutation checks. A successful precondition check alone does not protect a later write against concurrent changes. Application Caching applies these decisions through its version-pinned read and conditional-publication adapters. Normal ASP.NET Core file results can continue to use their built-in range processing.
+
 ## NDJSON streaming endpoints
 
 Use `AddNdjsonStreaming`, `NdjsonHttpResult.From`, and `.WithNdjson<T>()` on dedicated streaming URLs. Raw DTO output is the default; optional version 1 envelopes add heartbeat and completion. `MapHttpNdjson` maps prepared Results while preserving ordinary admission failures. See [Presentation Streaming](features-presentation-streaming.md) for server/client setup and hosting requirements.

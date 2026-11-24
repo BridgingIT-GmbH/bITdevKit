@@ -134,6 +134,7 @@ public sealed class BlobStorageBuilderContext(
     /// <param name="providerFactory">The provider factory.</param>
     /// <param name="configure">The optional per-client options callback.</param>
     /// <param name="providerName">The provider label used for diagnostics and continuation-token binding.</param>
+    /// <param name="capabilitiesFactory">Optional DI-time capability resolution without backend access.</param>
     /// <param name="capabilities">The provider capabilities exposed for diagnostics.</param>
     /// <param name="lifetime">The optional client lifetime override.</param>
     /// <returns>The current builder context.</returns>
@@ -148,7 +149,8 @@ public sealed class BlobStorageBuilderContext(
         Action<BlobStoreOptions> configure = null,
         string providerName = null,
         BlobStoreProviderCapabilities capabilities = null,
-        ServiceLifetime? lifetime = null)
+        ServiceLifetime? lifetime = null,
+        Func<IServiceProvider, BlobStoreProviderCapabilities> capabilitiesFactory = null)
     {
         ArgumentNullException.ThrowIfNull(providerFactory);
 
@@ -158,7 +160,8 @@ public sealed class BlobStorageBuilderContext(
             configure,
             providerName,
             capabilities,
-            lifetime);
+            lifetime,
+            capabilitiesFactory);
     }
 
     /// <summary>
@@ -168,6 +171,7 @@ public sealed class BlobStorageBuilderContext(
     /// <param name="providerFactory">The provider factory that receives the resolved per-client options.</param>
     /// <param name="configure">The optional per-client options callback.</param>
     /// <param name="providerName">The provider label used for diagnostics and continuation-token binding.</param>
+    /// <param name="capabilitiesFactory">Optional DI-time capability resolution without backend access.</param>
     /// <param name="capabilities">The provider capabilities exposed for diagnostics.</param>
     /// <param name="lifetime">The optional client lifetime override.</param>
     /// <returns>The current builder context.</returns>
@@ -182,7 +186,8 @@ public sealed class BlobStorageBuilderContext(
         Action<BlobStoreOptions> configure = null,
         string providerName = null,
         BlobStoreProviderCapabilities capabilities = null,
-        ServiceLifetime? lifetime = null)
+        ServiceLifetime? lifetime = null,
+        Func<IServiceProvider, BlobStoreProviderCapabilities> capabilitiesFactory = null)
     {
         if (!this.Options.IsEnabled)
         {
@@ -203,6 +208,10 @@ public sealed class BlobStorageBuilderContext(
         {
             throw new InvalidOperationException($"Blob store client '{name}' is already registered.");
         }
+
+        if (this.Services.Any(descriptor => descriptor.ImplementationInstance is RegistrationName registrationName
+            && string.Equals(registrationName.Name, name, StringComparison.OrdinalIgnoreCase)))
+            throw new InvalidOperationException($"Blob store client '{name}' is already registered.");
 
         var options = new BlobStoreOptions();
         configure?.Invoke(options);
@@ -228,16 +237,26 @@ public sealed class BlobStorageBuilderContext(
             {
                 IBlobStoreClient client = new BlobStoreClient(resolvedProviderName,
                     serviceProvider.GetRequiredKeyedService<IBlobStoreProvider>(name), options,
-                    inner => this.ApplyBehaviors(name, serviceProvider, inner), serviceProvider.GetService<IContinuationTokenProtector>());
+                    inner => this.ApplyBehaviors(name, serviceProvider, inner), serviceProvider.GetService<IContinuationTokenProtector>(), name);
                 return this.auditing ? new AuditingBlobStoreClientBehavior(client, serviceProvider.GetRequiredService<IServiceScopeFactory>(), name, this.auditOptions) : client;
             });
-        this.Services.AddSingleton(new BlobStoreClientRegistration
+        if (capabilitiesFactory is null)
         {
-            Name = name,
-            ProviderName = resolvedProviderName,
-            Capabilities = resolvedCapabilities,
-            Lifetime = resolvedLifetime
-        });
+            this.Services.AddSingleton(new BlobStoreClientRegistration
+            {
+                Name = name, ProviderName = resolvedProviderName, Capabilities = resolvedCapabilities, Lifetime = resolvedLifetime
+            });
+        }
+        else
+        {
+            this.Services.AddSingleton(new RegistrationName(name));
+            this.Services.AddSingleton(serviceProvider => new BlobStoreClientRegistration
+            {
+                Name = name, ProviderName = resolvedProviderName,
+                Capabilities = capabilitiesFactory(serviceProvider) ?? resolvedCapabilities, Lifetime = resolvedLifetime
+            });
+        }
+
         this.Services.TryAddBlobStorageHealthCheck(tags: ["ready", "storage", "blobs"]);
 
         return this;
@@ -297,4 +316,6 @@ public sealed class BlobStorageBuilderContext(
 
         return client;
     }
+    private sealed record RegistrationName(string Name);
+
 }

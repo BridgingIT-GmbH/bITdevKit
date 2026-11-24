@@ -43,7 +43,11 @@ public static class BlobPropertyStorageExtensions
             return Task.FromResult(Result<BlobInfo>.Failure(new BlobStoreValidationError("Property name cannot be null or whitespace.")));
         }
 
-        return PatchAsync(blobClient, blobKey, properties => properties[propertyName] = value, options, cancellationToken);
+        var snapshot = BlobPropertyValues.Clone(new() { [propertyName] = value });
+        var validation = BlobPropertyValues.Validate(snapshot);
+        return validation.IsFailure
+            ? Task.FromResult(Result<BlobInfo>.Failure(validation))
+            : PatchAsync(blobClient, blobKey, properties => properties[propertyName] = snapshot.Get(propertyName), options, cancellationToken);
     }
 
     /// <summary>
@@ -101,7 +105,11 @@ public static class BlobPropertyStorageExtensions
             return Task.FromResult(Result<BlobInfo>.Failure(new BlobStoreValidationError("Properties cannot be null.")));
         }
 
-        return PatchAsync(blobClient, blobKey, target => target.Merge(properties), options, cancellationToken);
+        var snapshot = BlobPropertyValues.Clone(properties);
+        var validation = BlobPropertyValues.Validate(snapshot);
+        return validation.IsFailure
+            ? Task.FromResult(Result<BlobInfo>.Failure(validation))
+            : PatchAsync(blobClient, blobKey, target => target.Merge(snapshot), options, cancellationToken);
     }
 
     private static async Task<Result<BlobInfo>> PatchAsync(
@@ -130,7 +138,7 @@ public static class BlobPropertyStorageExtensions
 
         options ??= new BlobPropertyPatchOptions();
         var current = propertiesResult.Value;
-        var properties = current.Properties?.Clone() ?? new PropertyBag();
+        var properties = BlobPropertyValues.Clone(current.Properties) ?? new PropertyBag();
         patch(properties);
 
         return await blobClient.UpdatePropertiesAsync(

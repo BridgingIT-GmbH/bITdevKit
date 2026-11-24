@@ -16,7 +16,7 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// {
 ///     public int MaxDownloadBatchSize => 25;
 ///
-///     public Task&lt;IReadOnlyDictionary&lt;BlobKey, Result&lt;BlobDownload&gt;&gt;&gt; DownloadManyAsync(
+///     public Task&lt;IReadOnlyDictionary&lt;BlobKey, Result&lt;StoredBlobDownload&gt;&gt;&gt; DownloadManyAsync(
 ///         IReadOnlyCollection&lt;BlobKey&gt; keys,
 ///         CancellationToken cancellationToken = default) =&gt; ...;
 /// }
@@ -43,14 +43,14 @@ public interface IBlobStoreBatchDownloadProvider
     /// A dictionary with one result per key the provider could satisfy. Keys that are missing from the
     /// dictionary (for example blobs too large to buffer, or a failed batch) are read with
     /// <see cref="IBlobStoreProvider.DownloadAsync" /> instead, so a batch never changes the outcome of a read.
-    /// The caller owns and disposes every returned <see cref="BlobDownload" />.
+    /// The caller owns and disposes every returned <see cref="StoredBlobDownload" />.
     /// </returns>
     /// <example>
     /// <code>
     /// var results = await provider.DownloadManyAsync(keys, cancellationToken);
     /// </code>
     /// </example>
-    Task<IReadOnlyDictionary<BlobKey, Result<BlobDownload>>> DownloadManyAsync(
+    Task<IReadOnlyDictionary<BlobKey, Result<StoredBlobDownload>>> DownloadManyAsync(
         IReadOnlyCollection<BlobKey> keys,
         CancellationToken cancellationToken = default);
 }

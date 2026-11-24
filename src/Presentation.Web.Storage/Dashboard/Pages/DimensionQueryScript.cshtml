@@ -1,0 +1,175 @@
+@inherits RazorSlices.RazorSlice
+<script>
+(() => {
+    const dashboard = window.bdkDashboard = window.bdkDashboard || {};
+    if (dashboard.storageDimensions) return;
+    const labels = { Equal: 'is', NotEqual: 'is not', GreaterThan: 'greater than', GreaterThanOrEqual: 'at least', LessThan: 'less than', LessThanOrEqual: 'at most', Exists: 'exists', Missing: 'is missing', IsNull: 'is null', IsNotNull: 'is not null' };
+    const kinds = { Integer: 'Integer', Decimal: 'Decimal', Boolean: 'Boolean', String: 'String', DateTime: 'Date/time (UTC)' };
+    const states = new Set(['Exists', 'Missing', 'IsNull', 'IsNotNull']);
+    const originalStrings = new WeakMap();
+    function element(tag, classes, text) {
+        const node = document.createElement(tag);
+        if (classes) node.className = classes;
+        if (text) node.textContent = text;
+        return node;
+    }
+    function select(label, options, selected) {
+        const node = element('select', 'form-select form-select-sm');
+        node.setAttribute('aria-label', label);
+        Object.entries(options).forEach(([value, text]) => node.add(new Option(text, value)));
+        node.value = selected;
+        if (!node.value) node.selectedIndex = 0;
+        return node;
+    }
+    function button(label, command, iconOnly = false) {
+        const node = element('button', 'btn btn-outline-secondary btn-sm', iconOnly ? null : label);
+        node.type = 'button'; node.dataset.dimensionCommand = command;
+        if (iconOnly) {
+            node.title = label; node.setAttribute('aria-label', label);
+            const icon = element('i', 'bi bi-x-circle'); icon.setAttribute('aria-hidden', 'true'); node.append(icon);
+        }
+        return node;
+    }
+    function showError(owner, message) {
+        const error = owner.querySelector('[data-dimension-error]');
+        if (error) { error.textContent = message; error.hidden = !message; }
+    }
+    function condition(editor, node = {}) {
+        const row = element('div', 'row g-2 align-items-center mt-1'); row.dataset.dimensionCondition = '';
+        const name = element('input', 'form-control form-control-sm'); name.dataset.dimensionName = '';
+        name.setAttribute('aria-label', 'Dimension name'); name.placeholder = 'Dimension name'; name.value = node.name || '';
+        name.title = 'Start with a letter or underscore; use letters, digits, underscores, dots, colons, or hyphens.';
+        name.required = true; name.maxLength = 128; name.pattern = '[A-Za-z_][A-Za-z0-9_.:\\-]{0,127}';
+        const supportedKinds = Object.fromEntries(Object.entries(kinds).filter(([kind]) => editor.operators[kind]?.length));
+        const type = select('Value type', supportedKinds, Object.keys(kinds).find(k => k.toLowerCase() === node.operand?.type?.toLowerCase()) || 'Integer'); type.dataset.dimensionType = '';
+        const operation = select('Comparison', {}, ''); operation.dataset.dimensionOperator = '';
+        const value = element('textarea', 'form-control form-control-sm'); value.setAttribute('aria-label', 'Dimension value'); value.dataset.dimensionValue = '';
+        value.rows = 1;
+        value.value = node.operand?.value == null ? '' : String(node.operand.value);
+        if (node.operand?.type === 'string') originalStrings.set(value, { stored: node.operand.value, displayed: value.value });
+        for (const [width, control] of [['col-12 col-lg-3', name], ['col-6 col-lg-2', type], ['col-6 col-lg-3', operation], ['col-10 col-lg-3', value], ['col-2 col-lg-1', button('Remove condition', 'remove-condition', true)]]) {
+            const cell = element('div', width); cell.append(control); row.append(cell);
+        }
+        updateType(editor, row, node.operator || 'Equal');
+        return row;
+    }
+    function updateType(editor, row, selected) {
+        const type = row.querySelector('[data-dimension-type]').value;
+        const op = row.querySelector('[data-dimension-operator]');
+        const previous = selected || op.value;
+        op.replaceChildren();
+        (editor.operators[type] || []).forEach(value => op.add(new Option(labels[value] || value, value)));
+        op.value = previous;
+        if (!op.value) op.selectedIndex = 0;
+        const value = row.querySelector('[data-dimension-value]');
+        value.placeholder = type === 'DateTime' ? '2026-01-01T00:00:00Z' : type === 'Boolean' ? 'true or false' : 'Value';
+        updateOperation(row);
+    }
+    function updateOperation(row) {
+        const state = states.has(row.querySelector('[data-dimension-operator]').value);
+        const type = row.querySelector('[data-dimension-type]');
+        const value = row.querySelector('[data-dimension-value]');
+        type.disabled = state; value.disabled = state; value.hidden = state;
+        value.setCustomValidity('');
+        if (!state && type.value === 'Boolean' && !['true', 'false'].includes(value.value.toLowerCase())) value.setCustomValidity('Enter true or false.');
+        if (!state && type.value === 'Integer' && (!/^[+-]?\d+$/.test(value.value) || Number(value.value) < -2147483648 || Number(value.value) > 2147483647)) value.setCustomValidity('Enter a whole number between -2147483648 and 2147483647.');
+    }
+    function group(editor, node, depth = 1) {
+        const wrapper = element('div', 'border rounded p-2 mt-2'); wrapper.dataset.dimensionGroup = String(depth);
+        const header = element('div', 'd-flex flex-wrap align-items-center gap-2');
+        const mode = select('Match conditions', { all: 'Match all', any: 'Match any' }, node.any ? 'any' : 'all'); mode.style.width = 'auto'; mode.dataset.dimensionMode = '';
+        header.append(mode, button('Add condition', 'add-condition'), button('Add group', 'add-group'));
+        header.append(depth === 1 ? button('Clear dimensions', 'clear', true) : button('Remove group', 'remove-group', true));
+        const children = element('div'); children.dataset.dimensionChildren = '';
+        const nodes = node.all || node.any || (node.name ? [node] : []);
+        nodes.forEach(child => children.append(child.all || child.any ? group(editor, child, depth + 1) : condition(editor, child)));
+        wrapper.append(header, children);
+        return wrapper;
+    }
+    function readGroup(group) {
+        const children = Array.from(group.querySelector(':scope > [data-dimension-children]').children);
+        group.querySelector(':scope > div > [data-dimension-mode]').setCustomValidity(children.length === 0 && group.dataset.dimensionGroup !== '1' ? 'Add a condition to this group or remove it.' : '');
+        return { [group.querySelector(':scope > div > [data-dimension-mode]').value]: children.map(row => {
+            if (row.hasAttribute('data-dimension-group')) return readGroup(row);
+            updateOperation(row);
+            const node = { name: row.querySelector('[data-dimension-name]').value, operator: row.querySelector('[data-dimension-operator]').value };
+            if (!states.has(node.operator)) {
+                const type = row.querySelector('[data-dimension-type]').value;
+                const input = row.querySelector('[data-dimension-value]');
+                let value = input.value;
+                const original = originalStrings.get(input);
+                if (type === 'String' && original?.displayed === value) value = original.stored;
+                if (type === 'Integer' && /^[+-]?\d+$/.test(value) && Number.isSafeInteger(Number(value))) value = Number(value);
+                if (type === 'Boolean' && ['true', 'false'].includes(value.toLowerCase())) value = value.toLowerCase() === 'true';
+                node.operand = { type: type.toLowerCase(), value };
+            }
+            return node;
+        }) };
+    }
+    function sync(editor) {
+        const root = editor.querySelector('[data-dimension-group]');
+        const value = readGroup(root);
+        const count = editor.querySelectorAll('[data-dimension-condition]').length;
+        editor.querySelector('[name="dimensionFilter"]').value = count || editor.querySelectorAll('[data-dimension-group]').length > 1 ? JSON.stringify(value) : '';
+        editor.querySelector('[data-dimension-count]').textContent = count ? `(${count})` : '';
+    }
+    function clear(owner) {
+        const editor = owner.querySelector('[data-storage-dimension-editor]');
+        if (!editor) return;
+        editor.querySelector('[name="dimensionFilter"]').value = '';
+        if (editor.dataset.supported === 'true') {
+            editor.querySelector('[data-dimension-conditions]').replaceChildren(group(editor, {})); sync(editor);
+        }
+        showError(editor, '');
+    }
+    function mount(owner) {
+        owner.querySelectorAll('[data-storage-dimension-editor]').forEach(editor => {
+            if (editor.dataset.initialized || editor.dataset.supported !== 'true') return;
+            editor.dataset.initialized = 'true';
+            editor.operators = JSON.parse(editor.dataset.operators);
+            let node = {};
+            try { node = JSON.parse(editor.querySelector('[name="dimensionFilter"]').value || '{}'); }
+            catch { showError(editor, 'The Dimension filter is invalid. Clear it and add conditions.'); }
+            let predicates = 0, groups = 0;
+            function bounded(value, depth = 0) {
+                if (!value || typeof value !== 'object') return false;
+                if (value.all || value.any) {
+                    const children = value.all || value.any;
+                    return ++groups <= 16 && depth < 4 && Array.isArray(children) && children.every(child => bounded(child, depth + 1));
+                }
+                return !value.name || ++predicates <= 16;
+            }
+            if (!bounded(node)) {
+                node = {};
+                showError(editor, 'The Dimension filter exceeds the supported condition or group limits. Clear it and add conditions.');
+            }
+            editor.querySelector('[data-dimension-conditions]').replaceChildren(group(editor, node || {}));
+            const update = event => {
+                if (event.target.matches('[data-dimension-type]')) updateType(editor, event.target.closest('[data-dimension-condition]'));
+                sync(editor); showError(editor, '');
+            };
+            editor.addEventListener('input', update); editor.addEventListener('change', update);
+            editor.addEventListener('click', event => {
+                const target = event.target.closest('[data-dimension-command]');
+                if (!target) return;
+                const command = target.dataset.dimensionCommand;
+                if (command === 'clear') { clear(editor.parentElement); return; }
+                const current = target.closest('[data-dimension-group]');
+                if (command === 'remove-condition') target.closest('[data-dimension-condition]').remove();
+                if (command === 'remove-group') current.remove();
+                if (command === 'add-condition') {
+                    if (editor.querySelectorAll('[data-dimension-condition]').length >= 16) { showError(editor, 'Use at most 16 conditions.'); return; }
+                    current.querySelector(':scope > [data-dimension-children]').append(condition(editor));
+                }
+                if (command === 'add-group') {
+                    if (Number(current.dataset.dimensionGroup) >= 4 || editor.querySelectorAll('[data-dimension-group]').length >= 16) { showError(editor, 'Use at most four group levels and 16 groups.'); return; }
+                    current.querySelector(':scope > [data-dimension-children]').append(group(editor, {}, Number(current.dataset.dimensionGroup) + 1));
+                }
+                sync(editor); showError(editor, '');
+            });
+            editor.querySelector('[data-dimension-count]').textContent = editor.querySelectorAll('[data-dimension-condition]').length ? `(${editor.querySelectorAll('[data-dimension-condition]').length})` : '';
+        });
+    }
+    dashboard.storageDimensions = { mount, clear };
+})();
+</script>

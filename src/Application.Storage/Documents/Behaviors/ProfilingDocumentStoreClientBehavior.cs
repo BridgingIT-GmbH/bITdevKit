@@ -27,6 +27,10 @@ public sealed class ProfilingDocumentStoreClientBehavior<T>(IDocumentStoreClient
     /// <inheritdoc />
     /// <example><code>await documents.ListPageAsync(new DocumentQuery { AllowFullScan = true });</code></example>
     public override Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.ProfileAsync("list-page", () => this.Inner.ListPageAsync(query, cancellationToken), cancellationToken);
+
+    /// <inheritdoc />
+    public override Task<Result<DocumentInfoPage>> ListPageAsync(DocumentFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) => this.ProfileAsync("list-page", () => this.Inner.ListPageAsync(scope, filter, continuationToken, cancellationToken), cancellationToken);
     /// <inheritdoc />
     /// <example><code>await documents.CountAsync(new DocumentCountQuery { AllowFullScan = true });</code></example>
     public override Task<Result<long>> CountAsync(DocumentCountQuery query, CancellationToken cancellationToken = default) => this.ProfileAsync("count", () => this.Inner.CountAsync(query, cancellationToken), cancellationToken);
@@ -40,8 +44,12 @@ public sealed class ProfilingDocumentStoreClientBehavior<T>(IDocumentStoreClient
     /// <example><code>await documents.UpsertManyAsync([new(new("people", "42"), new T())]);</code></example>
     public override Task<Result<DocumentBatchResult<DocumentInfo>>> UpsertManyAsync(IReadOnlyCollection<DocumentWrite<T>> writes, CancellationToken cancellationToken = default) => this.ProfileAsync("upsert-many", () => this.Inner.UpsertManyAsync(writes, cancellationToken), cancellationToken);
     /// <inheritdoc />
+    public override Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) => this.ProfileAsync("update-dimensions", () => this.Inner.UpdateDimensionsAsync(update, cancellationToken), cancellationToken);
+
+    /// <inheritdoc />
     /// <example><code>await documents.UpdatePropertiesAsync(new(new("people", "42")));</code></example>
     public override Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default) => this.ProfileAsync("update-properties", () => this.Inner.UpdatePropertiesAsync(update, cancellationToken), cancellationToken);
+
     /// <inheritdoc />
     /// <example><code>await documents.DeleteAsync(new("people", "42"));</code></example>
     public override Task<Result> DeleteAsync(DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default) => this.ProfileAsync("delete", () => this.Inner.DeleteAsync(key, options, cancellationToken), cancellationToken);

@@ -1,0 +1,160 @@
+@inherits RazorSlice
+<script>
+(() => {
+    const workspace = document.getElementById('application-caching-workspace');
+    const content = document.getElementById('cache-content');
+    if (!workspace || !content) return;
+    window.bdkCachingView?.dispose();
+    let applied = new URL(location.href), pending, busy = false, disposed = false;
+    const diagnostics = !!workspace.querySelector('[data-cache-charts]');
+    const helpTooltips = new Map();
+    function initializeHelp() {
+        if (disposed || !window.bootstrap?.Tooltip) return;
+        workspace.querySelectorAll('[data-dashboard-help]').forEach(element => {
+            if (!helpTooltips.has(element)) helpTooltips.set(element, window.bootstrap.Tooltip.getOrCreateInstance(element,
+                { container: 'body', trigger: 'hover focus', html: false }));
+        });
+    }
+    function disposeHelp(root = workspace) {
+        for (const [element, tooltip] of helpTooltips) {
+            if (root.contains(element)) { tooltip.dispose(); helpTooltips.delete(element); }
+        }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initializeHelp, { once: true });
+    else initializeHelp();
+    const dimension = document.getElementById('cache-dimension');
+    const dimensionOperator = document.getElementById('cache-dimension-operator');
+    const dimensionValue = document.getElementById('cache-dimension-value');
+    const dimensionUpper = document.getElementById('cache-dimension-upper');
+    function updateDimensionOperands() {
+        const schema = dimension.selectedOptions[0];
+        const selected = !!dimension.value;
+        const overlap = selected && dimensionOperator.value === 'overlap';
+        const hasValue = selected && ['equal', 'contains', 'overlap'].includes(dimensionOperator.value);
+        const utc = schema?.dataset.kind === 'Timestamp';
+        dimensionValue.disabled = !hasValue; dimensionUpper.disabled = !overlap;
+        document.getElementById('cache-dimension-value-field').hidden = !hasValue;
+        document.getElementById('cache-dimension-upper-field').hidden = !overlap;
+        document.getElementById('cache-dimension-value-label').textContent = (overlap ? 'Lower bound' : 'Value') + (utc ? ' (UTC)' : '');
+        document.getElementById('cache-dimension-upper-label').textContent = utc ? 'Upper bound (UTC, exclusive)' : 'Upper bound (exclusive)';
+        const placeholder = { Boolean: 'true or false', Integer: 'Whole number', Identifier: 'GUID', Timestamp: '2026-11-11T12:00:00Z' }[schema?.dataset.kind] || 'Dimension value';
+        dimensionValue.placeholder = placeholder; dimensionUpper.placeholder = placeholder;
+        dimensionValue.inputMode = dimensionUpper.inputMode = schema?.dataset.kind === 'Integer' ? 'numeric' : 'text';
+    }
+    function configureDimension() {
+        const schema = dimension.selectedOptions[0];
+        const previous = dimensionOperator.value;
+        const choices = !dimension.value ? [['', 'Choose a dimension']] : schema.dataset.form === 'Set' ? [['contains', 'Contains']] :
+            schema.dataset.form === 'Interval' ? [['overlap', 'Overlaps']] : [['equal', 'Equals']];
+        if (dimension.value) {
+            if (schema.dataset.null === 'true' && schema.dataset.form !== 'Interval') choices.push(schema.dataset.form === 'Set' ? ['contains-null', 'Contains null'] : ['null', 'Is null']);
+            choices.push(['present', 'Is present'], ['absent', 'Is missing']);
+        }
+        dimensionOperator.replaceChildren();
+        for (const [value, label] of choices) {
+            const option = document.createElement('option'); option.value = value; option.textContent = label; dimensionOperator.append(option);
+        }
+        dimensionOperator.disabled = !dimension.value;
+        dimensionOperator.value = choices.some(([value]) => value === previous) ? previous : choices[0][0];
+        updateDimensionOperands();
+    }
+    const changeDimension = () => { dimensionValue.value = ''; dimensionUpper.value = ''; configureDimension(); };
+    dimension?.addEventListener('change', changeDimension);
+    dimensionOperator?.addEventListener('change', updateDimensionOperands);
+    if (dimension) configureDimension();
+    const selectionKind = document.getElementById('cache-selection-kind');
+    const updateSelectionHint = () => { document.getElementById('cache-selection').placeholder = selectionKind.value === 'key' ? 'Enter an exact key' : 'All entries when empty'; };
+    selectionKind?.addEventListener('change', updateSelectionHint);
+    const contentUrl = () => {
+        const url = new URL(workspace.dataset.contentPath, location.origin);
+        url.search = (pending || applied).search;
+        return url;
+    };
+    const growing = window.bdkDashboard.createGrowingLists({
+        owner: workspace, root: () => content, appliedUrl: contentUrl, hasPending: () => !!pending,
+        lists: [{ key: 'cache-entries', cursor: 'continuation', boundary: 'listBoundary', size: 'pageSize' }],
+        onSizeChange: (_, value) => {
+            pending = new URL(applied);
+            pending.searchParams.set('pageSize', value);
+            pending.searchParams.delete('continuation');
+            pending.searchParams.delete('listBoundary');
+            refresher.refresh(true);
+        }
+    });
+    const refresher = window.bdkDashboard.createRefresher({
+        buildUrl: contentUrl, contentSelector: () => content,
+        applyResponse: async (root, html) => {
+            disposeHelp(root);
+            try { return await growing.applyResponse(root, html); }
+            finally { initializeHelp(); }
+        },
+        onSuccess: () => {
+            if (pending) { applied = pending; pending = null; history.replaceState(null, '', applied); }
+        },
+        onError: () => { pending = null; },
+        statusSelector: diagnostics ? '#cache-content-refresh-unused' : '#application-caching-refresh-status',
+        intervalSelector: diagnostics ? '#cache-content-interval-unused' : '#application-caching-refresh-interval',
+        refreshButtonSelector: diagnostics ? '#cache-content-button-unused' : '#application-caching-refresh-now',
+        storageKey: 'bdk.dashboard.application-caching:' + workspace.dataset.pagePath,
+        shouldRefresh: () => !disposed && !busy && !growing.busy()
+    });
+    document.getElementById('cache-filter-reset')?.addEventListener('click', () => location.assign(workspace.dataset.pagePath));
+    workspace.addEventListener('submit', async event => {
+        const form = event.target.closest('[data-cache-operation-form]');
+        if (!form) return;
+        event.preventDefault();
+        if (busy) return;
+        busy = true;
+        refresher.cancel();
+        if (event.submitter?.hasAttribute('data-cache-clear') && !await window.bdkDashboard.confirmAction({
+            title: 'Clear selected cache collections', message: 'Clear all entries in the selected collections?',
+            confirmText: 'Clear selected collections'
+        })) { busy = false; return; }
+        const result = document.getElementById('cache-operation-result');
+        event.submitter?.setAttribute('disabled', '');
+        try {
+            const response = await fetch(event.submitter?.formAction || form.action, {
+                method: 'POST', body: new FormData(form), credentials: 'same-origin',
+                headers: { 'X-Requested-With': 'fetch', Accept: 'application/json' }
+            });
+            const payload = await response.json();
+            result.hidden = false;
+            result.replaceChildren();
+            result.className = response.ok ? 'alert alert-secondary py-2' : 'alert alert-danger py-2';
+            if (!response.ok) {
+                result.textContent = payload.detail || payload.title || 'The operation could not be completed. Your input has been kept.';
+                return;
+            }
+            const title = document.createElement('strong'); title.textContent = payload.title; result.append(title);
+            for (const item of payload.items || []) {
+                const line = document.createElement('div');
+                line.textContent = item.collection + ': ' + item.state + (item.accepted ? ' · background submission accepted' : '') +
+                    (item.count !== null && item.count !== undefined ? ' · ' + item.count + ' entries (' + (item.countIsExact ? 'exact' : 'observed/partial') + ')' : '') +
+                    (item.completed === true ? ' · scope complete' : item.completed === false ? ' · scope remains incomplete' : '') +
+                    (item.error ? ' · ' + item.error : '');
+                if (item.statusUrl) {
+                    const link = document.createElement('a'); const url = new URL(item.statusUrl, location.origin);
+                    if (url.origin === location.origin) { link.href = url; link.textContent = ' View operation'; line.append(link); }
+                }
+                result.append(line);
+            }
+        } catch (error) {
+            result.hidden = false; result.textContent = 'The operation response is unavailable. Check tracked status before repeating a mutation.';
+        } finally {
+            busy = false;
+            event.submitter?.removeAttribute('disabled');
+            refresher.refresh(false);
+        }
+    });
+    const dispose = () => {
+        disposed = true; refresher.cancel(); growing.cancel();
+        disposeHelp(); document.removeEventListener('DOMContentLoaded', initializeHelp);
+        dimension?.removeEventListener('change', changeDimension);
+        dimensionOperator?.removeEventListener('change', updateDimensionOperands);
+        selectionKind?.removeEventListener('change', updateSelectionHint);
+    };
+    window.addEventListener('pagehide', event => { refresher.cancel(); growing.cancel(); helpTooltips.forEach(tooltip => tooltip.hide()); if (!event.persisted) dispose(); });
+    window.addEventListener('pageshow', event => { if (event.persisted) { initializeHelp(); refresher.refresh(false); } });
+    window.bdkCachingView = { dispose, refresh: () => refresher.refresh(false) };
+})();
+</script>

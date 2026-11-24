@@ -17,8 +17,17 @@ using System.Text.Json;
 [Index(nameof(TypeHash), nameof(PartitionKeyHash), nameof(RowKey))]
 [Index(nameof(TypeHash), nameof(PartitionKey), nameof(RowKey))]
 [Index(nameof(TypeHash), nameof(ExpiresAtUnixMilliseconds))]
+// Cover scoped Dimension membership and visibility without fetching the content row.
+[Index(nameof(TypeHash), nameof(Type), nameof(Id), nameof(ExpiresAtUnixMilliseconds))]
 public class StorageDocument
 {
+    /// <summary>Gets or sets the original-name, typed Dimensions snapshot.</summary>
+    [Column("Dimensions")]
+    public string DimensionsJson { get; set; }
+
+    /// <summary>Gets or sets independently indexed dimension values discovered by EF conventions.</summary>
+    public ICollection<StorageDocumentDimension> DimensionValues { get; set; } = [];
+
     /// <summary>
     /// Defines the fixed maximum length for persisted raw document key values in the EF provider.
     /// </summary>

@@ -419,13 +419,7 @@
     private static string Display(string value) => string.IsNullOrWhiteSpace(value) ? "unavailable" : value;
     private static string Value<T>(T? value) where T : struct => value?.ToString() ?? "unavailable";
     private static string FormatPercent(double? value) => value is null ? "unavailable" : $"{value.Value:N1}%";
-    private static string FormatBytes(long? value) => value is null ? "unavailable" : value.Value switch
-    {
-        >= 1_073_741_824 => $"{value.Value / 1_073_741_824d:N2} GiB",
-        >= 1_048_576 => $"{value.Value / 1_048_576d:N1} MiB",
-        >= 1024 => $"{value.Value / 1024d:N1} KiB",
-        _ => $"{value.Value:N0} B",
-    };
+    private static string FormatBytes(long? value) => value.HasValue ? ByteSize.FormatBinary(value.Value) : "unavailable";
     private static string FormatRate(double? value) => value is null ? "unavailable" : $"{FormatBytes((long)value.Value)}/s";
     private static string FormatDuration(TimeSpan? value) => value is null ? "unavailable" : value.Value.TotalMilliseconds < 1000 ? $"{value.Value.TotalMilliseconds:N1} ms" : $"{value.Value.TotalSeconds:N2} s";
     private static string FormatSegmentEnd(ProfilingSegment segment) => segment.EndedUtc is { } endedUtc

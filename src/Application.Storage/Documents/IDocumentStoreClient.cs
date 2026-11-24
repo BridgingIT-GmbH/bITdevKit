@@ -118,6 +118,11 @@ public interface IDocumentStoreClient<T> where T : class, new()
     /// </example>
     Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default);
 
+    /// <summary>Lists one page of metadata matching key and Dimension criteria.</summary>
+    /// <example><code>var page = await documents.ListPageAsync(scope, filter, continuationToken: null, cancellationToken: cancellationToken);</code></example>
+    Task<Result<DocumentInfoPage>> ListPageAsync(DocumentFilterScope scope, FilterModel filter, string continuationToken, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Result<DocumentInfoPage>.Failure(new DocumentStoreQueryNotSupportedError("Provider does not support FilterModel queries.")));
+
     /// <summary>
     /// Counts documents matching a query that are visible at the operation cutoff.
     /// </summary>
@@ -286,4 +291,13 @@ public interface IDocumentStoreClient<T> where T : class, new()
     /// </code>
     /// </example>
     Task<Result<DocumentBatchResult<DocumentKey>>> DeleteManyAsync(IReadOnlyCollection<DocumentDelete> deletes, CancellationToken cancellationToken = default);
+
+    /// <summary>Replaces Dimensions under the existing whole-item ETag without rewriting content.</summary>
+    /// <param name="update">The exact key, required replacement collection, and optional current whole-item ETag.</param>
+    /// <param name="cancellationToken">Cancels provider I/O.</param>
+    /// <returns>The acknowledged metadata snapshot or a typed failure.</returns>
+    /// <example><code>var result = await client.UpdateDimensionsAsync(new() { Key = key, Dimensions = DocumentDimensions.Empty, IfMatchETag = current.ETag }, cancellationToken);</code></example>
+    Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Result<DocumentInfo>.Failure(new DocumentDimensionsNotSupportedError()));
+
 }

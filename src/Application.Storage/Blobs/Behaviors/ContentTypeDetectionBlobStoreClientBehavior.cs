@@ -52,6 +52,9 @@ public sealed class ContentTypeDetectionBlobStoreClientBehavior : IBlobStoreClie
     public string StoreName { get; }
 
     /// <inheritdoc />
+    public BlobDimensionCapabilities DimensionCapabilities => this.inner.DimensionCapabilities;
+
+    /// <inheritdoc />
     public Task<Result<BlobInfo>> UploadAsync(
         BlobUpload upload,
         CancellationToken cancellationToken = default)
@@ -70,11 +73,14 @@ public sealed class ContentTypeDetectionBlobStoreClientBehavior : IBlobStoreClie
         return this.inner.UploadAsync(new BlobUpload
         {
             Key = upload.Key,
+            Dimensions = upload.Dimensions,
             Content = upload.Content,
             ContentType = contentType,
             ExpectedContentHash = upload.ExpectedContentHash,
             ExpiresAt = upload.ExpiresAt,
             Properties = upload.Properties,
+            TransformMetadata = upload.TransformMetadata,
+            IfMatchETag = upload.IfMatchETag,
             OverwriteMode = upload.OverwriteMode
         }, cancellationToken);
     }
@@ -88,6 +94,10 @@ public sealed class ContentTypeDetectionBlobStoreClientBehavior : IBlobStoreClie
         this.inner.GetPropertiesAsync(key, cancellationToken);
 
     /// <inheritdoc />
+    public Task<Result<BlobInfo>> UpdateDimensionsAsync(BlobDimensionsUpdate update, CancellationToken cancellationToken = default) =>
+        this.inner.UpdateDimensionsAsync(update, cancellationToken);
+
+    /// <inheritdoc />
     public Task<Result<BlobInfo>> UpdatePropertiesAsync(BlobPropertiesUpdate update, CancellationToken cancellationToken = default) =>
         this.inner.UpdatePropertiesAsync(update, cancellationToken);
 
@@ -98,6 +108,10 @@ public sealed class ContentTypeDetectionBlobStoreClientBehavior : IBlobStoreClie
     /// <inheritdoc />
     public Task<Result<BlobPage>> ListPageAsync(BlobQuery query, CancellationToken cancellationToken = default) =>
         this.inner.ListPageAsync(query, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Result<BlobPage>> ListPageAsync(BlobFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) => this.inner.ListPageAsync(scope, filter, continuationToken, cancellationToken);
 
     /// <inheritdoc />
     public Task<Result> DeleteAsync(

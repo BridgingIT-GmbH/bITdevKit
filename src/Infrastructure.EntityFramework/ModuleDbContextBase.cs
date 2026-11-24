@@ -1,10 +1,11 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Caching;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 /// <summary>
@@ -52,6 +53,11 @@ public abstract class ModuleDbContextBase(DbContextOptions options) : DbContext(
         if (this.ApplyConfigurationsFromAssembly)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
+        }
+
+        if (this is IApplicationCachingContext)
+        {
+            CacheModelConfiguration.Configure(modelBuilder, provider: this.Database.ProviderName);
         }
 
         base.OnModelCreating(modelBuilder);

@@ -33,6 +33,10 @@ public sealed record DocumentDeleteByQueryOptions
 /// <example><code>var options = new DocumentTransferOptions { CreateOnly = true };</code></example>
 public sealed record DocumentTransferOptions
 {
+    /// <summary>Gets the destination ETag required for replacement; omission permits unconditional writes.</summary>
+    /// <example><code>var expected = options.IfMatchETag;</code></example>
+    public string IfMatchETag { get; init; }
+
     /// <summary>Gets whether the target write must fail when a physical target record already exists.</summary>
     /// <example><code>var options = new DocumentTransferOptions { CreateOnly = true };</code></example>
     public bool CreateOnly { get; init; }
@@ -176,11 +180,13 @@ public static class DocumentStoreClientExtensions
     public static async Task<Result<DocumentTransferResult>> CopyAsync<T>(this IDocumentStoreClient<T> source, DocumentKey sourceKey, IDocumentStoreClient<T> target, DocumentKey targetKey, DocumentTransferOptions options = null, CancellationToken cancellationToken = default) where T : class, new()
     {
         options ??= new();
+        var condition = DocumentWriteValidator.Validate(new DocumentWriteOptions { CreateOnly = options.CreateOnly, IfMatchETag = options.IfMatchETag });
+        if (condition.IsFailure) return Result<DocumentTransferResult>.Failure(condition);
         var read = await source.GetAsync(sourceKey, cancellationToken);
         if (read.IsFailure) return read.Wrap<DocumentTransferResult>();
         var entry = read.Value;
         var expiration = options.ExpirationOverride ?? (options.PreserveExpiration && entry.ExpiresAt is not null ? ExpirationChange.At(entry.ExpiresAt.Value) : ExpirationChange.Clear);
-        var write = await target.UpsertAsync(targetKey, entry.Value, new() { CreateOnly = options.CreateOnly, Properties = options.PropertiesOverride ?? (options.PreserveProperties ? entry.Properties.Clone() : new PropertyBag()), Expiration = expiration }, cancellationToken);
+        var write = await target.UpsertAsync(targetKey, entry.Value, new() { CreateOnly = options.CreateOnly, IfMatchETag = options.IfMatchETag, Properties = options.PropertiesOverride ?? (options.PreserveProperties ? DocumentPropertyValues.Clone(entry.Properties) : new PropertyBag()), Expiration = expiration }, cancellationToken);
         return write.IsFailure ? write.Wrap<DocumentTransferResult>() : Result<DocumentTransferResult>.Success(new() { Source = entry, Target = write.Value });
     }
 
@@ -237,5 +243,5 @@ public static class DocumentStoreClientExtensions
     }
 
     private static void EnsureMaximum(int value) { if (value <= 0) throw new ArgumentOutOfRangeException(nameof(value), "MaxItems must be greater than zero."); }
-    private static DocumentQuery Copy(DocumentQuery query, string continuationToken) => new() { DocumentKey = query.DocumentKey, Filter = query.Filter, Take = query.Take, AllowFullScan = query.AllowFullScan, ContinuationToken = continuationToken };
+    private static DocumentQuery Copy(DocumentQuery query, string continuationToken) => new() { DocumentKey = query.DocumentKey, DimensionFilter = query.DimensionFilter, Filter = query.Filter, Take = query.Take, AllowFullScan = query.AllowFullScan, ContinuationToken = continuationToken };
 }

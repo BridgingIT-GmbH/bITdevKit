@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -23,6 +23,24 @@ public class LiteDbRepositoryOptionsBuilder
     {
         this.Target.DbContext = context;
 
+        return this;
+    }
+
+    /// <summary>Selects the shared scoped database session.</summary>
+    /// <param name="session">The registered session.</param>
+    /// <returns>The builder.</returns>
+    public LiteDbRepositoryOptionsBuilder Session(LiteDbDatabaseSession session)
+    {
+        this.Target.Session = session;
+        return this;
+    }
+
+    /// <summary>Selects an explicit collection name.</summary>
+    /// <param name="name">The collection name.</param>
+    /// <returns>The builder.</returns>
+    public LiteDbRepositoryOptionsBuilder CollectionName(string name)
+    {
+        this.Target.CollectionName = name;
         return this;
     }
 

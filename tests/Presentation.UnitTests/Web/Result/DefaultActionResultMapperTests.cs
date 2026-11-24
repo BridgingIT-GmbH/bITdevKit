@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Web;
 
@@ -12,16 +13,14 @@ using Presentation.Web;
 public class DefaultActionResultMapperTests
 {
     private readonly IResult successResult;
-    private readonly IResult failureResult;
+    private readonly IResult failureResult = Result.Failure("Unable to complete the operation");
 
     public DefaultActionResultMapperTests()
     {
         this.successResult = Substitute.For<IResult>();
         this.successResult.IsSuccess.Returns(true);
-
-        this.failureResult = Substitute.For<IResult>();
-        this.failureResult.IsSuccess.Returns(false);
     }
+
     [Fact]
     public void Ok_WhenGivenSuccessResult_ReturnsOkObjectResult()
     {
@@ -49,8 +48,8 @@ public class DefaultActionResultMapperTests
         var response = sut.Ok(this.failureResult, model);
 
         // Assert
-        response.Result.ShouldBeOfType<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(200);
+        response.Result.ShouldBeAssignableTo<ObjectResult>();
+        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
     }
 
     [Fact]
@@ -79,8 +78,38 @@ public class DefaultActionResultMapperTests
         var response = sut.Ok<PersonStub>(this.failureResult, m => m = PersonStub.Create(DateTime.UtcNow.Ticks));
 
         // Assert
-        response.Result.ShouldBeOfType<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(200);
+        response.Result.ShouldBeAssignableTo<ObjectResult>();
+        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
+    }
+
+    [Fact]
+    public void Ok_FailureWithoutTypedErrors_SkipsModelAction()
+    {
+        var sut = new DefaultActionResultMapper();
+        var called = false;
+
+        var response = sut.Ok<PersonStub>(this.failureResult, _ => called = true);
+
+        called.ShouldBeFalse();
+        var problem = response.Result.ShouldBeAssignableTo<ObjectResult>().Value.ShouldBeOfType<ProblemDetails>();
+        problem.Extensions["Messages"].ShouldBe("Unable to complete the operation");
+    }
+
+    [Fact]
+    public void Ok_FluentValidationError_ReturnsValidationProblemWithWholeMessages()
+    {
+        var sut = new DefaultActionResultMapper();
+        var failure = new ValidationFailure(nameof(PersonStub.FirstName), "Must not be empty");
+        var error = new FluentValidationError(new ValidationResult([failure]));
+
+        var response = sut.Ok(Result.Failure().WithError(error));
+
+        var body = response.ShouldBeAssignableTo<ObjectResult>();
+        body.StatusCode.ShouldBe(400);
+        var problem = body.Value.ShouldBeOfType<ProblemDetails>();
+        problem.Detail.ShouldContain(failure.PropertyName);
+        problem.Detail.ShouldContain(failure.ErrorMessage);
+        problem.Extensions["Errors"].ShouldBe(error.Message);
     }
 
     [Fact]
@@ -128,8 +157,8 @@ public class DefaultActionResultMapperTests
         var response = sut.Created(this.failureResult, model, "test-route-name");
 
         // Assert
-        response.Result.ShouldBeOfType<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(200);
+        response.Result.ShouldBeAssignableTo<ObjectResult>();
+        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
     }
 
     [Fact]
@@ -175,8 +204,8 @@ public class DefaultActionResultMapperTests
         var response = sut.Created<PersonStub>(this.failureResult, m => m = PersonStub.Create(DateTime.UtcNow.Ticks), "test-route-name");
 
         // Assert
-        response.Result.ShouldBeOfType<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(200);
+        response.Result.ShouldBeAssignableTo<ObjectResult>();
+        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
     }
 
     [Fact]
@@ -223,8 +252,8 @@ public class DefaultActionResultMapperTests
         var response = sut.Updated(this.failureResult, model, "test-route-name");
 
         // Assert
-        response.Result.ShouldBeOfType<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(200);
+        response.Result.ShouldBeAssignableTo<ObjectResult>();
+        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
     }
 
     [Fact]
@@ -269,8 +298,8 @@ public class DefaultActionResultMapperTests
         var response = sut.Updated<PersonStub>(this.failureResult, m => m = PersonStub.Create(DateTime.UtcNow.Ticks), "test-route-name");
 
         // Assert
-        response.Result.ShouldBeOfType<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(200);
+        response.Result.ShouldBeAssignableTo<ObjectResult>();
+        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
     }
 
     [Fact]
@@ -317,8 +346,8 @@ public class DefaultActionResultMapperTests
         var response = sut.Accepted(this.failureResult, model, "test-route-name");
 
         // Assert
-        response.Result.ShouldBeOfType<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(200);
+        response.Result.ShouldBeAssignableTo<ObjectResult>();
+        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
     }
 
     [Fact]
@@ -361,8 +390,8 @@ public class DefaultActionResultMapperTests
         var response = sut.Accepted<PersonStub>(this.failureResult, m => m = PersonStub.Create(DateTime.UtcNow.Ticks), "test-route-name");
 
         // Assert
-        response.Result.ShouldBeOfType<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(200);
+        response.Result.ShouldBeAssignableTo<ObjectResult>();
+        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
     }
 
     [Fact]
@@ -388,8 +417,7 @@ public class DefaultActionResultMapperTests
         var response = sut.NoContent<PersonStub>(this.failureResult);
 
         // Assert
-        response.Result.ShouldBeOfType<NoContentResult>();
-        ((NoContentResult)response.Result).StatusCode.ShouldBe(204);
+        response.Result.ShouldBeAssignableTo<ObjectResult>().StatusCode.ShouldBe(500);
     }
 
     [Fact]
@@ -419,8 +447,8 @@ public class DefaultActionResultMapperTests
         var response = sut.Object(this.failureResult, model, 201);
 
         // Assert
-        response.Result.ShouldBeOfType<ObjectResult>();
-        ((ObjectResult)response.Result).StatusCode.ShouldBe(201);
+        response.Result.ShouldBeAssignableTo<ObjectResult>();
+        ((ObjectResult)response.Result).StatusCode.ShouldBe(500);
     }
 
     [Fact]
@@ -509,7 +537,7 @@ public class DefaultActionResultMapperTests
     }
 
     [Fact]
-    public void Ok_WhenGivenNotFoundError_ReturnsNotFoundResult()
+    public void Ok_WhenGivenNotFoundError_ReturnsNotFoundProblem()
     {
         // Arrange
         var sut = new DefaultActionResultMapper();
@@ -519,11 +547,11 @@ public class DefaultActionResultMapperTests
         var response = sut.Ok(result);
 
         // Assert
-        response.ShouldBeOfType<NotFoundResult>();
+        response.ShouldBeAssignableTo<ObjectResult>().StatusCode.ShouldBe(404);
     }
 
     [Fact]
-    public void Ok_WhenGivenEntityNotFoundError_ReturnsNotFoundResult()
+    public void Ok_WhenGivenEntityNotFoundError_ReturnsNotFoundProblem()
     {
         // Arrange
         var sut = new DefaultActionResultMapper();
@@ -533,7 +561,7 @@ public class DefaultActionResultMapperTests
         var response = sut.Ok(result);
 
         // Assert
-        response.ShouldBeOfType<NotFoundResult>();
+        response.ShouldBeAssignableTo<ObjectResult>().StatusCode.ShouldBe(404);
     }
 
     [Fact]
@@ -547,7 +575,7 @@ public class DefaultActionResultMapperTests
         var response = sut.Ok(result);
 
         // Assert
-        var objectResult = response.ShouldBeOfType<ObjectResult>();
+        var objectResult = response.ShouldBeAssignableTo<ObjectResult>();
         objectResult.StatusCode.ShouldBe(400);
         var problemDetails = objectResult.Value.ShouldBeOfType<ProblemDetails>();
         problemDetails.Title.ShouldBe("Bad Request");
@@ -565,7 +593,7 @@ public class DefaultActionResultMapperTests
         var response = sut.Ok(result);
 
         // Assert
-        var objectResult = response.ShouldBeOfType<ObjectResult>();
+        var objectResult = response.ShouldBeAssignableTo<ObjectResult>();
         objectResult.StatusCode.ShouldBe(500);
         var problemDetails = objectResult.Value.ShouldBeOfType<ProblemDetails>();
         problemDetails.Title.ShouldBe("Unhandled Result Error");

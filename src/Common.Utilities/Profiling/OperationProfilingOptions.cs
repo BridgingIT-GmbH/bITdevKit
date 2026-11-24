@@ -12,9 +12,7 @@ public sealed class OperationProfilingOptions
     private int maximumRetainedOperations = 10000;
     private long maximumRetainedBytes = 128L * 1024 * 1024;
     private TimeSpan maximumOperationAge = TimeSpan.FromHours(24);
-    private bool countConfigured;
-    private bool bytesConfigured;
-    private bool ageConfigured;
+    private OptionsPatch retentionOverrides = new();
 
     /// <summary>Gets or sets explicit operation capture enablement.</summary>
     /// <example><code>var value = options.Enabled;</code></example>
@@ -126,33 +124,60 @@ public sealed class OperationProfilingOptions
 
     /// <summary>Gets or sets default in-memory root retention count.</summary>
     /// <example><code>var value = options.MaximumRetainedOperations;</code></example>
-    public int MaximumRetainedOperations { get => this.maximumRetainedOperations; set { this.maximumRetainedOperations = value; this.countConfigured = true; } }
+    public int MaximumRetainedOperations
+    {
+        get => this.maximumRetainedOperations;
+        set
+        {
+            this.retentionOverrides.Set(nameof(this.MaximumRetainedOperations), value);
+            this.maximumRetainedOperations = value;
+        }
+    }
 
     /// <summary>Gets or sets default in-memory charged retention bytes.</summary>
     /// <example><code>var value = options.MaximumRetainedBytes;</code></example>
-    public long MaximumRetainedBytes { get => this.maximumRetainedBytes; set { this.maximumRetainedBytes = value; this.bytesConfigured = true; } }
+    public long MaximumRetainedBytes
+    {
+        get => this.maximumRetainedBytes;
+        set
+        {
+            this.retentionOverrides.Set(nameof(this.MaximumRetainedBytes), value);
+            this.maximumRetainedBytes = value;
+        }
+    }
 
     /// <summary>Gets or sets default in-memory retained age.</summary>
     /// <example><code>var value = options.MaximumOperationAge;</code></example>
-    public TimeSpan MaximumOperationAge { get => this.maximumOperationAge; set { this.maximumOperationAge = value; this.ageConfigured = true; } }
+    public TimeSpan MaximumOperationAge
+    {
+        get => this.maximumOperationAge;
+        set
+        {
+            this.retentionOverrides.Set(nameof(this.MaximumOperationAge), value);
+            this.maximumOperationAge = value;
+        }
+    }
 
     /// <summary>Applies provider-specific retention defaults while preserving every explicit setting.</summary>
     /// <example><code>var effective = options.SnapshotWithRetentionDefaults(100000, null, TimeSpan.FromDays(7));</code></example>
     public OperationProfilingOptions SnapshotWithRetentionDefaults(int maximumCount, long? maximumBytes, TimeSpan maximumAge)
     {
         var copy = this.Snapshot();
-        if (!this.countConfigured) { copy.maximumRetainedOperations = maximumCount; }
-
-        if (!this.bytesConfigured) { copy.maximumRetainedBytes = maximumBytes ?? long.MaxValue; }
-
-        if (!this.ageConfigured) { copy.maximumOperationAge = maximumAge; }
-
-        return copy;
+        copy.maximumRetainedOperations = maximumCount;
+        copy.maximumRetainedBytes = maximumBytes ?? long.MaxValue;
+        copy.maximumOperationAge = maximumAge;
+        return this.retentionOverrides.Apply(copy, "Explicit", new Dictionary<string, string>());
     }
 
     /// <summary>Freezes current capture options in an independent copy.</summary>
     /// <example><code>var effective = options.Snapshot();</code></example>
-    public OperationProfilingOptions Snapshot() => (OperationProfilingOptions)this.MemberwiseClone();
+    public OperationProfilingOptions Snapshot()
+    {
+        var copy = (OperationProfilingOptions)this.MemberwiseClone();
+        copy.retentionOverrides = new();
+        copy.retentionOverrides.Merge(null, this.retentionOverrides);
+        return copy;
+    }
 
     /// <summary>Validates enabled capture limits.</summary>
     /// <example><code>options.Validate();</code></example>

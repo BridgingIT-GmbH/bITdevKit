@@ -403,16 +403,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            var isSuccess = mappedItems.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? Result<IEnumerable<TResult>>.Success(mappedItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : Result<IEnumerable<TResult>>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            return CompleteCollectionOutcome(mappedItems, failureCount, options, messages, errors);
         }
         catch (Exception ex)
         {
@@ -505,16 +496,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            var isSuccess = mappedItems.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? Result<IEnumerable<TResult>>.Success(mappedItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : Result<IEnumerable<TResult>>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            return CompleteCollectionOutcome(mappedItems, failureCount, options, messages, errors);
         }
         catch (OperationCanceledException)
         {
@@ -712,16 +694,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            if (errors.Count != 0 && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return Result<IEnumerable<T>>.Failure(processedItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return Result<IEnumerable<T>>.Success(processedItems)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            return CompleteCollectionOutcome(processedItems, failureCount, options, messages, errors);
         }
         catch (Exception ex)
         {
@@ -817,16 +790,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            if (errors.Count != 0 && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return Result<IEnumerable<T>>.Failure(processedItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return Result<IEnumerable<T>>.Success(processedItems)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            return CompleteCollectionOutcome(processedItems, failureCount, options, messages, errors);
         }
         catch (OperationCanceledException)
         {
@@ -1043,16 +1007,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            var isSuccess = results.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? Result<IEnumerable<T>>.Success(results)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : Result<IEnumerable<T>>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            return CompleteCollectionOutcome(results, failureCount, options, messages, errors);
         }
         catch (Exception ex)
         {
@@ -1163,16 +1118,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            var isSuccess = results.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? Result<IEnumerable<T>>.Success(results)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : Result<IEnumerable<T>>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            return CompleteCollectionOutcome(results, failureCount, options, messages, errors);
         }
         catch (OperationCanceledException)
         {
@@ -1381,16 +1327,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            var isSuccess = boundItems.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? Result<IEnumerable<TResult>>.Success(boundItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : Result<IEnumerable<TResult>>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            return CompleteCollectionOutcome(boundItems, failureCount, options, messages, errors);
         }
         catch (Exception ex)
         {
@@ -1494,16 +1431,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            var isSuccess = boundItems.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? Result<IEnumerable<TResult>>.Success(boundItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : Result<IEnumerable<TResult>>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            return CompleteCollectionOutcome(boundItems, failureCount, options, messages, errors);
         }
         catch (OperationCanceledException)
         {
@@ -1668,8 +1596,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                     errors.AddRange(result.Errors);
                     messages.AddRange(result.Messages);
 
-                    if (!options.ContinueOnItemFailure ||
-                        (options.MaxFailures.HasValue && failureCount > options.MaxFailures.Value))
+                    if (options.StopsAfterFailure(failureCount))
                     {
                         messages.Add($"Flattening aborted after {failureCount} failures");
                         break;
@@ -1677,16 +1604,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            var isSuccess = flattenedItems.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? Result<IEnumerable<T>>.Success(flattenedItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : Result<IEnumerable<T>>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            return CompleteCollectionOutcome(flattenedItems, failureCount, options, messages, errors);
         }
         catch (Exception ex)
         {
@@ -1715,39 +1633,9 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
     {
-        if (resultTasks is null)
-        {
-            return Result<IEnumerable<T>>.Failure()
-                .WithError(new Error("Result tasks collection cannot be null"));
-        }
-
-        try
-        {
-            options ??= ProcessingOptions.Default;
-            var results = new List<Result<IEnumerable<T>>>();
-
-            // First await all tasks
-            foreach (var task in resultTasks)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                var result = await task;
-                results.Add(result);
-            }
-
-            // Then flatten the results
-            return results.Flatten(options);
-        }
-        catch (OperationCanceledException)
-        {
-            return Result<IEnumerable<T>>.Failure()
-                .WithError(new OperationCancelledError());
-        }
-        catch (Exception ex)
-        {
-            return Result<IEnumerable<T>>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message);
-        }
+        options ??= ProcessingOptions.Default;
+        var observed = await ResultTExtensions.AwaitResultTasksAsync(resultTasks, options, cancellationToken).AnyContext();
+        return observed.IsSuccess ? observed.Value.Flatten(options) : observed.Wrap<IEnumerable<T>>();
     }
 
     /// <summary>
@@ -1821,15 +1709,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            var isSuccess = (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? Result<IEnumerable<TResult>>.Success(selectedItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : Result<IEnumerable<TResult>>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            return CompleteCollectionOutcome(selectedItems, failureCount, options, messages, errors);
         }
         catch (Exception ex)
         {
@@ -2131,16 +2011,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            var isSuccess = mappedItems.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? Result<IEnumerable<TResult>>.Success(mappedItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : Result<IEnumerable<TResult>>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            return CompleteCollectionOutcome(mappedItems, failureCount, options, messages, errors);
         }
         catch (Exception ex)
         {
@@ -2234,16 +2105,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            var isSuccess = mappedItems.Count != 0 &&
-                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
-
-            return isSuccess
-                ? Result<IEnumerable<TResult>>.Success(mappedItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages)
-                : Result<IEnumerable<TResult>>.Failure()
-                    .WithErrors(errors)
-                    .WithMessages(messages);
+            return CompleteCollectionOutcome(mappedItems, failureCount, options, messages, errors);
         }
         catch (OperationCanceledException)
         {
@@ -2508,16 +2370,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return Result<IEnumerable<T>>.Failure(validItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return Result<IEnumerable<T>>.Success(validItems)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            return CompleteCollectionOutcome(validItems, failureCount, options, messages, errors);
         }
         catch (Exception ex)
         {
@@ -2628,16 +2481,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return Result<IEnumerable<T>>.Failure(validItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return Result<IEnumerable<T>>.Success(validItems)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            return CompleteCollectionOutcome(validItems, failureCount, options, messages, errors);
         }
         catch (OperationCanceledException)
         {
@@ -2710,9 +2554,11 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                     else
                     {
                         failureCount++;
-                        var error = errorFactory(item);
-                        errors.Add(error);
-                        messages.Add($"Validation failed: {error.Message}");
+                        if (errorFactory(item) is { } error)
+                        {
+                            errors.Add(error);
+                            messages.Add($"Validation failed: {error.Message}");
+                        }
 
                         if (options.IncludeFailedItems)
                         {
@@ -2748,16 +2594,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return Result<IEnumerable<T>>.Failure(validItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return Result<IEnumerable<T>>.Success(validItems)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            return CompleteCollectionOutcome(validItems, failureCount, options, messages, errors);
         }
         catch (Exception ex)
         {
@@ -2829,9 +2666,11 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                     else
                     {
                         failureCount++;
-                        var error = errorFactory(item);
-                        errors.Add(error);
-                        messages.Add($"Validation failed: {error.Message}");
+                        if (errorFactory(item) is { } error)
+                        {
+                            errors.Add(error);
+                            messages.Add($"Validation failed: {error.Message}");
+                        }
 
                         if (options.IncludeFailedItems)
                         {
@@ -2871,16 +2710,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return Result<IEnumerable<T>>.Failure(validItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return Result<IEnumerable<T>>.Success(validItems)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            return CompleteCollectionOutcome(validItems, failureCount, options, messages, errors);
         }
         catch (OperationCanceledException)
         {
@@ -2984,16 +2814,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return Result<IEnumerable<T>>.Failure(validItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return Result<IEnumerable<T>>.Success(validItems)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            return CompleteCollectionOutcome(validItems, failureCount, options, messages, errors);
         }
         catch (Exception ex)
         {
@@ -3099,16 +2920,7 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
                 }
             }
 
-            if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
-            {
-                return Result<IEnumerable<T>>.Failure(validItems)
-                    .WithErrors(errors)
-                    .WithMessages(messages);
-            }
-
-            return Result<IEnumerable<T>>.Success(validItems)
-                .WithErrors(errors)
-                .WithMessages(messages);
+            return CompleteCollectionOutcome(validItems, failureCount, options, messages, errors);
         }
         catch (OperationCanceledException)
         {
@@ -3769,4 +3581,23 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
     }
 
     #endregion
+    internal static Result<IEnumerable<T>> CompleteCollectionOutcome<T>(
+        List<T> values,
+        int failureCount,
+        ProcessingOptions options,
+        IEnumerable<string> messages,
+        IEnumerable<IResultError> errors)
+    {
+        if (failureCount == 0)
+        {
+            return Result<IEnumerable<T>>.Success(values).WithMessages(messages).WithErrors(errors);
+        }
+
+        var keepPartialValues = values.Count != 0 &&
+            (options.MaxFailures is null || failureCount <= options.MaxFailures.Value);
+        return Result<IEnumerable<T>>.Failure(keepPartialValues ? values : null)
+            .WithMessages(messages)
+            .WithErrors(errors);
+    }
+
 }

@@ -6,51 +6,24 @@
 namespace BridgingIT.DevKit.Domain;
 
 /// <summary>
-///     Provides extension methods for handling instances of the <see cref="Result" /> class.
+///     Provides value access for results returned by domain policies.
 /// </summary>
 public static class ResultExtensions
 {
     /// <summary>
-    ///     Retrieves the value contained in the given <see cref="Result" /> instance.
+    ///     Retrieves a scalar or paged result value through its result interface.
     /// </summary>
-    /// <param name="source">The source <see cref="Result" /> instance from which the value is to be retrieved.</param>
+    /// <param name="source">The policy result to read.</param>
     /// <returns>
-    ///     The value contained in the given <see cref="Result" /> instance if it is of type
-    ///     <see cref="DomainPolicyResult{T}" /> or <see cref="Result{T}" />;
-    ///     otherwise, returns the default value for the type.
+    ///     The value exposed by the result, or <see langword="null"/> if the result has no value interface.
     /// </returns>
     public static object GetValue(this IResult source)
     {
-        if (source == null)
-        {
-            return null;
-        }
+        var resultInterface = source?.GetType().GetInterfaces().FirstOrDefault(type =>
+            type.IsGenericType &&
+            (type.GetGenericTypeDefinition() == typeof(IResult<>) ||
+             type.GetGenericTypeDefinition() == typeof(IResultPaged<>)));
 
-        var type = source.GetType();
-        switch (type.IsGenericType) // use some generics to get the value from the non generic IResult
-        {
-            case true when type.GetGenericTypeDefinition() == typeof(DomainPolicyResult<>):
-                {
-                    var property = type.GetProperty("Value"); // Result<>.Value
-                    if (property != null)
-                    {
-                        return property.GetValue(source);
-                    }
-
-                    break;
-                }
-            case true when type.GetGenericTypeDefinition() == typeof(Result<>):
-                {
-                    var property = type.GetProperty("Value"); // Result<>.Value
-                    if (property != null)
-                    {
-                        return property.GetValue(source);
-                    }
-
-                    break;
-                }
-        }
-
-        return null;
+        return resultInterface?.GetProperty(nameof(IResult<object>.Value))?.GetValue(source);
     }
 }

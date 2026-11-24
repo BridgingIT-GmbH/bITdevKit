@@ -1,0 +1,35 @@
+@inherits RazorSlices.RazorSlice
+
+<style>
+    [data-dimension-columns] > .dashboard-tools-menu {
+        width: 19rem;
+    }
+
+    @@media (max-width: 767.98px) {
+        [data-dimension-columns] {
+            position: static;
+        }
+
+        [data-dimension-columns] > .dashboard-tools-menu {
+            inset-inline: .5rem;
+            width: auto;
+            min-width: 0;
+        }
+    }
+</style>
+
+<details class="dashboard-tools" data-dimension-columns>
+    <summary class="btn btn-outline-secondary btn-sm">Dimension columns</summary>
+    <div class="dashboard-tools-menu">
+        <form class="w-100" data-pin-dimension>
+            <label for="storage-dimension-column-key" class="form-label small mb-1">Dimension key</label>
+            <div class="input-group input-group-sm">
+                <input id="storage-dimension-column-key" class="form-control font-monospace" list="storage-dimension-column-keys"
+                       autocomplete="off" required maxlength="128" pattern="[A-Za-z_][A-Za-z0-9_.:\-]{0,127}">
+                <datalist id="storage-dimension-column-keys"></datalist>
+                <button class="btn btn-outline-secondary" type="submit">Pin</button>
+            </div>
+        </form>
+        <div class="d-flex flex-wrap gap-1 w-100" data-pinned-dimension-keys></div>
+    </div>
+</details>

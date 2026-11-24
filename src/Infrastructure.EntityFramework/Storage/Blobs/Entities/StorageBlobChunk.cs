@@ -24,7 +24,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 /// </example>
 [Table("__Storage_BlobChunks")]
 [PrimaryKey(nameof(BlobId), nameof(Index))]
-[Index(nameof(BlobId), nameof(Index), IsUnique = true)]
 public sealed class StorageBlobChunk
 {
     /// <summary>

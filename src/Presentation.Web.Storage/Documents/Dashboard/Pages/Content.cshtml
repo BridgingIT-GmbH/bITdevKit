@@ -1,3 +1,5 @@
+@using BridgingIT.DevKit.Application.Storage
+@using BridgingIT.DevKit.Presentation.Web.Storage.Models
 @using System.Text.Json
 @using BridgingIT.DevKit.Common
 @using StorageDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DocumentStorageDashboardRoutes
@@ -124,6 +126,9 @@
      data-row-key="@vm.RowKey"
      data-row-key-mode="@vm.RowKeyMode"
      data-page-size="@vm.PageSize"
+     data-dimension-filter="@vm.DimensionFilterJson"
+     data-dimension-filter-valid="@(vm.DimensionFilter is not null ? "true" : "false")"
+     data-supports-dimensions="@(vm.DimensionCapabilities.SupportsDimensions ? "true" : "false")"
      data-continuation-token="@vm.ContinuationToken"
      data-selected-partition-key="@vm.SelectedPartitionKey"
      data-selected-row-key="@vm.SelectedRowKey">
@@ -137,7 +142,7 @@
     {
         @if (vm.Errors.Count > 0)
         {
-            <div class="alert alert-danger py-2 mb-0" data-dashboard-query-error>
+            <div class="alert alert-danger py-2 mb-0" role="alert" data-dashboard-query-error>
                 @foreach (var error in vm.Errors)
                 {
                     <div>@error</div>
@@ -189,15 +194,19 @@
                     </select>
                 </div>
                 <div class="col-12 col-lg-auto d-flex justify-content-end ms-auto">@(await RenderPartialAsync<FilterActions, DashboardFilterActionsModel>(new(ResetId: "documents-filter-reset")))</div>
-
             </div>
+            @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQuery, BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DashboardDimensionQueryModel>(new(vm.DimensionFilterJson, vm.DimensionCapabilities.SupportsQueries, vm.DimensionCapabilities.SupportedOperators)))
         </form>
 
         <div class="documents-layout">
             <section class="documents-panel" data-dashboard-list="documents">
-                <div class="documents-panel-header">
+                <div class="documents-panel-header position-relative">
                     <span>Documents</span>
                     <div class="d-flex align-items-center gap-2">
+                    @if (vm.DimensionCapabilities.SupportsDimensions)
+                    {
+                        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionColumns>())
+                    }
                     <button type="button"
                             class="btn btn-outline-secondary btn-sm"
                             data-documents-command="new"
@@ -235,7 +244,8 @@
                                         var displayRowKey = Shortener.Apply(key.RowKey, new ShorteningOptions { MaximumLength = 64 });
                                         var active = string.Equals(key.PartitionKey, vm.SelectedPartitionKey, StringComparison.Ordinal) &&
                                             string.Equals(key.RowKey, vm.SelectedRowKey, StringComparison.Ordinal);
-                                        <tr class="@(active ? "table-active" : null)" data-dashboard-row-id="@JsonSerializer.Serialize(new[] { key.PartitionKey, key.RowKey })">
+                                        <tr class="@(active ? "table-active" : null)" data-dashboard-row-id="@JsonSerializer.Serialize(new[] { key.PartitionKey, key.RowKey })"
+                                            data-dimensions="@DocumentStorageDimensionsJson.Write(entry.Info.Dimensions)">
                                             <td class="documents-key-cell" title="@key.PartitionKey">
                                                 <button type="button"
                                                         class="btn btn-link btn-sm p-0 align-baseline text-start font-monospace"
@@ -314,6 +324,7 @@
                  data-expires-at="@vm.SelectedInfo?.ExpiresAt?.ToString("O", CultureInfo.InvariantCulture)"></div>
             <textarea hidden data-documents-selected-content>@vm.SelectedContent</textarea>
             <textarea hidden data-documents-selected-properties>@SerializeProperties(vm.SelectedInfo?.Properties)</textarea>
+            <textarea hidden data-documents-selected-dimensions>@DocumentStorageDimensionsJson.Write(vm.SelectedInfo?.Dimensions)</textarea>
         }
     }
 </div>
@@ -332,6 +343,7 @@
             PartitionKey = GetQuery("partitionKey"),
             RowKey = GetQuery("rowKey"),
             RowKeyMode = NormalizeMode(GetQuery("rowKeyMode")),
+            DimensionFilterJson = GetQuery("dimensionFilter"),
             ContinuationToken = GetQuery("continuationToken"),
             SelectedPartitionKey = GetQuery("selectedPartitionKey"),
             SelectedRowKey = GetQuery("selectedRowKey"),
@@ -354,6 +366,23 @@
         model.SelectedClientId = ResolveSelectedClientId(model.Clients, GetQuery("clientId"));
         model.SelectedClient = model.Clients.First(e => string.Equals(e.ClientId, model.SelectedClientId, StringComparison.OrdinalIgnoreCase));
         model.RowKeyMode = NormalizeMode(model.RowKeyMode, model.SelectedClient);
+
+        model.DimensionCapabilities = model.SelectedClient.Capabilities.Dimensions;
+        var parsedFilter = DocumentStorageDimensionsJson.ParseFilter(string.IsNullOrWhiteSpace(model.DimensionFilterJson) ? null : model.DimensionFilterJson);
+        if (parsedFilter.IsFailure)
+        {
+            model.Errors.Add("Check the Dimension names, comparisons, and typed values.");
+            return model;
+        }
+
+        var filterValidation = DocumentDimensionFilterValidator.Validate(parsedFilter.Value, model.DimensionCapabilities);
+        if (filterValidation.IsFailure)
+        {
+            model.Errors.Add(GetFailureMessage(filterValidation, "Dimension queries are unavailable for this provider."));
+            return model;
+        }
+
+        model.DimensionFilter = parsedFilter.Value;
 
         var accessor = factory.Create(model.SelectedClientId);
         if (accessor is null)
@@ -420,6 +449,7 @@
             builder.ContinueWith(model.ContinuationToken);
         }
 
+        if (model.DimensionFilter is not null) builder.WhereDimensions(model.DimensionFilter);
         ApplyKey(builder, model);
 
         return builder.Build();
@@ -428,6 +458,7 @@
     private static DocumentCountQuery BuildCountQuery(DashboardDocumentsViewModel model)
     {
         var builder = DocumentQueries.Count();
+        if (model.DimensionFilter is not null) builder.WhereDimensions(model.DimensionFilter);
         ApplyKey(builder, model);
 
         return builder.Build();
@@ -541,13 +572,7 @@
     private static string DisplayCount(long? value) =>
         value.HasValue ? $"{value.Value.ToString("N0", CultureInfo.InvariantCulture)} match(es)" : "count unavailable";
 
-    private static string FormatSize(long bytes) => bytes switch
-    {
-        >= ByteSize.BytesPerGigabyte => $"{bytes / (double)ByteSize.BytesPerGigabyte:0.##} GB",
-        >= ByteSize.BytesPerMegabyte => $"{bytes / (double)ByteSize.BytesPerMegabyte:0.##} MB",
-        >= ByteSize.BytesPerKilobyte => $"{bytes / (double)ByteSize.BytesPerKilobyte:0.##} KB",
-        _ => $"{bytes} B"
-    };
+    private static string FormatSize(long bytes) => ByteSize.FormatBinary(bytes);
 
     private static string FormatTimestamp(DateTimeOffset? value) =>
         value?.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) ?? "-";

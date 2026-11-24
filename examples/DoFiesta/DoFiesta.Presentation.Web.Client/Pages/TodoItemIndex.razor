@@ -1,6 +1,7 @@
 @page "/todos"
 @using System.Net.Http.Headers
 @using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
+@using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client.Components
 @using Microsoft.Kiota.Abstractions
 @using Microsoft.Kiota.Abstractions.Serialization
 @inject Gen.BackendApiClient Api
@@ -18,7 +19,7 @@
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(loading || enums?.TodoStatuses?.Any() != true || items == null)" OnClick="OpenCreateTodoDialog">Create Task</MudButton>
     </div>
     <div class="wf-quick-add">
-        <MudTextField @bind-Value="newTodoTitle" Immediate="true" Disabled="@(loading || enums?.TodoStatuses?.Any() != true || items == null)" Label="New Todo" Variant="Variant.Outlined" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="newTodoTitle" Immediate="false" Disabled="@(loading || enums?.TodoStatuses?.Any() != true || items == null)" Label="New Todo" Variant="Variant.Outlined" Margin="Margin.Dense" />
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(loading || enums?.TodoStatuses?.Any() != true || items == null)" StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => AddNewTodo())">Add Todo</MudButton>
         <MudButton Variant="Variant.Outlined" Disabled="@(loading || enums?.TodoStatuses?.Any() != true || items == null)" StartIcon="@Icons.Material.Filled.Refresh" OnClick="ReloadPageAsync">Refresh</MudButton>
     </div>
@@ -91,8 +92,8 @@
                         <MudTd DataLabel="Title" Class="wf-title-cell">
                             <MudTooltip Text="@todoItem.Description">
                                 <MudTextField @bind-Value="todoItem.Title" Variant="Variant.Text" Margin="Margin.Dense"
-                                              Immediate="true" Class="flex-grow-1" Style="width: 100%;"
-                                              OnBlur="@(() => UpdateTodo(todoItem))" />
+                                              Immediate="false" Class="flex-grow-1" Style="width: 100%;"
+                                              @bind-Value:after="@(() => UpdateTodo(todoItem))" />
                             </MudTooltip>
                         </MudTd>
                         <MudTd DataLabel="Status" Class="wf-status-cell">
@@ -288,11 +289,10 @@
     <DialogContent>
         <MudGrid>
             <MudItem xs="12">
-                <MudTextField @bind-Value="createTodoModel.Title"
-                              Label="Title"
-                              Variant="Variant.Outlined"
-                              Required="true"
-                              Immediate="true" />
+                @if (showCreateTodoDialog)
+                {
+                    <TaskTitleSuggestions @key="createTodoModel" @bind-Value="createTodoModel.Title" />
+                }
             </MudItem>
             <MudItem xs="12">
                 <MudTextField @bind-Value="createTodoModel.Description"

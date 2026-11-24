@@ -184,3 +184,5 @@ This request works without a running host because the CLI reads the official Dev
 Use the [AI Agent Support Guide](agent-support-guide.md) for the architecture, tool catalog, coding workflow, prompt library, project-owned diagnostics, toolsets, and safety model.
 
 Use the [DevKit MCP Reference](reference/features-cli-mcp.md) for the command and protocol contract.
+
+To have an agent add the DevKit basics to an existing app, copy the prompts from [Hand the basics to an agent](getting-started-existing-app.md#hand-to-an-agent).

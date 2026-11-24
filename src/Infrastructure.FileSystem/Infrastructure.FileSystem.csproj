@@ -11,4 +11,8 @@
     <Using Include="BridgingIT.DevKit.Common" />
     <Using Include="BridgingIT.DevKit.Application.Storage" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Caching\Application.Caching.csproj" />
+    <InternalsVisibleTo Include="BridgingIT.DevKit.Infrastructure.UnitTests" />
+  </ItemGroup>
 </Project>

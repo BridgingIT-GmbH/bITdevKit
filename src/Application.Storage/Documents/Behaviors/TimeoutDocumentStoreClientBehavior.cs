@@ -21,6 +21,10 @@ public class TimeoutDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory,
     public override Task<Result<DocumentPage<T>>> FindPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.FindPageAsync(query, ct), cancellationToken);
     /// <inheritdoc />
     public override Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.ListPageAsync(query, ct), cancellationToken);
+
+    /// <inheritdoc />
+    public override Task<Result<DocumentInfoPage>> ListPageAsync(DocumentFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.ListPageAsync(scope, filter, continuationToken, ct), cancellationToken);
     /// <inheritdoc />
     public override Task<Result<long>> CountAsync(DocumentCountQuery query, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.CountAsync(query, ct), cancellationToken);
     /// <inheritdoc />
@@ -29,6 +33,9 @@ public class TimeoutDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory,
     public override Task<Result<DocumentInfo>> UpsertAsync(DocumentKey key, T value, DocumentWriteOptions options = null, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.UpsertAsync(key, value, options, ct), cancellationToken);
     /// <inheritdoc />
     public override Task<Result<DocumentBatchResult<DocumentInfo>>> UpsertManyAsync(IReadOnlyCollection<DocumentWrite<T>> writes, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.UpsertManyAsync(writes, ct), cancellationToken);
+    /// <inheritdoc />
+    public override Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.UpdateDimensionsAsync(update, ct), cancellationToken);
+
     /// <inheritdoc />
     public override Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default) => this.ExecuteAsync(ct => this.Inner.UpdatePropertiesAsync(update, ct), cancellationToken);
     /// <inheritdoc />

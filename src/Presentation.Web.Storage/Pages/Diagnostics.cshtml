@@ -1,17 +1,28 @@
 @using RazorSlices
+@using Microsoft.AspNetCore.Http
 @inherits RazorSlice<string>
 
 @{
-    var targetLabel = Model.Split('/').Last() switch
+    var feature = Model.Split('/').Last();
+    var targetLabel = feature switch
     {
         "blobs" => "Store",
         "documents" => "Type",
         _ => "Provider"
     };
     var targetName = targetLabel.ToLowerInvariant();
+    string[] explorerKeys = feature switch
+    {
+        "blobs" => ["store", "container", "prefix", "allowFullScan", "take", "dimensionFilter", "dashboardView"],
+        "documents" => ["clientId", "partitionKey", "rowKey", "rowKeyMode", "pageSize", "dimensionFilter", "dashboardView"],
+        _ => []
+    };
+    var explorerQuery = QueryString.Create(HttpContext.Request.Query
+        .Where(pair => explorerKeys.Contains(pair.Key, StringComparer.OrdinalIgnoreCase))
+        .SelectMany(pair => pair.Value.Select(value => new KeyValuePair<string, string>(pair.Key, value))));
 }
 
-<div id="storage-diagnostics" data-url="@(Model + "/diagnostics/data")" data-load-url="@(Model + "/diagnostics/load")" data-feature="@Model.Split('/').Last()">
+<div id="storage-diagnostics" data-url="@(Model + "/diagnostics/data")" data-load-url="@(Model + "/diagnostics/load")" data-feature="@feature">
     <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 py-2 mb-2 border-bottom">
         <div class="d-flex align-items-center gap-2">
             <span id="storage-metrics-status" class="small text-muted" role="status">Loading metrics</span>
@@ -26,8 +37,8 @@
         </div>
     </div>
     <nav class="nav nav-pills mb-2" aria-label="Storage views" data-dashboard-view="diagnostics">
-        <a class="nav-link" href="@Model">Explorer</a>
-        <a class="nav-link active" aria-current="page" href="@(Model + "/diagnostics")">Diagnostics</a>
+        <a class="nav-link" href="@(Model + explorerQuery)">Explorer</a>
+        <a class="nav-link active" aria-current="page" href="@(Model + "/diagnostics" + explorerQuery)">Diagnostics</a>
     </nav>
     <details id="storage-load-panel" class="card mb-2">
         <summary class="card-header">

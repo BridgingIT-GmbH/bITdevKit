@@ -15,6 +15,43 @@ using Microsoft.Extensions.Time.Testing;
 [UnitTest("Application")]
 public class DocumentStorageBuilderContextTests
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PagedQuery_WithDimensions_PreservesFilterAtRegisteredClientBoundary(bool keysOnly)
+    {
+        // Arrange
+        var provider = Substitute.For<IDocumentStoreProvider>();
+        provider.Capabilities.Returns(new DocumentStoreProviderCapabilities
+        {
+            FullScan = DocumentQuerySupport.SupportedServerSide,
+            KeyListing = DocumentQuerySupport.SupportedServerSide,
+            SupportsContinuationPaging = true,
+            SupportsKeyOnlyProjection = true,
+            Dimensions = new() { SupportsDimensions = true, SupportsQueries = true }
+        });
+        DocumentQuery observed = null;
+        provider.FindPageAsync(Arg.Any<DocumentTypeIdentity>(), Arg.Any<DocumentQuery>(), Arg.Any<DateTimeOffset>(), Arg.Any<CancellationToken>())
+            .Returns(call => { observed = call.Arg<DocumentQuery>(); return Result<StoredDocumentPage>.Success(new()); });
+        provider.ListPageAsync(Arg.Any<DocumentTypeIdentity>(), Arg.Any<DocumentQuery>(), Arg.Any<DateTimeOffset>(), Arg.Any<CancellationToken>())
+            .Returns(call => { observed = call.Arg<DocumentQuery>(); return Result<DocumentKeyPage>.Success(new()); });
+        var services = new ServiceCollection();
+        services.AddDocumentStorage().WithProvider<DocumentStorageBuilderPersonStub>(_ => provider,
+            documentStoreOptions: new() { AllowFullScans = true });
+        using var serviceProvider = services.BuildServiceProvider();
+        var sut = serviceProvider.GetRequiredService<IDocumentStoreClient<DocumentStorageBuilderPersonStub>>();
+        var filter = DocumentDimensionFilter.Where(DocumentDimensionPredicate.Create("Year", DocumentDimensionOperator.Equal, 2026).Value);
+        var query = new DocumentQuery { AllowFullScan = true, DimensionFilter = filter, Take = 1 };
+
+        // Act
+        if (keysOnly) (await sut.ListPageAsync(query)).IsSuccess.ShouldBeTrue();
+        else (await sut.FindPageAsync(query)).IsSuccess.ShouldBeTrue();
+
+        // Assert
+        observed.ShouldNotBeNull();
+        observed.DimensionFilter.ShouldBeSameAs(filter);
+    }
+
     [Fact]
     public async Task WithPermalinks_ClientBoundaryExposesBehaviorForLinkCreation()
     {

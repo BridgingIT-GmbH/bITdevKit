@@ -23,16 +23,25 @@ using Microsoft.Extensions.Caching.Distributed;
 public class DocumentStoreCache : IDistributedCache
 {
     private readonly IDocumentStoreClient<CacheDocument> client;
+    private readonly TimeProvider clock;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DocumentStoreCache" /> class.
     /// </summary>
     /// <param name="client">The document-store client that persists <see cref="CacheDocument" /> records.</param>
-    public DocumentStoreCache(IDocumentStoreClient<CacheDocument> client)
+    public DocumentStoreCache(IDocumentStoreClient<CacheDocument> client) : this(client, TimeProvider.System)
+    {
+    }
+
+    /// <summary>Creates the document-cache facade with an explicit expiration clock.</summary>
+    /// <param name="client">The document client storing cache payloads and deadlines.</param>
+    /// <param name="timeProvider">The clock shared with the document client.</param>
+    public DocumentStoreCache(IDocumentStoreClient<CacheDocument> client, TimeProvider timeProvider)
     {
         EnsureArg.IsNotNull(client, nameof(client));
 
         this.client = client;
+        this.clock = timeProvider ?? TimeProvider.System;
     }
 
     /// <inheritdoc />
@@ -44,41 +53,10 @@ public class DocumentStoreCache : IDistributedCache
     /// <inheritdoc />
     public async Task<byte[]> GetAsync(string key, CancellationToken token = default)
     {
-        EnsureArg.IsNotNullOrEmpty(key, nameof(key));
-        token.ThrowIfCancellationRequested();
-
-        var result = await this.client.GetAsync(new DocumentKey("storage-cache", key), token);
-        var document = result.IsSuccess ? result.Value.Value : null;
-
-        if (document != null)
-        {
-            if (!document.AbsoluteExpiration.HasValue)
-            {
-                return document.Value;
-            }
-
-            if (document.AbsoluteExpiration.HasValue &&
-                !document.SlidingExpiration.HasValue &&
-                DateTimeOffset.UtcNow <= document.AbsoluteExpiration.Value)
-            {
-                return document.Value;
-            }
-
-            if (document.AbsoluteExpiration.HasValue &&
-                document.SlidingExpiration.HasValue &&
-                document.SlidingExpiration.HasValue &&
-                DateTimeOffset.UtcNow <=
-                document.AbsoluteExpiration.Value.AddMilliseconds(document.SlidingExpiration.Value.TotalMilliseconds))
-            {
-                await this.RefreshDocumentAsync(key, document, token);
-
-                return document.Value;
-            }
-
-            await this.RemoveAsync(key, token);
-        }
-
-        return null;
+        var entry = await this.ReadEntryAsync(key, token).ConfigureAwait(false);
+        if (entry is null) return null;
+        await this.RefreshEntryAsync(entry, token).ConfigureAwait(false);
+        return entry.Value.Value;
     }
 
     /// <inheritdoc />
@@ -90,13 +68,8 @@ public class DocumentStoreCache : IDistributedCache
     /// <inheritdoc />
     public async Task RefreshAsync(string key, CancellationToken token = default)
     {
-        EnsureArg.IsNotNullOrEmpty(key, nameof(key));
-        token.ThrowIfCancellationRequested();
-
-        var result = await this.client.GetAsync(new DocumentKey("storage-cache", key), token);
-        var document = result.IsSuccess ? result.Value.Value : null;
-
-        await this.RefreshDocumentAsync(key, document, token);
+        var entry = await this.ReadEntryAsync(key, token).ConfigureAwait(false);
+        if (entry is not null) await this.RefreshEntryAsync(entry, token).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -124,40 +97,58 @@ public class DocumentStoreCache : IDistributedCache
         DistributedCacheEntryOptions options,
         CancellationToken token = default)
     {
-        var document = new CacheDocument
+        EnsureArg.IsNotNullOrEmpty(key, nameof(key));
+        ArgumentNullException.ThrowIfNull(value);
+        ArgumentNullException.ThrowIfNull(options);
+        token.ThrowIfCancellationRequested();
+        var now = this.clock.GetUtcNow();
+        var absolute = options.AbsoluteExpiration;
+        if (options.AbsoluteExpirationRelativeToNow is TimeSpan relative)
         {
-            Value = value,
-            AbsoluteExpiration = options.AbsoluteExpiration,
-            SlidingExpiration = options.SlidingExpiration
-        };
+            var relativeAt = now + relative;
+            absolute = absolute.HasValue && absolute.Value < relativeAt ? absolute : relativeAt;
+        }
 
-        await this.client.UpsertAsync(new DocumentKey("storage-cache", key), document, cancellationToken: token);
+        var due = absolute;
+        if (options.SlidingExpiration is TimeSpan sliding)
+        {
+            var slidingAt = now + sliding;
+            due = due.HasValue && due.Value < slidingAt ? due : slidingAt;
+        }
+
+        var result = await this.client.UpsertAsync(new("storage-cache", key), new CacheDocument
+        {
+            Value = value.ToArray(), AbsoluteExpiration = absolute, SlidingExpiration = options.SlidingExpiration
+        }, new DocumentWriteOptions { Expiration = due.HasValue ? ExpirationChange.At(due.Value) : ExpirationChange.Clear }, token).ConfigureAwait(false);
+        if (result.IsFailure) throw new IOException("The document cache write failed.");
     }
 
-    private async Task RefreshDocumentAsync(string key, CacheDocument document, CancellationToken token = default)
+    private async Task<DocumentEntry<CacheDocument>> ReadEntryAsync(string key, CancellationToken token)
     {
-        if (document is null)
+        EnsureArg.IsNotNullOrEmpty(key, nameof(key));
+        token.ThrowIfCancellationRequested();
+        var result = await this.client.GetAsync(new("storage-cache", key), token).ConfigureAwait(false);
+        if (result.IsFailure)
         {
-            return;
+            if (result.Errors.OfType<DocumentStoreNotFoundError>().Any()) return null;
+            throw new IOException("The document cache read failed.");
         }
 
-        if (document.AbsoluteExpiration.HasValue &&
-            document.SlidingExpiration.HasValue &&
-            document.SlidingExpiration.HasValue &&
-            DateTimeOffset.UtcNow <=
-            document.AbsoluteExpiration.Value.AddMilliseconds(document.SlidingExpiration.Value.TotalMilliseconds))
-        {
-            // refresh sliding expiration
-            await this.SetAsync(key,
-                document.Value,
-                new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.UtcNow.Add(document.SlidingExpiration.Value),
-                    SlidingExpiration = document.SlidingExpiration.Value
-                },
-                token);
-        }
+        return result.Value.Value.AbsoluteExpiration <= this.clock.GetUtcNow() ? null : result.Value;
     }
+
+    private async Task RefreshEntryAsync(DocumentEntry<CacheDocument> entry, CancellationToken token)
+    {
+        if (entry.Value.SlidingExpiration is not TimeSpan sliding) return;
+        var due = this.clock.GetUtcNow() + sliding;
+        if (entry.Value.AbsoluteExpiration is DateTimeOffset cap && cap < due) due = cap;
+        var result = await this.client.UpdatePropertiesAsync(new(entry.Key)
+        {
+            IfMatchETag = entry.ETag, Expiration = ExpirationChange.At(due)
+        }, token).ConfigureAwait(false);
+        if (result.IsFailure && !result.Errors.Any(error => error is DocumentStoreConflictError or DocumentStoreNotFoundError)) throw new IOException("The document cache refresh failed.");
+    }
+
 }
 
 /// <summary>

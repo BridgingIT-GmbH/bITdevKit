@@ -131,6 +131,7 @@ public static class BlobEnumerationExtensions
             Container = query.Container,
             Prefix = query.Prefix,
             Take = query.Take,
+            DimensionFilter = query.DimensionFilter,
             AllowFullScan = query.AllowFullScan,
             ContinuationToken = continuationToken
         };

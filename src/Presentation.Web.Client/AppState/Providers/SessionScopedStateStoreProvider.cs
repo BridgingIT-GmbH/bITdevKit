@@ -1,158 +1,96 @@
-﻿namespace BridgingIT.DevKit.Presentation.Web.Client;
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+namespace BridgingIT.DevKit.Presentation.Web.Client;
+
+using System.Collections.Concurrent;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using Microsoft.JSInterop;
 
-/// <summary>
-/// A state store provider that persists state in memory for the duration of a user session.
-/// </summary>
-/// <remarks>
-/// Initializes a new instance of the SessionScopedStateStoreProvider.
-/// </remarks>
-/// <param name="debugger">The state debugger to determine if logging is enabled.</param>
-/// <param name="jsRuntime">The JavaScript runtime for logging to the browser console.</param>
-public class SessionScopedStateStoreProvider(AppStateDebugger debugger, IJSRuntime jsRuntime) : IAppStateStoreProvider
+/// <summary>Stores independent serialized preferences only within the resolving runtime scope.</summary>
+/// <example>
+/// <code><![CDATA[
+/// var storage = new SessionScopedStateStoreProvider();
+/// await storage.SaveAsync("catalog-list", "anonymous:preview", new CatalogViewModel { Page = 2 });
+/// var restored = await storage.LoadAsync<CatalogViewModel>("catalog-list", "anonymous:preview");
+/// Debug.Assert(restored.Page == 2);
+/// ]]></code>
+/// </example>
+public class SessionScopedStateStoreProvider : IAppStateStoreProvider
 {
-    private readonly Dictionary<string, object> stateStore = [];
-    private readonly AppStateDebugger debugger = debugger ?? throw new ArgumentNullException(nameof(debugger));
-    private readonly IJSRuntime jsRuntime = jsRuntime ?? throw new ArgumentNullException(nameof(jsRuntime));
+    private readonly ConcurrentDictionary<string, byte[]> values = new(StringComparer.Ordinal);
 
-    /// <summary>
-    /// Asynchronously saves the state in memory, scoped to the session.
-    /// </summary>
-    /// <typeparam name="T">The type of the state object.</typeparam>
-    /// <param name="stateId">A unique identifier for the state.</param>
-    /// <param name="userContextId">A unique identifier for the user context (ignored as session scope handles isolation).</param>
-    /// <param name="state">The state object to save.</param>
-    /// <returns>A completed task representing the save operation.</returns>
-    public async Task SaveStateAsync<T>(string stateId, string userContextId, T state)
+    /// <summary>Creates an in-memory provider without requiring browser services.</summary>
+    /// <example>
+    /// <code><![CDATA[
+    /// var storage = new SessionScopedStateStoreProvider();
+    /// await storage.SaveAsync("catalog-list", "anonymous:preview", new CatalogViewModel());
+    /// ]]></code>
+    /// </example>
+    public SessionScopedStateStoreProvider() { }
+
+    /// <summary>Preserves the historical constructor; diagnostic dependencies remain DI-owned.</summary>
+    /// <param name="debugger">The optional observer.</param>
+    /// <param name="jsRuntime">The optional browser runtime, unused for memory storage.</param>
+    /// <example>
+    /// <code><![CDATA[
+    /// var storage = new SessionScopedStateStoreProvider(debugger, jsRuntime);
+    /// await storage.SaveAsync("catalog-list", "anonymous:preview", new CatalogViewModel());
+    /// ]]></code>
+    /// </example>
+    public SessionScopedStateStoreProvider(AppStateDebugger debugger, IJSRuntime jsRuntime) { }
+
+    /// <inheritdoc/>
+    public Task SaveAsync<T>(string stateId, string userContextId, T state) =>
+        this.SaveAsync(stateId, userContextId, state, null, CancellationToken.None);
+
+    /// <inheritdoc/>
+    public Task SaveAsync<T>(string stateId, string userContextId, T state, CancellationToken cancellationToken) =>
+        this.SaveAsync(stateId, userContextId, state, null, cancellationToken);
+
+    /// <inheritdoc/>
+    public Task SaveAsync<T>(string stateId, string userContextId, T state, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            if (this.debugger.IsEnabled)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.log", $"State saving to session storage for {stateId}", state);
-            }
-
-            var key = $"{stateId}_{userContextId}";
-            this.stateStore[key] = state;
-        }
-        catch (InvalidOperationException)
-        {
-            // ignore for now due to jsruntime not being available
-        }
-        catch (Exception ex)
-        {
-            if (this.debugger.IsEnabled)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to save state to session storage for {stateId}: {ex.Message}");
-            }
-
-            throw;
-        }
+        cancellationToken.ThrowIfCancellationRequested();
+        this.values[AppStateStorageKey.Resolve(stateId, userContextId)] = typeInfo != null
+            ? JsonSerializer.SerializeToUtf8Bytes(state, typeInfo) : JsonSerializer.SerializeToUtf8Bytes(state, (JsonTypeInfo<T>)JsonSerializerOptions.Default.GetTypeInfo(typeof(T)));
+        return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Asynchronously loads the state from memory, scoped to the session.
-    /// </summary>
-    /// <typeparam name="T">The type of the state object.</typeparam>
-    /// <param name="stateId">A unique identifier for the state.</param>
-    /// <param name="userContextId">A unique identifier for the user context (ignored as session scope handles isolation).</param>
-    /// <returns>A task returning the loaded state, or default if not found.</returns>
-    public async Task<T> LoadStateAsync<T>(string stateId, string userContextId)
+    /// <inheritdoc/>
+    public Task<T> LoadAsync<T>(string stateId, string userContextId) =>
+        this.LoadAsync<T>(stateId, userContextId, null, CancellationToken.None);
+
+    /// <inheritdoc/>
+    public Task<T> LoadAsync<T>(string stateId, string userContextId, CancellationToken cancellationToken) =>
+        this.LoadAsync<T>(stateId, userContextId, null, cancellationToken);
+
+    /// <inheritdoc/>
+    public Task<T> LoadAsync<T>(string stateId, string userContextId, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var key = $"{stateId}_{userContextId}";
-            if (this.stateStore.TryGetValue(key, out var state) && state is T typedState)
-            {
-                if (this.debugger.IsEnabled)
-                {
-                    await this.jsRuntime.InvokeVoidAsync("console.log", $"State loaded from session storage for {stateId}", typedState);
-                }
-
-                return typedState;
-            }
-
-            return default;
-        }
-        catch (Exception ex)
-        {
-            if (this.debugger.IsEnabled)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to load state from session storage for {stateId}: {ex.Message}");
-            }
-
-            throw;
-        }
+        cancellationToken.ThrowIfCancellationRequested();
+        return Task.FromResult(this.values.TryGetValue(AppStateStorageKey.Resolve(stateId, userContextId), out var bytes)
+            ? typeInfo != null ? JsonSerializer.Deserialize(bytes, typeInfo) : JsonSerializer.Deserialize(bytes, (JsonTypeInfo<T>)JsonSerializerOptions.Default.GetTypeInfo(typeof(T))) : default);
     }
 
-    /// <summary>
-    /// Asynchronously clears the state from memory for the given state ID.
-    /// </summary>
-    /// <param name="stateId">A unique identifier for the state.</param>
-    /// <param name="userContextId">A unique identifier for the user context (ignored as session scope handles isolation).</param>
-    /// <returns>A task representing the asynchronous clear operation.</returns>
-    public async Task ClearAsync(string stateId, string userContextId)
-    {
-        try
-        {
-            var key = $"{stateId}_{userContextId}";
-            this.stateStore.Remove(key);
-            if (this.debugger.IsEnabled)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.log", $"Cleared state from session storage for {stateId}");
-            }
-        }
-        catch (InvalidOperationException)
-        {
-            // ignore for now due to jsruntime not being available
-        }
-        catch (Exception ex)
-        {
-            if (this.debugger.IsEnabled)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to clear state from session storage for {stateId}: {ex.Message}");
-            }
+    /// <inheritdoc/>
+    public Task ClearAsync(string stateId, string userContextId) => this.ClearAsync(stateId, userContextId, CancellationToken.None);
 
-            throw;
-        }
+    /// <inheritdoc/>
+    public Task ClearAsync(string stateId, string userContextId, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        this.values.TryRemove(AppStateStorageKey.Resolve(stateId, userContextId), out _);
+        return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Asynchronously clears all state data from memory.
-    /// </summary>
-    /// <returns>A task representing the asynchronous clear operation.</returns>
-    public async Task ClearAllAsync()
+    /// <inheritdoc/>
+    public Task ClearAllAsync()
     {
-        try
-        {
-            foreach (var key in this.stateStore.Keys.ToList())
-            {
-                this.stateStore.Remove(key);
-                if (this.debugger.IsEnabled)
-                {
-                    await this.jsRuntime.InvokeVoidAsync("console.log", $"Cleared state from session storage for {key}");
-                }
-            }
-
-            this.stateStore.Clear();
-            if (this.debugger.IsEnabled)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.log", "Cleared all tracked states from session storage");
-            }
-        }
-        catch (InvalidOperationException)
-        {
-            // ignore for now due to jsruntime not being available
-        }
-        catch (Exception ex)
-        {
-            if (this.debugger.IsEnabled)
-            {
-                await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to clear all state from session storage: {ex.Message}");
-            }
-
-            throw;
-        }
+        this.values.Clear();
+        return Task.CompletedTask;
     }
 }

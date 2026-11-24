@@ -8,6 +8,8 @@ namespace BridgingIT.DevKit.Presentation.Web;
 using System.Net;
 using Common;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Represents default action result mapper.
@@ -21,14 +23,9 @@ public class DefaultActionResultMapper : IActionResultMapper
     /// <returns>The result of the operation.</returns>
     public virtual ActionResult Ok(IResult result)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
-            if (result.IsSuccess)
-            {
-                return new OkObjectResult(result);
-            }
-
-            return new ObjectResult(result) { StatusCode = 200 };
+            return new OkObjectResult(result);
         }
 
         return MapError(result);
@@ -43,14 +40,9 @@ public class DefaultActionResultMapper : IActionResultMapper
     /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Ok<TModel>(IResult result, TModel model)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
-            if (result.IsSuccess)
-            {
-                return new OkObjectResult(model);
-            }
-
-            return new ObjectResult(model) { StatusCode = 200 };
+            return new OkObjectResult(model);
         }
 
         return MapError(result);
@@ -66,17 +58,12 @@ public class DefaultActionResultMapper : IActionResultMapper
     public virtual ActionResult<TModel> Ok<TModel>(IResult result, Action<TModel> action)
         where TModel : new()
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
             var model = new TModel();
             action?.Invoke(model);
 
-            if (result.IsSuccess)
-            {
-                return new OkObjectResult(model);
-            }
-
-            return new ObjectResult(model) { StatusCode = 200 };
+            return new OkObjectResult(model);
         }
 
         return MapError(result);
@@ -91,14 +78,9 @@ public class DefaultActionResultMapper : IActionResultMapper
     /// <returns>The result of the operation.</returns>
     public virtual ActionResult<ICollection<TModel>> Ok<TModel>(IResult result, IEnumerable<TModel> models)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
-            if (result.IsSuccess)
-            {
-                return new OkObjectResult(models);
-            }
-
-            return new ObjectResult(models) { StatusCode = 200 };
+            return new OkObjectResult(models);
         }
 
         return MapError(result);
@@ -112,14 +94,9 @@ public class DefaultActionResultMapper : IActionResultMapper
     /// <returns>The result of the operation.</returns>
     public virtual ActionResult<ResultPaged<TModel>> Ok<TModel>(ResultPaged<TModel> result)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
-            if (result.IsSuccess)
-            {
-                return new OkObjectResult(result);
-            }
-
-            return new ObjectResult(result) { StatusCode = 200 };
+            return new OkObjectResult(result);
         }
 
         return MapError(result);
@@ -140,19 +117,14 @@ public class DefaultActionResultMapper : IActionResultMapper
         string routeName = null,
         object routeValues = null)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
-            if (result.IsSuccess)
+            if (!string.IsNullOrWhiteSpace(routeName))
             {
-                if (!string.IsNullOrWhiteSpace(routeName))
-                {
-                    return new CreatedAtRouteResult(routeName, routeValues, model);
-                }
-
-                return new OkObjectResult(model) { StatusCode = 201 };
+                return new CreatedAtRouteResult(routeName, routeValues, model);
             }
 
-            return new ObjectResult(model) { StatusCode = 200 };
+            return new OkObjectResult(model) { StatusCode = 201 };
         }
 
         return MapError(result);
@@ -174,22 +146,17 @@ public class DefaultActionResultMapper : IActionResultMapper
         object routeValues = null)
         where TModel : new()
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
             var model = new TModel();
             action?.Invoke(model);
 
-            if (result.IsSuccess)
+            if (!string.IsNullOrWhiteSpace(routeName))
             {
-                if (!string.IsNullOrWhiteSpace(routeName))
-                {
-                    return new CreatedAtRouteResult(routeName, routeValues, model);
-                }
-
-                return new OkObjectResult(model) { StatusCode = 201 };
+                return new CreatedAtRouteResult(routeName, routeValues, model);
             }
 
-            return new ObjectResult(model) { StatusCode = 200 };
+            return new OkObjectResult(model) { StatusCode = 201 };
         }
 
         return MapError(result);
@@ -212,19 +179,14 @@ public class DefaultActionResultMapper : IActionResultMapper
         string controllerName,
         object routeValues = null)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
-            if (result.IsSuccess)
+            if (!string.IsNullOrWhiteSpace(actionName) && !string.IsNullOrWhiteSpace(controllerName))
             {
-                if (!string.IsNullOrWhiteSpace(actionName) && !string.IsNullOrWhiteSpace(controllerName))
-                {
-                    return new CreatedAtActionResult(actionName, controllerName, routeValues, model);
-                }
-
-                return new OkObjectResult(model) { StatusCode = 201 };
+                return new CreatedAtActionResult(actionName, controllerName, routeValues, model);
             }
 
-            return new ObjectResult(model) { StatusCode = 200 };
+            return new OkObjectResult(model) { StatusCode = 201 };
         }
 
         return MapError(result);
@@ -248,22 +210,17 @@ public class DefaultActionResultMapper : IActionResultMapper
         object routeValues = null)
         where TModel : new()
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
             var model = new TModel();
             action?.Invoke(model);
 
-            if (result.IsSuccess)
+            if (!string.IsNullOrWhiteSpace(actionName) && !string.IsNullOrWhiteSpace(controllerName))
             {
-                if (!string.IsNullOrWhiteSpace(actionName) && !string.IsNullOrWhiteSpace(controllerName))
-                {
-                    return new CreatedAtActionResult(actionName, controllerName, routeValues, model);
-                }
-
-                return new OkObjectResult(model) { StatusCode = 201 };
+                return new CreatedAtActionResult(actionName, controllerName, routeValues, model);
             }
 
-            return new ObjectResult(model) { StatusCode = 200 };
+            return new OkObjectResult(model) { StatusCode = 201 };
         }
 
         return MapError(result);
@@ -284,19 +241,14 @@ public class DefaultActionResultMapper : IActionResultMapper
         string routeName = null,
         object routeValues = null)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
-            if (result.IsSuccess)
+            if (!string.IsNullOrWhiteSpace(routeName))
             {
-                if (!string.IsNullOrWhiteSpace(routeName))
-                {
-                    return new UpdatedAtRouteResult(routeName, routeValues, model) { StatusCode = 200 };
-                }
-
-                return new OkObjectResult(model) { StatusCode = 200 };
+                return new UpdatedAtRouteResult(routeName, routeValues, model) { StatusCode = 200 };
             }
 
-            return new ObjectResult(model) { StatusCode = 200 };
+            return new OkObjectResult(model) { StatusCode = 200 };
         }
 
         return MapError(result);
@@ -318,11 +270,11 @@ public class DefaultActionResultMapper : IActionResultMapper
         object routeValues = null)
         where TModel : new()
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
             var model = new TModel();
 
-            if (result.IsSuccess && action is not null)
+            if (action is not null)
             {
                 action.Invoke(model);
 
@@ -357,22 +309,17 @@ public class DefaultActionResultMapper : IActionResultMapper
         string controllerName,
         object routeValues = null)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
-            if (result.IsSuccess)
+            if (!string.IsNullOrWhiteSpace(actionName) && !string.IsNullOrWhiteSpace(controllerName))
             {
-                if (!string.IsNullOrWhiteSpace(actionName) && !string.IsNullOrWhiteSpace(controllerName))
+                return new UpdatedAtActionResult(actionName, controllerName, routeValues, model)
                 {
-                    return new UpdatedAtActionResult(actionName, controllerName, routeValues, model)
-                    {
-                        StatusCode = 200
-                    };
-                }
-
-                return new OkObjectResult(model) { StatusCode = 200 };
+                    StatusCode = 200
+                };
             }
 
-            return new ObjectResult(model) { StatusCode = 200 };
+            return new OkObjectResult(model) { StatusCode = 200 };
         }
 
         return MapError(result);
@@ -396,11 +343,11 @@ public class DefaultActionResultMapper : IActionResultMapper
         object routeValues = null)
         where TModel : new()
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
             var model = new TModel();
 
-            if (result.IsSuccess && action is not null)
+            if (action is not null)
             {
                 action.Invoke(model);
 
@@ -436,19 +383,14 @@ public class DefaultActionResultMapper : IActionResultMapper
         string routeName = null,
         object routeValues = null)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
-            if (result.IsSuccess)
+            if (!string.IsNullOrWhiteSpace(routeName))
             {
-                if (!string.IsNullOrWhiteSpace(routeName))
-                {
-                    return new AcceptedAtRouteResult(routeName, routeValues, model);
-                }
-
-                return new OkObjectResult(model) { StatusCode = 202 };
+                return new AcceptedAtRouteResult(routeName, routeValues, model);
             }
 
-            return new ObjectResult(model) { StatusCode = 200 };
+            return new OkObjectResult(model) { StatusCode = 202 };
         }
 
         return MapError(result);
@@ -470,22 +412,17 @@ public class DefaultActionResultMapper : IActionResultMapper
         object routeValues = null)
         where TModel : new()
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
             var model = new TModel();
             action?.Invoke(model);
 
-            if (result.IsSuccess)
+            if (!string.IsNullOrWhiteSpace(routeName))
             {
-                if (!string.IsNullOrWhiteSpace(routeName))
-                {
-                    return new AcceptedAtRouteResult(routeName, routeValues, model);
-                }
-
-                return new OkObjectResult(model) { StatusCode = 202 };
+                return new AcceptedAtRouteResult(routeName, routeValues, model);
             }
 
-            return new ObjectResult(model) { StatusCode = 200 };
+            return new OkObjectResult(model) { StatusCode = 202 };
         }
 
         return MapError(result);
@@ -508,19 +445,14 @@ public class DefaultActionResultMapper : IActionResultMapper
         string controllerName,
         object routeValues = null)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
-            if (result.IsSuccess)
+            if (!string.IsNullOrWhiteSpace(actionName) && !string.IsNullOrWhiteSpace(controllerName))
             {
-                if (!string.IsNullOrWhiteSpace(actionName) && !string.IsNullOrWhiteSpace(controllerName))
-                {
-                    return new AcceptedAtActionResult(actionName, controllerName, routeValues, model);
-                }
-
-                return new OkObjectResult(model) { StatusCode = 202 };
+                return new AcceptedAtActionResult(actionName, controllerName, routeValues, model);
             }
 
-            return new ObjectResult(model) { StatusCode = 200 };
+            return new OkObjectResult(model) { StatusCode = 202 };
         }
 
         return MapError(result);
@@ -544,22 +476,17 @@ public class DefaultActionResultMapper : IActionResultMapper
         object routeValues = null)
         where TModel : new()
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
             var model = new TModel();
             action?.Invoke(model);
 
-            if (result.IsSuccess)
+            if (!string.IsNullOrWhiteSpace(actionName) && !string.IsNullOrWhiteSpace(controllerName))
             {
-                if (!string.IsNullOrWhiteSpace(actionName) && !string.IsNullOrWhiteSpace(controllerName))
-                {
-                    return new AcceptedAtActionResult(actionName, controllerName, routeValues, model);
-                }
-
-                return new OkObjectResult(model) { StatusCode = 202 };
+                return new AcceptedAtActionResult(actionName, controllerName, routeValues, model);
             }
 
-            return new ObjectResult(model) { StatusCode = 200 };
+            return new OkObjectResult(model) { StatusCode = 202 };
         }
 
         return MapError(result);
@@ -593,7 +520,7 @@ public class DefaultActionResultMapper : IActionResultMapper
     /// <returns>The result of the operation.</returns>
     public virtual ActionResult NoContent(IResult result)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
             return new NoContentResult();
         }
@@ -609,7 +536,7 @@ public class DefaultActionResultMapper : IActionResultMapper
     /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> NoContent<TModel>(IResult result)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
             return new NoContentResult();
         }
@@ -627,7 +554,7 @@ public class DefaultActionResultMapper : IActionResultMapper
     /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Object<TModel>(IResult result, TModel model, int statusCode)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
             return new ObjectResult(model) { StatusCode = statusCode };
         }
@@ -648,7 +575,7 @@ public class DefaultActionResultMapper : IActionResultMapper
         IEnumerable<TModel> models,
         int statusCode)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
             return new ObjectResult(models) { StatusCode = statusCode };
         }
@@ -665,7 +592,7 @@ public class DefaultActionResultMapper : IActionResultMapper
     /// <returns>The result of the operation.</returns>
     public virtual ActionResult<ResultPaged<TModel>> Object<TModel>(ResultPaged<TModel> result, int statusCode)
     {
-        if (!result.HasError())
+        if (result.IsSuccess)
         {
             return new ObjectResult(result) { StatusCode = statusCode };
         }
@@ -675,63 +602,66 @@ public class DefaultActionResultMapper : IActionResultMapper
 
     private static ActionResult MapError(IResult result)
     {
-        if (result.TryGetErrors<NotFoundError>(out _))
+        var errors = result.Errors ?? [];
+
+        var status = errors switch
         {
-            return new NotFoundResult();
+            _ when errors.Has<ForbiddenError>() => HttpStatusCode.Forbidden,
+            _ when errors.Has<UnauthorizedError>() => HttpStatusCode.Unauthorized,
+            _ when errors.Has<NotFoundError>() || errors.Has<EntityNotFoundError>() => HttpStatusCode.NotFound,
+            _ => (HttpStatusCode?)null
+        };
+        if (status is { } knownStatus)
+        {
+            return ToProblemResult(ResultHttpProblemDetails.Create((int)knownStatus, result: result));
         }
 
-        if (result.TryGetErrors<EntityNotFoundError>(out _))
+        var validationDetails = errors.SelectMany<IResultError, string>(error => error switch
         {
-            return new NotFoundResult();
+            ValidationError validation => [$"[{validation.GetType().Name}] {validation.Message}"],
+            FluentValidationError { Errors.Count: > 0 } fluent => fluent.Errors.Select(
+                failure => $"[FluentValidationError] {failure.PropertyName}: {failure.ErrorMessage}"),
+            FluentValidationError fluent => [$"[FluentValidationError] {fluent.Message}"],
+            _ => []
+        }).ToArray();
+        var isValidationFailure = validationDetails.Length > 0;
+        var problem = ResultHttpProblemDetails.Create(
+            (int)(isValidationFailure ? HttpStatusCode.BadRequest : HttpStatusCode.InternalServerError),
+            isValidationFailure ? "Bad Request" : "Unhandled Result Error",
+            result);
+        if (problem is not ResultHttpProblemDetails)
+        {
+            problem.Detail = string.Join("; ", isValidationFailure
+                ? validationDetails
+                : errors.Select(error => $"[{error.GetType().Name}] {error.Message}"));
+            problem.Extensions["IsSuccess"] = result.IsSuccess;
+            problem.Extensions["Messages"] = string.Join(Environment.NewLine, result.Messages.SafeNull());
+            problem.Extensions["Errors"] = string.Join(Environment.NewLine, errors.Select(error => error.Message));
+        }
+        else if (isValidationFailure)
+        {
+            problem.Detail = string.Join("; ", validationDetails);
         }
 
-        if (result.TryGetErrors<ValidationError>(out var validationErrors))
+        return ToProblemResult(problem);
+    }
+
+    private static ObjectResult ToProblemResult(ProblemDetails problem) =>
+        new ResultProblemObjectResult(problem) { StatusCode = problem.Status };
+
+    private sealed class ResultProblemObjectResult(ProblemDetails problem) : ObjectResult(problem)
+    {
+        public override Task ExecuteResultAsync(ActionContext context)
         {
-            // throw new FluentValidationException(errors) > handled by ProblemsDetails middleware
-            return new ObjectResult(new ProblemDetails
+            if (this.Value is not ProblemDetails details)
             {
-                Title = "Bad Request", // A validation error has occurred while executing the request
-                Status = (int)HttpStatusCode.BadRequest,
-                Detail = string.Join("; ", validationErrors.Select(e => $"[{e.GetType().Name}] {e.Message}")),
-                Extensions =
-                {
-                    ["IsSuccess"] = result.IsSuccess,
-                    ["Messages"] = string.Join(Environment.NewLine, result.Messages),
-                    ["Errors"] = string.Join(Environment.NewLine, result.Errors.SelectMany(e => e.Message)),
-                },
-                Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
-            })
-            { StatusCode = 400 };
-        }
-        else if (result.TryGetErrors<FluentValidationError>(out _))
-        {
-            // TODO: not yet handled
-            // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware
-        }
-        else if (result.TryGetErrors<RuleError>(out _))
-        {
-            // TODO: not yet handled
-            // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware
-        }
-        else if (result.TryGetErrors<DomainPolicyError>(out _))
-        {
-            // TODO: not yet handled
-            // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware
-        }
+                return base.ExecuteResultAsync(context);
+            }
 
-        return new ObjectResult(new ProblemDetails
-        {
-            Title = "Unhandled Result Error",
-            Status = (int)HttpStatusCode.InternalServerError,
-            Detail = string.Join("; ", result.Errors.Select(e => $"[{e.GetType().Name}] {e.Message}")),
-            Extensions =
-            {
-                ["IsSuccess"] = result.IsSuccess,
-                ["Messages"] = string.Join(Environment.NewLine, result.Messages),
-                ["Errors"] = string.Join(Environment.NewLine, result.Errors.SelectMany(e => e.Message))
-            },
-            Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500"
-        })
-        { StatusCode = 500 }; // unhandled
+            var response = (ResultProblemObjectResult)this.MemberwiseClone();
+            response.Value = ResultHttpProblemDetails.PrepareResponse(details, context.HttpContext);
+            return context.HttpContext.RequestServices.GetRequiredService<IActionResultExecutor<ObjectResult>>()
+                .ExecuteAsync(context, response);
+        }
     }
 }

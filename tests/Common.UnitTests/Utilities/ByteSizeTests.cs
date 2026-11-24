@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
+using System.Globalization;
+
 [UnitTest("Common")]
 public class ByteSizeTests
 {
@@ -114,5 +116,54 @@ public class ByteSizeTests
 
         // Act & Assert
         Should.Throw<OverflowException>(() => ByteSize.Megabytes(value));
+    }
+
+    /// <summary>Signed sizes select binary units and round midpoint fractions away from zero without padding.</summary>
+    /// <param name="bytes">The signed byte count to display.</param>
+    /// <param name="expected">The expected label, including its binary unit.</param>
+    [Theory]
+    [InlineData(0L, "0 B")]
+    [InlineData(1023L, "1023 B")]
+    [InlineData(1024L, "1 KiB")]
+    [InlineData(1152L, "1.13 KiB")]
+    [InlineData(1536L, "1.5 KiB")]
+    [InlineData(904512L, "883.31 KiB")]
+    [InlineData(1048576L, "1 MiB")]
+    [InlineData(1073741824L, "1 GiB")]
+    [InlineData(1099511627776L, "1 TiB")]
+    [InlineData(1125899906842624L, "1 PiB")]
+    [InlineData(1152921504606846976L, "1 EiB")]
+    [InlineData(long.MaxValue, "8 EiB")]
+    [InlineData(-1L, "-1 B")]
+    [InlineData(-1024L, "-1 KiB")]
+    [InlineData(-1152L, "-1.13 KiB")]
+    [InlineData(long.MinValue, "-8 EiB")]
+    public void FormatBinary_WithSignedCounts_FormatsBinaryUnits(long bytes, string expected)
+    {
+        var result = ByteSize.FormatBinary(bytes);
+
+        result.ShouldBe(expected);
+    }
+
+    /// <summary>Display labels keep decimal points and omit digit grouping independently of the calling culture.</summary>
+    /// <param name="cultureName">The culture used by the calling thread.</param>
+    [Theory]
+    [InlineData("de-DE")]
+    [InlineData("nl-NL")]
+    [InlineData("en-US")]
+    public void FormatBinary_WithDifferentCultures_ReturnsInvariantLabels(string cultureName)
+    {
+        var previous = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(cultureName);
+
+            ByteSize.FormatBinary(904512).ShouldBe("883.31 KiB");
+            ByteSize.FormatBinary(1023).ShouldBe("1023 B");
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = previous;
+        }
     }
 }

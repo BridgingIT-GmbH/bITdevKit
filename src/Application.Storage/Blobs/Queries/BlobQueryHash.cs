@@ -27,9 +27,10 @@ public static class BlobQueryHash
     /// var hash = BlobQueryHash.Compute(query);
     /// </code>
     /// </example>
-    public static string Compute(BlobQuery query) =>
-        HashHelper.ComputeSha256(string.Join("|",
-            query?.Container ?? string.Empty,
-            query?.Prefix ?? string.Empty,
-            query?.AllowFullScan.ToString(CultureInfo.InvariantCulture) ?? bool.FalseString));
+    public static string Compute(BlobQuery query)
+    {
+        var keyHash = HashHelper.ComputeSha256(string.Join("|", query?.Container ?? string.Empty,
+            query?.Prefix ?? string.Empty, query?.AllowFullScan.ToString(CultureInfo.InvariantCulture) ?? bool.FalseString));
+        return query?.DimensionFilter is null ? keyHash : HashHelper.ComputeSha256(System.Text.Json.JsonSerializer.Serialize(new[] { keyHash, query.DimensionFilter.ToCanonicalString() }));
+    }
 }

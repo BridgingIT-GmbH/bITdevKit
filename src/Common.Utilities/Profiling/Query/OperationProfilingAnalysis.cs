@@ -88,8 +88,8 @@ public static class OperationProfilingAnalysis
         {
             Count = ticks.LongLength, MinimumMilliseconds = Milliseconds(ticks[0]), MaximumMilliseconds = Milliseconds(ticks[^1]),
             MeanMilliseconds = Milliseconds(total / ticks.Length), P50Milliseconds = Milliseconds(median),
-            P95Milliseconds = Milliseconds(ticks[(int)Math.Ceiling(ticks.Length * .95) - 1]),
-            P99Milliseconds = Milliseconds(ticks[(int)Math.Ceiling(ticks.Length * .99) - 1]),
+            P95Milliseconds = Milliseconds(SampleStatistics.NearestRank(ticks, .95)),
+            P99Milliseconds = Milliseconds(SampleStatistics.NearestRank(ticks, .99)),
         };
     }
 

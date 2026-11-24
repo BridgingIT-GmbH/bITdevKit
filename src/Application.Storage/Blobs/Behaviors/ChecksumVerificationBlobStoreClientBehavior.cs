@@ -52,6 +52,9 @@ public sealed class ChecksumVerificationBlobStoreClientBehavior : IBlobStoreClie
     public string StoreName { get; }
 
     /// <inheritdoc />
+    public BlobDimensionCapabilities DimensionCapabilities => this.inner.DimensionCapabilities;
+
+    /// <inheritdoc />
     public Task<Result<BlobInfo>> UploadAsync(BlobUpload upload, CancellationToken cancellationToken = default) =>
         this.inner.UploadAsync(upload, cancellationToken);
 
@@ -125,6 +128,10 @@ public sealed class ChecksumVerificationBlobStoreClientBehavior : IBlobStoreClie
         this.inner.GetPropertiesAsync(key, cancellationToken);
 
     /// <inheritdoc />
+    public Task<Result<BlobInfo>> UpdateDimensionsAsync(BlobDimensionsUpdate update, CancellationToken cancellationToken = default) =>
+        this.inner.UpdateDimensionsAsync(update, cancellationToken);
+
+    /// <inheritdoc />
     public Task<Result<BlobInfo>> UpdatePropertiesAsync(BlobPropertiesUpdate update, CancellationToken cancellationToken = default) =>
         this.inner.UpdatePropertiesAsync(update, cancellationToken);
 
@@ -135,6 +142,10 @@ public sealed class ChecksumVerificationBlobStoreClientBehavior : IBlobStoreClie
     /// <inheritdoc />
     public Task<Result<BlobPage>> ListPageAsync(BlobQuery query, CancellationToken cancellationToken = default) =>
         this.inner.ListPageAsync(query, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Result<BlobPage>> ListPageAsync(BlobFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) => this.inner.ListPageAsync(scope, filter, continuationToken, cancellationToken);
 
     /// <inheritdoc />
     public Task<Result> DeleteAsync(

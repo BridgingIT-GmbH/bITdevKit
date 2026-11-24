@@ -50,6 +50,9 @@ public readonly record struct DocumentStoreServiceKey(Type DocumentType, string 
 /// <example><code>var etag = info.ETag;</code></example>
 public record DocumentInfo
 {
+    /// <summary>Gets independently supplied or persisted Dimensions.</summary>
+    public DocumentDimensions Dimensions { get; init; } = DocumentDimensions.Empty;
+
     /// <summary>Gets the exact partition and row key identifying the document.</summary>
     /// <example><code>var partition = info.Key.PartitionKey;</code></example>
     public required DocumentKey Key { get; init; }
@@ -98,12 +101,16 @@ public sealed record DocumentEntry<T> : DocumentInfo where T : class
 
 /// <summary>Configures concurrency, integrity, properties, and expiration for one document write.</summary>
 /// <remarks>
+/// The ETag covers content, properties, and expiration; either kind of mutation invalidates the prior token.
 /// By default an existing record is replaced while its expiration and properties are preserved. Create-only and ETag
 /// conditions are mutually exclusive validation concerns enforced before provider mutation.
 /// </remarks>
 /// <example><code>var options = new DocumentWriteOptions { CreateOnly = true };</code></example>
 public sealed record DocumentWriteOptions
 {
+    /// <summary>Gets independently supplied or persisted Dimensions.</summary>
+    public DocumentDimensions Dimensions { get; init; }
+
     /// <summary>Gets the required current ETag for atomic conditional replacement, or null for an unconditional write.</summary>
     /// <example><code>var options = new DocumentWriteOptions { IfMatchETag = current.ETag };</code></example>
     public string IfMatchETag { get; init; }
@@ -120,7 +127,7 @@ public sealed record DocumentWriteOptions
     /// <example><code>var options = new DocumentWriteOptions { Expiration = ExpirationChange.After(TimeSpan.FromHours(1)) };</code></example>
     public ExpirationChange Expiration { get; init; } = ExpirationChange.Preserve;
 
-    /// <summary>Gets scalar application properties that replace the current bag; null preserves current properties.</summary>
+    /// <summary>Gets scalar application properties that replace the current bag; null preserves current properties and an empty bag clears them.</summary>
     /// <example><code>var options = new DocumentWriteOptions { Properties = properties };</code></example>
     public PropertyBag Properties { get; init; }
 }
@@ -153,7 +160,7 @@ public sealed record DocumentDelete(DocumentKey Key, DocumentDeleteOptions Optio
 /// <example><code>var update = new DocumentPropertiesUpdate(key) { Expiration = ExpirationChange.Clear };</code></example>
 public sealed record DocumentPropertiesUpdate(DocumentKey Key)
 {
-    /// <summary>Gets scalar replacement properties; null preserves the current property bag.</summary>
+    /// <summary>Gets scalar replacement properties; null preserves the current property bag and an empty bag clears it.</summary>
     /// <example><code>var update = new DocumentPropertiesUpdate(key) { Properties = properties };</code></example>
     public PropertyBag Properties { get; init; }
 
@@ -194,6 +201,9 @@ public sealed record DocumentBatchResult<T>
 /// <example><code>var bytes = stored.Content;</code></example>
 public sealed record StoredDocument
 {
+    /// <summary>Gets independently supplied or persisted Dimensions.</summary>
+    public DocumentDimensions Dimensions { get; init; } = DocumentDimensions.Empty;
+
     /// <summary>Gets the exact partition and row key identifying the stored record.</summary>
     /// <example><code>var key = stored.Key;</code></example>
     public required DocumentKey Key { get; init; }
@@ -244,6 +254,9 @@ public sealed record StoredDocument
 /// <example><code>var write = new StoredDocumentWrite { Key = key, Content = bytes };</code></example>
 public sealed record StoredDocumentWrite
 {
+    /// <summary>Gets independently supplied or persisted Dimensions.</summary>
+    public DocumentDimensions Dimensions { get; init; }
+
     /// <summary>Gets the exact partition and row key identifying the target record.</summary>
     /// <example><code>var key = write.Key;</code></example>
     public required DocumentKey Key { get; init; }

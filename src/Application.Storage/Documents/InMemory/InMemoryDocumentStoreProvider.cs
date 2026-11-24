@@ -58,6 +58,8 @@ public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) 
     /// <inheritdoc />
     public Task<Result<StoredDocumentPage>> FindPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Task.FromResult(Result<StoredDocumentPage>.Failure(new DocumentDimensionsNotSupportedError()));
+
         cancellationToken.ThrowIfCancellationRequested();
         lock (this.syncRoot)
         {
@@ -76,6 +78,8 @@ public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) 
     /// <inheritdoc />
     public async Task<Result<DocumentKeyPage>> ListPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Result<DocumentKeyPage>.Failure(new DocumentDimensionsNotSupportedError());
+
         cancellationToken.ThrowIfCancellationRequested();
         lock (this.syncRoot)
         {
@@ -94,6 +98,8 @@ public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) 
     /// <inheritdoc />
     public Task<Result<long>> CountAsync(DocumentTypeIdentity type, DocumentCountQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Task.FromResult(Result<long>.Failure(new DocumentDimensionsNotSupportedError()));
+
         cancellationToken.ThrowIfCancellationRequested();
         lock (this.syncRoot)
         {
@@ -116,6 +122,11 @@ public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) 
     /// <inheritdoc />
     public Task<Result<DocumentInfo>> UpsertAsync(DocumentTypeIdentity type, StoredDocumentWrite write, CancellationToken cancellationToken = default)
     {
+        if ((write?.Dimensions is not null || write?.Options?.Dimensions is not null)) return Task.FromResult(Result<DocumentInfo>.Failure(new DocumentDimensionsNotSupportedError()));
+
+        var condition = DocumentWriteValidator.Validate(write.Options);
+        if (condition.IsFailure) return Task.FromResult(Result<DocumentInfo>.Failure(condition));
+
         cancellationToken.ThrowIfCancellationRequested();
         lock (this.syncRoot)
         {
@@ -143,7 +154,7 @@ public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) 
                 CreatedAt = current?.CreatedAt ?? now,
                 LastModifiedAt = now,
                 ExpiresAt = write.PreserveExpiration ? current?.ExpiresAt : write.ExpiresAt,
-                Properties = write.Properties?.Clone() ?? current?.Properties?.Clone() ?? new PropertyBag(),
+                Properties = DocumentPropertyValues.Clone(write.Properties) ?? DocumentPropertyValues.Clone(current?.Properties) ?? new PropertyBag(),
                 TransformMetadata = write.TransformMetadata?.Clone() ?? new PropertyBag()
             };
             this.documents[storageKey] = stored;
@@ -159,6 +170,9 @@ public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) 
         bool preserveExpiration,
         CancellationToken cancellationToken = default)
     {
+        var condition = DocumentWriteValidator.Validate(update);
+        if (condition.IsFailure) return Task.FromResult(Result<DocumentInfo>.Failure(condition));
+
         cancellationToken.ThrowIfCancellationRequested();
         lock (this.syncRoot)
         {
@@ -178,7 +192,7 @@ public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) 
                 ETag = Guid.NewGuid().ToString("N"),
                 LastModifiedAt = DateTimeOffset.UtcNow,
                 ExpiresAt = preserveExpiration ? current.ExpiresAt : resolvedExpiresAt,
-                Properties = update.Properties?.Clone() ?? current.Properties.Clone()
+                Properties = DocumentPropertyValues.Clone(update.Properties) ?? DocumentPropertyValues.Clone(current.Properties)
             };
             this.documents[storageKey] = updated;
             return Task.FromResult(Result<DocumentInfo>.Success(ToInfo(updated)));
@@ -188,6 +202,9 @@ public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) 
     /// <inheritdoc />
     public Task<Result> DeleteAsync(DocumentTypeIdentity type, DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default)
     {
+        var condition = DocumentWriteValidator.Validate(options);
+        if (condition.IsFailure) return Task.FromResult(condition);
+
         cancellationToken.ThrowIfCancellationRequested();
         lock (this.syncRoot)
         {
@@ -323,7 +340,7 @@ public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) 
     private static StoredDocument Clone(StoredDocument value) => value with
     {
         Content = value.Content.ToArray(),
-        Properties = value.Properties?.Clone() ?? new PropertyBag(),
+        Properties = DocumentPropertyValues.Clone(value.Properties) ?? new PropertyBag(),
         TransformMetadata = value.TransformMetadata?.Clone() ?? new PropertyBag()
     };
     private static DocumentInfo ToInfo(StoredDocument value) => new()
@@ -334,6 +351,6 @@ public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) 
         CreatedAt = value.CreatedAt,
         LastModifiedAt = value.LastModifiedAt,
         ExpiresAt = value.ExpiresAt,
-        Properties = value.Properties?.Clone() ?? new PropertyBag()
+        Properties = DocumentPropertyValues.Clone(value.Properties) ?? new PropertyBag()
     };
 }

@@ -17,17 +17,11 @@ public static class ResultTaskExtensions
     public static async Task<Result<TNew>> MapResult<T, TNew>(this Task<Result<T>> resultTask, IMapper mapper)
         where TNew : class
     {
-        if (mapper is null)
-        {
-            return Result<TNew>.Failure()
-                .WithError(new Error("Mapper cannot be null"));
-        }
-
         try
         {
-            var result = await resultTask;
+            var result = await resultTask.ConfigureAwait(false);
 
-            return result.MapResult<T, TNew>(mapper);
+            return ResultExtensions.MapResult<T, TNew>(result, mapper);
         }
         catch (OperationCanceledException)
         {
@@ -57,31 +51,6 @@ public static class ResultTaskExtensions
     ///     A task that represents the asynchronous operation, containing a new <see cref="Result{TValue}" /> instance with
     ///     the transformed value, original messages, and errors.
     /// </returns>
-    public static async Task<Result<TNew>> MapResultAsync<T, TNew>(this Task<Result<T>> resultTask, IMapper mapper)
-        where TNew : class
-    {
-        if (mapper is null)
-        {
-            return Result<TNew>.Failure()
-                .WithError(new Error("Mapper cannot be null"));
-        }
-
-        try
-        {
-            var result = await resultTask;
-
-            return result.MapResult<T, TNew>(mapper);
-        }
-        catch (OperationCanceledException)
-        {
-            return Result<TNew>.Failure()
-                .WithError(new OperationCancelledError());
-        }
-        catch (Exception ex)
-        {
-            return Result<TNew>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message);
-        }
-    }
+    public static Task<Result<TNew>> MapResultAsync<T, TNew>(this Task<Result<T>> resultTask, IMapper mapper)
+        where TNew : class => MapResult<T, TNew>(resultTask, mapper);
 }

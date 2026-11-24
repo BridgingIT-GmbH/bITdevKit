@@ -20,6 +20,9 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class BlobQuery
 {
+    /// <summary>Gets optional predicates over explicitly indexed Dimensions.</summary>
+    public BlobDimensionFilter DimensionFilter { get; init; }
+
     /// <summary>
     /// Gets the container to list.
     /// </summary>

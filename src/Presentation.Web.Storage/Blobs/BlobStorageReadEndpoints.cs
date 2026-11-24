@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -17,6 +17,7 @@ using HttpResult = Microsoft.AspNetCore.Http.IResult;
 /// <summary>
 /// Exposes read-only REST endpoints for downloading Blob Storage content.
 /// </summary>
+/// <remarks>Enable this group with <c>AddReadEndpoints</c> or <c>AddBlobStorageReadEndpoints</c>. Assembly discovery alone leaves it disabled.</remarks>
 /// <example>
 /// <code>
 /// services.AddBlobStorage()
@@ -24,11 +25,11 @@ using HttpResult = Microsoft.AspNetCore.Http.IResult;
 ///     .AddReadEndpoints(options => options.AllowAnonymous());
 /// </code>
 /// </example>
-public sealed class BlobStorageReadEndpoints(
+public sealed partial class BlobStorageReadEndpoints(
     BlobStorageReadEndpointsOptions options = null) : EndpointsBase
 {
     private const string RouteNamePrefix = "_bdk.Storage.Blobs.Read";
-    private readonly BlobStorageReadEndpointsOptions options = options ?? new BlobStorageReadEndpointsOptions();
+    private readonly BlobStorageReadEndpointsOptions options = options ?? new BlobStorageReadEndpointsOptions { Enabled = false };
 
     /// <summary>
     /// Maps Blob Storage read endpoints into the current endpoint route builder.
@@ -49,8 +50,8 @@ public sealed class BlobStorageReadEndpoints(
         var group = this.MapGroup(app, this.options)
             .DisableAntiforgery();
 
-        group.MapGet("{storeName}/content", (string storeName, [FromQuery] string container, [FromQuery] string name, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
-            this.DownloadAsync(factory, storeName, container, name, cancellationToken))
+        group.MapGet("{storeName}/content", (HttpContext context, string storeName, [FromQuery] string container, [FromQuery] string name, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            this.DownloadAsync(factory, storeName, container, name, context, cancellationToken))
             .Produces((int)HttpStatusCode.OK)
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
@@ -58,6 +59,8 @@ public sealed class BlobStorageReadEndpoints(
             .WithName($"{RouteNamePrefix}.Download")
             .WithSummary("Download blob content")
             .WithDescription("Streams one blob by exact key through the configured Blob Storage client.");
+
+        this.MapDimensions(group);
 
         this.IsRegistered = true;
     }
@@ -67,6 +70,7 @@ public sealed class BlobStorageReadEndpoints(
         string storeName,
         string container,
         string name,
+        HttpContext context,
         CancellationToken cancellationToken)
     {
         if (!TryCreateClient(factory, storeName, out var client, out var failure))
@@ -81,6 +85,7 @@ public sealed class BlobStorageReadEndpoints(
         }
 
         var download = result.Value;
+        HttpETag.Write(context.Response, download.Info?.ETag);
         var contentType = download.Info?.ContentType?.MimeType();
         if (string.IsNullOrWhiteSpace(contentType))
         {
@@ -131,7 +136,8 @@ public sealed class BlobStorageReadEndpoints(
 
         return error switch
         {
-            BlobStoreValidationError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
+            BlobStoreValidationError or BlobDimensionsNotSupportedError or BlobStoreQueryTooBroadError or BlobStorePageSizeExceededError or
+                BlobStoreInvalidContinuationTokenError or BlobStoreQueryNotSupportedError => Results.Problem(message, statusCode: (int)HttpStatusCode.BadRequest),
             BlobStoreTimeoutError => Results.Problem(message, statusCode: (int)HttpStatusCode.RequestTimeout),
             _ => Results.Problem(message, statusCode: (int)HttpStatusCode.InternalServerError)
         };

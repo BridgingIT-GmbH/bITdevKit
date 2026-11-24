@@ -29,6 +29,7 @@ internal sealed class RecordingAzureBlobStoreBackend : AzureBlobStoreProvider
     public int SetPropertiesCalls => this.backend.SetPropertiesCalls;
     public int OpenReadCalls { get => this.backend.OpenReadCalls; set => this.backend.OpenReadCalls = value; }
     public bool LastFailIfExists => this.backend.LastFailIfExists;
+    public string LastUploadIfMatchETag => this.backend.LastUploadIfMatchETag;
     public string LastIfMatchETag => this.backend.LastIfMatchETag;
     public string LastDeleteIfMatchETag => this.backend.LastDeleteIfMatchETag;
     public string LastListPrefix => this.backend.LastListPrefix;
@@ -44,6 +45,7 @@ internal sealed class RecordingAzureBlobStoreBackend : AzureBlobStoreProvider
         public int SetPropertiesCalls { get; private set; }
         public int OpenReadCalls { get; set; }
         public bool LastFailIfExists { get; private set; }
+        public string LastUploadIfMatchETag { get; private set; }
         public string LastIfMatchETag { get; private set; }
         public string LastDeleteIfMatchETag { get; private set; }
         public string LastListPrefix { get; private set; }
@@ -72,6 +74,7 @@ internal sealed class RecordingAzureBlobStoreBackend : AzureBlobStoreProvider
             this.ThrowIfRequested();
             this.UploadCalls++;
             this.LastFailIfExists = request.FailIfExists;
+            this.LastUploadIfMatchETag = request.IfMatchETag;
 
             if (request.FailIfExists && this.entries.ContainsKey(key))
             {
@@ -106,9 +109,22 @@ internal sealed class RecordingAzureBlobStoreBackend : AzureBlobStoreProvider
                 throw new AzureBlobStoreBackendException(new BlobStoreIntegrityError("ExpectedContentHash does not match uploaded content."));
             }
 
+            if (!string.IsNullOrWhiteSpace(request.IfMatchETag) &&
+                (!this.entries.TryGetValue(key, out var current) || current.ETag != request.IfMatchETag))
+            {
+                throw new RequestFailedException(412, "ETag mismatch.");
+            }
+
             var now = DateTimeOffset.UtcNow;
             var metadata = Clone(request.Metadata);
             metadata[request.ContentHashMetadataKey] = contentHash;
+            if (request.PreservePropertiesMetadataKey is not null &&
+                this.entries.TryGetValue(key, out var preservedEntry) &&
+                preservedEntry.Metadata.TryGetValue(request.PreservePropertiesMetadataKey, out var preserved))
+            {
+                metadata[request.PreservePropertiesMetadataKey] = preserved;
+            }
+
             var entry = new Entry
             {
                 Content = target.ToArray(),
@@ -123,7 +139,7 @@ internal sealed class RecordingAzureBlobStoreBackend : AzureBlobStoreProvider
             this.LastMetadata = Clone(entry.Metadata);
             this.LastTags = Clone(entry.Tags);
 
-            return new AzureBlobUploadResult(entry.ETag, contentHash);
+            return new AzureBlobUploadResult(entry.ETag, contentHash, this.ToProperties(key, entry));
         }
 
         public Task<Stream> OpenReadAsync(BlobKey key, CancellationToken cancellationToken)
@@ -159,7 +175,13 @@ internal sealed class RecordingAzureBlobStoreBackend : AzureBlobStoreProvider
             }
 
             entry.ContentType = contentType;
+            var contentHash = entry.Metadata.GetValueOrDefault("bdk_contenthash");
             entry.Metadata = Clone(metadata);
+            if (contentHash is not null)
+            {
+                entry.Metadata["bdk_contenthash"] = contentHash;
+            }
+
             entry.Tags = Clone(tags);
             entry.ETag = CreateETag();
             entry.LastModifiedAt = DateTimeOffset.UtcNow;

@@ -13,7 +13,7 @@ hide:
     <p class="hero-statement">Build modular .NET applications with Domain-Driven Design.</p>
     <p class="hero-lead">Use shared domain types, request handling, messaging, storage, scheduling, and host tooling without rebuilding the same application infrastructure.</p>
     <div class="hero-actions">
-      <a class="cta-button cta-primary" href="getting-started/">Create a project</a>
+      <a class="cta-button cta-primary" href="getting-started/">Get started</a>
       <a class="cta-button cta-secondary" href="docs/">Browse docs</a>
       <a class="cta-button cta-ghost" href="api/">API reference</a>
     </div>
@@ -23,20 +23,15 @@ hide:
   </div>
 </section>
 
-## Start in two commands
+## Build business features with less groundwork
 
-Install the templates, then create a solution with its first module.
+Give your team a head start on the work every application needs. bITdevKit brings domain modeling, request handling, data access, messaging, and background processing together through consistent APIs and conventions.
 
-```powershell
-dotnet new install BridgingIT.DevKit.Templates
-dotnet new bdksolution --SolutionName SolutionName --ModuleName Core --allow-scripts yes -o ./projects/SolutionName
-```
+Choose the capabilities you need today and add more as your application grows. Use the same building blocks in a new solution or an existing application, supported by practical guides, working examples, developer dashboards, and AI agent tools.
 
-The template creates `./projects/SolutionName/SolutionName.slnx` with application, domain, infrastructure, presentation, and test projects.
+Explore the [architecture](architecture.md) and [see how bITdevKit fits your application](why.md).
 
-<p class="section-linkout"><a class="inline-link" href="getting-started/">Continue with the Quickstart</a></p>
-
-## Find the part you need
+## What bITdevKit offers
 
 <div class="capability-grid capability-grid--home">
   <a class="capability-card" href="docs/#model-a-domain">
@@ -45,7 +40,7 @@ The template creates `./projects/SolutionName/SolutionName.slnx` with applicatio
   </a>
   <a class="capability-card" href="docs/#handle-requests-and-workflows">
     <h3><img class="bdk-doc-icon" src="assets/features/requester.svg" width="28" height="28" alt=""> Application flow</h3>
-    <p>Commands, queries, results, requester pipelines, events, and durable orchestrations.</p>
+    <p>Commands, queries, results, requester pipelines, events, caching, and durable orchestrations.</p>
   </a>
   <a class="capability-card" href="docs/#integrate-storage-and-messaging">
     <h3><img class="bdk-doc-icon" src="assets/features/storage.svg" width="28" height="28" alt=""> <img class="bdk-doc-icon" src="assets/features/messaging.svg" width="28" height="28" alt=""> Infrastructure integration</h3>
@@ -71,7 +66,8 @@ The template creates `./projects/SolutionName/SolutionName.slnx` with applicatio
 ## Continue from working code
 
 <nav class="next-step-strip" aria-label="Next steps">
-  <a href="https://github.com/BridgingIT-GmbH/bITdevKit.Examples.GettingStarted">Open GettingStarted</a>
-  <a href="examples/">Explore all examples</a>
-  <a href="why/">See when bITdevKit fits</a>
+  <a href="https://github.com/BridgingIT-GmbH/bITdevKit.Examples.GettingStarted"><small>template-based solution</small>Open GettingStarted</a>
+  <a href="examples/"><small>sample applications</small>Explore all examples</a>
+  <a href="why/"><small>evaluate</small>See when bITdevKit fits</a>
+  <a href="faq/"><small>common questions</small>FAQ</a>
 </nav>

@@ -86,6 +86,10 @@ public static class ResultNonGenericTaskExtensions
             var result = await resultTask;
             return result.Map(value);
         }
+        catch (OperationCanceledException)
+        {
+            return Result<T>.Failure().WithError(new OperationCancelledError());
+        }
         catch (Exception ex)
         {
             return Result<T>.Failure()
@@ -109,16 +113,14 @@ public static class ResultNonGenericTaskExtensions
     /// </example>
     public static async Task<Result<T>> Map<T>(this Task<Result> resultTask, Func<T> mapper)
     {
-        if (mapper is null)
-        {
-            return Result<T>.Failure()
-                .WithError(new Error("Mapper cannot be null"));
-        }
-
         try
         {
             var result = await resultTask;
             return result.Map(mapper);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<T>.Failure().WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
@@ -311,6 +313,10 @@ public static class ResultNonGenericTaskExtensions
         {
             var result = await resultTask;
             return result.AndThen(operation);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure().WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {

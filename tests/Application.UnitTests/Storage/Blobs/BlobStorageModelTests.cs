@@ -145,7 +145,7 @@ public class BlobStorageModelTests
     }
 
     [Fact]
-    public void BlobUpload_WithDefaults_UsesOverwriteAndEmptyProperties()
+    public void BlobUpload_WithDefaults_UsesOverwriteAndPreservesProperties()
     {
         // Arrange
         using var content = new MemoryStream([1, 2, 3]);
@@ -159,8 +159,7 @@ public class BlobStorageModelTests
 
         // Assert
         sut.OverwriteMode.ShouldBe(BlobOverwriteMode.Overwrite);
-        sut.Properties.ShouldNotBeNull();
-        sut.Properties.Count.ShouldBe(0);
+        sut.Properties.ShouldBeNull();
         typeof(IDisposable).IsAssignableFrom(typeof(BlobUpload)).ShouldBeFalse();
         typeof(IAsyncDisposable).IsAssignableFrom(typeof(BlobUpload)).ShouldBeFalse();
         content.CanRead.ShouldBeTrue();

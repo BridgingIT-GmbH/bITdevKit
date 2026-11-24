@@ -231,27 +231,8 @@ public readonly partial struct Result : IResult
     /// <typeparam name="TNew">The value type returned by the operation.</typeparam>
     /// <param name="operation">The operation to execute.</param>
     /// <returns>A successful value result, or a failed result when the operation is <see langword="null"/> or throws.</returns>
-    public static Result<TNew> Bind<TNew>(Func<TNew> operation)
-    {
-        if (operation is null)
-        {
-            return Result<TNew>.Failure()
-                .WithError(new Error("Operation cannot be null"));
-        }
-
-        try
-        {
-            var value = operation();
-
-            return Result<TNew>.Success(value);
-        }
-        catch (Exception ex)
-        {
-            return Result<TNew>.Failure()
-                .WithError(Settings.ExceptionErrorFactory(ex))
-                .WithMessage(ex.Message);
-        }
-    }
+    public static Result<TNew> Bind<TNew>(Func<TNew> operation) =>
+        Result<TNew>.Bind(operation);
 
     /// <summary>
     ///     Creates a Result from an async operation, handling any exceptions that occur.
@@ -302,35 +283,10 @@ public readonly partial struct Result : IResult
     /// <param name="operation">The asynchronous operation to execute.</param>
     /// <param name="cancellationToken">The token passed to the operation.</param>
     /// <returns>A task containing a successful value result, or a failed result for a missing operation, cancellation, or exception.</returns>
-    public static async Task<Result<TNew>> BindAsync<TNew>(
+    public static Task<Result<TNew>> BindAsync<TNew>(
         Func<CancellationToken, Task<TNew>> operation,
-        CancellationToken cancellationToken = default)
-    {
-        if (operation is null)
-        {
-            return Result<TNew>.Failure()
-                .WithError(new Error("Operation cannot be null"));
-        }
-
-        try
-        {
-            var value = await operation(cancellationToken);
-
-            return Result<TNew>.Success(value);
-        }
-        catch (OperationCanceledException)
-        {
-            return Result<TNew>.Failure()
-                .WithError(new OperationCancelledError())
-                .WithMessage("Operation was cancelled");
-        }
-        catch (Exception ex)
-        {
-            return Result<TNew>.Failure()
-                .WithError(Settings.ExceptionErrorFactory(ex))
-                .WithMessage(ex.Message);
-        }
-    }
+        CancellationToken cancellationToken = default) =>
+        Result<TNew>.BindAsync(operation, cancellationToken);
 
     /// <summary>
     /// Creates a new successful Result.
@@ -530,14 +486,7 @@ public readonly partial struct Result : IResult
     /// }
     /// </example>
     public Result WithError(Exception ex)
-    {
-        if (ex is null)
-        {
-            return this;
-        }
-
-        return new Result(false, this.messages, this.errors.Add(new ExceptionError(ex)));
-    }
+        => ex is null ? this : this.WithError(new ExceptionError(ex));
 
     /// <summary>
     /// Adds multiple errors to the Result and marks it as failed.
@@ -551,13 +500,17 @@ public readonly partial struct Result : IResult
     /// </example>
     public Result WithErrors(IEnumerable<IResultError> errors)
     {
-        if (errors?.Any() != true)
-        {
-            return this;
-        }
+        var combined = AppendErrors(this.errors, errors);
 
-        return new Result(false, this.messages, this.errors.AddRange(errors));
+        return combined.Count == this.errors.Count
+            ? this
+            : new Result(false, this.messages, combined);
     }
+
+    internal static ValueList<IResultError> AppendErrors(
+        ValueList<IResultError> existing,
+        IEnumerable<IResultError> errors) =>
+        existing.AddRange(errors?.Where(static error => error is not null));
 
     /// <summary>
     /// Adds an error of the specified type to the Result and marks it as failed.
@@ -576,6 +529,7 @@ public readonly partial struct Result : IResult
     /// <summary>
     /// Checks if the Result contains an error of the specified type.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <example>
     /// var result = Result.Failure()
     ///     .WithError(new ValidationError("Invalid email"));
@@ -585,12 +539,7 @@ public readonly partial struct Result : IResult
     /// }
     /// </example>
     public bool HasError<TError>()
-        where TError : class, IResultError
-    {
-        var errorType = typeof(TError);
-
-        return this.errors.AsEnumerable().Any(e => e.GetType() == errorType);
-    }
+        where TError : class, IResultError => this.GetError<TError>() is not null;
 
     /// <summary>
     /// Checks if the Result contains any errors.
@@ -607,8 +556,9 @@ public readonly partial struct Result : IResult
     /// <summary>
     /// Gets all errors of the specified type from the Result.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <example>
-    /// if (result.HasError{ValidationError}(out var validationErrors))
+    /// if (result.TryGetErrors{ValidationError}(out var validationErrors))
     /// {
     ///     foreach(var error in validationErrors)
     ///     {
@@ -619,9 +569,7 @@ public readonly partial struct Result : IResult
     public bool TryGetErrors<TError>(out IEnumerable<TError> errors)
         where TError : class, IResultError
     {
-        var errorType = typeof(TError);
-        errors = this.errors.AsEnumerable()
-            .Where(e => e.GetType() == errorType).Cast<TError>();
+        errors = this.GetErrors<TError>();
 
         return errors.Any();
     }
@@ -629,6 +577,7 @@ public readonly partial struct Result : IResult
     /// <summary>
     /// Attempts to get an error of the specified type.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <example>
     /// if (result.TryGetError{ValidationError}(out var error))
     /// {
@@ -642,36 +591,27 @@ public readonly partial struct Result : IResult
     public bool TryGetError<TError>(out TError error)
         where TError : class, IResultError
     {
-        error = null;
-        var foundError = this.errors.AsEnumerable().FirstOrDefault(e => e is TError);
-        if (foundError is null)
-        {
-            return false;
-        }
+        error = this.GetError<TError>();
 
-        error = foundError as TError;
-
-        return true;
+        return error is not null;
     }
 
     /// <summary>
     /// Gets an error of the specified type.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <example>
     /// var validationError = result.GetError{ValidationError}();
     /// Console.WriteLine($"Validation error: {error.Message}");
     /// </example>
     public TError GetError<TError>()
-        where TError : class, IResultError
-    {
-        var errorType = typeof(TError);
-
-        return this.errors.AsEnumerable().FirstOrDefault(e => e.GetType() == errorType) as TError;
-    }
+        where TError : class, IResultError =>
+        this.errors.AsEnumerable().FirstOrDefault(static error => error is TError) as TError;
 
     /// <summary>
     /// Gets all errors of the specified type.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <example>
     /// var validationErrors = result.GetErrors{ValidationError}();
     /// foreach(var error in validationErrors)
@@ -680,12 +620,7 @@ public readonly partial struct Result : IResult
     /// }
     /// </example>
     public IEnumerable<TError> GetErrors<TError>()
-        where TError : class, IResultError
-    {
-        var errorType = typeof(TError);
-
-        return this.errors.AsEnumerable().Where(e => e.GetType() == errorType).Cast<TError>();
-    }
+        where TError : class, IResultError => this.errors.AsEnumerable().OfType<TError>();
 
     /// <summary>
     /// Determines the Result based on a success condition.
@@ -1062,9 +997,9 @@ public readonly partial struct Result : IResult
     /// <summary>Converts this result to an empty paged result while preserving its state, messages, and errors.</summary>
     /// <typeparam name="T">The paged item type.</typeparam>
     /// <returns>An empty paged result with the same success state, messages, and errors.</returns>
-    public ResultPaged<T> ToResultPaged<T>() => this.Match(
-            ResultPaged<T>.Success([]).WithMessages(this.Messages).WithErrors(this.Errors),
-            ResultPaged<T>.Failure().WithMessages(this.Messages).WithErrors(this.Errors));
+    /// <remarks>The converted result contributes only its outcome when passed to <see cref="ResultPaged{T}.Merge"/>.</remarks>
+    public ResultPaged<T> ToResultPaged<T>() =>
+        ResultPaged<T>.FromOutcome(this.success, this.messages, this.errors);
 
     /// <summary>
     /// Creates a new generic Result with a value.

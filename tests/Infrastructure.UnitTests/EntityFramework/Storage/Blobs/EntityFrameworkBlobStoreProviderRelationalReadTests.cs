@@ -44,6 +44,21 @@ public sealed class EntityFrameworkBlobStoreProviderRelationalReadTests : IDispo
     }
 
     [Fact]
+    public async Task Properties_WithEveryScalarAndPrivateTransforms_PersistIndependently()
+    {
+        var sut = this.CreateProvider(new());
+        var properties = Application.UnitTests.Storage.StoragePropertySamples.Create();
+        var uploaded = await sut.UploadAsync(new() { Key = Key, Content = new MemoryStream([1]), Properties = properties, TransformMetadata = new() { ["system"] = "value" } });
+        uploaded.IsSuccess.ShouldBeTrue();
+        var read = await sut.GetPropertiesAsync(Key);
+        Application.UnitTests.Storage.StoragePropertySamples.AssertEqual(read.Value.Properties, properties);
+        read.Value.TransformMetadata.Get<string>("system").ShouldBe("value");
+        (await sut.UpdatePropertiesAsync(new() { Key = Key, Properties = new() })).Value.TransformMetadata.Get<string>("system").ShouldBe("value");
+        (await sut.GetPropertiesAsync(Key)).Value.Properties.Count.ShouldBe(0);
+        (await sut.UploadAsync(new() { Key = Key, Content = new MemoryStream([2]) })).Value.TransformMetadata.Count.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task GetPropertiesAsync_AfterDatabaseRoundTrip_PreservesStringOwnershipProperty()
     {
         var sut = this.CreateProvider(new BlobStoreOptions());
@@ -405,7 +420,7 @@ public sealed class EntityFrameworkBlobStoreProviderRelationalReadTests : IDispo
         return keys;
     }
 
-    private static async Task<string> ReadAllAsync(Result<BlobDownload> result)
+    private static async Task<string> ReadAllAsync(Result<StoredBlobDownload> result)
     {
         await using var download = result.Value;
         using var target = new MemoryStream();
@@ -414,7 +429,7 @@ public sealed class EntityFrameworkBlobStoreProviderRelationalReadTests : IDispo
         return Encoding.UTF8.GetString(target.ToArray());
     }
 
-    private static BlobUpload CreateUpload(string content, BlobKey key = null) =>
+    private static StoredBlobUpload CreateUpload(string content, BlobKey key = null) =>
         new()
         {
             Key = key ?? Key,

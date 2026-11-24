@@ -9,17 +9,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="LiteDB"/>
-    <Using Include="EnsureThat"/>
+    <Using Include="LiteDB" />
+    <Using Include="EnsureThat" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiteDB"/>
-    <PackageReference Include="System.Linq.Dynamic.Core"/>
+    <PackageReference Include="LiteDB" />
+    <PackageReference Include="System.Linq.Dynamic.Core" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\Domain.csproj"/>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj" />
+    <ProjectReference Include="..\Application.Entities\Application.Entities.csproj" />
+    <ProjectReference Include="..\Application.Jobs\Application.Jobs.csproj" />
+    <ProjectReference Include="..\Application.Orchestrations\Application.Orchestrations.csproj" />
+    <ProjectReference Include="..\Application.Messaging\Application.Messaging.csproj" />
+    <ProjectReference Include="..\Application.Queueing\Application.Queueing.csproj" />
+    <ProjectReference Include="..\Application.Notifications\Application.Notifications.csproj" />
+    <ProjectReference Include="..\Application.Storage\Application.Storage.csproj" />
+    <ProjectReference Include="..\Application.Auditing\Application.Auditing.csproj" />
+    <ProjectReference Include="..\Application.Caching\Application.Caching.csproj" />
+    <ProjectReference Include="..\Application.Identity\Application.Identity.csproj" />
   </ItemGroup>
 
 </Project>

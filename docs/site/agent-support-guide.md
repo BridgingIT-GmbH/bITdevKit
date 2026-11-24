@@ -2,6 +2,8 @@
 title: AI Agent Support Guide
 ---
 
+<!-- markdownlint-disable-file MD033 -->
+
 <img class="bdk-doc-icon" src="assets/features/mcp.svg" width="32" height="32" alt="" align="right">
 
 # AI Agent Support Guide
@@ -186,6 +188,8 @@ See [MCP profiling tools](reference/features-cli-mcp.md#inspect-operation-and-re
 
 State what the agent must inspect first, what it can change, and when it must wait for approval. Runtime prompts require the application and `bdk mcp` to be running. Documentation, API reference, and guidance prompts work without a running application.
 
+<div class="prompt-list" markdown>
+
 ### Runtime orientation
 
 ```text
@@ -296,6 +300,10 @@ Use bdk_project_summary to orient on this app's modules and MCP capabilities. Th
 Use bdk_api_search for IRepository and Specification. Call bdk_api_get for the exact symbols you plan to use before editing repository code.
 ```
 
+### Build an app with DevKit
+
+Start with a minimal Web API and add capabilities one step at a time. The [planning and apply prompts](getting-started-existing-app.md#hand-to-an-agent) use bdk MCP to consult the relevant guides and APIs.
+
 ### Admin operations
 
 ```text
@@ -303,6 +311,8 @@ Use bdk MCP to inspect retained local test data older than yesterday. Do not pur
 ```
 
 For a destructive action, ask the agent to inspect and propose the operation first. Approve the operation in a second prompt with the explicit confirmation arguments.
+
+</div>
 
 ## Add project-owned tools
 

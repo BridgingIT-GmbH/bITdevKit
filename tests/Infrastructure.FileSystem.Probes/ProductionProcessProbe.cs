@@ -121,18 +121,22 @@ internal static class ProductionProcessProbe
         return new(new() { RootPath = root, AccessKind = FileSystemStorageAccessKind.Smb, LockAcquireTimeout = TimeSpan.Zero });
     }
 
-    private static Process Start(string workspace, string scenario)
+    internal static Process Start(string workspace, string scenario, string runtimeConfig = null)
     {
-        var start = new ProcessStartInfo(Environment.ProcessPath)
+        var start = new ProcessStartInfo("dotnet")
         {
             UseShellExecute = false,
             CreateNoWindow = true
         };
 
-        if (Path.GetFileNameWithoutExtension(Environment.ProcessPath).Equals("dotnet", StringComparison.OrdinalIgnoreCase))
+        if (runtimeConfig is not null)
         {
-            start.ArgumentList.Add(Assembly.GetExecutingAssembly().Location);
+            start.ArgumentList.Add("exec");
+            start.ArgumentList.Add("--runtimeconfig");
+            start.ArgumentList.Add(runtimeConfig);
         }
+
+        start.ArgumentList.Add(Assembly.GetExecutingAssembly().Location);
 
         foreach (var arg in new[]
         {

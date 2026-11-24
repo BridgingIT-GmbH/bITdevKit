@@ -86,6 +86,7 @@ saves retain atomic visibility.
 - **Add `UploadManyAsync` or a background uploader**
   - Rejected because durability, restart behavior, stream ownership, and per-item results need a
     separate API design.
+  - The public client API deferral is later superseded by [ADR-0045](0045-bounded-attempt-all-blob-upload-batches.md), which defines bounded attempt-all coordination. Background and durable upload services remain outside that decision.
 - **Save the entire blob in one EF call**
   - Rejected because memory would scale with blob size.
 - **Retain one save per chunk as the default**

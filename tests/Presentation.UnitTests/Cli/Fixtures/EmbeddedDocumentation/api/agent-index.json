@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "siteUrl": "https://bridgingit-gmbh.github.io/bITdevKit/api/",
+  "source": "docfx-mref",
+  "symbols": [
+    {
+      "uid": "BridgingIT.DevKit.Common.Result.Bind(System.Action)",
+      "name": "Bind(Action)",
+      "fullName": "BridgingIT.DevKit.Common.Result.Bind(System.Action)",
+      "kind": "Method",
+      "namespace": "BridgingIT.DevKit.Common",
+      "assembly": "BridgingIT.DevKit.Common.Results",
+      "summary": "Creates a Result from an operation.",
+      "href": "obj/api/BridgingIT.DevKit.Common.Result.html#Bind",
+      "detail": "agent-symbols/result-page.json",
+      "topics": [
+        "results",
+        "common"
+      ]
+    },
+    {
+      "uid": "Fixture.Result",
+      "name": "Result",
+      "fullName": "Fixture.Result",
+      "kind": "Struct",
+      "namespace": "BridgingIT.DevKit.Common",
+      "assembly": "BridgingIT.DevKit.Common.Results",
+      "summary": "Creates a Result from an operation.",
+      "href": "obj/api/BridgingIT.DevKit.Common.Result.html#Bind",
+      "detail": "agent-symbols/result-single.json",
+      "topics": [
+        "results",
+        "common"
+      ]
+    },
+    {
+      "uid": "Fixture.MissingDetail",
+      "name": "MissingDetail",
+      "fullName": "Fixture.MissingDetail",
+      "kind": "Method",
+      "namespace": "BridgingIT.DevKit.Common",
+      "assembly": "BridgingIT.DevKit.Common.Results",
+      "summary": "Creates a Result from an operation.",
+      "href": "obj/api/BridgingIT.DevKit.Common.Result.html#Bind",
+      "detail": "agent-symbols/missing.json",
+      "topics": [
+        "results",
+        "common"
+      ]
+    },
+    {
+      "uid": "Fixture.AbsentFromPage",
+      "name": "AbsentFromPage",
+      "fullName": "Fixture.AbsentFromPage",
+      "kind": "Method",
+      "namespace": "BridgingIT.DevKit.Common",
+      "assembly": "BridgingIT.DevKit.Common.Results",
+      "summary": "Creates a Result from an operation.",
+      "href": "obj/api/BridgingIT.DevKit.Common.Result.html#Bind",
+      "detail": "agent-symbols/result-page.json",
+      "topics": [
+        "results",
+        "common"
+      ]
+    }
+  ]
+}

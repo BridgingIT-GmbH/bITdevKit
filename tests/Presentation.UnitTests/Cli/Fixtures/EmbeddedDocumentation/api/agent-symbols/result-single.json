@@ -1,0 +1,16 @@
+{
+  "uid": "Fixture.Result",
+  "name": "Result",
+  "fullName": "Fixture.Result",
+  "kind": "Struct",
+  "namespace": "BridgingIT.DevKit.Common",
+  "assembly": "BridgingIT.DevKit.Common.Results",
+  "summary": "Creates a Result from an operation.",
+  "href": "obj/api/BridgingIT.DevKit.Common.Result.html#Bind",
+  "detail": "agent-symbols/result-page.json",
+  "topics": [
+    "results",
+    "common"
+  ],
+  "remarks": "An individual symbol detail."
+}

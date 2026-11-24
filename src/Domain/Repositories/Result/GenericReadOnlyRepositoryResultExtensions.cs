@@ -28,7 +28,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
 
             return Result<bool>.Success(exists);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<bool>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -74,7 +74,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             var exists = await source.FindOneAsync(specifications, null, cancellationToken).AnyContext() is not null;
             return Result<bool>.Success(exists);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<bool>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -98,7 +98,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
 
             return Result<long>.Success(count);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -141,7 +141,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
 
             return Result<long>.Success(count);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -167,7 +167,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
 
             return Result<long>.Success(count);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -196,7 +196,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             var count = await source.CountAsync(specifications, cancellationToken).AnyContext();
             return Result<long>.Success(count);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -224,7 +224,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
 
             return entity is null ? Result<TEntity>.Failure<NotFoundError>() : Result<TEntity>.Success(entity);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -272,7 +272,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
 
             return entity is null ? Result<TEntity>.Failure<NotFoundError>() : Result<TEntity>.Success(entity);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -300,7 +300,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
 
             return entity is null ? Result<TEntity>.Failure<NotFoundError>() : Result<TEntity>.Success(entity);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -330,7 +330,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             var entity = await source.FindOneAsync(specifications, findOptions, cancellationToken).AnyContext();
             return entity is null ? Result<TEntity>.Failure<NotFoundError>() : Result<TEntity>.Success(entity);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -355,7 +355,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             return Result<IEnumerable<TEntity>>.Success(
                 await source.FindAllAsync(options, cancellationToken).AnyContext());
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<IEnumerable<TEntity>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -408,7 +408,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
 
             return Result<IEnumerable<TEntity>>.Success(entities);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<IEnumerable<TEntity>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -437,7 +437,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             return Result<IEnumerable<TEntity>>.Success(
                 await source.FindAllAsync(specification, options, cancellationToken).AnyContext());
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<IEnumerable<TEntity>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -464,7 +464,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             return Result<IEnumerable<TEntity>>.Success(
                 await source.FindAllAsync(specifications, options, cancellationToken).AnyContext());
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<IEnumerable<TEntity>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -490,7 +490,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             return Result<IEnumerable<TId>>.Success(
                 await source.FindAllIdsAsync<TEntity, TId>(options, cancellationToken).AnyContext());
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<IEnumerable<TId>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -539,7 +539,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             return Result<IEnumerable<TId>>.Success(
                 await source.FindAllIdsAsync<TEntity, TId>(specification, options, cancellationToken).AnyContext());
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<IEnumerable<TId>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -567,7 +567,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             return Result<IEnumerable<TId>>.Success(
                 await source.FindAllIdsAsync<TEntity, TId>(specifications, options, cancellationToken).AnyContext());
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<IEnumerable<TId>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -597,20 +597,21 @@ public static class GenericReadOnlyRepositoryResultExtensions
     {
         try
         {
+            var paging = FindOptionsBuilder.NormalizePaging(page, pageSize);
             var count = await source.CountAsync(cancellationToken).AnyContext();
             var entities = await source.FindAllAsync(new FindOptions<TEntity>
             {
                 Order = !ordering.IsNullOrEmpty() ? new OrderOption<TEntity>(ordering) : null,
-                Skip = (page - 1) * pageSize,
-                Take = pageSize,
+                Skip = paging.Skip,
+                Take = paging.PageSize,
                 Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
                             !includePath.IsNullOrEmpty() ? new IncludeOption<TEntity>(includePath) : null
             }, cancellationToken)
                 .AnyContext();
 
-            return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
+            return ResultPaged<TEntity>.Success(entities, count, paging.Page, paging.PageSize);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -642,20 +643,21 @@ public static class GenericReadOnlyRepositoryResultExtensions
     {
         try
         {
+            var paging = FindOptionsBuilder.NormalizePaging(page, pageSize);
             var count = await source.CountAsync(cancellationToken).AnyContext();
             var entities = await source.FindAllAsync(new FindOptions<TEntity>
             {
                 Order = new OrderOption<TEntity>(orderingExpression, orderDirection),
-                Skip = (page - 1) * pageSize,
-                Take = pageSize,
+                Skip = paging.Skip,
+                Take = paging.PageSize,
                 Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
                             !includePath.IsNullOrEmpty() ? new IncludeOption<TEntity>(includePath) : null
             }, cancellationToken)
                 .AnyContext();
 
-            return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
+            return ResultPaged<TEntity>.Success(entities, count, paging.Page, paging.PageSize);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -720,21 +722,22 @@ public static class GenericReadOnlyRepositoryResultExtensions
     {
         try
         {
+            var paging = FindOptionsBuilder.NormalizePaging(page, pageSize);
             var count = await source.CountAsync(specification, cancellationToken).AnyContext();
             var entities = await source.FindAllAsync(specification,
                     new FindOptions<TEntity>
                     {
                         Order = !ordering.IsNullOrEmpty() ? new OrderOption<TEntity>(ordering) : null,
-                        Skip = (page - 1) * pageSize,
-                        Take = pageSize,
+                        Skip = paging.Skip,
+                        Take = paging.PageSize,
                         Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
                             !includePath.IsNullOrEmpty() ? new IncludeOption<TEntity>(includePath) : null
                     }, cancellationToken)
                 .AnyContext();
 
-            return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
+            return ResultPaged<TEntity>.Success(entities, count, paging.Page, paging.PageSize);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -795,7 +798,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         {
             filter ??= new FilterModel();
             specifications = SpecificationBuilder.Build(filter, specifications).ToArray();
-            var findOptions = FindOptionsBuilder.Build<TEntity>(filter);
+            var findOptions = FindOptionsBuilder.BuildPaged<TEntity>(filter, out var page, out var pageSize);
 
             var count = await source.CountAsync(specifications, cancellationToken).AnyContext();
             var entities = await source.FindAllAsync(
@@ -803,9 +806,9 @@ public static class GenericReadOnlyRepositoryResultExtensions
                     findOptions, cancellationToken)
                 .AnyContext();
 
-            return ResultPaged<TEntity>.Success(entities, count, filter.Page, filter.PageSize);
+            return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -839,21 +842,22 @@ public static class GenericReadOnlyRepositoryResultExtensions
     {
         try
         {
+            var paging = FindOptionsBuilder.NormalizePaging(page, pageSize);
             var count = await source.CountAsync(specification, cancellationToken).AnyContext();
             var entities = await source.FindAllAsync(specification,
                     new FindOptions<TEntity>
                     {
                         Order = new OrderOption<TEntity>(orderingExpression, orderDirection),
-                        Skip = (page - 1) * pageSize,
-                        Take = pageSize,
+                        Skip = paging.Skip,
+                        Take = paging.PageSize,
                         Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
                             !includePath.IsNullOrEmpty() ? new IncludeOption<TEntity>(includePath) : null
                     }, cancellationToken)
                 .AnyContext();
 
-            return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
+            return ResultPaged<TEntity>.Success(entities, count, paging.Page, paging.PageSize);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -886,22 +890,23 @@ public static class GenericReadOnlyRepositoryResultExtensions
     {
         try
         {
+            var paging = FindOptionsBuilder.NormalizePaging(page, pageSize);
             var count = await source.CountAsync(specifications, cancellationToken).AnyContext();
             var entities = await source.FindAllAsync(
                     specifications,
                     new FindOptions<TEntity>
                     {
                         Order = !ordering.IsNullOrEmpty() ? new OrderOption<TEntity>(ordering) : null,
-                        Skip = (page - 1) * pageSize,
-                        Take = pageSize,
+                        Skip = paging.Skip,
+                        Take = paging.PageSize,
                         Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
                             !includePath.IsNullOrEmpty() ? new IncludeOption<TEntity>(includePath) : null
                     }, cancellationToken)
                 .AnyContext();
 
-            return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
+            return ResultPaged<TEntity>.Success(entities, count, paging.Page, paging.PageSize);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -935,21 +940,22 @@ public static class GenericReadOnlyRepositoryResultExtensions
     {
         try
         {
+            var paging = FindOptionsBuilder.NormalizePaging(page, pageSize);
             var count = await source.CountAsync(specifications, cancellationToken).AnyContext();
             var entities = await source.FindAllAsync(specifications,
                     new FindOptions<TEntity>
                     {
                         Order = new OrderOption<TEntity>(orderingExpression, orderDirection),
-                        Skip = (page - 1) * pageSize,
-                        Take = pageSize,
+                        Skip = paging.Skip,
+                        Take = paging.PageSize,
                         Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
                             !includePath.IsNullOrEmpty() ? new IncludeOption<TEntity>(includePath) : null
                     }, cancellationToken)
                 .AnyContext();
 
-            return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
+            return ResultPaged<TEntity>.Success(entities, count, paging.Page, paging.PageSize);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -977,7 +983,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             var result = await source.ProjectAllAsync(projection, options, cancellationToken).AnyContext();
             return Result<IEnumerable<TProjection>>.Success(result);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<IEnumerable<TProjection>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -1007,7 +1013,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             var result = await source.ProjectAllAsync(expression, projection, options, cancellationToken).AnyContext();
             return Result<IEnumerable<TProjection>>.Success(result);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<IEnumerable<TProjection>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -1037,7 +1043,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             var result = await source.ProjectAllAsync(specification, projection, options, cancellationToken).AnyContext();
             return Result<IEnumerable<TProjection>>.Success(result);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<IEnumerable<TProjection>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -1067,7 +1073,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             var result = await source.ProjectAllAsync(specifications, projection, options, cancellationToken).AnyContext();
             return Result<IEnumerable<TProjection>>.Success(result);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<IEnumerable<TProjection>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -1106,7 +1112,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
 
             return Result<IEnumerable<TProjection>>.Success(result);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return Result<IEnumerable<TProjection>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -1134,14 +1140,14 @@ public static class GenericReadOnlyRepositoryResultExtensions
         {
             filterModel ??= new FilterModel();
             specifications = SpecificationBuilder.Build(filterModel, specifications).ToArray();
-            var findOptions = FindOptionsBuilder.Build<TEntity>(filterModel);
+            var findOptions = FindOptionsBuilder.BuildPaged<TEntity>(filterModel, out var page, out var pageSize);
 
             var count = await source.CountAsync(specifications, cancellationToken).AnyContext();
             var entities = await source.ProjectAllAsync(specifications, projection, findOptions, cancellationToken).AnyContext();
 
-            return ResultPaged<TProjection>.Success(entities, count, filterModel.Page, filterModel.PageSize);
+            return ResultPaged<TProjection>.Success(entities, count, page, pageSize);
         }
-        catch (Exception ex) when (!ex.IsTransientException())
+        catch (Exception ex) when (ex is not OperationCanceledException && !ex.IsTransientException())
         {
             return ResultPaged<TProjection>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }

@@ -41,6 +41,10 @@ public sealed class MetricsDocumentStoreClientBehavior<T> : DocumentStoreClientB
     public override Task<Result<DocumentPage<T>>> FindPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.Measure("find", () => base.FindPageAsync(query, cancellationToken));
     /// <inheritdoc />
     public override Task<Result<DocumentKeyPage>> ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default) => this.Measure("list", () => base.ListPageAsync(query, cancellationToken));
+
+    /// <inheritdoc />
+    public override Task<Result<DocumentInfoPage>> ListPageAsync(DocumentFilterScope scope, FilterModel filter, string continuationToken,
+        CancellationToken cancellationToken = default) => this.Measure("list", () => base.ListPageAsync(scope, filter, continuationToken, cancellationToken));
     /// <inheritdoc />
     public override Task<Result<long>> CountAsync(DocumentCountQuery query, CancellationToken cancellationToken = default) => this.Measure("count", () => base.CountAsync(query, cancellationToken));
     /// <inheritdoc />
@@ -49,6 +53,9 @@ public sealed class MetricsDocumentStoreClientBehavior<T> : DocumentStoreClientB
     public override Task<Result<DocumentInfo>> UpsertAsync(DocumentKey key, T value, DocumentWriteOptions options = null, CancellationToken cancellationToken = default) => this.Measure("upsert", () => base.UpsertAsync(key, value, options, cancellationToken));
     /// <inheritdoc />
     public override Task<Result<DocumentBatchResult<DocumentInfo>>> UpsertManyAsync(IReadOnlyCollection<DocumentWrite<T>> writes, CancellationToken cancellationToken = default) => this.Measure("upsert-many", () => base.UpsertManyAsync(writes, cancellationToken));
+    /// <inheritdoc />
+    public override Task<Result<DocumentInfo>> UpdateDimensionsAsync(DocumentDimensionsUpdate update, CancellationToken cancellationToken = default) => this.Measure("update-dimensions", () => base.UpdateDimensionsAsync(update, cancellationToken));
+
     /// <inheritdoc />
     public override Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default) => this.Measure("update-properties", () => base.UpdatePropertiesAsync(update, cancellationToken));
     /// <inheritdoc />

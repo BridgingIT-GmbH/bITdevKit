@@ -64,30 +64,23 @@ public static class ResultPagedExtensions
     /// </example>
     public static ResultPaged<TNew> Map<T, TNew>(this ResultPaged<T> result, Func<IEnumerable<T>, IEnumerable<TNew>> mapper)
     {
-        if (!result.IsSuccess || mapper is null)
+        if (result.IsFailure)
         {
-            return ResultPaged<TNew>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<TNew>();
+        }
+
+        if (mapper is null)
+        {
+            return result.For<TNew>().WithError(new Error("Mapper cannot be null"));
         }
 
         try
         {
-            var newValues = mapper(result.Value);
-            return ResultPaged<TNew>.Success(
-                    newValues,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For(mapper(result.Value));
         }
         catch (Exception ex)
         {
-            return ResultPaged<TNew>.Failure()
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.For<TNew>().WithExceptionFailure(ex);
         }
     }
 
@@ -107,37 +100,28 @@ public static class ResultPagedExtensions
         Func<IEnumerable<T>, CancellationToken, Task<IEnumerable<TNew>>> mapper,
         CancellationToken cancellationToken = default)
     {
-        if (!result.IsSuccess || mapper is null)
+        if (result.IsFailure)
         {
-            return ResultPaged<TNew>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<TNew>();
+        }
+
+        if (mapper is null)
+        {
+            return result.For<TNew>().WithError(new Error("Mapper cannot be null"));
         }
 
         try
         {
-            var newValues = await mapper(result.Value, cancellationToken);
-            return ResultPaged<TNew>.Success(
-                    newValues,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            cancellationToken.ThrowIfCancellationRequested();
+            return result.For(await mapper(result.Value, cancellationToken).AnyContext());
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<TNew>.Failure()
-                .WithErrors(result.Errors)
-                .WithError(new OperationCancelledError())
-                .WithMessages(result.Messages);
+            return result.For<TNew>().WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<TNew>.Failure()
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.For<TNew>().WithExceptionFailure(ex);
         }
     }
 
@@ -157,26 +141,23 @@ public static class ResultPagedExtensions
     /// </example>
     public static ResultPaged<TNew> Bind<T, TNew>(this ResultPaged<T> result, Func<IEnumerable<T>, ResultPaged<TNew>> binder)
     {
-        if (!result.IsSuccess || binder is null)
+        if (result.IsFailure)
         {
-            return ResultPaged<TNew>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<TNew>();
+        }
+
+        if (binder is null)
+        {
+            return result.For<TNew>().WithError(new Error("Binder cannot be null"));
         }
 
         try
         {
-            var newResult = binder(result.Value);
-            return newResult
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return binder(result.Value).WithPrependedOutcome(result);
         }
         catch (Exception ex)
         {
-            return ResultPaged<TNew>.Failure()
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.For<TNew>().WithExceptionFailure(ex);
         }
     }
 
@@ -196,33 +177,29 @@ public static class ResultPagedExtensions
         Func<IEnumerable<T>, CancellationToken, Task<ResultPaged<TNew>>> binder,
         CancellationToken cancellationToken = default)
     {
-        if (!result.IsSuccess || binder is null)
+        if (result.IsFailure)
         {
-            return ResultPaged<TNew>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<TNew>();
+        }
+
+        if (binder is null)
+        {
+            return result.For<TNew>().WithError(new Error("Binder cannot be null"));
         }
 
         try
         {
-            var newResult = await binder(result.Value, cancellationToken);
-            return newResult
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            cancellationToken.ThrowIfCancellationRequested();
+            var bound = await binder(result.Value, cancellationToken).AnyContext();
+            return bound.WithPrependedOutcome(result);
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<TNew>.Failure()
-                .WithErrors(result.Errors)
-                .WithError(new OperationCancelledError())
-                .WithMessages(result.Messages);
+            return result.For<TNew>().WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<TNew>.Failure()
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.For<TNew>().WithExceptionFailure(ex);
         }
     }
 
@@ -247,17 +224,11 @@ public static class ResultPagedExtensions
         {
             return predicate(result.Value)
                 ? result
-                : ResultPaged<T>.Failure(result.Value)
-                    .WithErrors(result.Errors)
-                    .WithError(error ?? new Error("Predicate condition not met"))
-                    .WithMessages(result.Messages);
+                : result.WithError(error ?? new Error("Predicate condition not met"));
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex);
         }
     }
 
@@ -284,26 +255,18 @@ public static class ResultPagedExtensions
 
         try
         {
-            return await predicate(result.Value, cancellationToken)
+            cancellationToken.ThrowIfCancellationRequested();
+            return await predicate(result.Value, cancellationToken).AnyContext()
                 ? result
-                : ResultPaged<T>.Failure(result.Value)
-                    .WithErrors(result.Errors)
-                    .WithError(error ?? new Error("Predicate condition not met"))
-                    .WithMessages(result.Messages);
+                : result.WithError(error ?? new Error("Predicate condition not met"));
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(new OperationCancelledError())
-                .WithMessages(result.Messages);
+            return result.WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex);
         }
     }
 
@@ -346,15 +309,11 @@ public static class ResultPagedExtensions
                 }
             }
 
-            return ResultPaged<T>.Success(filteredValues)
-                    .WithErrors(result.Errors)
-                    .WithMessages(result.Messages);
+            return result.CreateItemProjection(filteredValues).WithPrependedOutcome(result);
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex);
         }
     }
 
@@ -395,30 +354,26 @@ public static class ResultPagedExtensions
 
         try
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var filteredValues = new List<T>();
             foreach (var item in result.Value)
             {
-                if (await predicate(item, cancellationToken))
+                cancellationToken.ThrowIfCancellationRequested();
+                if (await predicate(item, cancellationToken).AnyContext())
                 {
                     filteredValues.Add(item);
                 }
             }
 
-            return ResultPaged<T>.Success(filteredValues)
-                    .WithErrors(result.Errors)
-                    .WithMessages(result.Messages);
+            return result.CreateItemProjection(filteredValues).WithPrependedOutcome(result);
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithError(new OperationCancelledError())
-                .WithMessages(result.Messages);
+            return result.WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex);
         }
     }
 
@@ -440,27 +395,18 @@ public static class ResultPagedExtensions
 
         if (predicate is null)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(new Error("Predicate cannot be null"))
-                .WithMessages(result.Messages);
+            return result.AsFailure().WithError(new Error("Predicate cannot be null"));
         }
 
         try
         {
             return predicate(result.Value)
                 ? result
-                : ResultPaged<T>.Failure(result.Value)
-                    .WithErrors(result.Errors)
-                    .WithError(error ?? new Error("Ensure condition not met"))
-                    .WithMessages(result.Messages);
+                : result.AsFailure().WithError(error ?? new Error("Ensure condition not met"));
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex);
         }
     }
 
@@ -487,34 +433,22 @@ public static class ResultPagedExtensions
 
         if (predicate is null)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(new Error("Predicate cannot be null"))
-                .WithMessages(result.Messages);
+            return result.AsFailure().WithError(new Error("Predicate cannot be null"));
         }
 
         try
         {
             return await predicate(result.Value, cancellationToken)
                 ? result
-                : ResultPaged<T>.Failure(result.Value)
-                    .WithErrors(result.Errors)
-                    .WithError(error ?? new Error("Ensure condition not met"))
-                    .WithMessages(result.Messages);
+                : result.AsFailure().WithError(error ?? new Error("Ensure condition not met"));
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(new OperationCancelledError())
-                .WithMessages(result.Messages);
+            return result.AsFailure().WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex);
         }
     }
 
@@ -537,18 +471,12 @@ public static class ResultPagedExtensions
         try
         {
             return predicate(result.Value)
-                ? ResultPaged<T>.Failure(result.Value)
-                    .WithErrors(result.Errors)
-                    .WithError(error ?? new Error("Unless condition met"))
-                    .WithMessages(result.Messages)
+                ? result.AsFailure().WithError(error ?? new Error("Unless condition met"))
                 : result;
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex);
         }
     }
 
@@ -576,25 +504,16 @@ public static class ResultPagedExtensions
         try
         {
             return await predicate(result.Value, cancellationToken)
-                ? ResultPaged<T>.Failure(result.Value)
-                    .WithErrors(result.Errors)
-                    .WithError(error ?? new Error("Unless condition met"))
-                    .WithMessages(result.Messages)
+                ? result.AsFailure().WithError(error ?? new Error("Unless condition met"))
                 : result;
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(new OperationCancelledError())
-                .WithMessages(result.Messages);
+            return result.AsFailure().WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex);
         }
     }
 
@@ -625,10 +544,7 @@ public static class ResultPagedExtensions
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex);
         }
     }
 
@@ -662,17 +578,11 @@ public static class ResultPagedExtensions
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(new OperationCancelledError())
-                .WithMessages(result.Messages);
+            return result.AsFailure().WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex);
         }
     }
 
@@ -1233,50 +1143,13 @@ public static class ResultPagedExtensions
     /// <returns>A paged success containing all output values when every operation succeeds; otherwise, a failure containing collected errors and messages.</returns>
     public static ResultPaged<TOutput> Collect<T, TOutput>(this ResultPaged<T> result, Func<T, Result<TOutput>> operation)
     {
-        if (!result.IsSuccess || operation is null)
+        if (result.IsFailure)
         {
-            return ResultPaged<TOutput>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<TOutput>();
         }
 
-        var results = new List<TOutput>();
-        var errors = new List<IResultError>();
-        var messages = new List<string>();
-
-        foreach (var item in result.Value)
-        {
-            try
-            {
-                var newResult = operation(item);
-                if (newResult.IsSuccess)
-                {
-                    results.Add(newResult.Value);
-                }
-                else
-                {
-                    errors.AddRange(newResult.Errors);
-                }
-
-                messages.AddRange(newResult.Messages);
-            }
-            catch (Exception ex)
-            {
-                errors.Add(Result.Settings.ExceptionErrorFactory(ex));
-            }
-        }
-
-        return errors.Any()
-            ? ResultPaged<TOutput>.Failure()
-                .WithErrors(errors)
-                .WithMessages(messages)
-            : ResultPaged<TOutput>.Success(
-                    results,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
-                .WithErrors(result.Errors)
-                .WithMessages(messages);
+        var collected = Result<IEnumerable<T>>.Success(result.Value).Collect(operation);
+        return result.CreateItemProjection(collected.Value).WithOutcome(collected).WithPrependedOutcome(result);
     }
 
     /// <summary>
@@ -1293,54 +1166,13 @@ public static class ResultPagedExtensions
         Func<T, CancellationToken, Task<Result<TOutput>>> operation,
         CancellationToken cancellationToken = default)
     {
-        if (!result.IsSuccess || operation is null)
+        if (result.IsFailure)
         {
-            return ResultPaged<TOutput>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return result.For<TOutput>();
         }
 
-        var results = new List<TOutput>();
-        var errors = new List<IResultError>();
-        var messages = new List<string>();
-
-        foreach (var item in result.Value)
-        {
-            try
-            {
-                var newResult = await operation(item, cancellationToken);
-                if (newResult.IsSuccess)
-                {
-                    results.Add(newResult.Value);
-                }
-                else
-                {
-                    errors.AddRange(newResult.Errors);
-                }
-
-                messages.AddRange(newResult.Messages);
-            }
-            catch (OperationCanceledException)
-            {
-                errors.Add(new OperationCancelledError());
-                break;
-            }
-            catch (Exception ex)
-            {
-                errors.Add(Result.Settings.ExceptionErrorFactory(ex));
-            }
-        }
-
-        return errors.Any()
-            ? ResultPaged<TOutput>.Failure()
-                .WithErrors(errors)
-                .WithMessages(messages)
-            : ResultPaged<TOutput>.Success(
-                    results,
-                    result.TotalCount,
-                    result.CurrentPage,
-                    result.PageSize)
-                .WithMessages(messages);
+        var collected = await Result<IEnumerable<T>>.Success(result.Value).CollectAsync(operation, cancellationToken).AnyContext();
+        return result.CreateItemProjection(collected.Value).WithOutcome(collected).WithPrependedOutcome(result);
     }
 
     /// <summary>
@@ -1367,10 +1199,7 @@ public static class ResultPagedExtensions
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex);
         }
     }
 
@@ -1400,24 +1229,19 @@ public static class ResultPagedExtensions
 
         try
         {
-            var newResult = await operation(result.Value, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            var newResult = await operation(result.Value, cancellationToken).AnyContext();
             return newResult
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(new OperationCancelledError())
-                .WithMessages(result.Messages);
+            return result.AsFailure().WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex);
         }
     }
 
@@ -1451,10 +1275,7 @@ public static class ResultPagedExtensions
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex);
         }
     }
 
@@ -1490,17 +1311,11 @@ public static class ResultPagedExtensions
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(new OperationCancelledError())
-                .WithMessages(result.Messages);
+            return result.AsFailure().WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex);
         }
     }
 
@@ -1530,10 +1345,7 @@ public static class ResultPagedExtensions
 
         if (validator is null)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(new Error("Validator cannot be null"))
-                .WithMessages(result.Messages);
+            return result.AsFailure().WithError(new Error("Validator cannot be null"));
         }
 
         try
@@ -1553,20 +1365,14 @@ public static class ResultPagedExtensions
 
             if (errors.Any())
             {
-                return ResultPaged<T>.Failure(result.Value)
-                    .WithErrors(result.Errors)
-                    .WithErrors(errors)
-                    .WithMessages(result.Messages);
+                return result.AsFailure().WithErrors(errors);
             }
 
             return result;
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages)
+            return result.WithExceptionFailure(ex)
                 .WithMessage("Validation failed due to an error");
         }
     }
@@ -1596,9 +1402,7 @@ public static class ResultPagedExtensions
 
         if (validator is null)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithError(new Error("Validator cannot be null"))
-                .WithMessages(result.Messages);
+            return result.WithError(new Error("Validator cannot be null"));
         }
 
         try
@@ -1620,28 +1424,18 @@ public static class ResultPagedExtensions
 
             if (errors.Any())
             {
-                return ResultPaged<T>.Failure(result.Value)
-                    .WithErrors(result.Errors)
-                    .WithErrors(errors)
-                    .WithMessages(result.Messages);
+                return result.AsFailure().WithErrors(errors);
             }
 
             return result;
         }
         catch (OperationCanceledException)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(new OperationCancelledError())
-                .WithMessages(result.Messages);
+            return result.AsFailure().WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return ResultPaged<T>.Failure(result.Value)
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessage("Validation failed due to an error")
-                .WithMessages(result.Messages);
+            return result.WithExceptionFailure(ex).WithMessage("Validation failed due to an error");
         }
     }
 

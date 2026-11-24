@@ -59,7 +59,8 @@ public static partial class ServiceCollectionExtensions
             documentStoreOptions: documentStoreOptions,
             name: name,
             isDefault: isDefault,
-            lifetime: lifetime);
+            lifetime: lifetime,
+            capabilitiesFactory: provider is null ? EntityFrameworkDocumentStoreProvider<TContext>.GetCapabilities : null);
     }
 
     private static EntityFrameworkDocumentStoreProvider<TContext> CreateProvider<TContext>(

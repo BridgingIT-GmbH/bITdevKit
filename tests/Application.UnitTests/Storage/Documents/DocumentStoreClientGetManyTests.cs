@@ -9,6 +9,23 @@ using Application.Storage;
 public sealed class DocumentStoreClientGetManyTests
 {
     [Fact]
+    public async Task CacheBehavior_WithSerializedProperties_ReturnsIndependentTypedBagsForEveryHit()
+    {
+        var cache = new DictionaryCache();
+        var inner = Substitute.For<IDocumentStoreClient<GetManyDocument>>();
+        var key = new DocumentKey("p", "properties");
+        inner.GetAsync(key, Arg.Any<CancellationToken>()).Returns(Result<DocumentEntry<GetManyDocument>>.Success(Entry(key, "value") with { Properties = StoragePropertySamples.Create() }));
+        var sut = new CacheDocumentStoreClientBehavior<GetManyDocument>(null, inner, cache);
+        var first = await sut.GetAsync(key);
+        ((byte[])first.Value.Properties.Get("Bytes"))[0] = 99;
+        var hits = await sut.GetManyAsync([key, key]);
+        StoragePropertySamples.AssertEqual(hits.Value[0].Value.Properties, StoragePropertySamples.Create());
+        ((byte[])hits.Value[0].Value.Properties.Get("Bytes"))[0] = 98;
+        StoragePropertySamples.AssertEqual(hits.Value[1].Value.Properties, StoragePropertySamples.Create());
+        await inner.Received(1).GetAsync(key, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
     public async Task GetManyAsync_WithoutBatchProvider_ReturnsOneResultPerKeyInInputOrder()
     {
         var sut = new DocumentStoreClient<GetManyDocument>(new InMemoryDocumentStoreProvider());
@@ -199,7 +216,11 @@ public sealed class DocumentStoreClientGetManyTests
         public Task RemoveAsync(string key, CancellationToken token = default) { this.Remove(key); return Task.CompletedTask; }
         public void RemoveStartsWith(string key) { foreach (var k in this.entries.Keys.Where(x => x.StartsWith(key, StringComparison.Ordinal)).ToList()) this.entries.Remove(k); }
         public Task RemoveStartsWithAsync(string key, CancellationToken token = default) { this.RemoveStartsWith(key); return Task.CompletedTask; }
-        public void Set<T>(string key, T value, TimeSpan? slidingExpiration = null, DateTimeOffset? absoluteExpiration = null) => this.entries[key] = value;
+        public void Set<T>(string key, T value, TimeSpan? slidingExpiration = null, DateTimeOffset? absoluteExpiration = null)
+        {
+            var options = new System.Text.Json.JsonSerializerOptions { Converters = { new PropertyBagJsonConverter() } };
+            this.entries[key] = System.Text.Json.JsonSerializer.Deserialize<T>(System.Text.Json.JsonSerializer.Serialize(value, options), options);
+        }
         public Task SetAsync<T>(string key, T value, TimeSpan? slidingExpiration = null, DateTimeOffset? absoluteExpiration = null, CancellationToken cancellationToken = default) { this.Set(key, value, slidingExpiration, absoluteExpiration); return Task.CompletedTask; }
     }
 }

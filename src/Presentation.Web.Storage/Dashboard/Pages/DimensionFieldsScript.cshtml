@@ -1,0 +1,102 @@
+@inherits RazorSlices.RazorSlice
+<script>
+(() => {
+    const dashboard = window.bdkDashboard = window.bdkDashboard || {};
+    const placeholders = {
+        string: 'Value',
+        integer: '2026',
+        decimal: '12.50',
+        boolean: 'true or false',
+        datetime: '2026-01-01T00:00:00Z',
+        null: 'null'
+    };
+
+    dashboard.createDimensionFields = form => {
+        const fields = form.querySelector('[data-storage-dimension-fields]');
+        const rows = fields.querySelector('[data-dimension-rows]');
+        const template = fields.querySelector('template');
+        const add = fields.querySelector('[data-add-dimension]');
+        const originalStrings = new WeakMap();
+        let baseline;
+
+        function notifyChange() {
+            fields.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+
+        function addRow(key = '', dimension = { type: 'string', value: '' }, filter) {
+            const row = template.content.firstElementChild.cloneNode(true);
+            const name = row.querySelector('input');
+            const type = row.querySelector('select');
+            const value = row.querySelector('textarea');
+            name.value = key;
+            type.value = dimension.type;
+            value.value = dimension.value ?? '';
+            if (dimension.type === 'string') {
+                originalStrings.set(value, { stored: dimension.value, displayed: value.value });
+            }
+            const updateType = () => {
+                value.disabled = type.value === 'null';
+                value.placeholder = placeholders[type.value];
+            };
+            updateType();
+            type.addEventListener('change', updateType);
+            const remove = row.querySelector('button');
+            if (filter) {
+                const button = window.bdkDashboard.createDimensionFilterButton(key, filter);
+                button.classList.add('me-1');
+                remove.before(button);
+            }
+            remove.addEventListener('click', () => {
+                const neighbor = row.nextElementSibling || row.previousElementSibling;
+                row.remove();
+                (neighbor?.querySelector('input') || add).focus();
+                notifyChange();
+            });
+            rows.append(row);
+            return name;
+        }
+
+        function serialize() {
+            const entries = Array.from(rows.children, row => {
+                const key = row.querySelector('input').value;
+                const type = row.querySelector('select').value;
+                const input = row.querySelector('textarea');
+                let value = input.value;
+                if (type === 'integer' && /^[+-]?\d+$/.test(value)) {
+                    value = Number(value);
+                } else if (type === 'boolean' && ['true', 'false'].includes(value.toLowerCase())) {
+                    value = value.toLowerCase() === 'true';
+                } else if (type === 'null') {
+                    value = null;
+                } else if (type === 'string') {
+                    const original = originalStrings.get(input);
+                    if (original?.displayed === value) value = original.stored;
+                }
+                return JSON.stringify(key) + ':' + JSON.stringify({ type, value });
+            });
+            return '{' + entries.join(',') + '}';
+        }
+
+        add.addEventListener('click', () => {
+            addRow().focus();
+            notifyChange();
+        });
+
+        return {
+            load(json, enabled, filterAction) {
+                fields.hidden = fields.disabled = !enabled;
+                rows.replaceChildren();
+                for (const [key, dimension] of Object.entries(JSON.parse(json || '{}'))) {
+                    addRow(key, dimension, filterAction?.(key, dimension));
+                }
+                baseline = serialize();
+            },
+            write(formData) {
+                if (fields.disabled) return;
+                const json = serialize();
+                if (json !== baseline) formData.set('dimensions', json);
+            }
+        };
+    };
+})();
+</script>

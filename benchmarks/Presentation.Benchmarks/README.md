@@ -1,5 +1,7 @@
 # Presentation Benchmarks
 
+AppState has separate execution-time and allocation workloads for snapshots, transitions, selectors, history, ownership, diagnostics and persistence. Run them with the `appstate` or `appstate-allocations` argument. See the [AppState benchmark instructions](AppState/README.md) for repeatable jobs, baseline metadata and comparison rules.
+
 These experiments use fictional inventory records. Run them from the repository root in Release mode, with other builds and load tests stopped.
 
 ```sh

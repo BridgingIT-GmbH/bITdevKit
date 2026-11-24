@@ -52,7 +52,7 @@ public class BlobStorageEndpointsApplication : WebApplicationFactory<BlobStorage
 
 }
 
-public class BlobStorageEndpointsTests : IAsyncDisposable
+public class BlobStorageEndpointsTests : IAsyncLifetime
 {
     private readonly BlobStorageEndpointsApplication factory;
     private readonly HttpClient client;
@@ -67,7 +67,11 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         this.blobStoreClientFactory = this.scope.ServiceProvider.GetRequiredService<IBlobStoreClientFactory>();
     }
 
-    public async ValueTask DisposeAsync()
+    /// <inheritdoc />
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    /// <inheritdoc />
+    public async Task DisposeAsync()
     {
         this.client.Dispose();
         this.scope.Dispose();
@@ -348,6 +352,24 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
     }
 
     [Fact]
+    public async Task UpdateProperties_WithOmittedNullAndEmptyBags_PreservesOrClears()
+    {
+        var blobs = this.blobStoreClientFactory.CreateClient("reports");
+        var key = new BlobKey("reports", "meta/preserve.txt");
+        (await blobs.UploadAsync(new() { Key = key, Content = new MemoryStream([1]), Properties = new() { ["source"] = "test" } })).IsSuccess.ShouldBeTrue();
+        foreach (var json in new[] { "{\"container\":\"reports\",\"name\":\"meta/preserve.txt\"}", "{\"container\":\"reports\",\"name\":\"meta/preserve.txt\",\"properties\":null}" })
+        {
+            using var response = await this.client.PatchAsync("/_bdk/api/storage/blobs/reports/blobs/properties", new StringContent(json, Encoding.UTF8, "application/json"));
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            (await blobs.GetPropertiesAsync(key)).Value.Properties.Get<string>("source").ShouldBe("test");
+        }
+
+        using var clear = await this.client.PatchAsJsonAsync("/_bdk/api/storage/blobs/reports/blobs/properties", new BlobStorageUpdatePropertiesRequestModel { Container = "reports", Name = key.Name, Properties = new() });
+        clear.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await blobs.GetPropertiesAsync(key)).Value.Properties.Count.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task ListBlobs_ShouldReturnMatchingPrefixOnly()
     {
         var blobs = this.blobStoreClientFactory.CreateClient("reports");
@@ -375,6 +397,21 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         deleteResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
         exists.IsSuccess.ShouldBeTrue();
         exists.Value.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task DeleteBlob_WithStaleHeader_PreservesCurrentVersion()
+    {
+        var blobs = this.blobStoreClientFactory.CreateClient("reports");
+        var created = await blobs.UploadAsync(CreateUpload("conditional-delete.txt", "one"));
+        await blobs.UploadAsync(CreateUpload("conditional-delete.txt", "two"));
+        using var request = new HttpRequestMessage(HttpMethod.Delete, "/_bdk/api/storage/blobs/reports/blobs?container=reports&name=conditional-delete.txt");
+        request.Headers.TryAddWithoutValidation("If-Match", created.Value.ETag);
+
+        var response = await this.client.SendAsync(request);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
+        (await blobs.ExistsAsync(new BlobKey("reports", "conditional-delete.txt"))).Value.ShouldBeTrue();
     }
 
     private static BlobUpload CreateUpload(string name, string content) => new()

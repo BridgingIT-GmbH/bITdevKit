@@ -1,6 +1,6 @@
 ---
 name: update-packages
-description: Update all NuGet packages and dotnet tools in the bITdevKit repo to the latest stable versions, then restore, build, test, fix breakages and check for vulnerabilities. Use this when asked to update, upgrade or bump packages, dependencies or tools, fix NU1109/NU1103 restore errors, or check for new CVEs after an update.
+description: Update all NuGet packages and dotnet tools in the bITdevKit repo to the latest compatible stable versions, then restore, build, test, fix breakages and check for vulnerabilities. Use this when asked to update, upgrade or bump packages, dependencies or tools, fix NU1109/NU1103 restore errors, or check for new CVEs after an update.
 ---
 
 # Update packages
@@ -9,6 +9,8 @@ Repeatable process for upgrading the repo's dependencies (Central Package Manage
 
 ## Rules
 
+- Stay on the .NET major version specified by `sdk.version` in [global.json](../../../global.json). For example, `10.0.404` selects .NET 10. A framework upgrade requires an explicit request to change the SDK or project targets.
+- Keep framework-aligned packages and tools on that .NET release line. Packages with independent versioning can advance when their direct and transitive framework dependencies fit that release line.
 - Latest stable only. No previews, unless a package has no stable release at all (then keep the newest pre-release on the same release train as its siblings, e.g. the OpenTelemetry Prometheus exporter).
 - Keep version constraints intact: bracketed pins (`[3.18.1]`) and ranges (`[6.8.1,7.0.0)`) in `Directory.Packages.props` must not change. Check the diff for them at the end.
 - Use `dotnet outdated` and the dotnet CLI for the bulk upgrade. Direct edits of `Directory.Packages.props` are only for things the tool can't do: aligning a package family and the transitive pin group.
@@ -21,6 +23,7 @@ Repeatable process for upgrading the repo's dependencies (Central Package Manage
 ### 1. Preflight
 
 - `git status --short` to see what is already modified.
+- Read `sdk.version` in `global.json` and run `dotnet --version` from the repository root. Confirm the resolved SDK is on the configured major version.
 - `dotnet tool restore`, then `dotnet outdated --version` (the `dotnet-outdated-tool` is in the local manifest).
 - If `dotnet restore` already fails (typically NU1109 downgrades), fix that first (step 3), otherwise `dotnet outdated` can't evaluate anything.
 
@@ -28,9 +31,11 @@ Repeatable process for upgrading the repo's dependencies (Central Package Manage
 
 ```bash
 dotnet outdated bITdevKit.slnx --no-restore            # review first
-dotnet outdated bITdevKit.slnx --no-restore -u         # apply
+dotnet outdated bITdevKit.slnx --no-restore -u:prompt  # accept reviewed candidates
 git diff Directory.Packages.props                      # confirm bracketed/range pins are untouched
 ```
+
+For framework-aligned packages already on the configured major, use `--version-lock Major` with `--include` to find updates on that release line. Check the dependency metadata for candidates that may pull in framework packages from a later .NET release. For example, OpenTelemetry 1.21 brings in DiagnosticSource 11, which makes 1.20.x the compatible choice between those releases for .NET 10.
 
 `dotnet outdated` only sees packages that some project references. Entries that exist only as central versions (for example transitive pins or packages kept for later) are skipped, so check them separately against NuGet:
 
@@ -44,8 +49,8 @@ curl -s https://api.nuget.org/v3-flatcontainer/<id-lowercase>/index.json | pytho
 dotnet restore 2>&1 | grep -oE "(error|warning) NU[0-9]+: .{0,200}" | sort | uniq -c | sort -rn
 ```
 
-- **NU1109 (downgrade).** A direct or pinned version is lower than what a dependency needs. Raise the central version, usually in the `upgrade some packages due to transitive vulnerabilities` group at the bottom (for example `MimeKit` behind `MailKit`, `OpenTelemetry.Api` behind the OpenTelemetry packages). Read `dotnet nuget why <csproj> <package>` to see who pulls it.
-- **NU1103 (version not found).** A servicing release can be only partly published or not yet indexed. Align the whole Microsoft 10.0.x family (AspNetCore, EF Core, `Microsoft.Extensions.*`, `System.*`) on one patch version. Before bumping, verify every package in the family has that version on NuGet. If some are missing, use the previous patch version and retry later.
+- **NU1109 (downgrade).** A direct or pinned version is lower than what a dependency needs. Read `dotnet nuget why <csproj> <package>` to find the dependency that requires it. Raise the central version within the allowed release line, usually in the `upgrade some packages due to transitive vulnerabilities` group. If the update requires a later .NET release line, choose the newest compatible version of the package that introduces it.
+- **NU1103 (version not found).** A servicing release can be only partly published or not yet indexed. Align the framework-aligned ASP.NET Core, EF Core, `Microsoft.Extensions.*`, and `System.*` servicing packages on one patch version within the configured .NET release line, such as `10.0.x` for .NET 10. Before bumping, verify every package in the family has that version on NuGet. If some are missing, use the previous patch version and retry later.
 - **NU1608 (outside dependency constraint).** A major bump violates an upper bound of another package. Example: `Microsoft.OpenApi` 3.x vs `Microsoft.AspNetCore.OpenApi` 10.x which requires below 3.0. Hold back and comment.
 - Look at the nuspec to confirm a constraint before holding something back: `curl -s https://api.nuget.org/v3-flatcontainer/<id>/<version>/<id>.nuspec | grep -oE '<dependency id="[^"]*"[^>]*>'`
 
@@ -88,11 +93,11 @@ dotnet test bITdevKit.slnx --no-build --filter "FullyQualifiedName~UnitTests"
 `dotnet outdated` does not cover `.config/dotnet-tools.json`. Compare each tool's current version with NuGet (same flat-container call as above, keyed by tool package id), then:
 
 ```bash
-dotnet tool update <package-id>      # per outdated tool, updates the local manifest
+dotnet tool update <package-id> --version <compatible-version>
 dotnet tool restore
 ```
 
-Keep tools aligned with the packages they pair with: `dotnet-ef` with the EF Core version, `minver-cli` with `MinVer`, `kiota` with `Microsoft.Kiota.Bundle`, `microsoft.dotnet-openapi` with the Microsoft 10.0.x family.
+Keep each tool aligned with its companion package or release line. Match `dotnet-ef` with EF Core, `minver-cli` with `MinVer`, `kiota` with `Microsoft.Kiota.Bundle`, and `microsoft.dotnet-openapi` with the configured .NET servicing release line.
 
 ### 9. Kiota client after a tool bump
 
@@ -101,6 +106,7 @@ The DoFiesta build regenerates the Kiota client, so a new `kiota` version change
 ### 10. Final check and report
 
 - `dotnet restore` shows no errors, `dotnet build bITdevKit.slnx` shows 0 errors and 0 warnings, tests pass, vulnerability scan is empty.
+- Confirm the SDK and runtime targets still match the configured .NET release line. Inspect `dotnet list bITdevKit.slnx package --include-transitive` or the restored `project.assets.json` files for framework-aligned packages from later release lines.
 - `git diff Directory.Packages.props` still shows the bracketed and range pins unchanged.
 - Report briefly: what moved, what is held back and why (these reasons also live as comments in `Directory.Packages.props`), which tests were flaky or skipped, and which generated files changed.
 

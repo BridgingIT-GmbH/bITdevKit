@@ -10,6 +10,33 @@ using Microsoft.Extensions.Time.Testing;
 
 public sealed class OperationProfilerTests
 {
+    [Fact]
+    public void ActiveByteCapacity_RejectsAdditionalCaptureAndRecoversAfterRelease()
+    {
+        var (sut, sink, _) = Create(o => { o.MaxActiveBytes = 4096; o.MaxRecordBytes = 4096; });
+        var first = sut.BeginOperation("first");
+        first.IsRecording.ShouldBeTrue();
+        var occupied = sut.ActiveBytes;
+
+        using (var rejected = sut.BeginOperation("second"))
+        {
+            rejected.IsRecording.ShouldBeFalse();
+            sut.ActiveBytes.ShouldBe(occupied);
+        }
+
+        first.Complete();
+        first.Dispose();
+        sut.ActiveBytes.ShouldBe(0);
+        using (var admitted = sut.BeginOperation("third"))
+        {
+            admitted.IsRecording.ShouldBeTrue();
+            admitted.Complete();
+        }
+
+        sink.Records.Count.ShouldBe(2);
+        sut.ActiveBytes.ShouldBe(0);
+    }
+
     /// <summary>Adapter defaults can evolve until an accepted application override takes precedence, even with identical text.</summary>
     /// <example>Run with the OperationProfilerTests filter.</example>
     [Theory]

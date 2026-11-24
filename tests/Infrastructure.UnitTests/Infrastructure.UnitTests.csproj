@@ -61,11 +61,18 @@
 
   <ItemGroup>
     <Compile Include="..\Application.UnitTests\Storage\Blobs\BlobStoreProviderContractTests.cs" Link="EntityFramework\Storage\Blobs\Shared\BlobStoreProviderContractTests.cs" />
+    <Compile Include="../Application.UnitTests/Storage/StoragePropertySamples.cs" Link="Storage/Shared/StoragePropertySamples.cs" />
+    <Compile Include="../Application.UnitTests/Storage/Documents/DocumentPropertiesContractTests.cs" Link="Storage/Shared/DocumentPropertiesContractTests.cs" />
     <Compile Include="../Infrastructure.FileSystem.Probes/QualificationConfiguration.cs" Link="FileSystem/Probes/QualificationConfiguration.cs" />
     <Compile Include="../Infrastructure.FileSystem.Probes/ProbeResult.cs" Link="FileSystem/Probes/ProbeResult.cs" />
     <Compile Include="../Infrastructure.FileSystem.Probes/ProbeWorkspace.cs" Link="FileSystem/Probes/ProbeWorkspace.cs" />
     <Compile Include="../Infrastructure.FileSystem.Probes/RemoteFileSystemProbe.cs" Link="FileSystem/Probes/RemoteFileSystemProbe.cs" />
     <ProjectReference Include="../../src/Infrastructure.FileSystem/Infrastructure.FileSystem.csproj" />
+    <ProjectReference Include="../Infrastructure.FileSystem.Probes/Infrastructure.FileSystem.Probes.csproj" />
+    <Compile Include="../Shared/Caching/*.cs" Link="Caching/Shared/%(Filename)%(Extension)" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="../Shared/Storage/DocumentStoreConcurrencyContractTests.cs" Link="Storage/DocumentStoreConcurrencyContractTests.cs" />
+  </ItemGroup>
 </Project>

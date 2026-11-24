@@ -89,7 +89,7 @@ public sealed class BlobDownloadBatchScope : IAsyncDisposable
     /// var result = await scope.DownloadAsync(provider, batchProvider, key, cancellationToken);
     /// </code>
     /// </example>
-    public async Task<Result<BlobDownload>> DownloadAsync(
+    public async Task<Result<StoredBlobDownload>> DownloadAsync(
         IBlobStoreProvider provider,
         IBlobStoreBatchDownloadProvider batchProvider,
         BlobKey key,
@@ -168,7 +168,7 @@ public sealed class BlobDownloadBatchScope : IAsyncDisposable
         var batchSize = Math.Max(1, batchProvider.MaxDownloadBatchSize);
         var groups = this.keys
             .Chunk(batchSize)
-            .Select(chunk => new BatchGroup(chunk, new Lazy<Task<ConcurrentDictionary<BlobKey, Result<BlobDownload>>>>(
+            .Select(chunk => new BatchGroup(chunk, new Lazy<Task<ConcurrentDictionary<BlobKey, Result<StoredBlobDownload>>>>(
                 () => Task.Run(() => this.LoadAsync(batchProvider, chunk), CancellationToken.None))))
             .ToArray();
         var keyToGroup = new Dictionary<BlobKey, int>();
@@ -193,11 +193,11 @@ public sealed class BlobDownloadBatchScope : IAsyncDisposable
         }
     }
 
-    private async Task<ConcurrentDictionary<BlobKey, Result<BlobDownload>>> LoadAsync(
+    private async Task<ConcurrentDictionary<BlobKey, Result<StoredBlobDownload>>> LoadAsync(
         IBlobStoreBatchDownloadProvider batchProvider,
         BlobKey[] batchKeys)
     {
-        var batch = new ConcurrentDictionary<BlobKey, Result<BlobDownload>>();
+        var batch = new ConcurrentDictionary<BlobKey, Result<StoredBlobDownload>>();
         await this.batchLimit.WaitAsync(this.cancellation.Token).ConfigureAwait(false);
         try
         {
@@ -224,7 +224,7 @@ public sealed class BlobDownloadBatchScope : IAsyncDisposable
         return batch;
     }
 
-    private sealed record BatchGroup(BlobKey[] Keys, Lazy<Task<ConcurrentDictionary<BlobKey, Result<BlobDownload>>>> Load);
+    private sealed record BatchGroup(BlobKey[] Keys, Lazy<Task<ConcurrentDictionary<BlobKey, Result<StoredBlobDownload>>>> Load);
 
     private sealed record ProviderState(BatchGroup[] Groups, Dictionary<BlobKey, int> KeyToGroup);
 }

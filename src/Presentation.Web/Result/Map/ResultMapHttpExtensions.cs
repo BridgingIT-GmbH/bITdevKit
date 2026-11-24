@@ -91,8 +91,8 @@ public static class ResultMapHttpExtensions
     /// <typeparam name="TSuccess">The type of the successful HTTP result (e.g., <see cref="Ok{T}"/>, <see cref="NoContent"/>, <see cref="Created{T}"/>).</typeparam>
     /// <typeparam name="TNotFound">The type of the not found HTTP result (e.g., <see cref="NotFound"/>).</typeparam>
     /// <typeparam name="TUnauthorized">The type of the unauthorized HTTP result (e.g., <see cref="UnauthorizedHttpResult"/>).</typeparam>
-    /// <typeparam name="TBadRequest">The type of the bad request HTTP result (e.g., <see cref="BadRequest"/> or <see cref="BadRequest{T}"/>).</typeparam>
-    /// <typeparam name="TProblem">The type of the problem HTTP result (e.g., <see cref="ProblemHttpResult"/>).</typeparam>
+    /// <typeparam name="TBadRequest">The HTTP 400 type, such as <see cref="BadRequest"/>, <c>BadRequest&lt;string&gt;</c>, or <c>BadRequest&lt;ProblemDetails&gt;</c>.</typeparam>
+    /// <typeparam name="TProblem">The problem response type. Use <see cref="ProblemHttpResult"/> for error-specific statuses or <see cref="InternalServerError"/> for HTTP 500.</typeparam>
     /// <typeparam name="TValue">The type of the result value, constrained to reference types (class) if used. Defaults to <see cref="object"/> for non-generic cases.</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> struct containing the operation outcome.</param>
     /// <param name="successFunc">A function to generate the success HTTP result when the operation succeeds. Must return <typeparamref name="TSuccess"/>.</param>
@@ -172,18 +172,14 @@ public static class ResultMapHttpExtensions
         return result switch
         {
             { IsSuccess: true } => successFunc(result.Value),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<TUnauthorized>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ForbiddenError>() => MapStatusProblem<TProblem>(logger, result, StatusCodes.Status403Forbidden),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<TUnauthorized>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<TNotFound>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<TBadRequest>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<OperationCancelledError>() => MapOperationCancelledError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<TimeoutError>() => MapTimeoutError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ExceptionError>() => MapExceptionError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleError>() => MapRuleError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleExceptionError>() => MapRuleExceptionError<TProblem>(logger, result),
-            _ => MapError<TProblem>(logger, result)
+            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() =>
+                typeof(TProblem).IsAssignableFrom(typeof(ProblemHttpResult))
+                    ? MapBadRequestError<TProblem>(logger, result)
+                    : MapBadRequestError<TBadRequest>(logger, result),
+            _ => MapFailureProblem<TProblem>(logger, result)
         };
     }
 
@@ -195,7 +191,7 @@ public static class ResultMapHttpExtensions
     /// <typeparam name="TNotFound">The type of the not found HTTP result (e.g., <see cref="NotFound"/>).</typeparam>
     /// <typeparam name="TUnauthorized">The type of the unauthorized HTTP result (e.g., <see cref="UnauthorizedHttpResult"/>).</typeparam>
     /// <typeparam name="TBadRequest">The type of the bad request HTTP result (e.g., <see cref="BadRequest"/>).</typeparam>
-    /// <typeparam name="TProblem">The type of the problem HTTP result (e.g., <see cref="ProblemHttpResult"/>).</typeparam>
+    /// <typeparam name="TProblem">The problem response type. Use <see cref="ProblemHttpResult"/> for error-specific statuses or <see cref="InternalServerError"/> for HTTP 500.</typeparam>
     /// <param name="result">The <see cref="Result"/> struct containing the operation outcome.</param>
     /// <param name="successFunc">A function to generate the success HTTP result when the operation succeeds. Must return <typeparamref name="TSuccess"/>.</param>
     /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
@@ -271,18 +267,14 @@ public static class ResultMapHttpExtensions
         return result switch
         {
             { IsSuccess: true } => successFunc(),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<TUnauthorized>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ForbiddenError>() => MapStatusProblem<TProblem>(logger, result, StatusCodes.Status403Forbidden),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<TUnauthorized>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<TNotFound>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<TBadRequest>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<OperationCancelledError>() => MapOperationCancelledError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<TimeoutError>() => MapTimeoutError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ExceptionError>() => MapExceptionError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleError>() => MapRuleError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleExceptionError>() => MapRuleExceptionError<TProblem>(logger, result),
-            _ => MapError<TProblem>(logger, result)
+            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() =>
+                typeof(TProblem).IsAssignableFrom(typeof(ProblemHttpResult))
+                    ? MapBadRequestError<TProblem>(logger, result)
+                    : MapBadRequestError<TBadRequest>(logger, result),
+            _ => MapFailureProblem<TProblem>(logger, result)
         };
     }
 
@@ -293,7 +285,7 @@ public static class ResultMapHttpExtensions
     /// <typeparam name="TSuccess">The type of the successful HTTP result (e.g., <see cref="Ok{T}"/>, <see cref="NoContent"/>, <see cref="Created{T}"/>).</typeparam>
     /// <typeparam name="TUnauthorized">The type of the unauthorized HTTP result (e.g., <see cref="UnauthorizedHttpResult"/>).</typeparam>
     /// <typeparam name="TBadRequest">The type of the bad request HTTP result (e.g., <see cref="BadRequest"/>).</typeparam>
-    /// <typeparam name="TProblem">The type of the problem HTTP result (e.g., <see cref="ProblemHttpResult"/>).</typeparam>
+    /// <typeparam name="TProblem">The problem response type. Use <see cref="ProblemHttpResult"/> for error-specific statuses or <see cref="InternalServerError"/> for HTTP 500.</typeparam>
     /// <param name="result">The <see cref="Result"/> struct containing the operation outcome.</param>
     /// <param name="successFunc">A function to generate the success HTTP result when the operation succeeds. Must return <typeparamref name="TSuccess"/>.</param>
     /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
@@ -366,17 +358,14 @@ public static class ResultMapHttpExtensions
         return result switch
         {
             { IsSuccess: true } => successFunc(),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<TUnauthorized>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<TBadRequest>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<OperationCancelledError>() => MapOperationCancelledError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<TimeoutError>() => MapTimeoutError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ExceptionError>() => MapExceptionError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleError>() => MapRuleError<TProblem>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleExceptionError>() => MapRuleExceptionError<TProblem>(logger, result),
-            _ => MapError<TProblem>(logger, result)
+            { IsFailure: true, Errors: var errors } when errors.Has<ForbiddenError>() => MapStatusProblem<TProblem>(logger, result, StatusCodes.Status403Forbidden),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<TUnauthorized>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapStatusProblem<TProblem>(logger, result, StatusCodes.Status404NotFound),
+            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() =>
+                typeof(TProblem).IsAssignableFrom(typeof(ProblemHttpResult))
+                    ? MapBadRequestError<TProblem>(logger, result)
+                    : MapBadRequestError<TBadRequest>(logger, result),
+            _ => MapFailureProblem<TProblem>(logger, result)
         };
     }
 
@@ -421,34 +410,14 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return TypedResults.Problem(
-                        detail: "A custom error handler was executed. See extensions for details.",
-                        statusCode: customResult switch
-                        {
-                            IStatusCodeHttpResult statusResult => statusResult.StatusCode,
-                            _ => 500 // Default to 500 if status isn’t available
-                        },
-                        title: "Custom Error",
-                        extensions: new Dictionary<string, object> { ["customResultType"] = customResult.GetType().Name }
-                    );
+                    return WrapCustomResult(customResult);
             }
         }
 
         return result switch
         {
             { IsSuccess: true } => TypedResults.NoContent(),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<NotFound>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<OperationCancelledError>() => MapOperationCancelledError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<TimeoutError>() => MapTimeoutError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ExceptionError>() => MapExceptionError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleError>() => MapRuleError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleExceptionError>() => MapRuleExceptionError<ProblemHttpResult>(logger, result),
-            _ => MapError<ProblemHttpResult>(logger, result)
+            _ => MapFailureProblem<ProblemHttpResult>(logger, result)
         };
     }
 
@@ -501,34 +470,14 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return TypedResults.Problem(
-                        detail: "A custom error handler was executed. See extensions for details.",
-                        statusCode: customResult switch
-                        {
-                            IStatusCodeHttpResult statusResult => statusResult.StatusCode,
-                            _ => 500 // Default to 500 if status isn’t available
-                        },
-                        title: "Custom Error",
-                        extensions: new Dictionary<string, object> { ["customResultType"] = customResult.GetType().Name }
-                    );
+                    return WrapCustomResult(customResult);
             }
         }
 
         return result switch
         {
             { IsSuccess: true } => TypedResults.Ok(result.Value),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<NotFound>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<OperationCancelledError>() => MapOperationCancelledError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<TimeoutError>() => MapTimeoutError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ExceptionError>() => MapExceptionError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleError>() => MapRuleError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleExceptionError>() => MapRuleExceptionError<ProblemHttpResult>(logger, result),
-            _ => MapError<ProblemHttpResult>(logger, result)
+            _ => MapFailureProblem<ProblemHttpResult>(logger, result)
         };
     }
 
@@ -573,34 +522,14 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return TypedResults.Problem(
-                        detail: "A custom error handler was executed. See extensions for details.",
-                        statusCode: customResult switch
-                        {
-                            IStatusCodeHttpResult statusResult => statusResult.StatusCode,
-                            _ => 500 // Default to 500 if status isn’t available
-                        },
-                        title: "Custom Error",
-                        extensions: new Dictionary<string, object> { ["customResultType"] = customResult.GetType().Name }
-                    );
+                    return WrapCustomResult(customResult);
             }
         }
 
         return result switch
         {
             { IsSuccess: true } => TypedResults.Ok(),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<NotFound>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<OperationCancelledError>() => MapOperationCancelledError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<TimeoutError>() => MapTimeoutError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ExceptionError>() => MapExceptionError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleError>() => MapRuleError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleExceptionError>() => MapRuleExceptionError<ProblemHttpResult>(logger, result),
-            _ => MapError<ProblemHttpResult>(logger, result)
+            _ => MapFailureProblem<ProblemHttpResult>(logger, result)
         };
     }
 
@@ -651,33 +580,14 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return TypedResults.Problem(
-                        detail: "A custom error handler was executed. See extensions for details.",
-                        statusCode: customResult switch
-                        {
-                            IStatusCodeHttpResult statusResult => statusResult.StatusCode,
-                            _ => 500 // Default to 500 if status isn’t available
-                        },
-                        title: "Custom Error",
-                        extensions: new Dictionary<string, object> { ["customResultType"] = customResult.GetType().Name }
-                    );
+                    return WrapCustomResult(customResult);
             }
         }
 
         return result switch
         {
             { IsSuccess: true } => TypedResults.Ok(result.Value),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<OperationCancelledError>() => MapOperationCancelledError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<TimeoutError>() => MapTimeoutError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ExceptionError>() => MapExceptionError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleError>() => MapRuleError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleExceptionError>() => MapRuleExceptionError<ProblemHttpResult>(logger, result),
-            _ => MapError<ProblemHttpResult>(logger, result)
+            _ => MapFailureProblem<ProblemHttpResult>(logger, result)
         };
     }
 
@@ -730,33 +640,14 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return TypedResults.Problem(
-                        detail: "A custom error handler was executed. See extensions for details.",
-                        statusCode: customResult switch
-                        {
-                            IStatusCodeHttpResult statusResult => statusResult.StatusCode,
-                            _ => 500 // Default to 500 if status isn’t available
-                        },
-                        title: "Custom Error",
-                        extensions: new Dictionary<string, object> { ["customResultType"] = customResult.GetType().Name }
-                    );
+                    return WrapCustomResult(customResult);
             }
         }
 
         return result switch
         {
             { IsSuccess: true } => TypedResults.Created(uri, result.Value),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<OperationCancelledError>() => MapOperationCancelledError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<TimeoutError>() => MapTimeoutError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ExceptionError>() => MapExceptionError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleError>() => MapRuleError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleExceptionError>() => MapRuleExceptionError<ProblemHttpResult>(logger, result),
-            _ => MapError<ProblemHttpResult>(logger, result)
+            _ => MapFailureProblem<ProblemHttpResult>(logger, result)
         };
     }
 
@@ -790,33 +681,14 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return TypedResults.Problem(
-                        detail: "A custom error handler was executed. See extensions for details.",
-                        statusCode: customResult switch
-                        {
-                            IStatusCodeHttpResult statusResult => statusResult.StatusCode,
-                            _ => 500 // Default to 500 if status isn’t available
-                        },
-                        title: "Custom Error",
-                        extensions: new Dictionary<string, object> { ["customResultType"] = customResult.GetType().Name }
-                    );
+                    return WrapCustomResult(customResult);
             }
         }
 
         return result switch
         {
             { IsSuccess: true } => TypedResults.Accepted(location),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<OperationCancelledError>() => MapOperationCancelledError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<TimeoutError>() => MapTimeoutError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ExceptionError>() => MapExceptionError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleError>() => MapRuleError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleExceptionError>() => MapRuleExceptionError<ProblemHttpResult>(logger, result),
-            _ => MapError<ProblemHttpResult>(logger, result)
+            _ => MapFailureProblem<ProblemHttpResult>(logger, result)
         };
     }
 
@@ -857,33 +729,14 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return TypedResults.Problem(
-                        detail: "A custom error handler was executed. See extensions for details.",
-                        statusCode: customResult switch
-                        {
-                            IStatusCodeHttpResult statusResult => statusResult.StatusCode,
-                            _ => 500 // Default to 500 if status isn’t available
-                        },
-                        title: "Custom Error",
-                        extensions: new Dictionary<string, object> { ["customResultType"] = customResult.GetType().Name }
-                    );
+                    return WrapCustomResult(customResult);
             }
         }
 
         return result switch
         {
             { IsSuccess: true } => TypedResults.Accepted(location, result.Value),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<OperationCancelledError>() => MapOperationCancelledError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<TimeoutError>() => MapTimeoutError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ExceptionError>() => MapExceptionError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleError>() => MapRuleError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleExceptionError>() => MapRuleExceptionError<ProblemHttpResult>(logger, result),
-            _ => MapError<ProblemHttpResult>(logger, result)
+            _ => MapFailureProblem<ProblemHttpResult>(logger, result)
         };
     }
 
@@ -948,33 +801,14 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return TypedResults.Problem(
-                        detail: "A custom error handler was executed. See extensions for details.",
-                        statusCode: customResult switch
-                        {
-                            IStatusCodeHttpResult statusResult => statusResult.StatusCode,
-                            _ => 500 // Default to 500 if status isn’t available
-                        },
-                        title: "Custom Error",
-                        extensions: new Dictionary<string, object> { ["customResultType"] = customResult.GetType().Name }
-                    );
+                    return WrapCustomResult(customResult);
             }
         }
 
         return result switch
         {
             { IsSuccess: true } => TypedResults.Ok(ToPagedResponse(result)),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<OperationCancelledError>() => MapOperationCancelledError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<TimeoutError>() => MapTimeoutError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ExceptionError>() => MapExceptionError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleError>() => MapRuleError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleExceptionError>() => MapRuleExceptionError<ProblemHttpResult>(logger, result),
-            _ => MapError<ProblemHttpResult>(logger, result)
+            _ => MapFailureProblem<ProblemHttpResult>(logger, result)
         };
 
         // Creates a standardized paged response from a ResultPaged.
@@ -1021,16 +855,7 @@ public static class ResultMapHttpExtensions
                 default:
                     // Wrap unrecognized custom results directly in a ProblemHttpResult
                     logger?.LogInformation("Custom error handler returned an unrecognized type. Wrapping in ProblemHttpResult.");
-                    return TypedResults.Problem(
-                        detail: "A custom error handler was executed. See extensions for details.",
-                        statusCode: customResult switch
-                        {
-                            IStatusCodeHttpResult statusResult => statusResult.StatusCode,
-                            _ => 500 // Default to 500 if status isn’t available
-                        },
-                        title: "Custom Error",
-                        extensions: new Dictionary<string, object> { ["customResultType"] = customResult.GetType().Name }
-                    );
+                    return WrapCustomResult(customResult);
             }
         }
 
@@ -1044,18 +869,7 @@ public static class ResultMapHttpExtensions
                 lastModified: fileContent.LastModified,
                 entityTag: string.IsNullOrWhiteSpace(fileContent.EntityTag) ? null : EntityTagHeaderValue.Parse(fileContent.EntityTag)),
 
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<NotFound>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<OperationCancelledError>() => MapOperationCancelledError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<TimeoutError>() => MapTimeoutError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ExceptionError>() => MapExceptionError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleError>() => MapRuleError<ProblemHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<RuleExceptionError>() => MapRuleExceptionError<ProblemHttpResult>(logger, result),
-            _ => MapError<ProblemHttpResult>(logger, result)
+            _ => MapFailureProblem<ProblemHttpResult>(logger, result)
         };
     }
 
@@ -1115,7 +929,7 @@ public static class ResultMapHttpExtensions
         }
 
         logger?.LogWarning("result - unauthorized access detected: {Error}", result.ToString());
-        return (TResult)(IResult)TypedResults.Unauthorized();
+        return MatchResponse<TResult>(TypedResults.Unauthorized());
     }
 
     /// <summary>
@@ -1141,16 +955,17 @@ public static class ResultMapHttpExtensions
         }
 
         logger?.LogWarning("result - not found: {Error}", result.ToString());
-        return (TResult)(IResult)TypedResults.NotFound();
+        return MatchResponse<TResult>(TypedResults.NotFound());
     }
 
     /// <summary>
-    /// Executes the map bad request error operation.
+    /// Maps a failed result to the requested HTTP 400 response.
     /// </summary>
-    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <typeparam name="TResult">The response type. Built-in mappings support <see cref="BadRequest"/>, <c>BadRequest&lt;string&gt;</c>, <c>BadRequest&lt;ProblemDetails&gt;</c>, and <see cref="ProblemHttpResult"/>.</typeparam>
     /// <param name="logger">The logger that receives diagnostic events.</param>
     /// <param name="result">The result used by the operation.</param>
-    /// <returns>The result of the operation.</returns>
+    /// <returns>The declared response with validation details when its type accepts them.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when a registered handler or the built-in mappings cannot provide the requested response type.</exception>
     public static TResult MapBadRequestError<TResult>(ILogger logger, Result result)
         where TResult : IResult
     {
@@ -1170,25 +985,13 @@ public static class ResultMapHttpExtensions
 
         logger?.LogWarning("result - bad request error occurred: {Error}", result.ToString());
 
-        if (result.Errors.Has<ValidationError>() || result.Errors.Has<FluentValidationError>())
+        return MatchResponse<TResult>(typeof(TResult) switch
         {
-            return MapValidationErrors<TResult>(result, logger);
-        }
-
-        if (typeof(TResult) == typeof(BadRequest))
-        {
-            return (TResult)(IResult)TypedResults.BadRequest();
-        }
-
-        // Fallback to ProblemHttpResult for other TBadRequest types
-        logger?.LogWarning("Cannot map to {BadRequestType} for non-validation errors. Falling back to ProblemHttpResult.", typeof(TResult).Name);
-        return (TResult)(IResult)TypedResults.Problem(
-            detail: result.ToString(),
-            instance: null,
-            statusCode: 400, // Bad Request
-            title: "Bad Request",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
+            var type when type == typeof(BadRequest) => TypedResults.BadRequest(),
+            var type when type == typeof(BadRequest<string>) => TypedResults.BadRequest(CreateBadRequestDetails(result).Detail),
+            var type when type == typeof(BadRequest<ProblemDetails>) => TypedResults.BadRequest(CreateBadRequestDetails(result)),
+            _ => TypedResults.Problem(CreateBadRequestDetails(result))
+        });
     }
 
     /// <summary>
@@ -1214,13 +1017,7 @@ public static class ResultMapHttpExtensions
         }
 
         logger?.LogWarning("result - conflict error occurred: {Error}", result.ToString());
-        return (TResult)(IResult)TypedResults.Problem(
-            detail: result.ToString(),
-            instance: null,
-            statusCode: 409, // Conflict
-            title: "Conflict",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409",
-            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
+        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 409, "Conflict")));
     }
 
     /// <summary>
@@ -1246,13 +1043,7 @@ public static class ResultMapHttpExtensions
         }
 
         logger?.LogWarning("result - concurrency error occurred: {Error}", result.ToString());
-        return (TResult)(IResult)TypedResults.Problem(
-            detail: result.ToString(),
-            instance: null,
-            statusCode: 409, // Conflict
-            title: "Concurrency Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409",
-            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
+        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 409, "Concurrency Error")));
     }
 
     /// <summary>
@@ -1278,12 +1069,7 @@ public static class ResultMapHttpExtensions
         }
 
         logger?.LogWarning("result - domain policy error occurred: {Error}", result.ToString());
-        return (TResult)(IResult)TypedResults.Problem(
-            detail: result.ToString(),
-            statusCode: 400, // Bad Request
-            title: "Domain Policy Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
+        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 400, "Domain Policy Error")));
     }
 
     /// <summary>
@@ -1309,12 +1095,7 @@ public static class ResultMapHttpExtensions
         }
 
         logger?.LogWarning("result - operation cancelled: {Error}", result.ToString());
-        return (TResult)(IResult)TypedResults.Problem(
-            detail: result.ToString(),
-            statusCode: 499, // Client Closed Request (custom or unofficial, often used for cancellations)
-            title: "Operation Cancelled",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/499",
-            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
+        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 499, "Operation Cancelled")));
     }
 
     /// <summary>
@@ -1340,12 +1121,7 @@ public static class ResultMapHttpExtensions
         }
 
         logger?.LogWarning("result - timeout error occurred: {Error}", result.ToString());
-        return (TResult)(IResult)TypedResults.Problem(
-            detail: result.ToString(),
-            statusCode: 504, // Gateway Timeout
-            title: "Timeout Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504",
-            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
+        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 504, "Timeout Error")));
     }
 
     /// <summary>
@@ -1370,13 +1146,9 @@ public static class ResultMapHttpExtensions
             logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.", typeof(TResult).Name, customResult.GetType().Name);
         }
 
-        logger?.LogError("result - exception error occurred: {Error}", result.ToString());
-        return (TResult)(IResult)TypedResults.Problem(
-            detail: result.ToString(),
-            statusCode: 500, // Internal Server Error
-            title: "Exception Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500",
-            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
+        logger?.LogError(result.Errors.OfType<ExceptionError>().FirstOrDefault()?.Exception,
+            "result - exception error occurred: {Error}", result.ToString());
+        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 500, "Exception Error")));
     }
 
     /// <summary>
@@ -1402,12 +1174,7 @@ public static class ResultMapHttpExtensions
         }
 
         logger?.LogWarning("result - rule error occurred: {Error}", result.ToString());
-        return (TResult)(IResult)TypedResults.Problem(
-            detail: result.ToString(),
-            statusCode: 500, // Bad Request
-            title: "Rule Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500",
-            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
+        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 500, "Rule Error")));
     }
 
     /// <summary>
@@ -1432,13 +1199,9 @@ public static class ResultMapHttpExtensions
             logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.", typeof(TResult).Name, customResult.GetType().Name);
         }
 
-        logger?.LogError("result - rule exception error occurred: {Error}", result.ToString());
-        return (TResult)(IResult)TypedResults.Problem(
-            detail: result.ToString(),
-            statusCode: 500, // Internal Server Error
-            title: "Rule Exception Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500",
-            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
+        logger?.LogError(result.Errors.OfType<RuleExceptionError>().FirstOrDefault()?.Exception,
+            "result - rule exception error occurred: {Error}", result.ToString());
+        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 500, "Rule Exception Error")));
     }
 
     /// <summary>
@@ -1466,13 +1229,7 @@ public static class ResultMapHttpExtensions
         //}
 
         logger?.LogError("result - unexpected error occurred: {Error}", result.ToString());
-        return (TResult)(IResult)TypedResults.Problem(
-            detail: result.ToString(),
-            instance: Guid.NewGuid().ToString(),
-            statusCode: 500,
-            title: "Unexpected Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500",
-            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
+        return MatchProblemResponse<TResult>(TypedResults.Problem(CreateProblem(result, 500, "Unexpected Error", instance: Guid.NewGuid().ToString())));
     }
 
     ///// <summary>
@@ -1505,8 +1262,85 @@ public static class ResultMapHttpExtensions
     //    return (TResult)(IResult)problem;
     //}
 
-    private static TResult MapValidationErrors<TResult>(Result result, ILogger logger)
+    private static ProblemHttpResult WrapCustomResult(IResult customResult)
+    {
+        var status = (customResult as IStatusCodeHttpResult)?.StatusCode ?? StatusCodes.Status500InternalServerError;
+        var problem = ResultHttpProblemDetails.Create(status, "Custom Error");
+        problem.Detail = "A custom error handler was executed. See extensions for details.";
+        problem.Extensions["customResultType"] = customResult.GetType().Name;
+        return TypedResults.Problem(problem);
+    }
+
+    private static TResult MapFailureProblem<TResult>(ILogger logger, Result result)
+        where TResult : IResult => result.Errors switch
+        {
+            var errors when errors.Has<ForbiddenError>() => MapStatusProblem<TResult>(logger, result, StatusCodes.Status403Forbidden),
+            var errors when errors.Has<UnauthorizedError>() => MapStatusProblem<TResult>(logger, result, StatusCodes.Status401Unauthorized),
+            var errors when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapStatusProblem<TResult>(logger, result, StatusCodes.Status404NotFound),
+            var errors when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<TResult>(logger, result),
+            var errors when errors.Has<ConflictError>() => MapConflictError<TResult>(logger, result),
+            var errors when errors.Has<ConcurrencyError>() => MapConcurrencyError<TResult>(logger, result),
+            var errors when errors.Has<DomainPolicyError>() => MapDomainPolicyError<TResult>(logger, result),
+            var errors when errors.Has<OperationCancelledError>() => MapOperationCancelledError<TResult>(logger, result),
+            var errors when errors.Has<TimeoutError>() => MapTimeoutError<TResult>(logger, result),
+            var errors when errors.Has<ExceptionError>() => MapExceptionError<TResult>(logger, result),
+            var errors when errors.Has<RuleExceptionError>() => MapRuleExceptionError<TResult>(logger, result),
+            var errors when errors.Has<RuleError>() => MapRuleError<TResult>(logger, result),
+            _ => MapError<TResult>(logger, result)
+        };
+
+    private static TResult MapStatusProblem<TResult>(ILogger logger, Result result, int statusCode)
         where TResult : IResult
+    {
+        logger?.LogWarning("result - HTTP {StatusCode}: {Error}", statusCode, result.ToString());
+        return MatchProblemResponse<TResult>(TypedResults.Problem(ResultHttpProblemDetails.Create(statusCode, result: result)));
+    }
+
+    private static ProblemDetails CreateProblem(
+        Result result, int statusCode, string title, string instance = null, Dictionary<string, string[]> errors = null)
+    {
+        var problem = ResultHttpProblemDetails.Create(statusCode, title, result);
+        problem.Instance = instance;
+
+        if (problem is not ResultHttpProblemDetails)
+        {
+            problem.Detail = result.ToString();
+            problem.Extensions["data"] = errors is null ? new { result } : new { result, errors };
+        }
+        else if (errors is not null)
+        {
+            problem.Detail = "One or more validation errors occurred.";
+            problem.Extensions["data"] = new { errors };
+        }
+
+        return problem;
+    }
+
+    private static TResult MatchProblemResponse<TResult>(ProblemHttpResult response)
+        where TResult : IResult =>
+        typeof(TResult) == typeof(InternalServerError)
+            ? MatchResponse<TResult>(TypedResults.InternalServerError())
+            : MatchResponse<TResult>(response);
+
+    private static TResult MatchResponse<TResult>(IResult response)
+        where TResult : IResult =>
+        response is TResult compatible
+            ? compatible
+            : throw new InvalidOperationException(
+                $"The built-in response {response.GetType()} cannot be returned as {typeof(TResult)}. " +
+                "Declare a supported response type or register a custom error handler that returns the requested type.");
+
+    private static ProblemDetails CreateBadRequestDetails(Result result)
+    {
+        if (result.Errors.Has<ValidationError>() || result.Errors.Has<FluentValidationError>())
+        {
+            return CreateValidationDetails(result);
+        }
+
+        return CreateProblem(result, StatusCodes.Status400BadRequest, "Bad Request");
+    }
+
+    private static ProblemDetails CreateValidationDetails(Result result)
     {
         var validationErrors = new List<(string PropertyName, string Message)>();
 
@@ -1514,58 +1348,21 @@ public static class ResultMapHttpExtensions
         {
             if (error is ValidationError ve)
             {
-                validationErrors.Add((
-                    string.IsNullOrWhiteSpace(ve.PropertyName) ? string.Empty : ve.PropertyName, ve.Message));
+                validationErrors.Add((ve.PropertyName, ve.Message));
             }
             else if (error is FluentValidationError fve)
             {
                 foreach (var failure in fve.Errors)
                 {
-                    validationErrors.Add((
-                        string.IsNullOrWhiteSpace(failure.PropertyName) ? string.Empty : failure.PropertyName, failure.ErrorMessage));
+                    validationErrors.Add((failure.PropertyName, failure.ErrorMessage));
                 }
             }
         }
 
         var errors = validationErrors
-            .GroupBy(e => e.PropertyName)
-            .ToDictionary(
-                g => g.Key.EmptyToNull() ?? "validation",
-                g => g.Select(e => e.Message).ToArray());
+            .GroupBy(e => string.IsNullOrWhiteSpace(e.PropertyName) ? "validation" : e.PropertyName)
+            .ToDictionary(g => g.Key, g => g.Select(e => e.Message).ToArray());
 
-        var problemDetails = new ProblemDetails
-        {
-            Title = "Validation Error",
-            Status = StatusCodes.Status400BadRequest,
-            Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-            Detail = result.ToString(),
-            Extensions = new Dictionary<string, object>
-            {
-                ["data"] = new { result, errors }
-            }
-        };
-
-        // Always return ProblemHttpResult, as it's compatible with most result unions
-        if (typeof(TResult) == typeof(ProblemHttpResult))
-        {
-            return (TResult)(IResult)TypedResults.Problem(problemDetails);
-        }
-
-        // If TResult is BadRequest, return a plain BadRequest with the problem details in the log
-        if (typeof(TResult) == typeof(BadRequest))
-        {
-            logger?.LogWarning("Validation errors mapped to plain BadRequest due to type constraint.");
-            return (TResult)(IResult)TypedResults.Problem(
-                detail: result.ToString(),
-                instance: null,
-                statusCode: 400, // Bad Request
-                title: "Bad Request",
-                type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-                extensions: new Dictionary<string, object>() { ["data"] = new { result } });
-        }
-
-        // Fallback for other TResult types
-        logger?.LogWarning("Cannot map validation errors to {ResultType}. Falling back to ProblemHttpResult.", typeof(TResult).Name);
-        return (TResult)(IResult)TypedResults.Problem(problemDetails);
+        return CreateProblem(result, StatusCodes.Status400BadRequest, "Validation Error", errors: errors);
     }
 }

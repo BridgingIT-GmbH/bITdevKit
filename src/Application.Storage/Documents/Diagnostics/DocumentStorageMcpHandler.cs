@@ -21,8 +21,8 @@ public sealed class DocumentStorageMcpHandler(IDocumentStorageDiagnosticsService
     public IReadOnlyCollection<McpCapability> Capabilities { get; } =
     [
         Capability("documents.summary", "Returns Document Storage registration and health summary."),
-        Capability("documents.clients", "Lists registered Document Storage clients with provider capabilities and probe status."),
-        Capability("documents.probe", "Returns non-mutating probe details for one registered Document Storage client.")
+        Capability("documents.clients", "Lists registered Document Storage clients with capabilities and probe status. Optional includeDimensionNameCounts=true performs dictionary counts."),
+        Capability("documents.probe", "Returns non-mutating probe details for one Document Storage client. Optional includeDimensionNameCounts=true performs dictionary counts.")
     ];
 
     /// <inheritdoc />
@@ -60,7 +60,10 @@ public sealed class DocumentStorageMcpHandler(IDocumentStorageDiagnosticsService
 
     private async Task<McpResponse> ClientsAsync(JsonElement arguments, CancellationToken cancellationToken)
     {
-        var result = await diagnostics.CaptureAsync(cancellationToken).ConfigureAwait(false);
+        var includeNames = McpArgumentReader.GetBoolean(arguments, "includeDimensionNameCounts") == true;
+        var result = includeNames
+            ? await diagnostics.CaptureAsync(true, cancellationToken).ConfigureAwait(false)
+            : await diagnostics.CaptureAsync(cancellationToken).ConfigureAwait(false);
         if (result.IsFailure)
         {
             return Failure(result, "Document Storage client diagnostics failed.");
@@ -87,7 +90,10 @@ public sealed class DocumentStorageMcpHandler(IDocumentStorageDiagnosticsService
             return McpResponse.Unavailable(McpErrorCode.OperationFailed, "Document Storage client name is required.", "Supply the name argument.");
         }
 
-        var result = await diagnostics.CaptureAsync(cancellationToken).ConfigureAwait(false);
+        var includeNames = McpArgumentReader.GetBoolean(arguments, "includeDimensionNameCounts") == true;
+        var result = includeNames
+            ? await diagnostics.CaptureAsync(true, cancellationToken).ConfigureAwait(false)
+            : await diagnostics.CaptureAsync(cancellationToken).ConfigureAwait(false);
         if (result.IsFailure)
         {
             return Failure(result, $"Document Storage probe for client '{name}' failed.");

@@ -85,29 +85,9 @@ public readonly partial struct Result<T> : IResult<T>
     public bool IsFailure => !this.success;
 
     /// <summary>
-    /// Gets the value if the result is successful. Throws if accessing a failed result's value.
+    /// Gets the stored value. A failure can carry a partial value or the default value for <typeparamref name="T"/>.
     /// </summary>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when attempting to access the Value property of a failed result.
-    /// </exception>
-    /// <example>
-    /// <code>
-    /// var result = Result{User}.Success(user);
-    /// try
-    /// {
-    ///     var name = result.Value.Name; // Safe if IsSuccess is true
-    /// }
-    /// catch (InvalidOperationException)
-    /// {
-    ///     Console.WriteLine("Cannot access value of failed result");
-    /// }
-    /// </code>
-    /// </example>
     public T Value => this.value;
-
-    //public T Value => this.success
-    //    ? this.value
-    //    : throw new InvalidOperationException("Cannot access Value of failed result");
 
     /// <summary>
     /// Gets a read-only list of messages associated with the result.
@@ -297,27 +277,8 @@ public readonly partial struct Result<T> : IResult<T>
     /// <typeparam name="TNew">The type returned by the operation.</typeparam>
     /// <param name="operation">The operation to execute.</param>
     /// <returns>A successful result containing the returned value; a failed result when the operation is <see langword="null"/> or throws.</returns>
-    public static Result<TNew> Bind<TNew>(Func<TNew> operation)
-    {
-        if (operation is null)
-        {
-            return Result<TNew>.Failure()
-                .WithError(new Error("Operation cannot be null"));
-        }
-
-        try
-        {
-            var value = operation();
-
-            return Result<TNew>.Success(value);
-        }
-        catch (Exception ex)
-        {
-            return Result<TNew>.Failure()
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessage(ex.Message);
-        }
-    }
+    public static Result<TNew> Bind<TNew>(Func<TNew> operation) =>
+        Result<TNew>.Bind(operation);
 
     /// <summary>
     ///     Creates a Result from an async operation, handling any exceptions that occur.
@@ -368,35 +329,10 @@ public readonly partial struct Result<T> : IResult<T>
     /// <param name="operation">The asynchronous operation to execute.</param>
     /// <param name="cancellationToken">The token passed to the operation.</param>
     /// <returns>A task containing a successful value result, or a failed result for a missing operation, cancellation, or exception.</returns>
-    public static async Task<Result<TNew>> BindAsync<TNew>(
+    public static Task<Result<TNew>> BindAsync<TNew>(
         Func<CancellationToken, Task<TNew>> operation,
-        CancellationToken cancellationToken = default)
-    {
-        if (operation is null)
-        {
-            return Result<TNew>.Failure()
-                .WithError(new Error("Operation cannot be null"));
-        }
-
-        try
-        {
-            var value = await operation(cancellationToken);
-
-            return Result<TNew>.Success(value);
-        }
-        catch (OperationCanceledException)
-        {
-            return Result<TNew>.Failure()
-                .WithError(new OperationCancelledError())
-                .WithMessage("Operation was cancelled");
-        }
-        catch (Exception ex)
-        {
-            return Result<TNew>.Failure()
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessage(ex.Message);
-        }
-    }
+        CancellationToken cancellationToken = default) =>
+        Result<TNew>.BindAsync(operation, cancellationToken);
 
     // /// <summary>
     // /// Implicitly converts a Result{T} to a Result{TOutput}.
@@ -851,6 +787,9 @@ public readonly partial struct Result<T> : IResult<T>
         return new Result<T>(false, this.value, this.messages, this.errors.Add(error));
     }
 
+    internal Result<T> AsFailure() =>
+        this.IsFailure ? this : new Result<T>(false, this.value, this.messages, this.errors);
+
     /// <summary>Adds an error with the supplied message and marks the result as failed.</summary>
     /// <param name="errorMessage">The message stored in the appended <see cref="Error"/>.</param>
     /// <returns>A failed result that preserves the current value, messages, and existing errors.</returns>
@@ -871,14 +810,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// }
     /// </example>
     public Result<T> WithError(Exception ex)
-    {
-        if (ex is null)
-        {
-            return this;
-        }
-
-        return new Result<T>(false, default, this.messages, this.errors.Add(new ExceptionError(ex)));
-    }
+        => ex is null ? this : this.WithError(new ExceptionError(ex));
 
     /// <summary>
     /// Adds multiple errors to the Result and marks it as failed while maintaining immutability.
@@ -900,12 +832,11 @@ public readonly partial struct Result<T> : IResult<T>
     /// </example>
     public Result<T> WithErrors(IEnumerable<IResultError> errors)
     {
-        if (errors?.Any() != true)
-        {
-            return this;
-        }
+        var combined = Result.AppendErrors(this.errors, errors);
 
-        return new Result<T>(false, this.value, this.messages, this.errors.AddRange(errors));
+        return combined.Count == this.errors.Count
+            ? this
+            : new Result<T>(false, this.value, this.messages, combined);
     }
 
     /// <summary>
@@ -938,6 +869,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// <summary>
     /// Checks if the Result contains an error of a specific type.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <typeparam name="TError">The type of error to check for.</typeparam>
     /// <returns>True if the Result contains at least one error of type TError; otherwise, false.</returns>
     /// <example>
@@ -953,12 +885,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// </code>
     /// </example>
     public bool HasError<TError>()
-        where TError : class, IResultError
-    {
-        var errorType = typeof(TError);
-
-        return this.errors.AsEnumerable().Any(e => e.GetType() == errorType);
-    }
+        where TError : class, IResultError => this.GetError<TError>() is not null;
 
     /// <summary>
     /// Checks if the Result contains any errors.
@@ -978,6 +905,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// <summary>
     /// Tries to get all errors of a specific type from the Result.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <typeparam name="TError">The type of errors to retrieve.</typeparam>
     /// <param name="errors">When this method returns, contains all errors of type TError if any were found; otherwise, empty.</param>
     /// <returns>True if any errors of type TError were found; otherwise, false.</returns>
@@ -999,8 +927,7 @@ public readonly partial struct Result<T> : IResult<T>
     public bool TryGetErrors<TError>(out IEnumerable<TError> errors)
         where TError : class, IResultError
     {
-        var errorType = typeof(TError);
-        errors = this.errors.AsEnumerable().Where(e => e.GetType() == errorType).Cast<TError>();
+        errors = this.GetErrors<TError>();
 
         return errors.Any();
     }
@@ -1008,6 +935,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// <summary>
     /// Gets the first error of a specific type from the Result.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <typeparam name="TError">The type of error to retrieve.</typeparam>
     /// <returns>The first error of type TError if found; otherwise, null.</returns>
     /// <example>
@@ -1020,16 +948,13 @@ public readonly partial struct Result<T> : IResult<T>
     /// </code>
     /// </example>
     public TError GetError<TError>()
-        where TError : class, IResultError
-    {
-        var errorType = typeof(TError);
-
-        return this.errors.AsEnumerable().FirstOrDefault(e => e.GetType() == errorType) as TError;
-    }
+        where TError : class, IResultError =>
+        this.errors.AsEnumerable().FirstOrDefault(static error => error is TError) as TError;
 
     /// <summary>
     /// Tries to get the first error of a specific type from the Result.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <typeparam name="TError">The type of error to retrieve.</typeparam>
     /// <param name="error">When this method returns, contains the first error of type TError if found; otherwise, default.</param>
     /// <returns>True if an error of type TError was found; otherwise, false.</returns>
@@ -1048,16 +973,9 @@ public readonly partial struct Result<T> : IResult<T>
     public bool TryGetError<TError>(out TError error)
         where TError : class, IResultError
     {
-        error = null;
-        var foundError = this.errors.AsEnumerable().FirstOrDefault(e => e is TError);
-        if (foundError is null)
-        {
-            return false;
-        }
+        error = this.GetError<TError>();
 
-        error = foundError as TError;
-
-        return true;
+        return error is not null;
     }
 
     //bool IResult.TryGetError<TError>(out TError error)
@@ -1073,6 +991,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// <summary>
     /// Gets all errors of a specific type from the Result.
     /// </summary>
+    /// <remarks>Matches errors assignable to <typeparamref name="TError"/>.</remarks>
     /// <typeparam name="TError">The type of errors to retrieve.</typeparam>
     /// <returns>All errors of type TError. Empty enumerable if none found.</returns>
     /// <example>
@@ -1089,12 +1008,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// </code>
     /// </example>
     public IEnumerable<TError> GetErrors<TError>()
-        where TError : class, IResultError
-    {
-        var errorType = typeof(TError);
-
-        return this.errors.AsEnumerable().Where(e => e.GetType() == errorType).Cast<TError>();
-    }
+        where TError : class, IResultError => this.errors.AsEnumerable().OfType<TError>();
 
     /// <summary>
     ///     Creates a Result from an operation, handling any exceptions that occur.
@@ -1106,27 +1020,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// var result = Result{int}.Try(() => int.Parse("42")); // Success(42)
     /// </code>
     /// </example>
-    public static Result<T> Try(Func<T> operation)
-    {
-        if (operation is null)
-        {
-            return Failure()
-                .WithError(new Error("Operation cannot be null"));
-        }
-
-        try
-        {
-            var result = operation();
-
-            return Success(result);
-        }
-        catch (Exception ex)
-        {
-            return Failure()
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessage(ex.Message);
-        }
-    }
+    public static Result<T> Try(Func<T> operation) => Bind(operation);
 
     /// <summary>
     ///     Creates a Result from an async operation, handling any exceptions that occur.
@@ -1142,35 +1036,10 @@ public readonly partial struct Result<T> : IResult<T>
     /// );
     /// </code>
     /// </example>
-    public static async Task<Result<T>> TryAsync(
+    public static Task<Result<T>> TryAsync(
         Func<CancellationToken, Task<T>> operation,
-        CancellationToken cancellationToken = default)
-    {
-        if (operation is null)
-        {
-            return Failure()
-                .WithError(new Error("Operation cannot be null"));
-        }
-
-        try
-        {
-            var result = await operation(cancellationToken);
-
-            return Success(result);
-        }
-        catch (OperationCanceledException)
-        {
-            return Failure()
-                .WithError(new OperationCancelledError())
-                .WithMessage("Operation was cancelled");
-        }
-        catch (Exception ex)
-        {
-            return Failure()
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessage(ex.Message);
-        }
-    }
+        CancellationToken cancellationToken = default) =>
+        BindAsync(operation, cancellationToken);
 
     /// <summary>
     /// Converts a generic Result{T} to a non-generic Result.

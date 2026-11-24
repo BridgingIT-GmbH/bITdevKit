@@ -103,6 +103,8 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
     /// <inheritdoc />
     public async Task<Result<StoredDocumentPage>> FindPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Result<StoredDocumentPage>.Failure(new DocumentDimensionsNotSupportedError());
+
         try
         {
             var container = await this.GetContainerAsync(type, cancellationToken);
@@ -140,6 +142,8 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
     /// <inheritdoc />
     public async Task<Result<DocumentKeyPage>> ListPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Result<DocumentKeyPage>.Failure(new DocumentDimensionsNotSupportedError());
+
         var result = await this.FindPageAsync(type, query, visibilityCutoff, cancellationToken);
         return result.IsFailure ? result.Wrap<DocumentKeyPage>() : Result<DocumentKeyPage>.Success(new() { Items = result.Value.Items.Select(x => x.Key).ToArray(), ContinuationToken = RebindToken("list", type, query, visibilityCutoff, result.Value.ContinuationToken) });
     }
@@ -147,6 +151,8 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
     /// <inheritdoc />
     public async Task<Result<long>> CountAsync(DocumentTypeIdentity type, DocumentCountQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Result<long>.Failure(new DocumentDimensionsNotSupportedError());
+
         var pageQuery = new DocumentQuery { DocumentKey = query?.DocumentKey, Filter = query?.Filter ?? DocumentKeyFilter.FullMatch, AllowFullScan = query?.AllowFullScan ?? false, Take = this.options.MaxTake };
         long count = 0;
         do
@@ -169,23 +175,36 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
     /// <inheritdoc />
     public async Task<Result<DocumentInfo>> UpsertAsync(DocumentTypeIdentity type, StoredDocumentWrite write, CancellationToken cancellationToken = default)
     {
+        if ((write?.Dimensions is not null || write?.Options?.Dimensions is not null)) return Result<DocumentInfo>.Failure(new DocumentDimensionsNotSupportedError());
+
+        var condition = DocumentWriteValidator.Validate(write.Options);
+        if (condition.IsFailure) return Result<DocumentInfo>.Failure(condition);
+
         try
         {
             var blob = (await this.GetContainerAsync(type, cancellationToken)).GetBlobClient(Name(write.Key));
             StoredDocument current = null;
             if (write.PreserveExpiration || write.Properties is null)
             {
-                var read = await this.GetPhysicalAsync(blob, write.Key, cancellationToken);
+                var read = await this.GetPhysicalAsync(blob, write.Key, cancellationToken, includeContent: false);
                 if (read.IsSuccess) current = read.Value;
+                else if (!read.HasError<DocumentStoreNotFoundError>()) return read.Wrap<DocumentInfo>();
             }
 
             var now = DateTimeOffset.UtcNow;
             var metadata = Metadata(write, current, now);
+            if (MetadataTooLarge(metadata)) return Result<DocumentInfo>.Failure(new DocumentStoreSizeLimitError("Encoded Azure Blob metadata exceeds 8 KiB."));
             var conditions = new BlobRequestConditions();
             if (write.Options.CreateOnly) conditions.IfNoneMatch = ETag.All;
             if (!string.IsNullOrWhiteSpace(write.Options.IfMatchETag)) conditions.IfMatch = new ETag(write.Options.IfMatchETag);
+            else if (!write.Options.CreateOnly && (write.Properties is null || write.PreserveExpiration))
+            {
+                if (current is null) conditions.IfNoneMatch = ETag.All;
+                else conditions.IfMatch = new ETag(current.ETag);
+            }
+
             var response = await blob.UploadAsync(BinaryData.FromBytes(write.Content), new BlobUploadOptions { Metadata = metadata, Conditions = conditions }, cancellationToken);
-            return Result<DocumentInfo>.Success(new() { Key = write.Key, ETag = response.Value.ETag.ToString(), ContentHash = write.ContentHash, CreatedAt = current?.CreatedAt ?? now, LastModifiedAt = now, ExpiresAt = write.PreserveExpiration ? current?.ExpiresAt : write.ExpiresAt, Properties = write.Properties?.Clone() ?? current?.Properties?.Clone() ?? new PropertyBag() });
+            return Result<DocumentInfo>.Success(new() { Key = write.Key, ETag = response.Value.ETag.ToString(), ContentHash = write.ContentHash, CreatedAt = current?.CreatedAt ?? now, LastModifiedAt = now, ExpiresAt = write.PreserveExpiration ? current?.ExpiresAt : write.ExpiresAt, Properties = DocumentPropertyValues.Clone(write.Properties) ?? DocumentPropertyValues.Clone(current?.Properties) ?? new PropertyBag() });
         }
         catch (RequestFailedException ex) when (ex.Status is 409 or 412) { return Result<DocumentInfo>.Failure(new DocumentStoreConflictError(ex.Message)); }
         catch (OperationCanceledException) { throw; }
@@ -195,10 +214,13 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
     /// <inheritdoc />
     public async Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentTypeIdentity type, DocumentPropertiesUpdate update, DateTimeOffset? resolvedExpiresAt, bool preserveExpiration, CancellationToken cancellationToken = default)
     {
+        var condition = DocumentWriteValidator.Validate(update);
+        if (condition.IsFailure) return Result<DocumentInfo>.Failure(condition);
+
         try
         {
             var blob = (await this.GetContainerAsync(type, cancellationToken)).GetBlobClient(Name(update.Key));
-            var read = await this.GetPhysicalAsync(blob, update.Key, cancellationToken);
+            var read = await this.GetPhysicalAsync(blob, update.Key, cancellationToken, includeContent: false);
             if (read.IsFailure) return read.Wrap<DocumentInfo>();
             var current = read.Value;
             var metadata = new Dictionary<string, string>((await blob.GetPropertiesAsync(cancellationToken: cancellationToken)).Value.Metadata, StringComparer.OrdinalIgnoreCase)
@@ -207,9 +229,10 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
                 [PropertiesKey] = EncodeBag(update.Properties ?? current.Properties)
             };
             if (!preserveExpiration) SetDate(metadata, ExpiresKey, resolvedExpiresAt);
+            if (MetadataTooLarge(metadata)) return Result<DocumentInfo>.Failure(new DocumentStoreSizeLimitError("Encoded Azure Blob metadata exceeds 8 KiB."));
             var etag = string.IsNullOrWhiteSpace(update.IfMatchETag) ? current.ETag : update.IfMatchETag;
             var response = await blob.SetMetadataAsync(metadata, new BlobRequestConditions { IfMatch = new ETag(etag) }, cancellationToken);
-            return Result<DocumentInfo>.Success(new() { Key = update.Key, ETag = response.Value.ETag.ToString(), ContentHash = current.ContentHash, CreatedAt = current.CreatedAt, LastModifiedAt = DateTimeOffset.UtcNow, ExpiresAt = preserveExpiration ? current.ExpiresAt : resolvedExpiresAt, Properties = update.Properties?.Clone() ?? current.Properties.Clone() });
+            return Result<DocumentInfo>.Success(new() { Key = update.Key, ETag = response.Value.ETag.ToString(), ContentHash = current.ContentHash, CreatedAt = current.CreatedAt, LastModifiedAt = DateTimeOffset.UtcNow, ExpiresAt = preserveExpiration ? current.ExpiresAt : resolvedExpiresAt, Properties = DocumentPropertyValues.Clone(update.Properties) ?? DocumentPropertyValues.Clone(current.Properties) });
         }
         catch (RequestFailedException ex) when (ex.Status == 404) { return Result<DocumentInfo>.Failure(new DocumentStoreNotFoundError()); }
         catch (RequestFailedException ex) when (ex.Status == 412) { return Result<DocumentInfo>.Failure(new DocumentStoreConflictError(ex.Message)); }
@@ -220,6 +243,9 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
     /// <inheritdoc />
     public async Task<Result> DeleteAsync(DocumentTypeIdentity type, DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default)
     {
+        var condition = DocumentWriteValidator.Validate(options);
+        if (condition.IsFailure) return condition;
+
         try
         {
             var blob = (await this.GetContainerAsync(type, cancellationToken)).GetBlobClient(Name(key));
@@ -290,10 +316,16 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
         return container;
     }
 
-    private async Task<Result<StoredDocument>> GetPhysicalAsync(BlobClient blob, DocumentKey key, CancellationToken cancellationToken)
+    private async Task<Result<StoredDocument>> GetPhysicalAsync(BlobClient blob, DocumentKey key, CancellationToken cancellationToken, bool includeContent = true)
     {
         try
         {
+            if (!includeContent)
+            {
+                var properties = await blob.GetPropertiesAsync(cancellationToken: cancellationToken);
+                return Result<StoredDocument>.Success(Map(key, [], properties.Value.Metadata, properties.Value.ETag.ToString(), properties.Value.LastModified));
+            }
+
             var response = await blob.DownloadContentAsync(cancellationToken);
             return Result<StoredDocument>.Success(Map(key, response.Value.Content.ToArray(), response.Value.Details.Metadata, response.Value.Details.ETag.ToString(), response.Value.Details.LastModified));
         }
@@ -320,6 +352,9 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
         SetDate(metadata, ExpiresKey, write.PreserveExpiration ? current?.ExpiresAt : write.ExpiresAt);
         return metadata;
     }
+    private static bool MetadataTooLarge(IDictionary<string, string> metadata) =>
+        metadata.Sum(item => System.Text.Encoding.UTF8.GetByteCount(item.Key) + System.Text.Encoding.UTF8.GetByteCount(item.Value)) > 8192;
+
     private static string EncodeBag(PropertyBag bag) => Base64UrlHelper.Encode(JsonSerializer.SerializeToUtf8Bytes((bag ?? new()).ToDictionary(x => x.Key, x => PropertyBagScalarCodec.Encode(x.Value))));
     private static PropertyBag DecodeBag(string value)
     {

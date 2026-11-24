@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -12,6 +12,38 @@ using Microsoft.Extensions.DependencyInjection;
 [UnitTest("Application")]
 public sealed class BlobStoreCacheBehaviorTests
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CachedProperties_WithSerializedEntry_PreserveTypesAndPrivateTransformState(bool cacheInsideTransform)
+    {
+        var provider = new InMemoryBlobStoreProvider();
+        var inner = new BlobStoreClient("reports", provider);
+        var cache = new RecordingCacheProvider { SerializeEntries = true };
+        IBlobStoreClient sut = cacheInsideTransform
+            ? new CompressionBlobStoreClientBehavior(new CacheBlobStoreClientBehavior(null, inner, cache))
+            : new CacheBlobStoreClientBehavior(null, new CompressionBlobStoreClientBehavior(inner), cache);
+        var key = new BlobKey("reports", "cached-properties");
+        var source = new string('a', 1024);
+        var uploaded = await sut.UploadAsync(new() { Key = key, Content = new MemoryStream(Encoding.UTF8.GetBytes(source)), Properties = StoragePropertySamples.Create() });
+        uploaded.IsSuccess.ShouldBeTrue();
+        var first = await sut.DownloadAsync(key);
+        await first.Value.DisposeAsync();
+        var second = await sut.DownloadAsync(key);
+        second.IsSuccess.ShouldBeTrue();
+        StoragePropertySamples.AssertEqual(second.Value.Info.Properties, StoragePropertySamples.Create());
+        ((byte[])second.Value.Info.Properties.Get("Bytes"))[0] = 99;
+        await using (second.Value) (await ReadStringAsync(second.Value.Content)).ShouldBe(source);
+        var third = await sut.DownloadAsync(key);
+        await using (third.Value)
+        {
+            StoragePropertySamples.AssertEqual(third.Value.Info.Properties, StoragePropertySamples.Create());
+            (await ReadStringAsync(third.Value.Content)).ShouldBe(source);
+        }
+
+        cache.SetCalls.ShouldBe(1);
+    }
+
     [Fact]
     public async Task DownloadAsync_WithCacheMiss_CachesContentAndReturnsDownload()
     {
@@ -77,18 +109,24 @@ public sealed class BlobStoreCacheBehaviorTests
         var cached = await sut.DownloadAsync(key);
         await cached.Value.DisposeAsync();
 
+        var otherKey = new BlobKey("reports", "other.txt");
+        var otherCached = await sut.DownloadAsync(otherKey);
+        await otherCached.Value.DisposeAsync();
+
         // Act
         var upload = await sut.UploadAsync(CreateUpload(key));
         var afterUpload = await sut.DownloadAsync(key);
+        var otherAfterUpload = await sut.DownloadAsync(otherKey);
 
         // Assert
         upload.IsSuccess.ShouldBeTrue();
         afterUpload.IsSuccess.ShouldBeTrue();
-        inner.DownloadCalls.ShouldBe(2);
+        inner.DownloadCalls.ShouldBe(3);
         cache.RemoveCalls.ShouldBe(1);
-        cache.RemoveStartsWithCalls.ShouldBe(1);
+        (await ReadStringAsync(otherAfterUpload.Value.Content)).ShouldBe("content-2");
 
         await afterUpload.Value.DisposeAsync();
+        await otherAfterUpload.Value.DisposeAsync();
     }
 
     [Fact]
@@ -291,6 +329,8 @@ public sealed class BlobStoreCacheBehaviorTests
     {
         private readonly Dictionary<string, object> entries = new();
 
+        public bool SerializeEntries { get; init; }
+
         public int RemoveCalls { get; private set; }
 
         public int RemoveStartsWithCalls { get; private set; }
@@ -362,7 +402,10 @@ public sealed class BlobStoreCacheBehaviorTests
             DateTimeOffset? absoluteExpiration = null)
         {
             this.SetCalls++;
-            this.entries[key] = value;
+            var options = new System.Text.Json.JsonSerializerOptions { Converters = { new PropertyBagJsonConverter() } };
+            this.entries[key] = this.SerializeEntries
+                ? System.Text.Json.JsonSerializer.Deserialize<T>(System.Text.Json.JsonSerializer.Serialize(value, options), options)
+                : value;
         }
 
         public Task SetAsync<T>(

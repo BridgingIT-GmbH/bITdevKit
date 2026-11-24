@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Collections.ObjectModel;
+
 /// <summary>
 /// A memory-efficient collection optimized for very small sets of items (0-2).
 /// This struct provides value semantics and avoids heap allocations for the most common scenarios
@@ -19,22 +21,21 @@ public readonly struct ValueList<T>
     private readonly T item1;
     private readonly T item2;
 
-    // Overflow storage for less common cases (3+ items)
-    private readonly List<T> overflow;
+    // Overflow storage supplies its own count.
+    private readonly ReadOnlyCollection<T> overflow;
 
-    // Total count of items (0-255, byte is sufficient)
-    private readonly byte count;
+    private readonly byte inlineCount;
 
     /// <summary>
     /// Gets the number of items in the collection.
     /// </summary>
-    public int Count => this.count;
+    public int Count => this.overflow?.Count ?? this.inlineCount;
 
     /// <summary>
     /// Gets a value indicating whether the collection is empty.
     /// This property is more efficient than checking Count == 0.
     /// </summary>
-    public bool IsEmpty => this.count == 0;
+    public bool IsEmpty => this.overflow is null && this.inlineCount == 0;
 
     /// <summary>
     /// Creates a new ValueList with a single item.
@@ -46,7 +47,7 @@ public readonly struct ValueList<T>
         this.item1 = item;
         this.item2 = default;
         this.overflow = null;
-        this.count = 1;
+        this.inlineCount = 1;
     }
 
     /// <summary>
@@ -60,38 +61,19 @@ public readonly struct ValueList<T>
         this.item1 = item1;
         this.item2 = item2;
         this.overflow = null;
-        this.count = 2;
+        this.inlineCount = 2;
     }
 
     /// <summary>
-    /// Creates a new ValueList with three items.
-    /// This operation allocates a List{T} as we've exceeded inline storage capacity.
+    /// Takes ownership of a list that has exceeded inline storage capacity.
     /// </summary>
-    /// <param name="item1">The first item.</param>
-    /// <param name="item2">The second item.</param>
-    /// <param name="item3">The third item.</param>
-    private ValueList(T item1, T item2, T item3)
+    /// <param name="items">A list owned by the new collection.</param>
+    private ValueList(List<T> items)
     {
-        // When exceeding inline capacity, move to heap storage
-        this.overflow = [item1, item2, item3];
+        this.overflow = items.AsReadOnly();
         this.item1 = default;
         this.item2 = default;
-        this.count = 3;
-    }
-
-    /// <summary>
-    /// Creates a new ValueList from an existing list plus a new item.
-    /// This constructor is used when adding items to an already-overflowed collection.
-    /// </summary>
-    /// <param name="existing">The existing list of items.</param>
-    /// <param name="newItem">The new item to add.</param>
-    private ValueList(List<T> existing, T newItem)
-    {
-        // Create a new list with space for the additional item
-        this.overflow = [.. existing, newItem];
-        this.item1 = default;
-        this.item2 = default;
-        this.count = (byte)this.overflow.Count;
+        this.inlineCount = 0;
     }
 
     /// <summary>
@@ -103,12 +85,16 @@ public readonly struct ValueList<T>
     /// <returns>A new ValueList containing all current items plus the new item.</returns>
     public ValueList<T> Add(T item)
     {
-        return this.count switch
+        if (this.overflow is not null)
         {
-            0 => new ValueList<T>(item),                        // First item: inline storage
-            1 => new ValueList<T>(this.item1, item),           // Second item: still inline
-            2 => new ValueList<T>(this.item1, this.item2, item), // Third item: move to heap
-            _ => new ValueList<T>(this.overflow, item)         // Already on heap: extend list
+            return new ValueList<T>([.. this.overflow, item]);
+        }
+
+        return this.inlineCount switch
+        {
+            0 => new ValueList<T>(item),
+            1 => new ValueList<T>(this.item1, item),
+            _ => new ValueList<T>([this.item1, this.item2, item])
         };
     }
 
@@ -125,13 +111,22 @@ public readonly struct ValueList<T>
             return this;
         }
 
-        var result = this;
+        var inline = this;
+        List<T> buffer = null;
+
         foreach (var item in items)
         {
-            result = result.Add(item);
+            if (buffer is null && inline.Count < 2)
+            {
+                inline = inline.Add(item);
+                continue;
+            }
+
+            buffer ??= inline.overflow is null ? [inline.item1, inline.item2] : [.. inline.overflow];
+            buffer.Add(item);
         }
 
-        return result;
+        return buffer is null ? inline : new ValueList<T>(buffer);
     }
 
     /// <summary>
@@ -141,12 +136,16 @@ public readonly struct ValueList<T>
     /// <returns>An enumerable sequence of all items.</returns>
     public IEnumerable<T> AsEnumerable()
     {
-        return this.count switch
+        if (this.overflow is not null)
         {
-            0 => [],                    // Empty: return cached empty array
-            1 => new[] { this.item1 },                // One item: single-element array
-            2 => new[] { this.item1, this.item2 },    // Two items: two-element array
-            _ => this.overflow                        // Three or more: return list
+            return this.overflow;
+        }
+
+        return this.inlineCount switch
+        {
+            0 => [],
+            1 => [this.item1],
+            _ => [this.item1, this.item2]
         };
     }
 }

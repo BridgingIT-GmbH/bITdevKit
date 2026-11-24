@@ -1,427 +1,490 @@
-﻿namespace BridgingIT.DevKit.Presentation.Web.Client;
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Presentation.Web.Client;
 
 using System.Text.Json;
-using BridgingIT.DevKit.Common.Utilities;
+using System.Text.Json.Serialization.Metadata;
 using Microsoft.Extensions.Logging;
 
-/// <summary>
-/// Abstract base class for managing state with persistence, history, and change notification.
-/// </summary>
-/// <typeparam name="TState">The type of the state object managed by this instance.</typeparam>
-public abstract class AppState<TState> : IAppState, IDisposable
+/// <summary>Owns typed state, independent snapshots, bounded history, and optional persistence.</summary>
+/// <typeparam name="TState">The serializable or explicitly copied model type.</typeparam>
+/// <remarks>Use snapshot/restore methods for changes. Direct mutation of CurrentState cannot be observed.</remarks>
+/// <example>
+/// <code><![CDATA[
+/// using BridgingIT.DevKit.Presentation.Web.Client;
+/// using Microsoft.Extensions.Logging;
+///
+/// public sealed class CatalogViewModel
+/// {
+///     public int Page { get; set; } = 1;
+///
+///     public string Search { get; set; } = string.Empty;
+///
+///     public List<int> SelectedIds { get; set; } = [];
+/// }
+///
+/// public class CatalogViewState : AppState<CatalogViewModel>
+/// {
+///     private CatalogViewModel current = new();
+///
+///     public CatalogViewState(ILogger<CatalogViewState> logger, AppStateOptions options,
+///         IAppStateStoreProvider storageProvider = null, IUserContextProvider userContextProvider = null,
+///         AppStateDebugger debugger = null)
+///         : base(logger, options, storageProvider, userContextProvider, debugger) { }
+///
+///     public Task SetPage(int page)
+///     {
+///         var next = this.TakeSnapshot();
+///         next.Page = page;
+///         return this.SetCurrentState(next);
+///     }
+///
+///     protected override CatalogViewModel GetCurrentState() => this.current;
+///
+///     protected override void UpdateState(CatalogViewModel state) => this.current = state;
+///
+///     protected override CatalogViewModel CreateDefaultState() => new();
+/// }
+///
+/// [System.Text.Json.Serialization.JsonSerializable(typeof(CatalogViewModel))]
+/// public partial class CatalogJson : System.Text.Json.Serialization.JsonSerializerContext { }
+/// ]]></code>
+/// </example>
+public abstract partial class AppState<TState> : IAppStateRuntime, IDisposable, IAsyncDisposable
     where TState : class, new()
 {
+    private readonly object sync = new();
     private readonly ILogger logger;
     private readonly AppStateOptions options;
     private readonly IAppStateStoreProvider storageProvider;
     private readonly IUserContextProvider userContextProvider;
     private readonly AppStateDebugger debugger;
-    private readonly Stack<TState> undoStack;
-    private readonly Stack<TState> redoStack;
-    private readonly Debouncer saveDebouncer;
-    private bool isLoaded;
+    private readonly List<TState> undo = [];
+    private readonly List<TState> redo = [];
+    private readonly CancellationTokenSource lifetime = new();
+    private CancellationTokenSource generation = new();
+    private readonly HashSet<AppStateSubscription> subscriptions = [];
+    private AppStateManager owner;
+    private TimeProvider clock = TimeProvider.System;
+    private AppStateContext context = new();
+    private AppStateContext ownerContext;
+    private long revision;
+    private long contextRevision;
+    private bool disposed;
 
-    /// <summary>
-    /// Initializes a new instance of the ManagedState class.
-    /// </summary>
-    /// <param name="logger">The logger instance for debugging.</param>
-    /// <param name="options">The configuration options for this state.</param>
-    /// <param name="storageProvider">The optional storage provider for persistence.</param>
-    /// <param name="userContextProvider">The provider for user context IDs.</param>
-    /// <param name="debugger">The debugger for tracking state changes.</param>
-    protected AppState(
-        ILogger logger,
-        AppStateOptions options,
-        IAppStateStoreProvider storageProvider = null,
-        IUserContextProvider userContextProvider = null,
-        AppStateDebugger debugger = null)
+    /// <summary>Creates an owner without performing browser or storage I/O.</summary>
+    /// <param name="logger">The state logger; payload values are not logged.</param>
+    /// <param name="options">The state configuration, copied for this instance.</param>
+    /// <param name="storageProvider">The optional DI-owned storage adapter.</param>
+    /// <param name="userContextProvider">The optional user partition provider.</param>
+    /// <param name="debugger">The optional owner-local diagnostic observer.</param>
+    protected AppState(ILogger logger, AppStateOptions options, IAppStateStoreProvider storageProvider = null,
+        IUserContextProvider userContextProvider = null, AppStateDebugger debugger = null)
     {
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        this.options = (options ?? throw new ArgumentNullException(nameof(options))).Copy();
         this.storageProvider = storageProvider;
         this.userContextProvider = userContextProvider;
         this.debugger = debugger;
-        this.undoStack = options.HistoryEnabled ? new Stack<TState>(options.MaxHistoryItems) : [];
-        this.redoStack = options.HistoryEnabled ? new Stack<TState>(options.MaxHistoryItems) : [];
-        this.saveDebouncer = new Debouncer(options.DebounceDelay, this.SaveStateAsyncInternal);
-
-        if (this.debugger?.IsEnabled == true)
+        this.PersistenceStatus = this.HasPersistence ? AppStatePersistenceStatus.NotLoaded : AppStatePersistenceStatus.NotConfigured;
+        if (this.options.JsonTypeInfo != null && this.options.JsonTypeInfo.Type != typeof(TState))
         {
-            //this.debugger.ConsoleLogAsync($"State initialized for {this.StateId}", options).Wait();
+            throw new ArgumentException("JSON metadata must describe the state model.", nameof(options));
         }
     }
 
-    /// <summary>
-    /// Gets the unique identifier for this state instance, to be implemented by derived classes.
-    /// </summary>
-    public virtual string StateId { get; } = typeof(TState).FullName.Replace(".", "_").ToLower();
+    /// <inheritdoc/>
+    public virtual string StateId { get; } = typeof(TState).FullName.Replace(".", "_").ToLowerInvariant();
 
-    /// <summary>
-    /// Gets the current state object.
-    /// </summary>
+    /// <inheritdoc/>
+    public Guid InstanceId { get; } = Guid.NewGuid();
+
+    /// <summary>Gets the current model. Change it through snapshot/restore, not direct property mutation.</summary>
     public TState CurrentState => this.GetCurrentState();
 
     object IAppState.CurrentState => this.CurrentState;
 
-    /// <summary>
-    /// Gets a value indicating whether an undo operation is possible.
-    /// </summary>
-    public bool CanUndo => this.undoStack.Count > 0;
+    /// <inheritdoc/>
+    public AppStateVersion Version
+    {
+        get
+        {
+            lock (this.sync)
+            {
+                return new(this.InstanceId, this.revision, this.contextRevision);
+            }
+        }
+    }
 
-    /// <summary>
-    /// Gets a value indicating whether a redo operation is possible.
-    /// </summary>
-    public bool CanRedo => this.redoStack.Count > 0;
+    /// <inheritdoc/>
+    public AppStatePersistenceStatus PersistenceStatus { get; private set; }
 
-    /// <summary>
-    /// Gets the history of undoable states.
-    /// </summary>
-    public IReadOnlyList<TState> UndoHistory => this.undoStack.ToList().AsReadOnly();
+    /// <inheritdoc/>
+    public string PersistenceIdentity => this.HasPersistence
+        ? AppStateStorageKey.Create(this.options.ApplicationId, this.options.ModuleId,
+            this.options.StateName ?? this.StateId, this.options.InstanceKey, string.Empty, string.Empty, this.options.SchemaVersion)
+        : null;
 
-    /// <summary>
-    /// Gets the history of redoable states.
-    /// </summary>
-    public IReadOnlyList<TState> RedoHistory => this.redoStack.ToList().AsReadOnly();
+    /// <inheritdoc/>
+    public bool CanUndo { get { lock (this.sync) { return this.undo.Count > 0; } } }
 
-    /// <summary>
-    /// Event raised when the state changes, providing the new state object.
-    /// </summary>
+    /// <inheritdoc/>
+    public bool CanRedo { get { lock (this.sync) { return this.redo.Count > 0; } } }
+
+    /// <summary>Gets copied history snapshots in newest-to-oldest order.</summary>
+    public IReadOnlyList<TState> UndoHistory => this.CopyHistory(this.undo);
+
+    /// <summary>Gets copied redo snapshots in newest-to-oldest order.</summary>
+    public IReadOnlyList<TState> RedoHistory => this.CopyHistory(this.redo);
+
+    /// <inheritdoc/>
     public event Action<object> StateChanged;
 
-    /// <summary>
-    /// Event raised when the state changes, providing detailed metadata about the change.
-    /// </summary>
+    /// <inheritdoc/>
     public event Action<IStateChangeMetadata> StateChangeWithMetadata;
 
-    /// <summary>
-    /// Retrieves the current state object, to be implemented by derived classes.
-    /// </summary>
-    /// <returns>The current state object.</returns>
+    /// <summary>Gets the current feature-owned model.</summary>
+    /// <returns>The current model reference.</returns>
     protected abstract TState GetCurrentState();
 
-    /// <summary>
-    /// Updates the state object, to be implemented by derived classes.
-    /// </summary>
-    /// <param name="state">The new state object.</param>
+    /// <summary>Replaces the feature-owned model during an accepted synchronous commit.</summary>
+    /// <param name="state">The independent model owned by this instance.</param>
     protected abstract void UpdateState(TState state);
 
-    /// <summary>
-    /// Creates a default state instance, to be implemented by derived classes.
-    /// </summary>
-    /// <returns>A new instance of the default state.</returns>
+    /// <summary>Creates defaults without reading browser state.</summary>
+    /// <returns>The default model.</returns>
     protected abstract TState CreateDefaultState();
 
-    /// <summary>
-    /// Takes a snapshot of the current state for manipulation or history.
-    /// </summary>
-    /// <returns>A deep copy of the current state using JSON serialization.</returns>
-    public TState TakeSnapshot()
+    /// <summary>Copies a model independently of persistence enablement.</summary>
+    /// <param name="value">The model to copy.</param>
+    /// <returns>An independent model, or null for null input.</returns>
+    /// <remarks>Override for immutable values or deliberate copying. Trimmed consumers supply generated JSON metadata.</remarks>
+    protected virtual TState CloneState(TState value)
     {
-        var current = this.GetCurrentState();
-        if (current == null)
+        if (value == null)
         {
-            //this.logger.LogWarning("Current state is null for {StateId}", this.StateId);
             return null;
         }
 
-        if (!this.options.Enabled)
+        if (this.options.JsonTypeInfo is JsonTypeInfo<TState> typeInfo)
         {
-            return current;
+            return JsonSerializer.Deserialize(JsonSerializer.SerializeToUtf8Bytes(value, typeInfo), typeInfo);
         }
 
-        // Create a deep copy using JSON serialization
-        var json = JsonSerializer.Serialize(current);
-        var copy = JsonSerializer.Deserialize<TState>(json);
-
-        if (this.debugger?.IsEnabled == true)
-        {
-            //this.debugger.ConsoleLogAsync($"State snapshot created for {this.StateId}", copy).Wait();
-        }
-
-        return copy;
+        return JsonSerializer.Deserialize(JsonSerializer.SerializeToUtf8Bytes(value, (JsonTypeInfo<TState>)JsonSerializerOptions.Default.GetTypeInfo(typeof(TState))), (JsonTypeInfo<TState>)JsonSerializerOptions.Default.GetTypeInfo(typeof(TState)));
     }
 
-    /// <summary>
-    /// Restores the state to a previous snapshot, triggering change events and a debounced save.
-    /// </summary>
-    /// <param name="snapshot">The snapshot to restore.</param>
-    /// <param name="reason">The reason for the restoration.</param>
-    public async Task RestoreSnapshot(TState snapshot, string reason = null)
-    {
-        if (snapshot == null || !this.options.Enabled)
-        {
-            return;
-        }
+    /// <summary>Captures an independent model for edits or asynchronous work.</summary>
+    /// <returns>An independent model snapshot.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// var next = state.TakeSnapshot();
+    /// next.SelectedIds.Add(42);
+    /// Debug.Assert(!state.CurrentState.SelectedIds.Contains(42));
+    /// ]]></code>
+    /// </example>
+    public TState TakeSnapshot() => this.CloneState(this.GetCurrentState());
 
-        await this.SetCurrentState(snapshot, reason);
+    /// <summary>Accepts an independent snapshot as an ordinary edit.</summary>
+    /// <param name="snapshot">The proposed values.</param>
+    /// <param name="reason">Optional feature-local transition information.</param>
+    /// <returns>Completion of the in-memory transition, without waiting for debounce.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// var next = state.TakeSnapshot();
+    /// next.Page = 2;
+    /// await state.RestoreSnapshot(next);
+    /// ]]></code>
+    /// </example>
+    public Task RestoreSnapshot(TState snapshot, string reason = null) => this.SetCurrentState(snapshot, reason);
+
+    /// <summary>Checks whether an asynchronous result still belongs to the same edit and context.</summary>
+    /// <param name="version">The captured version.</param>
+    /// <returns>True only for the current nondisposed instance and version.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// var version = state.Version;
+    /// await Task.Delay(1);
+    /// if (state.IsCurrent(version))
+    /// {
+    ///     Console.WriteLine("The captured catalog view is still current.");
+    /// }
+    /// ]]></code>
+    /// </example>
+    public bool IsCurrent(AppStateVersion version)
+    {
+        lock (this.sync)
+        {
+            return !this.disposed && this.IsOwnerContextCurrent()
+                && version == new AppStateVersion(this.InstanceId, this.revision, this.contextRevision);
+        }
     }
 
-    /// <summary>
-    /// Asynchronously saves the current state to the configured storage provider.
-    /// </summary>
-    /// <remarks>
-    /// This method is a no-op as saving is handled via debouncing in SetCurrentState.
-    /// </remarks>
-    public Task SaveStateAsync()
+    /// <summary>Conditionally accepts an asynchronous result without overwriting newer edits.</summary>
+    /// <param name="snapshot">The independently captured result.</param>
+    /// <param name="expectedVersion">The originating version.</param>
+    /// <param name="reason">Optional transition information.</param>
+    /// <param name="cancellationToken">Cancels admission before commit.</param>
+    /// <returns>False when the originating version is obsolete.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// var version = state.Version;
+    /// var next = state.TakeSnapshot();
+    /// await Task.Delay(1);
+    /// next.Page = 2;
+    /// var accepted = await state.TryRestoreSnapshot(next, version, cancellationToken: CancellationToken.None);
+    /// Debug.Assert(accepted);
+    /// ]]></code>
+    /// </example>
+    public Task<bool> TryRestoreSnapshot(TState snapshot, AppStateVersion expectedVersion, string reason = null,
+        CancellationToken cancellationToken = default)
     {
-        // No-op: Saving is handled via debouncing in SetCurrentState
-        //this.logger.LogInformation("SaveStateAsync called for {StateId}, but saving is handled via debouncing in SetCurrentState", this.StateId);
+        cancellationToken.ThrowIfCancellationRequested();
+        ArgumentNullException.ThrowIfNull(snapshot);
+        if (!this.IsCurrent(expectedVersion)) { return Task.FromResult(false); }
+
+        return Task.FromResult(this.Commit(snapshot, "Restore", reason, expectedVersion));
+    }
+
+    /// <summary>Accepts an ordinary feature update and schedules optional persistence.</summary>
+    /// <param name="newState">The proposed model, copied before acceptance.</param>
+    /// <param name="reason">Optional transition information.</param>
+    /// <returns>Completion of the accepted in-memory transition.</returns>
+    protected virtual Task SetCurrentState(TState newState, string reason = null)
+    {
+        this.Commit(newState, "Update", reason);
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Asynchronously loads the state from the configured storage provider.
-    /// </summary>
-    public virtual async Task LoadStateAsync()
+    /// <inheritdoc/>
+    public Task Undo() => this.MoveHistoryAsync(this.undo, this.redo, "Undo");
+
+    /// <inheritdoc/>
+    public Task Redo() => this.MoveHistoryAsync(this.redo, this.undo, "Redo");
+
+    /// <inheritdoc/>
+    public void AttachOwner(AppStateManager owner, TimeProvider timeProvider)
     {
-        if (this.options.PersistenceType == AppStatePersistenceType.ComponentScoped || this.options.PersistenceType == AppStatePersistenceType.SessionScoped)
+        ArgumentNullException.ThrowIfNull(owner);
+        if (this.owner != null && !ReferenceEquals(this.owner, owner))
         {
-            //this.logger.LogInformation("Skipping load for {StateId} due to persistence level: {PersistenceLevel}", this.StateId, this.options.PersistenceLevel);
-            return;
+            throw new InvalidOperationException("A state cannot join another runtime owner.");
         }
 
-        if (this.storageProvider == null)
-        {
-            //this.logger.LogWarning("LoadState called for {StateId} but no storage provider is registered for persistence level {Level}", this.StateId, this.options.PersistenceLevel);
-            return;
-        }
-
-#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception
-        try
-        {
-            if (this.options.Enabled)
-            {
-                var userContextId = /*this.options.PersistenceLevel == StatePersistenceLevel.LocalStorage &&*/ this.userContextProvider != null
-                    ? await this.userContextProvider.GetUserContextId()
-                    : null;
-                var state = await this.storageProvider.LoadStateAsync<TState>(this.StateId, userContextId);
-                if (state != null)
-                {
-                    await this.SetCurrentState(state, "Loaded from storage");
-                }
-            }
-
-            this.isLoaded = true;
-            //this.logger.LogInformation("Successfully loaded state for {StateId}", this.StateId);
-        }
-        catch (Exception/* ex*/) // Catch all exceptions to prevent crashing the application when f5 is used as we then load too early from localstorage
-        {
-            //this.logger.LogError(ex, "Failed to load state for {StateId}", this.StateId);
-        }
-#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception
+        this.owner = owner;
+        this.clock = timeProvider ?? TimeProvider.System;
+        this.context = owner.CurrentContext;
+        this.ownerContext = this.context;
     }
 
-    /// <summary>
-    /// Resets the state to its initial value and clears the associated storage.
-    /// </summary>
-    /// <returns>A task representing the asynchronous reset operation.</returns>
-    public virtual async Task ResetAsync()
-    {
-        // Create a new default state
-        var defaultState = this.CreateDefaultState();
-        if (defaultState == null)
-        {
-            //this.logger.LogWarning("Default state is null for {StateId}", this.StateId);
-            return;
-        }
-
-        // Reset the state
-        await this.SetCurrentState(defaultState, "State reset"); // needed for undo/redo
-
-        // Clear history
-        this.undoStack.Clear();
-        this.redoStack.Clear();
-
-        // Clear the storage
-        if (this.storageProvider != null)
-        {
-            try
-            {
-                //this.debugger?.ConsoleLogAsync($"State reset for {this.StateId}", defaultState).Wait();
-                var userContextId = this.userContextProvider != null
-                    ? await this.userContextProvider.GetUserContextId()
-                    : null;
-                await this.storageProvider.ClearAsync(this.StateId, userContextId);
-                //await this.storageProvider.SaveStateAsync(this.StateId, userContextId, defaultState);
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, "Failed to clear storage for {StateId}", this.StateId);
-            }
-        }
-
-        // Reset the loaded flag
-        //this.isLoaded = false;
-    }
-
-    /// <summary>
-    /// Performs an undo operation, reverting to the previous state in the history.
-    /// </summary>
-    public async Task UndoAsync()
-    {
-        if (!this.options.HistoryEnabled || !this.CanUndo || !this.options.Enabled)
-        {
-            //this.logger.LogInformation("Undo skipped for {StateId}. HistoryEnabled: {HistoryEnabled}, CanUndo: {CanUndo}", this.StateId, this.options.HistoryEnabled, this.CanUndo);
-            return;
-        }
-
-        var current = this.GetCurrentState();
-        if (this.debugger?.IsEnabled == true)
-        {
-            //this.logger.LogInformation("State changed for {StateId}. Old: {OldState}, New: {NewState}", this.StateId, JsonSerializer.Serialize(oldState), JsonSerializer.Serialize(newState));
-            //this.debugger.ConsoleLogAsync($"State undo for {this.StateId}", current).Wait();
-        }
-
-        this.redoStack.Push(current);
-        if (this.redoStack.Count > this.options.MaxHistoryItems)
-        {
-            this.redoStack.TryPop(out _); // Remove oldest if exceeding limit
-        }
-
-        var previous = this.undoStack.Pop();
-        await this.SetCurrentState(previous, "Undo operation");
-    }
-
-    /// <summary>
-    /// Performs a redo operation, advancing to the next state in the history.
-    /// </summary>
-    public async Task RedoAsync()
-    {
-        if (!this.options.HistoryEnabled || !this.CanRedo || !this.options.Enabled)
-        {
-            //this.logger.LogInformation("Redo skipped for {StateId}. HistoryEnabled: {HistoryEnabled}, CanRedo: {CanRedo}", this.StateId, this.options.HistoryEnabled, this.CanRedo);
-            return;
-        }
-
-        var current = this.GetCurrentState();
-        if (this.debugger?.IsEnabled == true)
-        {
-            //this.logger.LogInformation("State changed for {StateId}. Old: {OldState}, New: {NewState}", this.StateId, JsonSerializer.Serialize(oldState), JsonSerializer.Serialize(newState));
-            //this.debugger.ConsoleLogAsync($"State redo for {this.StateId}", current).Wait();
-        }
-
-        this.undoStack.Push(current);
-        if (this.undoStack.Count > this.options.MaxHistoryItems)
-        {
-            this.undoStack.TryPop(out _); // Remove oldest if exceeding limit
-        }
-
-        var next = this.redoStack.Pop();
-        await this.SetCurrentState(next, "Redo operation");
-    }
-
-    /// <summary>
-    /// Sets the current state, updating history, raising change events, and triggering a debounced save.
-    /// </summary>
-    /// <param name="newState">The new state to set.</param>
-    /// <param name="reason">The reason for the state change.</param>
-    protected virtual async Task SetCurrentState(TState newState, string reason = null)
-    {
-        var oldState = this.GetCurrentState();
-        //this.logger.LogInformation("SetCurrentState called for {StateId} with reason: {Reason}", this.StateId, reason);
-        if (!Equals(oldState, newState))
-        {
-            if (this.debugger?.IsEnabled == true)
-            {
-                //this.logger.LogInformation("State changed for {StateId}. Old: {OldState}, New: {NewState}", this.StateId, JsonSerializer.Serialize(oldState), JsonSerializer.Serialize(newState));
-                //this.debugger.ConsoleLogAsync($"State changed for {this.StateId} with reason: {reason}", oldState, newState).Wait();
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                this.debugger.ConsoleLogAsync($"State changed for {this.StateId} with reason: {reason}", oldState, newState);
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            }
-
-            if (this.options.HistoryEnabled)
-            {
-                this.undoStack.Push(oldState);
-                if (this.undoStack.Count > this.options.MaxHistoryItems)
-                {
-                    this.undoStack.TryPop(out _); // Remove oldest if exceeding limit
-                }
-
-                this.redoStack.Clear(); // Clear redo stack on new change
-            }
-
-            this.UpdateState(newState);
-
-            var metadata = new StateChangeMetadata<TState>
-            {
-                StateId = this.StateId,
-                Timestamp = DateTimeOffset.UtcNow,
-                Operation = "Update",
-                OldValue = oldState,
-                NewValue = newState,
-                Reason = reason
-            };
-
-            this.StateChanged?.Invoke(newState);
-            this.StateChangeWithMetadata?.Invoke(metadata);
-
-            this.debugger.TrackStateChange(metadata);
-
-            // Trigger a debounced save if persistence is enabled
-            if (this.options.PersistenceType != AppStatePersistenceType.ComponentScoped && this.options.PersistenceType != AppStatePersistenceType.SessionScoped)
-            {
-                //this.logger.LogInformation("Triggering debounced save for {StateId}", this.StateId);
-                //Task.Run(() => this.SaveStateAsyncInternal());
-
-                await this.saveDebouncer.DebounceAsync(CancellationToken.None);
-            }
-            else
-            {
-                //this.logger.LogInformation("Skipping save for {StateId} due to persistence level: {PersistenceLevel}", this.StateId, this.options.PersistenceLevel);
-            }
-        }
-        else
-        {
-            //this.logger.LogInformation("State unchanged for {StateId}. Skipping update.", this.StateId);
-        }
-    }
-
-    /// <summary>
-    /// Asynchronously saves the current state to the configured storage provider.
-    /// </summary>
-    /// <remarks>
-    /// This method is internal and called via debouncing in SetCurrentState.
-    /// </remarks>
-    private async Task SaveStateAsyncInternal()
-    {
-        if (!this.isLoaded)
-        {
-            //this.logger.LogInformation("Skipping save for {StateId} because state has not been loaded yet", this.StateId);
-            return;
-        }
-
-        if (this.options.PersistenceType == AppStatePersistenceType.ComponentScoped || this.options.PersistenceType == AppStatePersistenceType.SessionScoped)
-        {
-            //this.logger.LogInformation("Skipping save for {StateId} due to persistence level: {PersistenceLevel}", this.StateId, this.options.PersistenceLevel);
-            return;
-        }
-
-        if (this.storageProvider == null || !this.options.Enabled)
-        {
-            //this.logger.LogWarning("SaveState called for {StateId} but no storage provider is registered for persistence level {Level}", this.StateId, this.options.PersistenceLevel);
-            return;
-        }
-
-        try
-        {
-            var userContextId = /*this.options.PersistenceLevel == StatePersistenceLevel.LocalStorage &&*/ this.userContextProvider != null
-                ? await this.userContextProvider.GetUserContextId()
-                : null;
-            await this.storageProvider.SaveStateAsync(this.StateId, userContextId, this.GetCurrentState());
-            //this.logger.LogInformation("Successfully saved state for {StateId}", this.StateId);
-        }
-        catch (Exception ex)
-        {
-            this.logger.LogError(ex, "Failed to save state for {StateId}", this.StateId);
-        }
-    }
-
-    /// <summary>
-    /// Disposes of the ManagedState instance, cleaning up resources.
-    /// </summary>
+    /// <summary>Cancels owned work and detaches observers without disposing injected services.</summary>
+    /// <example>
+    /// <code><![CDATA[
+    /// var owned = new CatalogViewState(NullLogger<CatalogViewState>.Instance, new AppStateOptions());
+    /// owned.Dispose();
+    /// ]]></code>
+    /// </example>
     public void Dispose()
     {
-        this.saveDebouncer?.Dispose();
+        AppStateSubscription[] owned;
+        lock (this.sync)
+        {
+            if (this.disposed)
+            {
+                return;
+            }
+
+            this.disposed = true;
+            this.contextRevision++;
+            this.PersistenceStatus = AppStatePersistenceStatus.Disposed;
+            owned = this.subscriptions.ToArray();
+            this.subscriptions.Clear();
+            this.StateChanged = null;
+            this.StateChangeWithMetadata = null;
+            this.undo.Clear();
+            this.redo.Clear();
+        }
+
+        this.CancelOwned(this.lifetime);
+        this.CancelOwned(this.generation);
+        this.CancelPendingSave();
+        foreach (var subscription in owned)
+        {
+            subscription.Dispose();
+        }
+
+        this.owner?.UnregisterState(this);
     }
+
+    /// <summary>Waits at most one second for cooperative owned work after detaching immediately.</summary>
+    /// <returns>Bounded asynchronous cleanup, without a final browser flush.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// await using var owned = new CatalogViewState(
+    /// NullLogger<CatalogViewState>.Instance, new AppStateOptions());
+    /// await owned.SetPage(2);
+    /// ]]></code>
+    /// </example>
+    public async ValueTask DisposeAsync()
+    {
+        this.Dispose();
+        try
+        {
+            await Task.WhenAll(this.GetPendingTasks()).WaitAsync(TimeSpan.FromSeconds(1), this.clock);
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            this.logger.LogDebug("AppState cleanup ended ({Outcome})", ex.GetType().Name);
+        }
+    }
+
+    private bool HasPersistence => this.options.Enabled && this.storageProvider != null
+        && this.options.PersistenceType != AppStatePersistenceType.ComponentScoped;
+
+    private IReadOnlyList<TState> CopyHistory(List<TState> history)
+    {
+        TState[] values;
+        lock (this.sync) { values = history.ToArray(); }
+
+        return values.Reverse().Select(this.CloneState).ToArray();
+    }
+
+    private bool Commit(TState proposed, string operation, string reason = null, AppStateVersion? expected = null,
+        List<TState> historySource = null, List<TState> historyDestination = null, string handoffKey = null)
+    {
+        ArgumentNullException.ThrowIfNull(proposed);
+        var value = this.CloneState(proposed);
+        TState old;
+        AppStateVersion accepted;
+        lock (this.sync)
+        {
+            if (expected.HasValue && !this.IsCurrent(expected.Value))
+            {
+                return false;
+            }
+
+            ObjectDisposedException.ThrowIf(this.disposed, this);
+            if (operation == "Handoff")
+            {
+                if (this.hasHandoff || this.lastEditRevision != 0 || handoffKey != this.GetHandoffKey()) { return false; }
+            }
+            else if (operation == "Load" && this.hasHandoff) { return false; }
+
+            old = this.CloneState(this.GetCurrentState());
+            if (expected.HasValue && !this.IsCurrent(expected.Value)) { return false; }
+
+            if (historySource != null)
+            {
+                historySource.RemoveAt(historySource.Count - 1);
+                this.PushHistory(historyDestination, old);
+            }
+            else if (this.options.Enabled && this.options.HistoryEnabled && operation is "Update" or "Restore")
+            {
+                this.PushHistory(this.undo, old);
+                this.redo.Clear();
+            }
+
+            this.UpdateState(value);
+            if (operation == "Handoff") { this.hasHandoff = true; }
+
+            this.revision++;
+            if (operation is "Update" or "Restore" or "Undo" or "Redo") { this.lastEditRevision = this.revision; }
+
+            accepted = new(this.InstanceId, this.revision, this.contextRevision);
+        }
+
+        this.Notify(old, value, operation, reason, accepted);
+        if (this.IsGenerationCurrent(accepted) && operation is "Update" or "Restore" or "Undo" or "Redo")
+        {
+            this.ScheduleSave();
+        }
+
+        return true;
+    }
+
+    private Task MoveHistoryAsync(List<TState> source, List<TState> destination, string operation)
+    {
+        if (!this.options.Enabled || !this.options.HistoryEnabled) { return Task.CompletedTask; }
+
+        TState next;
+        AppStateVersion expected;
+        lock (this.sync)
+        {
+            ObjectDisposedException.ThrowIf(this.disposed, this);
+            if (source.Count == 0) { return Task.CompletedTask; }
+
+            expected = this.Version;
+            next = source[^1];
+        }
+
+        this.Commit(next, operation, expected: expected, historySource: source, historyDestination: destination);
+        return Task.CompletedTask;
+    }
+
+    private void PushHistory(List<TState> history, TState value)
+    {
+        history.Add(value);
+        if (history.Count > this.options.MaxHistoryItems) { history.RemoveAt(0); }
+    }
+
+    private void Notify(TState old, TState value, string operation, string reason, AppStateVersion version)
+    {
+        foreach (var handler in this.StateChanged?.GetInvocationList() ?? [])
+        {
+            if (!this.IsGenerationCurrent(version)) { return; }
+
+            try
+            {
+                var observed = this.CloneState(value);
+                if (!this.IsGenerationCurrent(version)) { return; }
+
+                ((Action<object>)handler)(observed);
+            }
+            catch (Exception ex) { this.ObserverFailure(ex); }
+        }
+
+        if (!this.IsGenerationCurrent(version)) { return; }
+
+        if (operation == "ContextReset") { old = null; }
+
+        var metadata = new StateChangeMetadata<TState>
+        {
+            StateId = this.StateId, Version = version, Timestamp = this.clock.GetUtcNow(), Operation = operation,
+            OldValue = old, NewValue = value, Reason = reason
+        };
+        foreach (var handler in this.StateChangeWithMetadata?.GetInvocationList() ?? [])
+        {
+            if (!this.IsGenerationCurrent(version)) { return; }
+
+            try
+            {
+                var observed = metadata with { OldValue = this.CloneState(old), NewValue = this.CloneState(value) };
+                if (!this.IsGenerationCurrent(version)) { return; }
+
+                ((Action<IStateChangeMetadata>)handler)(observed);
+            }
+            catch (Exception ex) { this.ObserverFailure(ex); }
+        }
+
+        if (this.debugger?.IsEnabled == true && this.IsGenerationCurrent(version))
+        {
+            var observed = metadata with
+            {
+                OldValue = this.debugger.CapturesValues ? this.CloneState(old) : null,
+                NewValue = this.debugger.CapturesValues ? this.CloneState(value) : null
+            };
+            if (this.IsGenerationCurrent(version)) { this.Observe(this.debugger.TrackStateChangeAsync(observed)); }
+        }
+    }
+
+    private void CancelOwned(CancellationTokenSource source)
+    {
+        try { source?.Cancel(); }
+        catch (Exception ex) { this.ObserverFailure(ex); }
+    }
+
+    private void ObserverFailure(Exception ex) => this.logger.LogWarning("AppState observer failed ({Outcome})", ex.GetType().Name);
 }

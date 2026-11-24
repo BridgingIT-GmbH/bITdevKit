@@ -161,5 +161,67 @@ public sealed class DocumentStoreClientBulkWriteTests
         (await sut.GetAsync(new("p", "b"))).IsSuccess.ShouldBeTrue();
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task UpsertManyAsync_WithStaleVersion_PreservesNewerDocumentAndStopsAfterCommittedPrefix(bool useBulkProvider)
+    {
+        // Arrange
+        var storage = new InMemoryDocumentStoreProvider();
+        var documents = new DocumentStoreClient<BulkDocument>(storage);
+        var firstKey = new DocumentKey("p", "a");
+        var changedKey = new DocumentKey("p", "b");
+        var skippedKey = new DocumentKey("p", "c");
+        var first = await documents.UpsertAsync(firstKey, new() { Value = "original-a" });
+        var original = await documents.UpsertAsync(changedKey, new() { Value = "original-b" });
+        var changed = await documents.UpsertAsync(changedKey, new() { Value = "newer-b" },
+            new DocumentWriteOptions { IfMatchETag = original.Value.ETag });
+        IDocumentStoreProvider provider = storage;
+        if (useBulkProvider)
+        {
+            provider = Substitute.For<IDocumentStoreProvider, IDocumentStoreBulkWriteProvider>();
+            ((IDocumentStoreBulkWriteProvider)provider).UpsertManyAsync(default, default, default).ReturnsForAnyArgs(async call =>
+            {
+                var completed = new List<DocumentInfo>();
+                foreach (var write in call.Arg<IReadOnlyList<StoredDocumentWrite>>())
+                {
+                    var saved = await storage.UpsertAsync(call.Arg<DocumentTypeIdentity>(), write, call.Arg<CancellationToken>());
+                    if (saved.IsFailure)
+                    {
+                        return Result<DocumentBatchResult<DocumentInfo>>.Success(new()
+                        {
+                            Items = completed,
+                            FailedKey = write.Key,
+                            FailedKeys = [write.Key]
+                        });
+                    }
+
+                    completed.Add(saved.Value);
+                }
+
+                return Result<DocumentBatchResult<DocumentInfo>>.Success(new() { Items = completed });
+            });
+        }
+
+        var sut = new DocumentStoreClient<BulkDocument>(provider);
+
+        // Act
+        var result = await sut.UpsertManyAsync([
+            new(firstKey, new() { Value = "edited-a" }, new() { IfMatchETag = first.Value.ETag }),
+            new(changedKey, new() { Value = "stale-b" }, new() { IfMatchETag = original.Value.ETag }),
+            new(skippedKey, new() { Value = "skipped-c" })]);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.Items.Select(x => x.Key).ShouldBe([firstKey]);
+        result.Value.FailedKey.ShouldBe(changedKey);
+        result.Value.FailedKeys.ShouldBe([changedKey]);
+        (await documents.GetAsync(firstKey)).Value.Value.Value.ShouldBe("edited-a");
+        var retained = await documents.GetAsync(changedKey);
+        retained.Value.Value.Value.ShouldBe("newer-b");
+        retained.Value.ETag.ShouldBe(changed.Value.ETag);
+        (await documents.GetAsync(skippedKey)).HasError<DocumentStoreNotFoundError>().ShouldBeTrue();
+    }
+
     public sealed class BulkDocument { public string Value { get; set; } }
 }

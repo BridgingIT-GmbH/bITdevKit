@@ -102,11 +102,14 @@ public static class ResultNonGenericExtensions
     /// </example>
     public static Result<T> Map<T>(this Result result, Func<T> mapper)
     {
-        if (!result.IsSuccess || mapper is null)
+        if (result.IsFailure)
         {
-            return Result<T>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
+            return Result<T>.Failure(result);
+        }
+
+        if (mapper is null)
+        {
+            return Result<T>.Failure(result).WithError("Mapper cannot be null");
         }
 
         try
@@ -1187,7 +1190,7 @@ public static class ResultNonGenericExtensions
 
         try
         {
-            return operation();
+            return Result.Merge(result, operation());
         }
         catch (Exception ex)
         {
@@ -1225,7 +1228,8 @@ public static class ResultNonGenericExtensions
 
         try
         {
-            return await operation(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            return Result.Merge(result, await operation(cancellationToken).AnyContext());
         }
         catch (OperationCanceledException)
         {

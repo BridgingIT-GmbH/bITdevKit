@@ -40,7 +40,7 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<Result, TModel>(result);
+        var model = result.IsSuccess ? mapper.Map<Result, TModel>(result) : null;
 
         return actionResultMapper is not null
             ? actionResultMapper.Ok(result, model)
@@ -97,7 +97,7 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
+        var model = result.IsSuccess ? mapper.Map<TSource, TModel>(result.Value) : null;
 
         return actionResultMapper is not null
             ? actionResultMapper.Ok(result, model)
@@ -175,16 +175,8 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var resultPaged = result.IsSuccess
-            ? ResultPaged<TModel>.Success(result.Value.Select(e => mapper.Map<TSource, TModel>(e)), result.CurrentPage, result.PageSize)
-                .WithMessages(result.Messages)
-            : ResultPaged<TModel>.Failure()
-                .WithMessages(result.Messages);
-
-        foreach (var error in result.Errors.SafeNull())
-        {
-            resultPaged.WithError(error);
-        }
+        var resultPaged = result.For(
+            result.IsSuccess ? result.Value.Select(item => mapper.Map<TSource, TModel>(item)) : null);
 
         return actionResultMapper is not null
             ? actionResultMapper.Ok(resultPaged)
@@ -250,7 +242,7 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
+        var model = result.IsSuccess ? mapper.Map<TSource, TModel>(result.Value) : null;
 
         return actionResultMapper is not null
             ? actionResultMapper.Created(result, model, routeName, routeValues)
@@ -347,7 +339,7 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
+        var model = result.IsSuccess ? mapper.Map<TSource, TModel>(result.Value) : null;
 
         return actionResultMapper is not null
             ? actionResultMapper.Created(result, model, actionName, controllerName, routeValues)
@@ -444,7 +436,7 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
+        var model = result.IsSuccess ? mapper.Map<TSource, TModel>(result.Value) : null;
 
         return actionResultMapper is not null
             ? actionResultMapper.Updated(result, model, routeName, routeValues)
@@ -541,7 +533,7 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
+        var model = result.IsSuccess ? mapper.Map<TSource, TModel>(result.Value) : null;
 
         return actionResultMapper is not null
             ? actionResultMapper.Updated(result, model, actionName, controllerName, routeValues)
@@ -638,7 +630,7 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
+        var model = result.IsSuccess ? mapper.Map<TSource, TModel>(result.Value) : null;
 
         return actionResultMapper is not null
             ? actionResultMapper.Accepted(result, model, routeName, routeValues)
@@ -735,7 +727,7 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
+        var model = result.IsSuccess ? mapper.Map<TSource, TModel>(result.Value) : null;
 
         return actionResultMapper is not null
             ? actionResultMapper.Accepted(result, model, actionName, controllerName, routeValues)
@@ -896,7 +888,7 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
+        var model = result.IsSuccess ? mapper.Map<TSource, TModel>(result.Value) : null;
 
         return actionResultMapper is not null
             ? actionResultMapper.Object(result, model, statusCode)
@@ -982,22 +974,8 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var resultPaged = result.IsSuccess
-            ? ResultPaged<TModel>.Success(result.Value.Select(e => mapper.Map<TSource, TModel>(e)), result.CurrentPage, result.PageSize)
-                .WithMessages(result.Messages)
-            : ResultPaged<TModel>.Failure()
-                .WithMessages(result.Messages);
-
-        // var resultPaged =
-        //     new ResultPaged<TModel>(models, result.Messages, result.TotalCount, result.CurrentPage, result.PageSize)
-        //     {
-        //         IsSuccess = result.IsSuccess
-        //     };
-
-        foreach (var error in result.Errors.SafeNull())
-        {
-            resultPaged.WithError(error);
-        }
+        var resultPaged = result.For(
+            result.IsSuccess ? result.Value.Select(item => mapper.Map<TSource, TModel>(item)) : null);
 
         return actionResultMapper is not null
             ? actionResultMapper.Object(resultPaged, statusCode)

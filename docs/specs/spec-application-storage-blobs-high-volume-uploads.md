@@ -49,7 +49,7 @@ The behavior controls overload before it reaches a provider. EF chunk flushing r
 
 This specification does not introduce:
 
-* a public bulk-upload operation on `IBlobStoreClient`;
+* the later public `UploadManyAsync` contract, defined separately in [ADR-0045](../adr/0045-bounded-attempt-all-blob-upload-batches.md);
 * a background queue that returns before the upload completes;
 * durable upload queueing;
 * resumable or multipart public upload APIs;

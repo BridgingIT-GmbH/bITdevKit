@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -15,6 +15,12 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class BlobStorageClientDiagnostics
 {
+    /// <summary>Gets cheap Dimension counters and explicitly requested retained-name cardinality when available.</summary>
+    public BlobDimensionDiagnostics DimensionDiagnostics { get; init; }
+
+    /// <summary>Gets a non-sensitive inspection failure when optional Dimension diagnostics are unavailable.</summary>
+    public string DimensionDiagnosticsError { get; init; }
+
     /// <summary>
     /// Gets the registered client name.
     /// </summary>

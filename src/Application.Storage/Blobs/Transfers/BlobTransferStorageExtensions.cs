@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -63,6 +63,8 @@ public static class BlobTransferStorageExtensions
         }
 
         options ??= new BlobCopyOptions();
+        var condition = BlobValidator.ValidateCondition(options.IfMatchETag, options.OverwriteMode == BlobOverwriteMode.FailIfExists);
+        if (condition.IsFailure) return Result<BlobTransferResult>.Failure(condition);
         var downloadResult = await sourceClient.DownloadAsync(sourceKey, cancellationToken).ConfigureAwait(false);
         if (downloadResult.IsFailure)
         {
@@ -73,6 +75,14 @@ public static class BlobTransferStorageExtensions
         if (download?.Info is null)
         {
             return Result<BlobTransferResult>.Failure(new BlobStoreProviderError("Blob download did not include metadata."));
+        }
+
+        var dimensions = options.Dimensions ?? download.Info.Dimensions;
+        if (targetClient.DimensionCapabilities?.SupportsDimensions != true)
+        {
+            if (options.Dimensions is not null || dimensions.Count > 0)
+                return Result<BlobTransferResult>.Failure(new BlobDimensionsNotSupportedError());
+            dimensions = null;
         }
 
         var expectedContentHash = options.PreserveContentHash ? download.Info.ContentHash : null;
@@ -111,6 +121,8 @@ public static class BlobTransferStorageExtensions
                     ExpectedContentHash = expectedContentHash,
                     ExpiresAt = options.ExpiresAtOverride ?? (options.PreserveExpiration ? download.Info.ExpiresAt : null),
                     Properties = CreateTargetProperties(download.Info, options),
+                    Dimensions = dimensions,
+                    IfMatchETag = options.IfMatchETag,
                     OverwriteMode = options.OverwriteMode
                 },
                 cancellationToken).ConfigureAwait(false);
@@ -202,7 +214,7 @@ public static class BlobTransferStorageExtensions
         var moveTracked = false;
         try
         {
-            var copyResult = await sourceClient.CopyToAsync(sourceKey, targetClient, targetKey, options.Copy, cancellationToken).ConfigureAwait(false);
+            var copyResult = await sourceClient.CopyToAsync(sourceKey, targetClient, targetKey, MoveCopyOptions(options), cancellationToken).ConfigureAwait(false);
             if (copyResult.IsFailure) return copyResult;
             targetWritten = true;
 
@@ -297,6 +309,7 @@ public static class BlobTransferStorageExtensions
 
             var deleteResult = await blobClient.DeleteAsync(
                     item.Value.Key,
+                    new BlobDeleteOptions { IfMatchETag = item.Value.ETag },
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
             if (deleteResult.IsFailure)
@@ -343,11 +356,11 @@ public static class BlobTransferStorageExtensions
     private static PropertyBag CreateTargetProperties(BlobInfo source, BlobCopyOptions options)
     {
         var properties = options.PreserveProperties
-            ? source.Properties?.Clone() ?? new PropertyBag()
+            ? BlobPropertyValues.Clone(source.Properties) ?? new PropertyBag()
             : new PropertyBag();
         if (options.Properties is not null)
         {
-            properties.Merge(options.Properties);
+            properties.Merge(BlobPropertyValues.Clone(options.Properties));
         }
 
         return properties;
@@ -363,4 +376,17 @@ public static class BlobTransferStorageExtensions
 
         return "failed";
     }
+    private static BlobCopyOptions MoveCopyOptions(BlobMoveOptions options)
+    {
+        if (options.Dimensions is null) return options.Copy;
+        var copy = options.Copy ?? new();
+        return new()
+        {
+            Dimensions = options.Dimensions, IfMatchETag = copy.IfMatchETag, PreserveProperties = copy.PreserveProperties,
+            PreserveContentType = copy.PreserveContentType, PreserveContentHash = copy.PreserveContentHash,
+            PreserveExpiration = copy.PreserveExpiration, ExpiresAtOverride = copy.ExpiresAtOverride,
+            ContentType = copy.ContentType, Properties = copy.Properties, OverwriteMode = copy.OverwriteMode
+        };
+    }
+
 }

@@ -1,11 +1,21 @@
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Infrastructure.FileSystem.Probes;
 
 using System.Runtime.InteropServices;
 using BridgingIT.DevKit.Infrastructure.FileSystem;
 
-internal static class Program
+/// <summary>Dispatches the existing filesystem qualification host and explicit advanced-cache probe/recovery commands.</summary>
+/// <example><code>dotnet run --project tests/Infrastructure.FileSystem.Probes -- cache-crash</code></example>
+public static class Program
 {
-    internal static async Task<int> Main(string[] args)
+    /// <summary>Executes one validated probe or explicit operator-owned offline recovery command.</summary>
+    /// <param name="args">A command followed by unique --name value option pairs.</param>
+    /// <returns>Zero for passed work, one for failure, or two for unavailable qualification.</returns>
+    public static async Task<int> Main(string[] args)
     {
         var command = args.FirstOrDefault() ?? "qualify";
         var options = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -27,12 +37,32 @@ internal static class Program
         {
             if (command == "worker")
             {
+                if (options["--scenario"].StartsWith("cache-role-", StringComparison.Ordinal))
+                {
+                    return await CacheSharedContractProbe.WorkerAsync(options["--workspace"], options["--scenario"]);
+                }
+
+                if (options["--scenario"].StartsWith("cache-local-case-", StringComparison.Ordinal))
+                {
+                    return await CacheSharedProbe.LocalContractWorkerAsync(options["--workspace"], options["--scenario"]);
+                }
+
+                if (options["--scenario"].StartsWith("cache-local-", StringComparison.Ordinal))
+                {
+                    return await CacheSharedProbe.LocalWorkerAsync(options["--workspace"], options["--scenario"]);
+                }
+
+                if (options["--scenario"].StartsWith("cache-prototype-", StringComparison.Ordinal) || options["--scenario"].StartsWith("cache-production-", StringComparison.Ordinal))
+                {
+                    return await CacheCommitRecoveryPrototype.WorkerAsync(options["--workspace"], options["--scenario"]);
+                }
+
                 return options["--scenario"].StartsWith("production-", StringComparison.Ordinal)
                     ? await ProductionProcessProbe.WorkerAsync(options["--workspace"], options["--scenario"])
                     : await SharedAccessProbe.RunWorkerAsync(options["--workspace"], options["--scenario"], options["--actor"]);
             }
 
-            if (command is not ("qualify" or "local-probe" or "load" or "verify-results" or "recover"))
+            if (command is not ("qualify" or "local-probe" or "load" or "verify-results" or "recover" or "cache-prototype" or "cache-crash" or "cache-contract" or "cache-shared" or "cache-recover" or "cache-reset" or "cache-inspect"))
             {
                 return 2;
             }
@@ -62,6 +92,26 @@ internal static class Program
             Directory.CreateDirectory(evidence);
             ProbeResult.Write(Path.Combine(evidence, "source-map.json"), SourceMap.Capture(repository));
             Console.WriteLine($"run={runId}; evidence={evidence}");
+
+            if (command is "cache-inspect" or "cache-recover" or "cache-reset")
+            {
+                return await CacheOfflineProbe.RunAsync(command, evidence, options);
+            }
+
+            if (command == "cache-shared")
+            {
+                return await CacheSharedProbe.RunAsync(evidence, runId, options);
+            }
+
+            if (command is "cache-prototype" or "cache-crash" or "cache-contract")
+            {
+                var workspace = ProbeWorkspace.Open(Path.GetTempPath(), runId, command, true);
+                var results = command == "cache-contract" ? await CacheContractProbe.RunAsync(workspace) : await CacheCommitRecoveryPrototype.RunAsync(workspace);
+                ProbeResult.Write(Path.Combine(evidence, command + ".json"), new { runId, workspace, passed = results, implementation = "FileSystemCacheStoreProvider and FileSystemCacheRecovery",
+                    qualification = command == "cache-contract" ? "Local production application API checks only. No network, independent-host, or power-loss qualification." :
+                        "Local production process termination only. Shared markers on local scratch are protocol evidence; SMB/NFS, independent hosts, and power loss are not qualified." });
+                return 0;
+            }
 
             if (!OperatingSystem.IsWindows() && !OperatingSystem.IsLinux())
             {

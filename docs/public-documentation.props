@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <DevKitDocumentationRoot>$(MSBuildThisFileDirectory)</DevKitDocumentationRoot>
+    <DevKitPublicDocumentationGlobs>$(DevKitDocumentationRoot)INDEX.md;$(DevKitDocumentationRoot)introduction-ddd-guide.md;$(DevKitDocumentationRoot)common-*.md;$(DevKitDocumentationRoot)development-*.md;$(DevKitDocumentationRoot)features-*.md;$(DevKitDocumentationRoot)storage-*.md;$(DevKitDocumentationRoot)testing-*.md</DevKitPublicDocumentationGlobs>
+  </PropertyGroup>
+</Project>

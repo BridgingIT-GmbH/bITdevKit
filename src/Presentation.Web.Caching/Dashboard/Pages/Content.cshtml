@@ -1,0 +1,169 @@
+@inherits RazorSlice
+@{
+    var viewModel = await HttpContext.RequestServices.GetRequiredService<CacheDashboardViewModelBuilder>().BuildAsync(HttpContext);
+    var dashboard = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+    var tokens = HttpContext.Items[typeof(CacheDashboardAuthorizationFilter)] as AntiforgeryTokenSet;
+    var canInvalidateEntry = viewModel.RevealSensitiveMetadata && tokens?.RequestToken is not null;
+}
+<div data-cache-fragment data-cache-view="@viewModel.View">
+@if (viewModel.Error is not null)
+{
+    <div class="alert alert-warning py-2" data-dashboard-query-error role="status">@viewModel.Error</div>
+}
+@if (viewModel.View == "collections")
+{
+    <div class="table-responsive border rounded-1">
+        <table class="table table-sm table-hover align-middle mb-0"><thead><tr><th>Collection</th><th class="text-end">Entries @(await RenderPartialAsync<CacheHelp, string>("Retained metadata entries across contract versions, including expired entries awaiting cleanup. Observed counts are partial or affected by concurrent changes. Unavailable means the bounded inspection could not confirm a count."))</th><th>Contract @(await RenderPartialAsync<CacheHelp, string>("The registered value contract for this collection. Its version separates incompatible logical entry identities."))</th><th>Provider</th><th>Access</th><th>Coordination @(await RenderPartialAsync<CacheHelp, string>("NodeLocal shares source work within one app node. SharedStore coordinates load ownership through the configured provider across nodes."))</th><th>Hot retention @(await RenderPartialAsync<CacheHelp, string>("Optional validated local retention of binary or decoded entry representations. Its memory is included in the cache memory total."))</th></tr></thead><tbody>
+        @foreach (var item in viewModel.Collections)
+        {
+            <tr><td class="text-break"><a href="@CacheDashboardRoutes.Collection(dashboard, item.Name)" title="@item.Name">@item.Name</a></td><td class="text-end text-nowrap" data-cache-collection-count="@item.Name">@if (viewModel.CollectionCounts.TryGetValue(item.Name, out var count)) { @count.Count.ToString("N0", CultureInfo.InvariantCulture) @if (!count.CountIsExact) { <span class="small text-muted">(observed)</span> } } else { <span class="text-muted">Unavailable</span> }</td><td class="text-break">@item.Contract</td><td class="text-break">@item.Provider <span class="small text-muted">(@item.ProviderKind)</span></td><td><span class="badge text-bg-@(viewModel.FeatureEnabled && item.Options.Enabled ? "success" : "secondary")">@(viewModel.FeatureEnabled && item.Options.Enabled ? "Enabled" : "Disabled")</span></td><td>@item.Options.Loading.CoordinationScope</td><td>@(item.Options.HotEntries.Enabled ? item.Options.HotEntries.Representation.ToString() : "Off")</td></tr>
+        }
+        @if (viewModel.Collections.Count == 0) { <tr><td colspan="7" class="text-muted">No collections are declared in this authorized scope.</td></tr> }
+        </tbody></table>
+    </div>
+}
+else if (viewModel.View == "entries")
+{
+    <section data-dashboard-list="cache-entries" data-dashboard-list-total="@(viewModel.Entries?.Count ?? 0)">
+    <div class="small text-muted mb-2">@(viewModel.Entries is null ? "Unavailable" : (viewModel.Entries.CountIsExact ? "Matching entries: " : "Observed matching entries: ") + viewModel.Entries.Count.ToString("N0", CultureInfo.InvariantCulture)) @(await RenderPartialAsync<CacheHelp, string>("Exact means the query confirmed the complete count. Otherwise it is the count observed so far; Load more continues the same filter and cutoff."))</div>
+    <div class="table-responsive border rounded-1" data-dashboard-list-scroll>
+        <table class="table table-sm table-hover align-middle mb-0"><thead><tr><th>Key</th><th>Dimensions @(await RenderPartialAsync<CacheHelp, string>("Application-supplied typed metadata used for filtering and invalidation. None means no dimensions were attached; Hidden means disclosure is disabled."))</th><th>Representation @(await RenderPartialAsync<CacheHelp, string>("The actual stored codec and compression for this entry. Confirmed absence is a negative-cache result. Settings shows the configured writer profile."))</th><th>Published (UTC)</th><th>Expires (UTC) @(await RenderPartialAsync<CacheHelp, string>("The current entry expiry time in UTC. Physical reclamation of its stored bytes can happen later."))</th><th class="text-end">Logical size @(await RenderPartialAsync<CacheHelp, string>("Payload bytes after reversing storage transforms, before decoding the value. This is serialized content size rather than decoded object memory."))</th><th class="text-end">Stored size @(await RenderPartialAsync<CacheHelp, string>("Stored payload and envelope bytes after storage transforms such as compression. Provider indexes and other store metadata are accounted separately."))</th><th><span class="visually-hidden">Actions</span></th></tr></thead><tbody data-dashboard-list-rows>
+        @foreach (var entry in viewModel.Entries?.Entries ?? [])
+        {
+            <tr data-dashboard-row-id="@entry.Version.Value">
+                <td style="max-width:32rem" class="text-break" title="@(entry.DisplayKey ?? entry.Identity.Key)"><code>@Shortener.Apply(entry.DisplayKey ?? entry.Identity.Key, new ShorteningOptions { MaximumLength = 80, Strategy = Shortener.LeftTruncate })</code></td>
+                <td style="min-width:12rem;max-width:24rem" class="small" data-cache-entry-dimensions>
+                @if (!viewModel.RevealSensitiveMetadata) { <span class="text-muted">Hidden</span> }
+                else if (entry.Dimensions.Count == 0) { <span class="text-muted">None</span> }
+                else
+                {
+                    @foreach (var dimension in entry.Dimensions.Take(3))
+                    {
+                        var value = CacheDashboardFormatting.Dimension(dimension);
+                        <div class="text-break" title="@value"><code>@dimension.Name</code>: @Shortener.Apply(value, new ShorteningOptions { MaximumLength = 160 })</div>
+                    }
+                    @if (entry.Dimensions.Count > 3)
+                    {
+                        <details><summary class="text-muted">@(entry.Dimensions.Count - 3) more</summary>
+                        @foreach (var dimension in entry.Dimensions.Skip(3))
+                        {
+                            var value = CacheDashboardFormatting.Dimension(dimension);
+                            <div class="text-break" title="@value"><code>@dimension.Name</code>: @Shortener.Apply(value, new ShorteningOptions { MaximumLength = 160 })</div>
+                        }
+                        </details>
+                    }
+                }
+                </td>
+                <td>@(entry.IsNotFound ? "Confirmed absence" : entry.CodecId) @if (entry.Compression != "none") { <span class="badge text-bg-secondary">@entry.Compression</span> }</td>
+                <td class="small text-nowrap">@entry.PublishedAt.UtcDateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)</td><td class="small text-nowrap">@entry.ExpiresAt.UtcDateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)</td><td class="text-end">@CacheDashboardFormatting.Bytes(entry.LogicalSizeBytes)</td><td class="text-end">@CacheDashboardFormatting.Bytes(entry.StoredSizeBytes)</td>
+                <td class="text-end"><form method="post" action="@(CacheDashboardRoutes.Actions(dashboard) + "/remove")" data-cache-operation-form data-cache-entry-action>
+                @if (canInvalidateEntry)
+                {
+                    <input type="hidden" name="@tokens.FormFieldName" value="@tokens.RequestToken" />
+                    <input type="hidden" name="collections" value="@viewModel.Collection" />
+                    <input type="hidden" name="key" value="@(entry.DisplayKey ?? entry.Identity.Key)" />
+                    <input type="hidden" name="version" value="@entry.Version.Value" />
+                }
+                <button type="submit" class="btn btn-outline-danger btn-sm" title="@(canInvalidateEntry ? "Invalidate entry" : "Entry keys are hidden by the dashboard metadata settings.")" aria-label="Invalidate entry" disabled="@(!canInvalidateEntry)"><i class="bi bi-trash" aria-hidden="true"></i></button>
+                </form></td>
+            </tr>
+        }
+        @if (viewModel.Entries?.Entries.Count == 0) { <tr><td colspan="8" class="text-muted">No retained metadata matches this selection.</td></tr> }
+        </tbody></table>
+    </div>
+    @(await RenderPartialAsync<ListFooter, DashboardListFooterModel>(new("cache-entries", viewModel.Take, viewModel.Entries?.Continuation is not null,
+        viewModel.Entries?.Continuation, Sizes: new[] { 10, 25, 50, 100 }.Where(size => size <= (viewModel.Selected?.Options.Limits.MetadataPageSize ?? 100)).ToArray(),
+        Boundary: viewModel.Entries?.Cutoff.UtcTicks.ToString(CultureInfo.InvariantCulture), LoadedCount: viewModel.Entries?.Entries.Count ?? 0, FormId: "cache-entry-filters", SizeName: "pageSize")))
+    </section>
+}
+else if (viewModel.View == "settings" && viewModel.Selected is not null)
+{
+    var compression = viewModel.Selected.Options.Compression;
+    <div class="row g-2 mb-2">
+        <section class="col-md-6" data-cache-codec-settings><div class="card h-100"><div class="card-header">Codec @(await RenderPartialAsync<CacheHelp, string>("The configured writer profile used to encode new values. Entries reports the actual stored codec, which can differ for older retained entries."))</div><div class="card-body py-2">
+            <div class="small text-muted">Codec profile</div><div class="fs-5"><code>@(viewModel.Selected.Binary ? "binary" : viewModel.Selected.Options.Codec)</code></div>
+        </div></div></section>
+        <section class="col-md-6" data-cache-compression-settings><div class="card h-100"><div class="card-header">Compression @(await RenderPartialAsync<CacheHelp, string>("Optional compression after value encoding. A compressed representation is retained only when the entry size and minimum saving requirements are met."))</div><div class="card-body py-2">
+        @if (compression.Enabled)
+        {
+            <div class="mb-1">@compression.Algorithm · @compression.Level <span class="badge text-bg-success ms-1">On</span></div>
+            <dl class="row small mb-0"><dt class="col-6">Minimum entry size @(await RenderPartialAsync<CacheHelp, string>("Minimum encoded payload size before a compression candidate is considered. Smaller values are stored without compression."))</dt><dd class="col-6">@CacheDashboardFormatting.Bytes(compression.ThresholdBytes)</dd><dt class="col-6">Minimum saving @(await RenderPartialAsync<CacheHelp, string>("Required reduction in stored bytes before the compressed candidate is retained. Otherwise the original representation is kept."))</dt><dd class="col-6">@((compression.MinimumSavingRatio * 100).ToString("0.##", CultureInfo.InvariantCulture))%</dd></dl>
+        }
+        else { <div class="fs-5">Off</div> }
+        </div></div></section>
+    </div>
+    <section class="card"><div class="card-header">Effective startup settings @(await RenderPartialAsync<CacheHelp, string>("The finalized collection policy and provider capabilities for this host. Runtime controls affect admission or entries without rewriting startup configuration.")) <span class="badge text-bg-secondary ms-1">Read only</span></div><div class="card-body">
+        <dl class="row small mb-2"><dt class="col-sm-3">Collection</dt><dd class="col-sm-9 text-break">@viewModel.Selected.Name</dd><dt class="col-sm-3">Contract / provider</dt><dd class="col-sm-9 text-break">@viewModel.Selected.Contract / @viewModel.Selected.Provider (@viewModel.Selected.ProviderKind)</dd><dt class="col-sm-3">External HTTP API @(await RenderPartialAsync<CacheHelp, string>("Whether the separate cache HTTP API exposes this collection. Dashboard visibility is configured independently."))</dt><dd class="col-sm-9">@(viewModel.HttpExposed ? "Exposed" : "Not exposed")</dd><dt class="col-sm-3">Collection behaviors @(await RenderPartialAsync<CacheHelp, string>("The configured behavior order around collection operations, including cache hits and misses."))</dt><dd class="col-sm-9 text-break">@string.Join(" → ", viewModel.Selected.Options.Behaviors.CollectionOperations)</dd><dt class="col-sm-3">Source behaviors @(await RenderPartialAsync<CacheHelp, string>("The configured behavior order around actual source work. Returning a retained cache value does not run the source pipeline."))</dt><dd class="col-sm-9 text-break">@string.Join(" → ", viewModel.Selected.Options.Behaviors.SourceExecution)</dd><dt class="col-sm-3">Payload behaviors @(await RenderPartialAsync<CacheHelp, string>("The configured behavior order at payload encoding, transformation and delivery boundaries."))</dt><dd class="col-sm-9 text-break">@string.Join(" → ", viewModel.Selected.Options.Behaviors.PayloadTransformation)</dd></dl>
+        <details><summary class="small mb-2">Configuration and capabilities</summary><pre class="small mb-0" style="max-height:34rem;overflow:auto">@JsonSerializer.Serialize(new { viewModel.Selected.Options, viewModel.Selected.Capabilities }, new JsonSerializerOptions { WriteIndented = true })</pre></details>
+    </div></section>
+}
+else if (viewModel.View == "operations")
+{
+    @if (viewModel.Operation is not null)
+    {
+        <section class="card"><div class="card-header">Tracked invalidation <span class="badge text-bg-secondary">@viewModel.Operation.State</span></div><div class="card-body"><dl class="row small mb-0"><dt class="col-sm-3">Identifier</dt><dd class="col-sm-9 text-break">@viewModel.Operation.Id</dd><dt class="col-sm-3">Committed affected entries @(await RenderPartialAsync<CacheHelp, string>("Entries whose invalidation has been committed. Completed batches stay effective if the remaining operation is cancelled."))</dt><dd class="col-sm-9">@(viewModel.Operation.Outcome?.AffectedCount.ToString("N0", CultureInfo.InvariantCulture) ?? "Not observed")</dd><dt class="col-sm-3">Scope complete @(await RenderPartialAsync<CacheHelp, string>("Whether the captured selection has been fully processed. Physical cleanup of retired storage can finish later."))</dt><dd class="col-sm-9">@(viewModel.Operation.Outcome?.Completed.ToString() ?? "Pending")</dd><dt class="col-sm-3">Count accuracy @(await RenderPartialAsync<CacheHelp, string>("Exact means the affected count is confirmed for the captured scope. Concurrent changes or partial progress can make the count partial."))</dt><dd class="col-sm-9">@(viewModel.Operation.Outcome?.CountIsExact == true ? "Exact" : "Partial or unknown")</dd><dt class="col-sm-3">Cancellation requested @(await RenderPartialAsync<CacheHelp, string>("Stops remaining work at a confirmed safe boundary. Completed invalidations are not rolled back."))</dt><dd class="col-sm-9">@viewModel.Operation.CancellationRequested</dd><dt class="col-sm-3">Updated (UTC)</dt><dd class="col-sm-9">@viewModel.Operation.UpdatedAt.UtcDateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)</dd></dl></div></section>
+    }
+}
+else if (viewModel.Diagnostics is not null)
+{
+    var report = viewModel.Diagnostics;
+    @if (viewModel.View is "overview" or "diagnostics")
+    {
+        <div class="row g-2 mb-2">
+            <section class="col-sm-6 col-xl-3" data-cache-footprint="resident"><div class="card h-100"><div class="card-body py-2"><div class="small text-muted">Owned resident RAM @(await RenderPartialAsync<CacheHelp, string>("Memory currently reserved or retained by the cache across all collections on this app node, including metadata, buffers and hot entries. Decoded objects use size estimates. This is cache accounting, not total process RAM."))</div><div>@Bytes(report.Footprint.ResidentBytes)</div></div></div></section>
+            <section class="col-sm-6 col-xl-3" data-cache-footprint="hot"><div class="card h-100"><div class="card-body py-2"><div class="small text-muted">Hot memory @(await RenderPartialAsync<CacheHelp, string>("Memory accounted to locally retained hot representations on this node. Already included in Owned resident RAM; do not add the two values. Decoded objects use size estimates."))</div><div>@Bytes(report.Footprint.HotResidentBytes)</div></div></div></section>
+            <section class="col-sm-6 col-xl-3" data-cache-footprint="transient"><div class="card h-100"><div class="card-body py-2"><div class="small text-muted">Transient reservations @(await RenderPartialAsync<CacheHelp, string>("Temporary memory reserved for active cache operations, transfers, codec workspaces and diagnostics on this node. Reservations last until the actual work releases them."))</div><div>@Bytes(report.Footprint.TransientBytes)</div></div></div></section>
+            <section class="col-sm-6 col-xl-3" data-cache-footprint="sources"><div class="card h-100"><div class="card-body py-2"><div class="small text-muted">Occupied source work / queued @(await RenderPartialAsync<CacheHelp, string>("Source work holding a concurrency slot, followed by work queued for a slot, across this node. Timed-out work keeps its slot until it actually ends."))</div><div>@report.Footprint.ActiveSources / @report.Footprint.QueuedSources</div></div></div></section>
+        </div>
+        <div class="table-responsive border rounded-1 mb-2"><table class="table table-sm align-middle mb-0"><thead><tr><th>Provider</th><th>Scope @(await RenderPartialAsync<CacheHelp, string>("The provider scope covered by these counts and sizes. It can cover several collections or nodes; memory cards describe the current app node."))</th><th>Observation @(await RenderPartialAsync<CacheHelp, string>("Availability and timestamp of the provider quota observation. Unavailable does not mean the store is empty."))</th><th class="text-end">Provider current entries @(await RenderPartialAsync<CacheHelp, string>("The current retained entry count in the reported provider scope. Retired entries and staging use separate quota accounting."))</th><th class="text-end">Stored size @(await RenderPartialAsync<CacheHelp, string>("Bytes charged to current retained payloads and envelopes in this provider scope. This is not physical database-file size or free disk space."))</th><th>Accuracy / breaker @(await RenderPartialAsync<CacheHelp, string>("Quota accuracy and the local provider circuit-breaker state. Open temporarily rejects new calls; half-open allows probes. Breaker off means no breaker is configured."))</th></tr></thead><tbody>
+        @foreach (var provider in report.Providers)
+        {
+            var observed = provider.Quota.Availability == CacheObservationAvailability.Available;
+            <tr><td class="text-break">@provider.Provider <span class="small text-muted">(@provider.Kind)</span></td><td>@provider.Scope</td><td><span class="badge text-bg-@(observed ? "success" : "secondary")">@(observed ? "Available" : provider.Quota.Availability.ToString())</span><span class="small text-muted ms-1">@provider.Quota.Reason</span><div class="small text-muted">Observed: @(provider.Quota.ObservedAt?.UtcDateTime.ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) ?? "Unavailable")</div></td><td class="text-end">@(observed ? provider.Quota.Value.CurrentEntries.ToString("N0", CultureInfo.InvariantCulture) : "Unavailable")</td><td class="text-end">@(observed ? CacheDashboardFormatting.Bytes(provider.Quota.Value.CurrentBytes) : "Unavailable")</td><td>@provider.Quota.Accuracy / @(provider.Breaker?.State ?? "Breaker off")</td></tr>
+        }
+        </tbody></table></div>
+    }
+    @if (viewModel.View == "shared-loads")
+    {
+        <div class="table-responsive border rounded-1"><table class="table table-sm align-middle mb-0"><thead><tr><th>Collection</th><th class="text-end">Source attempts @(await RenderPartialAsync<CacheHelp, string>("Attempts to execute the source on this node. Joining an existing load is counted separately; this is a cumulative local observation."))</th><th class="text-end">Joined callers @(await RenderPartialAsync<CacheHelp, string>("Callers that joined work already in flight instead of starting a separate load. This cumulative observation belongs to the current node."))</th><th class="text-end">Active owners @(await RenderPartialAsync<CacheHelp, string>("Current load-owner observations on this node. A shared provider coordinates work across nodes, but this count is local."))</th><th class="text-end">Waiting callers @(await RenderPartialAsync<CacheHelp, string>("Callers currently waiting for a shared load result on this node. This differs from source work queued for a concurrency slot."))</th><th class="text-end">Source p95 (s) @(await RenderPartialAsync<CacheHelp, string>("The 95th percentile of retained source-duration samples, in seconds."))</th><th class="text-end">Wait p95 (s) @(await RenderPartialAsync<CacheHelp, string>("The 95th percentile of sampled follower waiting durations on this node, in seconds."))</th></tr></thead><tbody>
+        @foreach (var snapshot in report.Collections)
+        {
+            <tr><td class="text-break"><a href="@CacheDashboardRoutes.Collection(dashboard, snapshot.Collection, "shared-loads")">@snapshot.Collection</a><div class="small text-muted">@snapshot.Scope · @snapshot.Availability</div></td><td class="text-end">@Counter(snapshot, CacheObservationKind.SourceAttempt)</td><td class="text-end">@Counter(snapshot, CacheObservationKind.Join)</td><td class="text-end">@Active(snapshot, CacheActiveKind.Owners)</td><td class="text-end">@Active(snapshot, CacheActiveKind.Waiters)</td><td class="text-end">@P95(snapshot, CacheLatencyKind.Source)</td><td class="text-end">@P95(snapshot, CacheLatencyKind.Wait)</td></tr>
+        }
+        </tbody></table></div>
+    }
+    else
+    {
+        <div class="table-responsive border rounded-1"><table class="table table-sm align-middle mb-0"><thead><tr><th>Collection</th><th class="text-end">Positive hits @(await RenderPartialAsync<CacheHelp, string>("Lookups that returned a usable retained value. This is a cumulative observation on the current node."))</th><th class="text-end">Negative hits @(await RenderPartialAsync<CacheHelp, string>("Lookups that reused a cached confirmed absence. A negative hit is a valid cached result rather than a source failure."))</th><th class="text-end">Misses @(await RenderPartialAsync<CacheHelp, string>("Lookups without a usable retained result. Source work may follow according to the configured loading policy."))</th><th class="text-end">Lookup hit ratio @(await RenderPartialAsync<CacheHelp, string>("Positive plus negative hits divided by all recorded hits and misses on this node. Includes cached absence and is cumulative since observations began."))</th><th class="text-end">Source attempts @(await RenderPartialAsync<CacheHelp, string>("Attempts to execute the source on this node. Joining an existing load is counted separately; this is a cumulative local observation."))</th><th class="text-end">Joined callers @(await RenderPartialAsync<CacheHelp, string>("Callers that joined work already in flight instead of starting a separate load. This cumulative observation belongs to the current node."))</th><th class="text-end">Operation p95 (s) @(await RenderPartialAsync<CacheHelp, string>("The 95th percentile of retained cache-operation duration samples on this node, in seconds."))</th></tr></thead><tbody>
+        @foreach (var snapshot in report.Collections)
+        {
+            <tr><td class="text-break"><a href="@CacheDashboardRoutes.Collection(dashboard, snapshot.Collection)">@snapshot.Collection</a><div class="small text-muted">@snapshot.Availability</div></td><td class="text-end">@Counter(snapshot, CacheObservationKind.PositiveHit)</td><td class="text-end">@Counter(snapshot, CacheObservationKind.NegativeHit)</td><td class="text-end">@Counter(snapshot, CacheObservationKind.Miss)</td><td class="text-end">@HitRatio(snapshot)</td><td class="text-end">@Counter(snapshot, CacheObservationKind.SourceAttempt)</td><td class="text-end">@Counter(snapshot, CacheObservationKind.Join)</td><td class="text-end">@P95(snapshot, CacheLatencyKind.Operation)</td></tr>
+        }
+        </tbody></table></div>
+    }
+}
+else if (viewModel.Error is null && viewModel.View is not ("operations" or "settings"))
+{
+    <div class="alert alert-secondary py-2" role="status">No observations are available for this scope.</div>
+}
+</div>
+@functions {
+    private static string Bytes(CacheObservedValue<long> value) => value.Availability == CacheObservationAvailability.Available ? CacheDashboardFormatting.Bytes(value.Value) : value.Availability.ToString();
+
+    private static string Counter(CacheObservationSnapshot snapshot, CacheObservationKind kind) => snapshot.Counters.TryGetValue(kind, out var value) && value.HasValue ? value.Value.ToString("N0", CultureInfo.InvariantCulture) : snapshot.Availability.ToString();
+
+    private static string Active(CacheObservationSnapshot snapshot, CacheActiveKind kind) => snapshot.Active.TryGetValue(kind, out var value) && value.HasValue ? value.Value.ToString("N0", CultureInfo.InvariantCulture) : snapshot.Availability.ToString();
+
+    private static string P95(CacheObservationSnapshot snapshot, CacheLatencyKind kind) => snapshot.Latencies.TryGetValue(kind, out var value) && value.P95Seconds.HasValue ? value.P95Seconds.Value.ToString("0.####", CultureInfo.InvariantCulture) : "Unavailable";
+
+    private static string HitRatio(CacheObservationSnapshot snapshot)
+    {
+        var positive = snapshot.Counters.GetValueOrDefault(CacheObservationKind.PositiveHit);
+        var negative = snapshot.Counters.GetValueOrDefault(CacheObservationKind.NegativeHit);
+        var misses = snapshot.Counters.GetValueOrDefault(CacheObservationKind.Miss);
+        if (!positive.HasValue || !negative.HasValue || !misses.HasValue) { return "Unavailable"; }
+
+        var total = (double)positive.Value + negative.Value + misses.Value;
+        return total > 0 ? (((double)positive.Value + negative.Value) / total).ToString("P1", CultureInfo.InvariantCulture) : "No lookups";
+    }
+}

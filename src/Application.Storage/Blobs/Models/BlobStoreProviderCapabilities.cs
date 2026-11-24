@@ -19,6 +19,12 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class BlobStoreProviderCapabilities
 {
+    /// <summary>Gets whether the provider supports bounded FilterModel queries.</summary>
+    public bool SupportsFilterModel { get; init; }
+
+    /// <summary>Gets the independent Dimensions storage and operator profile.</summary>
+    public BlobDimensionCapabilities Dimensions { get; init; } = BlobDimensionCapabilities.Unsupported;
+
     /// <summary>
     /// Gets a value indicating whether continuation paging is supported.
     /// </summary>
@@ -70,7 +76,7 @@ public sealed class BlobStoreProviderCapabilities
     public bool SupportsContentType { get; init; }
 
     /// <summary>
-    /// Gets a value indicating whether entity tags are supported.
+    /// Gets whether item ETags support conditional content replacement, metadata updates, and exact deletion.
     /// </summary>
     /// <example>
     /// <code>

@@ -19,21 +19,58 @@ public static class FindOptionsBuilder
     public static FindOptions<TEntity> Build<TEntity>(FilterModel filterModel)
         where TEntity : class, IEntity
     {
-        if (filterModel == null)
+        var options = BuildFilterOptions<TEntity>(filterModel);
+        if (filterModel?.PageSize > 0)
         {
-            return new FindOptions<TEntity>();
+            options.Skip = filterModel.PageSize * (filterModel.Page - 1);
+            options.Take = filterModel.PageSize;
         }
 
-        return new FindOptions<TEntity>
+        return options;
+    }
+
+    internal static FindOptions<TEntity> BuildPaged<TEntity>(FilterModel filterModel, out int page, out int pageSize)
+        where TEntity : class, IEntity
+    {
+        var paging = NormalizePaging(filterModel?.Page ?? 0, filterModel?.PageSize ?? 0);
+        page = paging.Page;
+        pageSize = paging.PageSize;
+
+        var options = BuildFilterOptions<TEntity>(filterModel);
+        options.Skip = paging.Skip;
+        options.Take = paging.PageSize;
+        return options;
+    }
+
+    internal static Result<FindOptions<TEntity>> BuildPagedResult<TEntity>(FilterModel filterModel)
+        where TEntity : class, IEntity
+    {
+        try
+        {
+            return Result<FindOptions<TEntity>>.Success(BuildPaged<TEntity>(filterModel, out _, out _));
+        }
+        catch (OverflowException ex)
+        {
+            return Result<FindOptions<TEntity>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+        }
+    }
+
+    internal static (int Page, int PageSize, int Skip) NormalizePaging(int page, int pageSize)
+    {
+        page = Math.Max(1, page);
+        pageSize = pageSize > 0 ? pageSize : 10;
+        return (page, pageSize, checked((page - 1) * pageSize));
+    }
+
+    private static FindOptions<TEntity> BuildFilterOptions<TEntity>(FilterModel filterModel)
+        where TEntity : class, IEntity =>
+        filterModel is null ? new() : new()
         {
             Orders = OrderOptionBuilder.Build<TEntity>(filterModel.Orderings),
             Includes = IncludeOptionBuilder.Build<TEntity>(filterModel.Includes),
             Hierarchy = HierarchyOptionBuilder.Build<TEntity>(filterModel.Hierarchy, filterModel.HierarchyMaxDepth),
-            Skip = filterModel.PageSize > 0 ? filterModel.PageSize * (filterModel.Page - 1) : null,
-            Take = filterModel.PageSize > 0 ? filterModel.PageSize : null,
             NoTracking = filterModel.NoTracking
         };
-    }
 
     /// <summary>
     ///     Builds FindOptions with default settings and applies custom configurations.

@@ -72,16 +72,18 @@ public sealed class InMemoryBlobStoreProvider(
     }
 
     /// <inheritdoc />
-    public async Task<Result<BlobInfo>> UploadAsync(
-        BlobUpload upload,
+    public async Task<Result<StoredBlobInfo>> UploadAsync(
+        StoredBlobUpload upload,
         CancellationToken cancellationToken = default)
     {
+        if (upload?.Dimensions is not null) return Result<StoredBlobInfo>.Failure(new BlobDimensionsNotSupportedError());
+
         cancellationToken.ThrowIfCancellationRequested();
 
         var validation = BlobValidator.Validate(upload, this.options);
         if (validation.IsFailure)
         {
-            return Result<BlobInfo>.Failure(validation);
+            return Result<StoredBlobInfo>.Failure(validation);
         }
 
         using var buffer = new MemoryStream();
@@ -92,7 +94,7 @@ public sealed class InMemoryBlobStoreProvider(
             cancellationToken: cancellationToken).ConfigureAwait(false);
         if (copy.IsFailure)
         {
-            return Result<BlobInfo>.Failure(copy);
+            return Result<StoredBlobInfo>.Failure(copy);
         }
 
         var content = buffer.ToArray();
@@ -100,11 +102,11 @@ public sealed class InMemoryBlobStoreProvider(
         if (!string.IsNullOrWhiteSpace(upload.ExpectedContentHash) &&
             !string.Equals(upload.ExpectedContentHash, contentHash, StringComparison.Ordinal))
         {
-            return Result<BlobInfo>.Failure(new BlobStoreIntegrityError("ExpectedContentHash does not match uploaded content."));
+            return Result<StoredBlobInfo>.Failure(new BlobStoreIntegrityError("ExpectedContentHash does not match uploaded content."));
         }
 
         var now = DateTimeOffset.UtcNow;
-        var info = new BlobInfo
+        var info = new StoredBlobInfo
         {
             Key = upload.Key,
             Length = content.LongLength,
@@ -114,22 +116,24 @@ public sealed class InMemoryBlobStoreProvider(
             CreatedAt = now,
             LastModifiedAt = now,
             ExpiresAt = ToUtc(upload.ExpiresAt),
-            Properties = CloneProperties(upload.Properties)
+            Properties = BlobPropertyValues.Clone(upload.Properties),
+            TransformMetadata = CloneProperties(upload.TransformMetadata)
         };
         if (!this.Context.TryStore(
                 new InMemoryBlobEntry { Content = content, Info = info },
                 upload.OverwriteMode == BlobOverwriteMode.FailIfExists,
+                upload.IfMatchETag,
                 out var stored))
         {
-            return Result<BlobInfo>.Failure(new BlobStoreConflictError(
-                $"Blob with container '{upload.Key.Container}' and name '{upload.Key.Name}' already exists."));
+            return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError(
+                $"Blob create-only or ETag condition did not match for '{upload.Key.Container}/{upload.Key.Name}'."));
         }
 
-        return Result<BlobInfo>.Success(stored.Info);
+        return Result<StoredBlobInfo>.Success(stored.Info);
     }
 
     /// <inheritdoc />
-    public Task<Result<BlobDownload>> DownloadAsync(
+    public Task<Result<StoredBlobDownload>> DownloadAsync(
         BlobKey key,
         CancellationToken cancellationToken = default)
     {
@@ -138,15 +142,15 @@ public sealed class InMemoryBlobStoreProvider(
         var validation = BlobValidator.Validate(key);
         if (validation.IsFailure)
         {
-            return Task.FromResult(Result<BlobDownload>.Failure(validation));
+            return Task.FromResult(Result<StoredBlobDownload>.Failure(validation));
         }
 
         if (!this.Context.TryGet(key, out var entry))
         {
-            return Task.FromResult(Result<BlobDownload>.Failure(new BlobStoreNotFoundError(key)));
+            return Task.FromResult(Result<StoredBlobDownload>.Failure(new BlobStoreNotFoundError(key)));
         }
 
-        return Task.FromResult(Result<BlobDownload>.Success(new BlobDownload
+        return Task.FromResult(Result<StoredBlobDownload>.Success(new StoredBlobDownload
         {
             Content = new MemoryStream(entry.Content, writable: false),
             Info = entry.Info
@@ -154,7 +158,7 @@ public sealed class InMemoryBlobStoreProvider(
     }
 
     /// <inheritdoc />
-    public Task<Result<BlobInfo>> GetPropertiesAsync(
+    public Task<Result<StoredBlobInfo>> GetPropertiesAsync(
         BlobKey key,
         CancellationToken cancellationToken = default)
     {
@@ -163,25 +167,26 @@ public sealed class InMemoryBlobStoreProvider(
         var validation = BlobValidator.Validate(key);
         if (validation.IsFailure)
         {
-            return Task.FromResult(Result<BlobInfo>.Failure(validation));
+            return Task.FromResult(Result<StoredBlobInfo>.Failure(validation));
         }
 
         return Task.FromResult(this.Context.TryGet(key, out var entry)
-            ? Result<BlobInfo>.Success(entry.Info)
-            : Result<BlobInfo>.Failure(new BlobStoreNotFoundError(key)));
+            ? Result<StoredBlobInfo>.Success(entry.Info)
+            : Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(key)));
     }
 
     /// <inheritdoc />
-    public Task<Result<BlobInfo>> UpdatePropertiesAsync(
-        BlobPropertiesUpdate update,
+    public Task<Result<StoredBlobInfo>> UpdatePropertiesAsync(
+        StoredBlobPropertiesUpdate update,
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        if (update?.Dimensions is not null) return Task.FromResult(Result<StoredBlobInfo>.Failure(new BlobDimensionsNotSupportedError()));
 
         var validation = BlobValidator.Validate(update);
         if (validation.IsFailure)
         {
-            return Task.FromResult(Result<BlobInfo>.Failure(validation));
+            return Task.FromResult(Result<StoredBlobInfo>.Failure(validation));
         }
 
         var updated = this.Context.TryUpdate(
@@ -190,7 +195,7 @@ public sealed class InMemoryBlobStoreProvider(
             entry => new InMemoryBlobEntry
             {
                 Content = entry.Content,
-                Info = new BlobInfo
+                Info = new StoredBlobInfo
                 {
                     Key = entry.Info.Key,
                     Length = entry.Info.Length,
@@ -200,7 +205,8 @@ public sealed class InMemoryBlobStoreProvider(
                     CreatedAt = entry.Info.CreatedAt,
                     LastModifiedAt = DateTimeOffset.UtcNow,
                     ExpiresAt = ToUtc(update.ExpiresAt),
-                    Properties = CloneProperties(update.Properties)
+                    Properties = CloneProperties(update.Properties ?? entry.Info.Properties),
+                    TransformMetadata = CloneProperties(update.TransformMetadata ?? entry.Info.TransformMetadata)
                 }
             },
             out var stored,
@@ -209,13 +215,13 @@ public sealed class InMemoryBlobStoreProvider(
         {
             if (etagMismatch)
             {
-                return Task.FromResult(Result<BlobInfo>.Failure(new BlobStoreConflictError("Blob ETag does not match.")));
+                return Task.FromResult(Result<StoredBlobInfo>.Failure(new BlobStoreConflictError("Blob ETag does not match.")));
             }
 
-            return Task.FromResult(Result<BlobInfo>.Failure(new BlobStoreNotFoundError(update.Key)));
+            return Task.FromResult(Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(update.Key)));
         }
 
-        return Task.FromResult(Result<BlobInfo>.Success(stored.Info));
+        return Task.FromResult(Result<StoredBlobInfo>.Success(stored.Info));
     }
 
     /// <inheritdoc />
@@ -235,10 +241,12 @@ public sealed class InMemoryBlobStoreProvider(
     }
 
     /// <inheritdoc />
-    public Task<Result<BlobPage>> ListPageAsync(
+    public Task<Result<StoredBlobPage>> ListPageAsync(
         BlobQuery query,
         CancellationToken cancellationToken = default)
     {
+        if (query?.DimensionFilter is not null) return Task.FromResult(Result<StoredBlobPage>.Failure(new BlobDimensionsNotSupportedError()));
+
         cancellationToken.ThrowIfCancellationRequested();
 
         var validation = BlobQueryValidator.NormalizeAndValidate(
@@ -249,7 +257,7 @@ public sealed class InMemoryBlobStoreProvider(
             continuationTokenProtector);
         if (validation.IsFailure)
         {
-            return Task.FromResult(Result<BlobPage>.Failure(validation));
+            return Task.FromResult(Result<StoredBlobPage>.Failure(validation));
         }
 
         var rows = this.Context.GetSnapshot()
@@ -275,7 +283,7 @@ public sealed class InMemoryBlobStoreProvider(
             ? this.CreateContinuationToken(validation.Value.QueryHash, items[^1].Key)
             : null;
 
-        return Task.FromResult(Result<BlobPage>.Success(new BlobPage
+        return Task.FromResult(Result<StoredBlobPage>.Success(new StoredBlobPage
         {
             Items = items,
             ContinuationToken = continuationToken
@@ -288,6 +296,9 @@ public sealed class InMemoryBlobStoreProvider(
         BlobDeleteOptions options = null,
         CancellationToken cancellationToken = default)
     {
+        var condition = BlobValidator.Validate(options);
+        if (condition.IsFailure) return Task.FromResult(condition);
+
         cancellationToken.ThrowIfCancellationRequested();
 
         var validation = BlobValidator.Validate(key);
@@ -379,11 +390,11 @@ public sealed class InMemoryBlobStoreProvider(
 
     private static string CreateETag() => $"\"{Guid.NewGuid():N}\"";
 
-    private static PropertyBag CloneProperties(PropertyBag properties) => properties?.Clone() ?? new PropertyBag();
+    private static PropertyBag CloneProperties(PropertyBag properties) => BlobPropertyValues.Clone(properties) ?? new PropertyBag();
 
     private static DateTimeOffset? ToUtc(DateTimeOffset? value) => value?.ToUniversalTime();
 
-    private static BlobInfo CloneInfo(BlobInfo info) => new()
+    private static StoredBlobInfo CloneInfo(StoredBlobInfo info) => new()
     {
         Key = info.Key,
         Length = info.Length,
@@ -393,7 +404,8 @@ public sealed class InMemoryBlobStoreProvider(
         CreatedAt = info.CreatedAt,
         LastModifiedAt = info.LastModifiedAt,
         ExpiresAt = info.ExpiresAt,
-        Properties = CloneProperties(info.Properties)
+        Properties = CloneProperties(info.Properties),
+        TransformMetadata = CloneProperties(info.TransformMetadata)
     };
 
     private string CreateContinuationToken(string queryHash, BlobKey lastKey)

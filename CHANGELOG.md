@@ -2,6 +2,56 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.127] - 2026-11-24
+
+This release carries forward the package changes listed under 10.0.126.
+
+## [10.0.126] - 2026-11-24
+
+- Fixed API reference generation for `BridgingIT.DevKit.Cli` to run DocFX in batches and release memory between batches. The embedded MCP API index combines symbols from all batches.
+- Updated Azure Storage dependencies to `Azure.Storage.Blobs` 12.30.2, `Azure.Storage.Files.Shares` 12.28.1, and `Azure.Storage.Queues` 12.28.2.
+- Updated database dependencies to `Microsoft.Data.SqlClient` 7.1.2 and `Npgsql.EntityFrameworkCore.PostgreSQL` 10.0.4. Updated `SharpCompress` to 0.50.11.
+- Updated `NSwag.AspNetCore` to 14.8.0, `Microsoft.OpenApi` to 2.13.1, and `Microsoft.Extensions.Resilience` to 10.11.1. Projects continue to target .NET 10.
+
+## [10.0.125] - 2026-11-24
+
+- Changed storage `Properties` to preserve .NET scalar types and keep application properties separate from transform metadata. Null preserves the current properties and an empty bag clears them. **Breaking change.** Custom `IBlobStoreProvider` implementations must use the new `StoredBlob*` models. The persisted blob formats and filesystem document records require newly created storage. DevKit supplies no conversion or compatibility reader for those formats.
+- Added typed `BlobDimensions` and `DocumentDimensions` for indexed queries on EF Core with SQL Server, PostgreSQL, and SQLite. `UpdateDimensionsAsync` replaces dimensions without rewriting content and accepts the current item's ETag. Generate provider-specific migrations for the new dimension tables and columns.
+- Added `FilterModel` overloads for blob and document `ListPageAsync` and matching maintenance search endpoints on EF Core. Queries combine storage keys and Dimensions, and continuation tokens resume the same filtered and sorted query.
+- Added `IfMatchETag` to blob uploads and destination copies. Blob and document HTTP endpoints return opaque `ETag` headers for conditional writes and deletes. Azure Blob uploads apply the version condition when committing staged blocks.
+- Added opt-in `AddReadEndpoints()` and `AddMaintenanceEndpoints()` registration for documents, including content reads, metadata queries, and conditional mutations. The Blob and Document Storage dashboards can edit content, properties, and Dimensions with version checks, and keep the draft when an edit conflicts.
+- Added `UploadManyAsync` for bounded parallel blob uploads with per-item outcomes in input order. Fixed EF document batch mutations to retain previously confirmed items when a later batch fails.
+- Added component-owned `AppState` leases, changed-value subscriptions, and Blazor prerender and circuit handoff. **Breaking change.** State methods are now `Save`, `Load`, `Reset`, `Undo`, and `Redo`. Update custom `IAppStateStoreProvider` implementations to the new async method names and use `AppStateManager.ResetAll()` in place of `ResetAllAsync()`. AppState rejects singleton registrations, and existing preferences require an explicit import into the new application-qualified keys.
+- Changed `Result`, `Result<T>`, and `ResultPaged<T>` to support failures without errors and to match derived error types. Paged mapping preserves source totals, and EF and in-memory ActiveEntity paging count the filtered dataset before slicing. Added `ResultPaged<T>.WithOutcome()` to append another operation's status and diagnostics to a page.
+- Fixed Result operation scopes to run rollback and cleanup when a step fails or commit is canceled. Result JSON keeps typed error details while omitting raw exceptions.
+- Changed the default HTTP Result mappers to return Problem Details for 401, 403, and 404 failures. **Breaking change.** Clients may now receive a Problem Details body for those statuses. Use `AddResultHttpProblemDetails()` to include correlation IDs and opt in to exception diagnostics. Exception details are hidden by default.
+- Updated `Infrastructure.LiteDB` from 5.0.21 to `6.0.0-prerelease.355`. **Breaking change.** Applications must explicitly acknowledge the upstream prerelease guard before opening a database. This engine build is for disposable development databases.
+- Added `AddLiteDbDatabase()` and LiteDB providers for ActiveEntity, bulk inserts, domain-event and message outboxes, change history, jobs, orchestrations, messaging, queueing, and email notifications. The package also adds local documents, files, permalinks, file monitoring, Common and Application Caching, auditing, profiling, entity permissions, and the Broadcasting registry.
+- Added fluent `AddValueCodecs()` and `WithCodec()` registration for reading older codec versions and selecting the default writer. Added `PropertyBagSerialization`, `ScalarPropertyBagJson`, `OpaqueVersionETag`, and `IncrementalHashWriteStream` for scalar metadata, HTTP version tokens, and streaming hashes.
+- Changed `bdk_docs_search`, `bdk_docs_get`, `bdk_api_search`, and `bdk_api_get` to use documentation and API metadata bundled with the installed CLI. Lookups work offline, and `bdk_docs_get` can page through long documents.
+
+## [10.0.124] - 2026-11-15
+
+- Added `Application.Caching` for typed and binary collections, coalesced source loading, typed dimension selection, safe invalidation, expiration, streaming, compression and optional local hot entries. Providers include InMemory, Entity Framework for SQL Server/PostgreSQL/SQLite, and native filesystem storage. Consumer DbContexts own EF migrations. Common Caching provides the separate minimal caching API.
+- Added `Presentation.Web.Caching` with optional HTTP, Dashboard, Console Commands and MCP management. The Caching dashboard includes collection entry counts, entry and dimension browsing, per-entry invalidation, collection settings, invalidation previews, overview charts, expandable advanced diagnostics and contextual tooltips.
+- Added `OptionsPatch`, `PatchOptionsBuilder`, and `OptionsConfigurationOverlay` for explicit option assignments, configuration overlays, and tracking which source supplied each setting. Explicit false, zero, null, and empty collections remain distinguishable from omitted settings.
+- Added typed value codecs and `ValueCodecRegistry`, streaming gzip payload transforms, and `AesGcmContinuationTokenProtector` for encrypted, authenticated continuation tokens.
+- Added shared resource budgets, admission controls, cancellation and transfer deadlines, owned task tracking, and bounded stream wrappers in `Common.Utilities`.
+- Added `BoundedTimeSeries`, `SampleStatistics.NearestRank()`, and `ByteSize.FormatBinary()`. Storage and profiling dashboards now use consistent binary size labels.
+- Added `GlobPatternMatcher` for reusable Unicode-aware glob matching without recursive backtracking. Fixed the existing string `Match()` wildcard to include line breaks.
+- Added `WithDbContextFactory()` to SQL Server context registration for independently owned contexts without request-scoped interceptors. Existing factory registrations are preserved.
+- Added `HttpRepresentationConditions` for conditional HTTP headers and single byte ranges, and `FileSystemKindProbe` for observing local, SMB, and Linux NFS filesystem types. Application Caching shared-filesystem qualification and remaining scale/performance measurements are deferred.
+- Fixed duplicate Broadcasting node-shutdown work during concurrent disposal.
+- Updated the .NET SDK baseline to 10.0.404.
+
+## [10.0.123] - 2026-11-10
+
+- Updated the .NET SDK baseline to 10.0.403 and the ASP.NET Core, EF Core, Microsoft.Extensions, and System servicing packages to 10.0.15. Projects continue to target .NET 10.
+- Updated Azure.Core to 1.65.0, Azure.Monitor.OpenTelemetry.Exporter to 1.10.0, Microsoft.ApplicationInsights.AspNetCore to 3.2.0, and OpenAI to 2.15.0, keeping Azure telemetry and AI dependencies compatible during build-time OpenAPI generation.
+- Changed notification email integration to MailKit and MimeKit 5.0.0. Breaking change: `FakeSmtpClient.MaxSize` now returns `long` instead of `uint`, and `Capabilities` uses MailKit 5's capability collection instead of enum flags.
+- Added `FakeSmtpClient.Send(ISendRequest, ...)` and `SendAsync(ISendRequest, ...)` overloads returning `SendResult`, with request lifecycle callbacks, cancellation checks, accepted-recipient results, and `DisposeAsync()`. Existing `MimeMessage` convenience overloads retain their string response results.
+- Updated Azure Cosmos to 3.64.0, Scalar.AspNetCore to 2.20.0, Microsoft.OpenApi to 2.13.0, and the ASP.NET Core, HTTP, and SQL Client OpenTelemetry instrumentation packages to 1.20.2.
+
 ## [10.0.122] - 2026-11-10
 
 - Added the shared `window.bdkDashboard.state` browser helper for dashboard UI preferences, with validated string and JSON reads, session storage, feature-scoped keys, and an in-memory fallback when browser storage is unavailable. Existing dashboard pages now use it and keep their storage keys.

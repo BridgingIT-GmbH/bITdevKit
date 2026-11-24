@@ -23,11 +23,12 @@ Typed JSON data needs more than provider-specific CRUD. Callers need stable keys
 ## Key Features
 
 - typed reads and writes with two-part `DocumentKey` values
-- ETag-based conditional updates and deletes
+- optional ETag conditions for document content, metadata updates, and deletes
 - bounded paging with query-bound continuation tokens
 - size limits and logical/stored SHA-256 integrity checks
 - scalar properties, expiration, retention, compression, and encryption
 - named clients, behaviors, diagnostics, dashboard, and MCP integration
+- optional maintenance and content-read REST endpoints with independent feature registration
 - in-memory, filesystem, Entity Framework, Azure Blob, Azure Table, and Cosmos providers
 
 ## Architecture
@@ -178,15 +179,173 @@ Core operations:
 - `CountAsync`: provider-side count where supported.
 - `ExistsAsync`: exact logical existence.
 - `GetManyAsync`: batched exact reads returning one `Result<DocumentEntry<T>>` per requested key, in input order. A missing or expired key is a per-item `DocumentStoreNotFoundError`; the outer result fails only when the whole read fails. Duplicate keys are read once.
-- `UpsertAsync`: one conditional typed write returning `DocumentInfo`.
+- `UpsertAsync`: one typed write with an optional ETag condition, returning `DocumentInfo`.
 - `UpsertManyAsync`: ordered, prevalidated, non-atomic batch with explicit partial completion. Providers that implement `IDocumentStoreBulkWriteProvider` (Entity Framework) commit the batch in one round trip.
-- `UpdatePropertiesAsync`: metadata/expiration-only conditional update.
+- `UpdatePropertiesAsync`: metadata and expiration update with an optional ETag condition.
 - `DeleteAsync`: idempotent optional ETag delete.
 - `DeleteManyAsync`: ordered, prevalidated delete batch, also bulk-capable.
 
 Batch read size is controlled by `DocumentStoreOptions.GetManyBatchSize` (default 25, valid range 1 to 1000). `DocumentStoreOptions.GetManyMaxParallelism` (default 4, valid range 1 to 32) limits how many batches of one call run at the same time. Providers without `IDocumentStoreBatchGetProvider` fall back to one `GetAsync` per distinct key.
 
 `DocumentEntry<T>` and `DocumentInfo` expose provider-neutral `ETag`, logical `ContentHash`, creation/modification timestamps, `ExpiresAt`, and cloned scalar properties. The stored transformed hash remains an internal integrity value.
+
+### Conditional updates
+
+`DocumentWriteOptions.IfMatchETag` protects replacement of a previously read document. `DocumentPropertiesUpdate.IfMatchETag` and `DocumentDeleteOptions.IfMatchETag` protect metadata updates and exact deletes. These conditions are optional. Null, empty, and whitespace-only values are omitted; the wildcard `*` is invalid as a concrete version token.
+
+One ETag represents the whole item. Every successful content, property, or expiration update invalidates the previous ETag, even when the submitted values are unchanged. Retain the original token while editing, then submit it with the draft:
+
+```csharp
+var key = new DocumentKey("customers", "42");
+var draft = await documents.GetAsync(key, cancellationToken);
+if (draft.IsFailure)
+{
+	Console.Error.WriteLine("The customer document could not be read.");
+	return;
+}
+
+draft.Value.Value.Name = "Harbor Supplies";
+var saved = await documents.UpsertAsync(key, draft.Value.Value,
+	new DocumentWriteOptions { IfMatchETag = draft.Value.ETag },
+	cancellationToken);
+
+if (saved.IsFailure)
+{
+	Console.Error.WriteLine(string.Join("; ", saved.Errors.Select(error => error.Message)));
+}
+```
+
+| Request | Behavior |
+| --- | --- |
+| Upsert without an ETag | Create if absent, or replace unconditionally |
+| Upsert with a matching ETag | Replace that version and return the committed new ETag |
+| Upsert with a stale ETag or missing target | Return `DocumentStoreConflictError` without creating or changing the item |
+| Metadata update with a stale ETag | Return `DocumentStoreConflictError` without changing the item |
+| Metadata update against a missing target | Fail without creating an item |
+| `CreateOnly = true` without an ETag | Create only if no physical record exists, including an expired record |
+| `CreateOnly = true` with a nonempty ETag | Validation failure before mutation |
+
+Metadata updates without an ETag are unconditional but still require an existing item. Exact deletes remain idempotent when the item is already absent. Conditional deletes retain a newer item and return a conflict when its ETag differs.
+
+The returned ETag and metadata describe the version committed by the operation. An intervening writer's token is never adopted from a later unconditional read. Keep the named client, document type, partition key, and row key with the token. ETags do not establish authorization, and `ExpectedContentHash` validates the incoming logical payload rather than the stored version. Bulk writes preserve each `DocumentWrite<T>.Options` condition.
+
+## Queryable Dimensions
+
+Use `Properties` for descriptive metadata and optional `Dimensions` for typed, indexed queries. EF SQL Server, PostgreSQL, and SQLite support Dimensions. Check the registered client's descriptor through `IDocumentStoreClientFactory.GetDescriptors()` before offering this feature. Other providers reject explicit Dimensions, including an empty collection, before backend I/O.
+
+Supply dimensions through ordinary write options. Names register automatically within the document type; applications do not configure numeric name IDs or choose individual indexes.
+
+```csharp
+var descriptor = documentClientFactory.GetDescriptors()
+    .Single(item => item.DocumentType == typeof(Invoice) && item.Name == "default");
+if (!descriptor.Capabilities.Dimensions.SupportsDimensions) return;
+
+var dimensions = DocumentDimensions.Create(new Dictionary<string, object>
+{
+    ["FiscalYear"] = 2026,
+    ["Amount"] = 125.500000m,
+    ["Approved"] = true
+});
+if (dimensions.IsFailure) return;
+
+var saved = await documents.UpsertAsync(
+    new DocumentKey("invoices", "INV-42"), invoice,
+    new DocumentWriteOptions { Dimensions = dimensions.Value }, cancellationToken);
+
+var year = DocumentDimensionPredicate.Create("FiscalYear", DocumentDimensionOperator.Equal, 2026);
+if (year.IsFailure) return;
+var page = await documents.FindPageAsync(new DocumentQuery
+{
+    DimensionFilter = DocumentDimensionFilter.Where(year.Value),
+    Take = 100
+}, cancellationToken);
+```
+
+Omitting `Dimensions` preserves the current collection when replacing content. Explicit `DocumentDimensions.Empty` clears it. A nonempty collection replaces it. New documents without dimensions remain dimensionless. Use `UpdateDimensionsAsync(new DocumentDimensionsUpdate { Key = key, Dimensions = replacement, IfMatchETag = current.ETag })` to replace only dimensions. Content, Properties, and Dimensions share one ETag. A stale token fails rather than overwriting another field's newer value.
+
+| Contract | Behavior |
+| --- | --- |
+| Scalar values | `int`, `decimal`, `bool`, `string`, UTC `DateTime`, or explicit null |
+| Decimal | Exact `decimal(18,6)` range; excess fractional precision is rejected |
+| String values | Exact case-sensitive equality, spaces significant; at most 256 UTF-8 bytes |
+| Names | Case-insensitive ASCII identifiers matching `[A-Za-z_][A-Za-z0-9_.:-]{0,127}`; snapshots retain supplied spelling |
+| Per-document limit | 64 dimensions, including nulls |
+| Filter limits | 16 predicates, 16 groups, four nested group levels |
+| Comparisons | Equality/inequality, integer/date/decimal ranges, existence and null checks; `All`/`Any` groups |
+| SQLite decimal | Indexed equality only; other decimal comparisons fail before query execution |
+
+`NotEqual` matches only present, non-null values of the operand's type. Missing names and explicit null are distinct. String ordering is unsupported. Counts and key-only pages accept the same filter. A positive indexed predicate permits selective queries; otherwise existing key constraints or full-scan consent are required. Every `Any` branch needs an anchor. Continuation tokens bind the logical filter, not database name IDs.
+
+EF discovers the two dimension tables through annotated navigations on `StorageDocument`; the context interface needs no new sets. Existing persisted Properties require no backfill. Generate the application's normal provider-specific migrations for the added snapshot and tables. EF Cosmos hosts call `modelBuilder.ExcludeDocumentDimensions()` to exclude the relational-only members.
+
+The name dictionary retains unused names and has no quota. Its per-provider positive cache is bounded to 4,096 entries. After externally recreating the database, quiesce operations and recreate the provider or call `ClearDimensionNameCache()` on the EF provider. Diagnostics expose local cache/registration counters. MCP `documents.clients` and `documents.probe` count dictionary entries only when `includeDimensionNameCounts` is explicitly true.
+
+Dimensions are plaintext metadata indexed for filtering. Payload encryption does not encrypt their snapshot or indexed values. Avoid placing secrets in Dimensions.
+
+Enabled read endpoints add POST `/{clientId}/documents/search`, `/documents/keys`, and `/documents/count` under their configured route group. Maintenance adds PATCH `/{clientId}/documents/dimensions`. Typed dimensions use envelopes such as `{"FiscalYear":{"type":"integer","value":2026},"Amount":{"type":"decimal","value":"125.5"}}`. A filter leaf is `{"name":"FiscalYear","operator":"Equal","operand":{"type":"integer","value":2026}}`; groups use `{"all":[...]}` or `{"any":[...]}`. CLI listing accepts this filter JSON through `--dimension-filter`.
+
+See the [Dimensions specification](specs/spec-storage-dimensions.md) for the schema and qualification requirements. See the [performance and scaling](#appendix-a-performance-and-scaling) for measured behavior as the collection grows. SQLite retains functional support with informational performance diagnostics; parity with SQL Server/PostgreSQL is not a target. Server performance targets remain subject to volume qualification; index presence does not promise constant latency as data grows.
+
+### Filter metadata with FilterModel
+
+Use the `ListPageAsync` overload to combine document keys and indexed Dimensions. This example lists approved invoices with row keys starting with `INV-`. Use an EF Core client for SQL Server, PostgreSQL, or SQLite. Check `descriptor.Capabilities.SupportsFilterModel` on the registration returned by `IDocumentStoreClientFactory.GetDescriptors()`.
+
+```csharp
+var scope = new DocumentFilterScope(PartitionKey: "invoices");
+var filter = new FilterModel
+{
+    PageSize = 25,
+    Filters =
+    [
+        new("RowKey", FilterOperator.StartsWith, "INV-"),
+        new("Dimensions.Approved", FilterOperator.Equal, true)
+    ]
+};
+
+string continuationToken = null;
+do
+{
+    var page = await documents.ListPageAsync(scope, filter, continuationToken, cancellationToken);
+    if (page.IsFailure)
+    {
+        Console.Error.WriteLine(string.Join(", ", page.Errors.Select(error => error.Message)));
+        break;
+    }
+
+    foreach (var document in page.Value.Items)
+    {
+        Console.WriteLine(document.Key.RowKey);
+    }
+
+    continuationToken = page.Value.ContinuationToken;
+}
+while (continuationToken is not null);
+```
+
+To run the same query over HTTP, enable maintenance endpoints for the EF-backed client and authenticate with the configured maintenance policy. Replace `{clientId}` with the registered ID from the [clients endpoint](#routes-and-request-semantics).
+
+```http
+POST /_bdk/api/storage/documents/{clientId}/search?partitionKey=invoices
+Content-Type: application/json
+
+{
+  "pageSize": 25,
+  "filters": [
+    { "field": "RowKey", "operator": "startswith", "value": "INV-" },
+    { "field": "Dimensions.Approved", "operator": "eq", "value": { "type": "boolean", "value": true } }
+  ]
+}
+```
+
+The `SupportsFilterModel` capability also applies to queries that only use keys. The `PartitionKey` and `RowKey` fields support `eq`, `neq`, and `startswith`. Sort results by either key or both.
+
+Use `Dimensions.<name>` for the provider's supported typed equality, inequality, range, and null checks. In HTTP requests, wrap a comparison value in a typed envelope as shown above. Omit `value` for `isnull` and `isnotnull`. Both checks require the Dimension to be present. Use the native Dimension query for `Exists` and `Missing`.
+
+Combine key and Dimension predicates in nested AND and OR groups. The selected partition and optional `rowKeyPrefix` query parameter constrain every branch. To avoid a full scan without a partition in the scope, each branch needs an equality comparison on `PartitionKey` or a positive indexed Dimension predicate. Use `allowFullScan=true` when the filter requires a full scan and the client permits it.
+
+Omit `page` or use `0` or `1`. Omit `pageSize` or use `0` for the configured `DefaultTake`, capped by `MaxTake` and 1,000. Each response includes metadata and Dimensions in `items`. When `hasMore` is true, send the same request with the returned `continuationToken` in the JSON body. Each page reevaluates expiration using the client clock. Fetch content through the item read.
+
+See the shared [FilterModel structure](features-filtering.md#filter-model-structure).
 
 ## Query safety
 
@@ -209,7 +368,23 @@ Every write computes:
 
 ## <img class="bdk-doc-icon" src="assets/features/storage-transforms.svg" width="24" height="24" alt=""> Properties and transforms
 
-Properties are scalar `PropertyBag` values. Supported values include null, strings, Boolean and numeric primitives, `Guid`, date/time values, `TimeSpan`, and byte arrays. Providers use `PropertyBagScalarCodec` where text persistence is required.
+Document Storage supports application-defined `Properties`. Names are case-insensitive and retain supplied spelling. Results contain detached bags, including copies of byte-array values.
+
+| Input | Insert | Content replacement or metadata update |
+| --- | --- | --- |
+| Omitted or `null` | Empty bag | Preserve current properties |
+| Empty bag | Empty bag | Clear application properties |
+| Non-empty bag | Store the bag | Replace the entire bag |
+
+A present entry with a null value remains present. Use the merge/set/remove helpers for explicit read-modify-write changes.
+
+Supported values are null, `string`, `char`, `bool`, `byte`, `sbyte`, `short`, `ushort`, `int`, `uint`, `long`, `ulong`, `float`, `double`, `decimal`, `Guid`, `DateTime`, `DateTimeOffset`, `DateOnly`, `TimeOnly`, `TimeSpan`, and `byte[]`. Other objects and collections fail validation before provider I/O. Typed .NET calls and provider persistence preserve scalar type and value. HTTP uses ordinary JSON objects: strings stay strings, and JSON does not carry every .NET numeric or temporal type.
+
+Properties remain unindexed descriptive metadata. Use the separate Dimensions collection for indexed queries on supported EF providers. Compression/encryption state lives in separate provider metadata and survives clearing Properties. Application keys resembling transform keys are ordinary user properties.
+
+Providers use `PropertyBagScalarCodec` where text persistence is required. Azure Blob enforces its 8 KiB encoded metadata limit with a typed size failure. Filesystem document records use format version 3; recreate development/test storage, with no old-format reader or data conversion.
+
+See [scalar property bag persistence](common-serialization.md#propertybagserialization) for the shared JSON dictionary format.
 
 `IDocumentPayloadTransform` runs in registration order on writes and reverse order on reads. Compression uses `CompressionHelper`; encryption uses `EncryptionHelper` and `IEncryptionKeyProvider`, so active-key writes and historical-key reads support key rotation. Transform metadata is stored in a versioned `bdk_` envelope and is not exposed as application properties.
 
@@ -307,6 +482,97 @@ Every typed client method is measured, including count, key-only paging, propert
 
 `CopyAsync` and `MoveAsync` work across any two clients of the same document type. They reserialize through the target client and preserve properties and expiration unless overridden. Move copies first, then conditionally deletes the source ETag. A changed source remains intact and returns `DocumentStoreTransferError`; a move to the same client/key is a successful existence-checked no-op.
 
+`DocumentTransferOptions.IfMatchETag` refers to the destination version. Set it when replacing a previously read target. `CreateOnly = true` prevents replacing any physical target record and cannot be combined with a nonempty ETag. Without either condition, the destination write is unconditional. A failed destination condition prevents move source deletion.
+
+## HTTP endpoints
+
+The `Presentation.Web.Storage` package exposes registered typed Document Storage clients through two optional Minimal API groups:
+
+- `AddMaintenanceEndpoints(...)` enables create, update, and delete actions, property reads and updates, existence checks, discovery of registered clients, bounded key listing, and FilterModel queries.
+- `AddReadEndpoints(...)` enables exact-key document content reads with an ETag response header.
+
+Enable each group explicitly in the feature setup. Registering `AddDocumentStorage()` and its providers does not enable either group. Assembly discovery through `AddEndpoints()` also leaves them disabled until explicitly configured. `app.MapEndpoints()` maps the enabled registrations.
+
+### Enable endpoints in the feature setup
+
+Reference `BridgingIT.DevKit.Presentation.Web.Storage` in the host. Register the provider and endpoints, then map the DevKit endpoints:
+
+```csharp
+services.AddDocumentStorage()
+    .WithProvider<CustomerDocument>(sp => new InMemoryDocumentStoreProvider(),
+        lifetime: ServiceLifetime.Singleton)
+    .AddMaintenanceEndpoints(options => options
+        .GroupPath("/_bdk/api/storage/documents")
+        .RequireAuthorization(), enabled: true)
+    .AddReadEndpoints(options => options
+        .GroupPath("/_bdk/api/storage/documents")
+        .RequireAuthorization(), enabled: true);
+
+app.MapEndpoints();
+```
+
+The in-memory example uses a singleton so separate HTTP requests share stored documents. Choose the normal provider lifetime for persistent providers.
+
+Omit either registration or pass `enabled: false` to leave that group disabled. For separate service registration, use `services.AddDocumentStorageMaintenanceEndpoints(...)` and `services.AddDocumentStorageReadEndpoints(...)` with the same options and `enabled` switch.
+
+Both groups require authorization by default. Each has independent options for its path, tag, policies, and roles. Configure host authentication and authorization for the selected policies. To expose intentionally public content, call `AllowAnonymous()` on the read group while retaining authorization on maintenance. The default paths can be shared because the groups map different routes and HTTP methods.
+
+### Routes and request semantics
+
+Get `clientId` from the clients endpoint. It identifies a registered named, typed client; the API does not accept arbitrary CLR types. URL-encode the client id and exact key query values, including keys containing slashes.
+
+The read group exposes the existing exact content URL:
+
+```http
+GET /_bdk/api/storage/documents/{clientId}/documents?partitionKey=customers&rowKey=customer-42
+```
+
+The maintenance group exposes these routes:
+
+```http
+GET    /_bdk/api/storage/documents/clients
+GET    /_bdk/api/storage/documents/{clientId}/documents/properties?partitionKey=customers&rowKey=customer-42
+GET    /_bdk/api/storage/documents/{clientId}/documents/exists?partitionKey=customers&rowKey=customer-42
+GET    /_bdk/api/storage/documents/{clientId}/documents/keys?partitionKey=customers&rowKeyPrefix=customer-&take=100
+POST   /_bdk/api/storage/documents/{clientId}/search?partitionKey=invoices
+POST   /_bdk/api/storage/documents/{clientId}/documents?partitionKey=customers&rowKey=customer-42
+PUT    /_bdk/api/storage/documents/{clientId}/documents?partitionKey=customers&rowKey=customer-42
+PATCH  /_bdk/api/storage/documents/{clientId}/documents/properties?partitionKey=customers&rowKey=customer-42
+DELETE /_bdk/api/storage/documents/{clientId}/documents?partitionKey=customers&rowKey=customer-42
+```
+
+See the [FilterModel request example](#filter-metadata-with-filtermodel) for the JSON request to `POST /{clientId}/search`.
+
+POST is atomic create-only and returns HTTP 201 with committed `DocumentInfo`, an `ETag` header, and a `Location` pointing to the maintenance properties route. An existing physical record, including an expired record, returns HTTP 409. PUT creates or replaces content and returns HTTP 200 with committed `DocumentInfo` and a fresh `ETag`. Both deserialize the `content` envelope field through the selected typed client's serializer and use its normal validation, behaviors, transforms, size limits, and provider pipeline.
+
+```http
+PUT /_bdk/api/storage/documents/{clientId}/documents?partitionKey=customers&rowKey=customer-42
+Content-Type: application/json
+If-Match: "bdk.<token-from-the-last-response>"
+
+{
+  "content": { "id": "customer-42", "name": "Ada" },
+  "properties": { "reviewed": true, "revision": 2 },
+  "expiresAt": "2030-12-31T23:59:59Z"
+}
+```
+
+PUT, PATCH, and DELETE accept optional `If-Match`. Echo the complete `ETag` response header from an earlier read or successful write. The token covers content, custom properties, and expiration together. Any change invalidates the old token; stale content saves, property edits, and deletes return HTTP 409 without modifying the item. A stale PUT after deletion also conflicts and cannot recreate the document. Omit `If-Match` to permit unconditional creation or replacement. An already absent delete target is a successful HTTP 200 no-op. POST rejects `If-Match` with HTTP 400; wildcards and ETag lists are unsupported.
+
+HTTP `ETag` headers are quoted opaque transport tokens (`"bdk.<base64url>"`) preserving each provider's exact native token. Copy them unchanged without stripping quotes or decoding. The metadata body's `ETag` remains the native provider token; legacy native conditions are also accepted. Content GET requires `AddReadEndpoints(...)` and returns the typed JSON payload and ETag from the same snapshot. It uses the selected typed client pipeline, including behaviors, transforms, integrity checks, and expiration visibility. Properties GET returns `DocumentInfo` with the corresponding header. Successful writes return metadata from the exact commit without rereading the document.
+
+Omitted or null `properties` preserve the existing bag; `{}` clears it. Properties must contain scalar JSON values, not nested objects or arrays. Numeric values that overflow or underflow the supported finite .NET numeric types return HTTP 400. Omitted expiration preserves it. Supply `expiresAt` to set it or `clearExpiration: true` to remove it; combining both returns HTTP 400. These rules apply to POST/PUT and properties PATCH. PATCH uses the same metadata fields without a `content` field and leaves document content unchanged:
+
+```http
+PATCH /_bdk/api/storage/documents/{clientId}/documents/properties?partitionKey=customers&rowKey=customer-42
+Content-Type: application/json
+If-Match: "bdk.<token-from-the-last-response>"
+
+{ "properties": { "reviewed": true }, "clearExpiration": true }
+```
+
+Unknown clients and missing reads return HTTP 404. Invalid requests return HTTP 400, and configured document size violations return HTTP 413. Key listing uses bounded paging and protected continuation tokens. Type-wide scans require client `AllowFullScans` approval plus `allowFullScan=true` on the request.
+
 ## Providers
 
 ### <img class="bdk-doc-icon" src="assets/features/provider-inmemory.svg" width="24" height="24" alt=""> In-memory
@@ -385,7 +651,9 @@ The provider implements the optional batch interfaces: `GetManyAsync` reads keys
 
 Row ids are generated by EF Core, which produces sequential GUIDs on SQL Server and PostgreSQL, so inserts append to the clustered key instead of landing on random pages. SQLite stores random ids, which is harmless for its rowid-backed tables.
 
-See the [Appendix: EF performance and indexes](#appendix-ef-performance-and-indexes).
+The model includes keyset-paging indexes and sequential row IDs on relational server providers. For a smaller expiration index, optionally call `modelBuilder.ApplyDocumentStoreConfiguration()` in `OnModelCreating`, then generate and review the application migration. The filtered index reduces storage for records without expiration; it does not promise faster sweeps. Without this call, the ordinary paging and expiration indexes remain available. See [ADR-0036](adr/0036-keyset-and-filtered-indexes-for-ef-documents.md) for the schema details.
+
+See the [Appendix A: Performance and scaling](#appendix-a-performance-and-scaling).
 
 ### <img class="bdk-doc-icon" src="assets/features/provider-azure-blob.svg" width="24" height="24" alt=""> Azure Blob
 
@@ -407,11 +675,21 @@ Azure providers depend on an existing account, not pre-created feature resources
 
 The Document Storage dashboard inherits the shared dashboard authorization and antiforgery conventions. It selects named clients, lists document pages from 25 to 500 rows, and presents partition/row keys, serialized JSON size, modification time, and expiration in the compact table. Manual and interval refreshes use the currently applied client, key filters, query mode, page size, continuation state, and selected document. The standard refresh interval is off by default and remembered in browser-local storage. The details dialog exposes ETags, hashes, timestamps, expiration, scalar properties, and conditional save/delete actions without adding retention or transform administration to the browsing surface.
 
-Open Documents at `/_bdk/dashboard/storage/documents`. Choose a client, then apply partition and row-key filters. Prefix, Suffix and Exact select how the row key is matched. Use the pager when the result has a continuation page.
+Open Documents at `/_bdk/dashboard/storage/documents`. Choose a client, then apply partition and row-key filters. Prefix, Suffix and Exact select how the row key is matched. Use Load more to append a continuation page.
+
+For a provider that supports Dimension queries, expand **Dimensions** and add typed conditions. Combine them with **Match all** or **Match any**, including nested groups, then choose **Apply**. Available comparisons follow the provider. Results and the matching count use the same filter, which remains active through refresh and Load more. Reset or changing clients clears it. The key-filter illustration below omits the optional Dimensions panel.
+
+Applied filters and unfinished Dimension entries survive switching between **Explorer** and **Diagnostics** or navigating back in the same browser tab.
+
+Dashboard filters travel in URLs and remain subject to hosting limits. A large valid filter can return HTTP 414 when it exceeds the request-line or query-string limit. Use the POST search endpoint or .NET query API for larger filters.
 
 [![Document dashboard with named client, key filters and persisted JSON document metadata](assets/dashboard/14-storage-documents-documents.png)](assets/dashboard/14-storage-documents-documents.png)
 
-Select a row's information button to inspect and edit its JSON payload, scalar properties and expiration. The New document button opens the same editor with editable partition and row keys. A create conflict reports an existing key rather than overwriting it.
+Select a row's information button to inspect and edit its JSON payload, scalar properties, and expiration. For clients that support Dimensions, the editor shows the stored keys, types, and values. Use **Add dimension** to add an entry. The **New document** button opens the same editor with editable partition and row keys. A create conflict reports an existing key.
+
+Use the funnel button beside a saved dimension in **Document Details** to add its value to the active filter. Edit or remove conditions in **Dimensions**, then select **Apply**. In **Dimension columns**, pin up to three keys in the results table. The dashboard remembers these keys for each selected document client. A dash indicates a missing dimension, and `null` indicates an explicit null.
+
+Existing edits submit the originally displayed ETag, and an ordinary edit without that token is invalid. On conflict, the editor retains its JSON draft, properties, dimensions, expiration, identity, and original ETag. **Reload current item** asks for discard confirmation before replacing the draft. **Force overwrite** submits the retained draft without an ETag condition. This choice applies to one submission. After a validation error, HTTP error, or network failure, an ordinary Save uses the original ETag again. New documents remain create-only. The editor never refreshes the token silently to make a stale save succeed.
 
 [![Document details editor with keyed JSON payload, expiration and metadata](assets/dashboard/storage/document-details.png)](assets/dashboard/storage/document-details.png)
 
@@ -439,156 +717,205 @@ See [Common Utilities](./common-utilities.md), [Common Serialization](./common-s
 
 The feature is covered by client/behavior tests, in-memory contracts, dashboard and MCP registration tests, Entity Framework contracts on SQLite/PostgreSQL/SQL Server, Azurite contracts for Blob/Table resource management and persistence, and Cosmos contracts when an emulator or configured account is available. Blob Storage contracts remain regression coverage for shared primitives.
 
-## Appendix: EF performance and indexes
-
-This appendix describes the design of the Entity Framework provider's read and write paths, shows measured figures from SQL Server benchmarks and lists the schema notes for existing databases. The figures come from the benchmarks in `benchmarks/Application.Benchmarks` (BenchmarkDotNet, 12 iterations, one request in flight unless a row says otherwise). They show what the provider can do and how the paths compare. They are not a guarantee for your hardware, network or schema. The plan behind them is in [Document Storage EF performance](specs/spec-application-storage-documents-ef-performance.md).
-
-**Test setup.** AMD Ryzen 9 9900X, .NET 10, SQL Server 2022 in a local Docker container, so there is no network latency between the application and the database. Only SQL Server was benchmarked. PostgreSQL and SQLite are covered by the integration contract tests, not by timings. "Cold" means the SQL Server buffer pool was emptied with `DBCC DROPCLEANBUFFERS` before each iteration. The operating system file cache stayed warm, so real disks will be slower. The baseline is the provider as it was before this work (`GetAsync` and `UpsertAsync` in a loop, random ids, no keyset index), run on the same machine and the same data.
-
-Figures vary by a few percent between runs. Compare rows within one table, not across tables.
-
-### Read path
-
-- `GetAsync` runs one compiled query per provider instance. It filters on the fixed-length SHA-256 hash columns of type, partition and row key, then confirms the exact keys in memory, so a hash collision can never return another document.
-- `GetManyAsync` groups the distinct keys by partition and reads them in chunks of `GetManyBatchSize` with one compiled query per chunk. Up to `GetManyMaxParallelism` chunks (default 4) run at the same time, each in its own scope, context and connection. Round trips grow with the number of chunks, not the number of keys.
-- Stored bytes are not copied again on the way to the caller. Both integrity checks (stored hash and logical hash) stay.
-
-Throughput is the payload bytes of the 100 documents divided by the mean time. SQL Server, warm cache, documents read by 100 keys. "Loop" is the baseline, 100 `GetAsync` calls one after the other. "16 parallel" is 100 `GetAsync` calls with 16 in flight. The raw SQL ceiling is the fastest hand-written multi-key query over the same data, with no DevKit pipeline.
-
-| Document size | Loop | 16 parallel `GetAsync` | `GetManyAsync`, one partition | `GetManyAsync`, across 20 partitions | Raw SQL ceiling (one partition) |
-|---|---|---|---|---|---|
-| 1 KB | 117.9 ms, 0.8 MiB/s | 14.0 ms, 7.0 MiB/s | 4.0 ms, 24.3 MiB/s | 8.8 ms, 11.1 MiB/s | 1.9 ms, 50.1 MiB/s |
-| 10 KB | 122.6 ms, 8.0 MiB/s | 15.8 ms, 61.9 MiB/s | 8.4 ms, 116.5 MiB/s | 12.4 ms, 78.5 MiB/s | 5.7 ms, 172.6 MiB/s |
-| 100 KB | 198.0 ms, 49.3 MiB/s | 55.1 ms, 177.3 MiB/s | 56.1 ms, 174.2 MiB/s | 58.7 ms, 166.3 MiB/s | 45.6 ms, 214.0 MiB/s |
-
-- **Small documents (up to about 10 KB)** are limited by per-document cost and by round trips. `GetManyAsync` is 3.5x faster than 16 parallel reads for 1 KB in one partition and 1.9x for 10 KB. Across partitions it needs one query per partition, so the gain drops to 1.4x (1 KB) and 1.2x (10 KB). Against the loop it is 10 to 29x faster. Allocation falls to 25% to 54% of the loop's.
-- **At 100 KB** moving the bytes dominates and `GetManyAsync` equals 16 parallel reads (within the measurement error), while allocating about 75% as much.
-- **Remaining overhead.** For 1 KB documents `GetManyAsync` is about twice the raw SQL ceiling (4.0 ms against 1.9 ms). The rest is EF Core materialization, the behavior pipeline and a result object per document.
-- **Parallelism and batch size.** For 100 keys across 20 partitions (1 KB), `GetManyMaxParallelism = 1` takes 22.2 ms against 8.8 ms with the default of 4, because every partition needs its own query. For 100 keys in one partition, batches of 25 become 4 queries: 7.2 ms with parallelism 1 and 4.5 ms with 4, and one query of 100 keys also takes 4.3 ms. In a request of 1,000 keys, batches of 100 with 4 in parallel took 29.5 ms (1 KB) against 39.4 ms for batches of 25. The default batch size of 25 was kept because batches of 100 were 17% slower for 100 KB documents in one partition (65.7 ms against 56.1 ms, one run).
-
-Reading from a 1,000,000 row table (1 KB documents, 100 keys):
-
-| Read path | Warm | Cold |
-|---|---|---|
-| Loop (baseline) | 121 to 131 ms | 225 to 294 ms |
-| 16 parallel `GetAsync` | 13 to 14 ms | 28 to 29 ms |
-| `GetManyAsync` | 9.1 to 9.5 ms | 40 to 52 ms |
-
-- With a warm cache `GetManyAsync` reads 100 keys about 13 times faster than the loop and about 1.4x faster than 16 parallel reads. The table size does not change this, lookups stay index seeks.
-- With a cold cache every key costs its own page reads, so time goes to I/O. `GetManyAsync` is about 5 times faster than the loop but slower than 16 parallel reads, because it keeps only 4 batches in flight. Raising `GetManyMaxParallelism` is the lever for I/O-bound tables. Values above 4 were not measured for cold reads. For warm reads, 8 was 10% to 15% faster than 4 for 1,000 keys.
-- A single `GetAsync` is 6% to 8% faster than before for 1 KB and 10 KB documents (118 ms against 126 ms for 100 sequential reads of 1 KB) and equal at 100 KB. It allocates 11% to 16% less at every size (13.6 MB against 15.3 MB at 1 KB), from the compiled query and the removed byte copy.
-
-### Write path
-
-- `UpsertManyAsync` and `DeleteManyAsync` use one scope, one tracked lookup per chunk and one `SaveChanges` per batch.
-- Operations are evaluated in input order against the loaded rows. Duplicate keys in one batch see the result of earlier operations.
-- Failure semantics match the per-operation loop: stop at the first failure, keep the committed prefix, report `FailedKey`. A deleted key that does not exist counts as success.
-- If the single commit throws, the batch is repeated through the single-operation path, so contention behaves as it does for `UpsertAsync`.
-- A write that fails payload preparation (size limit, serialization, `ExpectedContentHash`) stops the batch at that item after the valid prefix has been sent.
-
-Time for one batch, SQL Server, 1 KB documents. "Loop" is the baseline per-operation loop (the baseline `UpsertManyAsync` and `DeleteManyAsync` were the same loop and measured the same).
-
-| Documents | Operation | Loop | `UpsertManyAsync` / `DeleteManyAsync` | Faster | Allocation |
-|---|---|---|---|---|---|
-| 10 | Insert | 33.7 ms | 12.8 ms | 2.6x | 49% |
-| 10 | Overwrite | 33.2 ms | 15.3 ms | 2.2x | 54% |
-| 10 | Delete | 32.3 ms | 14.0 ms | 2.3x | 44% |
-| 100 | Insert | 320.6 ms | 51.4 ms | 6.2x | 32% |
-| 100 | Overwrite | 317.8 ms | 45.5 ms | 7.0x | 41% |
-| 100 | Delete | 298.4 ms | 40.2 ms | 7.4x | 28% |
-| 1,000 | Insert | 2,523 ms | 360 ms | 7.0x | 30% |
-| 1,000 | Overwrite | 2,666 ms | 220 ms | 12.1x | 39% |
-| 1,000 | Delete | 2,490 ms | 166 ms | 15.0x | 24% |
-
-- The loop costs about 3 ms per document (scope, tracked `SELECT`, `SaveChanges` round trip). The batch pays the round trip once, so the gain grows with the batch size.
-- The gain is the saved round trips. Against a remote database each round trip costs more, so the gain should be larger there (not measured).
-
-### Row ids
-
-New rows get their `Id` from EF Core's value generator. SQL Server and PostgreSQL produce sequential GUIDs, so inserts append to the clustered key. SQLite keeps random GUIDs. Existing rows keep their ids, no data migration is needed, and the id is never exposed through the public API.
-
-Inserting 100,000 documents with 8 parallel writers into a table of 1,000,000 rows whose clustered key was built in order:
-
-| | Baseline (random GUIDs) | Sequential ids |
-|---|---|---|
-| Time | 49.7 s | 46.7 s |
-| Clustered index fragmentation | 0% to 34.6% | 0% to 15.3% |
-| Clustered index pages | 500,001 to 766,676 | 500,000 to 722,319 |
-| Page fullness | 72.8% | 77.3% |
-
-- Insert time is the same within the measurement error (the standard deviation was 4 s). The transaction log flush dominates, so sequential ids do not make single inserts faster. 1,000 sequential inserts took 2.5 s and 1,000 inserts with 8 writers took 0.5 s, for random and sequential ids alike, at 1,000 and at 1,000,000 rows.
-- The benefit is the layout of the table. Random ids split pages all over the clustered index. After the same inserts it was 2.3 times as fragmented and 6% larger, with fuller pages in the sequential case (77.3% against 72.8%). A table that is already fragmented stays fragmented (a table seeded with random ids was 99.3% fragmented before and 86.3% after the same insert), because new ids only improve the new pages. Rebuild the clustered index in a maintenance window to recover the old rows.
-- The sequential ids are in the clustered key only. The index on `(TypeHash, PartitionKey, RowKey)` and the hash index are ordered by other columns, so they fragment as before (4.0% to 42.6% and 0.2% to 38.4%).
-
-### Paging
-
-`FindPageAsync` and `ListPageAsync` page by keyset over `(TypeHash, PartitionKey, RowKey)`. SQL Server, 1 KB documents, page of 100 documents (mean time per page):
-
-| Table | Page | Baseline `FindPage` | New `FindPage` | Baseline `ListPage` | New `ListPage` |
-|---|---|---|---|---|---|
-| 1,000 rows | first | 6.3 ms | 3.7 ms | 2.5 ms | 1.7 ms |
-| 1,000 rows | deep | 4.4 ms | 3.4 ms | 2.2 ms | 1.6 ms |
-| 1,000,000 rows | first | 2,981 ms (cold start) | 4.8 ms | 185 ms | 2.0 ms |
-| 1,000,000 rows | middle | 235 ms | 10.4 ms | 168 ms | 8.3 ms |
-| 1,000,000 rows | deep | 183 ms | 10.4 ms | 167 ms | 8.3 ms |
-
-- Without the keyset index SQL Server sorted the whole document type for every page. With it, each page is an index seek, so the cost no longer depends on how deep the page is. At 1,000,000 rows a deep page is about 18x (`FindPage`) and 20x (`ListPage`) faster.
-- The cost still grows with the table. A middle or deep page at 1,000,000 rows takes about 3x to 5x as long as at 1,000 rows (10.4 ms against 3.4 to 3.6 ms for FindPage). It is flat across depth, not independent of table size.
-- `ListPageAsync` is cheaper than `FindPageAsync` because it does not materialize documents. It allocates about 11% as much.
-
-### Indexes and migration notes
-
-`StorageDocument` carries the index `(TypeHash, PartitionKey, RowKey)` as an annotation, which supports keyset paging over a full document type. Continuation uses `PartitionKey >= p AND (PartitionKey > p OR RowKey > r)`, which the index can seek. At 1,000,000 rows the index takes 24,426 pages (about 190 MB). That is the price of the paging figures above.
-
-Most rows have no expiration, so the `(TypeHash, ExpiresAtUnixMilliseconds)` index is much smaller as a filtered index. A filter cannot be expressed with annotations. Call the extension from your context to opt in:
-
-```csharp
-protected override void OnModelCreating(ModelBuilder modelBuilder)
-{
-    base.OnModelCreating(modelBuilder);
-    modelBuilder.ApplyDocumentStoreConfiguration();
-}
-```
-
-Then add a migration. Notes:
-
-- The library does not own migrations. Generate the migration from your model, review it and apply it as usual.
-- The migration adds the keyset index and replaces the expiration index with the filtered one.
-- On SQL Server, dropping and recreating an index is an online operation on Enterprise edition only. Other editions lock the table, so plan a maintenance window for large tables.
-- Databases on the old schema keep working. Queries stay correct without the new indexes, only slower on full-type scans and expiration sweeps.
-- Calling `ApplyDocumentStoreConfiguration` is optional. Without it you still get the keyset index.
-
-Expiration sweep in a table of 1,000,000 rows where 5% of the rows expire at some point (one sweep batch of 1,000):
-
-| Expired rows | Baseline index | Plain index (new schema) | Filtered index |
-|---|---|---|---|
-| 0 | 1.55 ms | 1.53 ms | 1.53 ms |
-| 1,000 | 168 ms | 136 ms | 140 ms |
-
-| Index | Pages (1,000,000 rows, 5% with expiry) | Fragmentation |
-|---|---|---|
-| Plain `(TypeHash, ExpiresAtUnixMilliseconds)` | 31,205 | 95.8% |
-| Filtered (rows with an expiry only) | 1,087 | 4.6% |
-
-- The filtered index is **not faster**. The 1,000 row sweep takes the same time with either index (the difference is within the measurement error). Cost follows the number of expired rows, and a sweep that finds nothing costs 1.5 ms in all cases.
-- The filtered index is 29 times smaller. That saves storage and write cost for every row without an expiry, and with no expiring rows it stays empty. Use it for the size, not for sweep speed.
-
-### Measuring in production
-
-Use `document.bytes_per_second` and `document.operation.duration` from the metrics behavior (see [Metrics](#metrics)), split by `operation`. Compare the read and write rates with your own document sizes, since the same store reads 1 KB documents at tens of MiB/s and 100 KB documents at around 170 MiB/s. Watch the connection pool as well: one `GetManyAsync` call can use up to `GetManyMaxParallelism` connections at once, so many concurrent callers multiply that. Lower the option if the pool is the limit.
-
-### Limits of these figures
-
-- One request was in flight at a time, except for the parallel rows and the sustained insert. A sustained load test with many concurrent readers was not run.
-- There was no network between the application and SQL Server. Over a network each query adds a round trip, which should favor the batch APIs, but this was not measured.
-- Cold figures use `DROPCLEANBUFFERS` only. A real disk, or a database larger than memory, reads slower.
-- Only SQL Server was benchmarked. PostgreSQL also gets sequential ids and the same indexes, SQLite keeps random ids.
-- At 100 KB `GetManyAsync` is not faster than 16 parallel `GetAsync` calls, and on a cold cache it is slower for 1,000,000 rows. It saves connections and allocations there, not time.
-- Documents from 1 KB to 100 KB were measured. Larger documents are not part of these figures.
-
-See [ADR-0034](adr/0034-sequential-ef-document-row-ids.md), [ADR-0035](adr/0035-batched-ef-document-reads-and-bulk-writes.md) and [ADR-0036](adr/0036-keyset-and-filtered-indexes-for-ef-documents.md) for the design decisions behind these results.
-
-
 ## Dashboard throughput tests
 
 The Diagnostics tab provides read/write throughput tests and live metric charts for the configured providers. See [Storage dashboard throughput tests](storage-load-testing.md) for controls, measurement semantics, and temporary-item cleanup.
+
+<a id="appendix-a-read-performance-and-scaling"></a>
+
+## Appendix A: Performance and scaling
+
+**Selective Dimension reads remained in the tens of milliseconds at one million documents.** Their latency grew much more slowly than the number of stored records in these measurements. Native plans for selective indexed value filters located matching keys without scanning every parent record.
+
+### Read by key
+
+The following figures measure a complete random 1-MiB item retrieved by key, with no writers or Dimensions. Each collection mixes 1-KiB, 16-KiB, 256-KiB and 1-MiB items.
+
+#### Single reader
+
+With one reader, latency grew more slowly than the number of stored records. Larger working sets increased the cost of large-content reads, especially on SQL Server.
+
+<div class="storage-performance-comparison" markdown="1">
+
+<figure class="storage-performance-figure" markdown="1">
+
+```mermaid
+%%{init: {"theme":"base","xyChart":{"width":420,"height":310,"titleFontSize":17,"legendFontSize":16,"xAxis":{"labelFontSize":16,"titleFontSize":15},"yAxis":{"labelFontSize":16,"titleFontSize":15}},"themeVariables":{"xyChart":{"backgroundColor":"transparent","titleColor":"var(--bdk-text)","legendTextColor":"var(--bdk-text)","plotColorPalette":"#397fc4, #c27a32","xAxisLabelColor":"var(--bdk-muted)","xAxisTitleColor":"var(--bdk-muted)","xAxisTickColor":"var(--bdk-muted)","xAxisLineColor":"var(--bdk-muted)","yAxisLabelColor":"var(--bdk-muted)","yAxisTitleColor":"var(--bdk-muted)","yAxisTickColor":"var(--bdk-muted)","yAxisLineColor":"var(--bdk-muted)"}}}}%%
+xychart-beta
+    title "1-MiB key read: single reader"
+    x-axis "Stored records" ["10k", "100k", "1m"]
+    y-axis "p95 latency (ms)" 0 --> 25
+    line "SQL Server" [6.7, 6.9, 21.1]
+    line "PostgreSQL" [6.9, 7.0, 9.8]
+```
+
+</figure>
+
+<div class="storage-performance-data" markdown="1">
+
+| Total records | SQL Server p95 | PostgreSQL p95 |
+|---:|---:|---:|
+| 10,000 | 6.7 ms | 6.9 ms |
+| 100,000 | 6.9 ms | 7.0 ms |
+| 1,000,000 | 21.1 ms | 9.8 ms |
+
+</div>
+
+</div>
+
+#### 16 concurrent readers
+
+With 16 readers, full-content latency increased moderately across the 100-fold larger collection. Throughput and per-request latency differ from the single-reader profile.
+
+<div class="storage-performance-comparison" markdown="1">
+
+<figure class="storage-performance-figure" markdown="1">
+
+```mermaid
+%%{init: {"theme":"base","xyChart":{"width":420,"height":310,"titleFontSize":17,"legendFontSize":16,"xAxis":{"labelFontSize":16,"titleFontSize":15},"yAxis":{"labelFontSize":16,"titleFontSize":15}},"themeVariables":{"xyChart":{"backgroundColor":"transparent","titleColor":"var(--bdk-text)","legendTextColor":"var(--bdk-text)","plotColorPalette":"#397fc4, #c27a32","xAxisLabelColor":"var(--bdk-muted)","xAxisTitleColor":"var(--bdk-muted)","xAxisTickColor":"var(--bdk-muted)","xAxisLineColor":"var(--bdk-muted)","yAxisLabelColor":"var(--bdk-muted)","yAxisTitleColor":"var(--bdk-muted)","yAxisTickColor":"var(--bdk-muted)","yAxisLineColor":"var(--bdk-muted)"}}}}%%
+xychart-beta
+    title "1-MiB key read: 16 readers"
+    x-axis "Stored records" ["10k", "100k", "1m"]
+    y-axis "p95 latency (ms)" 0 --> 80
+    line "SQL Server" [64.4, 67.1, 73.2]
+    line "PostgreSQL" [59.6, 59.7, 72.2]
+```
+
+</figure>
+
+<div class="storage-performance-data" markdown="1">
+
+| Total records | SQL Server p95 | PostgreSQL p95 |
+|---:|---:|---:|
+| 10,000 | 64.4 ms | 59.6 ms |
+| 100,000 | 67.1 ms | 59.7 ms |
+| 1,000,000 | 73.2 ms | 72.2 ms |
+
+</div>
+
+</div>
+
+At one million records, 1-KiB content reads stayed below 2.1 ms p95 with one reader and below 10 ms with 16 readers on both engines. Cache residency and content size affect latency; these results do not imply constant latency beyond the tested working sets.
+
+Read figures are medians of three 30-second run-level p95 values, including complete content consumption and checksum verification. Caches remain active, all payloads fit one blob chunk, and HTTP and typed document deserialization are excluded. The million-record collection contains 10,000 of the 1-MiB items.
+
+At one million documents, a warm-cache batch of 100 random 1-KiB documents took **9.1–9.5 ms** with `GetManyAsync`, versus 121–131 ms when read sequentially. The batch took 40–52 ms with cold database buffers and a warm operating-system cache.
+
+### Read by Dimensions
+
+The table shows a 100-item metadata page selected by an integer Dimension. Each record has eight Dimensions.
+
+<div class="storage-performance-comparison" markdown="1">
+
+<figure class="storage-performance-figure" markdown="1">
+
+```mermaid
+%%{init: {"theme":"base","xyChart":{"width":420,"height":310,"titleFontSize":17,"legendFontSize":16,"xAxis":{"labelFontSize":16,"titleFontSize":15},"yAxis":{"labelFontSize":16,"titleFontSize":15}},"themeVariables":{"xyChart":{"backgroundColor":"transparent","titleColor":"var(--bdk-text)","legendTextColor":"var(--bdk-text)","plotColorPalette":"#397fc4, #c27a32","xAxisLabelColor":"var(--bdk-muted)","xAxisTitleColor":"var(--bdk-muted)","xAxisTickColor":"var(--bdk-muted)","xAxisLineColor":"var(--bdk-muted)","yAxisLabelColor":"var(--bdk-muted)","yAxisTitleColor":"var(--bdk-muted)","yAxisTickColor":"var(--bdk-muted)","yAxisLineColor":"var(--bdk-muted)"}}}}%%
+xychart-beta
+    title "100-item Dimension metadata page"
+    x-axis "Stored records" ["10k", "100k", "1m"]
+    y-axis "p95 latency (ms)" 0 --> 100
+    line "SQL Server" [10.0, 23.7, 24.5]
+    line "PostgreSQL" [10.5, 42.7, 60.4]
+```
+
+</figure>
+
+<div class="storage-performance-data" markdown="1">
+
+| Documents | Dimension rows | SQL Server p95 | PostgreSQL p95 |
+|---:|---:|---:|---:|
+| 10,000 | 80,000 | 10.0 ms | 10.5 ms |
+| 100,000 | 800,000 | 23.7 ms | 42.7 ms |
+| 1,000,000 | 8,000,000 | 24.5 ms | 60.4 ms |
+
+</div>
+
+</div>
+
+The 100k and million-record filters both selected 960 matches; the 10k filter selected 200. The million-record plans examined matching keys rather than work proportional to the whole collection. This supports efficient indexed selection at the tested sizes, not constant latency for every filter.
+
+Use exact keys when known, selective Dimensions for discovery, and batching to reduce round trips. Fetching content adds transfer cost. Common values, broad filters, counts and sorting can be much slower, so keep interactive queries selective and paged.
+
+Dimension figures are medians of three two-minute run-level p95 values, with 16 readers and four concurrent writers shared across both storage features. Both features ran together within the approved local eight-CPU/32-GiB resource budget on NVMe. These are mixed-load provider timings, not pure read-only capacity or service guarantees. Payloads, selectivity, cache residency, network latency and competing work affect results.
+
+
+### Add and content-update performance
+
+Increasing the collection from 10k to one million documents kept single writes in a similar latency range. At one million records, adding with three Dimensions took 6.7 ms p95 on SQL Server and 4.7 ms on PostgreSQL; replacing content took 5.7 and 4.7 ms. Bulk updates grew more than single calls, so batch cost deserves separate attention.
+
+These writes use 1-KiB content and collections of 10k, 100k and one million records. Every record has either no Dimensions or three: an integer, a Boolean and a short string. Updates replace content and change all three values. There are no competing readers.
+
+One writer coordinates each operation. The 100-item groups call `UpsertManyAsync`; the charts show completion of the whole group.
+
+Each cell shows **SQL Server / PostgreSQL**: p95 milliseconds first, then call-only items/second in small text. Chart legends use 0 or 3 for the Dimension count.
+
+#### Add items
+
+<div class="storage-performance-comparison" markdown="1">
+
+<figure class="storage-performance-figure" markdown="1">
+
+```mermaid
+%%{init: {"theme":"base","xyChart":{"width":420,"height":310,"titleFontSize":17,"legendFontSize":16,"xAxis":{"labelFontSize":16,"titleFontSize":15},"yAxis":{"labelFontSize":16,"titleFontSize":15}},"themeVariables":{"xyChart":{"backgroundColor":"transparent","titleColor":"var(--bdk-text)","legendTextColor":"var(--bdk-muted)","plotColorPalette":"#7fb3df, #397fc4, #d8ad73, #c27a32","xAxisLabelColor":"var(--bdk-muted)","xAxisTitleColor":"var(--bdk-muted)","xAxisTickColor":"var(--bdk-muted)","xAxisLineColor":"var(--bdk-muted)","yAxisLabelColor":"var(--bdk-muted)","yAxisTitleColor":"var(--bdk-muted)","yAxisTickColor":"var(--bdk-muted)","yAxisLineColor":"var(--bdk-muted)"}}}}%%
+xychart-beta
+    title "Add 100 documents"
+    x-axis "Stored records" ["10k", "100k", "1m"]
+    y-axis "Group p95 (ms)" 0 --> 160
+    line "SQL 0" [34.2, 37.9, 33.6]
+    line "SQL 3" [57.3, 135.3, 58.2]
+    line "PG 0" [16.5, 17.0, 18.1]
+    line "PG 3" [36.2, 29.7, 36.0]
+```
+
+</figure>
+
+<div class="storage-performance-data" markdown="1">
+
+| Method | Dims | 10k | 100k | 1m |
+|---|---:|---:|---:|---:|
+| Single | 0 | 3.5 / 3.6<br><small>371 / 387</small> | 3.3 / 2.9<br><small>381 / 406</small> | 3.4 / 3.3<br><small>363 / 420</small> |
+| Single | 3 | 6.4 / 4.9<br><small>204 / 235</small> | 13.1 / 4.9<br><small>121 / 232</small> | 6.7 / 4.7<br><small>201 / 250</small> |
+| Bulk 100 | 0 | 34.2 / 16.5<br><small>3.5k / 7.0k</small> | 37.9 / 17.0<br><small>3.0k / 6.9k</small> | 33.6 / 18.1<br><small>3.4k / 6.6k</small> |
+| Bulk 100 | 3 | 57.3 / 36.2<br><small>2.0k / 3.6k</small> | 135.3 / 29.7<br><small>1.1k / 3.9k</small> | 58.2 / 36.0<br><small>2.0k / 3.5k</small> |
+
+</div>
+
+</div>
+
+#### Replace content
+
+<div class="storage-performance-comparison" markdown="1">
+
+<figure class="storage-performance-figure" markdown="1">
+
+```mermaid
+%%{init: {"theme":"base","xyChart":{"width":420,"height":310,"titleFontSize":17,"legendFontSize":16,"xAxis":{"labelFontSize":16,"titleFontSize":15},"yAxis":{"labelFontSize":16,"titleFontSize":15}},"themeVariables":{"xyChart":{"backgroundColor":"transparent","titleColor":"var(--bdk-text)","legendTextColor":"var(--bdk-muted)","plotColorPalette":"#7fb3df, #397fc4, #d8ad73, #c27a32","xAxisLabelColor":"var(--bdk-muted)","xAxisTitleColor":"var(--bdk-muted)","xAxisTickColor":"var(--bdk-muted)","xAxisLineColor":"var(--bdk-muted)","yAxisLabelColor":"var(--bdk-muted)","yAxisTitleColor":"var(--bdk-muted)","yAxisTickColor":"var(--bdk-muted)","yAxisLineColor":"var(--bdk-muted)"}}}}%%
+xychart-beta
+    title "Replace 100 documents"
+    x-axis "Stored records" ["10k", "100k", "1m"]
+    y-axis "Group p95 (ms)" 0 --> 140
+    line "SQL 0" [20.2, 19.3, 20.4]
+    line "SQL 3" [43.9, 117.9, 50.0]
+    line "PG 0" [17.4, 20.6, 32.3]
+    line "PG 3" [37.0, 38.3, 57.0]
+```
+
+</figure>
+
+<div class="storage-performance-data" markdown="1">
+
+| Method | Dims | 10k | 100k | 1m |
+|---|---:|---:|---:|---:|
+| Single | 0 | 3.3 / 3.2<br><small>374 / 400</small> | 3.4 / 2.9<br><small>370 / 397</small> | 3.5 / 4.2<br><small>353 / 416</small> |
+| Single | 3 | 6.7 / 5.0<br><small>192 / 234</small> | 10.4 / 5.6<br><small>132 / 225</small> | 5.7 / 4.7<br><small>200 / 242</small> |
+| Bulk 100 | 0 | 20.2 / 17.4<br><small>6.2k / 6.8k</small> | 19.3 / 20.6<br><small>6.1k / 5.6k</small> | 20.4 / 32.3<br><small>5.8k / 3.7k</small> |
+| Bulk 100 | 3 | 43.9 / 37.0<br><small>2.6k / 3.3k</small> | 117.9 / 38.3<br><small>1.7k / 2.9k</small> | 50.0 / 57.0<br><small>2.4k / 1.9k</small> |
+
+</div>
+
+</div>
+
+Native 100-item batches amortized the cost of individual calls. At one million records with three Dimensions, adds completed in 58.2 ms p95 on SQL Server and 36.0 ms on PostgreSQL; updates took 50.0 and 57.0 ms. PostgreSQL bulk-update p95 rose about 1.5 to 1.9 times as the collection grew 100 times. SQL Server's three-Dimension 100k point was slower than both other sizes. Its three slowest calls occurred in the final repetition. An independent 100k repeat gave 60.6 ms p95 for adds and 47.5 ms for updates; the original plotted results are retained. The cause of that slow phase was not established. Write latency varied at the same collection size, so treat these results as an observed range rather than a fixed curve.
+
+Write p95 uses 500 single calls or 50 complete groups across five repetitions after warm-up. Caches remain active. Group tails are indicative because they have fewer samples. Input preparation, persistent verification and insert cleanup are outside timing; rates cover provider/client call time, not full application capacity. The same resource budget described above applies. SQL Server used MAXDOP 1 and EF `MinBatchSize(1)`. Larger payloads, more Dimensions and competing work are outside this write study.

@@ -39,6 +39,7 @@ public sealed class DashboardFeatureIconTests
     [InlineData("orchestrations", "orchestrations")]
     [InlineData("messaging", "messaging")]
     [InlineData("queueing", "queueing")]
+    [InlineData("application.caching", "application-caching")]
     [InlineData("storage.files", "storage-files")]
     [InlineData("storage.documents", "storage-documents")]
     [InlineData("storage.blobs", "storage-blobs")]

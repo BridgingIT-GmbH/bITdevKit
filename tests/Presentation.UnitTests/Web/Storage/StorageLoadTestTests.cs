@@ -304,16 +304,16 @@ public sealed class StorageLoadTestTests
             {
                 var writes = 0;
                 provider = Substitute.For<IBlobStoreProvider, IBlobStoreContainerCatalog>();
-                provider.UploadAsync(Arg.Any<BlobUpload>(), Arg.Any<CancellationToken>()).Returns(async call =>
+                provider.UploadAsync(Arg.Any<StoredBlobUpload>(), Arg.Any<CancellationToken>()).Returns(async call =>
                 {
                     if (slowWrite && Interlocked.Increment(ref writes) > 1)
                     {
                         await Task.Delay(1200, call.Arg<CancellationToken>());
                     }
 
-                    var result = await this.blobs.UploadAsync(call.Arg<BlobUpload>(), call.Arg<CancellationToken>());
+                    var result = await this.blobs.UploadAsync(call.Arg<StoredBlobUpload>(), call.Arg<CancellationToken>());
 
-                    return uncertainWrite ? Result<BlobInfo>.Failure(new BlobStoreIndeterminateOperationError("publish", "mutation")) : result;
+                    return uncertainWrite ? Result<StoredBlobInfo>.Failure(new BlobStoreIndeterminateOperationError("publish", "mutation")) : result;
                 });
                 provider.GetPropertiesAsync(Arg.Any<BlobKey>(), Arg.Any<CancellationToken>()).Returns(async call =>
                 {
@@ -334,7 +334,7 @@ public sealed class StorageLoadTestTests
                     return result;
                 });
                 provider.ExistsAsync(Arg.Any<BlobKey>(), Arg.Any<CancellationToken>()).Returns(call => this.blobs.ExistsAsync(call.Arg<BlobKey>(), call.Arg<CancellationToken>()));
-                provider.DownloadAsync(Arg.Any<BlobKey>(), Arg.Any<CancellationToken>()).Returns(call => shortRead ? Task.FromResult(Result<BlobDownload>.Success(new() { Content = new MemoryStream([1]) })) : this.blobs.DownloadAsync(call.Arg<BlobKey>(), call.Arg<CancellationToken>()));
+                provider.DownloadAsync(Arg.Any<BlobKey>(), Arg.Any<CancellationToken>()).Returns(call => shortRead ? Task.FromResult(Result<StoredBlobDownload>.Success(new() { Content = new MemoryStream([1]) })) : this.blobs.DownloadAsync(call.Arg<BlobKey>(), call.Arg<CancellationToken>()));
                 provider.DeleteAsync(Arg.Any<BlobKey>(), Arg.Any<BlobDeleteOptions>(), Arg.Any<CancellationToken>()).Returns(call =>
                 {
                     this.DeleteAttempts++;

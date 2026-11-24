@@ -16,6 +16,19 @@ public class BlobStorageRuntimeShellTests
     private static readonly BlobKey HealthProbeKey = new("__bdk", "healthcheck/probe");
 
     [Fact]
+    public async Task Properties_WithUnsupportedValues_FailBeforeProviderIo()
+    {
+        var provider = Substitute.For<IBlobStoreProvider>();
+        var sut = new BlobStoreClient("reports", provider);
+        var result = await sut.UploadAsync(new() { Key = new("reports", "invalid"), Content = new MemoryStream([1]), Properties = new() { ["bad"] = new object() } });
+        result.HasError<BlobStoreValidationError>().ShouldBeTrue();
+        await provider.DidNotReceiveWithAnyArgs().UploadAsync(null, CancellationToken.None);
+        var update = await sut.UpdatePropertiesAsync(new() { Key = new("reports", "invalid"), Properties = new() { ["bad"] = new[] { 1 } } });
+        update.HasError<BlobStoreValidationError>().ShouldBeTrue();
+        await provider.DidNotReceiveWithAnyArgs().UpdatePropertiesAsync(null, CancellationToken.None);
+    }
+
+    [Fact]
     public void AddBlobStorage_WithEnabledOptions_RegistersFeatureOptions()
     {
         // Arrange
@@ -453,7 +466,7 @@ public class BlobStorageRuntimeShellTests
         // Assert
         result.IsFailure.ShouldBeTrue();
         result.HasError<BlobStoreValidationError>().ShouldBeTrue();
-        await provider.DidNotReceive().UploadAsync(Arg.Any<BlobUpload>(), Arg.Any<CancellationToken>());
+        await provider.DidNotReceive().UploadAsync(Arg.Any<StoredBlobUpload>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]

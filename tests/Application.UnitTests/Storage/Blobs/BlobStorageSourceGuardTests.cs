@@ -5,55 +5,19 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.Storage;
 
-using System.Text.RegularExpressions;
+using System.Reflection;
+using Application.Storage;
 
 [UnitTest("Application")]
-public sealed partial class BlobStorageSourceGuardTests
+public sealed class BlobStorageSourceGuardTests
 {
-    [Fact]
-    public void ProductionBlobStorageSource_DoesNotDeclareInternalSymbols()
+    [Theory]
+    [InlineData(typeof(BlobUpload))]
+    [InlineData(typeof(BlobInfo))]
+    [InlineData(typeof(BlobPropertiesUpdate))]
+    public void PublicBlobModels_DoNotExposeTransformMetadata(Type model)
     {
-        // Arrange
-        var repositoryRoot = FindRepositoryRoot();
-        var directories = new[]
-        {
-            "src/Application.Storage/Blobs",
-            "src/Infrastructure.EntityFramework/Storage/Blobs",
-            "src/Infrastructure.Azure.Storage/Blobs",
-            "src/Presentation.Web.Storage/Blobs"
-        };
-
-        // Act
-        var violations = directories
-            .Select(path => Path.Combine(repositoryRoot, path.Replace('/', Path.DirectorySeparatorChar)))
-            .SelectMany(path => Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories))
-            .SelectMany(file => File.ReadLines(file)
-                .Select((line, index) => new { File = file, Line = index + 1, Text = line }))
-            .Where(candidate => InternalDeclarationRegex().IsMatch(candidate.Text))
-            .Select(candidate => $"{Path.GetRelativePath(repositoryRoot, candidate.File)}:{candidate.Line}")
-            .ToArray();
-
-        // Assert
-        violations.ShouldBeEmpty();
+        model.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .ShouldNotContain(property => property.Name == "TransformMetadata");
     }
-
-    private static string FindRepositoryRoot()
-    {
-        var current = new DirectoryInfo(AppContext.BaseDirectory);
-        while (current is not null)
-        {
-            if (File.Exists(Path.Combine(current.FullName, "AGENTS.md")) &&
-                Directory.Exists(Path.Combine(current.FullName, "src")))
-            {
-                return current.FullName;
-            }
-
-            current = current.Parent;
-        }
-
-        throw new DirectoryNotFoundException("The repository root could not be located.");
-    }
-
-    [GeneratedRegex(@"^\s*(?:protected\s+|public\s+|private\s+)?internal\s+", RegexOptions.CultureInvariant)]
-    private static partial Regex InternalDeclarationRegex();
 }

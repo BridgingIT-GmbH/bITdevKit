@@ -21,7 +21,7 @@ Keep the upper full-width view titled "Application Caching" with tabs "Overview"
 
 Keep two lower views. Lower-left breadcrumb "Collection: product-cards", tabs "Overview", "Entries", "Shared Loads", "Operations", "Settings", Shared Loads active. Show a simple "One source load" owner box and several "Waiting request" follower boxes or a tiny abstract table. A short label "Node-local" is allowed. These are requests in one process, never separate nodes. Do not show real-looking IDs, start times or exact performance measurements.
 
-Lower-right breadcrumb "Collection: product-cards", the same five tabs with Operations active. Keep simple wireframe fields "Key prefix" and "Reason", outline buttons "Preview", "Invalidate", "Clear collection", and a small empty preview-results box. No specific matching-entry count. No raw JSON editor, no live provider switching, no cancel-load controls.
+Lower-right breadcrumb "Collection: product-cards", the same five tabs with Operations active. Keep a simple wireframe field "Key prefix", outline buttons "Preview", "Invalidate", "Clear collection", and a small empty preview-results box. No specific matching-entry count. No raw JSON editor, no live provider switching, no cancel-load controls.
 
 Bottom caption: "Wireframe concept - illustrative placeholders".
 Use the term Collections everywhere. Keep all important tab names legible. Keep the provider names exactly In-memory, Entity Framework, Filesystem. Keep the whole composition schematic and unpolished; fewer details are better.
@@ -69,7 +69,7 @@ Lower right panel:
 Breadcrumb: "Application Caching / product-cards"
 The same five tabs with Operations active.
 Heading: "Invalidate entries"
-Friendly filter controls labeled "Key prefix" with value "product:" and "Reason" with value "Catalog updated".
+Friendly filter control labeled "Key prefix" with value "product:".
 Buttons: "Preview" and "Invalidate"; separate subdued red outline button: "Clear collection".
 A result card: "Preview only", "1,248 matching entries", "Scope: product-cards".
 Show a small neutral provider badge: "In-memory".

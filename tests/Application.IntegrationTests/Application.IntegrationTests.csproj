@@ -71,5 +71,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Infrastructure.FileSystem/Infrastructure.FileSystem.csproj" />
+    <ProjectReference Include="..\..\src\Application.Caching\Application.Caching.csproj" />
   </ItemGroup>
 </Project>

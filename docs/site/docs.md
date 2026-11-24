@@ -2,15 +2,15 @@
 title: Documentation Overview
 ---
 
-<img class="bdk-doc-icon" src="assets/features/dashboard.svg" width="32" height="32" alt="" align="right">
-
-# Documentation Overview
+# Documentation Overview { data-feature-icons="false" }
 
 <!-- markdownlint-disable-file MD033 -->
 
 Start with the task in front of you. Each path links to the guides that explain the relevant APIs, runtime behavior, and trade-offs.
 
-<div class="docs-path-grid">
+To add one feature to an app that already runs a DevKit host, use [Add features](getting-started-existing-app-features.md). Each recipe there names the packages, shows the smallest registration that works and gives one command to check it.
+
+<div class="docs-path-grid" data-feature-icons="false">
   <a href="#model-a-domain"><span>01</span>Model a domain</a>
   <a href="#handle-requests-and-workflows"><span>02</span>Handle requests and workflows</a>
   <a href="#integrate-storage-and-messaging"><span>03</span>Integrate storage and messaging</a>
@@ -18,7 +18,7 @@ Start with the task in front of you. Each path links to the guides that explain 
   <a class="docs-path-agent" href="#work-with-ai-agents"><span>05</span>Work with AI agents</a>
 </div>
 
-## <img class="bdk-doc-icon" src="assets/features/domain.svg" width="24" height="24" alt=""> Model a domain
+## Model a domain { data-feature-icons="false" }
 
 Use the domain libraries for behavior, invariants, persistence boundaries, and business decisions.
 
@@ -28,17 +28,18 @@ Use the domain libraries for behavior, invariants, persistence boundaries, and b
 - [Domain Repositories](reference/features-domain-repositories.md) and [ActiveEntity](reference/features-domain-activeentity.md) provide two persistence models.
 - [Domain Events](reference/features-domain-events.md) and [Domain Change History](reference/features-domain-change-history.md) capture state transitions.
 
-## <img class="bdk-doc-icon" src="assets/features/requester.svg" width="24" height="24" alt=""> <img class="bdk-doc-icon" src="assets/features/orchestrations.svg" width="24" height="24" alt=""> Handle requests and workflows
+## Handle requests and workflows { data-feature-icons="false" }
 
 Use the application libraries to dispatch work, return explicit outcomes, and coordinate multi-step processes.
 
 - [Results](reference/features-results.md) defines the success and failure model used across the kit.
 - [Application Commands and Queries](reference/features-application-commands-queries.md) defines request contracts and handlers.
+- [Application Caching](reference/features-application-caching.md) caches disposable typed and binary results with bounded source coordination and invalidation. [Common Caching](reference/common-caching.md) remains the separate minimal alternative.
 - [Requester and Notifier](reference/features-requester-notifier.md) dispatches requests and notifications through pipeline behaviors.
 - [Pipelines](reference/features-pipelines.md) coordinates observable in-process steps.
 - [Orchestrations](reference/features-orchestrations.md) handles durable workflows with signals, timers, and explicit state.
 
-## <img class="bdk-doc-icon" src="assets/features/storage.svg" width="24" height="24" alt=""> <img class="bdk-doc-icon" src="assets/features/messaging.svg" width="24" height="24" alt=""> Integrate storage and messaging
+## Integrate storage and messaging { data-feature-icons="false" }
 
 Choose an integration by the data shape and delivery behavior your application needs.
 
@@ -50,7 +51,7 @@ Choose an integration by the data shape and delivery behavior your application n
 - [Jobs](reference/features-jobs.md) and [Job Scheduling](reference/features-jobscheduling.md) run background work now or on a schedule.
 - [Modules](reference/features-modules.md) composes feature registrations and keeps module boundaries explicit.
 
-## <img class="bdk-doc-icon" src="assets/features/dashboard.svg" width="24" height="24" alt=""> <img class="bdk-doc-icon" src="assets/features/metrics.svg" width="24" height="24" alt=""> Operate and diagnose an application
+## Operate and diagnose an application { data-feature-icons="false" }
 
 Use the host and tooling features to expose endpoints, inspect runtime state, and find failures.
 
@@ -61,7 +62,7 @@ Use the host and tooling features to expose endpoints, inspect runtime state, an
 - [Startup Tasks](reference/features-startuptasks.md) runs ordered work during application startup.
 - [CLI](reference/features-cli.md) and [Console Commands](reference/features-presentation-console-commands.md) provide local operational commands.
 
-## <img class="bdk-doc-icon" src="assets/features/mcp.svg" width="24" height="24" alt=""> Work with AI agents
+## Work with AI agents { data-feature-icons="false" }
 
 The `bdk mcp` command connects MCP-capable coding agents to official DevKit documentation and local runtime diagnostics.
 
@@ -69,7 +70,7 @@ Start with [AI Agent Support](agent-support.md) for the possibilities, installat
 
 Use the [MCP Reference](reference/features-cli-mcp.md) for the command and tool contract. Use [MCP Client Configuration](reference/features-cli-mcp-clients.md) for supported client files.
 
-## Browse the complete reference
+## Browse the complete reference { data-feature-icons="false" }
 
 - Open the [Complete Feature Index](reference/index.md) when you know the capability name.
 - Open the [API Reference](api/index.md) when you need a namespace, type, or member signature.

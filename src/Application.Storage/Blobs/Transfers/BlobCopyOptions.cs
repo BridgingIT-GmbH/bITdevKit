@@ -18,6 +18,14 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class BlobCopyOptions
 {
+    /// <summary>Gets optional destination Dimensions. Omission copies the source; empty clears the destination.</summary>
+    /// <example><code>var dimensions = options.Dimensions;</code></example>
+    public BlobDimensions Dimensions { get; init; }
+
+    /// <summary>Gets the original item ETag required for replacement; omission permits unconditional overwrite.</summary>
+    /// <example><code>var expected = options.IfMatchETag;</code></example>
+    public string IfMatchETag { get; init; }
+
     /// <summary>
     /// Gets a value indicating whether source properties should be copied.
     /// </summary>

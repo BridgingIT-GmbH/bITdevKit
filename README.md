@@ -75,6 +75,7 @@ The best entry point into the current documentation set is the
 
 ### Core Domain and Application
 
+- <img class="bdk-doc-icon" src="docs/assets/features/application-caching.svg" width="20" height="20" alt=""> [Application Caching](./docs/features-application-caching.md): Advanced collection caching, bounded source coalescing, and complete in-memory, EF, and native filesystem providers. Use [Common Caching](./docs/common-caching.md) for basic cache access and Key/Value Storage for application-owned state.
 - <img class="bdk-doc-icon" src="docs/assets/features/domain.svg" width="20" height="20" alt=""> [Domain](./docs/features-domain.md)
 - <img class="bdk-doc-icon" src="docs/assets/features/domain-events.svg" width="20" height="20" alt=""> [Domain Events](./docs/features-domain-events.md)
 - <img class="bdk-doc-icon" src="docs/assets/features/event-sourcing.svg" width="20" height="20" alt=""> [Event Sourcing](./docs/features-event-sourcing.md)

@@ -1,0 +1,13 @@
+@page "/"
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Components.Web
+<StateProbe @rendermode="Mode" />
+@code {
+#nullable disable
+    /// <summary>Gets the request-owned context for fixture prerender policy.</summary>
+    [CascadingParameter]
+    public HttpContext RequestContext { get; set; }
+
+    private IComponentRenderMode Mode => new InteractiveServerRenderMode(
+        prerender: string.Equals(RequestContext?.Request.Query["prerender"].ToString(), "true", StringComparison.Ordinal));
+}

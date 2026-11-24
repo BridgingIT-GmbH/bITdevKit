@@ -9,8 +9,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Time.Testing;
 
+/// <summary>Verifies node registration readiness and once-only graceful shutdown.</summary>
+/// <example><code>dotnet test --filter FullyQualifiedName~BroadcastNodeLifecycleServiceTests</code></example>
 public class BroadcastNodeLifecycleServiceTests
 {
+    /// <summary>Startup delay leaves the host available and postpones registration until the configured time.</summary>
     [Fact]
     public async Task StartAsync_WithStartupDelay_DoesNotBlockHostAndRegistersAfterDelay()
     {
@@ -41,6 +44,7 @@ public class BroadcastNodeLifecycleServiceTests
         await sut.StopAsync(CancellationToken.None);
     }
 
+    /// <summary>Database readiness postpones registration until the named application context is ready.</summary>
     [Fact]
     public async Task StartAsync_WithDatabaseReadiness_WaitsBeforeInitialRegistration()
     {
@@ -72,6 +76,7 @@ public class BroadcastNodeLifecycleServiceTests
         await sut.StopAsync(CancellationToken.None);
     }
 
+    /// <summary>An omitted readiness service does not prevent registration.</summary>
     [Fact]
     public async Task StartAsync_WithoutDatabaseReadyService_RegistersWithoutWaiting()
     {
@@ -96,9 +101,55 @@ public class BroadcastNodeLifecycleServiceTests
         await sut.StopAsync(CancellationToken.None);
     }
 
+    /// <summary>Concurrent and post-disposal stop requests wait for one registry removal without accessing disposed dependencies again.</summary>
+    [Fact]
+    public async Task StopAsync_ConcurrentAndRepeatedCalls_UnregistersOnce()
+    {
+        // Arrange
+        var registered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var removing = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var registry = Substitute.For<IBroadcastRegistryStore>();
+        registry.Capabilities.Returns(new BroadcastRegistryCapabilities(false, false));
+        registry.UpsertAsync(Arg.Any<BroadcastNodeRegistrationRequest>(), Arg.Any<CancellationToken>()).Returns(_ =>
+        {
+            registered.TrySetResult();
+            return Task.CompletedTask;
+        });
+        registry.RemoveAsync("node-a", Arg.Any<CancellationToken>()).Returns(_ =>
+        {
+            removing.TrySetResult();
+            return release.Task;
+        });
+        using var sut = CreateService(new BroadcastingOptions
+        {
+            NodeIdentity = "node-a", StartupDelay = TimeSpan.Zero, Scopes = { "Alpha" }
+        }, registry, TimeProvider.System);
+        await sut.StartAsync(CancellationToken.None);
+        await registered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        // Act
+        var first = sut.StopAsync(CancellationToken.None);
+        await removing.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        var second = sut.StopAsync(CancellationToken.None);
+        try
+        {
+            first.IsCompleted.ShouldBeFalse();
+            second.IsCompleted.ShouldBeFalse();
+        }
+        finally { release.TrySetResult(); }
+
+        await Task.WhenAll(first, second).WaitAsync(TimeSpan.FromSeconds(5));
+        sut.Dispose();
+        await sut.StopAsync(CancellationToken.None);
+
+        // Assert
+        await registry.Received(1).RemoveAsync("node-a", Arg.Any<CancellationToken>());
+    }
+
     private static BroadcastNodeLifecycleService CreateService(
         BroadcastingOptions options,
-        RecordingRegistry registry,
+        IBroadcastRegistryStore registry,
         TimeProvider timeProvider,
         IDatabaseReadyService databaseReadyService = null) =>
         new(

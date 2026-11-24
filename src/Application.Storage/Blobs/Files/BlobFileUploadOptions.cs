@@ -19,6 +19,14 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class BlobFileUploadOptions
 {
+    /// <summary>Gets an optional replacement. Omission preserves existing Dimensions; empty clears them.</summary>
+    /// <example><code>var dimensions = options.Dimensions;</code></example>
+    public BlobDimensions Dimensions { get; init; }
+
+    /// <summary>Gets the original item ETag required for replacement; omission permits unconditional overwrite.</summary>
+    /// <example><code>var expected = options.IfMatchETag;</code></example>
+    public string IfMatchETag { get; init; }
+
     /// <summary>
     /// Gets the explicit content type to store with the blob.
     /// </summary>
@@ -52,13 +60,14 @@ public sealed class BlobFileUploadOptions
 
     /// <summary>
     /// Gets the custom application properties to store with the blob.
+    /// Null preserves existing properties; an explicit empty bag clears them.
     /// </summary>
     /// <example>
     /// <code>
-    /// var source = options.Properties.Get&lt;string&gt;("source");
+    /// var source = options.Properties?.Get&lt;string&gt;("source");
     /// </code>
     /// </example>
-    public PropertyBag Properties { get; init; } = new();
+    public PropertyBag Properties { get; init; }
 
     /// <summary>
     /// Gets the overwrite behavior for the blob upload.

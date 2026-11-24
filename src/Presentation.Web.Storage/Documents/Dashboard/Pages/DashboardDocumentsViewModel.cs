@@ -17,6 +17,15 @@ using BridgingIT.DevKit.Application.Storage;
 /// </example>
 public sealed class DashboardDocumentsViewModel
 {
+    /// <summary>Gets or sets the applied Dimension filter in its feature-owned transport format.</summary>
+    public string DimensionFilterJson { get; set; }
+
+    /// <summary>Gets or sets the validated Dimension filter used for this request.</summary>
+    public DocumentDimensionFilter DimensionFilter { get; set; }
+
+    /// <summary>Gets or sets Dimension query capabilities for the selected provider.</summary>
+    public DocumentDimensionCapabilities DimensionCapabilities { get; set; } = new();
+
     /// <summary>
     /// Gets or sets the UTC timestamp when the dashboard model was captured.
     /// </summary>

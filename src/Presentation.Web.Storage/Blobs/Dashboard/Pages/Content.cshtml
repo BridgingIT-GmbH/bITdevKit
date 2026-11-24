@@ -118,6 +118,10 @@
      data-prefix="@vm.Prefix"
      data-take="@vm.Take"
      data-allow-full-scan="@vm.AllowFullScan.ToString().ToLowerInvariant()"
+     data-dimension-filter="@vm.DimensionFilterJson"
+     data-dimension-filter-valid="@(vm.DimensionFilter is not null ? "true" : "false")"
+     data-supports-dimensions="@(vm.DimensionCapabilities.SupportsDimensions ? "true" : "false")"
+     data-supports-dimension-updates="@(vm.DimensionCapabilities.SupportsMetadataUpdates ? "true" : "false")"
      data-continuation-token="@vm.ContinuationToken">
     @if (!vm.IsAvailable)
     {
@@ -129,7 +133,7 @@
     {
         @if (vm.Errors.Count > 0)
         {
-            <div class="alert alert-danger py-2 mb-0" data-dashboard-query-error>
+            <div class="alert alert-danger py-2 mb-0" role="alert" data-dashboard-query-error>
                 @foreach (var error in vm.Errors)
                 {
                     <div>@error</div>
@@ -172,14 +176,18 @@
                     </div>
                 </div>
                 <div class="col-12 col-lg-auto d-flex justify-content-end ms-auto">@(await RenderPartialAsync<FilterActions, DashboardFilterActionsModel>(new(ResetId: "blobs-filter-reset")))</div>
-
             </div>
+            @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionQuery, BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DashboardDimensionQueryModel>(new(vm.DimensionFilterJson, vm.DimensionCapabilities.SupportsQueries, vm.DimensionCapabilities.SupportedOperators)))
         </form>
 
         <section class="blobs-panel" data-dashboard-list="blobs">
-            <div class="blobs-panel-header">
+            <div class="blobs-panel-header position-relative">
                 <span>Blobs</span>
                 <div class="d-flex align-items-center gap-2">
+                    @if (vm.DimensionCapabilities.SupportsDimensions)
+                    {
+                        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Dashboard.Pages.DimensionColumns>())
+                    }
                     <button type="button" class="btn btn-outline-secondary btn-sm" data-blobs-command="upload" @(string.IsNullOrWhiteSpace(vm.SelectedStoreName) || string.IsNullOrWhiteSpace(vm.Container) ? "disabled" : null)>
                         <i class="bi bi-upload" aria-hidden="true"></i> Upload
                     </button>
@@ -216,7 +224,8 @@
                             {
                                 var downloadUrl = BuildDownloadUrl(vm.DownloadPath, vm.SelectedStoreName, blob.Container, blob.Name);
                                 var displayName = Shortener.Apply(blob.Name, new ShorteningOptions { MaximumLength = 64 });
-                                <tr data-dashboard-row-id="@blob.Name">
+                                var dimensionsJson = BlobStorageDimensionsJson.Write(blob.Dimensions);
+                                <tr data-dashboard-row-id="@blob.Name" data-dimensions="@dimensionsJson">
                                     <td>
                                         <div class="blobs-name-cell" title="@blob.Name">
                                             <i class="bi bi-file-earmark-binary me-1" aria-hidden="true"></i><code>@displayName</code>
@@ -258,9 +267,11 @@
                                                     data-created-at="@blob.CreatedAt?.ToString("O", CultureInfo.InvariantCulture)"
                                                     data-modified-at="@blob.LastModifiedAt?.ToString("O", CultureInfo.InvariantCulture)"
                                                     data-expires-at="@blob.ExpiresAt?.ToString("O", CultureInfo.InvariantCulture)"
-                                                    data-properties="@SerializeProperties(blob.Properties)" aria-label="Blob details">
+                                                    data-properties="@SerializeProperties(blob.Properties)"
+                                                    aria-label="Blob details">
                                                 <i class="bi bi-info-circle" aria-hidden="true"></i>
                                             </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" data-blobs-command="replace" data-container="@blob.Container" data-name="@blob.Name" data-etag="@blob.ETag" data-expires-at="@blob.ExpiresAt?.ToString("O", CultureInfo.InvariantCulture)" title="Replace content" aria-label="Replace content"><i class="bi bi-upload" aria-hidden="true"></i></button>
                                             <button type="button"
                                                     class="btn btn-sm btn-outline-danger"
                                                     title="Delete blob"
@@ -286,6 +297,7 @@
 
 @functions {
     private static readonly int[] PageSizeOptions = [25, 50, 100, 250, 500];
+    private static readonly JsonSerializerOptions PropertiesJsonOptions = new() { WriteIndented = true };
 
     private async Task<DashboardBlobsViewModel> CreateModelAsync()
     {
@@ -301,6 +313,7 @@
             Prefix = NormalizePrefix(GetQuery("prefix")),
             Take = ResolveTake(GetQuery("take")),
             AllowFullScan = !HttpContext.Request.Query.ContainsKey("allowFullScan") || GetBooleanQuery("allowFullScan"),
+            DimensionFilterJson = GetQuery("dimensionFilter"),
             ContinuationToken = GetQuery("continuationToken")
         };
 
@@ -321,6 +334,23 @@
         {
             var client = factory.CreateClient(model.SelectedStoreName);
             model.PermalinksEnabled = StoragePermalinkExtensions.FindBlobAccessor(client) is not null;
+            model.DimensionCapabilities = client.DimensionCapabilities;
+            var parsedFilter = BlobStorageDimensionsJson.ParseFilter(string.IsNullOrWhiteSpace(model.DimensionFilterJson) ? null : model.DimensionFilterJson);
+            if (parsedFilter.IsFailure)
+            {
+                model.Errors.Add("Check the Dimension names, comparisons, and typed values.");
+                return model;
+            }
+
+            var filterValidation = BlobDimensionFilterValidator.Validate(parsedFilter.Value, model.DimensionCapabilities);
+            if (filterValidation.IsFailure)
+            {
+                model.Errors.Add(GetFailureMessage(filterValidation, "Dimension queries are unavailable for this provider."));
+                return model;
+            }
+
+            model.DimensionFilter = parsedFilter.Value;
+
             var containersDiscovered = false;
             if (client is IBlobStoreContainerCatalog catalog)
             {
@@ -350,6 +380,7 @@
                 {
                     Container = model.Container,
                     Prefix = model.Prefix,
+                    DimensionFilter = model.DimensionFilter,
                     Take = model.Take,
                     AllowFullScan = model.AllowFullScan,
                     ContinuationToken = model.ContinuationToken
@@ -421,7 +452,10 @@
             info.CreatedAt,
             info.LastModifiedAt,
             info.ExpiresAt,
-            info.Properties?.Clone() ?? new PropertyBag());
+            info.Properties?.Clone() ?? new PropertyBag())
+        {
+            Dimensions = info.Dimensions
+        };
 
     private static int ResolveTake(string value) =>
         int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed)
@@ -446,25 +480,13 @@
         string.IsNullOrWhiteSpace(value) ? "-" : value;
 
     private static string SerializeProperties(PropertyBag properties) => JsonSerializer.Serialize(
-        (properties ?? new PropertyBag()).ToDictionary(item => item.Key, item => item.Value));
+        (properties ?? new PropertyBag()).ToDictionary(item => item.Key, item => item.Value),
+        PropertiesJsonOptions);
 
     private static string FormatTimestamp(DateTimeOffset? value) =>
         value?.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) ?? "-";
 
-    private static string FormatSize(long value)
-    {
-        const long kiloByte = 1024;
-        const long megaByte = kiloByte * 1024;
-        const long gigaByte = megaByte * 1024;
-
-        return value switch
-        {
-            >= gigaByte => $"{value / (double)gigaByte:0.##} GB",
-            >= megaByte => $"{value / (double)megaByte:0.##} MB",
-            >= kiloByte => $"{value / (double)kiloByte:0.##} KB",
-            _ => $"{value} B"
-        };
-    }
+    private static string FormatSize(long value) => ByteSize.FormatBinary(value);
 
     private static string BuildDownloadUrl(string basePath, string storeName, string container, string name)
     {

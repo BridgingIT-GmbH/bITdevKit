@@ -1,120 +1,221 @@
-﻿namespace BridgingIT.DevKit.Presentation.Web.Client;
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Presentation.Web.Client;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
-/// <summary>
-/// Builds the ManagedState system configuration with a fluent API.
-/// </summary>
-/// <remarks>
-/// Initializes a new instance of the StateManagementBuilder.
-/// </remarks>
-/// <param name="services">The IServiceCollection to configure.</param>
-/// <exception cref="ArgumentNullException">Thrown if services is null.</exception>
-public class AppStateManagementBuilder(IServiceCollection services)
+/// <summary>Collects state registrations using ordinary DI lifetimes and explicit ownership.</summary>
+/// <example>
+/// <code><![CDATA[
+/// services.AddAppState()
+///     .WithApplicationId("catalog-console")
+///     .WithDebugging(debug =>
+///     {
+///         debug.LoggingEnabled = true;
+///         debug.StateChangesTracked = true;
+///         debug.MaxTrackedChanges = 100;
+///     })
+///     .WithDefaultDebounceDelay(TimeSpan.FromMilliseconds(300))
+///     .AddState<CatalogViewState>()
+///         .WithIdentity("catalog", "list")
+///         .WithJsonTypeInfo(CatalogJson.Default.CatalogViewModel)
+///         .AsInMemoryScoped()
+///         .WithHistory(10)
+///         .Done();
+/// ]]></code>
+/// </example>
+public class AppStateManagementBuilder
 {
-    private readonly IServiceCollection services = services ?? throw new ArgumentNullException(nameof(services));
-    private readonly AppStateManagementOptions options = new AppStateManagementOptions();
+    private readonly AppStateManagementOptions options;
 
-    /// <summary>
-    /// Gets the IServiceCollection being configured.
-    /// </summary>
-    public IServiceCollection Services => this.services;
+    /// <summary>Creates a builder over the collection's shared registration options.</summary>
+    /// <param name="services">The runtime service collection.</param>
+    /// <example>
+    /// <code><![CDATA[
+    /// services.AddAppState();
+    /// var builder = new AppStateManagementBuilder(services);
+    /// builder.AddState<CatalogViewState>().AsComponentScoped().Done();
+    /// ]]></code>
+    /// </example>
+    public AppStateManagementBuilder(IServiceCollection services)
+    {
+        this.Services = services ?? throw new ArgumentNullException(nameof(services));
+        this.options = services.FirstOrDefault(d => d.ServiceType == typeof(AppStateManagementOptions))?.ImplementationInstance
+            as AppStateManagementOptions;
+        if (this.options == null)
+        {
+            this.options = new AppStateManagementOptions();
+            services.AddSingleton(this.options);
+        }
+    }
 
-    /// <summary>
-    /// Configures debugging options for the ManagedState system.
-    /// </summary>
-    /// <param name="configure">An action to configure the DebugOptions.</param>
-    /// <returns>The current StateManagementBuilder for chaining.</returns>
+    /// <summary>Gets the native service collection for additional registrations.</summary>
+    public IServiceCollection Services { get; }
+
+    /// <summary>Sets a stable application namespace before resolving state.</summary>
+    /// <param name="applicationId">An application ID unique among apps sharing browser storage.</param>
+    /// <returns>This builder.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// services.AddAppState().WithApplicationId("catalog-console");
+    /// ]]></code>
+    /// </example>
+    public AppStateManagementBuilder WithApplicationId(string applicationId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(applicationId);
+        this.options.ApplicationId = applicationId;
+        return this;
+    }
+
+    /// <summary>Configures bounded optional state diagnostics.</summary>
+    /// <param name="configure">Updates the shared diagnostic settings.</param>
+    /// <returns>This builder.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// services.AddAppState().WithDebugging(options =>
+    /// {
+    ///     options.LoggingEnabled = true;
+    ///     options.StateChangesTracked = true;
+    ///     options.MaxTrackedChanges = 100;
+    /// });
+    /// ]]></code>
+    /// </example>
     public AppStateManagementBuilder WithDebugging(Action<AppStateDebugOptions> configure)
     {
-        var debugOptions = new AppStateDebugOptions();
-        configure?.Invoke(debugOptions);
-        this.services.AddSingleton(debugOptions);
+        var settings = this.Services.First(d => d.ServiceType == typeof(AppStateDebugOptions)).ImplementationInstance as AppStateDebugOptions;
+        configure?.Invoke(settings);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(settings.MaxTrackedChanges);
         return this;
     }
 
-    /// <summary>
-    /// Configures the default debounce delay for all states in the ManagedState system.
-    /// </summary>
-    /// <param name="delay">The default delay interval before saving state after a change.</param>
-    /// <returns>The current StateManagementBuilder for chaining.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if delay is negative.</exception>
+    /// <summary>Sets the debounce delay for existing and future state registrations.</summary>
+    /// <param name="delay">A nonnegative delay; zero disables waiting.</param>
+    /// <returns>This builder.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// services.AddAppState().WithDefaultDebounceDelay(TimeSpan.FromMilliseconds(300));
+    /// ]]></code>
+    /// </example>
     public AppStateManagementBuilder WithDefaultDebounceDelay(TimeSpan delay)
     {
-        if (delay < TimeSpan.Zero)
-        {
-            throw new ArgumentOutOfRangeException(nameof(delay), "Debounce delay cannot be negative.");
-        }
-
-        foreach (var config in this.options.StateConfigurations.Values)
-        {
-            config.DebounceDelay = delay;
-        }
-        // Set the default for future states
+        ArgumentOutOfRangeException.ThrowIfLessThan(delay, TimeSpan.Zero);
         this.options.DefaultDebounceDelay = delay;
+        foreach (var config in this.options.StateConfigurations.Values) { config.DebounceDelay = delay; }
+
         return this;
     }
 
-    /// <summary>
-    /// Adds a specific state type to the ManagedState system with custom configuration.
-    /// </summary>
-    /// <typeparam name="TState">The type of the state class, must inherit from ManagedState.</typeparam>
-    /// <param name="lifetime">The service lifetime for the state (default is Scoped).</param>
-    /// <returns>A StateBuilder for configuring the specific state.</returns>
-    public AppStateBuilder AddState<TState>(ServiceLifetime lifetime = ServiceLifetime.Scoped) where TState : class, IAppState
+    /// <summary>Registers a concrete state and its interface alias without creating duplicate scoped objects.</summary>
+    /// <typeparam name="TState">The authored state service.</typeparam>
+    /// <param name="lifetime">Scoped or Transient. Singleton user state is rejected.</param>
+    /// <returns>The state-specific builder.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// services.AddAppState().AddState<CatalogViewState>()
+    /// .AsComponentScoped().WithHistory(10).Done();
+    /// ]]></code>
+    /// </example>
+    public AppStateBuilder AddState<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TState>(ServiceLifetime lifetime = ServiceLifetime.Scoped) where TState : class, IAppState
     {
-        var config = new AppStateOptions
+        if (lifetime == ServiceLifetime.Singleton) { throw new ArgumentException("AppState cannot use a singleton lifetime.", nameof(lifetime)); }
+
+        var configuration = new AppStateOptions { DebounceDelay = this.options.DefaultDebounceDelay };
+        if (!this.options.StateConfigurations.TryAdd(typeof(TState), configuration))
         {
-            DebounceDelay = this.options.DefaultDebounceDelay // Apply the default debounce delay
-        };
-        this.options.StateConfigurations[typeof(TState)] = config;
-
-        // Register the state as its concrete type (TState)
-        this.services.Add(new ServiceDescriptor(typeof(TState), factory, lifetime));
-
-        // Also register the state as IAppState so GetServices<IAppState>() can resolve it
-        this.services.Add(new ServiceDescriptor(typeof(IAppState), factory, lifetime));
-
-        return new AppStateBuilder(this.services, config, this);
-
-        // Factory to create the state instance
-        object factory(IServiceProvider provider)
-        {
-            var logger = provider.GetRequiredService<ILogger<TState>>();
-            var storageProvider = config.StorageProvider != null
-                ? (IAppStateStoreProvider)provider.GetService(config.StorageProvider)
-                : null;
-            var userContextProvider = provider.GetService<IUserContextProvider>();
-            var debugger = provider.GetService<AppStateDebugger>();
-            var instance = (IAppState)Activator.CreateInstance(typeof(TState), logger, config, storageProvider, userContextProvider, debugger);
-
-            // Register the state with the StateManager
-            var stateManager = provider.GetRequiredService<AppStateManager>();
-            stateManager.RegisterState(instance);
-
-            return instance;
+            throw new ArgumentException($"State {typeof(TState).FullName} is already registered.", nameof(TState));
         }
+
+        this.Services.Add(new ServiceDescriptor(typeof(TState), provider => CreateState<TState>(provider, configuration), lifetime));
+        this.Services.Add(new ServiceDescriptor(typeof(IAppState), provider => provider.GetRequiredService<TState>(), lifetime));
+        return new AppStateBuilder(this.Services, configuration, this);
     }
 
-    /// <summary>
-    /// Adds a custom state store provider for all states that require persistence, overriding the default.
-    /// </summary>
-    /// <typeparam name="TProvider">The type of the custom state store provider.</typeparam>
-    /// <param name="configureServices">An optional action to configure additional services for the provider.</param>
-    /// <returns>The current StateManagementBuilder for chaining.</returns>
+    /// <summary>Constructs and tracks a state using only the originating runtime's dependencies.</summary>
+    /// <typeparam name="TState">The concrete state service.</typeparam>
+    /// <param name="provider">The current DI scope.</param>
+    /// <param name="configuration">The registration options, copied before creation.</param>
+    /// <returns>The newly tracked state.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// var configuration = new AppStateOptions
+    /// {
+    ///     InstanceKey = "manual-pane", PersistenceType = AppStatePersistenceType.SessionScoped,
+    ///     StorageProvider = typeof(SessionScopedStateStoreProvider),
+    ///     JsonTypeInfo = CatalogJson.Default.CatalogViewModel
+    /// };
+    /// await using var owned = AppStateManagementBuilder.CreateState<CatalogViewState>(
+    ///     scope.ServiceProvider, configuration);
+    /// await owned.Load();
+    /// ]]></code>
+    /// </example>
+    public static TState CreateState<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TState>(IServiceProvider provider, AppStateOptions configuration) where TState : class, IAppState
+    {
+        var all = provider.GetRequiredService<AppStateManagementOptions>();
+        var options = configuration.Copy();
+        options.ApplicationId = all.ApplicationId;
+        if (options.StorageProvider == null && all.DefaultStorageProvider != null)
+        {
+            options.StorageProvider = all.DefaultStorageProvider;
+            options.PersistenceType = AppStatePersistenceType.CustomStorage;
+        }
+
+        var storage = options.StorageProvider != null
+            ? (IAppStateStoreProvider)provider.GetRequiredService(options.StorageProvider) : null;
+        // Explicit options/provider arguments preserve the historical constructor and permit extra DI dependencies.
+        var state = storage != null
+            ? ActivatorUtilities.CreateInstance<TState>(provider, options, storage)
+            : ActivatorUtilities.CreateInstance<TState>(provider, options);
+        var manager = provider.GetRequiredService<AppStateManager>();
+        try { manager.RegisterState(state); }
+        catch { (state as IDisposable)?.Dispose(); throw; }
+
+        return state;
+    }
+
+    /// <summary>Selects an application default for states without an explicit provider.</summary>
+    /// <typeparam name="TProvider">The provider type.</typeparam>
+    /// <param name="configureServices">Optional native dependency registrations.</param>
+    /// <returns>This builder.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// services.AddAppState()
+    /// .AddCustomStateStoreProvider<CustomStorageStateStoreProvider>()
+    /// .AddState<CatalogViewState>().WithIdentity("catalog", "list").Done();
+    /// ]]></code>
+    /// </example>
     public AppStateManagementBuilder AddCustomStateStoreProvider<TProvider>(Action<IServiceCollection> configureServices = null)
         where TProvider : class, IAppStateStoreProvider
     {
-        configureServices?.Invoke(this.services);
-        // Remove the default ComponentScopedStateStoreProvider if it exists
-        var defaultDescriptor = this.services.FirstOrDefault(d => d.ServiceType == typeof(IAppStateStoreProvider) && d.ImplementationType == typeof(ComponentScopedStateStoreProvider));
-        if (defaultDescriptor != null)
-        {
-            this.services.Remove(defaultDescriptor);
-        }
-
-        this.services.AddScoped<IAppStateStoreProvider, TProvider>();
+        configureServices?.Invoke(this.Services);
+        this.RegisterProvider<TProvider>();
+        this.options.DefaultStorageProvider = typeof(TProvider);
         return this;
+    }
+
+    /// <summary>Registers a provider once with an interface alias to the same scoped instance.</summary>
+    /// <typeparam name="TProvider">The selected provider.</typeparam>
+    /// <example>
+    /// <code><![CDATA[
+    /// var builder = services.AddAppState();
+    /// builder.RegisterProvider<SessionScopedStateStoreProvider>();
+    /// using var provider = services.BuildServiceProvider();
+    /// using var scope = provider.CreateScope();
+    /// var concrete = scope.ServiceProvider.GetRequiredService<SessionScopedStateStoreProvider>();
+    /// var alias = scope.ServiceProvider.GetRequiredService<IAppStateStoreProvider>();
+    /// Debug.Assert(ReferenceEquals(concrete, alias));
+    /// ]]></code>
+    /// </example>
+    public void RegisterProvider<TProvider>() where TProvider : class, IAppStateStoreProvider
+    {
+        this.Services.TryAddScoped<TProvider>();
+        if (this.options.RegisteredProviders.Add(typeof(TProvider)))
+        {
+            this.Services.AddScoped<IAppStateStoreProvider>(provider => provider.GetRequiredService<TProvider>());
+        }
     }
 }

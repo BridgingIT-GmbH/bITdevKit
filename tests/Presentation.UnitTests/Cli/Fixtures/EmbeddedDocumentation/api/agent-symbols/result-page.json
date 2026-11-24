@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "source": "docfx-mref-page",
+  "file": "BridgingIT.DevKit.Common.Result.yml",
+  "symbols": [
+    {
+      "uid": "BridgingIT.DevKit.Common.Result.Bind(System.Action)",
+      "name": "Bind(Action)",
+      "fullName": "BridgingIT.DevKit.Common.Result.Bind(System.Action)",
+      "kind": "Method",
+      "namespace": "BridgingIT.DevKit.Common",
+      "assembly": "BridgingIT.DevKit.Common.Results",
+      "summary": "Creates a Result from an operation.",
+      "href": "obj/api/BridgingIT.DevKit.Common.Result.html#Bind",
+      "detail": "agent-symbols/result-page.json",
+      "topics": [
+        "results",
+        "common"
+      ],
+      "syntax": {
+        "content": "public static Result Bind(Action operation)"
+      },
+      "parameters": [
+        {
+          "id": "operation",
+          "type": "System.Action",
+          "description": "The operation."
+        }
+      ],
+      "returns": {
+        "type": "BridgingIT.DevKit.Common.Result",
+        "description": "The result."
+      },
+      "url": "https://bridgingit-gmbh.github.io/bITdevKit/api/obj/api/BridgingIT.DevKit.Common.Result.html#Bind"
+    }
+  ]
+}

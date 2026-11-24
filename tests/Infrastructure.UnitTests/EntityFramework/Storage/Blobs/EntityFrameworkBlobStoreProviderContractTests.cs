@@ -38,13 +38,13 @@ public sealed class EntityFrameworkBlobStoreProviderContractTests : BlobStorePro
         var now = DateTimeOffset.UtcNow;
         var expired = CreateKey("ef-retention/expired.txt");
         var future = CreateKey("ef-retention/future.txt");
-        await provider.UploadAsync(new BlobUpload
+        await provider.UploadAsync(new StoredBlobUpload
         {
             Key = expired,
             Content = new MemoryStream([1, 2, 3]),
             ExpiresAt = now.AddMinutes(-1)
         });
-        await provider.UploadAsync(new BlobUpload
+        await provider.UploadAsync(new StoredBlobUpload
         {
             Key = future,
             Content = new MemoryStream([4, 5, 6]),

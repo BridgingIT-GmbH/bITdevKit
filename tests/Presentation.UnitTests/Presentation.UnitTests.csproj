@@ -29,6 +29,7 @@
     <PackageReference Include="Bogus" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="NBuilder" />
     <PackageReference Include="NSubstitute" />
@@ -68,6 +69,18 @@
     <ProjectReference Include="..\..\src\Presentation.Configuration\Presentation.Configuration.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Cli\Presentation.Cli.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web.Auditing\Presentation.Web.Auditing.csproj" />
+    <ProjectReference Include="..\..\src\Presentation.Web.Caching\Presentation.Web.Caching.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Cli/Fixtures/EmbeddedDocumentation/docs/*.md"
+                      LogicalName="BridgingIT.DevKit.Presentation.UnitTests.EmbeddedDocumentation/docs/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Cli/Fixtures/EmbeddedDocumentation/api/agent-index.json"
+                      LogicalName="BridgingIT.DevKit.Presentation.UnitTests.EmbeddedDocumentation/api/agent-index.json" />
+    <EmbeddedResource Include="Cli/Fixtures/EmbeddedDocumentation/api/agent-symbols/*.json"
+                      LogicalName="BridgingIT.DevKit.Presentation.UnitTests.EmbeddedDocumentation/api/agent-symbols/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Cli/Fixtures/EmbeddedDocumentation/no-api/features-only.md"
+                      LogicalName="BridgingIT.DevKit.Presentation.UnitTests.DocumentationOnly/docs/features-only.md" />
   </ItemGroup>
 
 </Project>

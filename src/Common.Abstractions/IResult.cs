@@ -27,8 +27,7 @@ public interface IResult
 
     /// <summary>
     ///     Indicates whether the operation represented by the result was successful.
-    ///     If true, the operation completed successfully.
-    ///     If false, the operation encountered one or more errors.
+    ///     A failure may have an empty <see cref="Errors"/> collection.
     /// </summary>
     bool IsSuccess { get; }
 
@@ -48,7 +47,7 @@ public interface IResult
     bool HasError();
 
     /// <summary>
-    ///     Determines whether the result contains any specific errors.
+    ///     Determines whether the result contains an error that matches <typeparamref name="TError"/>.
     /// </summary>
     /// <returns>
     ///     A boolean value indicating whether any errors are present in the result.
@@ -57,16 +56,16 @@ public interface IResult
         where TError : class, IResultError;
 
     /// <summary>
-    ///     Checks if the result contains any specific error.
+    ///     Gets the first error that matches <typeparamref name="TError"/>.
     /// </summary>
-    /// <param name="error">An output parameter that will contain all the errors found in the result if any exist.</param>
+    /// <param name="error">The first matching error, or null if no error matches.</param>
     /// <typeparam name="TError">The type of error to check for, which must implement IResultError.</typeparam>
     /// <returns>True if the result contains one error of the specified type; otherwise, false.</returns>
     bool TryGetError<TError>(out TError error)
         where TError : class, IResultError;
 
     /// <summary>
-    ///     Checks if the result contains any specific errors.
+    ///     Gets all errors that match <typeparamref name="TError"/>.
     /// </summary>
     /// <param name="errors">An output parameter that will contain all the errors found in the result if any exist.</param>
     /// <typeparam name="TError">The type of error to check for, which must implement IResultError.</typeparam>

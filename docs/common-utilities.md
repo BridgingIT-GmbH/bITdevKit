@@ -1145,6 +1145,46 @@ var progress = new Progress<RetryProgress>(p =>
     logger.LogInformation("attempt {Attempt}/{Max}: {Status}", p.CurrentAttempt, p.MaxAttempts, p.Status));
 ```
 
+## Bounded time-series history
+
+`BoundedTimeSeries<T>` retains a fixed number of observations in a ring. `Add` overwrites the oldest appended item when full. A capacity of zero disables retention. The caller supplies a timestamp selector and synchronizes concurrent access.
+
+```csharp
+var history = new BoundedTimeSeries<TemperatureReading>(
+    120, reading => reading.At);
+history.Add(new TemperatureReading(DateTimeOffset.UtcNow, 21.5));
+
+var now = DateTimeOffset.UtcNow;
+var points = history.Query(now.AddMinutes(-5), now, maximumPoints: 30);
+```
+
+Queries include both time boundaries, order retained observations by timestamp, and return independent arrays. When the selected window exceeds `maximumPoints`, the ring partitions it into chronological buckets by index. The default keeps the last actual observation in each bucket. It does not interpolate values or timestamps.
+
+Supply an aggregation function when a metric requires different treatment. For example, a rate sampled over unequal intervals needs duration weighting:
+
+```csharp
+var points = rates.Query(start, end, 30, bucket => new RateReading(
+    bucket[^1].At,
+    bucket.Sum(point => point.Value * point.Seconds)
+        / bucket.Sum(point => point.Seconds),
+    bucket.Sum(point => point.Seconds)));
+```
+
+The aggregator owns missing-value handling and timestamp selection. Keep sampled quantiles as actual observations; averaging p95 values does not calculate a new p95. Application Caching uses this ring for storage and downsampling, while its diagnostics adapter computes rates and preserves availability and quantile semantics.
+
+## Sample quantiles
+
+`SampleStatistics.NearestRank` selects an actual observation from a nonempty, ascending collection. The quantile is a fraction from zero through one: `0.95` selects p95. The method uses rank `ceil(count * quantile)`, with zero selecting the first observation. It does not sort, copy, interpolate or convert the selected value.
+
+```csharp
+var ordered = observations.OrderBy(value => value).ToArray();
+var p95 = SampleStatistics.NearestRank(ordered, 0.95);
+```
+
+The generic result preserves the observation type, including exact `long` ticks and `TimeSpan` values. Null or empty input and nonfinite or out-of-range quantiles are rejected. Callers decide how to report a window with no samples.
+
+For `[10, 20]`, nearest-rank p50 is `10`; a midpoint median is `15`. Application Caching uses nearest-rank p50/p95/p99 over its retained latency window and uses `BoundedTimeSeries<T>` without downsampling those observations. Profiling shares nearest-rank p95/p99 selection and calculates its midpoint median separately.
+
 ## Metrics
 
 The devkit metrics feature is a thin developer-friendly layer over .NET diagnostics metrics from `System.Diagnostics.Metrics`.
@@ -1690,15 +1730,15 @@ var allStatuses = Enumeration.GetAll<OrderStatus>();
 
 ### ByteSize
 
-`ByteSize` centralizes binary byte-size calculations so options and defaults do not repeat raw `1024` multiplication expressions.
+`ByteSize` centralizes binary byte-size calculations and display formatting so options, defaults, and dashboards use the same units.
 
 Use it for storage limits, cache-size thresholds, stream buffer thresholds, and memory display conversions:
 
 ```csharp
 var maxValueSize = ByteSize.Megabytes(1);
 var maxCachedBlobSize = ByteSize.Megabytes(10);
-var chunkSize = (int)ByteSize.Megabytes(4);
-var previewLimit = (int)ByteSize.Kilobytes(64);
+var chunkSize = checked((int)ByteSize.Megabytes(4));
+var previewLimit = checked((int)ByteSize.Kilobytes(64));
 ```
 
 Available unit helpers return raw byte counts:
@@ -1715,10 +1755,19 @@ Use `ByteSize.ToMegabytes(bytes)` when rendering memory or file-size values as m
 var workingSetMb = ByteSize.ToMegabytes(process.WorkingSet64);
 ```
 
+Use `ByteSize.FormatBinary(bytes)` for a display label that selects the appropriate binary unit:
+
+```csharp
+var payloadSize = ByteSize.FormatBinary(904512); // "883.31 KiB"
+var sizeChange = ByteSize.FormatBinary(-1536); // "-1.5 KiB"
+```
+
+Formatting uses invariant culture, no digit grouping, and at most two fractional digits. Midpoints round away from zero. Units range from B to EiB and use powers of 1,024. Signed values are supported for size differences. Callers choose their own label for unavailable or unknown sizes.
+
 Rules:
 
-- Units are binary: 1 KB is 1024 bytes.
-- Negative size values throw `ArgumentOutOfRangeException`.
+- Units are binary: 1 KiB is 1024 bytes.
+- Size calculation helpers reject negative values with `ArgumentOutOfRangeException`; display formatting accepts them.
 - Calculations use checked arithmetic and throw `OverflowException` when the result exceeds `long`.
 - Size options should still store raw byte counts, usually as `long` or `long?`.
 
@@ -1917,6 +1966,88 @@ var historical = await keys.GetKeyAsync("2026-01", cancellationToken);
 
 Keep old key ids available until no persisted encrypted value references them.
 
+### Resource capacity budgets
+
+`ResourceBudget` accounts finite capacity through a parent/child hierarchy. Reserve capacity before allocating a buffer or retaining a value. A rejected child reservation returns any parent charge acquired by that attempt. Capacity is returned when its reservation is disposed, rather than when a caller stops waiting.
+
+```csharp
+var process = new ResourceBudget("process", ByteSize.Megabytes(32));
+var uploads = new ResourceBudget("uploads", ByteSize.Megabytes(8), process);
+if (uploads.TryReserve(ByteSize.Kilobytes(64), out var reservation))
+{
+    using (reservation)
+    {
+        // Allocation is admitted by both the upload and process ceilings.
+        var buffer = new byte[64 * 1024];
+        await source.ReadAsync(buffer, cancellationToken);
+    }
+}
+```
+
+`ResourceReservation.TryGrow` admits additional capacity before allocation. `ReduceTo` releases capacity after the corresponding resources are released. Disposal is idempotent. `ResourceCharge.TryReserve` acquires the same amount across independent budgets and rolls back all earlier reservations if one rejects the request. Supply each independent budget once; a child already charges its ancestors.
+
+These are accounting limits on resources owned by the caller, including conservative estimates where needed. They do not impose a hard limit on the managed heap. Prefer disposable reservations over raw `TryCharge`/`Return` pairs. Raw charges must be returned to the same budget by their sole owner. Negative amounts and over-release are rejected without changing the affected counters.
+
+### Hierarchical operation admission
+
+`ResourceAdmission` limits concurrent work and queued callers through a parent/child hierarchy. A child waiting for its own capacity does not occupy an active parent slot. The shared root queue skips temporarily blocked children so another group can progress.
+
+```csharp
+var process = new ResourceAdmission("process", maximumActive: 16, maximumQueued: 64);
+var reports = new ResourceAdmission("reports", maximumActive: 4, maximumQueued: 16, parent: process);
+var result = await reports.AcquireAsync(TimeSpan.FromSeconds(5), cancellationToken);
+if (result.IsSuccess)
+{
+    using var lease = result.Value;
+    await GenerateReportAsync(cancellationToken);
+}
+```
+
+`TryAcquire` immediately returns false when active capacity is unavailable. `AcquireAsync` returns `QuotaExceededError` when a queue limit is reached and `TimeoutError` when its wait expires. Caller cancellation propagates as cancellation. A grant racing cancellation is returned before the cancelled caller exits. Release the lease only when the actual operation ends; a caller timeout does not establish that a database or native operation stopped.
+
+This is an occupied-work limit, separate from byte accounting in `ResourceBudget` and operations-per-interval limiting in `RateLimiter`. Application Caching maps the common failures to its own cache error codes. Blob upload admission keeps its FIFO limiter and uses the shared fixed deadline for its queue timeout.
+
+### Fixed and transfer deadlines
+
+`CancellationDeadline` starts one fixed deadline using a `TimeProvider`. Its `Token` is cancelled when the timer expires or `Cancel()` is called. Exceptions from cancellation callbacks reach the optional fault observer and cannot escape the timer. Disposing the deadline releases its timer and token source; it does not cancel or finish the underlying work.
+
+```csharp
+using var deadline = new CancellationDeadline(TimeSpan.FromSeconds(10), TimeProvider.System);
+using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, deadline.Token);
+await SendAsync(linked.Token);
+```
+
+`TransferDeadline` combines inactivity and absolute lifetime. Construction starts the lifetime clock; `Start()` schedules checks. Call `Progress()` after successful transfer progress to renew inactivity. Progress and delayed scheduling cannot extend the absolute lifetime. Its expiry callback runs once after cancellation is signalled, and callback failures cannot escape the timer.
+
+```csharp
+using var deadline = new TransferDeadline(
+    idleTimeout: TimeSpan.FromSeconds(30),
+    lifetime: TimeSpan.FromMinutes(5));
+deadline.Start();
+await CopyWithProgressAsync(source, destination, deadline.Progress, deadline.Token);
+```
+
+These helpers request cancellation. Keep admission, buffers and other resources charged until the operation actually terminates, including operations that ignore cancellation.
+
+### Resource lifetimes and owned tasks
+
+`ResourceLeaseContext.Begin` takes ownership of an already admitted disposable resource and makes it available to the current asynchronous flow. `Capture()` retains an independent reference. Nested scopes retain parent accounts, and the final reference disposes the original resource exactly once. Dispose scopes in reverse creation order in the same flow. A released account cannot be captured again.
+
+`OwnedTaskTracker` observes already started, already admitted tasks. `Track` captures any live ambient resource account and retains it until the task and cleanup finish. The tracker supplies a stopping token, optional fault and timeout observers, and a bounded shutdown wait.
+
+```csharp
+await using var tasks = new OwnedTaskTracker(TimeSpan.FromSeconds(5));
+if (buffers.TryReserve(ByteSize.Kilobytes(64), out var charge))
+{
+    using (ResourceLeaseContext.Begin(charge))
+    {
+        tasks.Track(UploadAsync(tasks.Stopping), "upload");
+    }
+}
+```
+
+Tracking grants no capacity and starts no work. The caller must bound task creation and hold each operation's admission until actual completion. Stopping requests cancellation; an expired shutdown wait leaves unfinished tasks tracked and their resources charged. Observer failures do not prevent resource cleanup. Application Caching supplies its logging, host lifetime and shutdown policy through a small adapter.
+
 ### <img class="bdk-doc-icon" src="assets/features/streams.svg" width="24" height="24" alt=""> <img class="bdk-doc-icon" src="assets/features/temporary-files.svg" width="24" height="24" alt=""> Stream operations and temporary files
 
 `StreamHelper` is the shared location for stream operations. Its `CopyAsync` method performs pooled asynchronous copies while optionally enforcing a maximum byte count and calculating an incremental hash. It leaves caller streams open and throws `StreamSizeLimitExceededException` before writing bytes beyond the configured limit.
@@ -1937,10 +2068,81 @@ Console.WriteLine($"{copy.Length} bytes, hash {copy.Hash}");
 
 `TemporaryFileHelper.Create(...)` returns a `TemporaryFileLease` with an asynchronous sequential stream and a unique path. Synchronous or asynchronous disposal closes the stream and unconditionally attempts to delete the file.
 
+The stream wrappers can be used independently of a storage provider:
+
+| Wrapper | Behavior and ownership |
+| --- | --- |
+| `ForwardOnlyReadStream` | Exposes reads while hiding seek and write capabilities. Its `leaveOpen` argument controls source ownership. |
+| `RangeReadStream` | Reads at most the selected length from the source's current position. It leaves the source open and does not seek to a range start. |
+| `OwnedStream` | Closes its source and releases a synchronous or asynchronous resource exactly once, including when source disposal fails. Use `await using` with asynchronous release; synchronous disposal waits for that release. |
+| `LimitedWriteStream` | Leaves its destination open, counts completed writes, and rejects writes beyond a finite byte limit with `StreamSizeLimitExceededException`. |
+| `IncrementalHashWriteStream` | Appends writes to a caller-owned `IncrementalHash`. |
+
+For a range view, position the source before creating the wrapper. This example copies only `REPORT` and leaves the source open:
+
+```csharp
+using var source = new MemoryStream("headerREPORTtail"u8.ToArray());
+source.Position = 6;
+using var range = new RangeReadStream(source, length: 6);
+using var destination = new MemoryStream();
+await range.CopyToAsync(destination, cancellationToken);
+Console.WriteLine(System.Text.Encoding.UTF8.GetString(destination.ToArray())); // REPORT
+```
+
+Use `ForwardOnlyReadStream` when a consumer must read sequentially even though the source supports seeking. Pass `leaveOpen: true` when the caller retains source ownership.
+
+```csharp
+using var sequential = new ForwardOnlyReadStream(source, leaveOpen: true);
+await ConsumeSequentiallyAsync(sequential, cancellationToken);
+```
+
+Use `OwnedStream` to tie a resource's release to the stream's lifetime. For an existing asynchronous lease, pass its `DisposeAsync` method and dispose the wrapper asynchronously:
+
+```csharp
+await using var owned = new OwnedStream(source, lease.DisposeAsync);
+await owned.CopyToAsync(destination, cancellationToken);
+```
+
+Ownership transfers to the wrapper. The caller no longer disposes the source or lease separately. For a synchronous resource such as `ResourceReservation`, pass `reservation.Dispose` instead.
+
+Use `LimitedWriteStream` when a producer writes directly into a caller-owned destination:
+
+```csharp
+using var output = new LimitedWriteStream(destination, ByteSize.Megabytes(2));
+await WriteReportAsync(output, cancellationToken);
+if (!output.CompletedSuccessfully)
+{
+    throw new InvalidDataException("The report did not complete its writes.");
+}
+```
+
+Check `CompletedSuccessfully` before disposing the write wrapper. A write, flush, or limit failure permanently rejects that attempt, even if the producer catches the exception. `Written` counts completed bytes; `HasFailed` reports a rejected attempt.
+
 ```csharp
 await using var temporary = TemporaryFileHelper.Create(prefix: "bdk-export-");
 await source.CopyToAsync(temporary.Stream, cancellationToken);
 ```
+
+#### Hash output as it is written
+
+Use `IncrementalHashWriteStream` when a producer writes to a `Stream` and you need the digest of its output. The stream appends only the bytes supplied to each write and keeps no copy of the payload. It checks the token supplied at construction on each write and also checks the per-call token on asynchronous writes. Cancellation leaves previously appended bytes in the hash.
+
+```csharp
+using System.Security.Cryptography;
+using System.Text.Json;
+using BridgingIT.DevKit.Common;
+
+using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+using (var output = new IncrementalHashWriteStream(hash, cancellationToken))
+{
+    await JsonSerializer.SerializeAsync(output, new { Station = "North", SampleCount = 42 },
+        cancellationToken: cancellationToken);
+}
+
+var fingerprint = Convert.ToHexStringLower(hash.GetHashAndReset());
+```
+
+The caller owns and finalizes the hash. Flushing or disposing the stream leaves the hash and its accumulated bytes available. For hashing an existing input, see [HashHelper](#hashhelper).
 
 ### Base64Url encoding
 
@@ -1977,6 +2179,8 @@ var restored = OpaqueContinuationTokenCodec.Deserialize<MyPayload>(token, "blob-
 Use a distinct stable purpose for each feature and keep the HMAC secret consistent across application instances that exchange continuation tokens.
 
 ### <img class="bdk-doc-icon" src="assets/features/hashing.svg" width="24" height="24" alt=""> HashHelper
+
+For producers that write to a stream, use [`IncrementalHashWriteStream`](#hash-output-as-it-is-written).
 
 `HashHelper` computes lowercase hexadecimal hashes for:
 

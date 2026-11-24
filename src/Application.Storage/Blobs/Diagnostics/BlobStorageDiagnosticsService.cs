@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -27,7 +27,10 @@ public sealed class BlobStorageDiagnosticsService(
     private readonly IReadOnlyList<BlobStoreClientRegistration> registrations = registrations?.ToArray() ?? [];
 
     /// <inheritdoc />
-    public async Task<Result<BlobStorageDiagnosticsSnapshot>> GetSnapshotAsync(CancellationToken cancellationToken = default)
+    public Task<Result<BlobStorageDiagnosticsSnapshot>> GetSnapshotAsync(CancellationToken cancellationToken = default) => this.GetSnapshotAsync(false, cancellationToken);
+
+    /// <inheritdoc />
+    public async Task<Result<BlobStorageDiagnosticsSnapshot>> GetSnapshotAsync(bool includeDimensionNameCounts, CancellationToken cancellationToken = default)
     {
         var clients = new List<BlobStorageClientDiagnostics>(this.registrations.Count);
         if (this.registrations.Count == 0)
@@ -50,6 +53,7 @@ public sealed class BlobStorageDiagnosticsService(
                 factory,
                 registration,
                 admissionCoordinator,
+                includeDimensionNameCounts,
                 cancellationToken).ConfigureAwait(false));
         }
 
@@ -66,12 +70,22 @@ public sealed class BlobStorageDiagnosticsService(
         IBlobStoreClientFactory factory,
         BlobStoreClientRegistration registration,
         IBlobUploadAdmissionCoordinator admissionCoordinator,
+        bool includeDimensionNameCounts,
         CancellationToken cancellationToken)
     {
         try
         {
             var client = factory.CreateClient(registration.Name);
             var result = await client.ExistsAsync(ProbeKey, cancellationToken).ConfigureAwait(false);
+            BlobDimensionDiagnostics dimensions = null;
+            string dimensionError = null;
+            if (registration.Capabilities?.Dimensions.SupportsDimensions == true && client is IBlobDimensionDiagnosticsProvider inspector)
+            {
+                var inspection = await inspector.GetDimensionDiagnosticsAsync(includeDimensionNameCounts, cancellationToken).ConfigureAwait(false);
+                if (inspection.IsSuccess) dimensions = inspection.Value;
+                else dimensionError = "Dimension diagnostics are unavailable.";
+            }
+
             if (result.IsSuccess || result.HasError<BlobStoreNotFoundError>())
             {
                 return Create(
@@ -79,7 +93,7 @@ public sealed class BlobStorageDiagnosticsService(
                     admissionCoordinator,
                     true,
                     "Healthy",
-                    "Probe completed.");
+                    "Probe completed.", dimensions, dimensionError);
             }
 
             return Create(
@@ -87,7 +101,7 @@ public sealed class BlobStorageDiagnosticsService(
                 admissionCoordinator,
                 false,
                 "Unhealthy",
-                CreateDetails(result));
+                CreateDetails(result), dimensions, dimensionError);
         }
         catch (OperationCanceledException)
         {
@@ -109,7 +123,9 @@ public sealed class BlobStorageDiagnosticsService(
         IBlobUploadAdmissionCoordinator admissionCoordinator,
         bool isHealthy,
         string status,
-        string details)
+        string details,
+        BlobDimensionDiagnostics dimensionDiagnostics = null,
+        string dimensionDiagnosticsError = null)
     {
         var admission = admissionCoordinator?.GetSnapshots().FirstOrDefault(snapshot =>
             string.Equals(
@@ -119,6 +135,8 @@ public sealed class BlobStorageDiagnosticsService(
 
         return new()
         {
+            DimensionDiagnostics = dimensionDiagnostics,
+            DimensionDiagnosticsError = dimensionDiagnosticsError,
             Name = registration.Name,
             ProviderName = registration.ProviderName,
             Capabilities = registration.Capabilities,

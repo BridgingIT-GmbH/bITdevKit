@@ -73,6 +73,54 @@ public sealed class BlobFileStorageExtensionsTests
         result.Value.ContentType.ShouldBe(ContentType.JSON);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task UploadFileAsync_WithChangedTarget_RejectsStaleVersionAndAcceptsCurrentVersion(bool changeMetadata)
+    {
+        // Arrange
+        var files = new InMemoryFileStorageProvider("files");
+        var sut = CreateClient();
+        var key = new BlobKey("reports", "report.txt");
+        using var original = new MemoryStream(Encoding.UTF8.GetBytes("original"));
+        var created = await sut.UploadAsync(new BlobUpload { Key = key, Content = original });
+        using var file = new MemoryStream(Encoding.UTF8.GetBytes("draft"));
+        await files.WriteFileAsync("source/report.txt", file);
+        using var newer = new MemoryStream(Encoding.UTF8.GetBytes("newer"));
+        var changed = changeMetadata
+            ? await sut.UpdatePropertiesAsync(new BlobPropertiesUpdate
+            {
+                Key = key,
+                IfMatchETag = created.Value.ETag,
+                Properties = new PropertyBag { ["owner"] = "newer" }
+            })
+            : await sut.UploadAsync(new BlobUpload { Key = key, Content = newer, IfMatchETag = created.Value.ETag });
+
+        // Act
+        var stale = await sut.UploadFileAsync(files, "source/report.txt", key,
+            new BlobFileUploadOptions { IfMatchETag = created.Value.ETag });
+        var retained = await sut.DownloadAsync(key);
+
+        // Assert
+        stale.HasError<BlobStoreConflictError>().ShouldBeTrue();
+        retained.Value.Info.ETag.ShouldBe(changed.Value.ETag);
+        retained.Value.Info.Properties.Get<string>("owner").ShouldBe(changeMetadata ? "newer" : null);
+        await using (var download = retained.Value)
+        {
+            using var reader = new StreamReader(download.Content);
+            (await reader.ReadToEndAsync()).ShouldBe(changeMetadata ? "original" : "newer");
+        }
+
+        var accepted = await sut.UploadFileAsync(files, "source/report.txt", key,
+            new BlobFileUploadOptions { IfMatchETag = changed.Value.ETag });
+        accepted.IsSuccess.ShouldBeTrue();
+        accepted.Value.ETag.ShouldNotBe(changed.Value.ETag);
+        var replaced = await sut.DownloadAsync(key);
+        await using var replacement = replaced.Value;
+        using var replacementReader = new StreamReader(replacement.Content);
+        (await replacementReader.ReadToEndAsync()).ShouldBe("draft");
+    }
+
     [Fact]
     public async Task UploadFileAsync_WithExpectedContentHash_PassesHashToBlobUpload()
     {

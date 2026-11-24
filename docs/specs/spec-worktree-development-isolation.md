@@ -1,6 +1,6 @@
 ---
 title: Worktree Development Isolation
-status: Implemented (preview)
+status: Implemented
 ---
 
 # Worktree Development Isolation

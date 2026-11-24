@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Storage.Models;
 
+using BridgingIT.DevKit.Application.Storage;
+
 /// <summary>
 /// Represents provider-neutral blob metadata returned from HTTP endpoints.
 /// </summary>
@@ -15,6 +17,9 @@ namespace BridgingIT.DevKit.Presentation.Web.Storage.Models;
 /// </example>
 public class BlobStorageBlobInfoModel
 {
+    /// <summary>Gets or sets the detached, original-name Dimensions snapshot.</summary>
+    public BlobDimensions Dimensions { get; set; } = BlobDimensions.Empty;
+
     /// <summary>
     /// Gets or sets the blob container.
     /// </summary>

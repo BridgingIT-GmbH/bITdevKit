@@ -1,0 +1,107 @@
+<Project>
+  <PropertyGroup>
+    <BdkMcpDocumentationPrefix>BridgingIT.DevKit.Cli.Documentation/</BdkMcpDocumentationPrefix>
+    <BdkMcpApiDirectory>$(MSBuildProjectDirectory)/obj/McpDocumentation/$(Configuration)/api</BdkMcpApiDirectory>
+    <BdkMcpBootstrapDirectory>$(MSBuildProjectDirectory)/obj/McpDocumentation/$(Configuration)/bootstrap</BdkMcpBootstrapDirectory>
+    <BdkGenerateMcpApiReference Condition="'$(BdkGenerateMcpApiReference)' == '' and '$(Configuration)' == 'Release'">true</BdkGenerateMcpApiReference>
+    <BdkGenerateMcpApiReference Condition="'$(BdkGenerateMcpApiReference)' == ''">false</BdkGenerateMcpApiReference>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="$(DevKitPublicDocumentationGlobs)"
+                      LogicalName="$(BdkMcpDocumentationPrefix)docs/%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(BdkGenerateMcpApiReference)' == 'true' and '$(BdkMcpApiBootstrap)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+    <_BdkMcpApiInput Include="$(MSBuildProjectDirectory)/../**/*.cs;$(MSBuildProjectDirectory)/../**/*.csproj;$(MSBuildProjectDirectory)/../**/*.props;$(MSBuildProjectDirectory)/../**/*.targets"
+                    Exclude="$(MSBuildProjectDirectory)/../**/bin/**;$(MSBuildProjectDirectory)/../**/obj/**" />
+    <_BdkMcpApiInput Include="$(MSBuildProjectDirectory)/../../Directory.Build.props;$(MSBuildProjectDirectory)/../../Directory.Build.targets;$(MSBuildProjectDirectory)/../../Directory.Packages.props;$(MSBuildProjectDirectory)/../../GlobalSuppressions.cs;$(MSBuildProjectDirectory)/../../global.json;$(MSBuildProjectDirectory)/../../.config/dotnet-tools.json;$(MSBuildProjectDirectory)/../../docs/api/ApiReference.proj;$(MSBuildProjectDirectory)/../../docs/api/filterConfig.yml;$(MSBuildProjectDirectory)/../../docs/api/scripts/build-mcp-api.ps1;$(MSBuildProjectDirectory)/../../docs/api/scripts/build-agent-index.ps1" />
+  </ItemGroup>
+
+  <Target Name="BdkGenerateEmbeddedApiReference"
+          Condition="'$(BdkGenerateMcpApiReference)' == 'true' and '$(BdkMcpApiBootstrap)' != 'true' and '$(DesignTimeBuild)' != 'true' and '$(NoBuild)' != 'true'"
+          Inputs="@(_BdkMcpApiInput)"
+          Outputs="$(BdkMcpApiDirectory)/agent-index.json">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)/../.."
+          Command="pwsh -NoProfile -File &quot;$(MSBuildProjectDirectory)/../../docs/api/scripts/build-mcp-api.ps1&quot; -Configuration &quot;$(Configuration)&quot; -OutputRoot &quot;$(BdkMcpApiDirectory)&quot; -BootstrapRoot &quot;$(BdkMcpBootstrapDirectory)&quot;" />
+  </Target>
+
+  <Target Name="BdkPrepareEmbeddedApiReference"
+          BeforeTargets="AssignTargetPaths"
+          DependsOnTargets="BdkGenerateEmbeddedApiReference"
+          Condition="'$(BdkMcpApiBootstrap)' != 'true' and '$(DesignTimeBuild)' != 'true' and '$(NoBuild)' != 'true'">
+    <PropertyGroup>
+      <_BdkMcpApiResourceRoot>$(BdkMcpApiDirectory)</_BdkMcpApiResourceRoot>
+      <_BdkMcpApiResourceRoot Condition="'$(BdkGenerateMcpApiReference)' != 'true' and !Exists('$(_BdkMcpApiResourceRoot)/agent-index.json') and Exists('$(MSBuildProjectDirectory)/obj/McpDocumentation/Release/api/agent-index.json')">$(MSBuildProjectDirectory)/obj/McpDocumentation/Release/api</_BdkMcpApiResourceRoot>
+    </PropertyGroup>
+    <Error Condition="('$(Configuration)' == 'Release' or '$(BdkGenerateMcpApiReference)' == 'true') and !Exists('$(_BdkMcpApiResourceRoot)/agent-index.json')"
+           Text="Embedded MCP API documentation is missing api/agent-index.json. Generate the API metadata before building Release or packaging." />
+    <ItemGroup>
+      <EmbeddedResource Include="$(_BdkMcpApiResourceRoot)/agent-index.json"
+                        Condition="Exists('$(_BdkMcpApiResourceRoot)/agent-index.json')"
+                        LogicalName="$(BdkMcpDocumentationPrefix)api/agent-index.json" />
+      <_BdkMcpApiDetail Include="$(_BdkMcpApiResourceRoot)/agent-symbols/*.json" />
+      <EmbeddedResource Include="@(_BdkMcpApiDetail)"
+                        LogicalName="$(BdkMcpDocumentationPrefix)api/agent-symbols/%(_BdkMcpApiDetail.Filename)%(_BdkMcpApiDetail.Extension)" />
+    </ItemGroup>
+  </Target>
+
+  <UsingTask TaskName="BdkReadEmbeddedApiIndex"
+             TaskFactory="RoslynCodeTaskFactory"
+             AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <AssemblyPath ParameterType="System.String" Required="true" />
+      <ResourceName ParameterType="System.String" Required="true" />
+      <ContainsIndex ParameterType="System.Boolean" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="$(MSBuildSDKsPath)/Microsoft.NET.Sdk/tools/net472/System.Reflection.Metadata.dll" />
+      <Reference Include="$(MSBuildSDKsPath)/Microsoft.NET.Sdk/tools/net472/System.Collections.Immutable.dll" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Reflection.Metadata" />
+      <Using Namespace="System.Reflection.PortableExecutable" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        using (var stream = File.OpenRead(AssemblyPath))
+        using (var image = new PEReader(stream))
+        {
+            var metadata = image.GetMetadataReader();
+            foreach (var handle in metadata.ManifestResources)
+            {
+                var resource = metadata.GetManifestResource(handle);
+                if (resource.Implementation.IsNil && metadata.GetString(resource.Name) == ResourceName)
+                {
+                    ContainsIndex = true;
+                    break;
+                }
+            }
+        }
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="BdkPrepareMcpPackageApiReference"
+          BeforeTargets="_WalkEachTargetPerFramework"
+          Condition="'$(BdkMcpApiBootstrap)' != 'true'">
+    <MSBuild Projects="$(MSBuildProjectFullPath)"
+             Targets="Build"
+             BuildInParallel="false"
+             Properties="BdkGenerateMcpApiReference=true"
+             Condition="'$(NoBuild)' != 'true' and '$(BdkGenerateMcpApiReference)' != 'true'" />
+  </Target>
+
+  <Target Name="BdkEnsureMcpPackageApiIndex"
+          BeforeTargets="PackToolImplementation"
+          Condition="'$(BdkMcpApiBootstrap)' != 'true'">
+    <PropertyGroup>
+      <_BdkMcpPackedAssembly>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(PublishDir)', '$(TargetFileName)'))</_BdkMcpPackedAssembly>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(_BdkMcpPackedAssembly)')"
+           Text="Embedded MCP API documentation is missing api/agent-index.json because the CLI assembly has not been built. Build the CLI with API generation enabled before packaging." />
+    <BdkReadEmbeddedApiIndex AssemblyPath="$(_BdkMcpPackedAssembly)"
+                             ResourceName="$(BdkMcpDocumentationPrefix)api/agent-index.json">
+      <Output TaskParameter="ContainsIndex" PropertyName="_BdkMcpHasEmbeddedApiIndex" />
+    </BdkReadEmbeddedApiIndex>
+    <Error Condition="'$(_BdkMcpHasEmbeddedApiIndex)' != 'true'"
+           Text="Embedded MCP API documentation is missing api/agent-index.json. Build the CLI with -p:BdkGenerateMcpApiReference=true before packaging with --no-build." />
+  </Target>
+</Project>

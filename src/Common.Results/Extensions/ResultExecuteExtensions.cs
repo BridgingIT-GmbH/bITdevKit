@@ -27,52 +27,66 @@ public static class ResultAsyncExtensions
     /// );
     /// </code>
     /// </example>
-    public static async Task<Result> ExecuteAsync(
+    public static Task<Result> ExecuteAsync(
         Func<CancellationToken, Task<Result>> operation,
         ResultExecuteOptions options = null,
-        CancellationToken cancellationToken = default)
-    {
-        options ??= ResultExecuteOptions.Default;
-        var retryCount = 0;
+        CancellationToken cancellationToken = default) =>
+        ExecuteCoreAsync(operation, static error => Result.Failure(error), options, cancellationToken);
 
-        while (true)
+    internal static async Task<TResult> ExecuteCoreAsync<TResult>(
+        Func<CancellationToken, Task<TResult>> operation,
+        Func<IResultError, TResult> failure,
+        ResultExecuteOptions options,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+        options ??= ResultExecuteOptions.Default;
+
+        for (var retryCount = 0; ; retryCount++)
         {
+            var timeout = new CancellationTokenSource();
+            var timeoutToken = timeout.Token;
+
             try
             {
-                using var timeoutCts = new CancellationTokenSource();
-                using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
-                    cancellationToken,
-                    timeoutCts.Token);
-
-                if (options.Timeout.HasValue)
+                using (timeout)
                 {
-                    timeoutCts.CancelAfter(options.Timeout.Value);
-                }
+                    using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (options.Timeout.HasValue)
+                    {
+                        timeout.CancelAfter(options.Timeout.Value);
+                    }
 
-                return await operation(linkedCts.Token);
-            }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-            {
-                return Result.Failure()
-                    .WithError(new OperationCancelledError());
+                    return await operation(linked.Token).AnyContext();
+                }
             }
             catch (OperationCanceledException)
             {
-                return Result.Failure()
-                    .WithError(new TimeoutError($"Operation timed out after {options.Timeout?.TotalSeconds} seconds."));
+                return cancellationToken.IsCancellationRequested || !timeoutToken.IsCancellationRequested
+                    ? failure(new OperationCancelledError())
+                    : failure(new TimeoutError($"Operation timed out after {options.Timeout?.TotalSeconds} seconds."));
             }
             catch (Exception ex)
             {
-                if (retryCount < options.MaxRetries &&
-                    (options.RetryableException?.Invoke(ex) ?? false))
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    retryCount++;
-                    await Task.Delay(options.RetryDelay, cancellationToken);
-                    continue;
+                    return failure(new OperationCancelledError());
                 }
 
-                return Result.Failure()
-                    .WithError(new ExceptionError(ex));
+                if (retryCount >= options.MaxRetries || !(options.RetryableException?.Invoke(ex) ?? false))
+                {
+                    return failure(Result.Settings.ExceptionErrorFactory(ex));
+                }
+            }
+
+            try
+            {
+                await Task.Delay(options.RetryDelay, cancellationToken).AnyContext();
+            }
+            catch (OperationCanceledException)
+            {
+                return failure(new OperationCancelledError());
             }
         }
     }
@@ -128,37 +142,48 @@ public static class ResultAsyncExtensions
     /// );
     /// </code>
     /// </example>
-    public static async Task<Result> ExecuteWithBackgroundAsync(
+    public static Task<Result> ExecuteWithBackgroundAsync(
         Func<CancellationToken, Task<Result>> operation,
         Func<CancellationToken, Task> backgroundWork,
         ResultExecuteOptions options = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default) =>
+        ExecuteWithBackgroundCoreAsync(
+            ct => ExecuteAsync(operation, options, ct), backgroundWork, cancellationToken);
+
+    internal static async Task<TResult> ExecuteWithBackgroundCoreAsync<TResult>(
+        Func<CancellationToken, Task<TResult>> operation,
+        Func<CancellationToken, Task> backgroundWork,
+        CancellationToken cancellationToken)
     {
-        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        ArgumentNullException.ThrowIfNull(backgroundWork);
+        using var cancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         var backgroundTask = Task.Run(async () =>
         {
             try
             {
-                await backgroundWork(cts.Token);
+                cancellation.Token.ThrowIfCancellationRequested();
+                await backgroundWork(cancellation.Token).AnyContext();
             }
             catch (OperationCanceledException)
             {
-                // Background task cancellation is expected
+                // Background cancellation does not determine the main operation's outcome.
             }
-        }, cts.Token);
+        });
 
         try
         {
-            var result = await ExecuteAsync(operation, options, cts.Token);
-            await cts.CancelAsync(); // Cancel background work when main operation completes
-            await backgroundTask; // Wait for background task to complete
-            return result;
+            return await operation(cancellation.Token).AnyContext();
         }
-        catch (Exception)
+        finally
         {
-            await cts.CancelAsync(); // Ensure background work is cancelled on error
-            await backgroundTask; // Wait for background task to complete
-            throw;
+            try
+            {
+                await cancellation.CancelAsync().AnyContext();
+            }
+            finally
+            {
+                await backgroundTask.AnyContext();
+            }
         }
     }
 }

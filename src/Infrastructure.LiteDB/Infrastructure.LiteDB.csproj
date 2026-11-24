@@ -5,7 +5,7 @@
     <AssemblyName>BridgingIT.DevKit.Infrastructure.LiteDb</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Infrastructure.LiteDb</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <IsPackable>true</IsPackable>
+    <IsPackable>false</IsPackable> <!-- Hold packaging until LiteDB v6 has a stable release. -->
   </PropertyGroup>
 
   <ItemGroup>

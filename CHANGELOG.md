@@ -2,6 +2,13 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.126] - 2026-11-24
+
+- Fixed API reference generation for `BridgingIT.DevKit.Cli` to run DocFX in batches and release memory between batches. The embedded MCP API index combines symbols from all batches.
+- Updated Azure Storage dependencies to `Azure.Storage.Blobs` 12.30.2, `Azure.Storage.Files.Shares` 12.28.1, and `Azure.Storage.Queues` 12.28.2.
+- Updated database dependencies to `Microsoft.Data.SqlClient` 7.1.2 and `Npgsql.EntityFrameworkCore.PostgreSQL` 10.0.4. Updated `SharpCompress` to 0.50.11.
+- Updated `NSwag.AspNetCore` to 14.8.0, `Microsoft.OpenApi` to 2.13.1, and `Microsoft.Extensions.Resilience` to 10.11.1. Projects continue to target .NET 10.
+
 ## [10.0.125] - 2026-11-24
 
 - Changed storage `Properties` to preserve .NET scalar types and keep application properties separate from transform metadata. Null preserves the current properties and an empty bag clears them. **Breaking change.** Custom `IBlobStoreProvider` implementations must use the new `StoredBlob*` models. The persisted blob formats and filesystem document records require newly created storage. DevKit supplies no conversion or compatibility reader for those formats.

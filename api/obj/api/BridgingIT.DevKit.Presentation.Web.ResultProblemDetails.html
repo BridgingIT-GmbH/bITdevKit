@@ -188,6 +188,40 @@ and optional validation or diagnostic information in the <code>data</code> prope
 
 
 
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultProblemDetails_ExceptionDetails_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultProblemDetails.ExceptionDetails*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultProblemDetails_ExceptionDetails" data-uid="BridgingIT.DevKit.Presentation.Web.ResultProblemDetails.ExceptionDetails">
+  ExceptionDetails
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Optional recursive diagnostics describing the exceptions that caused the failure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;exceptionDetails&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+public ProblemDetailsPayload.DiagnosticEntry[] ExceptionDetails { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html">DiagnosticEntry</a>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
 
 </article>
 

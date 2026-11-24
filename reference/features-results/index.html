@@ -9584,18 +9584,18 @@ throw <code>InvalidOperationException</code> when the instance contains the othe
 <code>UnauthorizedError</code> (401), <code>ForbiddenError</code> (403), and <code>NotFoundError</code> or
 <code>EntityNotFoundError</code> (404). This includes paged results and create or accept
 operations.</p>
-<p>Register <code>AddResultHttpProblemDetails</code> to populate the <code>correlationId</code> extension
-from each request. The mapper uses the ID established by the DevKit correlation
-middleware when available and falls back to the request trace ID.</p>
-<p><span class="bdk-feature-name" data-feature-name="results"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="results" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 16 4 4 7-8" /></g></svg></span>Result</span> responses hide exception messages and stack traces by default. To include
-full exception text in the <code>exceptionDetails</code> extension, enable it for a trusted
-development environment by name.</p>
-<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddResultHttpProblemDetails</span><span class="p">(</span>
-<span class="w">    </span><span class="n">includeExceptionDetails</span><span class="p">:</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsEnvironment</span><span class="p">(</span><span class="s">"LocalDebug"</span><span class="p">));</span>
+<p>Use DevKit's combined Problem Details setup to handle both thrown exceptions and
+failed <span class="bdk-feature-name" data-feature-name="results"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="results" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 16 4 4 7-8" /></g></svg></span>Results</span>. <code>correlationId</code> identifies the request and <code>data.errors</code> groups
+validation messages by field. <a href="../features-presentation-exception-handling/"><span class="bdk-feature-name" data-feature-name="exception-handling"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="exception-handling" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v14a10 10 0 0 0 20 0V4M1 4h6M21 4h6" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m17 4-6 11h6l-3 9 9-14h-6l2-6" /></g></svg></span>Exception</span> handling and HTTP Problem Details</a></p>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddResponseProblemDetails</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">IncludeExceptionDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">());</span>
 </code></pre></div>
-<p>This applies to the default MVC mapper and minimal API responses written through
-ASP.NET Core's Problem Details service. A typed response arm with no body has no
-Problem Details extensions.</p>
+<p>Exception messages and stacks are hidden by default. When enabled and accepted
+by a writer, <code>exceptionDetails</code> contains objects with <code>type</code>, <code>message</code>, and
+optional <code>stackTrace</code> and <code>innerExceptions</code> fields. A typed response arm that
+returns an empty body has no Problem Details extensions.</p>
+<p>Hosts that only need <span class="bdk-feature-name" data-feature-name="results"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="results" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 16 4 4 7-8" /></g></svg></span>Result</span> responses can use <code>AddResultHttpProblemDetails(bool)</code>
+with the same diagnostic format.</p>
 <h3 id="custom-error-handling">Custom error handling<a class="headerlink" href="#custom-error-handling" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Registering Handlers</strong>: Override defaults with <code>RegisterErrorHandler&lt;TError&gt;</code>.</li>

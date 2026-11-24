@@ -473131,6 +473131,1134 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.Web.EnvConsoleCommand.ExecuteAsync
   fullName: BridgingIT.DevKit.Presentation.Web.EnvConsoleCommand.ExecuteAsync
   nameWithType: EnvConsoleCommand.ExecuteAsync
+- uid: BridgingIT.DevKit.Presentation.Web.Errors
+  name: BridgingIT.DevKit.Presentation.Web.Errors
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.html
+  commentId: N:BridgingIT.DevKit.Presentation.Web.Errors
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors
+  nameWithType: BridgingIT.DevKit.Presentation.Web.Errors
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration
+  name: CombinedProblemDetailsRegistration
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration
+  nameWithType: CombinedProblemDetailsRegistration
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration.#ctor
+  name: CombinedProblemDetailsRegistration()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration.html#BridgingIT_DevKit_Presentation_Web_Errors_CombinedProblemDetailsRegistration__ctor
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration.CombinedProblemDetailsRegistration()
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration.New()
+  nameWithType: CombinedProblemDetailsRegistration.CombinedProblemDetailsRegistration()
+  nameWithType.vb: CombinedProblemDetailsRegistration.New()
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration.#ctor*
+  name: CombinedProblemDetailsRegistration
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration.html#BridgingIT_DevKit_Presentation_Web_Errors_CombinedProblemDetailsRegistration__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration.CombinedProblemDetailsRegistration
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration.New
+  nameWithType: CombinedProblemDetailsRegistration.CombinedProblemDetailsRegistration
+  nameWithType.vb: CombinedProblemDetailsRegistration.New
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions
+  name: ProblemDetailsOptions
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions
+  nameWithType: ProblemDetailsOptions
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.#ctor
+  name: ProblemDetailsOptions()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions__ctor
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ProblemDetailsOptions()
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.New()
+  nameWithType: ProblemDetailsOptions.ProblemDetailsOptions()
+  nameWithType.vb: ProblemDetailsOptions.New()
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.#ctor*
+  name: ProblemDetailsOptions
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ProblemDetailsOptions
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.New
+  nameWithType: ProblemDetailsOptions.ProblemDetailsOptions
+  nameWithType.vb: ProblemDetailsOptions.New
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.AllowedHeaderNames
+  name: AllowedHeaderNames
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_AllowedHeaderNames
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.AllowedHeaderNames
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.AllowedHeaderNames
+  nameWithType: ProblemDetailsOptions.AllowedHeaderNames
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.AllowedHeaderNames*
+  name: AllowedHeaderNames
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_AllowedHeaderNames_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.AllowedHeaderNames
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.AllowedHeaderNames
+  nameWithType: ProblemDetailsOptions.AllowedHeaderNames
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Handles(Microsoft.AspNetCore.Http.HttpContext)
+  name: Handles(HttpContext)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Handles_Microsoft_AspNetCore_Http_HttpContext_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Handles(Microsoft.AspNetCore.Http.HttpContext)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Handles(Microsoft.AspNetCore.Http.HttpContext)
+  nameWithType: ProblemDetailsOptions.Handles(HttpContext)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Handles*
+  name: Handles
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Handles_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Handles
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Handles
+  nameWithType: ProblemDetailsOptions.Handles
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.HostMappings
+  name: HostMappings
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_HostMappings
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.HostMappings
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.HostMappings
+  nameWithType: ProblemDetailsOptions.HostMappings
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.HostMappings*
+  name: HostMappings
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_HostMappings_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.HostMappings
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.HostMappings
+  nameWithType: ProblemDetailsOptions.HostMappings
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.IncludeExceptionDetails
+  name: IncludeExceptionDetails
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_IncludeExceptionDetails
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.IncludeExceptionDetails
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.IncludeExceptionDetails
+  nameWithType: ProblemDetailsOptions.IncludeExceptionDetails
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.IncludeExceptionDetails*
+  name: IncludeExceptionDetails
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_IncludeExceptionDetails_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.IncludeExceptionDetails
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.IncludeExceptionDetails
+  nameWithType: ProblemDetailsOptions.IncludeExceptionDetails
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map*
+  name: Map
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Map_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map
+  nameWithType: ProblemDetailsOptions.Map
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault*
+  name: MapDefault
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_MapDefault_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault
+  nameWithType: ProblemDetailsOptions.MapDefault
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault``1(System.Func{``0,Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Mvc.ProblemDetails},System.Func{``0,Microsoft.AspNetCore.Http.HttpContext,System.Boolean})
+  name: MapDefault<TException>(Func<TException, HttpContext, ProblemDetails>, Func<TException, HttpContext, bool>)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_MapDefault__1_System_Func___0_Microsoft_AspNetCore_Http_HttpContext_Microsoft_AspNetCore_Mvc_ProblemDetails__System_Func___0_Microsoft_AspNetCore_Http_HttpContext_System_Boolean__
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault``1(System.Func{``0,Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Mvc.ProblemDetails},System.Func{``0,Microsoft.AspNetCore.Http.HttpContext,System.Boolean})
+  name.vb: MapDefault(Of TException)(Func(Of TException, HttpContext, ProblemDetails), Func(Of TException, HttpContext, Boolean))
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault<TException>(System.Func<TException, Microsoft.AspNetCore.Http.HttpContext, Microsoft.AspNetCore.Mvc.ProblemDetails>, System.Func<TException, Microsoft.AspNetCore.Http.HttpContext, bool>)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault(Of TException)(System.Func(Of TException, Microsoft.AspNetCore.Http.HttpContext, Microsoft.AspNetCore.Mvc.ProblemDetails), System.Func(Of TException, Microsoft.AspNetCore.Http.HttpContext, Boolean))
+  nameWithType: ProblemDetailsOptions.MapDefault<TException>(Func<TException, HttpContext, ProblemDetails>, Func<TException, HttpContext, bool>)
+  nameWithType.vb: ProblemDetailsOptions.MapDefault(Of TException)(Func(Of TException, HttpContext, ProblemDetails), Func(Of TException, HttpContext, Boolean))
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault``1(System.Func{``0,Microsoft.AspNetCore.Mvc.ProblemDetails})
+  name: MapDefault<TException>(Func<TException, ProblemDetails>)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_MapDefault__1_System_Func___0_Microsoft_AspNetCore_Mvc_ProblemDetails__
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault``1(System.Func{``0,Microsoft.AspNetCore.Mvc.ProblemDetails})
+  name.vb: MapDefault(Of TException)(Func(Of TException, ProblemDetails))
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault<TException>(System.Func<TException, Microsoft.AspNetCore.Mvc.ProblemDetails>)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault(Of TException)(System.Func(Of TException, Microsoft.AspNetCore.Mvc.ProblemDetails))
+  nameWithType: ProblemDetailsOptions.MapDefault<TException>(Func<TException, ProblemDetails>)
+  nameWithType.vb: ProblemDetailsOptions.MapDefault(Of TException)(Func(Of TException, ProblemDetails))
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault``1(System.Int32,System.String,System.String)
+  name: MapDefault<TException>(int, string, string)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_MapDefault__1_System_Int32_System_String_System_String_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault``1(System.Int32,System.String,System.String)
+  name.vb: MapDefault(Of TException)(Integer, String, String)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault<TException>(int, string, string)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault(Of TException)(Integer, String, String)
+  nameWithType: ProblemDetailsOptions.MapDefault<TException>(int, string, string)
+  nameWithType.vb: ProblemDetailsOptions.MapDefault(Of TException)(Integer, String, String)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map``1(System.Func{``0,Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Mvc.ProblemDetails},System.Func{``0,Microsoft.AspNetCore.Http.HttpContext,System.Boolean})
+  name: Map<TException>(Func<TException, HttpContext, ProblemDetails>, Func<TException, HttpContext, bool>)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Map__1_System_Func___0_Microsoft_AspNetCore_Http_HttpContext_Microsoft_AspNetCore_Mvc_ProblemDetails__System_Func___0_Microsoft_AspNetCore_Http_HttpContext_System_Boolean__
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map``1(System.Func{``0,Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Mvc.ProblemDetails},System.Func{``0,Microsoft.AspNetCore.Http.HttpContext,System.Boolean})
+  name.vb: Map(Of TException)(Func(Of TException, HttpContext, ProblemDetails), Func(Of TException, HttpContext, Boolean))
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map<TException>(System.Func<TException, Microsoft.AspNetCore.Http.HttpContext, Microsoft.AspNetCore.Mvc.ProblemDetails>, System.Func<TException, Microsoft.AspNetCore.Http.HttpContext, bool>)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map(Of TException)(System.Func(Of TException, Microsoft.AspNetCore.Http.HttpContext, Microsoft.AspNetCore.Mvc.ProblemDetails), System.Func(Of TException, Microsoft.AspNetCore.Http.HttpContext, Boolean))
+  nameWithType: ProblemDetailsOptions.Map<TException>(Func<TException, HttpContext, ProblemDetails>, Func<TException, HttpContext, bool>)
+  nameWithType.vb: ProblemDetailsOptions.Map(Of TException)(Func(Of TException, HttpContext, ProblemDetails), Func(Of TException, HttpContext, Boolean))
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map``1(System.Func{``0,Microsoft.AspNetCore.Mvc.ProblemDetails})
+  name: Map<TException>(Func<TException, ProblemDetails>)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Map__1_System_Func___0_Microsoft_AspNetCore_Mvc_ProblemDetails__
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map``1(System.Func{``0,Microsoft.AspNetCore.Mvc.ProblemDetails})
+  name.vb: Map(Of TException)(Func(Of TException, ProblemDetails))
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map<TException>(System.Func<TException, Microsoft.AspNetCore.Mvc.ProblemDetails>)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map(Of TException)(System.Func(Of TException, Microsoft.AspNetCore.Mvc.ProblemDetails))
+  nameWithType: ProblemDetailsOptions.Map<TException>(Func<TException, ProblemDetails>)
+  nameWithType.vb: ProblemDetailsOptions.Map(Of TException)(Func(Of TException, ProblemDetails))
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map``1(System.Int32,System.String,System.String)
+  name: Map<TException>(int, string, string)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Map__1_System_Int32_System_String_System_String_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map``1(System.Int32,System.String,System.String)
+  name.vb: Map(Of TException)(Integer, String, String)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map<TException>(int, string, string)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map(Of TException)(Integer, String, String)
+  nameWithType: ProblemDetailsOptions.Map<TException>(int, string, string)
+  nameWithType.vb: ProblemDetailsOptions.Map(Of TException)(Integer, String, String)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ModuleMappings
+  name: ModuleMappings
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ModuleMappings
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ModuleMappings
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ModuleMappings
+  nameWithType: ProblemDetailsOptions.ModuleMappings
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ModuleMappings*
+  name: ModuleMappings
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ModuleMappings_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ModuleMappings
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ModuleMappings
+  nameWithType: ProblemDetailsOptions.ModuleMappings
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.OnBeforeWriteDetails
+  name: OnBeforeWriteDetails
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_OnBeforeWriteDetails
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.OnBeforeWriteDetails
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.OnBeforeWriteDetails
+  nameWithType: ProblemDetailsOptions.OnBeforeWriteDetails
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.OnBeforeWriteDetails*
+  name: OnBeforeWriteDetails
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_OnBeforeWriteDetails_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.OnBeforeWriteDetails
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.OnBeforeWriteDetails
+  nameWithType: ProblemDetailsOptions.OnBeforeWriteDetails
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration
+  name: ProblemDetailsOptions.Registration
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration
+  nameWithType: ProblemDetailsOptions.Registration
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.#ctor(BridgingIT.DevKit.Presentation.Web.ExceptionMapping,System.Func{System.Exception,Microsoft.AspNetCore.Http.HttpContext,System.Boolean})
+  name: Registration(ExceptionMapping, Func<Exception, HttpContext, bool>)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration__ctor_BridgingIT_DevKit_Presentation_Web_ExceptionMapping_System_Func_System_Exception_Microsoft_AspNetCore_Http_HttpContext_System_Boolean__
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.#ctor(BridgingIT.DevKit.Presentation.Web.ExceptionMapping,System.Func{System.Exception,Microsoft.AspNetCore.Http.HttpContext,System.Boolean})
+  name.vb: New(ExceptionMapping, Func(Of Exception, HttpContext, Boolean))
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Registration(BridgingIT.DevKit.Presentation.Web.ExceptionMapping, System.Func<System.Exception, Microsoft.AspNetCore.Http.HttpContext, bool>)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.New(BridgingIT.DevKit.Presentation.Web.ExceptionMapping, System.Func(Of System.Exception, Microsoft.AspNetCore.Http.HttpContext, Boolean))
+  nameWithType: ProblemDetailsOptions.Registration.Registration(ExceptionMapping, Func<Exception, HttpContext, bool>)
+  nameWithType.vb: ProblemDetailsOptions.Registration.New(ExceptionMapping, Func(Of Exception, HttpContext, Boolean))
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.#ctor*
+  name: Registration
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Registration
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.New
+  nameWithType: ProblemDetailsOptions.Registration.Registration
+  nameWithType.vb: ProblemDetailsOptions.Registration.New
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Deconstruct(BridgingIT.DevKit.Presentation.Web.ExceptionMapping@,System.Func{System.Exception,Microsoft.AspNetCore.Http.HttpContext,System.Boolean}@)
+  name: Deconstruct(out ExceptionMapping, out Func<Exception, HttpContext, bool>)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_Deconstruct_BridgingIT_DevKit_Presentation_Web_ExceptionMapping__System_Func_System_Exception_Microsoft_AspNetCore_Http_HttpContext_System_Boolean___
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Deconstruct(BridgingIT.DevKit.Presentation.Web.ExceptionMapping@,System.Func{System.Exception,Microsoft.AspNetCore.Http.HttpContext,System.Boolean}@)
+  name.vb: Deconstruct(ExceptionMapping, Func(Of Exception, HttpContext, Boolean))
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Deconstruct(out BridgingIT.DevKit.Presentation.Web.ExceptionMapping, out System.Func<System.Exception, Microsoft.AspNetCore.Http.HttpContext, bool>)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Deconstruct(BridgingIT.DevKit.Presentation.Web.ExceptionMapping, System.Func(Of System.Exception, Microsoft.AspNetCore.Http.HttpContext, Boolean))
+  nameWithType: ProblemDetailsOptions.Registration.Deconstruct(out ExceptionMapping, out Func<Exception, HttpContext, bool>)
+  nameWithType.vb: ProblemDetailsOptions.Registration.Deconstruct(ExceptionMapping, Func(Of Exception, HttpContext, Boolean))
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Deconstruct*
+  name: Deconstruct
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_Deconstruct_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Deconstruct
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Deconstruct
+  nameWithType: ProblemDetailsOptions.Registration.Deconstruct
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Equals(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration)
+  name: Equals(Registration?)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_Equals_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Equals(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration)
+  name.vb: Equals(Registration)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Equals(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration?)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Equals(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration)
+  nameWithType: ProblemDetailsOptions.Registration.Equals(ProblemDetailsOptions.Registration?)
+  nameWithType.vb: ProblemDetailsOptions.Registration.Equals(ProblemDetailsOptions.Registration)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Equals(System.Object)
+  name: Equals(object?)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_Equals_System_Object_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Equals(System.Object)
+  name.vb: Equals(Object)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Equals(object?)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Equals(Object)
+  nameWithType: ProblemDetailsOptions.Registration.Equals(object?)
+  nameWithType.vb: ProblemDetailsOptions.Registration.Equals(Object)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Equals*
+  name: Equals
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_Equals_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Equals
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Equals
+  nameWithType: ProblemDetailsOptions.Registration.Equals
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.GetHashCode
+  name: GetHashCode()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_GetHashCode
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.GetHashCode
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.GetHashCode()
+  nameWithType: ProblemDetailsOptions.Registration.GetHashCode()
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.GetHashCode*
+  name: GetHashCode
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_GetHashCode_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.GetHashCode
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.GetHashCode
+  nameWithType: ProblemDetailsOptions.Registration.GetHashCode
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Mapping
+  name: Mapping
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_Mapping
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Mapping
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Mapping
+  nameWithType: ProblemDetailsOptions.Registration.Mapping
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Mapping*
+  name: Mapping
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_Mapping_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Mapping
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.Mapping
+  nameWithType: ProblemDetailsOptions.Registration.Mapping
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.ToString
+  name: ToString()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_ToString
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.ToString
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.ToString()
+  nameWithType: ProblemDetailsOptions.Registration.ToString()
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.ToString*
+  name: ToString
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_ToString_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.ToString
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.ToString
+  nameWithType: ProblemDetailsOptions.Registration.ToString
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.When
+  name: When
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_When
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.When
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.When
+  nameWithType: ProblemDetailsOptions.Registration.When
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.When*
+  name: When
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_When_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.When
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.When
+  nameWithType: ProblemDetailsOptions.Registration.When
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.op_Equality(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration,BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration)
+  name: operator ==(Registration?, Registration?)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_op_Equality_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.op_Equality(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration,BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration)
+  name.vb: =(Registration, Registration)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.operator ==(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration?, BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration?)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.=(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration, BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration)
+  nameWithType: ProblemDetailsOptions.Registration.operator ==(ProblemDetailsOptions.Registration?, ProblemDetailsOptions.Registration?)
+  nameWithType.vb: ProblemDetailsOptions.Registration.=(ProblemDetailsOptions.Registration, ProblemDetailsOptions.Registration)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.op_Equality*
+  name: operator ==
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_op_Equality_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.op_Equality
+  name.vb: =
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.operator ==
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.=
+  nameWithType: ProblemDetailsOptions.Registration.operator ==
+  nameWithType.vb: ProblemDetailsOptions.Registration.=
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.op_Inequality(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration,BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration)
+  name: operator !=(Registration?, Registration?)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_op_Inequality_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.op_Inequality(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration,BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration)
+  name.vb: <>(Registration, Registration)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.operator !=(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration?, BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration?)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.<>(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration, BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration)
+  nameWithType: ProblemDetailsOptions.Registration.operator !=(ProblemDetailsOptions.Registration?, ProblemDetailsOptions.Registration?)
+  nameWithType.vb: ProblemDetailsOptions.Registration.<>(ProblemDetailsOptions.Registration, ProblemDetailsOptions.Registration)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.op_Inequality*
+  name: operator !=
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Registration_op_Inequality_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.op_Inequality
+  name.vb: <>
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.operator !=
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.<>
+  nameWithType: ProblemDetailsOptions.Registration.operator !=
+  nameWithType.vb: ProblemDetailsOptions.Registration.<>
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldHandleRequest
+  name: ShouldHandleRequest
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ShouldHandleRequest
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldHandleRequest
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldHandleRequest
+  nameWithType: ProblemDetailsOptions.ShouldHandleRequest
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldHandleRequest*
+  name: ShouldHandleRequest
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ShouldHandleRequest_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldHandleRequest
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldHandleRequest
+  nameWithType: ProblemDetailsOptions.ShouldHandleRequest
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogResultErrors
+  name: ShouldLogResultErrors
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ShouldLogResultErrors
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogResultErrors
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogResultErrors
+  nameWithType: ProblemDetailsOptions.ShouldLogResultErrors
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogResultErrors*
+  name: ShouldLogResultErrors
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ShouldLogResultErrors_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogResultErrors
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogResultErrors
+  nameWithType: ProblemDetailsOptions.ShouldLogResultErrors
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogUnhandledException
+  name: ShouldLogUnhandledException
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ShouldLogUnhandledException
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogUnhandledException
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogUnhandledException
+  nameWithType: ProblemDetailsOptions.ShouldLogUnhandledException
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogUnhandledException*
+  name: ShouldLogUnhandledException
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ShouldLogUnhandledException_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogUnhandledException
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogUnhandledException
+  nameWithType: ProblemDetailsOptions.ShouldLogUnhandledException
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload
+  name: ProblemDetailsPayload
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload
+  nameWithType: ProblemDetailsPayload
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.BuildDiagnostic(System.Exception)
+  name: BuildDiagnostic(Exception)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_BuildDiagnostic_System_Exception_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.BuildDiagnostic(System.Exception)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.BuildDiagnostic(System.Exception)
+  nameWithType: ProblemDetailsPayload.BuildDiagnostic(Exception)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.BuildDiagnostic*
+  name: BuildDiagnostic
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_BuildDiagnostic_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.BuildDiagnostic
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.BuildDiagnostic
+  nameWithType: ProblemDetailsPayload.BuildDiagnostic
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.ContentType
+  name: ContentType
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_ContentType
+  commentId: F:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.ContentType
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.ContentType
+  nameWithType: ProblemDetailsPayload.ContentType
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.Copy(Microsoft.AspNetCore.Mvc.ProblemDetails,System.Boolean)
+  name: Copy(ProblemDetails, bool)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_Copy_Microsoft_AspNetCore_Mvc_ProblemDetails_System_Boolean_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.Copy(Microsoft.AspNetCore.Mvc.ProblemDetails,System.Boolean)
+  name.vb: Copy(ProblemDetails, Boolean)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.Copy(Microsoft.AspNetCore.Mvc.ProblemDetails, bool)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.Copy(Microsoft.AspNetCore.Mvc.ProblemDetails, Boolean)
+  nameWithType: ProblemDetailsPayload.Copy(ProblemDetails, bool)
+  nameWithType.vb: ProblemDetailsPayload.Copy(ProblemDetails, Boolean)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.Copy*
+  name: Copy
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_Copy_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.Copy
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.Copy
+  nameWithType: ProblemDetailsPayload.Copy
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.CreateExceptionProblem(System.Exception)
+  name: CreateExceptionProblem(Exception)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_CreateExceptionProblem_System_Exception_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.CreateExceptionProblem(System.Exception)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.CreateExceptionProblem(System.Exception)
+  nameWithType: ProblemDetailsPayload.CreateExceptionProblem(Exception)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.CreateExceptionProblem*
+  name: CreateExceptionProblem
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_CreateExceptionProblem_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.CreateExceptionProblem
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.CreateExceptionProblem
+  nameWithType: ProblemDetailsPayload.CreateExceptionProblem
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry
+  name: ProblemDetailsPayload.DiagnosticEntry
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.#ctor(System.String,System.String,System.String,BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry[])
+  name: DiagnosticEntry(string, string, string, DiagnosticEntry[])
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry__ctor_System_String_System_String_System_String_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry___
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.#ctor(System.String,System.String,System.String,BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry[])
+  name.vb: New(String, String, String, DiagnosticEntry())
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.DiagnosticEntry(string, string, string, BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry[])
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.New(String, String, String, BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry())
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.DiagnosticEntry(string, string, string, ProblemDetailsPayload.DiagnosticEntry[])
+  nameWithType.vb: ProblemDetailsPayload.DiagnosticEntry.New(String, String, String, ProblemDetailsPayload.DiagnosticEntry())
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.#ctor*
+  name: DiagnosticEntry
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.DiagnosticEntry
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.New
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.DiagnosticEntry
+  nameWithType.vb: ProblemDetailsPayload.DiagnosticEntry.New
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Deconstruct(System.String@,System.String@,System.String@,BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry[]@)
+  name: Deconstruct(out string, out string, out string, out DiagnosticEntry[])
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_Deconstruct_System_String__System_String__System_String__BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry____
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Deconstruct(System.String@,System.String@,System.String@,BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry[]@)
+  name.vb: Deconstruct(String, String, String, DiagnosticEntry())
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Deconstruct(out string, out string, out string, out BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry[])
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Deconstruct(String, String, String, BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry())
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.Deconstruct(out string, out string, out string, out ProblemDetailsPayload.DiagnosticEntry[])
+  nameWithType.vb: ProblemDetailsPayload.DiagnosticEntry.Deconstruct(String, String, String, ProblemDetailsPayload.DiagnosticEntry())
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Deconstruct*
+  name: Deconstruct
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_Deconstruct_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Deconstruct
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Deconstruct
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.Deconstruct
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Equals(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry)
+  name: Equals(DiagnosticEntry?)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_Equals_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Equals(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry)
+  name.vb: Equals(DiagnosticEntry)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Equals(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry?)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Equals(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry)
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.Equals(ProblemDetailsPayload.DiagnosticEntry?)
+  nameWithType.vb: ProblemDetailsPayload.DiagnosticEntry.Equals(ProblemDetailsPayload.DiagnosticEntry)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Equals(System.Object)
+  name: Equals(object?)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_Equals_System_Object_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Equals(System.Object)
+  name.vb: Equals(Object)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Equals(object?)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Equals(Object)
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.Equals(object?)
+  nameWithType.vb: ProblemDetailsPayload.DiagnosticEntry.Equals(Object)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Equals*
+  name: Equals
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_Equals_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Equals
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Equals
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.Equals
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.GetHashCode
+  name: GetHashCode()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_GetHashCode
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.GetHashCode
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.GetHashCode()
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.GetHashCode()
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.GetHashCode*
+  name: GetHashCode
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_GetHashCode_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.GetHashCode
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.GetHashCode
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.GetHashCode
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.InnerExceptions
+  name: InnerExceptions
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_InnerExceptions
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.InnerExceptions
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.InnerExceptions
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.InnerExceptions
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.InnerExceptions*
+  name: InnerExceptions
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_InnerExceptions_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.InnerExceptions
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.InnerExceptions
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.InnerExceptions
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Message
+  name: Message
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_Message
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Message
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Message
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.Message
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Message*
+  name: Message
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_Message_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Message
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Message
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.Message
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.StackTrace
+  name: StackTrace
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_StackTrace
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.StackTrace
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.StackTrace
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.StackTrace
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.StackTrace*
+  name: StackTrace
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_StackTrace_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.StackTrace
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.StackTrace
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.StackTrace
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.ToString
+  name: ToString()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_ToString
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.ToString
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.ToString()
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.ToString()
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.ToString*
+  name: ToString
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_ToString_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.ToString
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.ToString
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.ToString
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Type
+  name: Type
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_Type
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Type
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Type
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.Type
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Type*
+  name: Type
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_Type_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Type
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.Type
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.Type
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.op_Equality(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry,BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry)
+  name: operator ==(DiagnosticEntry?, DiagnosticEntry?)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_op_Equality_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.op_Equality(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry,BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry)
+  name.vb: =(DiagnosticEntry, DiagnosticEntry)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.operator ==(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry?, BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry?)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.=(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry, BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry)
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.operator ==(ProblemDetailsPayload.DiagnosticEntry?, ProblemDetailsPayload.DiagnosticEntry?)
+  nameWithType.vb: ProblemDetailsPayload.DiagnosticEntry.=(ProblemDetailsPayload.DiagnosticEntry, ProblemDetailsPayload.DiagnosticEntry)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.op_Equality*
+  name: operator ==
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_op_Equality_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.op_Equality
+  name.vb: =
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.operator ==
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.=
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.operator ==
+  nameWithType.vb: ProblemDetailsPayload.DiagnosticEntry.=
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.op_Inequality(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry,BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry)
+  name: operator !=(DiagnosticEntry?, DiagnosticEntry?)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_op_Inequality_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.op_Inequality(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry,BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry)
+  name.vb: <>(DiagnosticEntry, DiagnosticEntry)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.operator !=(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry?, BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry?)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.<>(BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry, BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry)
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.operator !=(ProblemDetailsPayload.DiagnosticEntry?, ProblemDetailsPayload.DiagnosticEntry?)
+  nameWithType.vb: ProblemDetailsPayload.DiagnosticEntry.<>(ProblemDetailsPayload.DiagnosticEntry, ProblemDetailsPayload.DiagnosticEntry)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.op_Inequality*
+  name: operator !=
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_DiagnosticEntry_op_Inequality_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.op_Inequality
+  name.vb: <>
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.operator !=
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.<>
+  nameWithType: ProblemDetailsPayload.DiagnosticEntry.operator !=
+  nameWithType.vb: ProblemDetailsPayload.DiagnosticEntry.<>
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.GetResultCorrelation(Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Mvc.ProblemDetails)
+  name: GetResultCorrelation(HttpContext, ProblemDetails)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_GetResultCorrelation_Microsoft_AspNetCore_Http_HttpContext_Microsoft_AspNetCore_Mvc_ProblemDetails_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.GetResultCorrelation(Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Mvc.ProblemDetails)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.GetResultCorrelation(Microsoft.AspNetCore.Http.HttpContext, Microsoft.AspNetCore.Mvc.ProblemDetails)
+  nameWithType: ProblemDetailsPayload.GetResultCorrelation(HttpContext, ProblemDetails)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.GetResultCorrelation*
+  name: GetResultCorrelation
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_GetResultCorrelation_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.GetResultCorrelation
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.GetResultCorrelation
+  nameWithType: ProblemDetailsPayload.GetResultCorrelation
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.GroupValidation(System.Collections.Generic.IEnumerable{System.ValueTuple{System.String,System.String}})
+  name: GroupValidation(IEnumerable<(string Name, string Message)>)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_GroupValidation_System_Collections_Generic_IEnumerable_System_ValueTuple_System_String_System_String___
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.GroupValidation(System.Collections.Generic.IEnumerable{System.ValueTuple{System.String,System.String}})
+  name.vb: GroupValidation(IEnumerable(Of (Name As String, Message As String)))
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.GroupValidation(System.Collections.Generic.IEnumerable<(string Name, string Message)>)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.GroupValidation(System.Collections.Generic.IEnumerable(Of (Name As String, Message As String)))
+  nameWithType: ProblemDetailsPayload.GroupValidation(IEnumerable<(string Name, string Message)>)
+  nameWithType.vb: ProblemDetailsPayload.GroupValidation(IEnumerable(Of (Name As String, Message As String)))
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.GroupValidation*
+  name: GroupValidation
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_GroupValidation_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.GroupValidation
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.GroupValidation
+  nameWithType: ProblemDetailsPayload.GroupValidation
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.SetCorrelation(Microsoft.AspNetCore.Mvc.ProblemDetails,Microsoft.AspNetCore.Http.HttpContext,System.Boolean)
+  name: SetCorrelation(ProblemDetails, HttpContext, bool)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_SetCorrelation_Microsoft_AspNetCore_Mvc_ProblemDetails_Microsoft_AspNetCore_Http_HttpContext_System_Boolean_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.SetCorrelation(Microsoft.AspNetCore.Mvc.ProblemDetails,Microsoft.AspNetCore.Http.HttpContext,System.Boolean)
+  name.vb: SetCorrelation(ProblemDetails, HttpContext, Boolean)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.SetCorrelation(Microsoft.AspNetCore.Mvc.ProblemDetails, Microsoft.AspNetCore.Http.HttpContext, bool)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.SetCorrelation(Microsoft.AspNetCore.Mvc.ProblemDetails, Microsoft.AspNetCore.Http.HttpContext, Boolean)
+  nameWithType: ProblemDetailsPayload.SetCorrelation(ProblemDetails, HttpContext, bool)
+  nameWithType.vb: ProblemDetailsPayload.SetCorrelation(ProblemDetails, HttpContext, Boolean)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.SetCorrelation*
+  name: SetCorrelation
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_SetCorrelation_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.SetCorrelation
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.SetCorrelation
+  nameWithType: ProblemDetailsPayload.SetCorrelation
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.SetTrace(Microsoft.AspNetCore.Mvc.ProblemDetails,Microsoft.AspNetCore.Http.HttpContext,System.String)
+  name: SetTrace(ProblemDetails, HttpContext, string)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_SetTrace_Microsoft_AspNetCore_Mvc_ProblemDetails_Microsoft_AspNetCore_Http_HttpContext_System_String_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.SetTrace(Microsoft.AspNetCore.Mvc.ProblemDetails,Microsoft.AspNetCore.Http.HttpContext,System.String)
+  name.vb: SetTrace(ProblemDetails, HttpContext, String)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.SetTrace(Microsoft.AspNetCore.Mvc.ProblemDetails, Microsoft.AspNetCore.Http.HttpContext, string)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.SetTrace(Microsoft.AspNetCore.Mvc.ProblemDetails, Microsoft.AspNetCore.Http.HttpContext, String)
+  nameWithType: ProblemDetailsPayload.SetTrace(ProblemDetails, HttpContext, string)
+  nameWithType.vb: ProblemDetailsPayload.SetTrace(ProblemDetails, HttpContext, String)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.SetTrace*
+  name: SetTrace
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_SetTrace_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.SetTrace
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.SetTrace
+  nameWithType: ProblemDetailsPayload.SetTrace
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.StatusType(System.Int32)
+  name: StatusType(int)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_StatusType_System_Int32_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.StatusType(System.Int32)
+  name.vb: StatusType(Integer)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.StatusType(int)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.StatusType(Integer)
+  nameWithType: ProblemDetailsPayload.StatusType(int)
+  nameWithType.vb: ProblemDetailsPayload.StatusType(Integer)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.StatusType*
+  name: StatusType
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_StatusType_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.StatusType
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.StatusType
+  nameWithType: ProblemDetailsPayload.StatusType
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.UnexpectedDetail
+  name: UnexpectedDetail
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_UnexpectedDetail
+  commentId: F:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.UnexpectedDetail
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.UnexpectedDetail
+  nameWithType: ProblemDetailsPayload.UnexpectedDetail
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.ValidationDetail
+  name: ValidationDetail
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsPayload_ValidationDetail
+  commentId: F:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.ValidationDetail
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.ValidationDetail
+  nameWithType: ProblemDetailsPayload.ValidationDetail
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler
+  name: ResponseProblemDetailsExceptionHandler
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler
+  nameWithType: ResponseProblemDetailsExceptionHandler
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.#ctor(Microsoft.Extensions.Options.IOptions{BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions},Microsoft.AspNetCore.Http.IProblemDetailsService,Microsoft.Extensions.Logging.ILogger{BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler})
+  name: ResponseProblemDetailsExceptionHandler(IOptions<ProblemDetailsOptions>, IProblemDetailsService, ILogger<ResponseProblemDetailsExceptionHandler>)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler__ctor_Microsoft_Extensions_Options_IOptions_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions__Microsoft_AspNetCore_Http_IProblemDetailsService_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler__
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.#ctor(Microsoft.Extensions.Options.IOptions{BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions},Microsoft.AspNetCore.Http.IProblemDetailsService,Microsoft.Extensions.Logging.ILogger{BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler})
+  name.vb: New(IOptions(Of ProblemDetailsOptions), IProblemDetailsService, ILogger(Of ResponseProblemDetailsExceptionHandler))
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.ResponseProblemDetailsExceptionHandler(Microsoft.Extensions.Options.IOptions<BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions>, Microsoft.AspNetCore.Http.IProblemDetailsService, Microsoft.Extensions.Logging.ILogger<BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler>)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.New(Microsoft.Extensions.Options.IOptions(Of BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions), Microsoft.AspNetCore.Http.IProblemDetailsService, Microsoft.Extensions.Logging.ILogger(Of BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler))
+  nameWithType: ResponseProblemDetailsExceptionHandler.ResponseProblemDetailsExceptionHandler(IOptions<ProblemDetailsOptions>, IProblemDetailsService, ILogger<ResponseProblemDetailsExceptionHandler>)
+  nameWithType.vb: ResponseProblemDetailsExceptionHandler.New(IOptions(Of ProblemDetailsOptions), IProblemDetailsService, ILogger(Of ResponseProblemDetailsExceptionHandler))
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.#ctor*
+  name: ResponseProblemDetailsExceptionHandler
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.ResponseProblemDetailsExceptionHandler
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.New
+  nameWithType: ResponseProblemDetailsExceptionHandler.ResponseProblemDetailsExceptionHandler
+  nameWithType.vb: ResponseProblemDetailsExceptionHandler.New
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException
+  name: ResponseProblemDetailsExceptionHandler.DeclinedException
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.#ctor(System.Exception)
+  name: DeclinedException(Exception)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException__ctor_System_Exception_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.#ctor(System.Exception)
+  name.vb: New(Exception)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.DeclinedException(System.Exception)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.New(System.Exception)
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.DeclinedException(Exception)
+  nameWithType.vb: ResponseProblemDetailsExceptionHandler.DeclinedException.New(Exception)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.#ctor*
+  name: DeclinedException
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.DeclinedException
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.New
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.DeclinedException
+  nameWithType.vb: ResponseProblemDetailsExceptionHandler.DeclinedException.New
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Deconstruct(System.Exception@)
+  name: Deconstruct(out Exception)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_Deconstruct_System_Exception__
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Deconstruct(System.Exception@)
+  name.vb: Deconstruct(Exception)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Deconstruct(out System.Exception)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Deconstruct(System.Exception)
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.Deconstruct(out Exception)
+  nameWithType.vb: ResponseProblemDetailsExceptionHandler.DeclinedException.Deconstruct(Exception)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Deconstruct*
+  name: Deconstruct
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_Deconstruct_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Deconstruct
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Deconstruct
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.Deconstruct
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Equals(BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException)
+  name: Equals(DeclinedException?)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_Equals_BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Equals(BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException)
+  name.vb: Equals(DeclinedException)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Equals(BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException?)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Equals(BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException)
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.Equals(ResponseProblemDetailsExceptionHandler.DeclinedException?)
+  nameWithType.vb: ResponseProblemDetailsExceptionHandler.DeclinedException.Equals(ResponseProblemDetailsExceptionHandler.DeclinedException)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Equals(System.Object)
+  name: Equals(object?)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_Equals_System_Object_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Equals(System.Object)
+  name.vb: Equals(Object)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Equals(object?)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Equals(Object)
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.Equals(object?)
+  nameWithType.vb: ResponseProblemDetailsExceptionHandler.DeclinedException.Equals(Object)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Equals*
+  name: Equals
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_Equals_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Equals
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Equals
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.Equals
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Exception
+  name: Exception
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_Exception
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Exception
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Exception
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.Exception
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Exception*
+  name: Exception
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_Exception_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Exception
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.Exception
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.Exception
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.GetHashCode
+  name: GetHashCode()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_GetHashCode
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.GetHashCode
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.GetHashCode()
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.GetHashCode()
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.GetHashCode*
+  name: GetHashCode
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_GetHashCode_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.GetHashCode
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.GetHashCode
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.GetHashCode
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.ToString
+  name: ToString()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_ToString
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.ToString
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.ToString()
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.ToString()
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.ToString*
+  name: ToString
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_ToString_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.ToString
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.ToString
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.ToString
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.op_Equality(BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException,BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException)
+  name: operator ==(DeclinedException?, DeclinedException?)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_op_Equality_BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.op_Equality(BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException,BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException)
+  name.vb: =(DeclinedException, DeclinedException)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.operator ==(BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException?, BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException?)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.=(BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException, BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException)
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.operator ==(ResponseProblemDetailsExceptionHandler.DeclinedException?, ResponseProblemDetailsExceptionHandler.DeclinedException?)
+  nameWithType.vb: ResponseProblemDetailsExceptionHandler.DeclinedException.=(ResponseProblemDetailsExceptionHandler.DeclinedException, ResponseProblemDetailsExceptionHandler.DeclinedException)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.op_Equality*
+  name: operator ==
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_op_Equality_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.op_Equality
+  name.vb: =
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.operator ==
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.=
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.operator ==
+  nameWithType.vb: ResponseProblemDetailsExceptionHandler.DeclinedException.=
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.op_Inequality(BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException,BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException)
+  name: operator !=(DeclinedException?, DeclinedException?)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_op_Inequality_BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.op_Inequality(BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException,BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException)
+  name.vb: <>(DeclinedException, DeclinedException)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.operator !=(BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException?, BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException?)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.<>(BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException, BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException)
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.operator !=(ResponseProblemDetailsExceptionHandler.DeclinedException?, ResponseProblemDetailsExceptionHandler.DeclinedException?)
+  nameWithType.vb: ResponseProblemDetailsExceptionHandler.DeclinedException.<>(ResponseProblemDetailsExceptionHandler.DeclinedException, ResponseProblemDetailsExceptionHandler.DeclinedException)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.op_Inequality*
+  name: operator !=
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_DeclinedException_op_Inequality_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.op_Inequality
+  name.vb: <>
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.operator !=
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.<>
+  nameWithType: ResponseProblemDetailsExceptionHandler.DeclinedException.operator !=
+  nameWithType.vb: ResponseProblemDetailsExceptionHandler.DeclinedException.<>
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.LogHandledException(Microsoft.Extensions.Logging.ILogger,BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions,System.Exception,System.Int32)
+  name: LogHandledException(ILogger, ProblemDetailsOptions, Exception, int)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_LogHandledException_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_System_Exception_System_Int32_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.LogHandledException(Microsoft.Extensions.Logging.ILogger,BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions,System.Exception,System.Int32)
+  name.vb: LogHandledException(ILogger, ProblemDetailsOptions, Exception, Integer)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.LogHandledException(Microsoft.Extensions.Logging.ILogger, BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions, System.Exception, int)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.LogHandledException(Microsoft.Extensions.Logging.ILogger, BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions, System.Exception, Integer)
+  nameWithType: ResponseProblemDetailsExceptionHandler.LogHandledException(ILogger, ProblemDetailsOptions, Exception, int)
+  nameWithType.vb: ResponseProblemDetailsExceptionHandler.LogHandledException(ILogger, ProblemDetailsOptions, Exception, Integer)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.LogHandledException*
+  name: LogHandledException
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_LogHandledException_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.LogHandledException
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.LogHandledException
+  nameWithType: ResponseProblemDetailsExceptionHandler.LogHandledException
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.TryHandleAsync(Microsoft.AspNetCore.Http.HttpContext,System.Exception,System.Threading.CancellationToken)
+  name: TryHandleAsync(HttpContext, Exception, CancellationToken)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_TryHandleAsync_Microsoft_AspNetCore_Http_HttpContext_System_Exception_System_Threading_CancellationToken_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.TryHandleAsync(Microsoft.AspNetCore.Http.HttpContext,System.Exception,System.Threading.CancellationToken)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.TryHandleAsync(Microsoft.AspNetCore.Http.HttpContext, System.Exception, System.Threading.CancellationToken)
+  nameWithType: ResponseProblemDetailsExceptionHandler.TryHandleAsync(HttpContext, Exception, CancellationToken)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.TryHandleAsync*
+  name: TryHandleAsync
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsExceptionHandler_TryHandleAsync_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.TryHandleAsync
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.TryHandleAsync
+  nameWithType: ResponseProblemDetailsExceptionHandler.TryHandleAsync
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot
+  name: ResponseProblemDetailsHeaderSnapshot
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot
+  nameWithType: ResponseProblemDetailsHeaderSnapshot
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.#ctor(Microsoft.Extensions.Options.IOptions{BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions})
+  name: ResponseProblemDetailsHeaderSnapshot(IOptions<ProblemDetailsOptions>)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsHeaderSnapshot__ctor_Microsoft_Extensions_Options_IOptions_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions__
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.#ctor(Microsoft.Extensions.Options.IOptions{BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions})
+  name.vb: New(IOptions(Of ProblemDetailsOptions))
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.ResponseProblemDetailsHeaderSnapshot(Microsoft.Extensions.Options.IOptions<BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions>)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.New(Microsoft.Extensions.Options.IOptions(Of BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions))
+  nameWithType: ResponseProblemDetailsHeaderSnapshot.ResponseProblemDetailsHeaderSnapshot(IOptions<ProblemDetailsOptions>)
+  nameWithType.vb: ResponseProblemDetailsHeaderSnapshot.New(IOptions(Of ProblemDetailsOptions))
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.#ctor*
+  name: ResponseProblemDetailsHeaderSnapshot
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsHeaderSnapshot__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.ResponseProblemDetailsHeaderSnapshot
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.New
+  nameWithType: ResponseProblemDetailsHeaderSnapshot.ResponseProblemDetailsHeaderSnapshot
+  nameWithType.vb: ResponseProblemDetailsHeaderSnapshot.New
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Configure(System.Action{Microsoft.AspNetCore.Builder.IApplicationBuilder})
+  name: Configure(Action<IApplicationBuilder>)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsHeaderSnapshot_Configure_System_Action_Microsoft_AspNetCore_Builder_IApplicationBuilder__
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Configure(System.Action{Microsoft.AspNetCore.Builder.IApplicationBuilder})
+  name.vb: Configure(Action(Of IApplicationBuilder))
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Configure(System.Action<Microsoft.AspNetCore.Builder.IApplicationBuilder>)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Configure(System.Action(Of Microsoft.AspNetCore.Builder.IApplicationBuilder))
+  nameWithType: ResponseProblemDetailsHeaderSnapshot.Configure(Action<IApplicationBuilder>)
+  nameWithType.vb: ResponseProblemDetailsHeaderSnapshot.Configure(Action(Of IApplicationBuilder))
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Configure*
+  name: Configure
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsHeaderSnapshot_Configure_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Configure
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Configure
+  nameWithType: ResponseProblemDetailsHeaderSnapshot.Configure
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Restore(Microsoft.AspNetCore.Http.HttpContext)
+  name: Restore(HttpContext)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsHeaderSnapshot_Restore_Microsoft_AspNetCore_Http_HttpContext_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Restore(Microsoft.AspNetCore.Http.HttpContext)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Restore(Microsoft.AspNetCore.Http.HttpContext)
+  nameWithType: ResponseProblemDetailsHeaderSnapshot.Restore(HttpContext)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Restore*
+  name: Restore
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsHeaderSnapshot_Restore_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Restore
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Restore
+  nameWithType: ResponseProblemDetailsHeaderSnapshot.Restore
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService
+  name: ResponseProblemDetailsService
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService
+  nameWithType: ResponseProblemDetailsService
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.#ctor(System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Http.IProblemDetailsWriter},Microsoft.Extensions.Options.IOptions{Microsoft.AspNetCore.Http.ProblemDetailsOptions},Microsoft.Extensions.Options.IOptions{Microsoft.AspNetCore.Http.Json.JsonOptions},Microsoft.Extensions.Options.IOptions{BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions},Microsoft.Extensions.Logging.ILogger{BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService})
+  name: ResponseProblemDetailsService(IEnumerable<IProblemDetailsWriter>, IOptions<ProblemDetailsOptions>, IOptions<JsonOptions>, IOptions<ProblemDetailsOptions>, ILogger<ResponseProblemDetailsService>)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService__ctor_System_Collections_Generic_IEnumerable_Microsoft_AspNetCore_Http_IProblemDetailsWriter__Microsoft_Extensions_Options_IOptions_Microsoft_AspNetCore_Http_ProblemDetailsOptions__Microsoft_Extensions_Options_IOptions_Microsoft_AspNetCore_Http_Json_JsonOptions__Microsoft_Extensions_Options_IOptions_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions__Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService__
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.#ctor(System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Http.IProblemDetailsWriter},Microsoft.Extensions.Options.IOptions{Microsoft.AspNetCore.Http.ProblemDetailsOptions},Microsoft.Extensions.Options.IOptions{Microsoft.AspNetCore.Http.Json.JsonOptions},Microsoft.Extensions.Options.IOptions{BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions},Microsoft.Extensions.Logging.ILogger{BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService})
+  name.vb: New(IEnumerable(Of IProblemDetailsWriter), IOptions(Of ProblemDetailsOptions), IOptions(Of JsonOptions), IOptions(Of ProblemDetailsOptions), ILogger(Of ResponseProblemDetailsService))
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.ResponseProblemDetailsService(System.Collections.Generic.IEnumerable<Microsoft.AspNetCore.Http.IProblemDetailsWriter>, Microsoft.Extensions.Options.IOptions<Microsoft.AspNetCore.Http.ProblemDetailsOptions>, Microsoft.Extensions.Options.IOptions<Microsoft.AspNetCore.Http.Json.JsonOptions>, Microsoft.Extensions.Options.IOptions<BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions>, Microsoft.Extensions.Logging.ILogger<BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService>)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.New(System.Collections.Generic.IEnumerable(Of Microsoft.AspNetCore.Http.IProblemDetailsWriter), Microsoft.Extensions.Options.IOptions(Of Microsoft.AspNetCore.Http.ProblemDetailsOptions), Microsoft.Extensions.Options.IOptions(Of Microsoft.AspNetCore.Http.Json.JsonOptions), Microsoft.Extensions.Options.IOptions(Of BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions), Microsoft.Extensions.Logging.ILogger(Of BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService))
+  nameWithType: ResponseProblemDetailsService.ResponseProblemDetailsService(IEnumerable<IProblemDetailsWriter>, IOptions<ProblemDetailsOptions>, IOptions<JsonOptions>, IOptions<ProblemDetailsOptions>, ILogger<ResponseProblemDetailsService>)
+  nameWithType.vb: ResponseProblemDetailsService.New(IEnumerable(Of IProblemDetailsWriter), IOptions(Of ProblemDetailsOptions), IOptions(Of JsonOptions), IOptions(Of ProblemDetailsOptions), ILogger(Of ResponseProblemDetailsService))
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.#ctor*
+  name: ResponseProblemDetailsService
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.ResponseProblemDetailsService
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.New
+  nameWithType: ResponseProblemDetailsService.ResponseProblemDetailsService
+  nameWithType.vb: ResponseProblemDetailsService.New
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.HasFailedWrite(Microsoft.AspNetCore.Http.HttpContext)
+  name: HasFailedWrite(HttpContext)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_HasFailedWrite_Microsoft_AspNetCore_Http_HttpContext_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.HasFailedWrite(Microsoft.AspNetCore.Http.HttpContext)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.HasFailedWrite(Microsoft.AspNetCore.Http.HttpContext)
+  nameWithType: ResponseProblemDetailsService.HasFailedWrite(HttpContext)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.HasFailedWrite*
+  name: HasFailedWrite
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_HasFailedWrite_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.HasFailedWrite
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.HasFailedWrite
+  nameWithType: ResponseProblemDetailsService.HasFailedWrite
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.LogCustomResult(Microsoft.AspNetCore.Http.HttpContext,BridgingIT.DevKit.Common.Result)
+  name: LogCustomResult(HttpContext, Result)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_LogCustomResult_Microsoft_AspNetCore_Http_HttpContext_BridgingIT_DevKit_Common_Result_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.LogCustomResult(Microsoft.AspNetCore.Http.HttpContext,BridgingIT.DevKit.Common.Result)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.LogCustomResult(Microsoft.AspNetCore.Http.HttpContext, BridgingIT.DevKit.Common.Result)
+  nameWithType: ResponseProblemDetailsService.LogCustomResult(HttpContext, Result)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.LogCustomResult*
+  name: LogCustomResult
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_LogCustomResult_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.LogCustomResult
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.LogCustomResult
+  nameWithType: ResponseProblemDetailsService.LogCustomResult
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation
+  name: ResponseProblemDetailsService.Preparation
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation
+  nameWithType: ResponseProblemDetailsService.Preparation
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.#ctor(System.Collections.Generic.IEnumerable{Microsoft.Extensions.Options.IConfigureOptions{Microsoft.AspNetCore.Http.ProblemDetailsOptions}},System.Collections.Generic.IEnumerable{Microsoft.Extensions.Options.IPostConfigureOptions{Microsoft.AspNetCore.Http.ProblemDetailsOptions}},System.Collections.Generic.IEnumerable{Microsoft.Extensions.Options.IValidateOptions{Microsoft.AspNetCore.Http.ProblemDetailsOptions}})
+  name: Preparation(IEnumerable<IConfigureOptions<ProblemDetailsOptions>>, IEnumerable<IPostConfigureOptions<ProblemDetailsOptions>>, IEnumerable<IValidateOptions<ProblemDetailsOptions>>)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_Preparation__ctor_System_Collections_Generic_IEnumerable_Microsoft_Extensions_Options_IConfigureOptions_Microsoft_AspNetCore_Http_ProblemDetailsOptions___System_Collections_Generic_IEnumerable_Microsoft_Extensions_Options_IPostConfigureOptions_Microsoft_AspNetCore_Http_ProblemDetailsOptions___System_Collections_Generic_IEnumerable_Microsoft_Extensions_Options_IValidateOptions_Microsoft_AspNetCore_Http_ProblemDetailsOptions___
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.#ctor(System.Collections.Generic.IEnumerable{Microsoft.Extensions.Options.IConfigureOptions{Microsoft.AspNetCore.Http.ProblemDetailsOptions}},System.Collections.Generic.IEnumerable{Microsoft.Extensions.Options.IPostConfigureOptions{Microsoft.AspNetCore.Http.ProblemDetailsOptions}},System.Collections.Generic.IEnumerable{Microsoft.Extensions.Options.IValidateOptions{Microsoft.AspNetCore.Http.ProblemDetailsOptions}})
+  name.vb: New(IEnumerable(Of IConfigureOptions(Of ProblemDetailsOptions)), IEnumerable(Of IPostConfigureOptions(Of ProblemDetailsOptions)), IEnumerable(Of IValidateOptions(Of ProblemDetailsOptions)))
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Preparation(System.Collections.Generic.IEnumerable<Microsoft.Extensions.Options.IConfigureOptions<Microsoft.AspNetCore.Http.ProblemDetailsOptions>>, System.Collections.Generic.IEnumerable<Microsoft.Extensions.Options.IPostConfigureOptions<Microsoft.AspNetCore.Http.ProblemDetailsOptions>>, System.Collections.Generic.IEnumerable<Microsoft.Extensions.Options.IValidateOptions<Microsoft.AspNetCore.Http.ProblemDetailsOptions>>)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.New(System.Collections.Generic.IEnumerable(Of Microsoft.Extensions.Options.IConfigureOptions(Of Microsoft.AspNetCore.Http.ProblemDetailsOptions)), System.Collections.Generic.IEnumerable(Of Microsoft.Extensions.Options.IPostConfigureOptions(Of Microsoft.AspNetCore.Http.ProblemDetailsOptions)), System.Collections.Generic.IEnumerable(Of Microsoft.Extensions.Options.IValidateOptions(Of Microsoft.AspNetCore.Http.ProblemDetailsOptions)))
+  nameWithType: ResponseProblemDetailsService.Preparation.Preparation(IEnumerable<IConfigureOptions<ProblemDetailsOptions>>, IEnumerable<IPostConfigureOptions<ProblemDetailsOptions>>, IEnumerable<IValidateOptions<ProblemDetailsOptions>>)
+  nameWithType.vb: ResponseProblemDetailsService.Preparation.New(IEnumerable(Of IConfigureOptions(Of ProblemDetailsOptions)), IEnumerable(Of IPostConfigureOptions(Of ProblemDetailsOptions)), IEnumerable(Of IValidateOptions(Of ProblemDetailsOptions)))
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.#ctor*
+  name: Preparation
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_Preparation__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Preparation
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.New
+  nameWithType: ResponseProblemDetailsService.Preparation.Preparation
+  nameWithType.vb: ResponseProblemDetailsService.Preparation.New
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Applies(Microsoft.AspNetCore.Http.ProblemDetailsContext)
+  name: Applies(ProblemDetailsContext)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_Preparation_Applies_Microsoft_AspNetCore_Http_ProblemDetailsContext_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Applies(Microsoft.AspNetCore.Http.ProblemDetailsContext)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Applies(Microsoft.AspNetCore.Http.ProblemDetailsContext)
+  nameWithType: ResponseProblemDetailsService.Preparation.Applies(ProblemDetailsContext)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Applies*
+  name: Applies
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_Preparation_Applies_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Applies
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Applies
+  nameWithType: ResponseProblemDetailsService.Preparation.Applies
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Create(System.String)
+  name: Create(string)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_Preparation_Create_System_String_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Create(System.String)
+  name.vb: Create(String)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Create(string)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Create(String)
+  nameWithType: ResponseProblemDetailsService.Preparation.Create(string)
+  nameWithType.vb: ResponseProblemDetailsService.Preparation.Create(String)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Create*
+  name: Create
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_Preparation_Create_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Create
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.Create
+  nameWithType: ResponseProblemDetailsService.Preparation.Create
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.TrackResult(Microsoft.AspNetCore.Mvc.ProblemDetails,BridgingIT.DevKit.Common.Result,Microsoft.Extensions.Logging.ILogger)
+  name: TrackResult(ProblemDetails, Result, ILogger)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_TrackResult_Microsoft_AspNetCore_Mvc_ProblemDetails_BridgingIT_DevKit_Common_Result_Microsoft_Extensions_Logging_ILogger_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.TrackResult(Microsoft.AspNetCore.Mvc.ProblemDetails,BridgingIT.DevKit.Common.Result,Microsoft.Extensions.Logging.ILogger)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.TrackResult(Microsoft.AspNetCore.Mvc.ProblemDetails, BridgingIT.DevKit.Common.Result, Microsoft.Extensions.Logging.ILogger)
+  nameWithType: ResponseProblemDetailsService.TrackResult(ProblemDetails, Result, ILogger)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.TrackResult*
+  name: TrackResult
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_TrackResult_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.TrackResult
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.TrackResult
+  nameWithType: ResponseProblemDetailsService.TrackResult
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.TryWriteAsync(Microsoft.AspNetCore.Http.ProblemDetailsContext)
+  name: TryWriteAsync(ProblemDetailsContext)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_TryWriteAsync_Microsoft_AspNetCore_Http_ProblemDetailsContext_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.TryWriteAsync(Microsoft.AspNetCore.Http.ProblemDetailsContext)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.TryWriteAsync(Microsoft.AspNetCore.Http.ProblemDetailsContext)
+  nameWithType: ResponseProblemDetailsService.TryWriteAsync(ProblemDetailsContext)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.TryWriteAsync*
+  name: TryWriteAsync
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_TryWriteAsync_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.TryWriteAsync
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.TryWriteAsync
+  nameWithType: ResponseProblemDetailsService.TryWriteAsync
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.WriteAsync(Microsoft.AspNetCore.Http.ProblemDetailsContext)
+  name: WriteAsync(ProblemDetailsContext)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_WriteAsync_Microsoft_AspNetCore_Http_ProblemDetailsContext_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.WriteAsync(Microsoft.AspNetCore.Http.ProblemDetailsContext)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.WriteAsync(Microsoft.AspNetCore.Http.ProblemDetailsContext)
+  nameWithType: ResponseProblemDetailsService.WriteAsync(ProblemDetailsContext)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.WriteAsync*
+  name: WriteAsync
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsService_WriteAsync_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.WriteAsync
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.WriteAsync
+  nameWithType: ResponseProblemDetailsService.WriteAsync
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler
+  name: ResponseProblemDetailsStatusCodeHandler
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler
+  nameWithType: ResponseProblemDetailsStatusCodeHandler
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.#ctor
+  name: ResponseProblemDetailsStatusCodeHandler()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsStatusCodeHandler__ctor
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.ResponseProblemDetailsStatusCodeHandler()
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.New()
+  nameWithType: ResponseProblemDetailsStatusCodeHandler.ResponseProblemDetailsStatusCodeHandler()
+  nameWithType.vb: ResponseProblemDetailsStatusCodeHandler.New()
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.#ctor*
+  name: ResponseProblemDetailsStatusCodeHandler
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsStatusCodeHandler__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.ResponseProblemDetailsStatusCodeHandler
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.New
+  nameWithType: ResponseProblemDetailsStatusCodeHandler.ResponseProblemDetailsStatusCodeHandler
+  nameWithType.vb: ResponseProblemDetailsStatusCodeHandler.New
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.PostConfigure(System.String,Microsoft.AspNetCore.Builder.StatusCodePagesOptions)
+  name: PostConfigure(string, StatusCodePagesOptions)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsStatusCodeHandler_PostConfigure_System_String_Microsoft_AspNetCore_Builder_StatusCodePagesOptions_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.PostConfigure(System.String,Microsoft.AspNetCore.Builder.StatusCodePagesOptions)
+  name.vb: PostConfigure(String, StatusCodePagesOptions)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.PostConfigure(string, Microsoft.AspNetCore.Builder.StatusCodePagesOptions)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.PostConfigure(String, Microsoft.AspNetCore.Builder.StatusCodePagesOptions)
+  nameWithType: ResponseProblemDetailsStatusCodeHandler.PostConfigure(string, StatusCodePagesOptions)
+  nameWithType.vb: ResponseProblemDetailsStatusCodeHandler.PostConfigure(String, StatusCodePagesOptions)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.PostConfigure*
+  name: PostConfigure
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsStatusCodeHandler_PostConfigure_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.PostConfigure
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.PostConfigure
+  nameWithType: ResponseProblemDetailsStatusCodeHandler.PostConfigure
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.WriteFallbackAsync(Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Mvc.ProblemDetails,System.Threading.CancellationToken)
+  name: WriteFallbackAsync(HttpContext, ProblemDetails, CancellationToken)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsStatusCodeHandler_WriteFallbackAsync_Microsoft_AspNetCore_Http_HttpContext_Microsoft_AspNetCore_Mvc_ProblemDetails_System_Threading_CancellationToken_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.WriteFallbackAsync(Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Mvc.ProblemDetails,System.Threading.CancellationToken)
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.WriteFallbackAsync(Microsoft.AspNetCore.Http.HttpContext, Microsoft.AspNetCore.Mvc.ProblemDetails, System.Threading.CancellationToken)
+  nameWithType: ResponseProblemDetailsStatusCodeHandler.WriteFallbackAsync(HttpContext, ProblemDetails, CancellationToken)
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.WriteFallbackAsync*
+  name: WriteFallbackAsync
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsStatusCodeHandler_WriteFallbackAsync_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.WriteFallbackAsync
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.WriteFallbackAsync
+  nameWithType: ResponseProblemDetailsStatusCodeHandler.WriteFallbackAsync
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration
+  name: StandaloneExceptionHandlerRegistration
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration
+  nameWithType: StandaloneExceptionHandlerRegistration
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration.#ctor
+  name: StandaloneExceptionHandlerRegistration()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration.html#BridgingIT_DevKit_Presentation_Web_Errors_StandaloneExceptionHandlerRegistration__ctor
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration.StandaloneExceptionHandlerRegistration()
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration.New()
+  nameWithType: StandaloneExceptionHandlerRegistration.StandaloneExceptionHandlerRegistration()
+  nameWithType.vb: StandaloneExceptionHandlerRegistration.New()
+- uid: BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration.#ctor*
+  name: StandaloneExceptionHandlerRegistration
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration.html#BridgingIT_DevKit_Presentation_Web_Errors_StandaloneExceptionHandlerRegistration__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration.StandaloneExceptionHandlerRegistration
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration.New
+  nameWithType: StandaloneExceptionHandlerRegistration.StandaloneExceptionHandlerRegistration
+  nameWithType.vb: StandaloneExceptionHandlerRegistration.New
 - uid: BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase`1
   name: ExceptionHandlerBase<TException>
   href: obj/api/BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase-1.html
@@ -473174,6 +474302,22 @@ references:
   fullName.vb: BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase(Of TException).CreateProblemDetails
   nameWithType: ExceptionHandlerBase<TException>.CreateProblemDetails
   nameWithType.vb: ExceptionHandlerBase(Of TException).CreateProblemDetails
+- uid: BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase`1.CreateSharedProblemDetails(Microsoft.AspNetCore.Http.HttpContext,`0)
+  name: CreateSharedProblemDetails(HttpContext, TException)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase-1.html#BridgingIT_DevKit_Presentation_Web_ExceptionHandlerBase_1_CreateSharedProblemDetails_Microsoft_AspNetCore_Http_HttpContext__0_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase`1.CreateSharedProblemDetails(Microsoft.AspNetCore.Http.HttpContext,`0)
+  fullName: BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase<TException>.CreateSharedProblemDetails(Microsoft.AspNetCore.Http.HttpContext, TException)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase(Of TException).CreateSharedProblemDetails(Microsoft.AspNetCore.Http.HttpContext, TException)
+  nameWithType: ExceptionHandlerBase<TException>.CreateSharedProblemDetails(HttpContext, TException)
+  nameWithType.vb: ExceptionHandlerBase(Of TException).CreateSharedProblemDetails(HttpContext, TException)
+- uid: BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase`1.CreateSharedProblemDetails*
+  name: CreateSharedProblemDetails
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase-1.html#BridgingIT_DevKit_Presentation_Web_ExceptionHandlerBase_1_CreateSharedProblemDetails_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase`1.CreateSharedProblemDetails
+  fullName: BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase<TException>.CreateSharedProblemDetails
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase(Of TException).CreateSharedProblemDetails
+  nameWithType: ExceptionHandlerBase<TException>.CreateSharedProblemDetails
+  nameWithType.vb: ExceptionHandlerBase(Of TException).CreateSharedProblemDetails
 - uid: BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase`1.GetDetail(`0)
   name: GetDetail(TException)
   href: obj/api/BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase-1.html#BridgingIT_DevKit_Presentation_Web_ExceptionHandlerBase_1_GetDetail__0_
@@ -474885,6 +476029,18 @@ references:
   fullName.vb: BridgingIT.DevKit.Presentation.Web.Host.DbExceptionHandler.New
   nameWithType: DbExceptionHandler.DbExceptionHandler
   nameWithType.vb: DbExceptionHandler.New
+- uid: BridgingIT.DevKit.Presentation.Web.Host.DbExceptionHandler.CreateSharedProblemDetails(Microsoft.AspNetCore.Http.HttpContext,System.Data.Common.DbException)
+  name: CreateSharedProblemDetails(HttpContext, DbException)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Host.DbExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Host_DbExceptionHandler_CreateSharedProblemDetails_Microsoft_AspNetCore_Http_HttpContext_System_Data_Common_DbException_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Host.DbExceptionHandler.CreateSharedProblemDetails(Microsoft.AspNetCore.Http.HttpContext,System.Data.Common.DbException)
+  fullName: BridgingIT.DevKit.Presentation.Web.Host.DbExceptionHandler.CreateSharedProblemDetails(Microsoft.AspNetCore.Http.HttpContext, System.Data.Common.DbException)
+  nameWithType: DbExceptionHandler.CreateSharedProblemDetails(HttpContext, DbException)
+- uid: BridgingIT.DevKit.Presentation.Web.Host.DbExceptionHandler.CreateSharedProblemDetails*
+  name: CreateSharedProblemDetails
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Host.DbExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Host_DbExceptionHandler_CreateSharedProblemDetails_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Host.DbExceptionHandler.CreateSharedProblemDetails
+  fullName: BridgingIT.DevKit.Presentation.Web.Host.DbExceptionHandler.CreateSharedProblemDetails
+  nameWithType: DbExceptionHandler.CreateSharedProblemDetails
 - uid: BridgingIT.DevKit.Presentation.Web.Host.DbExceptionHandler.GetDetail(System.Data.Common.DbException)
   name: GetDetail(DbException)
   href: obj/api/BridgingIT.DevKit.Presentation.Web.Host.DbExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Host_DbExceptionHandler_GetDetail_System_Data_Common_DbException_
@@ -474969,6 +476125,18 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.Web.Host.DbUpdateConcurrencyExceptionHandler.CreateProblemDetails
   fullName: BridgingIT.DevKit.Presentation.Web.Host.DbUpdateConcurrencyExceptionHandler.CreateProblemDetails
   nameWithType: DbUpdateConcurrencyExceptionHandler.CreateProblemDetails
+- uid: BridgingIT.DevKit.Presentation.Web.Host.DbUpdateConcurrencyExceptionHandler.CreateSharedProblemDetails(Microsoft.AspNetCore.Http.HttpContext,Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
+  name: CreateSharedProblemDetails(HttpContext, DbUpdateConcurrencyException)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Host.DbUpdateConcurrencyExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Host_DbUpdateConcurrencyExceptionHandler_CreateSharedProblemDetails_Microsoft_AspNetCore_Http_HttpContext_Microsoft_EntityFrameworkCore_DbUpdateConcurrencyException_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Host.DbUpdateConcurrencyExceptionHandler.CreateSharedProblemDetails(Microsoft.AspNetCore.Http.HttpContext,Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
+  fullName: BridgingIT.DevKit.Presentation.Web.Host.DbUpdateConcurrencyExceptionHandler.CreateSharedProblemDetails(Microsoft.AspNetCore.Http.HttpContext, Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
+  nameWithType: DbUpdateConcurrencyExceptionHandler.CreateSharedProblemDetails(HttpContext, DbUpdateConcurrencyException)
+- uid: BridgingIT.DevKit.Presentation.Web.Host.DbUpdateConcurrencyExceptionHandler.CreateSharedProblemDetails*
+  name: CreateSharedProblemDetails
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Host.DbUpdateConcurrencyExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Host_DbUpdateConcurrencyExceptionHandler_CreateSharedProblemDetails_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Host.DbUpdateConcurrencyExceptionHandler.CreateSharedProblemDetails
+  fullName: BridgingIT.DevKit.Presentation.Web.Host.DbUpdateConcurrencyExceptionHandler.CreateSharedProblemDetails
+  nameWithType: DbUpdateConcurrencyExceptionHandler.CreateSharedProblemDetails
 - uid: BridgingIT.DevKit.Presentation.Web.Host.DbUpdateConcurrencyExceptionHandler.GetDetail(Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
   name: GetDetail(DbUpdateConcurrencyException)
   href: obj/api/BridgingIT.DevKit.Presentation.Web.Host.DbUpdateConcurrencyExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Host_DbUpdateConcurrencyExceptionHandler_GetDetail_Microsoft_EntityFrameworkCore_DbUpdateConcurrencyException_
@@ -475053,6 +476221,18 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.CreateProblemDetails
   fullName: BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.CreateProblemDetails
   nameWithType: DbUpdateExceptionHandler.CreateProblemDetails
+- uid: BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.CreateSharedProblemDetails(Microsoft.AspNetCore.Http.HttpContext,Microsoft.EntityFrameworkCore.DbUpdateException)
+  name: CreateSharedProblemDetails(HttpContext, DbUpdateException)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Host_DbUpdateExceptionHandler_CreateSharedProblemDetails_Microsoft_AspNetCore_Http_HttpContext_Microsoft_EntityFrameworkCore_DbUpdateException_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.CreateSharedProblemDetails(Microsoft.AspNetCore.Http.HttpContext,Microsoft.EntityFrameworkCore.DbUpdateException)
+  fullName: BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.CreateSharedProblemDetails(Microsoft.AspNetCore.Http.HttpContext, Microsoft.EntityFrameworkCore.DbUpdateException)
+  nameWithType: DbUpdateExceptionHandler.CreateSharedProblemDetails(HttpContext, DbUpdateException)
+- uid: BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.CreateSharedProblemDetails*
+  name: CreateSharedProblemDetails
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Host_DbUpdateExceptionHandler_CreateSharedProblemDetails_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.CreateSharedProblemDetails
+  fullName: BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.CreateSharedProblemDetails
+  nameWithType: DbUpdateExceptionHandler.CreateSharedProblemDetails
 - uid: BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.GetDetail(Microsoft.EntityFrameworkCore.DbUpdateException)
   name: GetDetail(DbUpdateException)
   href: obj/api/BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.html#BridgingIT_DevKit_Presentation_Web_Host_DbUpdateExceptionHandler_GetDetail_Microsoft_EntityFrameworkCore_DbUpdateException_
@@ -492319,6 +493499,57 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.Web.RequestMetricsMiddleware.Invoke
   fullName: BridgingIT.DevKit.Presentation.Web.RequestMetricsMiddleware.Invoke
   nameWithType: RequestMetricsMiddleware.Invoke
+- uid: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions
+  name: ResponseProblemDetailsExtensions
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions
+  fullName: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions
+  nameWithType: ResponseProblemDetailsExtensions
+- uid: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddResponseProblemDetails(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  name: AddResponseProblemDetails(IServiceCollection)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.html#BridgingIT_DevKit_Presentation_Web_ResponseProblemDetailsExtensions_AddResponseProblemDetails_Microsoft_Extensions_DependencyInjection_IServiceCollection_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddResponseProblemDetails(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  fullName: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddResponseProblemDetails(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  nameWithType: ResponseProblemDetailsExtensions.AddResponseProblemDetails(IServiceCollection)
+- uid: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddResponseProblemDetails(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions})
+  name: AddResponseProblemDetails(IServiceCollection, Action<ProblemDetailsOptions>)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.html#BridgingIT_DevKit_Presentation_Web_ResponseProblemDetailsExtensions_AddResponseProblemDetails_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Action_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions__
+  commentId: M:BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddResponseProblemDetails(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions})
+  name.vb: AddResponseProblemDetails(IServiceCollection, Action(Of ProblemDetailsOptions))
+  fullName: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddResponseProblemDetails(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Action<BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions>)
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddResponseProblemDetails(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Action(Of BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions))
+  nameWithType: ResponseProblemDetailsExtensions.AddResponseProblemDetails(IServiceCollection, Action<ProblemDetailsOptions>)
+  nameWithType.vb: ResponseProblemDetailsExtensions.AddResponseProblemDetails(IServiceCollection, Action(Of ProblemDetailsOptions))
+- uid: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddResponseProblemDetails*
+  name: AddResponseProblemDetails
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.html#BridgingIT_DevKit_Presentation_Web_ResponseProblemDetailsExtensions_AddResponseProblemDetails_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddResponseProblemDetails
+  fullName: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddResponseProblemDetails
+  nameWithType: ResponseProblemDetailsExtensions.AddResponseProblemDetails
+- uid: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddSharedProblemDetails(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  name: AddSharedProblemDetails(IServiceCollection)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.html#BridgingIT_DevKit_Presentation_Web_ResponseProblemDetailsExtensions_AddSharedProblemDetails_Microsoft_Extensions_DependencyInjection_IServiceCollection_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddSharedProblemDetails(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  fullName: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddSharedProblemDetails(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  nameWithType: ResponseProblemDetailsExtensions.AddSharedProblemDetails(IServiceCollection)
+- uid: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddSharedProblemDetails*
+  name: AddSharedProblemDetails
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.html#BridgingIT_DevKit_Presentation_Web_ResponseProblemDetailsExtensions_AddSharedProblemDetails_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddSharedProblemDetails
+  fullName: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.AddSharedProblemDetails
+  nameWithType: ResponseProblemDetailsExtensions.AddSharedProblemDetails
+- uid: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.UseResponseProblemDetails(Microsoft.AspNetCore.Builder.IApplicationBuilder)
+  name: UseResponseProblemDetails(IApplicationBuilder)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.html#BridgingIT_DevKit_Presentation_Web_ResponseProblemDetailsExtensions_UseResponseProblemDetails_Microsoft_AspNetCore_Builder_IApplicationBuilder_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.UseResponseProblemDetails(Microsoft.AspNetCore.Builder.IApplicationBuilder)
+  fullName: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.UseResponseProblemDetails(Microsoft.AspNetCore.Builder.IApplicationBuilder)
+  nameWithType: ResponseProblemDetailsExtensions.UseResponseProblemDetails(IApplicationBuilder)
+- uid: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.UseResponseProblemDetails*
+  name: UseResponseProblemDetails
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.html#BridgingIT_DevKit_Presentation_Web_ResponseProblemDetailsExtensions_UseResponseProblemDetails_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.UseResponseProblemDetails
+  fullName: BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.UseResponseProblemDetails
+  nameWithType: ResponseProblemDetailsExtensions.UseResponseProblemDetails
 - uid: BridgingIT.DevKit.Presentation.Web.RestartConsoleCommand
   name: RestartConsoleCommand
   href: obj/api/BridgingIT.DevKit.Presentation.Web.RestartConsoleCommand.html
@@ -492811,6 +494042,18 @@ references:
   commentId: T:BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails
   fullName: BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails
   nameWithType: ResultHttpProblemDetails
+- uid: BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails.AddDiagnostics(Microsoft.AspNetCore.Mvc.ProblemDetails)
+  name: AddDiagnostics(ProblemDetails)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails.html#BridgingIT_DevKit_Presentation_Web_ResultHttpProblemDetails_AddDiagnostics_Microsoft_AspNetCore_Mvc_ProblemDetails_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails.AddDiagnostics(Microsoft.AspNetCore.Mvc.ProblemDetails)
+  fullName: BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails.AddDiagnostics(Microsoft.AspNetCore.Mvc.ProblemDetails)
+  nameWithType: ResultHttpProblemDetails.AddDiagnostics(ProblemDetails)
+- uid: BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails.AddDiagnostics*
+  name: AddDiagnostics
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails.html#BridgingIT_DevKit_Presentation_Web_ResultHttpProblemDetails_AddDiagnostics_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails.AddDiagnostics
+  fullName: BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails.AddDiagnostics
+  nameWithType: ResultHttpProblemDetails.AddDiagnostics
 - uid: BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails.Create(System.Int32,System.String,BridgingIT.DevKit.Common.IResult)
   name: Create(int, string, IResult)
   href: obj/api/BridgingIT.DevKit.Presentation.Web.ResultHttpProblemDetails.html#BridgingIT_DevKit_Presentation_Web_ResultHttpProblemDetails_Create_System_Int32_System_String_BridgingIT_DevKit_Common_IResult_
@@ -493321,6 +494564,18 @@ references:
   fullName.vb: BridgingIT.DevKit.Presentation.Web.ResultMapHttpExtensions.MapCreated(Of T)(BridgingIT.DevKit.Common.Result(Of T), String, Microsoft.Extensions.Logging.ILogger)
   nameWithType: ResultMapHttpExtensions.MapCreated<T>(Result<T>, string, ILogger)
   nameWithType.vb: ResultMapHttpExtensions.MapCreated(Of T)(Result(Of T), String, ILogger)
+- uid: BridgingIT.DevKit.Presentation.Web.ResultMapHttpExtensions.MapDefaultFailure(BridgingIT.DevKit.Common.Result)
+  name: MapDefaultFailure(Result)
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ResultMapHttpExtensions.html#BridgingIT_DevKit_Presentation_Web_ResultMapHttpExtensions_MapDefaultFailure_BridgingIT_DevKit_Common_Result_
+  commentId: M:BridgingIT.DevKit.Presentation.Web.ResultMapHttpExtensions.MapDefaultFailure(BridgingIT.DevKit.Common.Result)
+  fullName: BridgingIT.DevKit.Presentation.Web.ResultMapHttpExtensions.MapDefaultFailure(BridgingIT.DevKit.Common.Result)
+  nameWithType: ResultMapHttpExtensions.MapDefaultFailure(Result)
+- uid: BridgingIT.DevKit.Presentation.Web.ResultMapHttpExtensions.MapDefaultFailure*
+  name: MapDefaultFailure
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ResultMapHttpExtensions.html#BridgingIT_DevKit_Presentation_Web_ResultMapHttpExtensions_MapDefaultFailure_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.ResultMapHttpExtensions.MapDefaultFailure
+  fullName: BridgingIT.DevKit.Presentation.Web.ResultMapHttpExtensions.MapDefaultFailure
+  nameWithType: ResultMapHttpExtensions.MapDefaultFailure
 - uid: BridgingIT.DevKit.Presentation.Web.ResultMapHttpExtensions.MapDomainPolicyError*
   name: MapDomainPolicyError
   href: obj/api/BridgingIT.DevKit.Presentation.Web.ResultMapHttpExtensions.html#BridgingIT_DevKit_Presentation_Web_ResultMapHttpExtensions_MapDomainPolicyError_
@@ -493732,6 +494987,18 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.Web.ResultProblemDetails.Data
   fullName: BridgingIT.DevKit.Presentation.Web.ResultProblemDetails.Data
   nameWithType: ResultProblemDetails.Data
+- uid: BridgingIT.DevKit.Presentation.Web.ResultProblemDetails.ExceptionDetails
+  name: ExceptionDetails
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ResultProblemDetails.html#BridgingIT_DevKit_Presentation_Web_ResultProblemDetails_ExceptionDetails
+  commentId: P:BridgingIT.DevKit.Presentation.Web.ResultProblemDetails.ExceptionDetails
+  fullName: BridgingIT.DevKit.Presentation.Web.ResultProblemDetails.ExceptionDetails
+  nameWithType: ResultProblemDetails.ExceptionDetails
+- uid: BridgingIT.DevKit.Presentation.Web.ResultProblemDetails.ExceptionDetails*
+  name: ExceptionDetails
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.ResultProblemDetails.html#BridgingIT_DevKit_Presentation_Web_ResultProblemDetails_ExceptionDetails_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.ResultProblemDetails.ExceptionDetails
+  fullName: BridgingIT.DevKit.Presentation.Web.ResultProblemDetails.ExceptionDetails
+  nameWithType: ResultProblemDetails.ExceptionDetails
 - uid: BridgingIT.DevKit.Presentation.Web.ResultProblemDetailsSchemaTransformer
   name: ResultProblemDetailsSchemaTransformer
   href: obj/api/BridgingIT.DevKit.Presentation.Web.ResultProblemDetailsSchemaTransformer.html

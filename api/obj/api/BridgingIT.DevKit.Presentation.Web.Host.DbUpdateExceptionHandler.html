@@ -311,6 +311,51 @@ Override this method for complete control over the problem details.</p>
 
 
 
+  <a id="BridgingIT_DevKit_Presentation_Web_Host_DbUpdateExceptionHandler_CreateSharedProblemDetails_" data-uid="BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.CreateSharedProblemDetails*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Host_DbUpdateExceptionHandler_CreateSharedProblemDetails_Microsoft_AspNetCore_Http_HttpContext_Microsoft_EntityFrameworkCore_DbUpdateException_" data-uid="BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.CreateSharedProblemDetails(Microsoft.AspNetCore.Http.HttpContext,Microsoft.EntityFrameworkCore.DbUpdateException)">
+  CreateSharedProblemDetails(HttpContext, DbUpdateException)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates the public problem for the combined DevKit response policy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override ProblemDetails CreateSharedProblemDetails(HttpContext httpContext, DbUpdateException exception)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>httpContext</code> <span class="xref">HttpContext</span></dt>
+    <dd><p>The request that raised the exception.</p>
+</dd>
+    <dt><code>exception</code> <span class="xref">DbUpdateException</span></dt>
+    <dd><p>The exception handled by this instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ProblemDetails</span></dt>
+    <dd><p>A problem with public detail and the handler's selected status, title and type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Host_DbUpdateExceptionHandler_CreateSharedProblemDetails_Microsoft_AspNetCore_Http_HttpContext_Microsoft_EntityFrameworkCore_DbUpdateException__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Override this method to customize public fields for the combined registration.</p>
+</div>
+
+
+
+
   <a id="BridgingIT_DevKit_Presentation_Web_Host_DbUpdateExceptionHandler_GetDetail_" data-uid="BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.GetDetail*"></a>
 
   <h3 id="BridgingIT_DevKit_Presentation_Web_Host_DbUpdateExceptionHandler_GetDetail_Microsoft_EntityFrameworkCore_DbUpdateException_" data-uid="BridgingIT.DevKit.Presentation.Web.Host.DbUpdateExceptionHandler.GetDetail(Microsoft.EntityFrameworkCore.DbUpdateException)">

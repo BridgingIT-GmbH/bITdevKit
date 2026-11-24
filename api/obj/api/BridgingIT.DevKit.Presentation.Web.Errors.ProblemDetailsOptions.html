@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ProblemDetailsOptions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ProblemDetailsOptions | bITdevKit API Reference ">
+      
+      <meta name="description" content="Configures DevKit HTTP Problem Details for exceptions and failed Results.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions" class="text-break">
+Class ProblemDetailsOptions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.html">Web</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Errors.html">Errors</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Configures DevKit HTTP Problem Details for exceptions and failed Results.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ProblemDetailsOptions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">ProblemDetailsOptions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_examples">Examples</h2>
+  <pre><code class="lang-csharp">builder.Services.AddResponseProblemDetails(options =&gt; options.IncludeExceptionDetails = builder.Environment.IsDevelopment());</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions__ctor_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions__ctor" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.#ctor">
+  ProblemDetailsOptions()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ProblemDetailsOptions()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_AllowedHeaderNames_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.AllowedHeaderNames*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_AllowedHeaderNames" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.AllowedHeaderNames">
+  AllowedHeaderNames
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets response header names to preserve when automatic error handling clears a response.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ISet&lt;string&gt; AllowedHeaderNames { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ISet</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_HostMappings_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.HostMappings*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_HostMappings" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.HostMappings">
+  HostMappings
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the host mappings in declaration order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;ProblemDetailsOptions.Registration&gt; HostMappings { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html">ProblemDetailsOptions</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html">Registration</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_IncludeExceptionDetails_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.IncludeExceptionDetails*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_IncludeExceptionDetails" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.IncludeExceptionDetails">
+  IncludeExceptionDetails
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets whether written problems include exception diagnostics. Defaults to false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IncludeExceptionDetails { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ModuleMappings_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ModuleMappings*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ModuleMappings" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ModuleMappings">
+  ModuleMappings
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the module defaults in declaration order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;ProblemDetailsOptions.Registration&gt; ModuleMappings { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html">ProblemDetailsOptions</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html">Registration</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_OnBeforeWriteDetails_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.OnBeforeWriteDetails*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_OnBeforeWriteDetails" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.OnBeforeWriteDetails">
+  OnBeforeWriteDetails
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the final enrichment callback for accepted problem writes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Action&lt;HttpContext, ProblemDetails&gt; OnBeforeWriteDetails { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Action</span>&lt;<span class="xref">HttpContext</span>, <span class="xref">ProblemDetails</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ShouldHandleRequest_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldHandleRequest*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ShouldHandleRequest" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldHandleRequest">
+  ShouldHandleRequest
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the request predicate for automatic exception and status-code handling.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Func&lt;HttpContext, bool&gt; ShouldHandleRequest { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Func</span>&lt;<span class="xref">HttpContext</span>, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ShouldHandleRequest_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When unset, DevKit lets ASP.NET Core handle exceptions that it has rewritten to an error page.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ShouldLogResultErrors_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogResultErrors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ShouldLogResultErrors" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogResultErrors">
+  ShouldLogResultErrors
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets whether DevKit logs mapped 5xx Problem Details and custom MVC Result responses at execution. Defaults to true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ShouldLogResultErrors { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ShouldLogUnhandledException_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogUnhandledException*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_ShouldLogUnhandledException" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.ShouldLogUnhandledException">
+  ShouldLogUnhandledException
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets whether DevKit logs handled server exceptions. Defaults to true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ShouldLogUnhandledException { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Handles_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Handles*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Handles_Microsoft_AspNetCore_Http_HttpContext_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Handles(Microsoft.AspNetCore.Http.HttpContext)">
+  Handles(HttpContext)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Evaluates the configured request predicate, allowing the request when no predicate is set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Handles(HttpContext context)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <span class="xref">HttpContext</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_MapDefault_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_MapDefault__1_System_Func___0_Microsoft_AspNetCore_Http_HttpContext_Microsoft_AspNetCore_Mvc_ProblemDetails__System_Func___0_Microsoft_AspNetCore_Http_HttpContext_System_Boolean__" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault``1(System.Func{``0,Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Mvc.ProblemDetails},System.Func{``0,Microsoft.AspNetCore.Http.HttpContext,System.Boolean})">
+  MapDefault&lt;TException&gt;(Func&lt;TException, HttpContext, ProblemDetails&gt;, Func&lt;TException, HttpContext, bool&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers a module default produced from the exception and request when the predicate matches.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ProblemDetailsOptions MapDefault&lt;TException&gt;(Func&lt;TException, HttpContext, ProblemDetails&gt; factory, Func&lt;TException, HttpContext, bool&gt; when = null) where TException : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>factory</code> <span class="xref">Func</span>&lt;TException, <span class="xref">HttpContext</span>, <span class="xref">ProblemDetails</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>when</code> <span class="xref">Func</span>&lt;TException, <span class="xref">HttpContext</span>, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html">ProblemDetailsOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TException</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_MapDefault_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_MapDefault__1_System_Func___0_Microsoft_AspNetCore_Mvc_ProblemDetails__" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault``1(System.Func{``0,Microsoft.AspNetCore.Mvc.ProblemDetails})">
+  MapDefault&lt;TException&gt;(Func&lt;TException, ProblemDetails&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers a module default produced from the exception.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ProblemDetailsOptions MapDefault&lt;TException&gt;(Func&lt;TException, ProblemDetails&gt; factory) where TException : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>factory</code> <span class="xref">Func</span>&lt;TException, <span class="xref">ProblemDetails</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html">ProblemDetailsOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TException</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_MapDefault_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_MapDefault__1_System_Int32_System_String_System_String_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.MapDefault``1(System.Int32,System.String,System.String)">
+  MapDefault&lt;TException&gt;(int, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers a module default that applies after host mappings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ProblemDetailsOptions MapDefault&lt;TException&gt;(int statusCode, string title = null, string typeUri = null) where TException : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>statusCode</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>title</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>typeUri</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html">ProblemDetailsOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TException</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_MapDefault__1_System_Int32_System_String_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">options.MapDefault&lt;TimeoutException&gt;(504);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Map_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Map__1_System_Func___0_Microsoft_AspNetCore_Http_HttpContext_Microsoft_AspNetCore_Mvc_ProblemDetails__System_Func___0_Microsoft_AspNetCore_Http_HttpContext_System_Boolean__" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map``1(System.Func{``0,Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Mvc.ProblemDetails},System.Func{``0,Microsoft.AspNetCore.Http.HttpContext,System.Boolean})">
+  Map&lt;TException&gt;(Func&lt;TException, HttpContext, ProblemDetails&gt;, Func&lt;TException, HttpContext, bool&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers a host mapping produced from the exception and request when the predicate matches.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ProblemDetailsOptions Map&lt;TException&gt;(Func&lt;TException, HttpContext, ProblemDetails&gt; factory, Func&lt;TException, HttpContext, bool&gt; when = null) where TException : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>factory</code> <span class="xref">Func</span>&lt;TException, <span class="xref">HttpContext</span>, <span class="xref">ProblemDetails</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>when</code> <span class="xref">Func</span>&lt;TException, <span class="xref">HttpContext</span>, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html">ProblemDetailsOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TException</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Map_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Map__1_System_Func___0_Microsoft_AspNetCore_Mvc_ProblemDetails__" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map``1(System.Func{``0,Microsoft.AspNetCore.Mvc.ProblemDetails})">
+  Map&lt;TException&gt;(Func&lt;TException, ProblemDetails&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers a host mapping produced from the exception.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ProblemDetailsOptions Map&lt;TException&gt;(Func&lt;TException, ProblemDetails&gt; factory) where TException : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>factory</code> <span class="xref">Func</span>&lt;TException, <span class="xref">ProblemDetails</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html">ProblemDetailsOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TException</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Map_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Map__1_System_Int32_System_String_System_String_" data-uid="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Map``1(System.Int32,System.String,System.String)">
+  Map&lt;TException&gt;(int, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers a host mapping with the supplied status and optional public title and type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ProblemDetailsOptions Map&lt;TException&gt;(int statusCode, string title = null, string typeUri = null) where TException : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>statusCode</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>title</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>typeUri</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html">ProblemDetailsOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TException</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Map__1_System_Int32_System_String_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">options.Map&lt;KeyNotFoundException&gt;(404);</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

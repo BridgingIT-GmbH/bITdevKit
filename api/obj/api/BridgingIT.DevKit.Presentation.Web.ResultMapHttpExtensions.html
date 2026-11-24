@@ -247,7 +247,7 @@ Class ResultMapHttpExtensions
     <dd><p>The location URI where the status of the operation can be monitored.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -293,7 +293,7 @@ using a function to generate the location URI.</p>
     <dd><p>A function that generates the location URI based on the result value.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -344,7 +344,7 @@ using a function to generate the location URI.</p>
     <dd><p>The location URI where the status of the operation can be monitored.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -546,7 +546,7 @@ such as POST operations. Handles success, unauthorized, not found, bad request, 
     <dd><p>The URI of the newly created resource, used in the Created response.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -589,6 +589,43 @@ Example response for other errors: HTTP 400 Problem with details.</p>
     <dd><p>Thrown when the result value is null for a reference type.</p>
 </dd>
   </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapHttpExtensions_MapDefaultFailure_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapHttpExtensions.MapDefaultFailure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapHttpExtensions_MapDefaultFailure_BridgingIT_DevKit_Common_Result_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapHttpExtensions.MapDefaultFailure(BridgingIT.DevKit.Common.Result)">
+  MapDefaultFailure(Result)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a failed Result through the custom handlers and default HTTP failure classification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IResult MapDefaultFailure(Result result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IResult</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
 
 
 
@@ -757,7 +794,7 @@ Example response for other errors: HTTP 400 Problem with details.</p>
     <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to map.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -845,7 +882,7 @@ such as DELETE operations. Handles success, unauthorized, not found, bad request
     <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> struct containing the operation outcome.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -946,7 +983,7 @@ such as GET or PUT operations. Handles success, unauthorized, not found, bad req
     <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> struct containing the operation outcome.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -999,7 +1036,7 @@ such as GET or PUT operations. Handles success, unauthorized, not found, bad req
     <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> struct containing the operation outcome.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -1063,7 +1100,7 @@ Example response for other errors: HTTP 400 Problem with details.</p>
     <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged&lt;T&gt;</a> to map.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -1112,7 +1149,7 @@ such as GET or PUT operations. Handles success, unauthorized, not found, bad req
     <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> struct containing the operation outcome.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -1420,7 +1457,7 @@ handling success, unauthorized, not found, bad request, validation, conflict, ru
     <dd><p>A function to generate the success HTTP result when the operation succeeds. Must return <code class="typeparamref">TSuccess</code>.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -1443,7 +1480,7 @@ handling success, unauthorized, not found, bad request, validation, conflict, ru
     <dd><p>The type of the bad request HTTP result (e.g., <span class="xref">Microsoft.AspNetCore.Http.HttpResults.BadRequest</span>).</p>
 </dd>
     <dt><code>TProblem</code></dt>
-    <dd><p>The problem response type. Use <span class="xref">Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult</span> for error-specific statuses or <span class="xref">Microsoft.AspNetCore.Http.HttpResults.InternalServerError</span> for HTTP 500.</p>
+    <dd><p>The problem response type. Use <span class="xref">Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult</span> for error-specific statuses or <span class="xref">Microsoft.AspNetCore.Http.HttpResults.InternalServerError</span> for a native HTTP 500. Supply a mapper logger to log failures mapped to the native arm.</p>
 </dd>
   </dl>
 
@@ -1514,7 +1551,7 @@ handling success, unauthorized, not found, bad request, validation, conflict, ru
     <dd><p>A function to generate the success HTTP result when the operation succeeds. Must return <code class="typeparamref">TSuccess</code>.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -1540,7 +1577,7 @@ handling success, unauthorized, not found, bad request, validation, conflict, ru
     <dd><p>The type of the bad request HTTP result (e.g., <span class="xref">Microsoft.AspNetCore.Http.HttpResults.BadRequest</span>).</p>
 </dd>
     <dt><code>TProblem</code></dt>
-    <dd><p>The problem response type. Use <span class="xref">Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult</span> for error-specific statuses or <span class="xref">Microsoft.AspNetCore.Http.HttpResults.InternalServerError</span> for HTTP 500.</p>
+    <dd><p>The problem response type. Use <span class="xref">Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult</span> for error-specific statuses or <span class="xref">Microsoft.AspNetCore.Http.HttpResults.InternalServerError</span> for a native HTTP 500. Supply a mapper logger to log failures mapped to the native arm.</p>
 </dd>
   </dl>
 
@@ -1611,7 +1648,7 @@ handling success, unauthorized, not found, bad request, validation, conflict, ru
     <dd><p>A function to generate the success HTTP result when the operation succeeds. Must return <code class="typeparamref">TSuccess</code>.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -1637,7 +1674,7 @@ handling success, unauthorized, not found, bad request, validation, conflict, ru
     <dd><p>The HTTP 400 type, such as <span class="xref">Microsoft.AspNetCore.Http.HttpResults.BadRequest</span>, <code>BadRequest&lt;string&gt;</code>, or <code>BadRequest&lt;ProblemDetails&gt;</code>.</p>
 </dd>
     <dt><code>TProblem</code></dt>
-    <dd><p>The problem response type. Use <span class="xref">Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult</span> for error-specific statuses or <span class="xref">Microsoft.AspNetCore.Http.HttpResults.InternalServerError</span> for HTTP 500.</p>
+    <dd><p>The problem response type. Use <span class="xref">Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult</span> for error-specific statuses or <span class="xref">Microsoft.AspNetCore.Http.HttpResults.InternalServerError</span> for a native HTTP 500. Supply a mapper logger to log failures mapped to the native arm.</p>
 </dd>
     <dt><code>TValue</code></dt>
     <dd><p>The type of the result value, constrained to reference types (class) if used. Defaults to <span class="xref">object</span> for non-generic cases.</p>

@@ -148,7 +148,7 @@ Class ResultMapExtensions
     <dd><p>The location URI where the status of the operation can be monitored.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -194,7 +194,7 @@ using a function to generate the location URI.</p>
     <dd><p>A function that generates the location URI based on the result value.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -245,7 +245,7 @@ using a function to generate the location URI.</p>
     <dd><p>The location URI where the status of the operation can be monitored.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -296,7 +296,7 @@ using a function to generate the location URI.</p>
     <dd><p>A function that generates the URI based on the result value.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -347,7 +347,7 @@ using a function to generate the location URI.</p>
     <dd><p>The URI of the newly created resource, used in the Created response.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -395,7 +395,7 @@ using a function to generate the location URI.</p>
     <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to map.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -482,7 +482,7 @@ using a function to generate the location URI.</p>
     <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> to map.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -572,7 +572,7 @@ using a function to generate the location URI.</p>
     <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> to map.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -614,7 +614,7 @@ using a function to generate the location URI.</p>
     <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to map.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -662,7 +662,7 @@ using a function to generate the location URI.</p>
     <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged&lt;T&gt;</a> to map.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -710,7 +710,7 @@ using a function to generate the location URI.</p>
     <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to map.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -761,7 +761,7 @@ using a function to generate the location URI.</p>
     <dd><p>A function to generate the success HTTP result when the operation succeeds.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -824,7 +824,7 @@ using a function to generate the location URI.</p>
     <dd><p>A function to generate the success HTTP result when the operation succeeds.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 
@@ -887,7 +887,7 @@ using a function to generate the location URI.</p>
     <dd><p>A function to generate the success HTTP result when the operation succeeds.</p>
 </dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+    <dd><p>An optional logger that logs failures during mapping and takes precedence over shared HTTP Result logging.</p>
 </dd>
   </dl>
 

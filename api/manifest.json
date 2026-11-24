@@ -65955,6 +65955,188 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Errors.CombinedProblemDetailsRegistration.yml\" sourcestartlinenumber=\"1\">Identifies hosts that registered combined DevKit Problem Details.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Registration.yml\" sourcestartlinenumber=\"1\">Pairs an exception mapping with its optional request predicate.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.yml\" sourcestartlinenumber=\"1\">Configures DevKit HTTP Problem Details for exceptions and failed Results.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.DiagnosticEntry.yml\" sourcestartlinenumber=\"1\">Represents one exception diagnostic in the shared response format.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsPayload.yml\" sourcestartlinenumber=\"1\">Provides the shared wire values used by DevKit HTTP Problem Details.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.DeclinedException.yml\" sourcestartlinenumber=\"1\">Identifies an exception outside automatic DevKit scope for native fallback.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.yml\" sourcestartlinenumber=\"1\">Maps unhandled exceptions to DevKit Problem Details within the configured request scope.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.yml\" sourcestartlinenumber=\"1\">Captures allowlisted headers when the native exception middleware clears a response.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.Preparation.yml\" sourcestartlinenumber=\"1\">Composes native Problem Details customization with DevKit response preparation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.yml\" sourcestartlinenumber=\"1\">Prepares DevKit problems and writes them through the first applicable registered writer.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsStatusCodeHandler.yml\" sourcestartlinenumber=\"1\">Configures the default DevKit response for eligible empty HTTP error statuses.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Errors.StandaloneExceptionHandlerRegistration.yml\" sourcestartlinenumber=\"1\">Identifies hosts that registered the standalone DevKit exception chain.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Errors.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Errors",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.ExceptionHandlerBase-1.yml",
       "output": {
         ".html": {
@@ -70264,6 +70446,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.RequestMetricsMiddleware",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.RequestMetricsMiddleware.yml\" sourcestartlinenumber=\"1\">Captures lightweight request metrics for the ASP.NET metrics endpoints.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.ResponseProblemDetailsExtensions.yml\" sourcestartlinenumber=\"1\">Registers and activates DevKit HTTP Problem Details.</p>\n"
     },
     {
       "type": "ManagedReference",

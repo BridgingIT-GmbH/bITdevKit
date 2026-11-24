@@ -64,6 +64,8 @@ jobs:
         run: |
           test -f .github/pages/index.html
           test -f .github/pages/api/index.html
+          test -f .github/pages/api/obj/api/toc.html
+          test -f .github/pages/api/agent-index.json
 
       - name: Publish to gh-pages
         env:

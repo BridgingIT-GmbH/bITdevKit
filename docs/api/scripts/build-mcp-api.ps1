@@ -72,44 +72,7 @@ try {
         }
     }
 
-    $assemblyNames = @(Get-ChildItem -LiteralPath $assemblyRoot -Filter '*.dll' -File | Sort-Object Name | ForEach-Object Name)
-    if ($assemblyNames.Count -eq 0) {
-        throw 'The API bootstrap build did not stage any assemblies.'
-    }
-
-    # DocFX retains metadata for its input assemblies until it writes the batch.
-    # Exit the process between batches so memory is released before the next one.
-    $batchSize = 8
-    $batchCount = [Math]::Ceiling($assemblyNames.Count / $batchSize)
-    $previousProcessorCount = $env:DOTNET_PROCESSOR_COUNT
-    try {
-        $env:DOTNET_PROCESSOR_COUNT = '1'
-        for ($offset = 0; $offset -lt $assemblyNames.Count; $offset += $batchSize) {
-            $batch = 1 + [int] [Math]::Floor($offset / $batchSize)
-            $last = [Math]::Min($offset + $batchSize, $assemblyNames.Count) - 1
-            $batchName = 'batch-{0:D3}' -f $batch
-            $metadataConfiguration = Join-Path $BootstrapRoot "$batchName.json"
-            $docfx = @{
-                metadata = @(@{
-                    # Other staged assemblies remain in the same directory for reference resolution.
-                    src = @(@{ src = $assemblyRoot; files = @($assemblyNames[$offset..$last]) })
-                    dest = Join-Path $metadataRoot $batchName
-                    filter = Join-Path $repoRoot 'docs/api/filterConfig.yml'
-                })
-            }
-            $docfx | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $metadataConfiguration -Encoding UTF8
-            Write-Host "Extracting DocFX metadata batch ${batch}/${batchCount} ($($last - $offset + 1) assemblies)."
-            Invoke-DotNet -Arguments @('docfx', 'metadata', $metadataConfiguration, '--logLevel', 'Error')
-        }
-    }
-    finally {
-        if ($null -eq $previousProcessorCount) {
-            Remove-Item Env:DOTNET_PROCESSOR_COUNT -ErrorAction SilentlyContinue
-        }
-        else {
-            $env:DOTNET_PROCESSOR_COUNT = $previousProcessorCount
-        }
-    }
+    & (Join-Path $PSScriptRoot 'build-docfx-metadata.ps1') -AssemblyRoot $assemblyRoot -MetadataRoot $metadataRoot
 
     Write-Host 'Building the MCP API index from DocFX metadata.'
     & (Join-Path $PSScriptRoot 'build-agent-index.ps1') -MetadataRoot $metadataRoot -OutputRoot $OutputRoot

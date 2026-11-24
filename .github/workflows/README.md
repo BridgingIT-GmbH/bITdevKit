@@ -206,10 +206,10 @@ The script:
 1. Synchronizes docs into the MkDocs site tree.
 2. Runs MkDocs Material in Docker.
 3. Restores .NET local tools.
-4. Restores and builds `docs/api/ApiReference.proj` in Release mode.
+4. Restores and builds `docs/api/ApiReference.proj` in Release mode with `BdkMcpApiBootstrap=true` to skip MCP API embedding.
 5. Stages built source assemblies and XML documentation into `docs/api/obj/assemblies`.
-6. Clears stale DocFX metadata under `docs/api/obj/api`.
-7. Runs DocFX with `docs/api/docfx.json`.
+6. Clears stale metadata and runs DocFX extraction in batches under `docs/api/obj/metadata-batches`.
+7. Merges shared pages and navigation into `docs/api/obj/api`, then renders the API site with `docs/api/docfx.json`.
 8. Runs `docs/api/scripts/build-agent-index.ps1`.
 
 ## Generated Documentation Artifacts
@@ -239,17 +239,7 @@ Rules:
 - Keep real methods, properties, constructors, fields, events, operators, types and namespaces.
 - Write one detail JSON file per DocFX mref page.
 
-The MCP server reads:
-
-```text
-https://bridgingit-gmbh.github.io/bITdevKit/api/agent-index.json
-```
-
-In local development it prefers:
-
-```text
-.github/pages/api/agent-index.json
-```
+The public site serves its index at `/api/agent-index.json`. The packaged MCP server reads the API index and details embedded in the CLI assembly.
 
 ## Common Maintenance Tasks
 

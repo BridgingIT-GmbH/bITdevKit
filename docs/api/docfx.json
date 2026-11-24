@@ -1,18 +1,4 @@
 {
-  "metadata": [
-    {
-      "src": [
-        {
-          "src": "../..",
-          "files": [
-            "docs/api/obj/assemblies/*.dll"
-          ]
-        }
-      ],
-      "dest": "obj/api",
-      "filter": "filterConfig.yml"
-    }
-  ],
   "build": {
     "content": [
       {

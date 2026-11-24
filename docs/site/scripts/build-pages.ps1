@@ -3,20 +3,23 @@ param()
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+$PSNativeCommandUseErrorActionPreference = $true
 
-$siteRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
 $sourceRoot = Join-Path $repoRoot 'src'
 $apiReferenceProject = Join-Path $repoRoot 'docs\api\ApiReference.proj'
 $docfxConfig = Join-Path $repoRoot 'docs\api\docfx.json'
 $docfxObjRoot = Join-Path $repoRoot 'docs\api\obj'
 $apiAssemblyRoot = Join-Path $docfxObjRoot 'assemblies'
+$apiBatchesRoot = Join-Path $docfxObjRoot 'metadata-batches'
+$apiMetadataScript = Join-Path $repoRoot 'docs/api/scripts/build-docfx-metadata.ps1'
 $apiMetadataRoot = Join-Path $docfxObjRoot 'api'
 $apiAgentIndexScript = Join-Path $repoRoot 'docs\api\scripts\build-agent-index.ps1'
 $apiPagesRoot = Join-Path $repoRoot '.github\pages\api'
 
 & (Join-Path $PSScriptRoot 'sync-docs.ps1')
 
+$mkdocsImage = 'squidfunk/mkdocs-material:9'
 $dockerUserArgs = @()
 if ($IsLinux -or $IsMacOS) {
     $userId = (id -u).Trim()
@@ -27,7 +30,7 @@ if ($IsLinux -or $IsMacOS) {
 docker run --rm `
     @dockerUserArgs `
     -v "${repoRoot}:/docs" `
-    squidfunk/mkdocs-material:9 `
+    $mkdocsImage `
     build --clean
 
 dotnet tool restore
@@ -35,17 +38,20 @@ dotnet tool restore
 dotnet msbuild $apiReferenceProject `
     -target:Restore `
     -property:Configuration=Release `
+    -property:BdkMcpApiBootstrap=true `
     -verbosity:minimal `
     -nologo
 
 dotnet msbuild $apiReferenceProject `
     -target:Build `
     -property:Configuration=Release `
+    -property:BdkMcpApiBootstrap=true `
     -maxCpuCount `
     -verbosity:minimal `
     -nologo
 
 Remove-Item -Path $apiAssemblyRoot -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path $apiBatchesRoot -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item -Path $apiMetadataRoot -Recurse -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force -Path $apiAssemblyRoot | Out-Null
 
@@ -77,7 +83,19 @@ foreach ($sourceProject in $sourceProjects) {
 
 Write-Host "Staged $($sourceProjects.Count) API reference assemblies to $apiAssemblyRoot"
 
-dotnet docfx $docfxConfig --logLevel Error
+& $apiMetadataScript -AssemblyRoot $apiAssemblyRoot -MetadataRoot $apiBatchesRoot
+
+Write-Host 'Merging DocFX pages and navigation.'
+docker run --rm `
+    @dockerUserArgs `
+    -v "${repoRoot}:/docs" `
+    --workdir /docs `
+    --entrypoint python `
+    $mkdocsImage `
+    docs/api/scripts/merge-docfx-metadata.py docs/api/obj/metadata-batches docs/api/obj/api
+
+Write-Host 'Rendering DocFX API pages.'
+dotnet docfx build $docfxConfig --maxParallelism 1 --logLevel Error
 
 & (Join-Path $repoRoot 'docs\api\scripts\fix-namespace-links.ps1') -OutputRoot $apiPagesRoot
 

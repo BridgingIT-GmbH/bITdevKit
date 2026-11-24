@@ -2,11 +2,11 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
-## [Unreleased]
+## [10.0.130] - 2026-11-24
 
-- Replaced Hellang with DevKit HTTP Problem Details over ASP.NET Core. Use `AddResponseProblemDetails(...)` and `UseResponseProblemDetails()` for the combined setup. The removed `Configure.ProblemDetails(...)` API requires consumers to rebuild and migrate. Mixed hosts can scope automatic handling to API requests and preserve native HTML pages. Both sample servers use Development-only exception diagnostics. DoFiesta previously exposed thrown-exception diagnostics in all environments. [Host migration](docs/adr/0046-shared-http-problem-details.md#host-registration)
-- DevKit problems use grouped `data.errors` validation and an optional structured `exceptionDetails` array. Built-in exceptions use fixed public detail. MVC Result failures follow Minimal API status rules, and `NotSupportedException` follows native handling. When no writer accepts, API problems still return public JSON. Regenerate clients that consume the revised OpenAPI schema. [HTTP response changes](docs/adr/0046-shared-http-problem-details.md#http-responses)
-- The combined Problem Details setup logs mapped 5xx Problem Details and custom MVC Result responses by default. Set `ShouldLogResultErrors = false` to disable HTTP Result logging. [Problem Details options](docs/features-presentation-exception-handling.md#configure-response-problem-details)
+- Removed Hellang from DevKit HTTP Problem Details. **Breaking change.** Replace `Configure.ProblemDetails(...)` with `AddResponseProblemDetails(...)` and `UseResponseProblemDetails()`, then rebuild. The new setup uses ASP.NET Core middleware and can limit automatic handling to API requests in mixed hosts. [Host migration](docs/adr/0046-shared-http-problem-details.md#host-registration)
+- Changed HTTP error responses to group validation messages by field in `data.errors` and return optional `exceptionDetails` as an array of objects. **Breaking change.** MVC Result failures follow Minimal API status rules, and `NotSupportedException` follows native handling. Built-in exception mappings use fixed public messages. When no writer accepts an API problem, the fallback returns public JSON. Regenerate clients that consume the revised OpenAPI schema. [HTTP response changes](docs/adr/0046-shared-http-problem-details.md#http-responses)
+- Changed the combined Problem Details setup to log mapped 5xx Problem Details and custom MVC Result responses by default. Set `ShouldLogResultErrors = false` to disable HTTP Result logging. [Problem Details options](docs/features-presentation-exception-handling.md#configure-response-problem-details)
 
 ## [10.0.129] - 2026-11-24
 

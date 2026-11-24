@@ -2,6 +2,10 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.127] - 2026-11-24
+
+This release carries forward the package changes listed under 10.0.126.
+
 ## [10.0.126] - 2026-11-24
 
 - Fixed API reference generation for `BridgingIT.DevKit.Cli` to run DocFX in batches and release memory between batches. The embedded MCP API index combines symbols from all batches.

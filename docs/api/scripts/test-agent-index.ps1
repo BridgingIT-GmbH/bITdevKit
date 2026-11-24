@@ -52,10 +52,29 @@ items:
   type: Class
 '@ | Set-Content -Path (Join-Path $metadataRoot 'IndexFixtureWithoutReferences.yml') -Encoding utf8
 
+    foreach ($batch in @('First', 'Second')) {
+        $batchRoot = Join-Path $metadataRoot $batch
+        New-Item -ItemType Directory -Path $batchRoot | Out-Null
+        @"
+### YamlMime:ManagedReference
+items:
+- uid: BridgingIT.DevKit.Common.BatchFixture
+  name: BatchFixture
+  fullName: BridgingIT.DevKit.Common.BatchFixture
+  type: Namespace
+  children:
+  - BridgingIT.DevKit.Common.BatchFixture.$batch
+- uid: BridgingIT.DevKit.Common.BatchFixture.$batch
+  name: $batch
+  fullName: BridgingIT.DevKit.Common.BatchFixture.$batch
+  type: Class
+"@ | Set-Content -Path (Join-Path $batchRoot 'BatchFixture.yml') -Encoding utf8
+    }
+
     & (Join-Path $PSScriptRoot 'build-agent-index.ps1') -MetadataRoot $metadataRoot -OutputRoot $outputRoot
     $index = Get-Content -Path (Join-Path $outputRoot 'agent-index.json') -Raw | ConvertFrom-Json
-    if ($index.symbols.Count -ne 5) {
-        throw "Expected five local symbols, including the last item before references and the last item at EOF; found $($index.symbols.Count)."
+    if ($index.symbols.Count -ne 8) {
+        throw "Expected eight distinct symbols after combining the batches. Found $($index.symbols.Count)."
     }
 
     $expectedMembers = @{
@@ -82,7 +101,22 @@ items:
         throw 'Reference metadata must not overwrite the final local member.'
     }
 
-    Write-Host 'API index regression passed: final-item boundaries, reference exclusion, member anchors and detail URLs.'
+    $namespaceUid = 'BridgingIT.DevKit.Common.BatchFixture'
+    $namespaceEntry = @($index.symbols | Where-Object uid -eq $namespaceUid)
+    if ($namespaceEntry.Count -ne 1) {
+        throw 'Expected one index entry for the namespace shared across batches.'
+    }
+
+    $batchPage = Get-Content -Path (Join-Path $outputRoot $namespaceEntry[0].detail) -Raw | ConvertFrom-Json
+    $namespaceDetail = $batchPage.symbols | Where-Object uid -eq $namespaceUid
+    foreach ($batch in @('First', 'Second')) {
+        $uid = "$namespaceUid.$batch"
+        if ($uid -notin $namespaceDetail.children -or $uid -notin $batchPage.symbols.uid) {
+            throw "Missing namespace child or symbol detail for '$uid' after combining batches."
+        }
+    }
+
+    Write-Host 'API index regression passed: item boundaries, anchors, detail URLs, and pages shared across batches.'
 }
 finally {
     Remove-Item -Path $fixtureRoot -Recurse -Force

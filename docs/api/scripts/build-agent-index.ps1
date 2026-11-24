@@ -62,73 +62,33 @@ public static class AgentApiReferenceIndexBuilder
         var siteUrlValue = siteUrl.EndsWith("/", StringComparison.Ordinal) ? siteUrl : siteUrl + "/";
         var indexSymbols = new List<Dictionary<string, object>>();
 
-        foreach (var file in Directory.EnumerateFiles(metadataRoot, "*.yml", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.OrdinalIgnoreCase))
+        var pages = Directory.EnumerateFiles(metadataRoot, "*.yml", SearchOption.AllDirectories)
+            .OrderBy(file => file, StringComparer.OrdinalIgnoreCase)
+            .GroupBy(Path.GetFileNameWithoutExtension, StringComparer.Ordinal);
+        foreach (var files in pages)
         {
-            var raw = File.ReadAllText(file);
-            if (!raw.Contains("YamlMime:ManagedReference", StringComparison.Ordinal))
-            {
-                continue;
-            }
-
-            var lines = raw.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
-            var starts = new List<int>();
-            var inItems = false;
-            var itemsEnd = lines.Length;
-            for (var i = 0; i < lines.Length; i++)
-            {
-                if (string.Equals(lines[i], "items:", StringComparison.Ordinal))
-                {
-                    inItems = true;
-                    continue;
-                }
-
-                if (string.Equals(lines[i], "references:", StringComparison.Ordinal))
-                {
-                    itemsEnd = i;
-                    break;
-                }
-
-                if (inItems && IsItemStart(lines[i]))
-                {
-                    starts.Add(i);
-                }
-            }
-
-            if (starts.Count == 0)
-            {
-                continue;
-            }
-
-            var fileBaseName = Path.GetFileNameWithoutExtension(file);
-            var detailName = StableHash(fileBaseName) + ".json";
+            var detailName = StableHash(files.Key) + ".json";
             var detailPath = "agent-symbols/" + detailName;
-            var pageDetails = new List<Dictionary<string, object>>();
-
-            for (var i = 0; i < starts.Count; i++)
+            var itemsByUid = new Dictionary<string, ItemPair>(StringComparer.Ordinal);
+            foreach (var file in files)
             {
-                var start = starts[i];
-                var end = i + 1 < starts.Count ? starts[i + 1] : itemsEnd;
-                var item = ConvertItem(lines, start, end, fileBaseName, detailPath, siteUrlValue);
-                if (item == null)
-                {
-                    continue;
-                }
-
-                indexSymbols.Add(item.Index);
-                pageDetails.Add(item.Detail);
+                ReadPage(file, files.Key, detailPath, siteUrlValue, itemsByUid);
             }
 
-            if (pageDetails.Count > 0)
+            if (itemsByUid.Count == 0)
             {
-                var page = new Dictionary<string, object>
-                {
-                    ["schemaVersion"] = 1,
-                    ["source"] = "docfx-mref-page",
-                    ["file"] = Path.GetFileName(file),
-                    ["symbols"] = pageDetails
-                };
-                File.WriteAllText(Path.Combine(symbolRoot, detailName), JsonSerializer.Serialize(page, JsonOptions), Encoding.UTF8);
+                continue;
             }
+
+            indexSymbols.AddRange(itemsByUid.Values.Select(item => item.Index));
+            var page = new Dictionary<string, object>
+            {
+                ["schemaVersion"] = 1,
+                ["source"] = "docfx-mref-page",
+                ["file"] = files.Key + ".yml",
+                ["symbols"] = itemsByUid.Values.Select(item => item.Detail).ToArray()
+            };
+            File.WriteAllText(Path.Combine(symbolRoot, detailName), JsonSerializer.Serialize(page, JsonOptions), Encoding.UTF8);
         }
 
         var orderedSymbols = indexSymbols
@@ -147,6 +107,71 @@ public static class AgentApiReferenceIndexBuilder
 
         File.WriteAllText(Path.Combine(outputRoot, "agent-index.json"), JsonSerializer.Serialize(index, JsonOptions), Encoding.UTF8);
         return orderedSymbols.Count;
+    }
+
+    private static void ReadPage(
+        string file, string fileBaseName, string detailPath, string siteUrl, Dictionary<string, ItemPair> itemsByUid)
+    {
+        var raw = File.ReadAllText(file);
+        if (!raw.Contains("YamlMime:ManagedReference", StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        var lines = raw.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
+        var starts = new List<int>();
+        var inItems = false;
+        var itemsEnd = lines.Length;
+        for (var i = 0; i < lines.Length; i++)
+        {
+            if (string.Equals(lines[i], "items:", StringComparison.Ordinal))
+            {
+                inItems = true;
+                continue;
+            }
+
+            if (string.Equals(lines[i], "references:", StringComparison.Ordinal))
+            {
+                itemsEnd = i;
+                break;
+            }
+
+            if (inItems && IsItemStart(lines[i]))
+            {
+                starts.Add(i);
+            }
+        }
+
+        for (var i = 0; i < starts.Count; i++)
+        {
+            var end = i + 1 < starts.Count ? starts[i + 1] : itemsEnd;
+            var item = ConvertItem(lines, starts[i], end, fileBaseName, detailPath, siteUrl);
+            if (item == null)
+            {
+                continue;
+            }
+
+            var uid = Value(item.Index, "uid");
+            if (itemsByUid.TryGetValue(uid, out var existing))
+            {
+                // A namespace can have a page in several extraction batches.
+                MergeList(existing.Detail, item.Detail, "children");
+                MergeList(existing.Detail, item.Detail, "extensionMethods");
+            }
+            else
+            {
+                itemsByUid.Add(uid, item);
+            }
+        }
+    }
+
+    private static void MergeList(Dictionary<string, object> destination, Dictionary<string, object> source, string key)
+    {
+        destination[key] = ((List<string>)destination[key])
+            .Concat((List<string>)source[key])
+            .Distinct(StringComparer.Ordinal)
+            .Take(100)
+            .ToList();
     }
 
     private static ItemPair ConvertItem(string[] lines, int start, int end, string fileBaseName, string detailPath, string siteUrl)

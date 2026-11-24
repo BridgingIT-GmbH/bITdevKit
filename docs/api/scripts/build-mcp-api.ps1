@@ -20,7 +20,6 @@ $BootstrapRoot = [System.IO.Path]::GetFullPath($BootstrapRoot)
 $artifactRoot = Join-Path $BootstrapRoot 'artifacts'
 $assemblyRoot = Join-Path $BootstrapRoot 'assemblies'
 $metadataRoot = Join-Path $BootstrapRoot 'metadata'
-$metadataConfiguration = Join-Path $BootstrapRoot 'docfx-metadata.json'
 $apiReferenceProject = Join-Path $repoRoot 'docs/api/ApiReference.proj'
 $properties = @(
     "-property:Configuration=$Configuration",
@@ -73,19 +72,35 @@ try {
         }
     }
 
-    $docfx = @{
-        metadata = @(@{
-            src = @(@{ src = $assemblyRoot; files = @('*.dll') })
-            dest = $metadataRoot
-            filter = Join-Path $repoRoot 'docs/api/filterConfig.yml'
-        })
+    $assemblyNames = @(Get-ChildItem -LiteralPath $assemblyRoot -Filter '*.dll' -File | Sort-Object Name | ForEach-Object Name)
+    if ($assemblyNames.Count -eq 0) {
+        throw 'The API bootstrap build did not stage any assemblies.'
     }
-    $docfx | ConvertTo-Json -Depth 8 | Set-Content $metadataConfiguration -Encoding UTF8
-    # Keep compiler work in this large metadata extraction serial. Do not constrain the bootstrap build.
+
+    # DocFX retains metadata for its input assemblies until it writes the batch.
+    # Exit the process between batches so memory is released before the next one.
+    $batchSize = 8
+    $batchCount = [Math]::Ceiling($assemblyNames.Count / $batchSize)
     $previousProcessorCount = $env:DOTNET_PROCESSOR_COUNT
     try {
         $env:DOTNET_PROCESSOR_COUNT = '1'
-        Invoke-DotNet -Arguments @('docfx', 'metadata', $metadataConfiguration, '--logLevel', 'Error')
+        for ($offset = 0; $offset -lt $assemblyNames.Count; $offset += $batchSize) {
+            $batch = 1 + [int] [Math]::Floor($offset / $batchSize)
+            $last = [Math]::Min($offset + $batchSize, $assemblyNames.Count) - 1
+            $batchName = 'batch-{0:D3}' -f $batch
+            $metadataConfiguration = Join-Path $BootstrapRoot "$batchName.json"
+            $docfx = @{
+                metadata = @(@{
+                    # Other staged assemblies remain in the same directory for reference resolution.
+                    src = @(@{ src = $assemblyRoot; files = @($assemblyNames[$offset..$last]) })
+                    dest = Join-Path $metadataRoot $batchName
+                    filter = Join-Path $repoRoot 'docs/api/filterConfig.yml'
+                })
+            }
+            $docfx | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $metadataConfiguration -Encoding UTF8
+            Write-Host "Extracting DocFX metadata batch ${batch}/${batchCount} ($($last - $offset + 1) assemblies)."
+            Invoke-DotNet -Arguments @('docfx', 'metadata', $metadataConfiguration, '--logLevel', 'Error')
+        }
     }
     finally {
         if ($null -eq $previousProcessorCount) {
@@ -96,6 +111,7 @@ try {
         }
     }
 
+    Write-Host 'Building the MCP API index from DocFX metadata.'
     & (Join-Path $PSScriptRoot 'build-agent-index.ps1') -MetadataRoot $metadataRoot -OutputRoot $OutputRoot
     if (-not (Test-Path (Join-Path $OutputRoot 'agent-index.json') -PathType Leaf)) {
         throw 'Embedded MCP API documentation is missing api/agent-index.json after generation.'

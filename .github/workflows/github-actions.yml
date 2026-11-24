@@ -5,7 +5,12 @@ on:
     paths-ignore:
       - '.github/workflows/**'
       - '.github/aw/**'
-  workflow_dispatch: # pick a tag under "Use workflow from" to build and publish it again
+  workflow_dispatch:
+    inputs:
+      verify_mcp_package:
+        description: Build and smoke-test the MCP package without pushing to NuGet
+        type: boolean
+        default: false
 
 permissions: # needed for test reporter
   pull-requests: write
@@ -255,6 +260,8 @@ jobs:
 
       - name: Package evaluation (nuget)
         id: publishing
+        env:
+          VERIFY_MCP_PACKAGE: ${{ inputs.verify_mcp_package }}
         run: |
           is_publishable=false
           should_push=false
@@ -282,6 +289,11 @@ jobs:
             should_push=true
           fi
 
+          if [[ "$VERIFY_MCP_PACKAGE" == "true" ]]; then
+            is_publishable=true
+            should_push=false
+          fi
+
           echo "is_publishable=${is_publishable}" >> "$GITHUB_OUTPUT"
           echo "should_push=${should_push}" >> "$GITHUB_OUTPUT"
           echo "Publishable branch: ${is_publishable}"
@@ -299,17 +311,34 @@ jobs:
       - name: Prepare embedded MCP documentation
         if: ${{ success() && steps.publishing.outputs.is_publishable == 'true' }}
         run: |
+          export MSBUILDDEBUGPATH="$RUNNER_TEMP/mcp-build-diagnostics"
+          mkdir -p "$MSBUILDDEBUGPATH"
           dotnet tool restore
-          dotnet build src/Presentation.Cli/Presentation.Cli.csproj --configuration ${{ env.Build_Configuration }} -p:BdkGenerateMcpApiReference=true --nologo
+          /usr/bin/time -v dotnet build src/Presentation.Cli/Presentation.Cli.csproj --configuration ${{ env.Build_Configuration }} -p:BdkGenerateMcpApiReference=true --nologo
+
+      - name: Upload MCP build diagnostics on failure
+        if: ${{ failure() && steps.publishing.outputs.is_publishable == 'true' }}
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: MCP build diagnostics
+          path: ${{ runner.temp }}/mcp-build-diagnostics/MSBuild_*.failure.txt
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Package pack (nuget)
         if: ${{ success() && steps.publishing.outputs.is_publishable == 'true' }}
+        env:
+          VERIFY_MCP_PACKAGE: ${{ inputs.verify_mcp_package }}
         run: |
           mkdir -p "${NUGET_DIRECTORY}"
-          mapfile -t package_projects < <(find . -name '*.csproj' -type f \
-            ! -path './examples/*' \
-            ! -name '*Tests.csproj' \
-            | sort)
+          if [[ "$VERIFY_MCP_PACKAGE" == "true" ]]; then
+            package_projects=(src/Presentation.Cli/Presentation.Cli.csproj)
+          else
+            mapfile -t package_projects < <(find . -name '*.csproj' -type f \
+              ! -path './examples/*' \
+              ! -name '*Tests.csproj' \
+              | sort)
+          fi
 
           if [[ "${#package_projects[@]}" -eq 0 ]]; then
             echo "::error::No package projects found."

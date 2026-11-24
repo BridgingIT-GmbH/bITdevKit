@@ -2,6 +2,11 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.128] - 2026-11-24
+
+- Changed release packaging to omit `BridgingIT.DevKit.Infrastructure.LiteDb` until LiteDB 6 has a stable release.
+- Fixed API reference generation for the documentation site by extracting DocFX metadata in batches. The CLI now rebuilds its embedded MCP API reference when the shared extraction script changes.
+
 ## [10.0.127] - 2026-11-24
 
 This release carries forward the package changes listed under 10.0.126.

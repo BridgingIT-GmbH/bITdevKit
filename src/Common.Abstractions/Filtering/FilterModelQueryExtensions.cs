@@ -40,7 +40,8 @@ public static class FilterModelQueryExtensions
         var first = true;
         foreach (var order in filter?.Orderings ?? [])
         {
-            if (order is null || !Enum.IsDefined(order.Direction))
+            var direction = order?.Direction ?? OrderDirection.Ascending;
+            if (order is null || !Enum.IsDefined(direction))
             {
                 throw new ArgumentException("Invalid ordering criterion.");
             }
@@ -54,7 +55,7 @@ public static class FilterModelQueryExtensions
             }
 
             var method = first ? "OrderBy" : "ThenBy";
-            method += order.Direction == OrderDirection.Descending ? "Descending" : string.Empty;
+            method += direction == OrderDirection.Descending ? "Descending" : string.Empty;
             source = source.Provider.CreateQuery<T>(Expression.Call(typeof(Queryable), method,
                 [typeof(T), property.Type], source.Expression, Expression.Quote(Expression.Lambda(property, parameter))));
             first = false;

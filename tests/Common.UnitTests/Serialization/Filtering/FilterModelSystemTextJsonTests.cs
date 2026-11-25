@@ -74,6 +74,37 @@ public class FilterModelSystemTextJsonTests
     }
 
     [Fact]
+    public void Deserialize_MixedPlaceholderAndValidEntries_PreservesValidOrderingAndIncludes()
+    {
+        // Arrange
+        const string json = """
+            {
+              "orderings": [
+                null,
+                { "field": "Name", "direction": null },
+                { "field": " ", "direction": "asc" },
+                { "field": "Id", "direction": "desc" }
+              ],
+              "includes": [null, "", " ", "Address"]
+            }
+            """;
+        var source = new[]
+        {
+            new { Id = 1, Name = "Beta" },
+            new { Id = 2, Name = "Alpha" },
+            new { Id = 3, Name = "Alpha" }
+        }.AsQueryable();
+
+        // Act
+        var filter = this.serializer.Deserialize<FilterModel>(json);
+
+        // Assert
+        filter.Includes.ShouldBe(["Address"]);
+        filter.Orderings.Select(order => order.Field).ShouldBe(["Name", "Id"]);
+        source.ApplyOrder(filter).Select(row => row.Id).ShouldBe([3, 2, 1]);
+    }
+
+    [Fact]
     public void SerializeAndDeserialize_ComplexFilterCriteria_ShouldMatchOriginal()
     {
         // Arrange

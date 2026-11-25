@@ -76,13 +76,14 @@ public static class StorageFilterQuery
         var order = new List<StorageFilterOrder>();
         foreach (var term in model.Orderings ?? [])
         {
-            if (term is null || !fields.Contains(term.Field, StringComparer.Ordinal) || !Enum.IsDefined(term.Direction) ||
+            var direction = term?.Direction ?? OrderDirection.Ascending;
+            if (term is null || !fields.Contains(term.Field, StringComparer.Ordinal) || !Enum.IsDefined(direction) ||
                 order.Exists(existing => existing.Field == term.Field))
             {
                 throw new ArgumentException("Unsupported or duplicate storage ordering field.");
             }
 
-            order.Add(new(term.Field, term.Direction == OrderDirection.Descending));
+            order.Add(new(term.Field, direction == OrderDirection.Descending));
         }
 
         order.AddRange(fields.Where(field => !order.Exists(term => term.Field == field)).Select(field => new StorageFilterOrder(field, false)).ToArray());

@@ -32,10 +32,11 @@ public sealed class AuditSearchPlanBuilder(AuditFieldCatalog catalog, TimeProvid
             var orders = new List<AuditOrder>();
             foreach (var order in copy.Orderings ?? [])
             {
-                if (order is null || !Enum.IsDefined(order.Direction)) throw Invalid();
+                var direction = order?.Direction ?? OrderDirection.Ascending;
+                if (order is null || !Enum.IsDefined(direction)) throw Invalid();
                 var field = this.Field("Record", order.Field);
                 if (field.Kind == "Collection") throw Invalid();
-                orders.Add(new AuditOrder { Field = field.Binding, Direction = order.Direction });
+                orders.Add(new AuditOrder { Field = field.Binding, Direction = direction });
             }
 
             if (orders.Count == 0) orders.Add(new AuditOrder { Field = "StartedUtc" });

@@ -36,7 +36,7 @@ public static class OrderOptionBuilder
         var conversion = Expression.Convert(property, typeof(object));
         var lambda = Expression.Lambda<Func<TEntity, object>>(conversion, parameter);
 
-        return new OrderOption<TEntity>(lambda, criteria.Direction);
+        return new OrderOption<TEntity>(lambda, criteria.Direction ?? OrderDirection.Ascending);
     }
 
     private static Expression BuildPropertyExpression(ParameterExpression parameter, string name)

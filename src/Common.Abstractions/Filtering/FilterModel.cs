@@ -199,9 +199,9 @@ public class FilterOrderCriteria
 
     /// <summary>
     /// Gets or sets the direction of the ordering.
-    /// Default value is <see cref="OrderDirection.Ascending"/>.
+    /// Defaults to <see cref="OrderDirection.Ascending"/>. A null value also sorts in ascending order.
     /// </summary>
-    public OrderDirection Direction { get; set; } = OrderDirection.Ascending;
+    public OrderDirection? Direction { get; set; } = OrderDirection.Ascending;
 }
 
 /// <summary>

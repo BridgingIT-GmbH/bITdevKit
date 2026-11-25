@@ -213,6 +213,9 @@ comprehensive examples and best practices for common scenarios.
 
 `field`, `fields`, ordering fields, and include paths are CLR property paths. Their segments are case-sensitive because the builders resolve them with expression-tree property access. For example, use `Department.Name`, not the JSON-style name `department.name`.
 
+When `System.Text.Json` reads a `FilterModel`, it skips orderings with blank fields and blank include paths.
+An ordering with a field uses ascending order if `direction` is omitted or `null`.
+
 ## API implementation
 
 ### ASP.NET controller example

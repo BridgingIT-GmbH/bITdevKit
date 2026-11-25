@@ -89,7 +89,7 @@ public static class AuditFilterSnapshot
 
             this.Enter(source, 0);
             this.RequireType(source, typeof(FilterOrderCriteria));
-            this.CheckEnum(source.Direction);
+            this.CheckEnum(source.Direction ?? OrderDirection.Ascending);
             var result = new FilterOrderCriteria { Field = this.CopyText(source.Field), Direction = source.Direction };
             this.Exit(source);
 

@@ -6,6 +6,8 @@
 namespace BridgingIT.DevKit.Common;
 
 using System.Text.Json;
+using System.Text.Json.Serialization;
+
 /// <summary>
 /// Adds JSON-based parsing for <see cref="FilterModel"/> so Minimal APIs can bind it
 /// from a single query value (e.g., ?filter={...json...}).
@@ -22,10 +24,16 @@ using System.Text.Json;
 /// - Only JSON-in-query is supported (the value must start with '{' or '[').
 /// - Clients must URL-encode the JSON payload in the query string.
 /// </summary>
-public partial class FilterModel
+public partial class FilterModel : IJsonOnDeserialized
 {
     // Pluggable JSON options (default to Web-like behavior if not set by host).
     private static JsonSerializerOptions jsonOptions = new(JsonSerializerDefaults.Web);
+
+    void IJsonOnDeserialized.OnDeserialized()
+    {
+        this.Orderings?.RemoveAll(order => string.IsNullOrWhiteSpace(order?.Field));
+        this.Includes?.RemoveAll(string.IsNullOrWhiteSpace);
+    }
 
     /// <summary>
     /// Configures the JSON serializer options used by <see cref="TryParse(string, IFormatProvider, out FilterModel)"/>.

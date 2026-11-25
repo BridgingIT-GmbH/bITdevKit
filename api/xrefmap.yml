@@ -218794,6 +218794,15 @@ references:
   fullName.vb: BridgingIT.DevKit.Common.DocumentStoreProviderError.New(String, System.Exception)
   nameWithType: DocumentStoreProviderError.DocumentStoreProviderError(string, Exception)
   nameWithType.vb: DocumentStoreProviderError.New(String, Exception)
+- uid: BridgingIT.DevKit.Common.DocumentStoreProviderError.#ctor(System.String,System.Exception,System.Boolean)
+  name: DocumentStoreProviderError(string, Exception, bool)
+  href: obj/api/BridgingIT.DevKit.Common.DocumentStoreProviderError.html#BridgingIT_DevKit_Common_DocumentStoreProviderError__ctor_System_String_System_Exception_System_Boolean_
+  commentId: M:BridgingIT.DevKit.Common.DocumentStoreProviderError.#ctor(System.String,System.Exception,System.Boolean)
+  name.vb: New(String, Exception, Boolean)
+  fullName: BridgingIT.DevKit.Common.DocumentStoreProviderError.DocumentStoreProviderError(string, System.Exception, bool)
+  fullName.vb: BridgingIT.DevKit.Common.DocumentStoreProviderError.New(String, System.Exception, Boolean)
+  nameWithType: DocumentStoreProviderError.DocumentStoreProviderError(string, Exception, bool)
+  nameWithType.vb: DocumentStoreProviderError.New(String, Exception, Boolean)
 - uid: BridgingIT.DevKit.Common.DocumentStoreProviderError.#ctor*
   name: DocumentStoreProviderError
   href: obj/api/BridgingIT.DevKit.Common.DocumentStoreProviderError.html#BridgingIT_DevKit_Common_DocumentStoreProviderError__ctor_
@@ -218815,6 +218824,18 @@ references:
   commentId: Overload:BridgingIT.DevKit.Common.DocumentStoreProviderError.InnerException
   fullName: BridgingIT.DevKit.Common.DocumentStoreProviderError.InnerException
   nameWithType: DocumentStoreProviderError.InnerException
+- uid: BridgingIT.DevKit.Common.DocumentStoreProviderError.IsTransient
+  name: IsTransient
+  href: obj/api/BridgingIT.DevKit.Common.DocumentStoreProviderError.html#BridgingIT_DevKit_Common_DocumentStoreProviderError_IsTransient
+  commentId: P:BridgingIT.DevKit.Common.DocumentStoreProviderError.IsTransient
+  fullName: BridgingIT.DevKit.Common.DocumentStoreProviderError.IsTransient
+  nameWithType: DocumentStoreProviderError.IsTransient
+- uid: BridgingIT.DevKit.Common.DocumentStoreProviderError.IsTransient*
+  name: IsTransient
+  href: obj/api/BridgingIT.DevKit.Common.DocumentStoreProviderError.html#BridgingIT_DevKit_Common_DocumentStoreProviderError_IsTransient_
+  commentId: Overload:BridgingIT.DevKit.Common.DocumentStoreProviderError.IsTransient
+  fullName: BridgingIT.DevKit.Common.DocumentStoreProviderError.IsTransient
+  nameWithType: DocumentStoreProviderError.IsTransient
 - uid: BridgingIT.DevKit.Common.DocumentStoreQueryNotSupportedError
   name: DocumentStoreQueryNotSupportedError
   href: obj/api/BridgingIT.DevKit.Common.DocumentStoreQueryNotSupportedError.html
@@ -371416,6 +371437,98 @@ references:
   commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceDatabaseAdapterBase.ValidateOrphanTarget
   fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DevAppInstanceDatabaseAdapterBase.ValidateOrphanTarget
   nameWithType: DevAppInstanceDatabaseAdapterBase.ValidateOrphanTarget
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1
+  name: DocumentDimensionNameResolver<TContext>
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver-1.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1
+  name.vb: DocumentDimensionNameResolver(Of TContext)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver<TContext>
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver(Of TContext)
+  nameWithType: DocumentDimensionNameResolver<TContext>
+  nameWithType.vb: DocumentDimensionNameResolver(Of TContext)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.#ctor(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory)
+  name: DocumentDimensionNameResolver(IServiceScopeFactory)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentDimensionNameResolver_1__ctor_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.#ctor(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory)
+  name.vb: New(IServiceScopeFactory)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver<TContext>.DocumentDimensionNameResolver(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver(Of TContext).New(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory)
+  nameWithType: DocumentDimensionNameResolver<TContext>.DocumentDimensionNameResolver(IServiceScopeFactory)
+  nameWithType.vb: DocumentDimensionNameResolver(Of TContext).New(IServiceScopeFactory)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.#ctor*
+  name: DocumentDimensionNameResolver
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentDimensionNameResolver_1__ctor_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver<TContext>.DocumentDimensionNameResolver
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver(Of TContext).New
+  nameWithType: DocumentDimensionNameResolver<TContext>.DocumentDimensionNameResolver
+  nameWithType.vb: DocumentDimensionNameResolver(Of TContext).New
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.CachedNames
+  name: CachedNames
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentDimensionNameResolver_1_CachedNames
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.CachedNames
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver<TContext>.CachedNames
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver(Of TContext).CachedNames
+  nameWithType: DocumentDimensionNameResolver<TContext>.CachedNames
+  nameWithType.vb: DocumentDimensionNameResolver(Of TContext).CachedNames
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.CachedNames*
+  name: CachedNames
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentDimensionNameResolver_1_CachedNames_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.CachedNames
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver<TContext>.CachedNames
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver(Of TContext).CachedNames
+  nameWithType: DocumentDimensionNameResolver<TContext>.CachedNames
+  nameWithType.vb: DocumentDimensionNameResolver(Of TContext).CachedNames
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.Capture
+  name: Capture()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentDimensionNameResolver_1_Capture
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.Capture
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver<TContext>.Capture()
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver(Of TContext).Capture()
+  nameWithType: DocumentDimensionNameResolver<TContext>.Capture()
+  nameWithType.vb: DocumentDimensionNameResolver(Of TContext).Capture()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.Capture*
+  name: Capture
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentDimensionNameResolver_1_Capture_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.Capture
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver<TContext>.Capture
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver(Of TContext).Capture
+  nameWithType: DocumentDimensionNameResolver<TContext>.Capture
+  nameWithType.vb: DocumentDimensionNameResolver(Of TContext).Capture
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.Clear
+  name: Clear()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentDimensionNameResolver_1_Clear
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.Clear
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver<TContext>.Clear()
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver(Of TContext).Clear()
+  nameWithType: DocumentDimensionNameResolver<TContext>.Clear()
+  nameWithType.vb: DocumentDimensionNameResolver(Of TContext).Clear()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.Clear*
+  name: Clear
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentDimensionNameResolver_1_Clear_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.Clear
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver<TContext>.Clear
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver(Of TContext).Clear
+  nameWithType: DocumentDimensionNameResolver<TContext>.Clear
+  nameWithType.vb: DocumentDimensionNameResolver(Of TContext).Clear
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.ResolveForReadAsync(`0,System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)
+  name: ResolveForReadAsync(TContext, string, IEnumerable<string>, CancellationToken)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentDimensionNameResolver_1_ResolveForReadAsync__0_System_String_System_Collections_Generic_IEnumerable_System_String__System_Threading_CancellationToken_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.ResolveForReadAsync(`0,System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)
+  name.vb: ResolveForReadAsync(TContext, String, IEnumerable(Of String), CancellationToken)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver<TContext>.ResolveForReadAsync(TContext, string, System.Collections.Generic.IEnumerable<string>, System.Threading.CancellationToken)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver(Of TContext).ResolveForReadAsync(TContext, String, System.Collections.Generic.IEnumerable(Of String), System.Threading.CancellationToken)
+  nameWithType: DocumentDimensionNameResolver<TContext>.ResolveForReadAsync(TContext, string, IEnumerable<string>, CancellationToken)
+  nameWithType.vb: DocumentDimensionNameResolver(Of TContext).ResolveForReadAsync(TContext, String, IEnumerable(Of String), CancellationToken)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.ResolveForReadAsync*
+  name: ResolveForReadAsync
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentDimensionNameResolver_1_ResolveForReadAsync_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver`1.ResolveForReadAsync
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver<TContext>.ResolveForReadAsync
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver(Of TContext).ResolveForReadAsync
+  nameWithType: DocumentDimensionNameResolver<TContext>.ResolveForReadAsync
+  nameWithType.vb: DocumentDimensionNameResolver(Of TContext).ResolveForReadAsync
 - uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionValueEncoding
   name: DocumentDimensionValueEncoding
   href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionValueEncoding.html
@@ -399696,6 +399809,36 @@ references:
   commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.IStoragePermalinkRegistryContext.StoragePermalinks
   fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.IStoragePermalinkRegistryContext.StoragePermalinks
   nameWithType: IStoragePermalinkRegistryContext.StoragePermalinks
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors
+  name: RelationalStorageErrors
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors
+  nameWithType: RelationalStorageErrors
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.IsTransient(System.Exception)
+  name: IsTransient(Exception)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_RelationalStorageErrors_IsTransient_System_Exception_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.IsTransient(System.Exception)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.IsTransient(System.Exception)
+  nameWithType: RelationalStorageErrors.IsTransient(Exception)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.IsTransient*
+  name: IsTransient
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_RelationalStorageErrors_IsTransient_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.IsTransient
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.IsTransient
+  nameWithType: RelationalStorageErrors.IsTransient
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.WasWriteRejected(System.Exception)
+  name: WasWriteRejected(Exception)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_RelationalStorageErrors_WasWriteRejected_System_Exception_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.WasWriteRejected(System.Exception)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.WasWriteRejected(System.Exception)
+  nameWithType: RelationalStorageErrors.WasWriteRejected(Exception)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.WasWriteRejected*
+  name: WasWriteRejected
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_RelationalStorageErrors_WasWriteRejected_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.WasWriteRejected
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.WasWriteRejected
+  nameWithType: RelationalStorageErrors.WasWriteRejected
 - uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors
   name: SqlServerBlobErrors
   href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.html
@@ -399726,6 +399869,24 @@ references:
   commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.ProviderError
   fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.ProviderError
   nameWithType: SqlServerBlobErrors.ProviderError
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors
+  name: SqlServerStorageErrors
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors
+  nameWithType: SqlServerStorageErrors
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors.IsTransient(System.Exception)
+  name: IsTransient(Exception)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_SqlServerStorageErrors_IsTransient_System_Exception_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors.IsTransient(System.Exception)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors.IsTransient(System.Exception)
+  nameWithType: SqlServerStorageErrors.IsTransient(Exception)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors.IsTransient*
+  name: IsTransient
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_SqlServerStorageErrors_IsTransient_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors.IsTransient
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors.IsTransient
+  nameWithType: SqlServerStorageErrors.IsTransient
 - uid: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob
   name: StorageBlob
   href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.html

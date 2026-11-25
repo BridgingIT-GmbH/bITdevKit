@@ -98,7 +98,7 @@ Class DocumentStoreProviderError
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class DocumentStoreProviderError : StorageError, IResultError</code></pre>
+    <pre><code class="lang-csharp hljs">public class DocumentStoreProviderError : StorageError, ITransientStorageError, IResultError</code></pre>
   </div>
 
 
@@ -117,6 +117,7 @@ Class DocumentStoreProviderError
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.ITransientStorageError.html">ITransientStorageError</a></div>
       <div><a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></div>
     </dd>
   </dl>
@@ -153,6 +154,9 @@ Class DocumentStoreProviderError
   </div>
   </dd></dl>
 
+
+  <h2 id="BridgingIT_DevKit_Common_DocumentStoreProviderError_examples">Examples</h2>
+  <pre><code class="lang-csharp">var error = new DocumentStoreProviderError("Write rejected", exception, isTransient: false);</code></pre>
 
 
 
@@ -192,6 +196,48 @@ Class DocumentStoreProviderError
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_DocumentStoreProviderError__ctor_System_String_System_Exception__examples">Examples</h4>
+  <pre><code class="lang-csharp">var error = new DocumentStoreProviderError("Write rejected", exception, isTransient: false);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DocumentStoreProviderError__ctor_" data-uid="BridgingIT.DevKit.Common.DocumentStoreProviderError.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DocumentStoreProviderError__ctor_System_String_System_Exception_System_Boolean_" data-uid="BridgingIT.DevKit.Common.DocumentStoreProviderError.#ctor(System.String,System.Exception,System.Boolean)">
+  DocumentStoreProviderError(string, Exception, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a provider failure with an explicit retry classification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DocumentStoreProviderError(string message, Exception innerException, bool isTransient)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>innerException</code> <span class="xref">Exception</span></dt>
+    <dd></dd>
+    <dt><code>isTransient</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DocumentStoreProviderError__ctor_System_String_System_Exception_System_Boolean__examples">Examples</h4>
+  <pre><code class="lang-csharp">var error = new DocumentStoreProviderError("Write rejected", exception, isTransient: false);</code></pre>
+
 
 
 
@@ -227,6 +273,41 @@ Class DocumentStoreProviderError
   </dl>
 
 
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_DocumentStoreProviderError_IsTransient_" data-uid="BridgingIT.DevKit.Common.DocumentStoreProviderError.IsTransient*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_DocumentStoreProviderError_IsTransient" data-uid="BridgingIT.DevKit.Common.DocumentStoreProviderError.IsTransient">
+  IsTransient
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether the retry behavior can replay the operation. The legacy constructor defaults to true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsTransient { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DocumentStoreProviderError_IsTransient_examples">Examples</h4>
+  <pre><code class="lang-csharp">if (error.IsTransient) { /* allow the configured retry */ }</code></pre>
 
 
 

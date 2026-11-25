@@ -51339,6 +51339,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver<TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionNameResolver-1.yml\" sourcestartlinenumber=\"1\">Resolves dimension name IDs for relational Document Storage.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionValueEncoding.yml",
       "output": {
         ".html": {
@@ -54993,6 +55007,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.RelationalStorageErrors.yml\" sourcestartlinenumber=\"1\">Classifies temporary database failures in relational storage providers.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.yml",
       "output": {
         ".html": {
@@ -55003,7 +55031,21 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.yml\" sourcestartlinenumber=\"1\">Classifies blob storage timeouts and transient SQL Server failures.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.yml\" sourcestartlinenumber=\"1\">Classifies blob storage timeouts and transient relational failures.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerStorageErrors.yml\" sourcestartlinenumber=\"1\">Classifies timeouts and transient SQL Server failures for storage providers.</p>\n"
     },
     {
       "type": "ManagedReference",

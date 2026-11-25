@@ -382,7 +382,7 @@ if (!lease.IsAcquired)
     <dd><p>The underlying rate-limit lease.</p>
 </dd>
     <dt><code>release</code> <span class="xref">Action</span></dt>
-    <dd><p>The callback that updates coordinator state after release.</p>
+    <dd><p>The callback that updates coordinator state before returning the permit.</p>
 </dd>
     <dt><code>waitDuration</code> <span class="xref">TimeSpan</span></dt>
     <dd><p>The admission wait duration.</p>

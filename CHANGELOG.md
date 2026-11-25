@@ -2,14 +2,15 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
-## [Unreleased]
+## [10.0.132] - 2026-11-25
 
+- Fixed `FilterModel` JSON parsing to skip blank ordering fields and include paths. Omitted or null directions sort ascending. **Breaking change.** `FilterOrderCriteria.Direction` is now nullable. Rebuild consumers and handle null when reading the property directly.
 - Fixed Blob Storage so expired blobs are hidden immediately, including in listings and cached downloads. Expired keys accept create-only uploads as fresh blobs.
-- Blob Storage retries only when every error is marked transient. The Entity Framework provider classifies timeouts and transient SQL Server errors.
-- EF Blob Storage uses the host's `TimeProvider` for timestamps, expiration checks, and leases.
-- Added opt-in tracing for named blob clients with operation, store, and error type information.
-- Changed EF blob row IDs and their foreign keys to C# `Guid`, stored as 32-character UUID text. Fresh schemas can use `UseBlobRowIdCollation` to preserve UUIDv7 timestamp order.
-- Aligned EF Document Storage with Blob Storage. New document rows use UUIDv7 IDs, and fresh relational schemas store the document key and Dimension foreign key as lowercase `char(32)` text. Use `UseDocumentRowIdCollation` to opt into bytewise ordering.
+- Changed Blob Storage to retry only when every error is marked transient. The EF provider classifies timeouts and transient SQL Server errors, and uses the host's `TimeProvider` for timestamps, expiration checks, and leases.
+- Added `WithTracingBehavior()` for named blob clients. Activities include the operation, store, and error type.
+- Changed EF blob row IDs and foreign keys from `string` to `Guid` in C#. **Breaking change.** Update custom EF models and code that reads or assigns these IDs. The database representation is lowercase `char(32)` text. Fresh schemas can use `UseBlobRowIdCollation` for bytewise UUIDv7 ordering.
+- Changed EF Document Storage to assign UUIDv7 IDs in DevKit. Relational schemas store the document key and Dimension foreign key as lowercase `char(32)` text. **Breaking change.** Existing relational stores that use a different key format need an application-owned migration or a fresh schema. Use `UseDocumentRowIdCollation` to opt into bytewise ordering.
+- Fixed `PropertyBag` merges and enumeration to use snapshots, and fixed scalar conversions to preserve date and time values and support `TimeSpan`.
 
 ## [10.0.131] - 2026-11-24
 

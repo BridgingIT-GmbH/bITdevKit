@@ -2,6 +2,15 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.134] - 2026-11-25
+
+- Fixed `AddJwtBearerAuthentication()` event logging to skip request paths matched by `RequestPathDefaults.Blacklist`.
+- Added `HttpRepresentationHeaders` for HTTP preconditions, ETag comparisons, and single byte-range selection. The existing `HttpRepresentationConditions` API retains its header matching behavior.
+- Added `TryParseDuration()` for invariant duration text such as `500ms` and `1.5m`. Queueing and Orchestrations accept these values through `StartupDelayInvariant()`. Console Commands opt in with `[ConsoleCommandDuration]` on `TimeSpan` options and arguments.
+- Added `TruncateUtf8()` to enforce byte limits without splitting Unicode scalars. Application Auditing uses it for bounded text.
+- Added `PathGlobMatcher` for whole-path glob matching and `AsyncKeyedLock<TKey>` for per-key asynchronous locking. Request Profiling and File Storage use the shared implementations.
+- Added `ScalarPropertyBagJson.ParseElement()` to parse typed metadata from a `JsonElement`. Blob and Document Storage maintenance endpoints use it when binding property bags.
+
 ## [10.0.133] - 2026-11-25
 
 - Fixed HTTP/2 failures with `AddResponseProblemDetails()` by letting ASP.NET Core manage response headers. Empty-status Problem Details responses keep their existing headers and cache policy.

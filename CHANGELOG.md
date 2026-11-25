@@ -2,6 +2,27 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [Unreleased]
+
+- Fixed EF Blob Storage downloads to honor caller-owned SQL Server transactions.
+- Fixed EF Document Storage batch upserts to honor caller-owned transactions and prevent replay after a post-commit cleanup failure.
+- Fixed EF Document Storage to stop retrying permanent upsert failures.
+- Fixed EF Document Storage to report unconfirmed upsert batch commits without replaying them.
+- Fixed EF Blob Storage to classify PostgreSQL and SQLite lock contention as transient.
+- Fixed EF Blob Storage retention to advance past a blocked candidate for the rest of the sweep.
+- Fixed EF Blob Storage uploads to report an indeterminate outcome when commit acknowledgement fails.
+- Fixed EF Blob Storage downloads to reject chunks from a replacement version.
+- Fixed EF Blob Storage paging to include distinct names that compare equal under the database collation.
+- Fixed EF Blob Storage prefix cleanup to stay in the requested container on case-insensitive databases.
+- Fixed EF Blob Storage to preserve the original failure when a rollback fails after the database ends the transaction.
+- Fixed EF Blob Storage dimension registration to preserve the blob transaction when the operation context is pooled.
+- Fixed Blob Storage upload admission to keep the reported active count within the configured limit.
+- Fixed EF Blob Storage to return container names in ordinal order.
+- Fixed EF Blob Storage retention to continue sweeping after a transient error on one blob.
+- Fixed EF Document Storage dimension registration to preserve the document transaction when the operation context is pooled.
+- Fixed EF Document Storage key paging to include distinct documents whose keys compare equal under the database collation.
+- Fixed EF Document Storage retention to continue after transient SQL Server errors and concurrent document changes.
+
 ## [10.0.134] - 2026-11-25
 
 - Fixed `AddJwtBearerAuthentication()` event logging to skip request paths matched by `RequestPathDefaults.Blacklist`.

@@ -10,8 +10,13 @@ using Application.UnitTests.Storage;
 using Infrastructure.EntityFramework;
 using Infrastructure.EntityFramework.Storage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using System.Data.Common;
+using System.Reflection;
 
+/// <summary>Exercises the EF blob provider contract and transaction error handling.</summary>
+/// <example><code>await new EntityFrameworkBlobStoreProviderContractTests().SweepExpiredAsync_WithExpiredBlobs_DeletesExpiredRowsAndChunksOnly();</code></example>
 [UnitTest("Infrastructure")]
 public sealed class EntityFrameworkBlobStoreProviderContractTests : BlobStoreProviderContractTests
 {
@@ -28,6 +33,29 @@ public sealed class EntityFrameworkBlobStoreProviderContractTests : BlobStorePro
         return new EntityFrameworkBlobStoreProvider<ContractBlobDbContext>(
             new SingleContextScopeFactory<ContractBlobDbContext>(this.context),
             options);
+    }
+
+    /// <summary>Checks which rollback failures the provider allows to propagate.</summary>
+    /// <example><code>await tests.RollbackAsync_WhenTransactionFails_SuppressesOnlyExpectedErrors(typeof(InvalidOperationException), true);</code></example>
+    [Theory]
+    [InlineData(typeof(InvalidOperationException), true)]
+    [InlineData(typeof(DbException), true)]
+    [InlineData(typeof(OperationCanceledException), false)]
+    [InlineData(typeof(OutOfMemoryException), false)]
+    public async Task RollbackAsync_WhenTransactionFails_SuppressesOnlyExpectedErrors(Type exceptionType, bool suppress)
+    {
+        var sut = this.CreateProvider();
+        var transaction = Substitute.For<IDbContextTransaction>();
+        var failure = exceptionType == typeof(DbException)
+            ? Substitute.For<DbException>()
+            : (Exception)Activator.CreateInstance(exceptionType);
+        transaction.RollbackAsync(CancellationToken.None).Returns(Task.FromException(failure));
+        var rollback = sut.GetType().GetMethod("RollbackAsync", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        var thrown = await Record.ExceptionAsync(() => (Task)rollback.Invoke(sut, [transaction, CancellationToken.None]));
+
+        thrown.ShouldBeSameAs(suppress ? null : failure);
+        await transaction.Received(1).RollbackAsync(CancellationToken.None);
     }
 
     [Fact]

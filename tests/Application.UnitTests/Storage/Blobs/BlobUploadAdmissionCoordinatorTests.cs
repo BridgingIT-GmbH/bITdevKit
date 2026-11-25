@@ -6,9 +6,12 @@
 namespace BridgingIT.DevKit.Application.UnitTests.Storage;
 
 using System.Diagnostics.Metrics;
+using System.Threading.RateLimiting;
 using BridgingIT.DevKit.Application.Storage;
 using Microsoft.Extensions.Time.Testing;
 
+/// <summary>Exercises upload admission, queueing, and active upload accounting.</summary>
+/// <example><code>await new BlobUploadAdmissionCoordinatorTests().AcquireAsync_WithManyQueuedUploads_KeepsActiveCountWithinLimit();</code></example>
 [UnitTest("Application.Storage")]
 [Collection(ProcessWideStateTestCollection.Name)]
 public class BlobUploadAdmissionCoordinatorTests
@@ -19,6 +22,91 @@ public class BlobUploadAdmissionCoordinatorTests
         MaxQueuedUploads = 2,
         QueueWaitTimeout = TimeSpan.FromMinutes(1)
     };
+
+    /// <summary>Checks that active upload snapshots and metrics stay within the store limit under contention.</summary>
+    /// <example><code>await tests.AcquireAsync_WithManyQueuedUploads_KeepsActiveCountWithinLimit();</code></example>
+    [Fact]
+    public async Task AcquireAsync_WithManyQueuedUploads_KeepsActiveCountWithinLimit()
+    {
+        const int limit = 4;
+        const int uploadCount = 2000;
+        const string store = "reports";
+        var options = new UploadConcurrencyBlobStoreClientBehaviorOptions
+        {
+            MaxConcurrentUploads = limit,
+            MaxQueuedUploads = uploadCount,
+            QueueWaitTimeout = TimeSpan.FromMinutes(1)
+        };
+        using var meterFactory = new CoordinatorMeterFactory();
+        var meter = meterFactory.Create(new(Metrics.MeterName));
+        using var listener = new MeterListener();
+        listener.InstrumentPublished = (instrument, meterListener) =>
+        {
+            if (instrument.Meter == meter && instrument.Name == "blobstorage_uploads_active")
+            {
+                meterListener.EnableMeasurementEvents(instrument);
+            }
+        };
+        var metricLock = new Lock();
+        var metricActive = 0L;
+        var metricPeak = 0L;
+        listener.SetMeasurementEventCallback<long>((_, delta, _, _) =>
+        {
+            if (delta < 0)
+            {
+                // Give waiting continuations a chance to run during a permit handoff.
+                Thread.Yield();
+            }
+
+            lock (metricLock)
+            {
+                metricActive += delta;
+                metricPeak = Math.Max(metricPeak, metricActive);
+            }
+        });
+        listener.Start();
+        using var sut = new BlobUploadAdmissionCoordinator(metricsService: new MetricsService(meterFactory));
+        var initialLeases = await Task.WhenAll(Enumerable.Range(0, limit)
+            .Select(_ => sut.AcquireAsync(store, options, CancellationToken.None).AsTask()));
+        var uploads = Enumerable.Range(0, uploadCount).Select(async _ =>
+        {
+            await using var lease = await sut.AcquireAsync(store, options, CancellationToken.None);
+            lease.IsAcquired.ShouldBeTrue();
+            var active = sut.GetSnapshots().Single().ActiveUploads;
+            await Task.Yield();
+            return active;
+        }).ToArray();
+
+        var queued = sut.GetSnapshots().Single().QueuedUploads;
+        await Task.WhenAll(initialLeases.Select(lease => Task.Run(async () => await lease.DisposeAsync())));
+        var activeCounts = await Task.WhenAll(uploads);
+
+        queued.ShouldBe(uploadCount);
+        activeCounts.Max().ShouldBeLessThanOrEqualTo(limit);
+        sut.GetSnapshots().Single().ActiveUploads.ShouldBe(0);
+        metricPeak.ShouldBe(limit);
+        metricActive.ShouldBe(0);
+    }
+
+    /// <summary>Checks that the accounting callback runs while the limiter still holds the permit.</summary>
+    /// <example><code>await tests.DisposeAsync_WithAcquiredLease_UpdatesAccountingBeforeReturningPermit();</code></example>
+    [Fact]
+    public async Task DisposeAsync_WithAcquiredLease_UpdatesAccountingBeforeReturningPermit()
+    {
+        using var limiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = 1 });
+        var permitAvailableDuringCallback = false;
+        var sut = BlobUploadAdmissionLease.Acquired(limiter.AttemptAcquire(), () =>
+        {
+            using var next = limiter.AttemptAcquire();
+            permitAvailableDuringCallback = next.IsAcquired;
+        }, TimeSpan.Zero);
+
+        await sut.DisposeAsync();
+
+        permitAvailableDuringCallback.ShouldBeFalse();
+        using var available = limiter.AttemptAcquire();
+        available.IsAcquired.ShouldBeTrue();
+    }
 
     [Fact]
     public async Task AcquireAsync_WhenPermitReleased_AdmitsOldestWaiterFirst()

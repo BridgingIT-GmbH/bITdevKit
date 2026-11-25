@@ -388,7 +388,7 @@ public sealed class BlobUploadAdmissionLease : IAsyncDisposable
     /// Creates an acquired lease for coordinator implementations.
     /// </summary>
     /// <param name="lease">The underlying rate-limit lease.</param>
-    /// <param name="release">The callback that updates coordinator state after release.</param>
+    /// <param name="release">The callback that updates coordinator state before returning the permit.</param>
     /// <param name="waitDuration">The admission wait duration.</param>
     /// <returns>An acquired upload-admission lease.</returns>
     /// <example>
@@ -435,8 +435,15 @@ public sealed class BlobUploadAdmissionLease : IAsyncDisposable
             return ValueTask.CompletedTask;
         }
 
-        lease.Dispose();
-        this.release();
+        try
+        {
+            // Update the active count before a waiting upload can take the permit.
+            this.release();
+        }
+        finally
+        {
+            lease.Dispose();
+        }
 
         return ValueTask.CompletedTask;
     }

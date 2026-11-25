@@ -33,12 +33,22 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> where TCo
         return context.StorageBlobs.FromSqlRaw(query, parameter);
     }
 
-    private static async Task<List<StorageBlob>> ReadExpiredCandidatesAsync(TContext context, BlobRetentionSweepRequest request, CancellationToken cancellationToken)
+    private static Task<List<StorageBlob>> ReadExpiredCandidatesAsync(TContext context, BlobRetentionSweepRequest request,
+        (DateTimeOffset ExpiresAt, Guid Id)? cursor, CancellationToken cancellationToken)
     {
         if (!IsSqlite(context))
-            return await context.StorageBlobs.Where(row => row.ExpiresAt != null && row.ExpiresAt <= request.ExpiresOnOrBefore)
+        {
+            var due = context.StorageBlobs.Where(row => row.ExpiresAt != null && row.ExpiresAt <= request.ExpiresOnOrBefore);
+            if (cursor is { } anchor)
+            {
+                due = due.Where(row => row.ExpiresAt > anchor.ExpiresAt ||
+                    (row.ExpiresAt == anchor.ExpiresAt && row.Id.CompareTo(anchor.Id) > 0));
+            }
+
+            return due
                 .OrderBy(row => row.ExpiresAt).ThenBy(row => row.Id).Take(Math.Max(1, request.BatchSize))
-                .ToListAsync(cancellationToken).ConfigureAwait(false);
+                .ToListAsync(cancellationToken);
+        }
 
         // SQLite cannot translate LINQ DateTimeOffset ordering. Provider writes normalize expiry to UTC,
         // whose native TEXT representation sorts chronologically without applying a function to the index column.
@@ -48,12 +58,23 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> where TCo
         var table = sql.DelimitIdentifier(store.Name, store.Schema);
         var expirationProperty = entity.FindProperty(nameof(StorageBlob.ExpiresAt));
         var expiration = sql.DelimitIdentifier(expirationProperty.GetColumnName(store));
-        var id = sql.DelimitIdentifier(entity.FindProperty(nameof(StorageBlob.Id)).GetColumnName(store));
+        var idProperty = entity.FindProperty(nameof(StorageBlob.Id));
+        var id = sql.DelimitIdentifier(idProperty.GetColumnName(store));
         using var command = context.Database.GetDbConnection().CreateCommand();
         var cutoff = expirationProperty.GetRelationalTypeMapping().CreateParameter(command, "@cutoff", request.ExpiresOnOrBefore.ToUniversalTime());
         // Only delimited model identifiers enter the SQL text. EF applies query filters before the outer Take.
-        var query = $"SELECT * FROM {table} WHERE {expiration} IS NOT NULL AND {expiration} <= {{0}} ORDER BY {expiration}, {id}";
-        return await context.StorageBlobs.FromSqlRaw(query, cutoff).Take(Math.Max(1, request.BatchSize))
-            .ToListAsync(cancellationToken).ConfigureAwait(false);
+        var query = $"SELECT * FROM {table} WHERE {expiration} IS NOT NULL AND {expiration} <= {{0}}";
+        object[] parameters = [cutoff];
+        if (cursor is { } sqliteAnchor)
+        {
+            query += $" AND ({expiration} > {{1}} OR ({expiration} = {{1}} AND {id} > {{2}}))";
+            parameters = [cutoff,
+                expirationProperty.GetRelationalTypeMapping().CreateParameter(command, "@afterExpiry", sqliteAnchor.ExpiresAt.ToUniversalTime()),
+                idProperty.GetRelationalTypeMapping().CreateParameter(command, "@afterId", sqliteAnchor.Id)];
+        }
+
+        query += $" ORDER BY {expiration}, {id}";
+        return context.StorageBlobs.FromSqlRaw(query, parameters).Take(Math.Max(1, request.BatchSize))
+            .ToListAsync(cancellationToken);
     }
 }

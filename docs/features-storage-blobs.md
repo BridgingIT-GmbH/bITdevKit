@@ -284,7 +284,11 @@ Normal blob operations use `IBlobStoreClient`. Direct helper calls require the d
 
 `WithRetryBehavior()` retries a failed result only when it contains errors and every error implements `ITransientStorageError` with `IsTransient` set to true. `BlobStoreProviderError` is permanent by default. `BlobStoreTimeoutError` is transient.
 
-The Entity Framework provider checks the exception and its inner exceptions for timeouts and transient SQL Server errors. It uses the SQL client classification and includes known transient error numbers such as deadlocks and lock timeouts. Retry also respects the configured attempt limit and the upload stream's replay rules.
+The Entity Framework provider checks the exception chain for timeouts and transient database errors. It recognizes SQL Server deadlocks and lock timeouts, PostgreSQL lock and serialization failures, and SQLite busy and locked errors. A SQLite writer lock can block the entire sweep and return a transient error. Retry also respects the configured attempt limit and the upload stream's replay rules.
+
+If SQL Server ends a transaction before rollback, the EF provider reports and classifies the original failure even when rollback also fails.
+
+If the EF provider cannot confirm an upload commit, it returns `BlobStoreIndeterminateOperationError`. Automatic retry stops. Read the key and confirm the stored version before deciding whether to replay the upload.
 
 ## Metrics
 
@@ -358,6 +362,8 @@ The defaults above are also the built-in defaults. `MaxQueuedUploads = 0` disabl
 The first registered behavior is outermost. The shown order means operation metrics and the overall timeout include queue time. Retry is outside admission, so each failed attempt releases its permit before backoff and reacquires a permit for the next attempt.
 
 Admission is deliberately process-local. With `N` application nodes, aggregate possible active uploads are approximately `N × MaxConcurrentUploads`; size database connection pools and server capacity accordingly.
+
+Admission decrements the active count and the `blobstorage_uploads_active` metric before returning a permit. Both stay within `MaxConcurrentUploads` for each named store.
 
 The EF provider groups chunks inside the existing per-blob transaction. It flushes when either `ChunkFlushCount` or `MaxPendingChunkBytes` is reached, then detaches the flushed chunk entities. A final partial group is always flushed. Count four is default-on; use `ChunkFlushCount = 1` only when explicitly requiring one save per chunk. Approximate pending content memory per active upload is bounded by:
 
@@ -850,10 +856,12 @@ Provider behavior:
 
 - In-memory keeps expiration with the in-memory entry and deletes due entries under the context lock.
 - Filesystem stores `ExpiresAt` in metadata and uses the existing background service. A persisted, bounded discovery cursor resumes across sweeps and restarts. Cleanup acquires key authority without waiting, rechecks expiration before deletion, and reclaims obsolete payload files. Open download handles can retain disk blocks until disposed. Tombstones and coordination directories remain on disk; offline compaction is not implemented.
-- Entity Framework stores expiration in `StorageBlob.ExpiresAt` with an index. Sweeps query due rows by that index, acquire the existing internal blob lease, and delete expired blobs in batches. Relational providers cascade deletion to content chunks and Dimension rows.
+- Entity Framework stores expiration in `StorageBlob.ExpiresAt` with an index. Sweeps query due rows by that index, acquire the existing internal blob lease, and delete expired blobs in batches. Relational providers cascade deletion to content chunks and Dimension rows. A blocked candidate leaves the current sweep free to process later due blobs. A subsequent sweep retries the deferred blob.
 - Azure Blob Storage stores expiration as metadata for property round-trips and as a fixed-width blob index tag for efficient native tag queries. The DevKit sweeper deletes blobs found through the tag index. Azure account-level lifecycle management can also be used for coarse retention classes, but exact per-blob `ExpiresAt` deletion is handled by the DevKit sweeper.
 
 Multiple application nodes can run the background service at the same time. Provider sweeps must be idempotent and lease- or condition-protected; a blob already deleted by another node is treated as a successful cleanup outcome.
+
+If a transient SQL Server error such as a deadlock aborts a blob deletion, the EF sweep counts that blob as skipped and continues with the remaining candidates. The rolled-back blob stays eligible for a later batch or sweep. Permanent provider errors still fail the sweep.
 
 ## Expected hash
 
@@ -902,6 +910,8 @@ The caller owns and disposes the returned `BlobDownload`, which disposes the ret
 ### Entity Framework read path
 
 The EF provider reads blobs up to `ChunkSize` (4 MB by default) with a single query that loads the metadata and the first chunk together. It releases its internal lease before returning, so the content stream is an in-memory stream that does not hold a database connection. Larger blobs return a forward-only stream that reads one chunk per query and keeps the lease until it is disposed. A missing chunk fails the read with `InvalidDataException` instead of returning truncated content.
+
+SQL Server downloads honor a caller-owned transaction. A locking read protects the metadata and chunk rows until the caller completes the transaction. Consume streamed content inside the transaction scope when the download must use that transaction throughout.
 
 `DownloadBytesAsync` returns the buffer of a small blob without an extra copy, and pre-sizes its buffer from the blob length for other streams. Blobs of at most 100 KB are the best case, because the read is dominated by the round trip, not the transfer.
 
@@ -1241,6 +1251,8 @@ foreach (var item in result.Value)
 
 The result has one item per requested key in input order. A missing blob is a `BlobStoreNotFoundError` item, not a failed call. With `ContinueOnError = false` the first failure fails the whole result. All content is buffered in memory, so use it for many small blobs, not for large files.
 
+An EF chunked download is bound to the ETag returned when it opened. If an overwrite or delete makes that version unavailable, the next chunk read throws `InvalidDataException`. Open a new download to read the current version.
+
 A provider can implement the optional `IBlobStoreBatchDownloadProvider` capability. The Entity Framework provider does, and reads the keys with a few multi-key queries (`DownloadBatchSize` keys per query, 25 by default) instead of one query per key. Every key still passes through the complete client behavior pipeline on its own, so compression, encryption, caching, retry, and other behaviors keep working per blob. Providers without the capability, and blobs larger than `ChunkSize`, are read one key at a time with the same bounded parallelism. Duplicate keys are read once per occurrence, but only the first occurrence is batched.
 
 Configure the batch size with `BlobStoreOptions.DownloadBatchSize` (1 to 1000).
@@ -1276,6 +1288,8 @@ var page = await blobs.ListPageAsync(new BlobQuery
 ```
 
 Every supported scalar is indexed automatically. Names register within their container, and the database assigns IDs. Applications do not manage IDs or define an index for each name.
+
+Give the EF context a public constructor that accepts its `DbContextOptions`, as shown in the [context example](#entity-framework-context). The provider creates a separate context to register new names in the owning blob transaction. This context is created outside the pool when the application uses `AddDbContextPool`.
 
 | Contract | Behavior |
 | --- | --- |
@@ -1463,6 +1477,10 @@ if (existsResult.IsSuccess && existsResult.Value)
 ## Listing
 
 Use prefix listing for bounded reads. Continuation tokens are opaque and query-bound.
+
+EF blob listing and prefix cleanup match the exact container name, including its case. Native pages follow the database collation and use the name hash to order distinct names that compare equal. Restart a traversal begun before this fix when you need a complete inventory.
+
+The EF provider returns names from `ListContainersAsync` in ordinal order. The database applies the column collation when selecting distinct names, so a case-insensitive collation can return one entry for both `Reports` and `reports`.
 
 ```csharp
 var pageResult = await blobs.ListPageAsync(

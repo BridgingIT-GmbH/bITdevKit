@@ -80,7 +80,7 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentD
                 context.Database.AutoSavepointsEnabled = savepoints;
             }
 
-            var committed = await CommitDimensionsAsync(transaction, "update-dimensions", cancellationToken).ConfigureAwait(false);
+            var committed = await CommitDocumentMutationAsync(transaction, "update-dimensions", cancellationToken).ConfigureAwait(false);
             if (committed.IsFailure) return Result<DocumentInfo>.Failure(committed);
             this.dimensionNames.PublishCommitted(dimensions);
             return Result<DocumentInfo>.Success(ToInfo(entity));
@@ -89,7 +89,7 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentD
         catch (Exception exception) { return Result<DocumentInfo>.Failure(MapError(exception)); }
     }
 
-    private static async Task<Result> CommitDimensionsAsync(IDbContextTransaction transaction, string operation, CancellationToken token)
+    private static async Task<Result> CommitDocumentMutationAsync(IDbContextTransaction transaction, string operation, CancellationToken token)
     {
         try
         {

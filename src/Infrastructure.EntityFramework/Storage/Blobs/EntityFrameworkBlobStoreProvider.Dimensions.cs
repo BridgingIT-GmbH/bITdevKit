@@ -136,7 +136,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobDi
             if (transaction is not null)
             {
                 var operation = propertiesUpdate is null ? "update-dimensions" : "update-properties";
-                var committed = await CommitDimensionsAsync(transaction, operation, cancellationToken).ConfigureAwait(false);
+                var committed = await CommitBlobMutationAsync(transaction, operation, cancellationToken).ConfigureAwait(false);
                 if (committed.IsFailure) return Result<StoredBlobInfo>.Failure(committed);
             }
 
@@ -174,7 +174,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobDi
         }
     }
 
-    private static async Task<Result> CommitDimensionsAsync(IDbContextTransaction transaction, string operation, CancellationToken token)
+    private static async Task<Result> CommitBlobMutationAsync(IDbContextTransaction transaction, string operation, CancellationToken token)
     {
         try
         {

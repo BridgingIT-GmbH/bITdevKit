@@ -157,7 +157,7 @@ public sealed record DocumentRetentionSweepResult
     public int BatchCount { get; init; }
 
     /// <summary>
-    /// Gets whether the configured bounds were reached and more due physical records may remain.
+    /// Gets whether more due physical records may remain after the sweep.
     /// </summary>
     /// <example>
     /// <code>

@@ -4,13 +4,14 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using Application.Storage;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Security.Cryptography;
 using System.Text;
 
 /// <summary>Resolves blob dimension names to database IDs and registers missing names within the blob transaction.</summary>
 /// <typeparam name="TContext">The relational context type that maps the blob dimension name table.</typeparam>
-/// <param name="scopes">Creates scopes for the contexts used to register new names in the owner transaction.</param>
+/// <param name="scopes">Creates scopes for resolving the options and dependencies of the name registration context.</param>
 /// <example><code>var resolver = new BlobDimensionNameResolver&lt;AppDbContext&gt;(scopeFactory);</code></example>
 public sealed class BlobDimensionNameResolver<TContext>(IServiceScopeFactory scopes) where TContext : DbContext
 {
@@ -106,7 +107,11 @@ public sealed class BlobDimensionNameResolver<TContext>(IServiceScopeFactory sco
             foreach (var batch in missing.Chunk(64))
             {
                 await using var serviceScope = scopes.CreateAsyncScope();
-                var registration = serviceScope.ServiceProvider.GetRequiredService<TContext>();
+                var services = serviceScope.ServiceProvider;
+                var options = services.GetService<DbContextOptions<TContext>>() ??
+                    (DbContextOptions)root.GetService<IDbContextOptions>();
+                // A pooled context can retain the borrowed connection when it returns to the pool.
+                await using var registration = ActivatorUtilities.CreateInstance<TContext>(services, options);
                 registration.Database.SetDbConnection(root.Database.GetDbConnection(), contextOwnsConnection: false);
                 await registration.Database.UseTransactionAsync(root.Database.CurrentTransaction.GetDbTransaction(), token).ConfigureAwait(false);
                 var rows = batch.Select(name => new StorageBlobDimensionName

@@ -235,6 +235,8 @@ Use `Properties` for descriptive metadata and optional `Dimensions` for typed, i
 
 Supply dimensions through ordinary write options. Names register automatically within the document type; applications do not configure numeric name IDs or choose individual indexes.
 
+Give the EF context a public constructor that accepts its `DbContextOptions`. The provider creates an unpooled context to register new names in the document write's transaction, including when the operation context comes from `AddDbContextPool`.
+
 ```csharp
 var descriptor = documentClientFactory.GetDescriptors()
     .Single(item => item.DocumentType == typeof(Invoice) && item.Name == "default");
@@ -421,6 +423,8 @@ Filesystem retention uses a persisted discovery cursor that resumes across sweep
 
 The defaults are enabled retention, a 15-second startup delay, one-hour interval, batch size 1000, at most 10 batches per client, no batch delay, and a 10-second stop timeout.
 
+EF retention saves each batch together. If a transient SQL Server error or a concurrency conflict aborts that save, the sweep retries each selected delete in its own context. A delete that still encounters contention is deferred to a later sweep. The result sets `HasMore` when deferred rows may remain due, and a permanent error fails the sweep.
+
 ## Named clients and DI
 
 `AddDocumentStorage` is the feature registration entry point. Registrations are keyed by document CLR type and normalized case-insensitive client name. At most one registration for a type is the explicit default exposed through direct `IDocumentStoreClient<T>` injection. Resolve other clients through `IDocumentStoreClientFactory.CreateClient<T>(name)`.
@@ -457,6 +461,8 @@ Every typed client method is measured, including count, key-only paging, propert
 - Timeout with a linked token, cancellation quiescence, caller-cancellation preservation, typed timeout errors, and injected `TimeProvider`.
 - Exact-read caching with named-client-aware keys and mutation invalidation.
 - Chaos behavior for controlled resilience testing.
+
+For EF document upserts, known permanent failures stop after one save attempt. The provider re-reads after an unconditional owner-key collision. The client retry policy can retry a write the database definitively rejected, such as a deadlock victim.
 
 ## Metrics
 
@@ -645,13 +651,17 @@ Normal typed operations use `IDocumentStoreClient<T>`. Direct helper calls must 
 
 Annotation-mapped `StorageDocument` persistence with indexed hashes for type/partition/row identity, a concurrency version, Unix-millisecond expiration, payload/transform metadata, and provider-owned contexts. SQL Server, PostgreSQL, and SQLite run the same provider contract.
 
-The provider implements the optional batch interfaces: `GetManyAsync` reads keys grouped by partition in chunks of `GetManyBatchSize` with one query per chunk, runs up to `GetManyMaxParallelism` chunks at the same time (each on its own connection), and `UpsertManyAsync` and `DeleteManyAsync` load existing rows once, apply the operations in order and commit once. A failed operation stops the batch, the operations before it stay committed and `FailedKey` is set. If the single commit throws (for example under contention), the provider repeats the batch through the per-operation path, which keeps the retry and conflict semantics of single writes.
+The provider implements the optional batch interfaces: `GetManyAsync` reads keys grouped by partition in chunks of `GetManyBatchSize` with one query per chunk, runs up to `GetManyMaxParallelism` chunks at the same time (each on its own connection), and `UpsertManyAsync` and `DeleteManyAsync` load existing rows once, apply the operations in order and commit once. A failed operation stops the batch, the operations before it stay committed and `FailedKey` is set. For a relational upsert batch, a save failure followed by a confirmed rollback can trigger sequential fallback. If the provider cannot confirm the commit, it returns `DocumentStoreIndeterminateOperationError` and retains results from earlier confirmed chunks. Read the affected keys and reconcile their state before replaying the batch.
+
+An upsert batch without dimensions can participate in a caller-owned transaction on providers that support enlistment. The batch reports the writes staged in that transaction, and the caller controls commit and rollback. For provider-owned transactions, a cleanup failure preserves the established batch outcome and cannot trigger a replay.
 
 New document rows get UUIDv7 IDs from `StorageDocument.CreateId()`. On SQL Server, PostgreSQL, and SQLite, EF discovers the key mapping from the entity annotations. It writes `StorageDocument.Id` and `StorageDocumentDimension.DocumentId` as lowercase, 32-character GUID text in `char(32)` columns on a fresh schema.
 
 Both columns inherit the database default collation. To guarantee UUIDv7 timestamp order across distinct milliseconds, call `modelBuilder.UseDocumentRowIdCollation(Database.ProviderName)` in `OnModelCreating` before creating the schema. It applies `Latin1_General_100_BIN2` on SQL Server, `C` on PostgreSQL, or `BINARY` on SQLite to both columns.
 
 The model uses an index on `(TypeHash, PartitionKey, RowKey)` for keyset paging. To reduce expiration index storage, call `modelBuilder.ApplyDocumentStoreConfiguration()` in `OnModelCreating` when creating the schema. It filters the `(TypeHash, ExpiresAtUnixMilliseconds)` index to rows with an expiration. Either model can use the row ID collation independently.
+
+EF key paging follows the database collation. The provider uses the key hashes to order ties and seek past the last key without skipping a distinct key that compares equal. The existing schema and continuation token format support this ordering. Restart an in-progress traversal after upgrading if it needs to include every key in a group that compares equal.
 
 See the [Appendix A: Performance and scaling](#appendix-a-performance-and-scaling).
 

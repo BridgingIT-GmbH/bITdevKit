@@ -76,8 +76,8 @@ public class RetryDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
 
     private static bool IsRetryable(IResult result)
     {
-        return !result.Errors.Any(error => error is DocumentStoreIndeterminateOperationError)
-            && result.Errors.All(error => error is DocumentStoreProviderError or ITransientStorageError { IsTransient: true });
+        return result.Errors.Any()
+            && result.Errors.All(error => error is ITransientStorageError { IsTransient: true });
     }
 
     private async Task<Result> ExecuteAsync(Func<CancellationToken, Task<Result>> operation, CancellationToken cancellationToken)

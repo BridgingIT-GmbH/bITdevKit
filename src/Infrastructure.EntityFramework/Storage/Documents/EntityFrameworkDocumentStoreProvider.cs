@@ -3,8 +3,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 
+using System.Data.Common;
 using System.Text.Json;
+using System.Transactions;
 using Application.Storage;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>Persists serialized documents with one dependency-injection-owned Entity Framework scope per operation.</summary>
@@ -20,6 +24,14 @@ using Microsoft.Extensions.DependencyInjection;
 public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScopeFactory scopeFactory, DocumentStoreOptions options = null)
     : IDocumentStoreProvider, IDocumentStoreRetentionProvider, IDocumentStoreBatchGetProvider, IDocumentStoreBulkWriteProvider where TContext : DbContext, IDocumentStoreContext
 {
+    private static readonly StorageFilterOrder[] DocumentKeyOrder =
+    [
+        new(nameof(StorageDocument.PartitionKey), false),
+        new(nameof(StorageDocument.RowKey), false),
+        new(nameof(StorageDocument.PartitionKeyHash), false),
+        new(nameof(StorageDocument.RowKeyHash), false)
+    ];
+
     private readonly DocumentStoreOptions options = options ?? new();
     private readonly DocumentDimensionNameResolver<TContext> dimensionNames = new(scopeFactory);
     private readonly IServiceScopeFactory dimensionScopes = scopeFactory;
@@ -179,14 +191,14 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScop
                 rows = translated.Value;
             }
 
-            rows = ApplyContinuation(rows, ReadNativeToken(query?.ContinuationToken));
+            rows = SeekDocumentPage(rows, ReadNativeToken(query?.ContinuationToken));
             if (query?.DimensionFilter is not null)
             {
-                var pageIds = rows.OrderBy(x => x.PartitionKey).ThenBy(x => x.RowKey).Select(x => x.Id).Take(take + 1);
-                rows = context.StorageDocuments.Where(x => pageIds.Contains(x.Id));
+                var pageIds = rows.Select(x => x.Id).Take(take + 1);
+                rows = SeekDocumentPage(context.StorageDocuments.Where(x => pageIds.Contains(x.Id)), null);
             }
 
-            var page = await rows.AsNoTracking().OrderBy(x => x.PartitionKey).ThenBy(x => x.RowKey).Take(take + 1).ToListAsync(cancellationToken);
+            var page = await rows.AsNoTracking().Take(take + 1).ToListAsync(cancellationToken);
             return Result<StoredDocumentPage>.Success(new()
             {
                 Items = page.Take(take).Select(Map).ToArray(),
@@ -217,8 +229,8 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScop
                 rows = translated.Value;
             }
 
-            rows = ApplyContinuation(rows, ReadNativeToken(query?.ContinuationToken));
-            var page = await rows.AsNoTracking().OrderBy(x => x.PartitionKey).ThenBy(x => x.RowKey).Select(x => new { x.PartitionKey, x.RowKey }).Take(take + 1).ToListAsync(cancellationToken);
+            rows = SeekDocumentPage(rows, ReadNativeToken(query?.ContinuationToken));
+            var page = await rows.AsNoTracking().Select(x => new { x.PartitionKey, x.RowKey }).Take(take + 1).ToListAsync(cancellationToken);
             return Result<DocumentKeyPage>.Success(new()
             {
                 Items = page.Take(take).Select(x => new DocumentKey(x.PartitionKey, x.RowKey)).ToArray(),
@@ -285,6 +297,7 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScop
         var attempts = string.IsNullOrWhiteSpace(write.Options.IfMatchETag) && !write.Options.CreateOnly ? 4 : 1;
         for (var attempt = 1; attempt <= attempts; attempt++)
         {
+            IModel insertModel = null;
             try
             {
                 await using var scope = this.dimensionScopes.CreateAsyncScope();
@@ -299,6 +312,7 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScop
                 var now = DateTimeOffset.UtcNow;
                 if (entity is null)
                 {
+                    if (attempt < attempts && context.Database.IsRelational()) insertModel = context.Model;
                     entity = Create(type, write.Key, now);
                     context.StorageDocuments.Add(entity);
                 }
@@ -313,7 +327,7 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScop
                 await context.SaveChangesAsync(cancellationToken);
                 if (transaction is not null)
                 {
-                    var committed = await CommitDimensionsAsync(transaction, "upsert", cancellationToken).ConfigureAwait(false);
+                    var committed = await CommitDocumentMutationAsync(transaction, "upsert", cancellationToken).ConfigureAwait(false);
                     if (committed.IsFailure) return Result<DocumentInfo>.Failure(committed);
                 }
 
@@ -321,14 +335,59 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScop
                 return Result<DocumentInfo>.Success(ToInfo(entity));
             }
             catch (OperationCanceledException) { throw; }
-            catch (DbUpdateException) when (attempt < attempts)
+            catch (DbUpdateException exception) when (attempt < attempts &&
+                (exception is DbUpdateConcurrencyException || IsOwnerKeyViolation(insertModel, exception)))
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(10 * attempt), cancellationToken);
             }
-            catch (Exception ex) { return Result<DocumentInfo>.Failure(MapError(ex)); }
+            catch (DbUpdateConcurrencyException exception) { return Result<DocumentInfo>.Failure(MapError(exception)); }
+            catch (Exception exception)
+            {
+                return Result<DocumentInfo>.Failure(new DocumentStoreProviderError("Entity Framework document operation failed.",
+                    exception, RelationalStorageErrors.WasWriteRejected(exception)));
+            }
         }
 
         return Result<DocumentInfo>.Failure(new DocumentStoreConflictError("The document changed during the write."));
+    }
+
+    private static bool IsOwnerKeyViolation(IModel model, DbUpdateException exception)
+    {
+        if (model is null) return false;
+
+        var entity = model.FindEntityType(typeof(StorageDocument));
+        string[] keyProperties = [nameof(StorageDocument.TypeHash), nameof(StorageDocument.PartitionKeyHash), nameof(StorageDocument.RowKeyHash)];
+        var index = entity.GetIndexes().FirstOrDefault(candidate => candidate.IsUnique &&
+            candidate.Properties.Select(property => property.Name).SequenceEqual(keyProperties));
+        if (index is null) return false;
+
+        var store = StoreObjectIdentifier.Table(entity.GetTableName(), entity.GetSchema());
+        var indexName = index.GetDatabaseName(store);
+        for (var current = exception.InnerException; current is not null; current = current.InnerException)
+        {
+            if (current is SqlException sql && sql.Errors.Cast<SqlError>().Any(error => error.Number is 2601 or 2627 &&
+                error.Message.Contains($"'{indexName}'", StringComparison.Ordinal)))
+            {
+                return true;
+            }
+
+            if (current is DbException { SqlState: "23505" } &&
+                current.GetType().GetProperty("ConstraintName")?.GetValue(current) is string constraintName && constraintName == indexName)
+            {
+                return true;
+            }
+
+            // SQLite identifies the violated index by its columns. The driver is optional for the shared package.
+            var exceptionType = current.GetType();
+            if (exceptionType.FullName == "Microsoft.Data.Sqlite.SqliteException" &&
+                exceptionType.GetProperty("SqliteExtendedErrorCode")?.GetValue(current) is 2067)
+            {
+                var columns = string.Join(", ", index.Properties.Select(property => $"{store.Name}.{property.GetColumnName(store)}"));
+                return current.Message.EndsWith(columns, StringComparison.Ordinal) || current.Message.Contains($"{columns}'", StringComparison.Ordinal);
+            }
+        }
+
+        return false;
     }
 
     /// <inheritdoc />
@@ -374,12 +433,8 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScop
             return await this.UpsertManyInOneCommitAsync(type, writes, cancellationToken);
         }
         catch (OperationCanceledException) { throw; }
-        catch (Exception)
-        {
-            // Nothing was committed. Contention or a constraint violation is resolved by the per-operation path, which
-            // re-reads every row and keeps the retry and conflict semantics of single upserts.
-            return await this.UpsertManySequentialAsync(type, writes, cancellationToken);
-        }
+        catch (DocumentDimensionResultException exception) { return Result<DocumentBatchResult<DocumentInfo>>.Failure(exception.Error); }
+        catch (Exception exception) { return Result<DocumentBatchResult<DocumentInfo>>.Failure(MapError(exception)); }
     }
 
     /// <inheritdoc />
@@ -398,11 +453,91 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScop
 
     private async Task<Result<DocumentBatchResult<DocumentInfo>>> UpsertManyInOneCommitAsync(DocumentTypeIdentity type, IReadOnlyList<StoredDocumentWrite> writes, CancellationToken cancellationToken)
     {
-        await using var scope = this.dimensionScopes.CreateAsyncScope();
-        var context = scope.ServiceProvider.GetRequiredService<TContext>();
-        var hasDimensions = writes.Any(write => write.Dimensions is not null || write.Options?.Dimensions is not null);
-        await using var transaction = hasDimensions ? await context.Database.BeginTransactionAsync(cancellationToken) : null;
-        await using var dimensions = hasDimensions ? this.dimensionNames.BeginSession() : null;
+        Result<DocumentBatchResult<DocumentInfo>>? outcome = null;
+        try
+        {
+            await using var scope = this.dimensionScopes.CreateAsyncScope();
+            var context = scope.ServiceProvider.GetRequiredService<TContext>();
+            if (!context.Database.IsRelational())
+            {
+                try { return await this.SaveUpsertBatchAsync(context, type, writes, null, cancellationToken); }
+                catch (OperationCanceledException) { throw; }
+                catch (Exception) { return await this.UpsertManySequentialAsync(type, writes, cancellationToken); }
+            }
+
+            var hasDimensions = writes.Any(write => write.Dimensions is not null || write.Options?.Dimensions is not null);
+            if (context.Database.CurrentTransaction is not null ||
+                context.Database.GetEnlistedTransaction() is not null || Transaction.Current is not null)
+            {
+                if (hasDimensions)
+                {
+                    return Result<DocumentBatchResult<DocumentInfo>>.Failure(
+                        new DocumentStoreProviderError("Batch dimension updates require a provider-owned transaction.", null, isTransient: false));
+                }
+
+                // A caller-owned transaction determines publication and retry of the whole unit of work.
+                try
+                {
+                    outcome = await this.SaveUpsertBatchAsync(context, type, writes, null, cancellationToken);
+                    return outcome.Value;
+                }
+                catch (OperationCanceledException) { throw; }
+                catch (DbUpdateConcurrencyException exception) { return Result<DocumentBatchResult<DocumentInfo>>.Failure(MapError(exception)); }
+                catch (Exception exception)
+                {
+                    return Result<DocumentBatchResult<DocumentInfo>>.Failure(new DocumentStoreProviderError(
+                        "Entity Framework document operation failed in a caller-owned transaction.", exception, isTransient: false));
+                }
+            }
+
+            var batch = await context.Database.CreateExecutionStrategy().ExecuteAsync<Result<DocumentBatchResult<DocumentInfo>>?>(async token =>
+            {
+                try
+                {
+                    await using var attemptScope = this.dimensionScopes.CreateAsyncScope();
+                    var attemptContext = attemptScope.ServiceProvider.GetRequiredService<TContext>();
+                    await using var transaction = await attemptContext.Database.BeginTransactionAsync(token);
+                    await using var dimensions = hasDimensions ? this.dimensionNames.BeginSession() : null;
+                    Result<DocumentBatchResult<DocumentInfo>> saved;
+                    try
+                    {
+                        saved = await this.SaveUpsertBatchAsync(attemptContext, type, writes, dimensions, token);
+                    }
+                    catch (DbUpdateException)
+                    {
+                        await transaction.RollbackAsync(CancellationToken.None);
+                        // A confirmed rollback permits the sequential path outside the execution strategy.
+                        return null;
+                    }
+
+                    if (saved.Value.Items.Count == 0) return saved;
+
+                    var committed = await CommitDocumentMutationAsync(transaction, "upsert-many", token);
+                    outcome = committed.IsFailure ? Result<DocumentBatchResult<DocumentInfo>>.Failure(committed) : saved;
+                    if (committed.IsSuccess && dimensions is not null) this.dimensionNames.PublishCommitted(dimensions);
+                    return outcome;
+                }
+                catch (Exception exception) when (outcome.HasValue && IsRecoverableBatchCleanupFailure(exception))
+                {
+                    // Cleanup runs inside the execution strategy. Keep the result before it can cause a replay.
+                    return outcome;
+                }
+            }, cancellationToken);
+
+            return batch ?? await this.UpsertManySequentialAsync(type, writes, cancellationToken);
+        }
+        catch (Exception exception) when (outcome.HasValue && IsRecoverableBatchCleanupFailure(exception))
+        {
+            return outcome.Value;
+        }
+    }
+
+    private static bool IsRecoverableBatchCleanupFailure(Exception exception) =>
+        exception is not (OutOfMemoryException or AccessViolationException or StackOverflowException);
+
+    private async Task<Result<DocumentBatchResult<DocumentInfo>>> SaveUpsertBatchAsync(TContext context, DocumentTypeIdentity type,
+        IReadOnlyList<StoredDocumentWrite> writes, DocumentDimensionMutationSession dimensions, CancellationToken cancellationToken)
+    {
         var rows = await this.LoadTrackedAsync(context, type, writes.Select(x => x.Key), cancellationToken);
         var completed = new List<DocumentInfo>(writes.Count);
         DocumentKey? failedKey = null;
@@ -459,13 +594,6 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScop
             await context.SaveChangesAsync(cancellationToken);
         }
 
-        if (transaction is not null)
-        {
-            var committed = await CommitDimensionsAsync(transaction, "upsert-many", cancellationToken).ConfigureAwait(false);
-            if (committed.IsFailure) return Result<DocumentBatchResult<DocumentInfo>>.Failure(committed);
-        }
-
-        if (dimensions is not null) this.dimensionNames.PublishCommitted(dimensions);
         return failedKey is null
             ? Result<DocumentBatchResult<DocumentInfo>>.Success(new() { Items = completed })
             : PartialResult(completed, failedKey.Value, failureMessages);
@@ -676,26 +804,40 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScop
         try
         {
             ArgumentNullException.ThrowIfNull(request);
-            var deleted = 0L;
             var deletedKeys = new List<DocumentKey>();
+            var deferred = new HashSet<Guid>();
             var batches = 0;
             var hasMore = false;
+            var typeHash = HashHelper.ComputeSha256(request.DocumentType.Value);
+            var cutoff = request.VisibilityCutoff.ToUnixTimeMilliseconds();
             for (; batches < request.MaxBatches; batches++)
             {
                 await using var scope = this.dimensionScopes.CreateAsyncScope();
                 var context = scope.ServiceProvider.GetRequiredService<TContext>();
-                var typeHash = HashHelper.ComputeSha256(request.DocumentType.Value);
-                var cutoff = request.VisibilityCutoff.ToUnixTimeMilliseconds();
-                var rows = await context.StorageDocuments
-                    .Where(x => x.TypeHash == typeHash && x.Type == request.DocumentType.Value && x.ExpiresAtUnixMilliseconds != null && x.ExpiresAtUnixMilliseconds <= cutoff)
+                var due = context.StorageDocuments
+                    .Where(x => x.TypeHash == typeHash && x.Type == request.DocumentType.Value && x.ExpiresAtUnixMilliseconds != null && x.ExpiresAtUnixMilliseconds <= cutoff);
+                if (deferred.Count > 0)
+                {
+                    due = due.Where(row => !deferred.Contains(row.Id));
+                }
+
+                var rows = await due
                     .OrderBy(x => x.ExpiresAtUnixMilliseconds)
                     .ThenBy(x => x.Id)
                     .Take(request.BatchSize)
-                    .ToListAsync(cancellationToken);
+                    .ToListAsync(cancellationToken).ConfigureAwait(false);
                 context.StorageDocuments.RemoveRange(rows);
-                await context.SaveChangesAsync(cancellationToken);
-                deleted += rows.Count;
-                deletedKeys.AddRange(rows.Select(x => new DocumentKey(x.PartitionKey, x.RowKey)));
+                try
+                {
+                    await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                    deletedKeys.AddRange(rows.Select(row => new DocumentKey(row.PartitionKey, row.RowKey)));
+                }
+                catch (Exception exception) when (IsRecoverableRetentionFailure(exception))
+                {
+                    context.ChangeTracker.Clear();
+                    await this.RetryRetentionDeletesAsync(rows, deletedKeys, deferred, cancellationToken).ConfigureAwait(false);
+                }
+
                 hasMore = rows.Count == request.BatchSize;
                 if (!hasMore)
                 {
@@ -712,15 +854,41 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScop
             return Result<DocumentRetentionSweepResult>.Success(new()
             {
                 DocumentType = request.DocumentType,
-                DeletedCount = deleted,
+                DeletedCount = deletedKeys.Count,
                 DeletedKeys = deletedKeys,
                 BatchCount = batches,
-                HasMore = hasMore
+                HasMore = hasMore || deferred.Count > 0
             });
         }
         catch (OperationCanceledException) { throw; }
         catch (Exception ex) { return Result<DocumentRetentionSweepResult>.Failure(MapError(ex)); }
     }
+
+    private async Task RetryRetentionDeletesAsync(
+        IReadOnlyList<StorageDocument> rows, List<DocumentKey> deletedKeys, HashSet<Guid> deferred, CancellationToken cancellationToken)
+    {
+        foreach (var row in rows)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            await using var scope = this.dimensionScopes.CreateAsyncScope();
+            var context = scope.ServiceProvider.GetRequiredService<TContext>();
+            // Retain the selected version so a concurrent write can revive the document.
+            context.StorageDocuments.Remove(row);
+            try
+            {
+                await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                deletedKeys.Add(new DocumentKey(row.PartitionKey, row.RowKey));
+            }
+            catch (Exception exception) when (IsRecoverableRetentionFailure(exception))
+            {
+                deferred.Add(row.Id);
+            }
+        }
+    }
+
+    private static bool IsRecoverableRetentionFailure(Exception exception) =>
+        exception is not OperationCanceledException &&
+        (exception is DbUpdateConcurrencyException || SqlServerStorageErrors.IsTransient(exception));
 
     private static IQueryable<StorageDocument> Exact(TContext context, DocumentTypeIdentity type, DocumentKey key)
     {
@@ -747,10 +915,19 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScop
         };
     }
 
-    // The leading PartitionKey >= p bound is redundant but gives the optimizer a plain range seek on (TypeHash, PartitionKey, RowKey).
-    private static IQueryable<StorageDocument> ApplyContinuation(IQueryable<StorageDocument> rows, DocumentKey? key) => key is null
-        ? rows
-        : rows.Where(x => string.Compare(x.PartitionKey, key.Value.PartitionKey) >= 0 && (string.Compare(x.PartitionKey, key.Value.PartitionKey) > 0 || string.Compare(x.RowKey, key.Value.RowKey) > 0));
+    private static IQueryable<StorageDocument> SeekDocumentPage(IQueryable<StorageDocument> rows, DocumentKey? key)
+    {
+        if (key is not { } position)
+        {
+            return EntityFrameworkStorageFilterQuery.Seek(rows, DocumentKeyOrder, null);
+        }
+
+        // Keep the leading range seek on (TypeHash, PartitionKey, RowKey). Hashes distinguish collation-equivalent keys.
+        rows = rows.Where(row => string.Compare(row.PartitionKey, position.PartitionKey) >= 0);
+        return EntityFrameworkStorageFilterQuery.Seek(rows, DocumentKeyOrder,
+            [position.PartitionKey, position.RowKey, HashHelper.ComputeSha256(position.PartitionKey), HashHelper.ComputeSha256(position.RowKey)]);
+    }
+
     private static bool Visible(StorageDocument entity, DateTimeOffset cutoff) => entity.ExpiresAtUnixMilliseconds is null || entity.ExpiresAtUnixMilliseconds > cutoff.ToUnixTimeMilliseconds();
     private static bool Matches(StorageDocument entity, string etag) => string.IsNullOrWhiteSpace(etag) || (entity is not null && string.Equals(entity.ConcurrencyVersion.ToString("N"), etag, StringComparison.Ordinal));
 

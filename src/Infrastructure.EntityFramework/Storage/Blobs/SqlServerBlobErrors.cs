@@ -5,9 +5,8 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 
 using Application.Storage;
 using BridgingIT.DevKit.Common;
-using Microsoft.Data.SqlClient;
 
-/// <summary>Classifies blob storage timeouts and transient SQL Server failures.</summary>
+/// <summary>Classifies blob storage timeouts and transient relational failures.</summary>
 /// <example><code>var error = SqlServerBlobErrors.ProviderError(exception);</code></example>
 public static class SqlServerBlobErrors
 {
@@ -21,22 +20,8 @@ public static class SqlServerBlobErrors
         return new BlobStoreProviderError(exception.GetFullMessage(), IsTransient(exception));
     }
 
-    /// <summary>Checks the exception and its inner exceptions for timeouts and transient SQL Server errors.</summary>
+    /// <summary>Checks the exception and its inner exceptions for timeouts and transient database errors.</summary>
     /// <param name="exception">The provider exception.</param>
     /// <example><code>var retry = SqlServerBlobErrors.IsTransient(exception);</code></example>
-    public static bool IsTransient(Exception exception)
-    {
-        for (var current = exception; current is not null; current = current.InnerException)
-        {
-            if (current is TimeoutException ||
-                current is SqlException sql && (sql.IsTransient || sql.Errors.Cast<SqlError>().Any(error =>
-                    error.Number is 1205 or -2 or 1222 or 233 or 64 or 121 or 10053 or 10054 or 10060
-                        or 10928 or 10929 or 40197 or 40501 or 40613 or 49918 or 49919 or 49920)))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
+    public static bool IsTransient(Exception exception) => RelationalStorageErrors.IsTransient(exception);
 }

@@ -6,12 +6,17 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 
 using System.Buffers;
+using System.Data.Common;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Transactions;
 using Application.Storage;
 using BridgingIT.DevKit.Common;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using IsolationLevel = System.Data.IsolationLevel;
 
 /// <summary>
 /// Provides the Entity Framework blob-store provider.
@@ -173,11 +178,12 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         {
             await using var scope = this.scopeFactory.CreateAsyncScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<TContext>();
-            IReadOnlyList<string> containers = await QueryLiveBlobs(dbContext, this.timeProvider.GetUtcNow()).AsNoTracking()
+            var containers = await QueryLiveBlobs(dbContext, this.timeProvider.GetUtcNow()).AsNoTracking()
                 .Select(blob => blob.Container)
                 .Distinct()
-                .OrderBy(container => container)
-                .ToArrayAsync(cancellationToken);
+                .ToArrayAsync(cancellationToken).ConfigureAwait(false);
+            // The catalog requires ordinal ordering regardless of the database collation.
+            Array.Sort(containers, StringComparer.Ordinal);
             return Result<IReadOnlyList<string>>.Success(containers);
         }
         catch (OperationCanceledException) { throw; }
@@ -380,12 +386,8 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
 
             if (transaction is not null)
             {
-                if (dimensions is not null)
-                {
-                    var committed = await CommitDimensionsAsync(transaction, "upload", cancellationToken).ConfigureAwait(false);
-                    if (committed.IsFailure) return Result<StoredBlobInfo>.Failure(committed);
-                }
-                else await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+                var committed = await CommitBlobMutationAsync(transaction, "upload", cancellationToken).ConfigureAwait(false);
+                if (committed.IsFailure) return Result<StoredBlobInfo>.Failure(committed);
             }
 
             if (dimensions is not null) this.dimensionNames.PublishCommitted(dimensions);
@@ -449,12 +451,11 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             var inlineLimit = this.options.ChunkSize;
             var now = this.timeProvider.GetUtcNow();
 
-            // Blobs up to one chunk are loaded together with their first chunk in a single round trip.
-            var row = await this.ReadBlobWithInlineContentAsync(
+            // Blobs up to one chunk are loaded together with their first chunk in one query.
+            var row = await ReadWithStableOwnerAsync(
                 lease.Context,
-                identity.ContainerHash,
-                identity.NameHash,
-                inlineLimit,
+                (lockRows, token) => this.ReadBlobWithInlineContentAsync(lease.Context, identity.ContainerHash, identity.NameHash,
+                    inlineLimit, lockRows, token),
                 cancellationToken).ConfigureAwait(false);
 
             if (row is null || IsExpired(row.Blob, now))
@@ -478,7 +479,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             return Result<StoredBlobDownload>.Success(new StoredBlobDownload
             {
                 Info = ToInfo(blob),
-                Content = new BlobChunkReadStream(lease, blob.Id, blob.Length)
+                Content = new BlobChunkReadStream(lease, blob.Id, blob.ETag, blob.Length)
             });
         }
         catch (OperationCanceledException)
@@ -764,9 +765,11 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         await using var lease = this.CreateContextLease();
         try
         {
+            var container = validation.Value.Query.Container;
+            var containerHash = HashHelper.ComputeSha256(container);
             var rows = QueryLiveBlobs(lease.Context, this.timeProvider.GetUtcNow())
                 .AsNoTracking()
-                .Where(e => e.Container == validation.Value.Query.Container);
+                .Where(e => e.ContainerHash == containerHash && e.Container == container);
 
             if (!string.IsNullOrEmpty(validation.Value.Query.Prefix))
             {
@@ -781,19 +784,23 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 rows = translated.Value;
             }
 
-            if (!string.IsNullOrWhiteSpace(validation.Value.ContinuationToken?.Name))
+            if (validation.Value.ContinuationToken?.Name is { Length: > 0 } anchorName)
             {
-                rows = rows.Where(e => string.Compare(e.Name, validation.Value.ContinuationToken.Name) > 0);
+                var anchorHash = HashHelper.ComputeSha256(anchorName);
+                rows = rows.Where(e => string.Compare(e.Name, anchorName) > 0 ||
+                    (e.Name == anchorName && string.Compare(e.NameHash, anchorHash) > 0));
             }
 
             if (validation.Value.Query.DimensionFilter is not null)
             {
-                var pageIds = rows.OrderBy(e => e.Name).Select(e => e.Id).Take(validation.Value.Take + 1);
+                var pageIds = rows.OrderBy(e => e.Name).ThenBy(e => e.NameHash)
+                    .Select(e => e.Id).Take(validation.Value.Take + 1);
                 rows = lease.Context.StorageBlobs.AsNoTracking().Where(e => pageIds.Contains(e.Id));
             }
 
             var pageRows = await rows
                 .OrderBy(e => e.Name)
+                .ThenBy(e => e.NameHash)
                 .Select(e => new BlobInfoProjection(
                     e.Container,
                     e.Name,
@@ -944,6 +951,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         var deletedKeys = new List<BlobKey>();
         var skipped = 0;
         var batches = 0;
+        (DateTimeOffset ExpiresAt, Guid Id)? cursor = null;
 
         try
         {
@@ -951,13 +959,15 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var candidates = await ReadExpiredCandidatesAsync(dbContext, request, cancellationToken).ConfigureAwait(false);
+                var candidates = await ReadExpiredCandidatesAsync(dbContext, request, cursor, cancellationToken).ConfigureAwait(false);
 
                 if (candidates.Count == 0)
                 {
                     break;
                 }
 
+                // Advance past the original batch even when a candidate must be retried in a later sweep.
+                cursor = (candidates[^1].ExpiresAt.Value, candidates[^1].Id);
                 batches++;
                 foreach (var blob in candidates)
                 {
@@ -973,6 +983,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                             await dbContext.Entry(blob).ReloadAsync(cancellationToken).ConfigureAwait(false);
                             if (dbContext.Entry(blob).State == EntityState.Detached || blob.ExpiresAt is null || blob.ExpiresAt > request.ExpiresOnOrBefore)
                             {
+                                dbContext.Entry(blob).State = EntityState.Detached;
                                 skipped++;
                                 continue;
                             }
@@ -980,6 +991,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
 
                         if (!await this.TryAcquireLeaseAsync(dbContext, blob, cancellationToken, throwOnConcurrency: true).ConfigureAwait(false))
                         {
+                            dbContext.Entry(blob).State = EntityState.Detached;
                             skipped++;
                             continue;
                         }
@@ -1001,7 +1013,8 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                         deleted++;
                         deletedKeys.Add(key);
                     }
-                    catch (DbUpdateConcurrencyException)
+                    catch (Exception exception) when (exception is not OperationCanceledException &&
+                        (exception is DbUpdateConcurrencyException || SqlServerBlobErrors.IsTransient(exception)))
                     {
                         await this.RollbackAsync(transaction, CancellationToken.None).ConfigureAwait(false);
                         dbContext.Entry(blob).State = EntityState.Detached;
@@ -1071,7 +1084,14 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     {
         if (transaction is not null)
         {
-            await transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                await transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception exception) when (exception is InvalidOperationException or DbException)
+            {
+                // The database may already have ended the transaction. Preserve the original failure.
+            }
         }
     }
 
@@ -1506,13 +1526,65 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     private IQueryable<StorageBlob> QueryExactBlob(TContext dbContext, KeyIdentity key) =>
         dbContext.StorageBlobs.Where(e => e.ContainerHash == key.ContainerHash && e.NameHash == key.NameHash);
 
+    private static Task<TResult> ReadWithStableOwnerAsync<TResult>(TContext context,
+        Func<bool, CancellationToken, Task<TResult>> read, CancellationToken cancellationToken)
+    {
+        if (context.Database.ProviderName != "Microsoft.EntityFrameworkCore.SqlServer")
+        {
+            return read(false, cancellationToken);
+        }
+
+        var local = context.Database.CurrentTransaction;
+        var ambient = context.Database.GetEnlistedTransaction() ?? Transaction.Current;
+        if (local is not null || ambient is not null)
+        {
+            // The caller owns the transaction. Protect locking reads on both tables and preserve snapshot visibility.
+            var usesSnapshot = local?.GetDbTransaction().IsolationLevel == IsolationLevel.Snapshot ||
+                ambient?.IsolationLevel == System.Transactions.IsolationLevel.Snapshot;
+            return read(!usesSnapshot, cancellationToken);
+        }
+
+        // Locking read committed can release the owner lock before the join reads the chunk.
+        return context.Database.CreateExecutionStrategy().ExecuteAsync(async token =>
+        {
+            await using var transaction = await context.Database.BeginTransactionAsync(IsolationLevel.RepeatableRead, token).ConfigureAwait(false);
+            var result = await read(false, token).ConfigureAwait(false);
+            await transaction.CommitAsync(token).ConfigureAwait(false);
+            return result;
+        }, cancellationToken);
+    }
+
+    private static IQueryable<TEntity> LockReadRows<TEntity>(TContext context, DbSet<TEntity> rows) where TEntity : class
+    {
+        var entity = context.Model.FindEntityType(typeof(TEntity));
+        var table = context.GetService<ISqlGenerationHelper>().DelimitIdentifier(entity.GetTableName(), entity.GetSchema());
+        var query = $"SELECT * FROM {table} WITH (HOLDLOCK)";
+        return rows.FromSqlRaw(query).AsNoTracking();
+    }
+
     private async Task<BlobInlineReadRow> ReadBlobWithInlineContentAsync(
         TContext dbContext,
         string containerHash,
         string nameHash,
         long inlineLimit,
+        bool lockRows,
         CancellationToken cancellationToken)
     {
+        if (lockRows)
+        {
+            return await (from blob in LockReadRows(dbContext, dbContext.StorageBlobs)
+                          where blob.ContainerHash == containerHash && blob.NameHash == nameHash
+                          join chunk in LockReadRows(dbContext, dbContext.StorageBlobChunks).Where(chunk => chunk.Index == 0)
+                              on blob.Id equals chunk.BlobId into chunks
+                          from chunk in chunks.DefaultIfEmpty()
+                          select new BlobInlineReadRow
+                          {
+                              Blob = blob,
+                              Content = blob.Length <= inlineLimit ? chunk.Content : null,
+                              ChunkLength = blob.Length <= inlineLimit && chunk != null ? (int?)chunk.Length : null
+                          }).SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+        }
+
         // The unique (ContainerHash, NameHash) index guarantees at most one row.
         await foreach (var row in this.readBlobWithInlineContentQuery(dbContext, containerHash, nameHash, inlineLimit)
             .WithCancellation(cancellationToken)
@@ -1711,7 +1783,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             string error);
     }
 
-    private sealed class BlobChunkReadStream(ContextLease lease, Guid blobId, long length) : Stream
+    private sealed class BlobChunkReadStream(ContextLease lease, Guid blobId, string etag, long length) : Stream
     {
         private byte[] currentChunk;
         private int currentOffset;
@@ -1809,16 +1881,22 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 return false;
             }
 
-            var chunk = await lease.Context.StorageBlobChunks
-                .AsNoTracking()
-                .Where(e => e.BlobId == blobId && e.Index == this.nextIndex)
-                .Select(e => new { e.Content, e.Length })
-                .SingleOrDefaultAsync(cancellationToken)
+            var chunk = await ReadWithStableOwnerAsync(lease.Context, (lockRows, token) =>
+            {
+                var context = lease.Context;
+                var owners = lockRows ? LockReadRows(context, context.StorageBlobs) : context.StorageBlobs.AsNoTracking();
+                var chunks = lockRows ? LockReadRows(context, context.StorageBlobChunks) : context.StorageBlobChunks.AsNoTracking();
+                return (from content in chunks
+                        where content.BlobId == blobId && content.Index == this.nextIndex
+                        join owner in owners on content.BlobId equals owner.Id
+                        where owner.ETag == etag
+                        select new { content.Content, content.Length }).SingleOrDefaultAsync(token);
+            }, cancellationToken)
                 .ConfigureAwait(false);
 
             if (chunk is null)
             {
-                throw new InvalidDataException($"Blob chunk {this.nextIndex} of blob {blobId} is missing.");
+                throw new InvalidDataException($"Blob chunk {this.nextIndex} of blob {blobId} is missing or its version changed.");
             }
 
             this.nextIndex++;

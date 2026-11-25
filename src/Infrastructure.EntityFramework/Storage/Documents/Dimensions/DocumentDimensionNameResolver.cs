@@ -4,11 +4,16 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using Application.Storage;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Security.Cryptography;
 using System.Text;
 
-internal sealed class DocumentDimensionNameResolver<TContext>(IServiceScopeFactory scopes) where TContext : DbContext
+/// <summary>Resolves dimension name IDs for relational Document Storage.</summary>
+/// <typeparam name="TContext">The context that maps document dimension names.</typeparam>
+/// <param name="scopes">Creates scopes for resolving the options and dependencies of the name registration context.</param>
+/// <example><code>var resolver = new DocumentDimensionNameResolver&lt;AppDbContext&gt;(scopeFactory);</code></example>
+public sealed class DocumentDimensionNameResolver<TContext>(IServiceScopeFactory scopes) where TContext : DbContext
 {
     private readonly Lazy<DocumentDimensionNameCache> cache = new(() => new());
 
@@ -17,11 +22,13 @@ internal sealed class DocumentDimensionNameResolver<TContext>(IServiceScopeFacto
     private long registrationConflicts;
     private long acknowledgedNames;
 
+    /// <summary>Gets the number of committed name IDs in the cache.</summary>
+    /// <example><code>var count = resolver.CachedNames;</code></example>
     public int CachedNames => this.cache.IsValueCreated ? this.cache.Value.Count : 0;
 
-    public DocumentDimensionMutationSession BeginSession() => new(this.cache.Value);
+    internal DocumentDimensionMutationSession BeginSession() => new(this.cache.Value);
 
-    public void PublishCommitted(DocumentDimensionMutationSession session)
+    internal void PublishCommitted(DocumentDimensionMutationSession session)
     {
         if (session.Published || System.Transactions.Transaction.Current is not null) return;
         session.Published = true;
@@ -29,6 +36,8 @@ internal sealed class DocumentDimensionNameResolver<TContext>(IServiceScopeFacto
         if (session.NewRegistrations > 0) Interlocked.Add(ref this.acknowledgedNames, session.NewRegistrations);
     }
 
+    /// <summary>Captures cache and registration diagnostics for this resolver.</summary>
+    /// <example><code>var diagnostics = resolver.Capture();</code></example>
     public DocumentDimensionDiagnostics Capture() => new()
     {
         PositiveCacheEntries = this.CachedNames,
@@ -39,8 +48,12 @@ internal sealed class DocumentDimensionNameResolver<TContext>(IServiceScopeFacto
         RegistrationsPerSecond = Interlocked.Read(ref this.acknowledgedNames) / Math.Max(1, this.lifetime.Elapsed.TotalSeconds)
     };
 
+    /// <summary>Clears cached name IDs and invalidates publication by existing sessions.</summary>
+    /// <example><code>resolver.Clear();</code></example>
     public void Clear() { if (this.cache.IsValueCreated) this.cache.Value.Clear(); }
 
+    /// <summary>Looks up existing dimension name IDs for a document read.</summary>
+    /// <example><code>var names = await resolver.ResolveForReadAsync(context, "receipts", ["year"], cancellationToken);</code></example>
     public async Task<Result<IReadOnlyDictionary<string, long>>> ResolveForReadAsync(TContext root, string scope, IEnumerable<string> names, CancellationToken token)
     {
         await using var session = this.BeginSession();
@@ -49,7 +62,7 @@ internal sealed class DocumentDimensionNameResolver<TContext>(IServiceScopeFacto
         return result;
     }
 
-    public async Task<Result<IReadOnlyDictionary<string, long>>> ResolveForWriteAsync(TContext root, string scope, IEnumerable<string> names,
+    internal async Task<Result<IReadOnlyDictionary<string, long>>> ResolveForWriteAsync(TContext root, string scope, IEnumerable<string> names,
         DocumentDimensionMutationSession session, CancellationToken token)
     {
         var supplied = names.GroupBy(DocumentDimensionValues.CanonicalizeName, StringComparer.Ordinal)
@@ -68,7 +81,11 @@ internal sealed class DocumentDimensionNameResolver<TContext>(IServiceScopeFacto
             foreach (var batch in missing.Chunk(64))
             {
                 await using var serviceScope = scopes.CreateAsyncScope();
-                var registration = serviceScope.ServiceProvider.GetRequiredService<TContext>();
+                var services = serviceScope.ServiceProvider;
+                var options = services.GetService<DbContextOptions<TContext>>() ??
+                    (DbContextOptions)root.GetService<IDbContextOptions>();
+                // A pooled context can retain the borrowed connection when it returns to the pool.
+                await using var registration = ActivatorUtilities.CreateInstance<TContext>(services, options);
                 registration.Database.SetDbConnection(root.Database.GetDbConnection(), contextOwnsConnection: false);
                 await registration.Database.UseTransactionAsync(root.Database.CurrentTransaction.GetDbTransaction(), token).ConfigureAwait(false);
                 var rows = batch.Select(name => new StorageDocumentDimensionName
@@ -100,7 +117,7 @@ internal sealed class DocumentDimensionNameResolver<TContext>(IServiceScopeFacto
         return result.IsSuccess && result.Value.Count != requested.Length ? Result<IReadOnlyDictionary<string, long>>.Failure(new DocumentDimensionRegistrationContentionError()) : result;
     }
 
-    public Task<Result<IReadOnlyDictionary<string, long>>> ResolveExistingAsync(TContext root, string scope, IEnumerable<string> names,
+    internal Task<Result<IReadOnlyDictionary<string, long>>> ResolveExistingAsync(TContext root, string scope, IEnumerable<string> names,
         DocumentDimensionMutationSession session, CancellationToken token) => this.LookupAsync(root, scope, names, session, token);
 
     private async Task<Result<IReadOnlyDictionary<string, long>>> LookupAsync(TContext root, string scope, IEnumerable<string> names,

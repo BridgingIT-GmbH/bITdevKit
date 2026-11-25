@@ -166,13 +166,23 @@ public class DocumentStoreNotFoundError(string message = null) : StorageError(me
 /// </summary>
 /// <param name="message">The error message. If null, a default message is used.</param>
 /// <param name="innerException">The optional exception that caused the provider failure.</param>
+/// <example><code>var error = new DocumentStoreProviderError("Write rejected", exception, isTransient: false);</code></example>
 public class DocumentStoreProviderError(string message = null, Exception innerException = null)
-    : StorageError(message ?? "Document store provider failed")
+    : StorageError(message ?? "Document store provider failed"), ITransientStorageError
 {
+    /// <summary>Creates a provider failure with an explicit retry classification.</summary>
+    /// <example><code>var error = new DocumentStoreProviderError("Write rejected", exception, isTransient: false);</code></example>
+    public DocumentStoreProviderError(string message, Exception innerException, bool isTransient)
+        : this(message, innerException) => this.IsTransient = isTransient;
+
     /// <summary>
     /// Gets the optional exception that caused the provider failure.
     /// </summary>
     public Exception InnerException { get; } = innerException;
+
+    /// <summary>Gets whether the retry behavior can replay the operation. The legacy constructor defaults to true.</summary>
+    /// <example><code>if (error.IsTransient) { /* allow the configured retry */ }</code></example>
+    public bool IsTransient { get; } = true;
 }
 
 /// <summary>

@@ -15,8 +15,61 @@ using System.Text;
 using Testcontainers.MsSql;
 using Testcontainers.PostgreSql;
 
+/// <summary>Exercises dimension writes and transaction boundaries on relational databases.</summary>
+/// <example><code>await new StorageDimensionsMutationProofTests().BlobDimensionMutations_WithPooledSqlServerContext_CommitNewNames();</code></example>
 public sealed partial class StorageDimensionsMutationProofTests
 {
+    /// <summary>Verifies that pooled SQL Server contexts can replace dimensions and overwrite blobs with new names.</summary>
+    /// <example><code>await tests.BlobDimensionMutations_WithPooledSqlServerContext_CommitNewNames();</code></example>
+    [Fact]
+    public async Task BlobDimensionMutations_WithPooledSqlServerContext_CommitNewNames()
+    {
+        await using var sql = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest").Build();
+        await sql.StartAsync();
+        var connectionString = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(sql.GetConnectionString())
+        {
+            InitialCatalog = "pooled_blob_dimensions"
+        }.ConnectionString;
+        await using var services = new ServiceCollection()
+            .AddDbContextPool<MutationContext>(options => options.UseSqlServer(connectionString), poolSize: 2)
+            .BuildServiceProvider();
+        await using (var scope = services.CreateAsyncScope())
+        {
+            await scope.ServiceProvider.GetRequiredService<MutationContext>().Database.EnsureCreatedAsync();
+        }
+
+        var sut = new BlobStoreClient("ef", new EntityFrameworkBlobStoreProvider<MutationContext>(
+            services.GetRequiredService<IServiceScopeFactory>()));
+        var key = new BlobKey("archive", "receipt");
+        using var originalContent = new MemoryStream([1, 2, 3]);
+        var created = await sut.UploadAsync(new() { Key = key, Content = originalContent });
+        created.IsSuccess.ShouldBeTrue(Errors(created));
+
+        var updated = await sut.UpdateDimensionsAsync(new()
+        {
+            Key = key,
+            IfMatchETag = created.Value.ETag,
+            Dimensions = BlobValues(("FiscalYear", 2026))
+        });
+        updated.IsSuccess.ShouldBeTrue(Errors(updated));
+        updated.Value.Dimensions["FiscalYear"].Value.ShouldBe(2026);
+
+        using var replacementContent = new MemoryStream([4, 5, 6]);
+        var overwritten = await sut.UploadAsync(new()
+        {
+            Key = key,
+            Content = replacementContent,
+            IfMatchETag = updated.Value.ETag,
+            Dimensions = BlobValues(("Approved", true))
+        });
+        overwritten.IsSuccess.ShouldBeTrue(Errors(overwritten));
+
+        var stored = await sut.GetPropertiesAsync(key);
+        stored.IsSuccess.ShouldBeTrue(Errors(stored));
+        stored.Value.Dimensions.Count.ShouldBe(1);
+        stored.Value.Dimensions["Approved"].Value.ShouldBe(true);
+    }
+
     [Fact]
     public async Task DimensionMutations_RealEngines_RegisterAtomicallyAndPreserveWholeItemConditions()
     {
